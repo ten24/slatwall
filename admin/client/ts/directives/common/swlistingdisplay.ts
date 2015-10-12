@@ -93,13 +93,27 @@ module slatwalladmin {
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes,'data-multiselectpropertyidentifier="'+this.multiselectPropertyIdentifier+'"',' ');    
                 //add column so we can get child count
                 var column = { 
-                    propertyIdentifier:'_content.'+this.multiselectFieldName,
+                    propertyIdentifier:'_content_childContents',
                     aggregate:{
-                        aggregateFunction:'COUNT',
-                        aggregateAlias:'listingPageCount'
+                        aggregateFunction:'count',
+                        aggregateAlias:'childContentsPageCount'
                     }
-                };
+                }; 
+                
                 this.collectionConfig.columns.push(column);
+                var joins = [
+                    {
+                        "associationName":"childContents",
+                        "alias":"_content_childContents"
+                    },
+                    {
+                        "associationName":"site",
+                        "alias":"_content_site"  
+                    }
+                ];
+                this.collectionConfig.joins = joins;
+                this.collectionConfig.groupBys = '_content';
+                
                 
                 //attach observer so we know when a selection occurs
                 this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelection',this.collection);

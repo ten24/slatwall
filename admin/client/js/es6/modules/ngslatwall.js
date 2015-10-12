@@ -64,6 +64,11 @@ var ngSlatwall;
             this.getEntityHasPropertyByEntityName = (entityName, propertyName) => {
                 return angular.isDefined(this.getEntityMetaData(entityName)[propertyName]);
             };
+            this.getPropertyIsObjectByEntityNameAndPropertyIdentifier = (entityName, propertyIdentifier) => {
+                var lastEntity = this.getLastEntityNameInPropertyIdentifier(entityName, propertyIdentifier);
+                var entityMetaData = this.getEntityMetaData(lastEntity);
+                return angular.isDefined(entityMetaData[this.utilityService.listLast(propertyIdentifier, '.')].cfc);
+            };
             this.getLastEntityNameInPropertyIdentifier = (entityName, propertyIdentifier) => {
                 console.log(propertyIdentifier);
                 if (propertyIdentifier.split('.').length > 1) {
@@ -174,6 +179,7 @@ var ngSlatwall;
                     params.filterGroupsConfig = options.filterGroupsConfig || '';
                     params.joinsConfig = options.joinsConfig || '';
                     params.orderByConfig = options.orderByConfig || '';
+                    params.groupBysConfig = options.groupBysConfig || '';
                     params.isDistinct = options.isDistinct || false;
                     params.propertyIdentifiersList = options.propertyIdentifiersList || '';
                     params.allRecords = options.allRecords || '';

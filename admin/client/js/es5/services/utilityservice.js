@@ -135,6 +135,14 @@ var slatwalladmin;
             this.right = function (stringItem, count) {
                 return stringItem.substring(stringItem.length - count, stringItem.length);
             };
+            //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
+            this.mid = function (stringItem, start, count) {
+                console.log('mid');
+                console.log(stringItem);
+                console.log(count);
+                var end = start + count;
+                return stringItem.substring(start, end);
+            };
             this.replaceAll = function (stringItem, find, replace) {
                 return stringItem.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
             };

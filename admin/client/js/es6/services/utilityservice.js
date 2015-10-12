@@ -117,6 +117,9 @@ var slatwalladmin;
             this.right = (stringItem, count) => {
                 return stringItem.substring(stringItem.length - count, stringItem.length);
             };
+            this.mid = (stringItem, start, count) => {
+                return stringItem.substring(stringItem.length - start, stringItem.length - start + count);
+            };
             this.replaceAll = (stringItem, find, replace) => {
                 return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
             };

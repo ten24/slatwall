@@ -70,7 +70,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1444350219278',
+									auditDateTime:'1444681457443',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -130,7 +130,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'ddcd52dcc3d058bc4624a1eae48c1396',
+									verificationCode:'f707bf10cdac44662f3927b62367fc4f',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2017,7 +2017,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"c8356464de0133f3b5c5e9ae7331a380",
+									accountPasswordResetID:"0283193bc478b12096666b156d580210",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -3000,6 +3000,8 @@
                 	
                 		entities['Content'].hb_parentPropertyName = 'parentContent';
                 	
+                		entities['Content'].hb_childPropertyName = 'childContents';
+                	
                 	validations['Content'] = {"properties":{"contentID":[{"contexts":"save","conditions":"notSlatwallCMS","required":true}],"site":[{"contexts":"save","required":true}],"contentTemplateFile":[{"contexts":"save","conditions":"isSlatwallCMS","required":true}],"urlTitle":[{"contexts":"save,create","conditions":"requireUrlTitle","required":true},{"contexts":"save","regex":"^[A-Za-z0-9-]+$","conditions":"notNewContent"}],"urlTitlePath":[{"contexts":"save","conditions":"isSlatwallCMS","method":"isUniqueUrlTitlePathBySite"}]},"conditions":{"topLevelContent":{"parentContent":{"null":true}},"notNewContent":{"newFlag":{"eq":false},"parentContent":{"null":false},"site.app.integration.integrationPackage":{"eq":"slatwallcms"}},"requireUrlTitle":{"parentContent":{"required":true},"site.app.integration.integrationPackage":{"eq":"slatwallcms"}},"notSlatwallCMS":{"site.app":{"null":true}},"isSlatwallCMS":{"site.app.integration.integrationPackage":{"eq":"slatwallcms"}}}};
                 	defaultValues['Content'] = {
                 	contentID:'',
@@ -3645,6 +3647,9 @@
 						this.metaData.className = entity.className;
 						if(entity.hb_parentPropertyName){
 							this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
+						}
+						if(entity.hb_childPropertyName){
+							this.metaData.hb_childPropertyName = entity.hb_childPropertyName;
 						}
 						
 						this.metaData.$$getRBKey = function(rbKey,replaceStringData){

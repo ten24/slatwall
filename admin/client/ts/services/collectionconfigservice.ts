@@ -17,12 +17,12 @@ module slatwalladmin{
 
     class Filter{
         constructor(
-            private propertyIdentifier:string,
-            private value:string,
-            private comparisonOperator:string,
-            private logicalOperator?:string,
-            private displayPropertyIdentifier?:string,
-            private displayValue?:string
+            public propertyIdentifier:string,
+            public value:string,
+            public comparisonOperator:string,
+            public logicalOperator?:string,
+            public displayPropertyIdentifier?:string,
+            public displayValue?:string
         ){}
     }
 
@@ -40,7 +40,7 @@ module slatwalladmin{
 
     class Join{
         constructor(public associationName:string,
-                    private alias:string
+                    public alias:string
         ){}
     }
 
@@ -50,18 +50,21 @@ module slatwalladmin{
             private direction:string
         ){}
     }
+    
 
     export class CollectionConfig {
         public collection: any;
-
+        public static $inject = ['$slatwall','utilityService'];
         constructor(
             private $slatwall:any,
+            private utilityService,
             public  baseEntityName?:string,
             public  baseEntityAlias?:string,
             private columns?:Column[],
             private filterGroups:Array=[{filterGroup: []}],
             private joins?:Join[],
             private orderBy?:OrderBy[],
+            private groupBys?:string,
             private id?:number,
             private currentPage:number = 1,
             private pageShow:number = 10,
@@ -69,6 +72,9 @@ module slatwalladmin{
             private allRecords:boolean = false
 
         ){
+            console.log('collectionConfigtest');
+            console.log(this);
+            
             if(angular.isDefined(this.baseEntityName)){
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if(angular.isUndefined(this.baseEntityAlias)){
@@ -82,7 +88,7 @@ module slatwalladmin{
         };
 
         newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string)=>{
-            return new CollectionConfig(this.$slatwall, baseEntityName, baseEntityAlias);
+            return new CollectionConfig(this.$slatwall, this.utilityService, baseEntityName, baseEntityAlias);
         };
 
         loadJson= (jsonCollection) =>{
@@ -100,6 +106,7 @@ module slatwalladmin{
             this.joins = jsonCollection.joins;
             this.keywords = jsonCollection.keywords;
             this.orderBy = jsonCollection.orderBy;
+            this.groupBys = jsonCollection.groupBys;
             this.pageShow = jsonCollection.pageShow;
             this.allRecords = jsonCollection.allRecords;
         };
@@ -111,6 +118,7 @@ module slatwalladmin{
                 columns: this.columns,
                 filterGroups: this.filterGroups,
                 joins: this.joins,
+                groupBys: this.groupBys,
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
@@ -128,6 +136,7 @@ module slatwalladmin{
                 columnsConfig: angular.toJson(this.columns),
                 filterGroupsConfig: angular.toJson(this.filterGroups),
                 joinsConfig: angular.toJson(this.joins),
+                groupBysConfig: angular.toJson(this.groupBys),
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
@@ -168,30 +177,20 @@ module slatwalladmin{
             return collection;
         };
 
-        private addJoin= (associationName: string) =>{
-            var joinFound:boolean = false,
-                parts = associationName.split('.'),
-                collection = '';
-
-            if(angular.isUndefined(this.joins)){
+        private addJoin= (join:Join) =>{
+            if(!this.joins){
                 this.joins = [];
             }
-            for (var i = 0; i < parts.length; i++) {
-                joinFound = false;
-                if (typeof this.$slatwall['new' + this.capitalize(parts[i])] !== "function") break;
-                collection += '.' + parts[i];
-                this.joins.map(function(_join) {
-                    if (_join.associationName == collection.slice(1)) {
-                        joinFound = true;
-                        return;
-                    }
-                });
-                if(!joinFound) {
-                    this.joins.push(new Join(collection.slice(1), collection.toLowerCase().replace(/\./g, '_')));
+            var joinFound = false;
+            angular.forEach(this.joins,(configJoin)=>{
+                if(configJoin.alias === join.alias){
+                    joinFound = true;
                 }
-
+            });
+            
+            if(!joinFound){
+                this.joins.push(join);
             }
-
         };
 
         private addAlias= (propertyIdentifier:string) =>{
@@ -289,22 +288,60 @@ module slatwalladmin{
         };
 
         addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
-            //this.addJoin(propertyIdentifier);
-          
-            if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
-
-            this.filterGroups[0].filterGroup.push(
-                new Filter(
-                    this.formatCollectionName(propertyIdentifier),
-                    value,
-                    comparisonOperator,
-                    logicalOperator,
-                    propertyIdentifier.split('.').pop(),
-                    value
-                )
+            console.log('addFilter');
+            console.log(propertyIdentifier);
+            var alias = this.baseEntityAlias;
+            var join;
+            var doJoin = false;
+            
+            //if filterGroups does not exists then set a default
+            if(!this.filterGroups){
+                this.filterGroups = [{filterGroup:[]}];
+            }
+            
+            var collection = propertyIdentifier;
+            var propertyKey = '.' + this.utilityService.listLast(propertyIdentifier,'.');
+            console.log(propertyKey);
+            //if the propertyIdenfifier is a chain
+            if(propertyIdentifier.indexOf('.') !== -1){
+                collection = this.utilityService.mid(propertyIdentifier,0,propertyIdentifier.lastIndexOf('.'));
+                propertyKey = '.'+this.utilityService.listLast(propertyIdentifier,'.');
+            }
+            console.log(collection);
+            console.log(propertyKey);
+            //create filter group
+            var filter = new Filter(
+                this.formatCollectionName(propertyIdentifier),
+                value,
+                comparisonOperator,
+                logicalOperator,
+                propertyIdentifier.split('.').pop(),
+                value
             );
-
+            
+            var isObject = this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(this.baseEntityName,propertyIdentifier);
+            if(isObject){
+                filter.propertyIdentifier = this.buildPropertyIdentifier(alias,propertyIdentifier);
+                join =  new Join(propertyIdentifier,this.buildPropertyIdentifier(alias,propertyIdentifier));
+                doJoin = true;
+            }else{
+                filter.propertyIdentifier = this.buildPropertyIdentifier(alias,collection) + propertyKey;
+                join = new Join(collection,this.buildPropertyIdentifier(alias,collection));
+                doJoin = true;
+            }
+            
+            //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
+            if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
+            
+            this.filterGroups[0].filterGroup.push(filter);
+            if(doJoin){
+                this.addJoin(join);   
+            }
         };
+        
+        buildPropertyIdentifier = (alias:string,propertyIdentifier:string, joinChar:string = '_'):string=>{
+            return alias + joinChar + this.utilityService.replaceAll(propertyIdentifier,'.','_');
+        }
 
         addCollectionFilter= (propertyIdentifier: string, displayPropertyIdentifier:string, displayValue:string,
                               collectionID: string, criteria:string='One', fieldtype?:string, readOnly:boolean=false
@@ -330,7 +367,7 @@ module slatwalladmin{
             this.addJoin(propertyIdentifier);
             this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
         };
-
+        
         setCurrentPage= (pageNumber) =>{
             this.currentPage = pageNumber;
         };
@@ -360,5 +397,5 @@ module slatwalladmin{
 
     }
     angular.module('slatwalladmin')
-        .factory('collectionConfigService', ['$slatwall', ($slatwall: any) => new CollectionConfig($slatwall)]);
+        .factory('collectionConfigService', ['$slatwall','utilityService', ($slatwall: any,utilityService) => new CollectionConfig($slatwall,utilityService)]);
 }

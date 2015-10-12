@@ -27,7 +27,9 @@ var slatwalladmin;
             this.buttonGroup = [];
             this.updateMultiselectValues = () => {
                 console.log('updateMultiselect');
-                this.mulitSelectValues = this.selectionService.getSelections('ListingDisplay');
+                this.multiselectValues = this.selectionService.getSelections('ListingDisplay');
+                console.log('msv');
+                console.log(this.multiselectValues);
             };
             this.getCollection = () => {
                 this.collectionConfig.setPageShow(this.paginator.getPageShow());
@@ -234,6 +236,29 @@ var slatwalladmin;
                 this.multiselectable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
+                //add column so we can get child count
+                var column = {
+                    propertyIdentifier: '_content_childContents',
+                    aggregate: {
+                        aggregateFunction: 'count',
+                        aggregateAlias: 'childContentsPageCount'
+                    }
+                };
+                this.collectionConfig.columns.push(column);
+                var joins = [
+                    {
+                        "associationName": "childContents",
+                        "alias": "_content_childContents"
+                    },
+                    {
+                        "associationName": "site",
+                        "alias": "_content_site"
+                    }
+                ];
+                this.collectionConfig.joins = joins;
+                this.collectionConfig.groupBys = '_content';
+                //attach observer so we know when a selection occurs
+                this.observerService.attach(this.updateMultiselectValues, 'swSelectionToggleSelection', this.collection);
             }
             if (this.multiselectable && !this.columns.length) {
                 //check if it has an active flag and if so then add the active flag
@@ -273,9 +298,6 @@ var slatwalladmin;
                 angular.forEach(this.multiselectValues.split(','), (value) => {
                     this.selectionService.addSelection('ListingDisplay', value);
                 });
-                //attach observer
-                console.log('attach event');
-                this.observerService.attach(updateMultiselectValues, 'swSelectionToggleSelection', this.collection);
             }
             this.getCollection();
         }

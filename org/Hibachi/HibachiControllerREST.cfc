@@ -395,6 +395,11 @@ component output="false" accessors="true" extends="HibachiController" {
 				orderByConfig = arguments.rc['orderByConfig'];
 			}
 			
+			var groupBysConfig = "";
+			if(structKeyExists(arguments.rc,'groupBysConfig')){
+				groupBysConfig = arguments.rc['groupBysConfig'];
+			}
+			
 			var propertyIdentifiersList = "";
 			if(structKeyExists(arguments.rc,"propertyIdentifiersList")){
 				propertyIdentifiersList = arguments.rc['propertyIdentifiersList'];
@@ -435,6 +440,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				isDistinct=isDistinct,
 				columnsConfig=columnsConfig,
 				orderByConfig=orderByConfig,
+				groupBysConfig=groupBysConfig,
 				allRecords=allRecords,
 				defaultColumns=defaultColumns,
 				processContext=processContext

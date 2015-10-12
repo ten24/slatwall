@@ -69,8 +69,7 @@ Notes:
 		<sw-listing-column data-property-identifier="title" tdclass="primary" />
 	</sw-listing-display>
 </cfoutput>
-<!---<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
+<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
 	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
 	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
 </hb:HibachiListingDisplay>
---->

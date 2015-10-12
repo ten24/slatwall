@@ -135,6 +135,14 @@ module slatwalladmin{
         public right = (stringItem:string,count:number):string =>{
             return stringItem.substring(stringItem.length-count,stringItem.length);
         }
+        //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
+        public mid = (stringItem:string,start:number,count:number):string =>{
+            console.log('mid');
+            console.log(stringItem);
+            console.log(count);
+            var end = start + count;
+            return stringItem.substring(start,end);
+        }
         
         public replaceAll = (stringItem:string, find:string, replace:string):string => {
             return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);

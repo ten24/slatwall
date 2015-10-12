@@ -900,7 +900,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public array function getRecords(boolean refresh=false, boolean forExport=false) {
 		
-		try{
+//		try{
 			//If we are returning only the exportable records, then check and pass through.
 			var HQL = '';
 			var HQLParams = {};
@@ -930,17 +930,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					
 					HQL = getHQL(forExport=arguments.forExport);
-					
+					writedump(HQL);abort;
 					HQLParams = getHQLParams();
 					variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.records = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection",text="Error:#e.message#");
-			writelog(file="collection",text="HQL:#HQL#");
-		}
+//		}
+//		catch(any e){
+//			variables.records = [{'failedCollection'='failedCollection'}];
+//			writelog(file="collection",text="Error:#e.message#");
+//			writelog(file="collection",text="HQL:#HQL#");
+//		}
 		
 		return variables.records;
 	}
@@ -1248,6 +1248,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!isnull(collectionConfig.joins)){
 				joins = collectionConfig.joins;
 			}
+			
 			if(structKeyExists(collectionConfig,'groupBys')){
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}

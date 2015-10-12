@@ -54,7 +54,7 @@ var slatwalladmin;
         return OrderBy;
     })();
     var CollectionConfig = (function () {
-        function CollectionConfig($slatwall, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, id, currentPage, pageShow, keywords, allRecords) {
+        function CollectionConfig($slatwall, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords) {
             var _this = this;
             if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
             if (currentPage === void 0) { currentPage = 1; }
@@ -62,12 +62,14 @@ var slatwalladmin;
             if (keywords === void 0) { keywords = ''; }
             if (allRecords === void 0) { allRecords = false; }
             this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
             this.baseEntityName = baseEntityName;
             this.baseEntityAlias = baseEntityAlias;
             this.columns = columns;
             this.filterGroups = filterGroups;
             this.joins = joins;
             this.orderBy = orderBy;
+            this.groupBys = groupBys;
             this.id = id;
             this.currentPage = currentPage;
             this.pageShow = pageShow;
@@ -77,7 +79,7 @@ var slatwalladmin;
                 _this.filterGroups = [{ filterGroup: [] }];
             };
             this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
-                return new CollectionConfig(_this.$slatwall, baseEntityName, baseEntityAlias);
+                return new CollectionConfig(_this.$slatwall, _this.utilityService, baseEntityName, baseEntityAlias);
             };
             this.loadJson = function (jsonCollection) {
                 //if json then make a javascript object else use the javascript object
@@ -93,6 +95,7 @@ var slatwalladmin;
                 _this.joins = jsonCollection.joins;
                 _this.keywords = jsonCollection.keywords;
                 _this.orderBy = jsonCollection.orderBy;
+                _this.groupBys = jsonCollection.groupBys;
                 _this.pageShow = jsonCollection.pageShow;
                 _this.allRecords = jsonCollection.allRecords;
             };
@@ -103,6 +106,7 @@ var slatwalladmin;
                     columns: _this.columns,
                     filterGroups: _this.filterGroups,
                     joins: _this.joins,
+                    groupBys: _this.groupBys,
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
@@ -118,6 +122,7 @@ var slatwalladmin;
                     columnsConfig: angular.toJson(_this.columns),
                     filterGroupsConfig: angular.toJson(_this.filterGroups),
                     joinsConfig: angular.toJson(_this.joins),
+                    groupBysConfig: angular.toJson(_this.groupBys),
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
@@ -159,25 +164,18 @@ var slatwalladmin;
                 }
                 return collection;
             };
-            this.addJoin = function (associationName) {
-                var joinFound = false, parts = associationName.split('.'), collection = '';
-                if (angular.isUndefined(_this.joins)) {
+            this.addJoin = function (join) {
+                if (!_this.joins) {
                     _this.joins = [];
                 }
-                for (var i = 0; i < parts.length; i++) {
-                    joinFound = false;
-                    if (typeof _this.$slatwall['new' + _this.capitalize(parts[i])] !== "function")
-                        break;
-                    collection += '.' + parts[i];
-                    _this.joins.map(function (_join) {
-                        if (_join.associationName == collection.slice(1)) {
-                            joinFound = true;
-                            return;
-                        }
-                    });
-                    if (!joinFound) {
-                        _this.joins.push(new Join(collection.slice(1), collection.toLowerCase().replace(/\./g, '_')));
+                var joinFound = false;
+                angular.forEach(_this.joins, function (configJoin) {
+                    if (configJoin.alias === join.alias) {
+                        joinFound = true;
                     }
+                });
+                if (!joinFound) {
+                    _this.joins.push(join);
                 }
             };
             this.addAlias = function (propertyIdentifier) {
@@ -258,11 +256,50 @@ var slatwalladmin;
                 });
             };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
-                //this.addJoin(propertyIdentifier);
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
+                console.log('addFilter');
+                console.log(propertyIdentifier);
+                var alias = _this.baseEntityAlias;
+                var join;
+                var doJoin = false;
+                //if filterGroups does not exists then set a default
+                if (!_this.filterGroups) {
+                    _this.filterGroups = [{ filterGroup: [] }];
+                }
+                var collection = propertyIdentifier;
+                var propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
+                console.log(propertyKey);
+                //if the propertyIdenfifier is a chain
+                if (propertyIdentifier.indexOf('.') !== -1) {
+                    collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
+                    propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
+                }
+                console.log(collection);
+                console.log(propertyKey);
+                //create filter group
+                var filter = new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
+                var isObject = _this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
+                if (isObject) {
+                    filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
+                    join = new Join(propertyIdentifier, _this.buildPropertyIdentifier(alias, propertyIdentifier));
+                    doJoin = true;
+                }
+                else {
+                    filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
+                    join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
+                    doJoin = true;
+                }
+                //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
                 if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
                     logicalOperator = 'AND';
-                _this.filterGroups[0].filterGroup.push(new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value));
+                _this.filterGroups[0].filterGroup.push(filter);
+                if (doJoin) {
+                    _this.addJoin(join);
+                }
+            };
+            this.buildPropertyIdentifier = function (alias, propertyIdentifier, joinChar) {
+                if (joinChar === void 0) { joinChar = '_'; }
+                return alias + joinChar + _this.utilityService.replaceAll(propertyIdentifier, '.', '_');
             };
             this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
                 if (criteria === void 0) { criteria = 'One'; }
@@ -299,6 +336,8 @@ var slatwalladmin;
                 }
                 return _this.$slatwall.getEntity(_this.baseEntityName, _this.getOptions());
             };
+            console.log('collectionConfigtest');
+            console.log(this);
             if (angular.isDefined(this.baseEntityName)) {
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if (angular.isUndefined(this.baseEntityAlias)) {
@@ -306,11 +345,12 @@ var slatwalladmin;
                 }
             }
         }
+        CollectionConfig.$inject = ['$slatwall', 'utilityService'];
         return CollectionConfig;
     })();
     slatwalladmin.CollectionConfig = CollectionConfig;
     angular.module('slatwalladmin')
-        .factory('collectionConfigService', ['$slatwall', function ($slatwall) { return new CollectionConfig($slatwall); }]);
+        .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new CollectionConfig($slatwall, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/collectionconfigservice.js.map

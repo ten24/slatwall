@@ -120,6 +120,9 @@ Notes:
                 	<cfif structKeyExists(local.metaData,'hb_parentPropertyName')>
                 		entities['#local.entity.getClassName()#'].hb_parentPropertyName = '#local.metaData.hb_parentPropertyName#';
                 	</cfif>
+                	<cfif structKeyExists(local.metaData,'hb_childPropertyName')>
+                		entities['#local.entity.getClassName()#'].hb_childPropertyName = '#local.metaData.hb_childPropertyName#';
+                	</cfif>
                 	validations['#local.entity.getClassName()#'] = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
                 	defaultValues['#local.entity.getClassName()#'] = {
                 	<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
@@ -235,6 +238,9 @@ Notes:
 						this.metaData.className = entity.className;
 						if(entity.hb_parentPropertyName){
 							this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
+						}
+						if(entity.hb_childPropertyName){
+							this.metaData.hb_childPropertyName = entity.hb_childPropertyName;
 						}
 						
 						this.metaData.$$getRBKey = function(rbKey,replaceStringData){

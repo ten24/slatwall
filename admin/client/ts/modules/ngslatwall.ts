@@ -84,8 +84,14 @@ module ngSlatwall {
             return this.getEntityMetaData(entityName).$$getIDName();
         }
         
-        getEntityHasPropertyByEntityName = (entityName,propertyName)=>{
+        getEntityHasPropertyByEntityName = (entityName,propertyName):boolean=>{
             return angular.isDefined(this.getEntityMetaData(entityName)[propertyName]);
+        }
+        
+        getPropertyIsObjectByEntityNameAndPropertyIdentifier = (entityName:string,propertyIdentifier:string):boolean=>{
+            var lastEntity = this.getLastEntityNameInPropertyIdentifier(entityName,propertyIdentifier);
+            var entityMetaData = this.getEntityMetaData(lastEntity);
+            return angular.isDefined(entityMetaData[this.utilityService.listLast(propertyIdentifier,'.')].cfc);
         }
         
         getLastEntityNameInPropertyIdentifier = (entityName,propertyIdentifier)=>{
@@ -105,9 +111,6 @@ module ngSlatwall {
             return entityName;
             
         }
-        
-        
-        
         
         //service method used to transform collection data to collection objects based on a collectionconfig
         populateCollection = (collectionData,collectionConfig) =>{
@@ -201,6 +204,7 @@ module ngSlatwall {
                 params.filterGroupsConfig = options.filterGroupsConfig || '';
                 params.joinsConfig = options.joinsConfig || '';
                 params.orderByConfig = options.orderByConfig || '';
+                params.groupBysConfig = options.groupBysConfig || '';
                 params.isDistinct = options.isDistinct || false;
                 params.propertyIdentifiersList = options.propertyIdentifiersList || '';
                 params.allRecords = options.allRecords || '';
