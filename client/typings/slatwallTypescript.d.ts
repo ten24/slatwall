@@ -166,14 +166,6 @@
 
 /// <reference path="../../admin/client/ts/directives/common/swsortable.ts" />
 
-/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
-
-/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
-
-/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
-
-/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
-
 /// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardbalance.ts" />
 
 /// <reference path="../../admin/client/ts/directives/giftcard/swgiftcarddetail.ts" />
@@ -203,6 +195,14 @@
 /// <reference path="../../admin/client/ts/directives/productBundleGroup/swproductbundlegroups.ts" />
 
 /// <reference path="../../admin/client/ts/directives/productBundleGroup/swproductbundlegrouptype.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
 
 /// <reference path="../../admin/client/ts/directives/workflow/swadmincreatesuperuser.ts" />
 
