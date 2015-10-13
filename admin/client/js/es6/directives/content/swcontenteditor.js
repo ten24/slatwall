@@ -16,9 +16,7 @@ angular.module('slatwalladmin')
             link: function (scope, element, attrs) {
                 scope.editorOptions = CKEDITOR.editorConfig;
                 scope.onContentChange = function () {
-                    console.log('content Change');
                     var form = formService.getForm('contentEditor');
-                    console.log(form);
                     form.contentBody.$setDirty();
                 };
                 //                scope.saveContent = function(){
@@ -43,4 +41,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swcontenteditor.js.map
+//# sourceMappingURL=../../directives/content/swcontenteditor.js.map

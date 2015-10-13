@@ -41,8 +41,6 @@ angular.module('slatwalladmin')
                             ormtype: 'id',
                             isSearchable: false
                         },
-<<<<<<< HEAD
-=======
                         {
                             propertyIdentifier: '_content.site.domainNames',
                             isVisible: false,
@@ -53,14 +51,6 @@ angular.module('slatwalladmin')
                             isVisible: false,
                             isSearchable: true
                         },
-                        //                        {
-                        //                            propertyIdentifier:'_content.contentTemplateFile',
-                        //                            persistent:false,
-                        //                            setting:true,
-                        //                            isVisible:true,
-                        //                            isSearchable:false
-                        //                        },
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                         //need to get template via settings
                         {
                             propertyIdentifier: '_content.allowPurchaseFlag',
@@ -203,4 +193,4 @@ angular.module('slatwalladmin')
         };
     }]);
 
-//# sourceMappingURL=swcontentlist.js.map
+//# sourceMappingURL=../../directives/content/swcontentlist.js.map

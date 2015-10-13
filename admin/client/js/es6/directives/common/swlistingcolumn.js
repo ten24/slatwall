@@ -43,8 +43,6 @@ var slatwalladmin;
                     editable: scope.swListingColumn.editable,
                     buttonGroup: scope.swListingColumn.buttonGroup
                 };
-                console.log('columsnscope');
-                console.log(scope);
                 scope.$parent.swListingDisplay.columns.push(column);
             };
         }

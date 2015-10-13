@@ -1,11 +1,7 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 (() => {
-<<<<<<< HEAD
     var app = angular.module('slatwalladmin', ['hibachi', 'ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor']);
-=======
-    var app = angular.module('slatwalladmin', ['ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngSanitize', 'ngCkeditor', 'ngClipboard']);
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
     app.config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
             ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) => {
             datepickerConfig.showWeeks = false;
@@ -148,4 +144,4 @@
         }]);
 })();
 
-//# sourceMappingURL=slatwalladmin.js.map
+//# sourceMappingURL=../modules/slatwalladmin.js.map

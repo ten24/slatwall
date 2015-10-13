@@ -178,8 +178,6 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.$slatwall = $slatwall;
             this.utilityService = utilityService;
-            console.log('actionCaller');
-            console.log(this.queryString);
             this.$templateRequest(this.partialsPath + "actioncaller.html").then((html) => {
                 var template = angular.element(html);
                 this.$element.parent().append(template);

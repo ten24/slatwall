@@ -26,10 +26,7 @@ var slatwalladmin;
             this.exampleEntity = "";
             this.buttonGroup = [];
             this.updateMultiselectValues = () => {
-                console.log('updateMultiselect');
                 this.multiselectValues = this.selectionService.getSelections('ListingDisplay');
-                console.log('msv');
-                console.log(this.multiselectValues);
             };
             this.getCollection = () => {
                 this.collectionConfig.setPageShow(this.paginator.getPageShow());
@@ -205,18 +202,15 @@ var slatwalladmin;
                 }
                 angular.forEach(this.columns, (column) => {
                     var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collection, column.propertyIdentifier);
-                    column.title = this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + this.utilityService.listLast(column.propertyIdentifier, '.'));
+                    var title = this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + this.utilityService.listLast(column.propertyIdentifier, '.'));
                     column.isVisible = column.isVisible || true;
-                    this.collectionConfig.columns.push(column);
+                    //this.collectionConfig.columns.push(column);
+                    this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
                 this.exampleEntity = this.$slatwall.newEntity(this.collection);
-                var primarycolumn = {
-                    propertyIdentifier: this.exampleEntity.$$getIDName(),
-                    isVisible: false
-                };
-                this.collectionConfig.columns.push(primarycolumn);
+                this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
             }
             //setup export action
             if (angular.isDefined(this.exportAction)) {
@@ -236,27 +230,6 @@ var slatwalladmin;
                 this.multiselectable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
-                //add column so we can get child count
-                var column = {
-                    propertyIdentifier: '_content_childContents',
-                    aggregate: {
-                        aggregateFunction: 'count',
-                        aggregateAlias: 'childContentsPageCount'
-                    }
-                };
-                this.collectionConfig.columns.push(column);
-                var joins = [
-                    {
-                        "associationName": "childContents",
-                        "alias": "_content_childContents"
-                    },
-                    {
-                        "associationName": "site",
-                        "alias": "_content_site"
-                    }
-                ];
-                this.collectionConfig.joins = joins;
-                this.collectionConfig.groupBys = '_content';
                 //attach observer so we know when a selection occurs
                 this.observerService.attach(this.updateMultiselectValues, 'swSelectionToggleSelection', this.collection);
             }
@@ -267,16 +240,26 @@ var slatwalladmin;
                 }
             }
             //Look for Hierarchy in example entity
-            if (!this.parentPropertyName || (this.parentPropertyName && !this.parentProopertyName.length)) {
+            if (!this.parentPropertyName || (this.parentPropertyName && !this.parentPropertyName.length)) {
                 if (this.exampleEntity.metaData.hb_parentPropertyName) {
                     this.parentPropertyName = this.exampleEntity.metaData.hb_parentPropertyName;
+                }
+            }
+            if (!this.childPropertyName || (this.childPropertyName && !this.childPropertyName.length)) {
+                if (this.exampleEntity.metaData.hb_childPropertyName) {
+                    this.childPropertyName = this.exampleEntity.metaData.hb_childPropertyName;
                 }
             }
             //Setup Hierachy Expandable
             if (this.parentPropertyName && this.parentPropertyName.length) {
                 this.expandable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-expandable', ' ');
+                //add parent property root filter
                 this.collectionConfig.addFilter(this.parentPropertyName + '.' + this.exampleEntity.$$getIDName(), 'NULL', 'IS');
+                //add children column
+                if (this.childPropertyName && this.childPropertyName.length) {
+                    this.collectionConfig.addDisplayAggregate(this.childPropertyName, 'COUNT', this.childPropertyName + 'Count');
+                }
                 this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, this.exampleEntity.$$getIDName() + 'Path');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
                 this.collectionConfig.setAllRecords(true);

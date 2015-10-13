@@ -34,6 +34,16 @@
 
 /// <reference path="../../admin/client/ts/model/pagedialog.ts" />
 
+/// <reference path="../../admin/client/ts/modules/hibachi.ts" />
+
+/// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
+
+/// <reference path="../../admin/client/ts/modules/ngslatwall.ts" />
+
+/// <reference path="../../admin/client/ts/modules/ngslatwallmodel.ts" />
+
+/// <reference path="../../admin/client/ts/modules/slatwalladmin.ts" />
+
 /// <reference path="../../admin/client/ts/services/alertservice.ts" />
 
 /// <reference path="../../admin/client/ts/services/baseservice.ts" />
@@ -63,16 +73,6 @@
 /// <reference path="../../admin/client/ts/services/utilityservice.ts" />
 
 /// <reference path="../../admin/client/ts/services/workflowconditionservice.ts" />
-
-/// <reference path="../../admin/client/ts/modules/hibachi.ts" />
-
-/// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
-
-/// <reference path="../../admin/client/ts/modules/ngslatwall.ts" />
-
-/// <reference path="../../admin/client/ts/modules/ngslatwallmodel.ts" />
-
-/// <reference path="../../admin/client/ts/modules/slatwalladmin.ts" />
 
 /// <reference path="../../admin/client/ts/directives/collection/swaddfilterbuttons.ts" />
 

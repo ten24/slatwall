@@ -70,16 +70,15 @@ var ngSlatwall;
                 return angular.isDefined(entityMetaData[this.utilityService.listLast(propertyIdentifier, '.')].cfc);
             };
             this.getLastEntityNameInPropertyIdentifier = (entityName, propertyIdentifier) => {
-                console.log(propertyIdentifier);
                 if (propertyIdentifier.split('.').length > 1) {
                     var propertiesStruct = this.getEntityMetaData(entityName);
                     if (!propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')]
                         || !propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')].cfc) {
                         throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
                     }
-                    console.log('listRest');
-                    console.log(this.utilityService.listRest(propertyIdentifier, '.'));
-                    return this.getLastEntityNameInPropertyIdentifier(propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')].cfc, this.utilityService.listRest(propertyIdentifier, '.'));
+                    var currentEntityName = this.utilityService.listLast(propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
+                    var currentPropertyIdentifier = this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (this.utilityService.listFirst(propertyIdentifier, '._').length));
+                    return this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
                 }
                 return entityName;
             };
@@ -192,7 +191,6 @@ var ngSlatwall;
                     urlString += '&entityId=' + options.id;
                 }
                 /*var transformRequest = (data) => {
-                    console.log(data);
                                             
                     return data;
                 };
@@ -396,20 +394,11 @@ var ngSlatwall;
                 if (this._resourceBundle[locale]) {
                     return this._resourceBundle[locale];
                 }
-<<<<<<< HEAD
                 var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey + '&locale=' + locale;
                 $http({
                     url: urlString,
                     method: "GET"
                 }).success((response, status, headersGetter) => {
-=======
-                var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey;
-                //var urlString = this.getConfig().baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+this.getConfig().instantiationKey;
-                var params = {
-                    locale: locale
-                };
-                $http.get(urlString, { params: params }).success((response) => {
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                     this._resourceBundle[locale] = response.data;
                     deferred.resolve(response);
                 }).error((response) => {
@@ -417,8 +406,6 @@ var ngSlatwall;
                     deferred.reject(response);
                 });
                 return deferred.promise;
-<<<<<<< HEAD
-=======
             };
             this.getCurrencies = () => {
                 var deferred = this.$q.defer();
@@ -429,7 +416,6 @@ var ngSlatwall;
                     deferred.reject(response);
                 });
                 return deferred.promise;
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
             };
             this.rbKey = (key, replaceStringData) => {
                 ////$log.debug('rbkey');
@@ -468,7 +454,7 @@ var ngSlatwall;
                     //$log.debug(bundle);
                     if (!bundle.then) {
                         if (angular.isDefined(bundle[key])) {
-                            $log.debug('rbkeyfound:' + bundle[key]);
+                            //$log.debug('rbkeyfound:'+bundle[key]);
                             return bundle[key];
                         }
                         var checkedKeysListArray = checkedKeys.split(',');
@@ -481,15 +467,9 @@ var ngSlatwall;
                         //$log.debug(checkedKeysListArray);
                         var localeListArray = locale.split('_');
                         //$log.debug(localeListArray);
-                        console.log('localeListArray');
-                        console.log(localeListArray);
                         if (localeListArray.length === 2) {
                             bundle = this.getResourceBundle(localeListArray[0]);
-                            console.log(bundle);
-                            console.log(key);
                             if (angular.isDefined(bundle[key])) {
-                                console.log('bundle');
-                                console.log(bundle[key]);
                                 //$log.debug('rbkey found:'+bundle[key]);
                                 return bundle[key];
                             }
@@ -574,8 +554,6 @@ var ngSlatwall;
                 debugFlag: true,
                 instantiationKey: '84552B2D-A049-4460-55F23F30FE7B26AD'
             };
-            console.log('config');
-            console.log(this._config);
             if (slatwallAngular.slatwallConfig) {
                 angular.extend(this._config, slatwallAngular.slatwallConfig);
             }
@@ -600,4 +578,4 @@ var ngSlatwall;
     angular.module('ngSlatwall').provider('$slatwall', $Slatwall);
 })(ngSlatwall || (ngSlatwall = {}));
 
-//# sourceMappingURL=ngslatwall.js.map
+//# sourceMappingURL=../modules/ngslatwall.js.map

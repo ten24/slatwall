@@ -6,7 +6,6 @@ var slatwalladmin;
     class SWEntityActionBarController {
         constructor() {
             this.init = () => {
-                console.log('init entity action Bar controller');
             };
             this.init();
         }

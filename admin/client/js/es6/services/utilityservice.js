@@ -117,8 +117,10 @@ var slatwalladmin;
             this.right = (stringItem, count) => {
                 return stringItem.substring(stringItem.length - count, stringItem.length);
             };
+            //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
             this.mid = (stringItem, start, count) => {
-                return stringItem.substring(stringItem.length - start, stringItem.length - start + count);
+                var end = start + count;
+                return stringItem.substring(start, end);
             };
             this.replaceAll = (stringItem, find, replace) => {
                 return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
@@ -204,4 +206,4 @@ var slatwalladmin;
     angular.module('hibachi').service('utilityService', UtilityService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=utilityservice.js.map
+//# sourceMappingURL=../services/utilityservice.js.map

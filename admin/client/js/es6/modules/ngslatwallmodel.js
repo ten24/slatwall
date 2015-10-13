@@ -48,11 +48,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-<<<<<<< HEAD
-                    auditDateTime: '1444681457443',
-=======
-                    auditDateTime: '1444315825797',
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
+                    auditDateTime: '1444765650524',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -103,11 +99,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-<<<<<<< HEAD
-                    verificationCode: 'f707bf10cdac44662f3927b62367fc4f',
-=======
-                    verificationCode: 'ab27be25fa3bdda32dc21445ff2012c6',
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
+                    verificationCode: '1d8e4b9cdd2e142b5e0a1f893a78ea04',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1355,16 +1347,11 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     modifiedByAccountID: null,
                     z: ''
                 };
-<<<<<<< HEAD
                 entities['GiftCardTransaction'] = { "printTemplates": { "persistent": false, "type": "struct", "name": "printTemplates" }, "simpleRepresentation": { "persistent": false, "type": "string", "name": "simpleRepresentation" }, "hibachiErrors": { "persistent": false, "type": "any", "name": "hibachiErrors" }, "persistableErrors": { "persistent": false, "type": "array", "name": "persistableErrors" }, "giftCard": { "cfc": "GiftCard", "fieldtype": "many-to-one", "fkcolumn": "giftCardID", "name": "giftCard" }, "auditSmartList": { "persistent": false, "type": "any", "name": "auditSmartList" }, "settingValueFormatted": { "persistent": false, "type": "any", "name": "settingValueFormatted" }, "processObjects": { "persistent": false, "type": "struct", "name": "processObjects" }, "creditAmount": { "ormtype": "big_decimal", "hb_formattype": "currency", "name": "creditAmount" }, "attributeValuesByAttributeCodeStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeCodeStruct" }, "debitAmount": { "ormtype": "big_decimal", "hb_formattype": "currency", "name": "debitAmount" }, "emailTemplates": { "persistent": false, "type": "struct", "name": "emailTemplates" }, "populatedSubProperties": { "persistent": false, "type": "struct", "name": "populatedSubProperties" }, "rollbackProcessedFlag": { "persistent": false, "type": "boolean", "name": "rollbackProcessedFlag" }, "modifiedByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "modifiedByAccountID" }, "newFlag": { "persistent": false, "type": "boolean", "name": "newFlag" }, "attributeValuesByAttributeIDStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeIDStruct" }, "encryptedPropertiesExistFlag": { "persistent": false, "type": "boolean", "name": "encryptedPropertiesExistFlag" }, "hibachiMessages": { "persistent": false, "type": "any", "name": "hibachiMessages" }, "modifiedDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "modifiedDateTime" }, "currencyCode": { "length": 3, "ormtype": "string", "name": "currencyCode" }, "validations": { "persistent": false, "type": "struct", "name": "validations" }, "remoteID": { "ormtype": "string", "name": "remoteID" }, "createdByAccount": { "persistent": false, "name": "createdByAccount" }, "giftCardTransactionID": { "generator": "uuid", "unsavedvalue": "", "fieldtype": "id", "length": 32, "ormtype": "string", "default": "", "name": "giftCardTransactionID" }, "createdDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "createdDateTime" }, "orderPayment": { "cfc": "OrderPayment", "fieldtype": "many-to-one", "fkcolumn": "orderPaymentID", "name": "orderPayment" }, "announceEvent": { "persistent": false, "type": "boolean", "default": true, "name": "announceEvent" }, "assignedAttributeSetSmartList": { "persistent": false, "type": "any", "name": "assignedAttributeSetSmartList" }, "createdByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "createdByAccountID" }, "modifiedByAccount": { "persistent": false, "name": "modifiedByAccount" }, "hibachiInstanceApplicationScopeKey": { "PERSISTENT": false, "TYPE": "string", "NAME": "hibachiInstanceApplicationScopeKey" }, "orderItems": { "cfc": "OrderItem", "fieldtype": "one-to-many", "singularname": "orderItem", "cascade": "all-delete-orphan", "fkcolumn": "giftCardTransactionID", "inverse": true, "name": "orderItems" } };
-=======
-                entities['GiftCardTransaction'] = { "printTemplates": { "persistent": false, "type": "struct", "name": "printTemplates" }, "simpleRepresentation": { "persistent": false, "type": "string", "name": "simpleRepresentation" }, "hibachiErrors": { "persistent": false, "type": "any", "name": "hibachiErrors" }, "persistableErrors": { "persistent": false, "type": "array", "name": "persistableErrors" }, "giftCard": { "cfc": "GiftCard", "fieldtype": "many-to-one", "fkcolumn": "giftCardID", "name": "giftCard" }, "auditSmartList": { "persistent": false, "type": "any", "name": "auditSmartList" }, "settingValueFormatted": { "persistent": false, "type": "any", "name": "settingValueFormatted" }, "processObjects": { "persistent": false, "type": "struct", "name": "processObjects" }, "creditAmount": { "ormtype": "big_decimal", "name": "creditAmount" }, "attributeValuesByAttributeCodeStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeCodeStruct" }, "debitAmount": { "ormtype": "big_decimal", "name": "debitAmount" }, "emailTemplates": { "persistent": false, "type": "struct", "name": "emailTemplates" }, "populatedSubProperties": { "persistent": false, "type": "struct", "name": "populatedSubProperties" }, "rollbackProcessedFlag": { "persistent": false, "type": "boolean", "name": "rollbackProcessedFlag" }, "modifiedByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "modifiedByAccountID" }, "newFlag": { "persistent": false, "type": "boolean", "name": "newFlag" }, "attributeValuesByAttributeIDStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeIDStruct" }, "encryptedPropertiesExistFlag": { "persistent": false, "type": "boolean", "name": "encryptedPropertiesExistFlag" }, "hibachiMessages": { "persistent": false, "type": "any", "name": "hibachiMessages" }, "modifiedDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "modifiedDateTime" }, "currencyCode": { "length": 3, "ormtype": "string", "name": "currencyCode" }, "validations": { "persistent": false, "type": "struct", "name": "validations" }, "remoteID": { "ormtype": "string", "name": "remoteID" }, "createdByAccount": { "persistent": false, "name": "createdByAccount" }, "giftCardTransactionID": { "generator": "uuid", "unsavedvalue": "", "fieldtype": "id", "length": 32, "ormtype": "string", "default": "", "name": "giftCardTransactionID" }, "createdDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "createdDateTime" }, "orderPayment": { "cfc": "OrderPayment", "fieldtype": "many-to-one", "fkcolumn": "orderPaymentID", "name": "orderPayment" }, "announceEvent": { "persistent": false, "type": "boolean", "default": true, "name": "announceEvent" }, "assignedAttributeSetSmartList": { "persistent": false, "type": "any", "name": "assignedAttributeSetSmartList" }, "createdByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "createdByAccountID" }, "modifiedByAccount": { "persistent": false, "name": "modifiedByAccount" }, "hibachiInstanceApplicationScopeKey": { "PERSISTENT": false, "TYPE": "string", "NAME": "hibachiInstanceApplicationScopeKey" }, "orderItems": { "cfc": "OrderItem", "fieldtype": "one-to-many", "singularname": "orderItem", "cascade": "all-delete-orphan", "fkcolumn": "giftCardTransactionID", "inverse": true, "name": "orderItems" } };
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                 entities['GiftCardTransaction'].className = 'GiftCardTransaction';
                 validations['GiftCardTransaction'] = { "properties": {} };
                 defaultValues['GiftCardTransaction'] = {
                     giftCardTransactionID: '',
-                    currencyCode: null,
                     creditAmount: null,
                     debitAmount: null,
                     currencyCode: null,
@@ -1702,11 +1689,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-<<<<<<< HEAD
-                    accountPasswordResetID: "0283193bc478b12096666b156d580210",
-=======
-                    accountPasswordResetID: "fdf5a86e76d3aed8c8e3f27ca9e6ad33",
->>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
+                    accountPasswordResetID: "baeb6fb791d4d521a9b54f3f807594bc",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3317,8 +3300,6 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                                             return entityInstance;
                                         };
                                         _jsEntities[entity.className].prototype['$$get' + property.name.charAt(0).toUpperCase() + property.name.slice(1)] = function () {
-                                            console.log('test');
-                                            console.log(this);
                                             var thisEntityInstance = this;
                                             if (angular.isDefined(this['$$get' + this.$$getIDName().charAt(0).toUpperCase() + this.$$getIDName().slice(1)])) {
                                                 var options = {
@@ -3922,4 +3903,4 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
             }]);
     }]);
 
-//# sourceMappingURL=ngslatwallmodel.js.map
+//# sourceMappingURL=../modules/ngslatwallmodel.js.map
