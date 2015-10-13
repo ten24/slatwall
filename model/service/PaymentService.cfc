@@ -454,18 +454,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Set the successFlag to false
 							arguments.paymentTransaction.setTransactionSuccessFlag( false );
 
-							// Populate the orderPayment with the processing error and make it persistable
-							arguments.paymentTransaction.addError('runTransaction', rbKey('error.unexpected.checklog'), true);
-
 							// Log the exception
 							logHibachiException(e);
 
-							rethrow;
+							if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
+								// Populate the orderPayment with the processing error and make it persistable
+								arguments.paymentTransaction.addError('runTransaction', rbKey('error.unexpected.checklog'), true);
+								rethrow;
+							}
 						}
 
 					// NO INTEGRATION
 					} else {
-                    
+
 						//GiftCard
                         if(arguments.data.transactiontype eq "giftCard"){
 
@@ -516,8 +517,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                     arguments.paymentTransaction.addErrors(card.getErrors());
                                 }
                             }
-		               
-                        } else { 
+
+                        } else {
 
                             // Setup amountReceived
                             if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
