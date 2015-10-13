@@ -162,7 +162,7 @@ angular.module('slatwalladmin')
                 scope.increaseCurrentCount = function(){
                       if(angular.isDefined(scope.totalPages) &&
 					  scope.totalPages != scope.currentPage){
-						  scope.currentPage++
+						  scope.currentPage++;
 					  } else { 
 						  scope.currentPage = 1;
 					  }
