@@ -102,7 +102,6 @@ angular.module('slatwalladmin')
 				 * Handles user selection of the dropdown.
 				 */
 				$scope.selectProductBundleGroupType = function ($item, $model, $label) {
-					console.log("Selecting");
 				    $scope.$item = $item;
 				    $scope.$model = $model;
 				    $scope.$label = $label;

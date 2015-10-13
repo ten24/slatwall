@@ -3301,8 +3301,6 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                                             return entityInstance;
                                         };
                                         _jsEntities[entity.className].prototype['$$get' + property.name.charAt(0).toUpperCase() + property.name.slice(1)] = function () {
-                                            console.log('test');
-                                            console.log(this);
                                             var thisEntityInstance = this;
                                             if (angular.isDefined(this['$$get' + this.$$getIDName().charAt(0).toUpperCase() + this.$$getIDName().slice(1)])) {
                                                 var options = {

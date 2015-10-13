@@ -95,7 +95,6 @@ module ngSlatwall {
         }
         
         getLastEntityNameInPropertyIdentifier = (entityName,propertyIdentifier)=>{
-            console.log(propertyIdentifier);
             if(propertyIdentifier.split('.').length > 1){
                 var propertiesStruct = this.getEntityMetaData(entityName);
                 if(
@@ -104,8 +103,6 @@ module ngSlatwall {
                 ){
                     throw("The Property Identifier "+propertyIdentifier+" is invalid for the entity "+entityName);
                 } 
-                console.log('listRest');
-                console.log(this.utilityService.listRest(propertyIdentifier,'.'));
                 var currentEntityName = this.utilityService.listLast(propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')].cfc,'.');
                 var currentPropertyIdentifier = this.utilityService.right(propertyIdentifier,propertyIdentifier.length-(this.utilityService.listFirst(propertyIdentifier,'._').length));
                 return this.getLastEntityNameInPropertyIdentifier(currentEntityName,currentPropertyIdentifier);
@@ -221,7 +218,6 @@ module ngSlatwall {
             }
 
             /*var transformRequest = (data) => {    
-                console.log(data);
                                         
                 return data;
             };
@@ -618,8 +614,6 @@ module ngSlatwall {
                 debugFlag : true,
                 instantiationKey : '84552B2D-A049-4460-55F23F30FE7B26AD'
             };
-            console.log('config');
-            console.log(this._config);
             if(slatwallAngular.slatwallConfig){
                 angular.extend(this._config, slatwallAngular.slatwallConfig);
             }   

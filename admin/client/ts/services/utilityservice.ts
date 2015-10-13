@@ -137,9 +137,6 @@ module slatwalladmin{
         }
         //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
         public mid = (stringItem:string,start:number,count:number):string =>{
-            console.log('mid');
-            console.log(stringItem);
-            console.log(count);
             var end = start + count;
             return stringItem.substring(start,end);
         }

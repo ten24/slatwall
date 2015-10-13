@@ -6,7 +6,6 @@ var slatwalladmin;
     var SWEntityActionBarController = (function () {
         function SWEntityActionBarController() {
             this.init = function () {
-                console.log('init entity action Bar controller');
             };
             this.init();
         }

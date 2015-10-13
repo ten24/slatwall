@@ -314,8 +314,6 @@ var slatwalladmin;
             };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
-                console.log('addFilter');
-                console.log(propertyIdentifier);
                 var alias = _this.baseEntityAlias;
                 var join;
                 var doJoin = false;
@@ -325,14 +323,11 @@ var slatwalladmin;
                 }
                 var collection = propertyIdentifier;
                 var propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
-                console.log(propertyKey);
                 //if the propertyIdenfifier is a chain
                 if (propertyIdentifier.indexOf('.') !== -1) {
                     collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
                     propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
                 }
-                console.log(collection);
-                console.log(propertyKey);
                 //create filter group
                 var filter = new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
                 var isObject = _this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
@@ -393,8 +388,6 @@ var slatwalladmin;
                 }
                 return _this.$slatwall.getEntity(_this.baseEntityName, _this.getOptions());
             };
-            console.log('collectionConfigtest');
-            console.log(this);
             if (angular.isDefined(this.baseEntityName)) {
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if (angular.isUndefined(this.baseEntityAlias)) {

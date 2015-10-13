@@ -7,7 +7,6 @@ module slatwalladmin {
     
     export class SWEntityActionBarController{
         public init = () =>{
-            console.log('init entity action Bar controller');
         }
         
         constructor(){

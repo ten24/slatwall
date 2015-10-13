@@ -71,15 +71,12 @@ var ngSlatwall;
                 return angular.isDefined(entityMetaData[_this.utilityService.listLast(propertyIdentifier, '.')].cfc);
             };
             this.getLastEntityNameInPropertyIdentifier = function (entityName, propertyIdentifier) {
-                console.log(propertyIdentifier);
                 if (propertyIdentifier.split('.').length > 1) {
                     var propertiesStruct = _this.getEntityMetaData(entityName);
                     if (!propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')]
                         || !propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc) {
                         throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
                     }
-                    console.log('listRest');
-                    console.log(_this.utilityService.listRest(propertyIdentifier, '.'));
                     var currentEntityName = _this.utilityService.listLast(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
                     var currentPropertyIdentifier = _this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (_this.utilityService.listFirst(propertyIdentifier, '._').length));
                     return _this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
@@ -195,7 +192,6 @@ var ngSlatwall;
                     urlString += '&entityId=' + options.id;
                 }
                 /*var transformRequest = (data) => {
-                    console.log(data);
                                             
                     return data;
                 };
@@ -561,8 +557,6 @@ var ngSlatwall;
                 debugFlag: true,
                 instantiationKey: '84552B2D-A049-4460-55F23F30FE7B26AD'
             };
-            console.log('config');
-            console.log(this._config);
             if (slatwallAngular.slatwallConfig) {
                 angular.extend(this._config, slatwallAngular.slatwallConfig);
             }

@@ -27,10 +27,7 @@ var slatwalladmin;
             this.exampleEntity = "";
             this.buttonGroup = [];
             this.updateMultiselectValues = function () {
-                console.log('updateMultiselect');
                 _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
-                console.log('msv');
-                console.log(_this.multiselectValues);
             };
             this.getCollection = function () {
                 _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
@@ -208,8 +205,6 @@ var slatwalladmin;
                     var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collection, column.propertyIdentifier);
                     var title = _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
                     column.isVisible = column.isVisible || true;
-                    console.log('mycol');
-                    console.log(column);
                     //this.collectionConfig.columns.push(column);
                     _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
                 });
@@ -363,8 +358,6 @@ var slatwalladmin;
                     observerService.detachByID(scope.collection);
                 });
             };
-            console.log('swlistingDisplay');
-            console.log(this);
             this.partialsPath = partialsPath;
             this.templateUrl = this.partialsPath + 'listingdisplay.html';
         }

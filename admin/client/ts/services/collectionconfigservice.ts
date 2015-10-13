@@ -72,9 +72,6 @@ module slatwalladmin{
             private allRecords:boolean = false
 
         ){
-            console.log('collectionConfigtest');
-            console.log(this);
-            
             if(angular.isDefined(this.baseEntityName)){
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if(angular.isUndefined(this.baseEntityAlias)){
@@ -354,8 +351,6 @@ module slatwalladmin{
         };
 
         addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
-            console.log('addFilter');
-            console.log(propertyIdentifier);
             var alias = this.baseEntityAlias;
             var join;
             var doJoin = false;
@@ -367,14 +362,11 @@ module slatwalladmin{
             
             var collection = propertyIdentifier;
             var propertyKey = '.' + this.utilityService.listLast(propertyIdentifier,'.');
-            console.log(propertyKey);
             //if the propertyIdenfifier is a chain
             if(propertyIdentifier.indexOf('.') !== -1){
                 collection = this.utilityService.mid(propertyIdentifier,0,propertyIdentifier.lastIndexOf('.'));
                 propertyKey = '.'+this.utilityService.listLast(propertyIdentifier,'.');
             }
-            console.log(collection);
-            console.log(propertyKey);
             //create filter group
             var filter = new Filter(
                 this.formatCollectionName(propertyIdentifier),

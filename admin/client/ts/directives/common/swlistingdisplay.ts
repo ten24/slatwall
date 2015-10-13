@@ -59,8 +59,6 @@ module slatwalladmin {
                     var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collection,column.propertyIdentifier);
                     var title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                     column.isVisible = column.isVisible || true;
-                    console.log('mycol');
-                    console.log(column);
                     //this.collectionConfig.columns.push(column);
                     this.collectionConfig.addDisplayProperty(column.propertyIdentifier,title,column);
                 });
@@ -163,10 +161,7 @@ module slatwalladmin {
         }
         
         public updateMultiselectValues = ()=>{
-            console.log('updateMultiselect');
             this.multiselectValues = this.selectionService.getSelections('ListingDisplay');   
-            console.log('msv');
-            console.log(this.multiselectValues); 
         }
         
         public getCollection = ()=>{
@@ -478,8 +473,6 @@ module slatwalladmin {
 		constructor(
             public partialsPath:hibachi.partialsPath 
         ){
-            console.log('swlistingDisplay');
-            console.log(this);
             this.partialsPath = partialsPath;
 			this.templateUrl = this.partialsPath+'listingdisplay.html';
 		} 

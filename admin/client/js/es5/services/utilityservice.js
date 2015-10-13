@@ -137,9 +137,6 @@ var slatwalladmin;
             };
             //this.utilityService.mid(propertyIdentifier,1,propertyIdentifier.lastIndexOf('.'));
             this.mid = function (stringItem, start, count) {
-                console.log('mid');
-                console.log(stringItem);
-                console.log(count);
                 var end = start + count;
                 return stringItem.substring(start, end);
             };

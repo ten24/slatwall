@@ -36,9 +36,6 @@ var slatwalladmin;
                             childCollectionConfig.addJoin(join);
                         });
                         childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
-                        console.log('childConfig');
-                        console.log(_this.collectionConfig);
-                        console.log(childCollectionConfig);
                         _this.collectionPromise = childCollectionConfig.getEntity();
                         _this.collectionPromise.then(function (data) {
                             _this.collectionData = data;

@@ -24,9 +24,7 @@ angular.module('slatwalladmin')
                 scope.editorOptions = CKEDITOR.editorConfig;
                 
                 scope.onContentChange = function(){
-                    console.log('content Change');
                     var form = formService.getForm('contentEditor');   
-                    console.log(form);
                     form.contentBody.$setDirty(); 
                 }
                 

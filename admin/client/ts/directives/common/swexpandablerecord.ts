@@ -43,9 +43,6 @@ module slatwalladmin {
                            childCollectionConfig.addJoin(join); 
                         });
                         childCollectionConfig.groupBys = this.collectionConfig.groupBys;
-                       console.log('childConfig')
-                        console.log(this.collectionConfig);
-                       console.log(childCollectionConfig);
                        this.collectionPromise = childCollectionConfig.getEntity();
                     
                        this.collectionPromise.then((data)=>{
