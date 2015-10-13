@@ -464,6 +464,9 @@ label {
   overflow-y: auto;
   overflow-x: auto;
 }
+.modal-content .s-content-wrapper {
+  margin-top: 5px;
+}
 .ui-datepicker {
   padding: 10px;
   z-index: 3005 !important;

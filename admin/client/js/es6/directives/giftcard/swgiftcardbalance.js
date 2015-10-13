@@ -30,6 +30,7 @@ var slatwalladmin;
             this.init();
         }
     }
+    SWGiftCardBalanceController.$inject = ["$slatwall"];
     slatwalladmin.SWGiftCardBalanceController = SWGiftCardBalanceController;
     class GiftCardBalance {
         constructor($slatwall, partialsPath) {

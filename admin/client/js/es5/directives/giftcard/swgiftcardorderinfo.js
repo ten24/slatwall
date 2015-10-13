@@ -17,6 +17,7 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.init();
         }
+        SWGiftCardOrderInfoController.$inject = ["$slatwall"];
         return SWGiftCardOrderInfoController;
     })();
     slatwalladmin.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;

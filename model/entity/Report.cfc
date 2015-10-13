@@ -150,9 +150,9 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 			} else if (getDynamicDateRangeEndType() eq 'lastMonthEnd') {
 				variables.reportEndDateTime = dateAdd("d", -1, createDate(year(now()), month(now()), 1));
 			} else if (getDynamicDateRangeEndType() eq 'thisQuarterEnd') {
-				variables.reportEndDateTime = dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3) + 1, 1));
+				variables.reportEndDateTime = dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3), 1));
 			} else if (getDynamicDateRangeEndType() eq 'lastQuarterEnd') {
-				variables.reportEndDateTime = dateAdd("q",-1,dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3) + 1, 1)));
+				variables.reportEndDateTime = dateAdd("q",-1,dateAdd("d", -1, createDate(year(now()), (quarter(now()) * 3), 1)));
 			} else if (getDynamicDateRangeEndType() eq 'thisYearEnd') {
 				variables.reportEndDateTime = createDate(year(now()), 12, 31);
 			} else if (getDynamicDateRangeEndType() eq 'lastYearEnd') {

@@ -95,7 +95,9 @@ Notes:
 				</cfif>
 			</hb:HibachiPropertyList>
 			<cfif !rc.setting.isNew() and local.hasRelationshipKey>
-				<hb:HibachiActionCaller action="admin:entity.deletesetting" queryString="settingID=#rc.setting.getSettingID()#&#local.redirectQS#&redirectAction=#rc.entityActionDetails.sRedirectAction#" class="btn btn-danger" />
+				<div class="col-md-12 s-content-wrapper">
+					<hb:HibachiActionCaller action="admin:entity.deletesetting" queryString="settingID=#rc.setting.getSettingID()#&#local.redirectQS#&redirectAction=#rc.entityActionDetails.sRedirectAction#" class="btn btn-danger" />
+				</div>
 			</cfif>
 		</hb:HibachiPropertyRow>
 	</hb:HibachiEntityDetailForm>
