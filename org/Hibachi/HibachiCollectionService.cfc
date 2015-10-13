@@ -552,18 +552,25 @@ component output="false" accessors="true" extends="HibachiService" {
 				response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 			}
 			
+			var aggregatePropertyIdentifierArray = [];
 			//get default property identifiers for the records that the collection refers to
-	
+			
+			
 			if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
 				for (var column in collectionEntity.getCollectionConfigStruct().columns){
 					var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
-					
+						
 					if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 						ArrayAppend(collectionPropertyIdentifiers,piAlias);
 						arrayDelete(	collectionPropertyIdentifiers, Replace(column.propertyIdentifier,collectionEntity.getCollectionConfigStruct().baseEntityAlias&'.',''));
 					}
+					//add all aggregates by alias
+					if(structKeyExists(column,'aggregate')){
+						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
+					}
 				}
 			}
+			
 			var authorizedProperties = [];
 			for(var collectionPropertyIdentifier in collectionPropertyIdentifiers){
 				if(
@@ -572,6 +579,10 @@ component output="false" accessors="true" extends="HibachiService" {
 					arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 				}
 			}
+			for(var aggregatePropertyIdentifier in aggregatePropertyIdentifierArray){
+				arrayAppend(authorizedProperties,aggregatePropertyIdentifier);
+			}
+			
 			var collectionStruct = {};
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,authorizedProperties);

@@ -219,7 +219,17 @@ var slatwalladmin;
                 if (angular.isDefined(_this.collection.metaData[lastProperty])) {
                     persistent = _this.collection.metaData[lastProperty].persistent;
                 }
-                _this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']));
+                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
+                if (options.aggregate) {
+                    columnObject.aggregate = options.aggregate;
+                }
+                //add any non-conventional options
+                for (key in options) {
+                    if (!columnObject[key]) {
+                        columnObject[key] = options[key];
+                    }
+                }
+                _this.columns.push(columnObject);
             };
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
@@ -237,6 +247,53 @@ var slatwalladmin;
                     }
                     _this.addColumn(_this.formatCollectionName(column), title, options);
                 });
+            };
+            this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias) {
+                var alias = _this.baseEntityAlias;
+                var doJoin = false;
+                var collection = propertyIdentifier;
+                var propertyKey = '';
+                if (propertyIdentifier.indexOf('.') !== -1) {
+                    collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
+                    propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
+                }
+                var column = {
+                    propertyIdentifier: alias + '.' + propertyIdentifier,
+                    aggregate: {
+                        aggregateFunction: aggregateFunction,
+                        aggregateAlias: aggregateAlias
+                    }
+                };
+                var isObject = _this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
+                if (isObject) {
+                    //check if count is on a one-to-many
+                    var lastEntityName = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
+                    var propertyMetaData = _this.$slatwall.getEntityMetaData(lastEntityName)[_this.utilityService.listLast(propertyIdentifier, '.')];
+                    var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
+                    //if is a one-to-many propertyKey then add a groupby
+                    if (isOneToMany) {
+                        _this.addGroupBy(alias);
+                    }
+                    column.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
+                    var join = new Join(propertyIdentifier, column.propertyIdentifier);
+                    doJoin = true;
+                }
+                else {
+                    column.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
+                    var join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
+                    doJoin = true;
+                }
+                //Add columns
+                _this.addColumn(column.propertyIdentifier, undefined, column);
+                if (doJoin) {
+                    _this.addJoin(join);
+                }
+            };
+            this.addGroupBy = function (groupByAlias) {
+                if (!_this.groupBys) {
+                    _this.groupBys = '';
+                }
+                _this.groupBys = _this.utilityService.listAppend(_this.groupBys, groupByAlias);
             };
             this.addDisplayProperty = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }

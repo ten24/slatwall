@@ -106,7 +106,9 @@ module ngSlatwall {
                 } 
                 console.log('listRest');
                 console.log(this.utilityService.listRest(propertyIdentifier,'.'));
-                return this.getLastEntityNameInPropertyIdentifier(propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')].cfc,this.utilityService.listRest(propertyIdentifier,'.'));
+                var currentEntityName = this.utilityService.listLast(propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')].cfc,'.');
+                var currentPropertyIdentifier = this.utilityService.right(propertyIdentifier,propertyIdentifier.length-(this.utilityService.listFirst(propertyIdentifier,'._').length));
+                return this.getLastEntityNameInPropertyIdentifier(currentEntityName,currentPropertyIdentifier);
             }
             return entityName;
             

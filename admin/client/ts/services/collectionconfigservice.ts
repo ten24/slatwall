@@ -213,7 +213,7 @@ module slatwalladmin{
                 persistent ,
                 ormtype = 'string',
                 lastProperty=column.split('.').pop();
-
+            
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
@@ -241,8 +241,7 @@ module slatwalladmin{
             if(angular.isDefined(this.collection.metaData[lastProperty])){
                 persistent = this.collection.metaData[lastProperty].persistent;
             }
-
-            this.columns.push(new Column(
+            var columnObject = new Column(
                 column,
                 title,
                 isVisible,
@@ -253,7 +252,19 @@ module slatwalladmin{
                 ormtype,
                 options['attributeID'],
                 options['attributeSetObject']
-            ));
+            );
+            if(options.aggregate){
+                columnObject.aggregate = options.aggregate;
+            }
+            //add any non-conventional options
+            for(key in options){
+                if(!columnObject[key]){
+                    columnObject[key] = options[key];    
+                }    
+            }
+            
+            
+            this.columns.push(columnObject);
         };
 
 
@@ -271,6 +282,61 @@ module slatwalladmin{
                 this.addColumn(this.formatCollectionName(column),title, options);
             });
         };
+        
+        addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string)=>{
+            var alias = this.baseEntityAlias;
+            
+            var doJoin = false;
+            var collection = propertyIdentifier;
+            var propertyKey = '';
+            
+            if(propertyIdentifier.indexOf('.') !== -1){
+                collection = this.utilityService.mid(propertyIdentifier,0,propertyIdentifier.lastIndexOf('.'));
+                propertyKey = '.' + this.utilityService.listLast(propertyIdentifier,'.');
+            }
+            
+            var column = {
+                propertyIdentifier:alias + '.' + propertyIdentifier,
+                aggregate:{
+                    aggregateFunction:aggregateFunction,
+                    aggregateAlias:aggregateAlias
+                }
+            };
+            
+            var isObject = this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(
+                this.baseEntityName,propertyIdentifier
+            );
+            if(isObject){
+                //check if count is on a one-to-many
+                var lastEntityName = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier);
+                var propertyMetaData = this.$slatwall.getEntityMetaData(lastEntityName)[this.utilityService.listLast(propertyIdentifier,'.')];
+                var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
+                //if is a one-to-many propertyKey then add a groupby
+                if(isOneToMany){
+                    this.addGroupBy(alias);
+                }
+                
+                column.propertyIdentifier = this.buildPropertyIdentifier(alias,propertyIdentifier);
+                var join = new Join(propertyIdentifier,column.propertyIdentifier);
+                doJoin = true;
+            }else{
+                column.propertyIdentifier = this.buildPropertyIdentifier(alias,collection) + propertyKey;
+                var join = new Join(collection,this.buildPropertyIdentifier(alias,collection));
+                doJoin = true;
+            }
+            //Add columns
+            this.addColumn(column.propertyIdentifier,undefined,column);
+            if(doJoin){
+                this.addJoin(join);
+            }
+        }
+        
+        addGroupBy = (groupByAlias)=>{
+            if(!this.groupBys){
+                this.groupBys = '';
+            }
+            this.groupBys = this.utilityService.listAppend(this.groupBys,groupByAlias);
+        }
         
         addDisplayProperty= (propertyIdentifier: string, title: string = '', options:Object = {}) =>{
             var _DividedColumns = propertyIdentifier.trim().split(',');

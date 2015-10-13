@@ -21,14 +21,30 @@ module slatwalladmin {
                this.childrenOpen = !this.childrenOpen;
                 if(!this.childrenLoaded){
                        var childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
+                       //set up parent
                        var parentName = this.entity.metaData.hb_parentPropertyName;
                        var parentCFC = this.entity.metaData[parentName].cfc;
                        var parentIDName = this.$slatwall.getEntityExample(parentCFC).$$getIDName();
+                       //set up child
+                       var childName = this.entity.metaData.hb_childPropertyName;
+                       var childCFC = this.entity.metaData[childName].cfc
+                       var childIDName = this.$slatwall.getEntityExample(childCFC).$$getIDName();
+                    
                        childCollectionConfig.clearFilterGroups(); 
                        childCollectionConfig.collection = this.entity;
                        childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
                        childCollectionConfig.setAllRecords(true);
-                       childCollectionConfig.columns = this.collectionConfig.columns;
+                    
+                       angular.forEach(this.collectionConfig.columns,(column)=>{
+                           childCollectionConfig.addColumn(column.propertyIdentifier,column.tilte,column);
+                       });
+                    
+                        angular.forEach(this.collectionConfig.joins,(join)=>{
+                           childCollectionConfig.addJoin(join); 
+                        });
+                        childCollectionConfig.groupBys = this.collectionConfig.groupBys;
+                       console.log('childConfig')
+                        console.log(this.collectionConfig);
                        console.log(childCollectionConfig);
                        this.collectionPromise = childCollectionConfig.getEntity();
                     
@@ -67,7 +83,8 @@ module slatwalladmin {
             collectionConfig:"=",
             records:"=",
             recordIndex:"=",
-            recordDepth:"="
+            recordDepth:"=",
+            childCount:"="
         };
         
         public controller=SWExpandableRecordController;
@@ -78,23 +95,22 @@ module slatwalladmin {
             this.$templateRequest = $templateRequest;
             this.partialsPath = partialsPath;
             this.$timeout = $timeout;
-            
-            
 		}
         
         
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
             
-            if(scope.swExpandableRecord.expandable){
-                $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
-                    var template = angular.element(html);
-                    
-                    template = $compile(template)(scope);
-                    element.html(template);
-                    element.on('click',scope.swExpandableRecord.toggleChild);
-                });
-            }
+                    if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
+                        $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
+                            var template = angular.element(html);
+                            
+                            template = $compile(template)(scope);
+                            element.html(template);
+                            element.on('click',scope.swExpandableRecord.toggleChild);
+                        });
+                    }
+            
             
 		}
 	}

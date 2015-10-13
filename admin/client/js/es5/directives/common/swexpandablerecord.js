@@ -17,14 +17,27 @@ var slatwalladmin;
                     _this.childrenOpen = !_this.childrenOpen;
                     if (!_this.childrenLoaded) {
                         var childCollectionConfig = _this.collectionConfigService.newCollectionConfig(_this.entity.metaData.className);
+                        //set up parent
                         var parentName = _this.entity.metaData.hb_parentPropertyName;
                         var parentCFC = _this.entity.metaData[parentName].cfc;
                         var parentIDName = _this.$slatwall.getEntityExample(parentCFC).$$getIDName();
+                        //set up child
+                        var childName = _this.entity.metaData.hb_childPropertyName;
+                        var childCFC = _this.entity.metaData[childName].cfc;
+                        var childIDName = _this.$slatwall.getEntityExample(childCFC).$$getIDName();
                         childCollectionConfig.clearFilterGroups();
                         childCollectionConfig.collection = _this.entity;
                         childCollectionConfig.addFilter(parentName + '.' + parentIDName, _this.parentId);
                         childCollectionConfig.setAllRecords(true);
-                        childCollectionConfig.columns = _this.collectionConfig.columns;
+                        angular.forEach(_this.collectionConfig.columns, function (column) {
+                            childCollectionConfig.addColumn(column.propertyIdentifier, column.tilte, column);
+                        });
+                        angular.forEach(_this.collectionConfig.joins, function (join) {
+                            childCollectionConfig.addJoin(join);
+                        });
+                        childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
+                        console.log('childConfig');
+                        console.log(_this.collectionConfig);
                         console.log(childCollectionConfig);
                         _this.collectionPromise = childCollectionConfig.getEntity();
                         _this.collectionPromise.then(function (data) {
@@ -73,12 +86,13 @@ var slatwalladmin;
                 collectionConfig: "=",
                 records: "=",
                 recordIndex: "=",
-                recordDepth: "="
+                recordDepth: "=",
+                childCount: "="
             };
             this.controller = SWExpandableRecordController;
             this.controllerAs = "swExpandableRecord";
             this.link = function (scope, element, attrs) {
-                if (scope.swExpandableRecord.expandable) {
+                if (scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount) {
                     $templateRequest(partialsPath + "expandablerecord.html").then(function (html) {
                         var template = angular.element(html);
                         template = $compile(template)(scope);

@@ -80,7 +80,9 @@ var ngSlatwall;
                     }
                     console.log('listRest');
                     console.log(_this.utilityService.listRest(propertyIdentifier, '.'));
-                    return _this.getLastEntityNameInPropertyIdentifier(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, _this.utilityService.listRest(propertyIdentifier, '.'));
+                    var currentEntityName = _this.utilityService.listLast(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
+                    var currentPropertyIdentifier = _this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (_this.utilityService.listFirst(propertyIdentifier, '._').length));
+                    return _this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
                 }
                 return entityName;
             };

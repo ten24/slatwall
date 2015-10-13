@@ -928,9 +928,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						arrayAppend(variables.records,record);
 					}//<--end entity 
 				}else{
-					
 					HQL = getHQL(forExport=arguments.forExport);
-					writedump(HQL);abort;
 					HQLParams = getHQLParams();
 					variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}

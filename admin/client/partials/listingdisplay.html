@@ -194,13 +194,17 @@
 					data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)}}"
 					data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
 					data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
+					data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
 					data-entity="swListingDisplay.exampleEntity"
 					data-collection-config="swListingDisplay.collectionConfig"
 					data-records="swListingDisplay.collectionData.pageRecords"
 					data-record-index="pageRecordKey"
 					data-record-depth="pageRecord.depth"
 				>
-					{{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}
+					<!--indent the primary for expandable-->
+					<span ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" style="margin-left:{{24+(pageRecord.depth*15)||0}}px" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]">
+					</span>
+					<span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
 				</td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
