@@ -38,7 +38,8 @@ angular.module('slatwalladmin')
 				$log.debug(scope.productBundleGroup);
 				scope.maxRecords = 10;
                 scope.recordsCount = 0;  
-                
+                scope.pageRecordsStart = 0;
+	            scope.pageRecordsEnd = 0;
 				scope.showAll = false;
                 scope.showAdvanced = false;
                 scope.currentPage = 1;
