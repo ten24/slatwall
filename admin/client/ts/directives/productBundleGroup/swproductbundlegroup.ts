@@ -38,9 +38,8 @@ angular.module('slatwalladmin')
 				$log.debug(scope.productBundleGroup);
 				scope.maxRecords = 10;
                 scope.recordsCount = 0;  
-                scope.pageRecordsStart = 0;
-                scope.pageRecordsEnd = 0;
-                scope.showAll = false;
+                
+				scope.showAll = false;
                 scope.showAdvanced = false;
                 scope.currentPage = 1;
                 scope.pageShow = 10;
@@ -160,7 +159,13 @@ angular.module('slatwalladmin')
 				}
 				 /** Increases the current page count by one */
                 scope.increaseCurrentCount = function(){
-                      scope.currentPage++;
+                      if(angular.isDefined(scope.totalPages) &&
+					  scope.totalPages != scope.currentPage){
+						  scope.currentPage++
+					  } else { 
+						  scope.currentPage = 1;
+					  }
+					  
                 };
                 /** resets the current page to zero when the searchbox is changed */
                 scope.resetCurrentCount = function(){
@@ -189,7 +194,11 @@ angular.module('slatwalladmin')
                                             $log.debug(value);    
                                             $log.debug("Total: " + value.recordsCount);
                                             $log.debug("Records Start: " + value.pageRecordsStart);
-                                            $log.debug("Records End: " + value.pageRecordsEnd);
+											scope.pageRecordsStart = value.pageRecordsStart;
+											$log.debug("Records End: " + value.pageRecordsEnd);
+                                			scope.pageRecordsEnd = value.pageRecordsEnd;
+											$log.debug("Total Pages " + value.totalPages);
+											scope.totalPages = value.totalPages;
                                             
 											 var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
 											     for(var j in formattedProductBundleGroupFilters){
@@ -226,6 +235,8 @@ angular.module('slatwalladmin')
                                 scope.recordsCount = value.recordsCount;
                                 scope.pageRecordsStart = value.pageRecordsStart;
                                 scope.pageRecordsEnd = value.pageRecordsEnd;
+								$log.debug("Total Pages " + value.totalPages);
+								scope.totalPages = value.totalPages;
 								$log.debug('getFiltersByTerm');
 								$log.debug(value);
 								scope.productBundleGroupFilters.value = productBundleService.formatProductBundleGroupFilters(value.pageRecords,filterTerm) || [];
