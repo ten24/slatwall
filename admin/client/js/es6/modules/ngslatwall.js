@@ -396,11 +396,20 @@ var ngSlatwall;
                 if (this._resourceBundle[locale]) {
                     return this._resourceBundle[locale];
                 }
+<<<<<<< HEAD
                 var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey + '&locale=' + locale;
                 $http({
                     url: urlString,
                     method: "GET"
                 }).success((response, status, headersGetter) => {
+=======
+                var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey;
+                //var urlString = this.getConfig().baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+this.getConfig().instantiationKey;
+                var params = {
+                    locale: locale
+                };
+                $http.get(urlString, { params: params }).success((response) => {
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                     this._resourceBundle[locale] = response.data;
                     deferred.resolve(response);
                 }).error((response) => {
@@ -408,6 +417,19 @@ var ngSlatwall;
                     deferred.reject(response);
                 });
                 return deferred.promise;
+<<<<<<< HEAD
+=======
+            };
+            this.getCurrencies = () => {
+                var deferred = this.$q.defer();
+                var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + this.getConfig().instantiationKey;
+                $http.get(urlString).success((response) => {
+                    deferred.resolve(response);
+                }).error((response) => {
+                    deferred.reject(response);
+                });
+                return deferred.promise;
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
             };
             this.rbKey = (key, replaceStringData) => {
                 ////$log.debug('rbkey');
@@ -578,4 +600,4 @@ var ngSlatwall;
     angular.module('ngSlatwall').provider('$slatwall', $Slatwall);
 })(ngSlatwall || (ngSlatwall = {}));
 
-//# sourceMappingURL=../modules/ngslatwall.js.map
+//# sourceMappingURL=ngslatwall.js.map

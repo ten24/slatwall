@@ -60,8 +60,7 @@ Notes:
 		<hb:HibachiEntityActionBarButtonGroup>
 		</hb:HibachiEntityActionBarButtonGroup>
 
-		<hb:HibachiProcessCaller action="admin:entity.processGiftCard" entity="#rc.giftCard#" processContext="updateEmail" type="list" />
-		<hb:HibachiProcessCaller action="admin:entity.processGiftCard" entity="#rc.giftCard#" processContext="changeRecipient" type="list" />
+		<hb:HibachiProcessCaller action="admin:entity.preProcessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
 	</hb:HibachiEntityActionBar>
 
 	<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>

@@ -24,7 +24,8 @@
 					data-original-title="Edit"
 					ng-click="productBundleGroup.data.$$toggleEdit()"
 					>
-				<i class="fa fa-pencil"></i>
+				<i ng-show="!productBundleGroup.data.$$editing" class="fa fa-eye"></i>
+				<i ng-show="productBundleGroup.data.$$editing" class="fa fa-eye-slash"></i>
 				</a>  
 				<a  
 					class="btn btn-default s-remove j-tool-tip-item"
@@ -61,40 +62,42 @@
 				<div class="s-options">
 					<div class="tab-content">
 						<h4>Basic</h4>
-						<span   sw-product-bundle-group-type
-							data-product-bundle-group="productBundleGroup"
-							>
-						</span>
-						<sw-form ng-if="formName && formName !== ''" 
-							name="{{formName}}" 
-							data-object="productBundleGroup"    
-							data-context="save"
-							>
-							<div class="row form-group">
-								<div class="col-md-6">
-									<sw-property-display
-										data-object="productBundleGroup"
-										data-property="minimumQuantity"
-										data-editing="true"
-										data-editable="true"
-										data-is-dirty="true"
-										data-on-change="productBundleGroup.data.$$setMinimumQuantity(productBundleGroup.data.minimumQuantity)"
-										>
-									</sw-property-display>
-								</div>
-								<div class="col-md-6">
-									<sw-property-display
-										data-object="productBundleGroup"
-										data-property="maximumQuantity"
-										data-editing="true"
-										data-editable="true"
-										data-is-dirty="true"
-										data-on-change="productBundleGroup.data.$$setMaximumQuantity(productBundleGroup.data.maximumQuantity)"
-										></sw-property-display>
-								</div>
-							</div>
-							<div class="row form-group">
-								<div class="col-md-6">
+						<div class="row s-basic-content">
+							<div class="col-md-6">
+								<span   sw-product-bundle-group-type
+									data-product-bundle-group="productBundleGroup"
+									>
+								</span>
+							
+								<sw-form ng-if="formName && formName !== ''" 
+									name="{{formName}}" 
+									data-object="productBundleGroup"    
+									data-context="save"
+									>
+									<div class="row">
+									  	<div class="col-md-6">
+										
+											<sw-property-display
+												data-object="productBundleGroup"
+												data-property="minimumQuantity"
+												data-editing="true"
+												data-editable="true"
+												data-is-dirty="true"
+												data-on-change="productBundleGroup.data.$$setMinimumQuantity(productBundleGroup.data.minimumQuantity)"
+												>
+											</sw-property-display>
+										</div>
+										<div class="col-md-6">
+											<sw-property-display
+												data-object="productBundleGroup"
+												data-property="maximumQuantity"
+												data-editing="true"
+												data-editable="true"
+												data-is-dirty="true"
+												data-on-change="productBundleGroup.data.$$setMaximumQuantity(productBundleGroup.data.maximumQuantity)"
+												></sw-property-display>
+										</div>
+									</div>
 									<sw-property-display
 										data-object="productBundleGroup"
 										data-property="amountType"
@@ -103,8 +106,7 @@
 										data-editable="true"
 										data-is-dirty="true"
 										></sw-property-display>
-								</div>
-								<div class="col-md-6">
+										
 									<span ng-show="productBundleGroup.data['amountType'] === 'fixed' || productBundleGroup.data['amountType'] === 'skuPricePercentageIncrease' || productBundleGroup.data['amountType'] === 'skuPricePercentageDecrease'">
 										<sw-property-display
 											data-object="productBundleGroup"
@@ -114,31 +116,28 @@
 											data-is-dirty="true"
 											></sw-property-display>
 									</span>
-								</div>
+								
+									<sw-property-display
+										data-object="productBundleGroup"
+										data-property="activeFlag"
+										data-editing="true"
+										data-editable="true"
+										data-is-dirty="true"
+										></sw-property-display>
+											
+									<sw-property-display
+										style="display:none" 
+										data-object="productBundleGroup"
+										data-property="skuCollectionConfig"
+										data-editing="true"
+										data-editable="true"
+										data-is-dirty="true"
+										></sw-property-display>
+								</sw-form>
 							</div>
-							<div class="form-group">
-								<div class="col-md-6">
-									<div class="row">
-										<sw-property-display
-											data-object="productBundleGroup"
-											data-property="activeFlag"
-											data-editing="true"
-											data-editable="true"
-											data-is-dirty="true"
-											></sw-property-display>
-									</div>
-								</div>
-								<div class="clearfix"></div>
-							</div>
-							<sw-property-display
-								style="display:none" 
-								data-object="productBundleGroup"
-								data-property="skuCollectionConfig"
-								data-editing="true"
-								data-editable="true"
-								data-is-dirty="true"
-								></sw-property-display>
-						</sw-form>
+							
+							
+						</div>
 						<!-- Search for product -->
 						<div class="row s-bundle-group-items">
 							<div class="col-xs-12 s-title">
@@ -306,7 +305,7 @@
 							</div>
 						</div>
 						<!-- //Search for product -->
-						<br/>
+						
 						<button type="button" class="btn btn-sm btn-primary" ng-click="productBundleGroup.$$save();productBundleGroup.data.$$toggleEdit()"><i class="fa fa-plus" ></i> Save</button>
 						<button type="button" class="btn btn-sm btn-primary" ng-click="productBundleGroup.$$save();productBundleGroup.data.$$toggleEdit();addProductBundleGroup();"><i class="fa fa-plus" ></i> Save & Add Bundle Group</button>
 					</div>

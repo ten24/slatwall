@@ -17,6 +17,7 @@ var slatwalladmin;
             this.init();
         }
     }
+    SWGiftCardOrderInfoController.$inject = ["$slatwall"];
     slatwalladmin.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
     class GiftCardOrderInfo {
         constructor($slatwall, partialsPath) {
@@ -43,4 +44,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/giftcard/swgiftcardorderinfo.js.map
+//# sourceMappingURL=swgiftcardorderinfo.js.map

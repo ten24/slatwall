@@ -49,6 +49,11 @@ angular.module('slatwalladmin')
                             "isSearchable": true
                         },
                         {
+                            "isVisible": false,
+                            "ormtype": "string",
+                            "propertyIdentifier": "_orderitem.currencyCode"
+                        },
+                        {
                             "title": "Order Item Type",
                             "propertyIdentifier": "_orderitem.orderItemType",
                             "isVisible": true,
@@ -368,4 +373,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/orderitem/sworderitems.js.map
+//# sourceMappingURL=sworderitems.js.map

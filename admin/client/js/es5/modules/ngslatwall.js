@@ -412,6 +412,16 @@ var ngSlatwall;
                 });
                 return deferred.promise;
             };
+            this.getCurrencies = function () {
+                var deferred = _this.$q.defer();
+                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + _this.getConfig().instantiationKey;
+                $http.get(urlString).success(function (response) {
+                    deferred.resolve(response);
+                }).error(function (response) {
+                    deferred.reject(response);
+                });
+                return deferred.promise;
+            };
             this.rbKey = function (key, replaceStringData) {
                 ////$log.debug('rbkey');
                 ////$log.debug(key);
@@ -449,7 +459,7 @@ var ngSlatwall;
                     //$log.debug(bundle);
                     if (!bundle.then) {
                         if (angular.isDefined(bundle[key])) {
-                            $log.debug('rbkeyfound:' + bundle[key]);
+                            //$log.debug('rbkeyfound:'+bundle[key]);
                             return bundle[key];
                         }
                         var checkedKeysListArray = checkedKeys.split(',');
@@ -462,15 +472,9 @@ var ngSlatwall;
                         //$log.debug(checkedKeysListArray);
                         var localeListArray = locale.split('_');
                         //$log.debug(localeListArray);
-                        console.log('localeListArray');
-                        console.log(localeListArray);
                         if (localeListArray.length === 2) {
                             bundle = _this.getResourceBundle(localeListArray[0]);
-                            console.log(bundle);
-                            console.log(key);
                             if (angular.isDefined(bundle[key])) {
-                                console.log('bundle');
-                                console.log(bundle[key]);
                                 //$log.debug('rbkey found:'+bundle[key]);
                                 return bundle[key];
                             }

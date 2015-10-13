@@ -160,8 +160,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('product','count','productCountTotal');
 
 		var pageRecords = myCollection.getPageRecords();
-
-		assertEquals(2,pageRecords[1]['productCountTotal']);	
+		assertEquals(2,pageRecords[1]['productCountTotal']);
+		
+		myCollection = variables.entityService.getContentCollectionList();
+		myCollection.setDisplayProperties('site.siteName,title');
+		myCollection.addFilter('parentContent','NULL','IS');
+		myCollection.addDisplayAggregate('childContents','count','childContentsCountTotal');
+		request.debug(myCollection.getHQL());
+		pageRecords = myCollection.getPageRecords();
+		debug(pageRecords);	
 	}
 
 		

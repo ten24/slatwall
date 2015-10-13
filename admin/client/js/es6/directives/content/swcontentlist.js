@@ -41,6 +41,26 @@ angular.module('slatwalladmin')
                             ormtype: 'id',
                             isSearchable: false
                         },
+<<<<<<< HEAD
+=======
+                        {
+                            propertyIdentifier: '_content.site.domainNames',
+                            isVisible: false,
+                            isSearchable: true
+                        },
+                        {
+                            propertyIdentifier: '_content.urlTitlePath',
+                            isVisible: false,
+                            isSearchable: true
+                        },
+                        //                        {
+                        //                            propertyIdentifier:'_content.contentTemplateFile',
+                        //                            persistent:false,
+                        //                            setting:true,
+                        //                            isVisible:true,
+                        //                            isSearchable:false
+                        //                        },
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                         //need to get template via settings
                         {
                             propertyIdentifier: '_content.allowPurchaseFlag',
@@ -133,6 +153,9 @@ angular.module('slatwalladmin')
                     options.columnsConfig = angular.toJson(columnsConfig);
                     var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
                     collectionListingPromise.then(function (value) {
+                        angular.forEach(value.pageRecords, function (node) {
+                            node.site_domainNames = node.site_domainNames.split(",")[0];
+                        });
                         scope.collection = value;
                         scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
                         scope.collectionConfig.columns = columnsConfig;
@@ -180,4 +203,4 @@ angular.module('slatwalladmin')
         };
     }]);
 
-//# sourceMappingURL=../../directives/content/swcontentlist.js.map
+//# sourceMappingURL=swcontentlist.js.map

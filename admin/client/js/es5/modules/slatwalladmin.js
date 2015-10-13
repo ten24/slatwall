@@ -107,6 +107,40 @@
                     return text;
                 }
             };
+        }]).filter('swcurrency', ['$slatwall', '$sce', '$log', function ($slatwall, $sce, $log) {
+            var data = null, serviceInvoked = false;
+            function realFilter(value, decimalPlace) {
+                // REAL FILTER LOGIC, DISREGARDING PROMISES
+                if (!angular.isDefined(data)) {
+                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+                    data = "$";
+                }
+                if (angular.isDefined(value)) {
+                    if (angular.isDefined(decimalPlace)) {
+                        value = parseFloat(value.toString()).toFixed(decimalPlace);
+                    }
+                    else {
+                        value = parseFloat(value.toString()).toFixed(2);
+                    }
+                }
+                return data + value;
+            }
+            filterStub.$stateful = true;
+            function filterStub(value, currencyCode, decimalPlace) {
+                if (data === null) {
+                    if (!serviceInvoked) {
+                        serviceInvoked = true;
+                        $slatwall.getCurrencies().then(function (currencies) {
+                            var result = currencies.data;
+                            data = result[currencyCode];
+                        });
+                    }
+                    return "-";
+                }
+                else
+                    return realFilter(value, decimalPlace);
+            }
+            return filterStub;
         }]);
 })();
 

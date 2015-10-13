@@ -57,7 +57,7 @@ module logger {
                 data : serializer({exception: this.exception, cause: this.cause, apiRequest: true}),
                 headers : {'Content-Type' : "application/x-www-form-urlencoded"}
             }; 
-            
+             
             /** notice I use the fat arrow for the anon function which preserves lexical scope. */
             http(requestConfig).error(
                 data => {

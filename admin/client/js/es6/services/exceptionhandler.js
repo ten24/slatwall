@@ -3,22 +3,34 @@
 var logger;
 (function (logger) {
     /*<------------------------------------------------------------------------
+
       This is out main class where we actually handle the exception by
+
       instantiating the http config and passing it along with the
+
       exception and cause. Classes are more the Typescript methodology versus
+
       function notation - but this compiles down to the function we want.
+
       <------------------------------------------------------------------------*/
-    class ExceptionHandler {
+    var ExceptionHandler = (function () {
         /** returning the ExceptionHandler bind here removes the circular dependancy
+
             that you would get from having exceptionHandler require $http <-- exceptionHandler --> $http
+
          */
-        constructor(injector) {
+        function ExceptionHandler(injector) {
             //grab the injector we passed in 
             ExceptionHandler.injector = injector;
             //return the bound static function.
             return ExceptionHandler.handle.bind(ExceptionHandler);
         }
+<<<<<<< HEAD
         static handle(exception, cause) {
+=======
+        ExceptionHandler.handle = function (exception, cause) {
+            var _this = this;
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
             if (exception) {
                 this.exception = exception.toString();
             }
@@ -32,7 +44,9 @@ var logger;
             /**  use the angular serializer rather than jQuery $.param */
             var serializer = this.injector.get('$httpParamSerializerJQLike');
             /* we use the IRequestConfig type here to get type protection on the object literal.
+
                alternativly, we could just cast to the correct type and drop the extra interface by
+
                using url: <string> "?slatAction=api:main.log" notation which does the same thing. */
             var requestConfig = {
                 url: "?slatAction=api:main.log",
@@ -41,15 +55,22 @@ var logger;
                 headers: { 'Content-Type': "application/x-www-form-urlencoded" }
             };
             /** notice I use the fat arrow for the anon function which preserves lexical scope. */
+<<<<<<< HEAD
             http(requestConfig).error(data => {
                 alertService.addAlert({ msg: this.exception, type: 'error' });
+=======
+            http(requestConfig).error(function (data) {
+                alertService.addAlert({ msg: _this.exception, type: 'error' });
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
             });
-        } //<--end handle method
-    }
+        }; //<--end handle method
+        return ExceptionHandler;
+    })();
     logger.ExceptionHandler = ExceptionHandler; //<--end class
     //let angular know about our class. notive we pass in the $injector and instantiate the class in one go
     //again using the fat arrow for scope.
-    angular.module('logger', []).factory('$exceptionHandler', ['$injector', ($injector) => new logger.ExceptionHandler($injector)]);
+    angular.module('logger', []).factory('$exceptionHandler', ['$injector', function ($injector) { return new logger.ExceptionHandler($injector); }]);
 })(logger || (logger = {})); //<--end module
+//# sourceMappingURL=exceptionhandler.js.map
 
-//# sourceMappingURL=../services/exceptionhandler.js.map
+//# sourceMappingURL=exceptionhandler.js.map

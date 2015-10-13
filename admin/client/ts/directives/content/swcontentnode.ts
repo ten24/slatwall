@@ -39,6 +39,11 @@ angular.module('slatwalladmin')
                                 isSearchable: true
                             },
                             {
+                                propertyIdentifier: '_content.urlTitlePath',
+                                isVisible: true,
+                                isSearchable: true
+                            },
+                            {
                                 propertyIdentifier: '_content.site.siteID',
                                 isVisible: false,
                                 isSearchable: false
@@ -47,6 +52,11 @@ angular.module('slatwalladmin')
                                 propertyIdentifier: '_content.site.siteName',
                                 isVisible: true,
                                 isSearchable: true
+                            },
+                            {
+                                propertyIdentifier: '_content.site.domainNames',
+                                isVisible: true, 
+                                isSearchable: true  
                             },
 //                            {
 //                                propertyIdentifier: '_content.contentTemplateFile',
@@ -108,6 +118,7 @@ angular.module('slatwalladmin')
                                 parentContentRecord.children = value.records;
                                 var index = 0;
                                 angular.forEach(parentContentRecord.children,function(child){
+                                    child.site_domainNames = child.site_domainNames.split(",")[0];
                                     scope['child'+index] = child;
                                     element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px" ng-if="childOpen"  sw-content-node data-content-data="child'+index+'"></tr>')(scope));
                                     index++;
@@ -121,7 +132,6 @@ angular.module('slatwalladmin')
                         if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)){
                             scope.toggleChildContent(scope.contentData);    
                         }
-
                     }
                 }
 

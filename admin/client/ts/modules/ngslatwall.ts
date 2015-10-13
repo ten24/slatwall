@@ -472,6 +472,17 @@ module ngSlatwall {
             return deferred.promise
         }
         
+        getCurrencies = () =>{
+            var deferred = this.$q.defer();
+            
+            var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey='+this.getConfig().instantiationKey;
+            $http.get(urlString).success((response) => {
+                deferred.resolve(response);
+            }).error((response) => {
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        }
         
         rbKey= (key,replaceStringData) => {
             ////$log.debug('rbkey');
@@ -522,7 +533,7 @@ module ngSlatwall {
                 //$log.debug(bundle);
                 if(!bundle.then) {
                     if(angular.isDefined(bundle[key])) {
-                        $log.debug('rbkeyfound:'+bundle[key]);
+                        //$log.debug('rbkeyfound:'+bundle[key]);
                         return bundle[key];
                     }
                     
@@ -539,17 +550,10 @@ module ngSlatwall {
                     
                     var localeListArray = locale.split('_');
                     //$log.debug(localeListArray);
-                    console.log('localeListArray');
-                    console.log(localeListArray);
                     if(localeListArray.length === 2)  {
                         
                         bundle = this.getResourceBundle(localeListArray[0]);
-                        
-                        console.log(bundle);
-                        console.log(key);
                         if(angular.isDefined(bundle[key])) {
-                            console.log('bundle');
-                            console.log(bundle[key]);
                             //$log.debug('rbkey found:'+bundle[key]);
                             return bundle[key];
                         }

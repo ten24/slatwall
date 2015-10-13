@@ -55,7 +55,11 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.type#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.type#" />
+		<cfset deleteQueryString = ''/>
+		<cfif !isNull(rc.type.getParentType())>
+			<cfset deleteQueryString = "sRedirectAction=entity.detailtype&sRedirectQS=typeID=#rc.type.getParentType().getTypeID()#"/>
+		</cfif>
+		<hb:HibachiEntityActionBar type="detail" object="#rc.type#" deleteQueryString="#deleteQueryString#"/>
 		
 		<hb:HibachiEntityDetailGroup object="#rc.type#">
 			<hb:HibachiEntityDetailItem view="admin:entity/typetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />

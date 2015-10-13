@@ -86,4 +86,4 @@ var slatwalladmin;
         .service('formService', FormService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/formservice.js.map
+//# sourceMappingURL=formservice.js.map

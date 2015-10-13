@@ -5,6 +5,8 @@ module slatwalladmin {
 		public giftCardId; 
 		public giftCard; 
 		
+		public static $inject = ["$slatwall"];
+		
 		constructor(private $slatwall:ngSlatwall.$Slatwall){
 			this.$slatwall = $slatwall; 
 			this.init();
@@ -12,7 +14,7 @@ module slatwalladmin {
 		
 		public init = ():void =>{
 			var giftCardConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCard');
-			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
+			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
 			giftCardConfig.addFilter('giftCardID', this.giftCardId);
 			giftCardConfig.setAllRecords(true);
 
@@ -25,6 +27,7 @@ module slatwalladmin {
 	export class GiftCardDetail implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "partialsPath"];
+		
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {}; 	

@@ -14,6 +14,16 @@ var slatwalladmin;
                 transactionConfig.setAllRecords(true);
                 transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
                 var transactionPromise = _this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
+                var emailBounceConfig = new slatwalladmin.CollectionConfig(_this.$slatwall, 'EmailBounce');
+                emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
+                emailBounceConfig.addFilter('relatedObject', "giftCard");
+                emailBounceConfig.addFilter('relatedObjectID', _this.giftCard.giftCardID);
+                emailBounceConfig.setAllRecords(true);
+                emailBounceConfig.setOrderBy("rejectedEmailSendTime", "DESC");
+                var emailBouncePromise = _this.$slatwall.getEntity("EmailBounce", emailBounceConfig.getOptions());
+                emailBouncePromise.then(function (response) {
+                    _this.bouncedEmails = response.records;
+                });
                 transactionPromise.then(function (response) {
                     _this.transactions = response.records;
                     var initialCreditIndex = _this.transactions.length - 1;
@@ -23,37 +33,42 @@ var slatwalladmin;
                         if (typeof transaction.debitAmount !== "string") {
                             transaction.debit = true;
                             totalDebit += transaction.debitAmount;
-                            transaction.debitAmount = "$" + parseFloat(transaction.debitAmount.toString()).toFixed(2);
                         }
                         else {
                             if (index != initialCreditIndex) {
                                 currentBalance += transaction.creditAmount;
                             }
                             transaction.debit = false;
-                            transaction.creditAmount = "$" + parseFloat(transaction.creditAmount.toString()).toFixed(2);
                         }
                         var tempCurrentBalance = currentBalance - totalDebit;
-                        transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
+                        transaction.balance = tempCurrentBalance;
                         if (index == initialCreditIndex) {
                             var emailSent = {
                                 emailSent: true,
                                 debit: false,
                                 sentAt: transaction.orderPayment_order_orderOpenDateTime,
-                                balanceFormatted: "$" + parseFloat(initialBalance.toString()).toFixed(2)
+                                balance: initialBalance
                             };
                             var activeCard = {
                                 activated: true,
                                 debit: false,
                                 activeAt: transaction.orderPayment_order_orderOpenDateTime,
-                                balanceFormatted: "$" + parseFloat(initialBalance.toString()).toFixed(2)
+                                balance: initialBalance
                             };
                             _this.transactions.splice(index, 0, activeCard);
                             _this.transactions.splice(index, 0, emailSent);
+                            if (angular.isDefined(_this.bouncedEmails)) {
+                                angular.forEach(_this.bouncedEmails, function (email, bouncedEmailIndex) {
+                                    email.bouncedEmail = true;
+                                    email.balance = initialBalance;
+                                    _this.transactions.splice(index, 0, email);
+                                });
+                            }
                         }
                     });
                 });
                 var orderConfig = new slatwalladmin.CollectionConfig(_this.$slatwall, 'Order');
-                orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.primaryEmailAddress.emailAddress");
+                orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
                 orderConfig.addFilter('orderID', _this.giftCard.originalOrderItem_order_orderID);
                 orderConfig.setAllRecords(true);
                 orderConfig.getEntity().then(function (response) {
@@ -63,6 +78,7 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.init();
         }
+        SWGiftCardHistoryController.$inject = ["$slatwall"];
         return SWGiftCardHistoryController;
     })();
     slatwalladmin.SWGiftCardHistoryController = SWGiftCardHistoryController;
@@ -72,7 +88,10 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
-                giftCard: "=?"
+                giftCard: "=?",
+                transactions: "=?",
+                bouncedEmails: "=?",
+                order: "=?"
             };
             this.controller = SWGiftCardHistoryController;
             this.controllerAs = "swGiftCardHistory";

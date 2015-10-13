@@ -234,7 +234,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public void function authorizeLogin(required struct rc) {
 		getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "login");
-		
+
 		if(getHibachiScope().getLoggedInFlag()) {
 			if(structKeyExists(rc, "sRedirectURL")) {
 				getFW().redirectExact(rc.sRedirectURL);
@@ -288,6 +288,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 
 		login(rc);
+	}
+
+	public void function processBouncedEmails(required struct rc){
+
+		try {
+			getService("EmailBounceService").processBouncedEmails();
+			rc.$.slatwall.showMessageKey( "admin.processBouncedEmails_success" );
+		} catch (any e) {
+			rc.$.slatwall.showMessageKey( "admin.processBouncedEmails_failure" );
+		}
+
+		getFW().redirect(action="admin:main.default", preserve="messages");
+
+
 	}
 
 	public void function changeLanguage( required struct rc ){

@@ -7,9 +7,8 @@
 			</div>
 			<div class="col-xs-9 s-detail-header-table">
 
-
 				<div class="responsive-table">
-					<table class="table">
+					<table ng-class="{'s-more-results': swGiftCardHistory.transactions.length > 10}" class="table">
 						<thead>
 							<tr>
 								<th></th>
@@ -20,19 +19,28 @@
 								<th>Balance</th>
 							</tr>
 						</thead>
-						<tbody>
-							<tr ng-class="{'s-purchase':transaction.debit, 's-success':transaction.activated}" ng-repeat="transaction in swGiftCardHistory.transactions">
+							<tr ng-class="{'s-purchase':transaction.debit, 's-success':transaction.activated, 's-error':transaction.bouncedEmail}" ng-repeat="transaction in swGiftCardHistory.transactions">
 								<!-- Initial Transactions -->
 								<td ng-if-start="$index==swGiftCardHistory.transactions.length-1"><i class="fa fa-plus"></i></td>
 								<td>Card Purchased </td>
 								<td ng-bind="swGiftCardHistory.order.orderOpenDateTime"></td>
-								<td>Customer: <a href="##"><span ng-bind="swGiftCardHistory.order.account_firstName"></span> <span ng-bind="swGiftCardHistory.order.account_lastName"></span> (<span ng-bind="swGiftCardHistory.order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
+								<td>Customer: <a href="?slatAction=admin:entity.detailAccount&accountID={{swGiftCardHistory.order.account_accountID}}"><span ng-bind="swGiftCardHistory.order.account_firstName"></span> <span ng-bind="swGiftCardHistory.order.account_lastName"></span> (<span ng-bind="swGiftCardHistory.order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
 								<td>
-									+ <span ng-bind="transaction.creditAmount"></span>
+									+ <span ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
 								</td>
 								<td ng-if-end>
-									<span ng-bind="transaction.creditAmount"></span>
+									<span ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
 								</td>
+								
+								<!-- Notification Email -->
+								<td ng-if-start="transaction.bouncedEmail"><i class="fa fa-envelope"></i></td>
+								<td>Recipient Email Failure </td>
+								<td ng-bind="transaction.rejectedEmailSendTime"></td>
+								<td>Recipient: 
+									<span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_firstName"></span> <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_lastName"></span> ( <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_emailAddress"></span> )
+								</td>
+								<td>--</td>
+								<td ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
 								
 								<!-- Notification Email -->
 								<td ng-if-start="transaction.emailSent"><i class="fa fa-envelope"></i></td>
@@ -42,7 +50,7 @@
 									<span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_firstName"></span> <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_lastName"></span> ( <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_emailAddress"></span> )
 								</td>
 								<td>--</td>
-								<td ng-if-end ng-bind="transaction.balanceFormatted"></td>
+								<td ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
 								
 								<!-- Activated -->
 								<td ng-if-start="transaction.activated"><i class="fa fa-check"></i></td>
@@ -50,23 +58,23 @@
 								<td ng-bind="transaction.activeAt"></td>
 								<td></td>
 								<td>--</td>
-								<td ng-if-end ng-bind="transaction.balanceFormatted"></td>
+								<td ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
 							
 								<!-- All Other Transactions -->
-								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated"><i class="fa fa-shopping-cart"></i></td>
+								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated && !transaction.bouncedEmail"><i class="fa fa-shopping-cart"></i></td>
 								<td ng-if-end>
 									<span ng-if="transaction.debit">Purchase Applied</span>
 									<span ng-if="!transaction.debit">Return Applied</span> 
 								</td>
-								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
+								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
 								<td>Order: <span ng-bind="transaction.orderPayment_order_orderNumber"></span></td>
 								<td>
-									<span ng-if-start="!transaction.debit && !transaction.emailSent && !transaction.activated">+</span>
-									<span ng-if-end ng-bind="transaction.creditAmount"></span>
-									<span ng-if-start="transaction.debit && !transaction.emailSent && !transaction.activated">-</span>
-									<span ng-if-end ng-bind="transaction.debitAmount"></span>
+									<span ng-if-start="!transaction.debit && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail">+</span>
+									<span ng-if-end ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
+									<span ng-if-start="transaction.debit && !transaction.emailSent && !transaction.activated  && !transaction.bouncedEmail">-</span>
+									<span ng-if-end ng-bind-html="transaction.debitAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
 								</td>
-								<td ng-if-end ng-bind="transaction.balanceFormatted"></td>
+								<td ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
 							</tr>
 							<!--
 							<tr class="s-purchase">

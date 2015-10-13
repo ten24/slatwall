@@ -3,8 +3,11 @@ module slatwalladmin {
 	
 	export class SWGiftCardHistoryController{
 		public transactions;
+		public bouncedEmails; 
 		public giftCard; 
 		public order; 
+		
+		public static $inject = ["$slatwall"];
 		
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall){
@@ -22,6 +25,18 @@ module slatwalladmin {
 			transactionConfig.setAllRecords(true);
 			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
 			var transactionPromise = this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
+			
+			var emailBounceConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'EmailBounce');
+			emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
+			emailBounceConfig.addFilter('relatedObject', "giftCard");
+			emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
+			emailBounceConfig.setAllRecords(true);
+			emailBounceConfig.setOrderBy("rejectedEmailSendTime", "DESC");
+			var emailBouncePromise = this.$slatwall.getEntity("EmailBounce", emailBounceConfig.getOptions());
+			
+			emailBouncePromise.then((response)=>{
+				this.bouncedEmails = response.records; 
+			});
 		
 			transactionPromise.then((response)=>{
 				this.transactions = response.records; 
@@ -34,46 +49,50 @@ module slatwalladmin {
 					if(typeof transaction.debitAmount !== "string"){
 						transaction.debit = true;
 						totalDebit += transaction.debitAmount; 
-						transaction.debitAmount = "$" + parseFloat(transaction.debitAmount.toString()).toFixed(2);
 					} else { 
 						if(index != initialCreditIndex){
 							currentBalance += transaction.creditAmount; 
 						}
 						
 						transaction.debit = false;
-						transaction.creditAmount = "$" + parseFloat(transaction.creditAmount.toString()).toFixed(2);
 					}
 					
 					var tempCurrentBalance = currentBalance - totalDebit; 
-					transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
+				
+					transaction.balance = tempCurrentBalance;
 					
-					if(index == initialCreditIndex){
-								
+					if(index == initialCreditIndex){			
 						var emailSent = { 
 							emailSent: true, 
 							debit:false, 
 							sentAt: transaction.orderPayment_order_orderOpenDateTime,
-							balanceFormatted:  "$" + parseFloat(initialBalance.toString()).toFixed(2)
+							balance: initialBalance
 						};
 						
 						var activeCard = {
 							activated: true, 
 							debit: false,
 							activeAt: transaction.orderPayment_order_orderOpenDateTime,
-							balanceFormatted:  "$" + parseFloat(initialBalance.toString()).toFixed(2)
+							balance: initialBalance
 						}
 						
 						this.transactions.splice(index, 0, activeCard); 
 						this.transactions.splice(index, 0, emailSent); 
 						
-						
+						if(angular.isDefined(this.bouncedEmails)){
+							angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
+								email.bouncedEmail = true; 
+								email.balance = initialBalance; 
+								this.transactions.splice(index, 0, email);
+							}); 
+						}
 					}
 				
 				});
 			});		
 			
 			var orderConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'Order');
-			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.primaryEmailAddress.emailAddress");
+			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
 			orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 			orderConfig.setAllRecords(true);
 		
@@ -86,11 +105,15 @@ module slatwalladmin {
 	export class GiftCardHistory implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "partialsPath"];
+		
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {};
 		public bindToController = {
-			giftCard:"=?"		
+			giftCard:"=?",
+			transactions:"=?",
+			bouncedEmails:"=?",
+			order:"=?"
 		}; 
 		public controller=SWGiftCardHistoryController;
 		public controllerAs="swGiftCardHistory"; 

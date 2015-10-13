@@ -142,7 +142,7 @@ Notes:
 				
 				<!--- CREATE SUPER USER --->
 				<form id="adminCreateSuperUserForm" class="s-form-signin" action="?s=1" method="post">
-					<h2>Create Super Administrator Account</h2>
+					<h2>Setup Super User</h2>
 					<input type="hidden" name="slatAction" value="admin:main.setupinitialadmin" />
 					<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("setupInitialAdmin") />
 					<hb:HibachiPropertyDisplay object="#processObject#" property="firstName" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.firstName')#" fieldAttributes="placeholder='First Name'" />

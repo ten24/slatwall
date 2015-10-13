@@ -13,6 +13,7 @@ module slatwalladmin {
 	export class GiftCardOverview implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "partialsPath"];
+		
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {}; 
@@ -30,9 +31,19 @@ module slatwalladmin {
 	}
 	
 	angular.module('slatwalladmin')
-	.directive('swGiftCardOverview',
-		["$slatwall", "partialsPath", 
-			($slatwall, partialsPath) => 
-				new GiftCardOverview($slatwall, partialsPath)
-			]);
+	.directive('swGiftCardOverview',["$slatwall", "partialsPath", 
+		($slatwall, partialsPath) => 
+			new GiftCardOverview($slatwall, partialsPath)
+	])
+	.controller('MyController', ['$scope', function ($scope) {
+        $scope.textToCopy = 'I can copy by clicking!';
+ 
+        $scope.success = function () {
+            console.log('Copied!');
+        };
+ 
+        $scope.fail = function (err) {
+            console.error('Error!', err);
+        };
+    }]);
 }
