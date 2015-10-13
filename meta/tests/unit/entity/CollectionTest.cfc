@@ -166,9 +166,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.setDisplayProperties('site.siteName,title');
 		myCollection.addFilter('parentContent','NULL','IS');
 		myCollection.addDisplayAggregate('childContents','count','childContentsCountTotal');
-		request.debug(myCollection.getHQL());
+		
 		pageRecords = myCollection.getPageRecords();
-		debug(pageRecords);	
+		
 	}
 
 		

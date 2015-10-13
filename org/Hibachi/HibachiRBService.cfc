@@ -3,10 +3,6 @@ component output="false" accessors="true" extends="HibachiService" {
 	variables.resourceBundles = {};
 	variables.instantiaded = now();
 	
-	public any function getInstantiated(){
-		return variables.instantiaded;
-	}
-	
 	public string function getRBKey(required string key, string locale="en_us", string checkedKeys="", string originalKey) {
 		
 		// Check to see if a list was passed in as the key
