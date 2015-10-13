@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 module slatwalladmin {
 	'use strict';
 	
@@ -49,10 +51,10 @@ module slatwalladmin {
 			if(search.length > 2){			
 				
 				if(this._timeoutPromise){
-					$timeout.cancel(this._timeoutPromise); 
+					this.$timeout.cancel(this._timeoutPromise); 
 				}
 				
-				this._timeoutPromise = $timeout(()=>{
+				this._timeoutPromise = this.$timeout(()=>{
 					
 					if(this.hideSearch){
 						this.hideSearch = false; 
@@ -114,7 +116,7 @@ module slatwalladmin {
 			}
 			
 			if(angular.isDefined(this.modelBind)){
-				this.searchTest = this.modelBind; 
+				this.searchText = this.modelBind; 
 			} else { 
 				this.searchText = "";
 			}
