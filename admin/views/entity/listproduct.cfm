@@ -55,59 +55,6 @@ Notes:
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
-	<sw-entity-action-bar
-		data-type="listing"
-		data-page-title="Products"
-		showCreate="false"
-	>
-		<sw-entity-action-bar-button-group>
-			<sw-action-caller-dropdown
-				data-title="#$.slatwall.rbKey('define.create')#"
-				data-icon="plus"
-				data-dropdown-class="pull-right"
-				>
-				<sw-process-caller 
-					data-action="admin:entity.preprocessproduct" 
-					data-entity="product" 
-					data-process-context="create" 
-					data-text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" 
-					data-query-string="baseProductType=contentAccess" 
-					data-disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" 
-					data-disabled-text="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" 
-					data-type="list" />
-				</sw-process-caller>
-				<sw-process-caller 
-					data-action="admin:entity.preprocessproduct" 
-					data-entity="product" 
-					data-process-context="create"
-					data-text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" 
-					data-query-string="baseProductType=event" 
-					type="list" 
-				/></sw-process-caller>
-			</sw-action-caller-dropdown>
-		</sw-entity-action-bar-button-group>
-	</sw-entity-action-bar>
-	
-	<sw-listing-display 
-		ng-if="$root.loadedResourceBundle"
-		collection="'Product'"
-		data-record-edit-action="admin:entity.editproduct"
-		data-record-detail-action="admin:entity.detailproduct"
-		data-show-create="false">
-		<sw-listing-column data-tdclass="primary" data-property-identifier="productName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="productCode"></sw-listing-column>
-		<!---<sw-listing-column data-property-identifier="productType.productTypeName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="brand.brandName"></sw-listing-column>--->
-		<!---<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
-		<hb:HibachiListingColumn propertyIdentifier="productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="defaultSku.price" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />--->
-	</sw-listing-display>
-	
-	
-	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
 	
 		<!--- Create ---> 

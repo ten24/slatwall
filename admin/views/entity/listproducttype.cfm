@@ -55,25 +55,6 @@ Notes:
 <cfset rc.productTypeSmartList.addOrder("productTypeName|ASC") />
 
 <cfoutput>
-	<sw-listing-display 
-		ng-if="$root.loadedResourceBundle"
-		collection="'ProductType'"
-		data-record-edit-action="admin:entity.editproducttype"
-		data-record-detail-action="admin:entity.detailproducttype"
-		data-show-create="false">
-		<sw-listing-column data-tdclass="primary" data-property-identifier="productTypeName" data-sort="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="activeFlag" data-sort="false"></sw-listing-column>
-		<sw-listing-column data-property-identifier="productTypeID" data-sort="false"></sw-listing-column>
-		<!---<sw-listing-column data-property-identifier="productType.productTypeName"></sw-listing-column>
-		<sw-listing-column data-property-identifier="brand.brandName"></sw-listing-column>--->
-		<!---<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
-		<hb:HibachiListingColumn propertyIdentifier="productCode" />
-		<hb:HibachiListingColumn propertyIdentifier="defaultSku.price" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
-		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />--->
-	</sw-listing-display>
-	
 	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productTypeSmartList#" showCreate="false">
 			
