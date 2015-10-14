@@ -6,7 +6,6 @@
 var ngSlatwall;
 (function (ngSlatwall) {
     class SlatwallService {
-        // public static $inject = ['$window','$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
         constructor($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities, _jsEntityInstances) {
             this.$window = $window;
             this.$q = $q;
@@ -525,6 +524,7 @@ var ngSlatwall;
             this._jsEntityInstances = _jsEntityInstances;
         }
     }
+    SlatwallService.$inject = ['$window', '$q', '$http', '$timeout', '$log', '$rootScope', '$location', '$anchorScroll', 'utilityService', 'formService'];
     ngSlatwall.SlatwallService = SlatwallService;
     class $Slatwall {
         constructor() {

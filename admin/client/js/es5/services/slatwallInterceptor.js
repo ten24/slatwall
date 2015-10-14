@@ -19,6 +19,15 @@ var slatwalladmin;
             this.authPrefix = 'Bearer ';
             this.request = function (config) {
                 _this.$log.debug('request');
+                //bypass interceptor rules when checking template cache
+                if (config.url.charAt(0) !== '/') {
+                    return config;
+                }
+                if (config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+                    //all partials are bound to instantiation key
+                    config.url = config.url + '?instantiationKey=' + $.slatwall.getConfig().instantiationKey;
+                    return config;
+                }
                 config.cache = true;
                 config.headers = config.headers || {};
                 if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
@@ -26,6 +35,7 @@ var slatwalladmin;
                 }
                 var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
                 if (config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')) {
+                    _this.$log.debug(config);
                     config.method = 'POST';
                     config.data = {};
                     var data = {};
@@ -38,10 +48,6 @@ var slatwalladmin;
                     config.data = $.param(params);
                     delete config.params;
                     config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                }
-                else if (config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
-                    //all partials are bound to instantiation key
-                    config.url = config.url + '?instantiationKey=' + $.slatwall.getConfig().instantiationKey;
                 }
                 return config;
             };
