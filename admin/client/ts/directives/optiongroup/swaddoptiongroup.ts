@@ -7,6 +7,7 @@ module slatwalladmin {
 		
 		public productId; 
 		public product; 
+		public productTypeID; 
 		public optionGroups; 
 		public optionGroupCollectionConfig;
 		public productCollectionConfig; 
@@ -14,22 +15,28 @@ module slatwalladmin {
 		public static $inject=["$slatwall", "$timeout", "collectionConfigService"];
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.collectionConfigService){
+			console.log("constructing");
+			
 			this.optionGroupCollectionConfig = collectionConfigService.newCollectionConfig("OptionGroup");
-			this.optionGroupCollectionConfig.addDisplayProperty("productTypes.productTypeID");
+			this.optionGroupCollectionConfig.setDisplayProperties("optionGroupID, optionGroupName, productTypes.productTypeID");
 			
 			this.productCollectionConfig = collectionConfigService.newCollectionConfig("Product");
-			this.productCollectionConfig.addFilter("productID", this.productId, "=")
-			console.log(this.productId);
-			this.productCollectionConfig.getEntity().then((response)=>{
+			this.productCollectionConfig.setDisplayProperties("productID, productName, productType.productTypeID");
+			this.productCollectionConfig.getEntity(this.productId).then((response)=>{
 				this.product = response; 
-				console.log(this.product);
+				this.productTypeID = response.productType_productTypeID;
+				this.updateOptionGroup(response.productType_productTypeID);
 			}); 
 			
 			
 		}
 		
-		public updateOptionGroup = (productTypeID) =>{
-			this.optionGroupCollectionConfig.addFilter("productTypes_productTypeID", productTypeID); 
+		public updateOptionGroup = (relatedProductTypeID?) =>{
+			if(angular.isDefined(relatedProductTypeID)){
+				this.optionGroupCollectionConfig.addFilter("productTypes.productTypeID", relatedProductTypeID); 
+			} else { 
+				this.optionGroupCollectionConfig.addFilter("productTypes.productTypeID", this.productTypeID);
+			}
 			this.optionGroupCollectionConfig.getEntity().then((response)=>{
 				this.optionGroups = response.pageRecords; 
 				console.log(this.optionGroups);
