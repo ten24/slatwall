@@ -460,9 +460,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Log the exception
 							logHibachiException(e);
 
-							if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
-								rethrow;
-							}
+							rethrow;
 						}
 
 					// NO INTEGRATION
