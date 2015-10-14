@@ -66,7 +66,6 @@ angular.module('slatwalladmin')
                     return manyToManyOptions;
                 };
                 scope.manyToManyOptions = getManyToManyOptions(scope.comparisonType);
-                console.log(scope.manyToManyOptions);
                 var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
                 existingCollectionsPromise.then(function (value) {
                     scope.collectionOptions = value.data;
@@ -122,4 +121,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swcriteriamanytomany.js.map
+//# sourceMappingURL=../../directives/collection/swcriteriamanytomany.js.map

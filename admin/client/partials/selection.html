@@ -1,10 +1,11 @@
 <div ng-class="isRadio ? 'radio' : 's-checkbox'"  ng-if="id && selectionid && selection">
 	<input  type="{{isRadio ? 'radio' : 'checkbox'}}"
 			id="j-checkbox-{{id}}"
-			name="selection"
+			ng-attr-name="{{name}}"
 			ng-model="toggleValue"
 			ng-click="toggleSelection(toggleValue,selectionid,selection)"
 			ng-value="id"
+			ng-disabled="disabled"
 			/>
 	<label for="j-checkbox-{{id}}">
 	</label>

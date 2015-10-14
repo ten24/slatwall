@@ -258,4 +258,4 @@ requestHandler.respond(404);
 requestHandler.respond(404, { key: 'value' });
 requestHandler.respond(404, { key: 'value' }, { header: 'value' });
 
-//# sourceMappingURL=angular-mocks-tests.js.map
+//# sourceMappingURL=../angularjs/angular-mocks-tests.js.map

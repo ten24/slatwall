@@ -9,18 +9,20 @@ module slatwalladmin{
     }
 	
 	export class SlatwallInterceptor implements slatwalladmin.IInterceptor{
-		public static $inject = ['$window','$q','$log','$injector','alertService','baseURL','dialogService'];
+		public static $inject = ['$location','$window','$q','$log','$injector','alertService','baseURL','dialogService','utilityService'];
 		
 		public static Factory(
+            $location:ng.ILocationService,
 			$window:ng.IWindowService ,
 			$q:ng.IQService,
 			$log:ng.ILogService,
 			$injector:ng.auto.IInjectorService,
 			alertService:slatwalladmin.IAlertService,
 			baseURL,
-			dialogService:slatwalladmin.IDialogService
+			dialogService:slatwalladmin.IDialogService,
+            utilityService:slatwalladmin.IUtilityService
 		) {
-            return new SlatwallInterceptor($window, $q, $log, $injector, alertService,baseURL,dialogService);
+            return new SlatwallInterceptor($location, $window, $q, $log, $injector, alertService,baseURL,dialogService,utilityService);
         }
         
         public urlParam = null;
@@ -28,14 +30,17 @@ module slatwalladmin{
         public authPrefix = 'Bearer ';
 
         constructor(
+            public $location:ng.ILocationService,
 			public $window:ng.IWindowService, 
 			public $q:ng.IQService, 
 			public $log:ng.ILogService,
 			public $injector:ng.auto.IInjectorService, 
 			public alertService:slatwalladmin.IAlertService,
 			public baseURL,
-			public dialogService:slatwalladmin.IDialogService
+			public dialogService:slatwalladmin.IDialogService, 
+            public utilityService
 		) {
+            this.$location = $location;
         	this.$window = $window;
 			this.$q = $q;
 			this.$log = $log;
@@ -43,18 +48,29 @@ module slatwalladmin{
 			this.alertService = alertService;
 			this.baseURL = baseURL;
 			this.dialogService = dialogService;
+            this.utilityService = utilityService;
         }
         
 		public request = (config): ng.IPromise<any> => {
             this.$log.debug('request');
-            
-            
-			if(config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1){
-				config.headers = config.headers || {};
-				if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
-					config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
-				}
-				
+            //bypass interceptor rules when checking template cache
+            if(config.url.charAt(0) !== '/'){
+                return config;   
+            }
+            if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+                //all partials are bound to instantiation key
+                config.url = config.url + '?instantiationKey='+$.slatwall.getConfig().instantiationKey;
+                return config;
+            }
+            config.cache = true;
+            config.headers = config.headers || {};
+            if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
+                
+                config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
+            }
+            var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
+			if(config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')){
+                this.$log.debug(config);
 				config.method = 'POST';
 				config.data = {};
 				var data = {};
@@ -67,9 +83,6 @@ module slatwalladmin{
 				config.data = $.param(params);
 				delete config.params;
 				config.headers['Content-Type']= 'application/x-www-form-urlencoded';
-			}else if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
-				//all partials are bound to instantiation key
-				config.url = config.url + '?instantiationKey='+$.slatwall.getConfig().instantiationKey;
 			}
 			
 			return config;

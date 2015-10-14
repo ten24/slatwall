@@ -68,4 +68,4 @@ var slatwalladmin;
         .service('alertService', AlertService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=alertservice.js.map
+//# sourceMappingURL=../services/alertservice.js.map
