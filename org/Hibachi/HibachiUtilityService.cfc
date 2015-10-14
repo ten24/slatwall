@@ -98,7 +98,7 @@
   			var result = createObject("java", "java.lang.StringBuffer").init (javaCast("int",arguments.numCharacters));
   			var index = 0;
 
-  			for(var i=0; i<=numCharacters; i++){
+  			for(var i=0; i<numCharacters; i++){
   				result.append(chars.charAt(random.nextInt(chars.length())));
   			}
 
