@@ -19,9 +19,9 @@
 	<cfproperty name="dimensionDefinitions" />
 	<cfproperty name="orderByType" />
 	<cfproperty name="reportDateTimeDefinitions" />
-	<cfproperty name="reportType">
-	<cfproperty name="limitResults" default="0">
-	<cfproperty name="showReport" default="false">
+	<cfproperty name="reportType" />
+	<cfproperty name="limitResults" default="0" />
+	<cfproperty name="showReport" default="false" />
 
 	<!--- Metric / Dimension States --->
 	<cfproperty name="metrics" />
