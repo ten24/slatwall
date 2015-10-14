@@ -53,6 +53,15 @@ module slatwalladmin{
         
 		public request = (config): ng.IPromise<any> => {
             this.$log.debug('request');
+            //bypass interceptor rules when checking template cache
+            if(config.url.charAt(0) !== '/'){
+                return config;   
+            }
+            if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+                //all partials are bound to instantiation key
+                config.url = config.url + '?instantiationKey='+$.slatwall.getConfig().instantiationKey;
+                return config;
+            }
             config.cache = true;
             config.headers = config.headers || {};
             if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
@@ -61,6 +70,7 @@ module slatwalladmin{
             }
             var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 			if(config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')){
+                this.$log.debug(config);
 				config.method = 'POST';
 				config.data = {};
 				var data = {};
@@ -73,9 +83,6 @@ module slatwalladmin{
 				config.data = $.param(params);
 				delete config.params;
 				config.headers['Content-Type']= 'application/x-www-form-urlencoded';
-			}else if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
-				//all partials are bound to instantiation key
-				config.url = config.url + '?instantiationKey='+$.slatwall.getConfig().instantiationKey;
 			}
 			
 			return config;
