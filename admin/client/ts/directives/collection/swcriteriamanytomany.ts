@@ -81,7 +81,6 @@ angular.module('slatwalladmin')
                     };
 
                     scope.manyToManyOptions = getManyToManyOptions(scope.comparisonType);
-                    console.log(scope.manyToManyOptions);
                     var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
                     existingCollectionsPromise.then(function(value){
                         scope.collectionOptions = value.data;

@@ -1,3 +1,5 @@
+
+/*  */
 var gulp = require('gulp'),
     traceur = require('gulp-traceur'),
     to5 = require('gulp-6to5'),
@@ -20,6 +22,7 @@ var gulp = require('gulp'),
 	runSequence = require('run-sequence'),
 	 ngmin = require("gulp-ngmin"),
 	changed = require('gulp-changed');
+	ngAnnotate = require('gulp-ng-annotate');
 	
 	var config = new Config();
 	
@@ -94,12 +97,14 @@ gulp.task('compile-ts', function () {
                          config.appTypeScriptReferences];     //reference to app.d.ts files
 
     var tsResult = gulp.src(sourceTsFiles)
+    					
     					.pipe(changed(config.tsOutputPath))
                        .pipe(sourcemaps.init())
                        .pipe(tsc({
                            target: 'ES6',
                            declarationFiles: false,
-                           noExternalResolve: true
+                           noExternalResolve: true,
+                           sourceMap:true
                        }));
 
         tsResult.dts.pipe(gulp.dest(config.tsOutputPath));
@@ -107,6 +112,7 @@ gulp.task('compile-ts', function () {
         				
                         .pipe(sourcemaps.write('.'))
                         .pipe(chmod(777))
+                        
                         .pipe(gulp.dest(config.tsOutputPath));
 });
 
@@ -122,7 +128,8 @@ gulp.task('compile-ts-to5', function () {
                            target: 'ES5',
                            declarationFiles: false,
                            noExternalResolve: true,
-                           module:'amd'
+                           module:'amd',
+                           sourceMap:true
                        }));
 
         tsResult.dts.pipe(gulp.dest(config.tsOutputPathto5));
@@ -254,6 +261,7 @@ gulp.task('6to5', function () {
 gulp.task('compress',function(){
     gulp.src([
 	  config.compilePath + 'es5/model/**/*.js',
+	  config.compilePath + 'es5/modules/hibachi.js',
 	  config.compilePath + 'es5/modules/ngslatwall.js',
 	  config.compilePath + 'es5/modules/ngslatwallmodel.js',
 	  config.compilePath + 'es5/modules/loggingmodule.js',
@@ -265,7 +273,10 @@ gulp.task('compress',function(){
     ])
   .pipe(sourcemaps.init())
   .pipe(concat('all.js'))
-  .pipe(uglify())
+  .pipe(ngAnnotate())
+  .pipe(uglify({
+    screw_ie8: true // Seriously, die
+  }))
   .pipe(rename(function(path){
       path.extname = '.min.js'
   }))

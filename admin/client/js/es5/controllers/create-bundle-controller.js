@@ -69,4 +69,4 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
     }
 ]);
 
-//# sourceMappingURL=create-bundle-controller.js.map
+//# sourceMappingURL=../controllers/create-bundle-controller.js.map

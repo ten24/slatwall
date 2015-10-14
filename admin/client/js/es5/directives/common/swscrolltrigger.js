@@ -73,4 +73,4 @@ angular
         };
     }]);
 
-//# sourceMappingURL=swscrolltrigger.js.map
+//# sourceMappingURL=../../directives/common/swscrolltrigger.js.map

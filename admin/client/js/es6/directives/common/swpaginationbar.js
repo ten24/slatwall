@@ -5,6 +5,9 @@ var slatwalladmin;
     'use strict';
     class SWPaginationBarController {
         constructor() {
+            if (angular.isUndefined(this.paginator)) {
+                this.paginator = slatwalladmin.PaginationService.createPagination();
+            }
         }
     }
     slatwalladmin.SWPaginationBarController = SWPaginationBarController;
@@ -30,4 +33,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout', 'partialsPath', 'paginationService', ($log, $timeout, partialsPath, paginationService) => new SWPaginationBar($log, $timeout, partialsPath, paginationService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swpaginationbar.js.map
+//# sourceMappingURL=../../directives/common/swpaginationbar.js.map

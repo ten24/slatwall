@@ -8,4 +8,4 @@ angular.module('slatwalladmin').controller('alertController', [
     }
 ]);
 
-//# sourceMappingURL=alertcontroller.js.map
+//# sourceMappingURL=../controllers/alertcontroller.js.map
