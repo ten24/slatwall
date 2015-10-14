@@ -454,12 +454,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Set the successFlag to false
 							arguments.paymentTransaction.setTransactionSuccessFlag( false );
 
+							// Populate the orderPayment with the processing error and make it persistable
+							arguments.paymentTransaction.addError('runTransaction', rbKey('error.unexpected.checklog'), true);
+
 							// Log the exception
 							logHibachiException(e);
 
 							if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
-								// Populate the orderPayment with the processing error and make it persistable
-								arguments.paymentTransaction.addError('runTransaction', rbKey('error.unexpected.checklog'), true);
 								rethrow;
 							}
 						}
