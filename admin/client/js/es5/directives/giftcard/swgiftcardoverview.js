@@ -29,7 +29,16 @@ var slatwalladmin;
         function ($slatwall, partialsPath) {
             return new GiftCardOverview($slatwall, partialsPath);
         }
-    ]);
+    ])
+        .controller('MyController', ['$scope', function ($scope) {
+            $scope.textToCopy = 'I can copy by clicking!';
+            $scope.success = function () {
+                console.log('Copied!');
+            };
+            $scope.fail = function (err) {
+                console.error('Error!', err);
+            };
+        }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/giftcard/swgiftcardoverview.js.map

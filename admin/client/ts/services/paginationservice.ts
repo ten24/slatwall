@@ -154,15 +154,15 @@ module slatwalladmin{
             }
             return false;
         }
-        public setPageRecordsInfo = (recordsCount:number,pageStart:number,pageEnd:number,totalPages:number):void =>{
-            this.setRecordsCount(recordsCount);
+        public setPageRecordsInfo = (collection):void =>{
+            this.setRecordsCount(collection.recordsCount);
             if(this.getRecordsCount() === 0 ){
                 this.setPageStart(0); 
             } else{
-                this.setPageStart(pageStart);
+                this.setPageStart(collection.pageRecordsStart);
             }
-            this.setPageEnd(pageEnd);
-            this.setTotalPages(totalPages);
+            this.setPageEnd(collection.pageRecordsEnd);
+            this.setTotalPages(collection.totalPages);
             
             this.totalPagesArray = [];
             for(var i = 0; i < this.getTotalPages(); i++){

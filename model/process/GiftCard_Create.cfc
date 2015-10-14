@@ -67,7 +67,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 		if(getService("settingService").getSettingValue("skuGiftCardAutoGenerateCode")==1){
 			return getService("hibachiUtilityService").generateRandomID(getService("settingService").getSettingValue("skuGiftCardCodeLength"));
 		} else {
-			return this.giftCardCode;
+			return variables.giftCardCode;
 		}
 	}
 

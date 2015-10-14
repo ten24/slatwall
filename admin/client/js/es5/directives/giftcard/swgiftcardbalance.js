@@ -30,6 +30,7 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.init();
         }
+        SWGiftCardBalanceController.$inject = ["$slatwall"];
         return SWGiftCardBalanceController;
     })();
     slatwalladmin.SWGiftCardBalanceController = SWGiftCardBalanceController;

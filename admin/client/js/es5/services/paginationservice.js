@@ -1,8 +1,7 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../client/typings/tsd.d.ts' />
@@ -146,16 +145,16 @@ var slatwalladmin;
                 }
                 return false;
             };
-            this.setPageRecordsInfo = function (recordsCount, pageStart, pageEnd, totalPages) {
-                _this.setRecordsCount(recordsCount);
+            this.setPageRecordsInfo = function (collection) {
+                _this.setRecordsCount(collection.recordsCount);
                 if (_this.getRecordsCount() === 0) {
                     _this.setPageStart(0);
                 }
                 else {
-                    _this.setPageStart(pageStart);
+                    _this.setPageStart(collection.pageRecordsStart);
                 }
-                _this.setPageEnd(pageEnd);
-                _this.setTotalPages(totalPages);
+                _this.setPageEnd(collection.pageRecordsEnd);
+                _this.setTotalPages(collection.totalPages);
                 _this.totalPagesArray = [];
                 for (var i = 0; i < _this.getTotalPages(); i++) {
                     _this.totalPagesArray.push(i + 1);

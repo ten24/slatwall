@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="orderDeliveryItems" type="array" hb_populateArray="true";
+	property name="giftCardCodes" type="array" hb_populateArray="true";
 
 	property name="trackingNumber";
 	property name="captureAuthorizedPaymentsFlag" hb_formFieldType="yesno";
@@ -78,6 +79,16 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return false;
 	}
 
+	public boolean function hasAllGiftCardCodes(){
+
+			if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !isNull(this.getGiftCardCodes())){
+				return this.getOrderFulfillment().getNumberOfNeededGiftCardCodes() == ArrayLen(this.getGiftCardCodes());
+			} else if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")) {
+				return this.getOrderFulfillment().hasGiftCardCodes();
+			}
+			return true;
+	}
+
 	public boolean function hasRecipientsForAllGiftCardDeliveryItems(){
 		for(var deliveryItem in this.getOrderDeliveryItems()){
 			if(!hasRecipientsForGiftCard(deliveryItem)){
@@ -90,21 +101,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
     private boolean function hasRecipientsForGiftCard(required any orderDelivery){
         var orderItem = getService("HibachiService").get("OrderItem", orderDelivery.orderItem.orderItemID);
         if(orderItem.getSku().isGiftCardSku()){
-            var quantityCount = orderDelivery.quantity; 
-            for(var recipient in orderItem.getOrderItemGiftRecipients()){ 
-                if(!recipient.hasAllAssignedGiftCards()){ 
-                    quantityCount = quantityCount - recipient.getNumberOfUnassignedGiftCards();                                                 
+            var quantityCount = orderDelivery.quantity;
+            for(var recipient in orderItem.getOrderItemGiftRecipients()){
+                if(!recipient.hasAllAssignedGiftCards()){
+                    quantityCount = quantityCount - recipient.getNumberOfUnassignedGiftCards();
                 }
-                                                                 
+
                 if(quantityCount LTE 0){
-                    return true;                                                 
+                    return true;
                 }
-            } 
-        } else { 
+            }
+        } else {
             //validation passes
-            return true;                                                         
+            return true;
         }
-        return false; 
+        return false;
     }
 
 	public numeric function getCapturableAmount() {

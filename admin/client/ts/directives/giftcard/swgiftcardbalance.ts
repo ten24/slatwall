@@ -8,6 +8,8 @@ module slatwalladmin {
 			public initialBalance:number; 
 			public balancePercentage;
 			
+			public static $inject = ["$slatwall"];
+			
 			constructor(private $slatwall:ngSlatwall.SlatwallService){
 				this.$slatwall = $slatwall; 
 				this.init(); 

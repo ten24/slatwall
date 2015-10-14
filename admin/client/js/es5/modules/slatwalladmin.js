@@ -1,7 +1,7 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 (function () {
-    var app = angular.module('slatwalladmin', ['ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngSanitize', 'ngCkeditor', 'ngResource']);
+    var app = angular.module('slatwalladmin', ['hibachi', 'ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor', 'ngResource']);
     app.config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
         function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
             datepickerConfig.showWeeks = false;
@@ -81,7 +81,7 @@
                 //controller:'otherwiseController'        
                 templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
             });
-        }]).run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService) {
+        }]).run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', 'observerService', 'utilityService', function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService, observerService, utilityService) {
             $anchorScroll.yOffset = 100;
             $rootScope.openPageDialog = function (partial) {
                 dialogService.addPageDialog(partial);
@@ -91,6 +91,8 @@
             };
             $rootScope.loadedResourceBundle = false;
             $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
+            $rootScope.buildUrl = $slatwall.buildUrl;
+            $rootScope.createID = utilityService.createID;
             var rbListener = $rootScope.$watch('loadedResourceBundle', function (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     $rootScope.$broadcast('hasResourceBundle');

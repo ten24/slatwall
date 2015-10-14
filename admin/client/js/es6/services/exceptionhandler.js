@@ -19,6 +19,13 @@ var logger;
             return ExceptionHandler.handle.bind(ExceptionHandler);
         }
         static handle(exception, cause) {
+            if (exception) {
+                this.exception = exception.toString();
+            }
+            if (cause) {
+                this.cause = cause.toString();
+            }
+            console.error(exception);
             /** get $http and alertService from the injector */
             var http = this.injector.get('$http');
             var alertService = this.injector.get('alertService');
@@ -30,13 +37,12 @@ var logger;
             var requestConfig = {
                 url: "?slatAction=api:main.log",
                 method: "POST",
-                data: serializer({ exception: exception, cause: cause, apiRequest: true }),
+                data: serializer({ exception: this.exception, cause: this.cause, apiRequest: true }),
                 headers: { 'Content-Type': "application/x-www-form-urlencoded" }
             };
             /** notice I use the fat arrow for the anon function which preserves lexical scope. */
             http(requestConfig).error(data => {
-                alertService.addAlert({ msg: exception, type: 'error' });
-                console.log(exception);
+                alertService.addAlert({ msg: this.exception, type: 'error' });
             });
         } //<--end handle method
     }

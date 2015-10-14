@@ -11,30 +11,30 @@
 			<cfif !rc.orderFulfillment.getNewFlag()>
  				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="orderFulfillmentStatusType">
 			</cfif>
-			
+
 			<!--- Email --->
 			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="emailAddress" edit="#rc.edit#">
-			
+
 			<!--- Pickup --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="pickupLocation" edit="#rc.edit#">
-				
+
 			<!--- Shipping --->
 			<cfelseif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-				
+
 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="shippingMethod" edit="#rc.edit#">
 				<hr />
 				<swa:SlatwallAdminAddressDisplay address="#rc.orderFulfillment.getAddress()#" fieldnameprefix="shippingAddress." edit="#rc.edit#" showPhoneNumber="true">
-			
+
 			</cfif>
-			
+
 			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "auto">
 				<!--- TODO: Add Fulfill From Location --->
 			</cfif>
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">
-			
+
 			<!--- Totals --->
 			<hb:HibachiPropertyTable>
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbkey('define.summary')#" />

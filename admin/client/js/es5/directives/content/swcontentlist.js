@@ -41,13 +41,16 @@ angular.module('slatwalladmin')
                             ormtype: 'id',
                             isSearchable: false
                         },
-                        //                        {
-                        //                            propertyIdentifier:'_content.contentTemplateFile',
-                        //                            persistent:false,
-                        //                            setting:true,
-                        //                            isVisible:true,
-                        //                            isSearchable:false
-                        //                        },
+                        {
+                            propertyIdentifier: '_content.site.domainNames',
+                            isVisible: false,
+                            isSearchable: true
+                        },
+                        {
+                            propertyIdentifier: '_content.urlTitlePath',
+                            isVisible: false,
+                            isSearchable: true
+                        },
                         //need to get template via settings
                         {
                             propertyIdentifier: '_content.allowPurchaseFlag',
@@ -140,6 +143,9 @@ angular.module('slatwalladmin')
                     options.columnsConfig = angular.toJson(columnsConfig);
                     var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
                     collectionListingPromise.then(function (value) {
+                        angular.forEach(value.pageRecords, function (node) {
+                            node.site_domainNames = node.site_domainNames.split(",")[0];
+                        });
                         scope.collection = value;
                         scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
                         scope.collectionConfig.columns = columnsConfig;

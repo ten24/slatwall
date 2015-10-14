@@ -72,7 +72,6 @@ angular.module('slatwalladmin')
             }, 500);
         };
         $scope.getCollection = function () {
-            console.log('getCollection');
             var pageShow = 50;
             if ($scope.paginator.getPageShow() !== 'Auto') {
                 pageShow = $scope.paginator.getPageShow();

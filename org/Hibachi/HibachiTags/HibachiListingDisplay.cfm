@@ -177,7 +177,7 @@
 			<cfset attributes.administativeCount++ />
 
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editaction="#attributes.recordEditAction#"', " ") />
-			<cfif len(attributes.recordDetailActionProperty)>
+			<cfif len(attributes.recordEditActionProperty)>
 				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editactionproperty="#attributes.recordEditActionProperty#"', " ") />
 			</cfif>
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editquerystring="#attributes.recordEditQueryString#"', " ") />

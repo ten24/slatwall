@@ -5,6 +5,8 @@ module slatwalladmin {
 		public giftCardId; 
 		public giftCard; 
 		
+		public static $inject = ["$slatwall"];
+		
 		constructor(private $slatwall:ngSlatwall.$Slatwall){
 			this.$slatwall = $slatwall; 
 			this.init();
@@ -25,6 +27,7 @@ module slatwalladmin {
 	export class GiftCardDetail implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "partialsPath"];
+		
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {}; 	

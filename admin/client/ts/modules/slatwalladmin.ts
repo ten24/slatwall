@@ -3,7 +3,7 @@
 
 ((): void => {
     
-    var app = angular.module('slatwalladmin', ['ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor', 'ngResource']);
+    var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngCkeditor', 'ngResource']);
     app.config(
         ["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
         ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig) =>
@@ -90,7 +90,7 @@
             templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
         });  
     
-    }]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService) => {
+    }]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService) => {
         $anchorScroll.yOffset = 100;
     
         $rootScope.openPageDialog = function( partial ) {
@@ -103,7 +103,8 @@
         
         $rootScope.loadedResourceBundle = false;
         $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
-        
+        $rootScope.buildUrl = $slatwall.buildUrl;
+        $rootScope.createID = utilityService.createID;
         
         var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
             if(newValue !== oldValue){
