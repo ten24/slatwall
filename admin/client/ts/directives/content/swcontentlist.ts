@@ -63,20 +63,13 @@ angular.module('slatwalladmin')
                                 isVisible: false,
                                 isSearchable: true
                         },
-//                        {
-//                            propertyIdentifier:'_content.contentTemplateFile',
-//                            persistent:false,
-//                            setting:true,
-//                            isVisible:true,
-//                            isSearchable:false
-//                        },
                         //need to get template via settings
                         {
                             propertyIdentifier:'_content.allowPurchaseFlag',
                             isVisible:true,
                             ormtype:'boolean',
                             isSearchable:false
-                        },
+                        }, 
                         {
                             propertyIdentifier:'_content.productListingPageFlag',
                             isVisible:true,
@@ -222,14 +215,10 @@ angular.module('slatwalladmin')
             }
             observerService.attach(optionsLoaded,'optionsLoaded','siteOptionsLoaded');
                 
-                
             scope.$on('$destroy', function handler() {
                 observerService.detachByEvent('optionsChanged');
                 observerService.detachByEvent('sortByColumn');
             });
-                
-            
-            
 	    }
 	}
 }]);

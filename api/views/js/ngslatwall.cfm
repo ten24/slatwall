@@ -476,6 +476,8 @@ Notes:
 					  			////$log.debug('getRBKey');
 					  			////$log.debug('loading:'+_loadingResourceBundle);
 					  			////$log.debug('loaded'+_loadedResourceBundle);
+					  			
+					  			
 					  			if(!_loadingResourceBundle && _loadedResourceBundle){
 					  				key = key.toLowerCase();
 						  			checkedKeys = checkedKeys || "";

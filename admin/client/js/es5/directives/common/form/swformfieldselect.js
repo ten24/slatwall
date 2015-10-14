@@ -48,9 +48,7 @@ angular.module('slatwalladmin')
                             /* for(var i = 0; i < optionSortArray.length - 1; i++){
                                  if(angular.isDefined(optionSortArray[i].parentID)){
                                      for(var j; j < optionSortArray.length - 1; j++){
-                                         console.log(optionSortArray[i].parentID +'-'+ optionSortArray[j].value);
                                           if(optionSortArray[i].parentID === optionSortArray[j].value){
-                                             console.log('item found');
                                              optionSortArray = utilityService.arrayMove(optionSortArray,i,j);
                                              break;
                                            }
@@ -130,4 +128,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swformfieldselect.js.map
+//# sourceMappingURL=../../../directives/common/form/swformfieldselect.js.map

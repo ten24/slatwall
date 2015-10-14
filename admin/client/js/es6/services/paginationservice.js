@@ -139,16 +139,16 @@ var slatwalladmin;
                 }
                 return false;
             };
-            this.setPageRecordsInfo = (recordsCount, pageStart, pageEnd, totalPages) => {
-                this.setRecordsCount(recordsCount);
+            this.setPageRecordsInfo = (collection) => {
+                this.setRecordsCount(collection.recordsCount);
                 if (this.getRecordsCount() === 0) {
                     this.setPageStart(0);
                 }
                 else {
-                    this.setPageStart(pageStart);
+                    this.setPageStart(collection.pageRecordsStart);
                 }
-                this.setPageEnd(pageEnd);
-                this.setTotalPages(totalPages);
+                this.setPageEnd(collection.pageRecordsEnd);
+                this.setTotalPages(collection.totalPages);
                 this.totalPagesArray = [];
                 for (var i = 0; i < this.getTotalPages(); i++) {
                     this.totalPagesArray.push(i + 1);
@@ -184,4 +184,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('paginationService', PaginationService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=paginationservice.js.map
+//# sourceMappingURL=../services/paginationservice.js.map

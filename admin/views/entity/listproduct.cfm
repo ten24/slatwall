@@ -57,7 +57,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
 	
-	<!--- Create ---> 
+		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
 			<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
 				<li><a ng-click="openPageDialog( 'productbundle/createproductbundle' )">#rc.$.slatwall.rbKey('define.bundleProduct')#</a></li>

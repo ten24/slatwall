@@ -1,7 +1,8 @@
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    __.prototype = b.prototype;
+    d.prototype = new __();
 };
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 var slatwalladmin;
@@ -21,6 +22,9 @@ var slatwalladmin;
                     _this._selection[selectionid] = [];
                 }
                 _this._selection[selectionid].push(selection);
+            };
+            this.setSelection = function (seleciontid, selections) {
+                _this._selection[selectionid] = selections;
             };
             this.removeSelection = function (selectionid, selection) {
                 if (angular.isUndefined(_this._selection[selectionid])) {
@@ -50,4 +54,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('selectionService', SelectionService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=selectionservice.js.map
+//# sourceMappingURL=../services/selectionservice.js.map
