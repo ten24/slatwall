@@ -5,7 +5,7 @@ module slatwalladmin {
 	
 	export class SWAddOptionGroupController {
 		
-		public productID;
+		public productId; 
 		public product; 
 		public optionGroups; 
 		public optionGroupCollectionConfig;
@@ -18,16 +18,21 @@ module slatwalladmin {
 			this.optionGroupCollectionConfig.addDisplayProperty("productTypes.productTypeID");
 			
 			this.productCollectionConfig = collectionConfigService.newCollectionConfig("Product");
-			
-			this.productCollectionConfig.getEntity(this.productID).then((response)=>{
+			this.productCollectionConfig.addFilter("productID", this.productId, "=")
+			console.log(this.productId);
+			this.productCollectionConfig.getEntity().then((response)=>{
 				this.product = response; 
+				console.log(this.product);
 			}); 
+			
+			
 		}
 		
 		public updateOptionGroup = (productTypeID) =>{
 			this.optionGroupCollectionConfig.addFilter("productTypes_productTypeID", productTypeID); 
 			this.optionGroupCollectionConfig.getEntity().then((response)=>{
 				this.optionGroups = response.pageRecords; 
+				console.log(this.optionGroups);
 			});
 		}
 	
@@ -42,7 +47,7 @@ module slatwalladmin {
 		public scope = {}	
 		
 		public bindToController = {
-			productID:"@"
+			productId:"@"
 		}
 		public controller=SWAddOptionGroupController;
         public controllerAs="swAddOptionGroup";
