@@ -310,8 +310,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var orderReturns = variables.order.getOrderReturns();
 
 		if(ArrayLen(orderReturns) > 0){
-			ArrayAppend(orderPayments, variables.newOrderPayment)
-			for (var payment in paymentMethodsAndAmountsQuery ) {
+			ArrayAppend(orderPayments, variables.newOrderPayment);
+			for (var payment in orderPayments ) {
 				//is this a gift card payment
 				if (payment.getPaymentMethodID() == "50d8cd61009931554764385482347f3a"){
 					return true;
