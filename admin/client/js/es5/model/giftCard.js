@@ -17,4 +17,4 @@ var slatwalladmin;
     slatwalladmin.GiftRecipient = GiftRecipient;
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../model/giftCard.js.map
+//# sourceMappingURL=giftCard.js.map
