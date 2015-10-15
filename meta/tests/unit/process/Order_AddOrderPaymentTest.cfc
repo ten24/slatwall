@@ -52,27 +52,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 
+		variables.gcPaymentMethodID = "50d8cd61009931554764385482347f3a";
+		variables.ccPaymentMethodID = "444df303dedc6dab69dd7ebcc9b8036a";
+
 	}
 
-	public void function isReturnWithGiftCardOrderPaymentTest(){
-
+	public void function isReturnWithGiftCardOrderPaymentTest_giftCardPaymentCase(){
 		//ASSERT TRUE CASE GC PAYMENT WITH ORDER RETURN
-
-		var gcPaymentMethodID = "50d8cd61009931554764385482347f3a";
-		var ccPaymentMethodID = "444df303dedc6dab69dd7ebcc9b8036a";
 
 		var order = request.slatwallScope.newEntity( 'order' );
 		var processObject = order.getProcessObject("AddOrderPayment");
 		var orderPayment = request.slatwallScope.newEntity( 'orderPayment' );
 		var orderReturn = request.slatwallScope.newEntity('orderReturn');
 
-		orderPayment.setPaymentMethod(request.slatwallScope.getService("PaymentService").getPaymentMethod(gcPaymentMethodID));
+		orderPayment.setPaymentMethod(request.slatwallScope.getService("PaymentService").getPaymentMethod(variables.gcPaymentMethodID));
 
 		processObject.setNewOrderPayment(orderPayment);
 		processObject.getOrder().addOrderReturn(orderReturn);
 
 		assertTrue(processObject.isReturnWithGiftCardOrderPayment());
 
+	}
+
+	public void function isReturnWithGiftCardOrderPaymentTest_creditCardPaymentCase(){
 		//ASSERT FALSE CC PAYMENT WITH ORDER RETURN
 
 		var anotherOrder = request.slatwallScope.newEntity( 'order' );
@@ -80,13 +82,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var anotherOrderPayment = request.slatwallScope.newEntity( 'orderPayment' );
 		var anotherOrderReturn = request.slatwallScope.newEntity('orderReturn');
 
-		anotherOrderPayment.setPaymentMethod(request.slatwallScope.getService("PaymentService").getPaymentMethod(ccPaymentMethodID));
+		anotherOrderPayment.setPaymentMethod(request.slatwallScope.getService("PaymentService").getPaymentMethod(variables.ccPaymentMethodID));
 
 		anotherProcessObject.setNewOrderPayment(anotherOrderPayment);
 		anotherProcessObject.getOrder().addOrderReturn(anotherOrderReturn);
 
 		assertFalse(anotherProcessObject.isReturnWithGiftCardOrderPayment());
+	}
 
+	public void function isReturnWithGiftCardOrderPaymentTest_noOrderReturnCase(){
 		//ASSERT FALSE GC PAYMENT WITH NO ORDER RETURN
 
 		var yetAnotherOrder = request.slatwallScope.newEntity( 'order' );
@@ -96,14 +100,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		yetAnotherOrder.addOrderItem(orderItem);
 
-		yetAnotherOrderPayment.setPaymentMethod(request.slatwallScope.getService("PaymentService").getPaymentMethod(gcPaymentMethodID));
+		yetAnotherOrderPayment.setPaymentMethod(request.slatwallScope.getService("PaymentService").getPaymentMethod(variables.gcPaymentMethodID));
 
 		yetAnotherProcessObject.setNewOrderPayment(yetAnotherOrderPayment);
 
 		request.debug(yetAnotherProcessObject.isReturnWithGiftCardOrderPayment());
 
 		assertFalse(yetAnotherProcessObject.isReturnWithGiftCardOrderPayment());
-
 	}
 
 }
