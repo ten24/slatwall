@@ -29,20 +29,6 @@ var slatwalladmin;
             this.updateMultiselectValues = function () {
                 _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
             };
-            this.getCollection = function () {
-                _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
-                _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
-                _this.collectionConfig.setKeywords(_this.paginator.keywords);
-                _this.collectionPromise = _this.collectionConfig.getEntity();
-                _this.collectionPromise.then(function (data) {
-                    _this.collectionData = data;
-                    _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
-                    _this.paginator.setPageRecordsInfo(_this.collectionData);
-                    //prepare an exampleEntity for use
-                    _this.init();
-                });
-                return _this.collectionPromise;
-            };
             this.escapeRegExp = function (str) {
                 return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
             };
@@ -192,27 +178,52 @@ var slatwalladmin;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, function () { });
+            if (angular.isUndefined(this.getCollection)) {
+                console.log('definde getcollection');
+                this.getCollection = function () {
+                    _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+                    _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
+                    _this.collectionConfig.setKeywords(_this.paginator.keywords);
+                    _this.collectionPromise = _this.collectionConfig.getEntity();
+                    _this.collectionPromise.then(function (data) {
+                        _this.collectionData = data;
+                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+                        _this.paginator.setPageRecordsInfo(_this.collectionData);
+                        //prepare an exampleEntity for use
+                        _this.init();
+                    });
+                    return _this.collectionPromise;
+                };
+            }
             this.paginator = paginationService.createPagination();
             this.paginator.getCollection = this.getCollection;
             this.tableID = 'LD' + this.utilityService.createID();
             //if collection Value is string instead of an object then create a collection
+            var hasCollectionPromise = false;
             if (angular.isString(this.collection)) {
-                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
+                this.collectionObject = this.collection;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
                 if (!this.collectionConfig.columns) {
                     this.collectionConfig.columns = [];
                 }
-                angular.forEach(this.columns, function (column) {
-                    var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collection, column.propertyIdentifier);
-                    var title = _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
-                    column.isVisible = column.isVisible || true;
-                    //this.collectionConfig.columns.push(column);
-                    _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
-                });
-                this.collectionConfig.setPageShow(this.paginator.pageShow);
-                this.collectionConfig.setCurrentPage(this.paginator.currentPage);
-                this.exampleEntity = this.$slatwall.newEntity(this.collection);
-                this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
             }
+            else {
+                hasCollectionPromise = true;
+                this.collectionObject = this.collection.collectionObject;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+                this.collectionConfig.loadJson(this.collection.collectionConfig);
+            }
+            angular.forEach(this.columns, function (column) {
+                var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collectionObject, column.propertyIdentifier);
+                var title = _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+                column.isVisible = column.isVisible || true;
+                //this.collectionConfig.columns.push(column);
+                _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
+            });
+            this.collectionConfig.setPageShow(this.paginator.pageShow);
+            this.collectionConfig.setCurrentPage(this.paginator.currentPage);
+            this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
+            this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
             //setup export action
             if (angular.isDefined(this.exportAction)) {
                 this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
@@ -232,11 +243,11 @@ var slatwalladmin;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
                 //attach observer so we know when a selection occurs
-                this.observerService.attach(this.updateMultiselectValues, 'swSelectionToggleSelection', this.collection);
+                this.observerService.attach(this.updateMultiselectValues, 'swSelectionToggleSelection', this.collectionObject);
             }
             if (this.multiselectable && !this.columns.length) {
                 //check if it has an active flag and if so then add the active flag
-                if (this.exampleEntity.metaData.activeProperty) {
+                if (this.exampleEntity.metaData.activeProperty && !hasCollectionPromise) {
                     this.collectionConfig.addFilter('activeFlag', 1);
                 }
             }
@@ -256,10 +267,14 @@ var slatwalladmin;
                 this.expandable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-expandable', ' ');
                 //add parent property root filter
-                this.collectionConfig.addFilter(this.parentPropertyName + '.' + this.exampleEntity.$$getIDName(), 'NULL', 'IS');
+                if (!hasCollectionPromise) {
+                    this.collectionConfig.addFilter(this.parentPropertyName + '.' + this.exampleEntity.$$getIDName(), 'NULL', 'IS');
+                }
                 //add children column
                 if (this.childPropertyName && this.childPropertyName.length) {
-                    this.collectionConfig.addDisplayAggregate(this.childPropertyName, 'COUNT', this.childPropertyName + 'Count');
+                    if (!hasCollectionPromise) {
+                        this.collectionConfig.addDisplayAggregate(this.childPropertyName, 'COUNT', this.childPropertyName + 'Count');
+                    }
                 }
                 this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, this.exampleEntity.$$getIDName() + 'Path');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
@@ -302,6 +317,7 @@ var slatwalladmin;
                 /*required*/
                 collection: "=",
                 collectionConfig: "=",
+                getCollection: "&?",
                 edit: "=",
                 /*Optional*/
                 title: "@",

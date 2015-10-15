@@ -17,6 +17,13 @@
 			</div>
 		</nav>
 	</div>
+	
+	<sw-listing-display
+		ng-if="$root.loadedResourceBundle && collection"	
+		data-collection="collection"
+		data-get-collection="getCollection"
+	>
+	</sw-listing-display>
 
 	<div class="s-table-header-nav s-listing-head-margin">
 		<div class="col-xs-6 s-no-padding-left">
