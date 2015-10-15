@@ -2,9 +2,11 @@
 angular.module('slatwalladmin')
     .directive('swRbkey', [
     '$slatwall',
+    'observerService',
+    'utilityService',
     '$rootScope',
     '$log',
-    function ($slatwall, $rootScope, $log) {
+    function ($slatwall, observerService, utilityService, $rootScope, $log) {
         return {
             restrict: 'A',
             scope: {
@@ -12,23 +14,16 @@ angular.module('slatwalladmin')
             },
             link: function (scope, element, attrs) {
                 var rbKeyValue = scope.swRbkey;
-                //$log.debug('running rbkey');
-                //$log.debug(rbKeyValue);
-                if (!$slatwall.getRBLoaded()) {
-                    var hasResourceBundleListener = $rootScope.$on('hasResourceBundle', function (event, data) {
-                        //$log.debug('received event');
-                        //$log.debug(rbKeyValue);
-                        if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
-                            //$log.debug($slatwall.getRBKey(rbKeyValue));
-                            element.text($slatwall.getRBKey(rbKeyValue));
-                        }
-                        hasResourceBundleListener();
-                    });
-                }
-                else {
+                var bindRBKey = function () {
                     if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
                         element.text($slatwall.getRBKey(rbKeyValue));
                     }
+                };
+                if (!$slatwall.getRBLoaded()) {
+                    observerService.attach(bindRBKey, 'hasResourceBundle');
+                }
+                else {
+                    bindRBKey();
                 }
             }
         };

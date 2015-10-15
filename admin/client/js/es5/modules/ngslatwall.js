@@ -1,13 +1,14 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 (function () {
-    var ngSlatwall = angular.module('ngSlatwall', []);
+    var ngSlatwall = angular.module('ngSlatwall', ['hibachi']);
 })();
 var ngSlatwall;
 (function (ngSlatwall) {
     var SlatwallService = (function () {
-        function SlatwallService($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities) {
+        function SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities, _jsEntityInstances) {
             var _this = this;
+            this.$window = $window;
             this.$q = $q;
             this.$http = $http;
             this.$timeout = $timeout;
@@ -19,15 +20,68 @@ var ngSlatwall;
             this.formService = formService;
             this._config = _config;
             this._jsEntities = _jsEntities;
+            this._jsEntityInstances = _jsEntityInstances;
             this._resourceBundle = {};
+            this._resourceBundleLastModified = '';
             this._loadingResourceBundle = false;
             this._loadedResourceBundle = false;
             this._deferred = {};
+            this.buildUrl = function (action, queryString) {
+                //actionName example: slatAction. defined in FW1 and populated to config
+                var actionName = _this.getConfigValue('action');
+                var baseUrl = _this.getConfigValue('baseURL');
+                queryString = queryString || '';
+                if (angular.isDefined(queryString) && queryString.length) {
+                    if (queryString.indexOf('&') !== 0) {
+                        queryString = '&' + queryString;
+                    }
+                }
+                return baseUrl + '?' + actionName + '=' + action + queryString;
+            };
             this.getJsEntities = function () {
                 return _this._jsEntities;
             };
             this.setJsEntities = function (jsEntities) {
                 _this._jsEntities = jsEntities;
+            };
+            this.getJsEntityInstances = function () {
+                return _this._jsEntityInstances;
+            };
+            this.setJsEntityInstances = function (jsEntityInstances) {
+                _this._jsEntityInstances = jsEntityInstances;
+            };
+            this.getEntityExample = function (entityName) {
+                return _this._jsEntityInstances[entityName];
+            };
+            this.getEntityMetaData = function (entityName) {
+                return _this._jsEntityInstances[entityName].metaData;
+            };
+            this.getPropertyByEntityNameAndPropertyName = function (entityName, propertyName) {
+                return _this.getEntityMetaData(entityName)[propertyName];
+            };
+            this.getPrimaryIDPropertyNameByEntityName = function (entityName) {
+                return _this.getEntityMetaData(entityName).$$getIDName();
+            };
+            this.getEntityHasPropertyByEntityName = function (entityName, propertyName) {
+                return angular.isDefined(_this.getEntityMetaData(entityName)[propertyName]);
+            };
+            this.getPropertyIsObjectByEntityNameAndPropertyIdentifier = function (entityName, propertyIdentifier) {
+                var lastEntity = _this.getLastEntityNameInPropertyIdentifier(entityName, propertyIdentifier);
+                var entityMetaData = _this.getEntityMetaData(lastEntity);
+                return angular.isDefined(entityMetaData[_this.utilityService.listLast(propertyIdentifier, '.')].cfc);
+            };
+            this.getLastEntityNameInPropertyIdentifier = function (entityName, propertyIdentifier) {
+                if (propertyIdentifier.split('.').length > 1) {
+                    var propertiesStruct = _this.getEntityMetaData(entityName);
+                    if (!propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')]
+                        || !propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc) {
+                        throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
+                    }
+                    var currentEntityName = _this.utilityService.listLast(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
+                    var currentPropertyIdentifier = _this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (_this.utilityService.listFirst(propertyIdentifier, '._').length));
+                    return _this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
+                }
+                return entityName;
             };
             //service method used to transform collection data to collection objects based on a collectionconfig
             this.populateCollection = function (collectionData, collectionConfig) {
@@ -107,6 +161,9 @@ var ngSlatwall;
                  * getEntity('Product', {keywords='Hello'});
                  *
                  */
+                if (angular.isUndefined(options)) {
+                    options = {};
+                }
                 if (angular.isDefined(options.deferKey)) {
                     _this.cancelPromise(options.deferKey);
                 }
@@ -122,6 +179,7 @@ var ngSlatwall;
                     params.filterGroupsConfig = options.filterGroupsConfig || '';
                     params.joinsConfig = options.joinsConfig || '';
                     params.orderByConfig = options.orderByConfig || '';
+                    params.groupBysConfig = options.groupBysConfig || '';
                     params.isDistinct = options.isDistinct || false;
                     params.propertyIdentifiersList = options.propertyIdentifiersList || '';
                     params.allRecords = options.allRecords || '';
@@ -134,7 +192,6 @@ var ngSlatwall;
                     urlString += '&entityId=' + options.id;
                 }
                 /*var transformRequest = (data) => {
-                    console.log(data);
                                             
                     return data;
                 };
@@ -338,12 +395,11 @@ var ngSlatwall;
                 if (_this._resourceBundle[locale]) {
                     return _this._resourceBundle[locale];
                 }
-                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.getConfig().instantiationKey;
-                //var urlString = this.getConfig().baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+this.getConfig().instantiationKey;
-                var params = {
-                    locale: locale
-                };
-                $http.get(urlString, { params: params }).success(function (response) {
+                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.getConfig().instantiationKey + '&locale=' + locale;
+                $http({
+                    url: urlString,
+                    method: "GET"
+                }).success(function (response, status, headersGetter) {
                     _this._resourceBundle[locale] = response.data;
                     deferred.resolve(response);
                 }).error(function (response) {
@@ -387,7 +443,7 @@ var ngSlatwall;
                         var keyValue = "";
                         for (var i = 0; i < keyListArray.length; i++) {
                             var keyValue = _this.getRBKey(keyListArray[i], locale, keyValue);
-                            ////$log.debug('keyvalue:'+keyValue);
+                            //$log.debug('keyvalue:'+keyValue);
                             if (keyValue.slice(-8) != "_missing") {
                                 break;
                             }
@@ -454,6 +510,7 @@ var ngSlatwall;
             this.setConfig = function (config) {
                 _this._config = config;
             };
+            this.$window = $window;
             this.$q = $q;
             this.$http = $http;
             this.$timeout = $timeout;
@@ -465,8 +522,9 @@ var ngSlatwall;
             this.formService = formService;
             this._config = _config;
             this._jsEntities = _jsEntities;
+            this._jsEntityInstances = _jsEntityInstances;
         }
-        SlatwallService.$inject = ['$q', '$http', '$timeout', '$log', '$rootScope', '$location', '$anchorScroll', 'utilityService', 'formService'];
+        SlatwallService.$inject = ['$window', '$q', '$http', '$timeout', '$log', '$rootScope', '$location', '$anchorScroll', 'utilityService', 'formService'];
         return SlatwallService;
     })();
     ngSlatwall.SlatwallService = SlatwallService;
@@ -499,12 +557,11 @@ var ngSlatwall;
                 debugFlag: true,
                 instantiationKey: '84552B2D-A049-4460-55F23F30FE7B26AD'
             };
-            console.log('config');
-            console.log(this._config);
             if (slatwallAngular.slatwallConfig) {
                 angular.extend(this._config, slatwallAngular.slatwallConfig);
             }
             this.$get.$inject = [
+                '$window',
                 '$q',
                 '$http',
                 '$timeout',
@@ -516,8 +573,8 @@ var ngSlatwall;
                 'formService'
             ];
         }
-        $Slatwall.prototype.$get = function ($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService) {
-            return new SlatwallService($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities);
+        $Slatwall.prototype.$get = function ($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService) {
+            return new SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities);
         };
         return $Slatwall;
     })();

@@ -15,6 +15,9 @@ var slatwalladmin;
                 }
                 this._selection[selectionid].push(selection);
             };
+            this.setSelection = (seleciontid, selections) => {
+                this._selection[selectionid] = selections;
+            };
             this.removeSelection = (selectionid, selection) => {
                 if (angular.isUndefined(this._selection[selectionid])) {
                     this._selection[selectionid] = [];

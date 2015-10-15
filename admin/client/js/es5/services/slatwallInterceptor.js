@@ -3,8 +3,9 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     var SlatwallInterceptor = (function () {
-        function SlatwallInterceptor($window, $q, $log, $injector, alertService, baseURL, dialogService) {
+        function SlatwallInterceptor($location, $window, $q, $log, $injector, alertService, baseURL, dialogService, utilityService) {
             var _this = this;
+            this.$location = $location;
             this.$window = $window;
             this.$q = $q;
             this.$log = $log;
@@ -12,16 +13,29 @@ var slatwalladmin;
             this.alertService = alertService;
             this.baseURL = baseURL;
             this.dialogService = dialogService;
+            this.utilityService = utilityService;
             this.urlParam = null;
             this.authHeader = 'Authorization';
             this.authPrefix = 'Bearer ';
             this.request = function (config) {
                 _this.$log.debug('request');
-                if (config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1) {
-                    config.headers = config.headers || {};
-                    if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
-                        config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
-                    }
+                //bypass interceptor rules when checking template cache
+                if (config.url.charAt(0) !== '/') {
+                    return config;
+                }
+                if (config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+                    //all partials are bound to instantiation key
+                    config.url = config.url + '?instantiationKey=' + $.slatwall.getConfig().instantiationKey;
+                    return config;
+                }
+                config.cache = true;
+                config.headers = config.headers || {};
+                if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
+                    config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+                }
+                var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
+                if (config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')) {
+                    _this.$log.debug(config);
                     config.method = 'POST';
                     config.data = {};
                     var data = {};
@@ -34,10 +48,6 @@ var slatwalladmin;
                     config.data = $.param(params);
                     delete config.params;
                     config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                }
-                else if (config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
-                    //all partials are bound to instantiation key
-                    config.url = config.url + '?instantiationKey=' + $.slatwall.getConfig().instantiationKey;
                 }
                 return config;
             };
@@ -93,6 +103,7 @@ var slatwalladmin;
                 }
                 return rejection;
             };
+            this.$location = $location;
             this.$window = $window;
             this.$q = $q;
             this.$log = $log;
@@ -100,11 +111,12 @@ var slatwalladmin;
             this.alertService = alertService;
             this.baseURL = baseURL;
             this.dialogService = dialogService;
+            this.utilityService = utilityService;
         }
-        SlatwallInterceptor.Factory = function ($window, $q, $log, $injector, alertService, baseURL, dialogService) {
-            return new SlatwallInterceptor($window, $q, $log, $injector, alertService, baseURL, dialogService);
+        SlatwallInterceptor.Factory = function ($location, $window, $q, $log, $injector, alertService, baseURL, dialogService, utilityService) {
+            return new SlatwallInterceptor($location, $window, $q, $log, $injector, alertService, baseURL, dialogService, utilityService);
         };
-        SlatwallInterceptor.$inject = ['$window', '$q', '$log', '$injector', 'alertService', 'baseURL', 'dialogService'];
+        SlatwallInterceptor.$inject = ['$location', '$window', '$q', '$log', '$injector', 'alertService', 'baseURL', 'dialogService', 'utilityService'];
         return SlatwallInterceptor;
     })();
     slatwalladmin.SlatwallInterceptor = SlatwallInterceptor;
