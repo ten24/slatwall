@@ -120,6 +120,18 @@
 
 /// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
 
+/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardbalance.ts" />
+
+/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcarddetail.ts" />
+
+/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardhistory.ts" />
+
+/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardorderinfo.ts" />
+
+/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardoverview.ts" />
+
+/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardrecipientinfo.ts" />
+
 /// <reference path="../../admin/client/ts/directives/common/swactioncaller.ts" />
 
 /// <reference path="../../admin/client/ts/directives/common/swactioncallerdropdown.ts" />
@@ -175,18 +187,6 @@
 /// <reference path="../../admin/client/ts/directives/common/swsortable.ts" />
 
 /// <reference path="../../admin/client/ts/directives/giftrecipient/sworderitemgiftrecipientrow.ts" />
-
-/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardbalance.ts" />
-
-/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcarddetail.ts" />
-
-/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardhistory.ts" />
-
-/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardorderinfo.ts" />
-
-/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardoverview.ts" />
-
-/// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardrecipientinfo.ts" />
 
 /// <reference path="../../admin/client/ts/directives/orderitem/swchildorderitem.ts" />
 
