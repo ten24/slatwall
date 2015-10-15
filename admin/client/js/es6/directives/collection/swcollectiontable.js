@@ -15,9 +15,14 @@ angular.module('slatwalladmin')
             scope: {
                 collection: "=",
                 collectionConfig: "=",
-                isRadio: "="
+                isRadio: "=",
+                //angularLink:true || false
+                angularLinks: "="
             },
             link: function (scope, element, attrs) {
+                if (angular.isUndefined(scope.angularLinks)) {
+                    scope.angularLinks = false;
+                }
                 scope.collectionObject = $slatwall['new' + scope.collection.collectionObject]();
                 var escapeRegExp = function (str) {
                     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");

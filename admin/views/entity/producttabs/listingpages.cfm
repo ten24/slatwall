@@ -57,8 +57,20 @@ Notes:
 <cfloop array="#selectedListingDisplays#" index="lp">
 	<cfset selectedListingPageIDs = listAppend(selectedListingPageIDs, lp.getPrimaryIDValue()) />
 </cfloop>
-
-<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
+<cfoutput>
+	<sw-listing-display
+		ng-if="$root.loadedResourceBundle"	
+		data-collection="'Content'"
+		data-multiselect-field-name="listingPages"
+		data-multiselect-values="#selectedListingPageIDs#"
+		data-edit="#rc.edit#"
+	>
+		<sw-listing-column data-property-identifier="site.siteName" />
+		<sw-listing-column data-property-identifier="title" tdclass="primary" />
+	</sw-listing-display>
+</cfoutput>
+<!--- deprecating previous listing display --->
+<!---<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
 	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
 	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-</hb:HibachiListingDisplay>
+</hb:HibachiListingDisplay>--->

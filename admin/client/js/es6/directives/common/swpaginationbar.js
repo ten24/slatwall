@@ -5,6 +5,9 @@ var slatwalladmin;
     'use strict';
     class SWPaginationBarController {
         constructor() {
+            if (angular.isUndefined(this.paginator)) {
+                this.paginator = slatwalladmin.PaginationService.createPagination();
+            }
         }
     }
     slatwalladmin.SWPaginationBarController = SWPaginationBarController;

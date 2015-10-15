@@ -43,8 +43,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		arguments.rc.apiRequest = true;
 		
 		getFW().setView("public:main.blank");
-		param name="rc.headers.contentType" default="application/json"; 
-		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
+		arguments.rc.headers["Content-Type"] = "application/json";
 		
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
@@ -315,22 +314,15 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function getResourceBundle(required struct rc){
-		var dtExpires = (Now() + 60);
- 
- 		var strExpires = GetHTTPTimeString( dtExpires );
- 
-		getPageContext().getResponse().setHeader('expires',strExpires);
-		
 		var resourceBundle = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
 		var data = {};
-		
-		getPageContext().getResponse().setHeader('expires', GetHTTPTimeString( now() + 60 ));
+		//cache RB for 1 day or until a reload
 		//lcase all the resourceBundle keys so we can have consistent casing for the js
 		for(var key in resourceBundle){
 			data[lcase(key)] = resourceBundle[key];
 		}
-		
 		arguments.rc.apiResponse.content['data'] = data;
+		arguments.rc.headers['Expires'] = 900;
 	}
 	
 	public any function getPropertyDisplayOptions(required struct rc){
@@ -415,6 +407,11 @@ component output="false" accessors="true" extends="HibachiController" {
 				orderByConfig = arguments.rc['orderByConfig'];
 			}
 			
+			var groupBysConfig = "";
+			if(structKeyExists(arguments.rc,'groupBysConfig')){
+				groupBysConfig = arguments.rc['groupBysConfig'];
+			}
+			
 			var propertyIdentifiersList = "";
 			if(structKeyExists(arguments.rc,"propertyIdentifiersList")){
 				propertyIdentifiersList = arguments.rc['propertyIdentifiersList'];
@@ -455,6 +452,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				isDistinct=isDistinct,
 				columnsConfig=columnsConfig,
 				orderByConfig=orderByConfig,
+				groupBysConfig=groupBysConfig,
 				allRecords=allRecords,
 				defaultColumns=defaultColumns,
 				processContext=processContext
