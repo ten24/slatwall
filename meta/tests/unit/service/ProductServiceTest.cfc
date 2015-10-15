@@ -67,9 +67,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(arrayLen(product.getSkus()),1);
 	}
 
-	public void function createGiftCardProduct(){
+	public void function createGiftCardProduct_sameAsPrice(){
 
-		//CASE1: Same As Price
 		var productData = {
 			productID="",
 			productName="unitTestProductSameAsPrice" & createUUID(),
@@ -89,7 +88,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
 		assertEquals(product.getDefaultSku().getGiftCardRedemptionAmount(),20);
 
-		//CASE2: Fixed Price
+	}
+
+	public void function createGiftCardProduct_fixedAmount(){
 		var someMoreProductData = {
 			productID="",
 			productName="unitTestProduct2FixedAmount" & createUUID(),
@@ -108,14 +109,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		assertEquals(anotherProduct.getDefaultSku().getRedemptionAmountType(),'fixedAmount');
 		assertEquals(anotherProduct.getDefaultSku().getGiftCardRedemptionAmount(),10);
+	}
 
-		//CASE3: Percentage
+	public void function createGiftCardProduct_percentage(){
 		var evenMoreProductData = {
 			productID="",
 			productName="unitTestProduct3Percentage" & createUUID(),
 			productCode="unitTestProductCode3Percentage" & createUUID()
 		};
-		var yetAnotherProduct = createTestEntity('product',someMoreProductData);
+		var yetAnotherProduct = createTestEntity('product',evenMoreProductData);
 		var yetAnotherProcessObject = yetAnotherProduct.getProcessObject('create');
 
 		yetAnotherProcessObject.setPrice(20);
