@@ -54,4 +54,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swListingColumn', [function () { return new SWListingColumn(); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swlistingcolumn.js.map
+//# sourceMappingURL=swlistingcolumn.js.map
