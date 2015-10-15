@@ -130,4 +130,4 @@ angular.module('slatwalladmin').controller('globalSearch', [
     }
 ]);
 
-//# sourceMappingURL=../controllers/globalsearch.js.map
+//# sourceMappingURL=globalsearch.js.map

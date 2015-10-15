@@ -128,4 +128,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldselect.js.map
+//# sourceMappingURL=swformfieldselect.js.map

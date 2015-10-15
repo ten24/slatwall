@@ -224,4 +224,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swActionCaller', [() => new SWActionCaller()]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swactioncaller.js.map
+//# sourceMappingURL=swactioncaller.js.map
