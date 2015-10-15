@@ -20,8 +20,8 @@
 	<cfproperty name="orderByType" />
 	<cfproperty name="reportDateTimeDefinitions" />
 	<cfproperty name="reportType" />
-	<cfproperty name="limitResults" default="0" />
-	<cfproperty name="showReport" default="false" />
+	<cfproperty name="limitResults" />
+	<cfproperty name="showReport" />
 
 	<!--- Metric / Dimension States --->
 	<cfproperty name="metrics" />
@@ -45,6 +45,20 @@
 
 	<!--- Currency Code --->
 	<cfproperty name="currencyCode" />
+
+	<cffunction name="getLimitResults" access="public" output="false">
+		<cfif not structKeyExists(variables, "limitResults")>
+			<cfset variables.limitResults = 0 />
+		</cfif>
+		<cfreturn variables.limitResults />
+	</cffunction>
+
+	<cffunction name="getShowReport" access="public" output="false">
+		<cfif not structKeyExists(variables, "showReport")>
+			<cfset variables.showReport = false />
+		</cfif>
+		<cfreturn variables.showReport />
+	</cffunction>
 
 	<cffunction name="getCurrentPage" access="public" output="false">
 		 <cfif not structKeyExists(variables, "currentPage")>
