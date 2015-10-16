@@ -98,7 +98,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			productBundleConstructor();
 		}
 
-		$scope.saveProductBundle = (saveAndNew, closeDialogIndex) =>{
+		$scope.saveProductBundle = (closeDialogIndex, saveAndNew) =>{
 			$scope.newSaving = true;
 			$log.debug($scope.newSaving);
             $scope.dIndex = closeDialogIndex;
