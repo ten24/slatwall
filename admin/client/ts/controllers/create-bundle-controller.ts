@@ -43,7 +43,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		var productID = getParameterByName('productID');
 		
 		var productBundleConstructor = () =>{ 
-			console.log("constructing")
+
 			$log.debug($scope);
 		
 			if(angular.isDefined($scope.product)){
