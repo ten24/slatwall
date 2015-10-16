@@ -487,14 +487,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				// Loop over the properties in the example entity to 
 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
 					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
-						smartList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
+						smartList.addFilter("#exampleEntity.getProperties()[i].name#.id", getPrimaryIDValue());
 					}
 				}
 				
 			// Otherwise add a where clause for many to many
 			} else if (getPropertyMetaData( arguments.propertyName ).fieldtype == "many-to-many") {
-				
-				smartList.addWhereCondition("EXISTS (SELECT r FROM #getEntityName()# t INNER JOIN t.#getPropertyMetaData( arguments.propertyName ).name# r WHERE r.#exampleEntity.getPrimaryIDPropertyName()# = a#lcase(exampleEntity.getEntityName())#.#exampleEntity.getPrimaryIDPropertyName()# AND t.#getPrimaryIDPropertyName()# = '#getPrimaryIDValue()#')");
+
+				smartList.addWhereCondition("EXISTS (SELECT r FROM #getEntityName()# t INNER JOIN t.#getPropertyMetaData( arguments.propertyName ).name# r WHERE r.id = a#lcase(exampleEntity.getEntityName())#.id AND t.id = '#getPrimaryIDValue()#')");
 				
 			}
 			
