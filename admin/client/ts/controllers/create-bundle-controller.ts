@@ -26,7 +26,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 	){
 		$scope.partialsPath = partialsPath;
 		
-		function getParameterByName(name) {
+		var getParameterByName = (name) =>{
 		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
 		    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
 		        results = regex.exec(location.search);
@@ -42,14 +42,12 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		
 		var productID = getParameterByName('productID');
 		
-		var productBundleConstructor = function(){ 
-			
-			
-			
+		var productBundleConstructor = () =>{ 
+			console.log("constructing")
+			$log.debug($scope);
+		
 			if(angular.isDefined($scope.product)){
-				console.log("killing it softly")
-				console.log($scope.product.data.skus[0].data.productBundleGroups);
-				
+			
 				for(var form in $scope.product.forms){
 					formService.resetForm($scope.product.forms[form]);
 				}
@@ -65,22 +63,14 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 						formService.resetForm( $scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms[form]);
 					}
 				}
-				
-				if(angular.isDefined($scope.productBundleGroup)){
-					for(var form in $scope.productBundleGroup.forms){
-						formService.resetForm($scope.productBundleGroup.forms[form]);
-					}
-				}
 			}
 			
 			$scope.product = $slatwall.newProduct();
-			
 			var brand = $slatwall.newBrand();
 			var productType = $slatwall.newProductType();
 			$scope.product.$$setBrand(brand);
 			$scope.product.$$setProductType(productType);
 			$scope.product.$$addSku();
-			
 			$scope.product.data.skus[0].data.productBundleGroups = [];
 		};
 		
@@ -108,18 +98,19 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			productBundleConstructor();
 		}
 
-		$scope.saveProductBundle = function(closeDialogIndex){
+		$scope.saveProductBundle = (saveAndNew, closeDialogIndex) =>{
 			$scope.newSaving = true;
 			$log.debug($scope.newSaving);
             $scope.dIndex = closeDialogIndex;
 			$scope.product.$$save().then(function(){
 				$log.debug("Turn off the loader after saving.");
 				$scope.newSaving = false;
-				productBundleConstructor();
-                 if(angular.isDefined($scope.dIndex)){
-                    $scope.closeSaving = true;
-                    $rootScope.closePageDialog($scope.dIndex);
-                 }  
+				$scope.closeSaving = true;
+				$rootScope.closePageDialog($scope.dIndex);
+				
+				if(saveAndNew){
+					$rootScope.openPageDialog( 'productbundle/createproductbundle' )		 
+				}
 			});
              
 			

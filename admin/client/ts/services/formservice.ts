@@ -92,6 +92,7 @@ module slatwalladmin{
             
             this.$log.debug('resetting form');
             this.$log.debug(form); 
+            
             for(var key in form){            
                 if(angular.isDefined(form[key]) 
                     && typeof form[key].$setViewValue == 'function' 
@@ -110,6 +111,7 @@ module slatwalladmin{
             
             form.$submitted = false;
             form.$setPristine();
+            form.$setUntouched(); 
         }
     }  
     angular.module('slatwalladmin')
