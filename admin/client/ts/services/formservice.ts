@@ -99,20 +99,20 @@ module slatwalladmin{
         }
         
         resetForm = (form:Form):void =>{
+            
             this.$log.debug('resetting form');
-            this.$log.debug(form);
-            for(var key in form){
-                this.$log.debug(key);
-                                
-                if(angular.isDefined(form[key]) && typeof form[key].$setViewValue == 'function'){
-                    this.$log.debug(form[key]);
+            
+            for(var key in form){            
+                if(angular.isDefined(form[key]) 
+                    && typeof form[key].$setViewValue == 'function' 
+                    && angular.isDefined(form[key].$viewValue)){
+                       
                     if(angular.isDefined(this.getPristinePropertyValue(key))){
                         form[key].$setViewValue(this.getPristinePropertyValue(key));
                     }else{
                         form[key].$setViewValue('');
                     }
                     form[key].$render();
-                    
                 }
             }
             
