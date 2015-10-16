@@ -1495,6 +1495,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
+			
+			//update the calculated properties
+			arguments.order.updateCalculatedProperties(true);
+			
 		}
 		return arguments.order;
 	}
@@ -2398,8 +2402,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Recalculate the order amounts
 			this.processOrder( order, {}, 'updateOrderAmounts' );
-			order.updateCalculatedProperties();
-			
 			getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
 			getHibachiEventService().announceEvent("afterOrderItemDeleteSuccess", arguments);
 			
