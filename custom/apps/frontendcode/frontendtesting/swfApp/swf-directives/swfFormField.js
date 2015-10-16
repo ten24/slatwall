@@ -31,10 +31,10 @@
  
  */
 
-angular.module('frontEndApplication')
+angular.module('slatwall')
 .directive('swfFormField', [
-'$log','$templateCache','$window','$slatwall','partialsPath',
-	function($log, $templateCache, $window, $slatwall, partialsPath){ 
+'$log','$templateCache','$window',
+	function($log, $templateCache, $window){ 
 		return {
 			restrict: 'E',
 			scope:{
@@ -49,7 +49,7 @@ angular.module('frontEndApplication')
 				doProcess: "@?"
 			},
 			transclude: true,
-			templateUrl:partialsPath+'/frontend/swfFormFieldPartial.html',
+			templateUrl:'custom/apps/frontendcode/frontendtesting/swfApp/swf-directive-partials/swfFormFieldPartial.html',
 			link: function(scope, element, attrs){
 				/** set defaults */
 				scope.valueObjectProperty = attrs.valueObjectProperty;

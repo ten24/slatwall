@@ -2,12 +2,11 @@
  * This directive will create a form logging in a user.
  * 
  */
-angular.module('frontEndApplication').directive('swfForm', [
-        '$slatwall',
+angular.module('slatwall').directive('swfForm', [
         'ProcessObject',
         '$compile', 
         '$templateCache', 
-        function($slatwall, ProcessObject, $compile, $templateCache) {
+        function(ProcessObject, $compile, $templateCache) {
              var getTemplate = function(scope, data) {
                     
                     var template = "";

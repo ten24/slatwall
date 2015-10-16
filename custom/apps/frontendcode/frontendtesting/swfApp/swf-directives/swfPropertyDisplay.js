@@ -1,4 +1,4 @@
-angular.module('frontEndApplication')
+angular.module('slatwall')
 .directive('swfPropertyDisplay', [
 '$log',
 'partialsPath',

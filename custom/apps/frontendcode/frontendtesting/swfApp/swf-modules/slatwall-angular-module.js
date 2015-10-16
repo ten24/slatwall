@@ -1,4 +1,4 @@
-angular.module('frontEndApplication', ['ngSlatwall', 'ngSlatwallModel', '$resource'])
+angular.module('slatwall', ['ngResource'])
 .run(function() {
    //nothing here yet.
 

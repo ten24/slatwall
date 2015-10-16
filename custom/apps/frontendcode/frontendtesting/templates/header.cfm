@@ -3,16 +3,19 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
 	<script src="/custom/apps/frontendcode/frontendtesting/swfApp/angular.min.js"></script>
 	<script src="/client/lib/angular/angular-resource.min.js"></script>
-	<script src="/admin/client/js/es5/services/utilityService.js"></script>
-	<script src="/admin/client/js/es5/modules/ngslatwall.js"></script>
-	<script src="/admin/client/js/es5/modules/ngslatwallmodel.js"></script>
-    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/sw-modules/frontendmodule.js"></script>
-    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/sw-services/cartService.js"></script>
-    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/sw-services/accountService.js"></script>
-    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/sw-services/processObjectService.js"></script>
-    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/sw-controllers/frontend-controller.js"></script>
-	<script src="/admin/client/js/es5/modules/loggingmodule.js"></script>
-<html lang="en" ng-app="frontEndApplication">
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-modules/slatwall-angular-module.js"></script>
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-controllers/slatwall.js"></script>
+    
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfForm.js"></script>
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfFormField.js"></script>
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfPropertyDisplay.js"></script>
+    
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-controllers/slatwall.js"></script>
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/cartService.js"></script>
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/accountService.js"></script>
+    <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/processObjectService.js"></script>
+	<!---<script src="/admin/client/js/es5/modules/loggingmodule.js"></script>--->
+<html lang="en" ng-app="slatwall">
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -34,17 +37,7 @@
 <header>
 	<div class="container"></div>
 </header>
-<script type="text/javascript">
-var slatwallAngular = {};
-slatwallAngular.slatwallConfig = $.slatwall.getConfig();
-<cfif !isnull(rc.ng)>
-    slatwallAngular.hashbang = true;
-</cfif>
-slatwallAngular.constantPaths = [];
-<cfloop collection="#$.slatwall.getService('hibachiService').getEntitiesMetaData()#" item="local.entityName">
-    slatwallAngular.constantPaths.push('#local.entityName#');
-</cfloop>
-</script>
+
 <div class="container"> 
 	<!--- body_container start --->
   

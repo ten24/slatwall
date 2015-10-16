@@ -1,7 +1,7 @@
 <cfoutput>
 <cfinclude template="header.cfm" >
 <div>
-  <div ng-controller="frontEndController as frontEndCtrl">
+  <div ng-controller="slatwall">
     <section>
         <div>           
             <div class="container" >
@@ -143,6 +143,21 @@
             </div>
         </div>
     </section>
+
+<form slatwall-submit="login">
+
+    Email: <input type="text" name="emailAddress" ng-model="slatwall.processObjects.login.emailAddress" />
+    <span class="error" ng-repeat="error in slatwall.processObjects.login.errors.emaillAddress" ng-bind="error"></span>
+        
+    Password: <input type="password" name="password" ng-model="slatwall.processObjects.login.password" />
+    <span class="error" ng-repeat="error in slatwall.processObjects.login.errors.password" ng-bind="error"></span>
+
+    <button type="submit">Login</button>
+    
+</form>
+
+
+
   </div>
 </div>
 </cfoutput>
