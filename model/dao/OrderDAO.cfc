@@ -171,10 +171,12 @@ Notes:
 		<cfreturn total />
 	</cffunction>
 
-	<cffunction name="getGiftCardOrderItems" access="public" returntype="query" output="false">
+	<cffunction name="getGiftCardOrderItems" access="public" returntype="array" output="false">
 		<cfargument name="orderID" type="string" required="true">
 
-		<cfquery name="local.giftCardOrderItems">
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
 			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem AS oi
     		LEFT JOIN SwSku AS s ON s.skuID = oi.skuID
     		LEFT JOIN SwProduct AS p ON s.productID = p.productID
@@ -182,7 +184,14 @@ Notes:
     		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 
-		<cfreturn local.giftCardOrderItems />
+
+		<cfset var giftCardOrderItems = ArrayNew(1) />
+
+		<cfloop query="rs">
+			<cfset arrayAppend(giftCardOrderItems, getService("orderService").getOrderItem(orderItemID)) />
+		</cfloop>
+
+		<cfreturn giftCardOrderItems />
 
 	</cffunction>
 

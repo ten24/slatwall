@@ -315,24 +315,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
 
-                                                     
-    //alias method for validation 
+
+    //alias method for validation
     public boolean function canCancel(){
-          return !hasGiftCardOrderItems();                                            
+          return !hasGiftCardOrderItems();
     }
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 
-		var orderItemIDs = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
+		var giftCardOrderItems = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
 
-		if(orderItemID EQ "" AND orderItemIDs.RecordCount GT 0){
-
+		if(orderItemID EQ "" AND ArrayLen(giftCardOrderItems) GT 0){
 			return true;
-
 		} else if (orderItemID NEQ ""){
 
-			for(row in orderItemIDs){
-				if(row.orderItemID EQ arguments.orderItemID){
+			for(var item in giftCardOrderItems){
+				if(item.getOrderItemID() EQ arguments.orderItemID){
 					return true;
 				}
 			}
@@ -343,26 +341,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public array function getGiftCardOrderItems() {
-
-		var orderItemIDs = getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
-		var giftCardOrderItems = [];
-        
-		for(row in orderItemIDs){
-				arrayAppend(giftCardOrderItems, getService('HibachiService').get('orderItem', row.orderItemID));
-		}
-        
-		return giftCardOrderItems;
+		return getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
 	}
 
 	public numeric function getGiftCardPaymentAmount(){
 		return getDAO('OrderDAO').getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
-                                                     
-    public any function getAllOrderItemGiftRecipientsSmartList(){ 
-        var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList(); 
+
+    public any function getAllOrderItemGiftRecipientsSmartList(){
+        var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList();
         orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
-        orderItemGiftRecipientSmartList.addWhereCondition("aslatwallorderitem.order.orderID='#this.getOrderID()#'"); 
-        return orderItemGiftRecipientSmartList; 
+        orderItemGiftRecipientSmartList.addWhereCondition("aslatwallorderitem.order.orderID='#this.getOrderID()#'");
+        return orderItemGiftRecipientSmartList;
     }
 
 	public void function checkNewBillingAccountAddressSave() {
@@ -670,7 +660,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				}
 			}
 		}
-    
+
 		return totalPayments;
 	}
 
@@ -1239,7 +1229,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			return false;
 		}
 	}
-	
+
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
