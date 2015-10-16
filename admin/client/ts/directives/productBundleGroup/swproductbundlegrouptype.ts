@@ -56,29 +56,6 @@ angular.module('slatwalladmin')
 				};
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
-				
-				
-				$scope.filterGroupsConfig = [
-												{
-													"filterGroup": [
-														{
-															"propertyIdentifier": "_type.parentType.systemCode",
-															"comparisonOperator": "=",
-															"conditionDisplay": "Equals",
-															"ormtype": "string",
-															"value": "productBundleGroupType"
-														},
-														{
-															"logicalOperator": "AND",
-															"propertyIdentifier": "_type.typeName",
-															"comparisonOperator": "like",
-															"ormtype": "string",
-															"value": "%replaceWithSearchString%"
-														}
-													]
-												}
-											];
-				
 				/**
 				 * Handles looking up the keyword and populating the dropdown as a user types.
 				 */
@@ -124,14 +101,18 @@ angular.module('slatwalladmin')
 				/**
 				 * Handles user selection of the dropdown.
 				 */
-				$scope.selectProductBundleGroupType = function (item) {
-				   
-					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,item);
+				$scope.selectProductBundleGroupType = function ($item, $model, $label) {
+					console.log("Selecting");
+				    $scope.$item = $item;
+				    $scope.$model = $model;
+				    $scope.$label = $label;
+				    
+					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
 					var parentType = $slatwall.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					$scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
 				    $scope.showAddProductBundleGroupTypeBtn = false;
-				};
+				    	};
 				
 				/**
 				 * Closes the add screen
@@ -158,8 +139,8 @@ angular.module('slatwalladmin')
 						var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
 						promise.then(function(response){
 							//Calls close function
-							if (promise.$$state.status === 1){
-								$scope.closeAddScreen();
+							if (promise.valid){
+							$scope.closeAddScreen();
 							}
 						});
 					
