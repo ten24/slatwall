@@ -26,9 +26,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var publicService = getService('PublicService');
 	    if (structKeyExists(arguments.rc, "context") && arguments.rc.context == "getProcessObjectDefinition"){
             publicService.getProcessObjectDefinition(rc);
-        }else if ( structKeyExists(arguments.rc, "context") ){
-			publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
-		}else{
+        }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getCart"){
+			publicService.invokeMethod("getCartData", {rc=arguments.rc});
+		}else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getAccount"){
+            publicService.invokeMethod("getAccountData", {rc=arguments.rc});
+        }else{
 			publicService.invokeMethod("getPublicContexts", {rc=arguments.rc});
 		}
 	}

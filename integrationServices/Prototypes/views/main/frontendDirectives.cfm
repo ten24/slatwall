@@ -87,7 +87,9 @@
     <div>           
         <div class="container"> 
             <h2>Create Account:</h2>
-            <swf:form entity-name="Account" process-object="create"></swf:process>
+            <swf:form entity-name="Account" process-object="create">
+            	
+            </swf:process>
         </div>
     </div>
 </section>
