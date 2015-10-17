@@ -705,7 +705,7 @@
 				<cfset variables.chartData["series"][1]["data"] = [] />
 				<cfset xAxisData["opposite"] = true />
 				<cfset xAxisData["type"] = "category">
-				<cfloop query="#chartDataQuery#">
+				<cfloop query="chartDataQuery">
 					<cfset var data = [] />
 					<cfset arrayAppend(data, evaluate("chartDataQuery.#dimensionDefinition.alias#"))>
 					<cfset arrayAppend(data, evaluate("chartDataQuery.#dimensionDefinition.alias#Total"))>
