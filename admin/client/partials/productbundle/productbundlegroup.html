@@ -228,7 +228,7 @@
 											placeholder="Search {{swProductBundleGroup.searchOptions.selected.name}} ..."
 											type="text"
 											ng-model="swProductBundleGroup.productBundleGroupFilters.keyword"
-											ng-change="swProductBundleGroup.productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected); swProductBundleGroup.resetCurrentCount();"
+											ng-change="swProductBundleGroup.getFiltersByTerm(swProductBundleGroup.productBundleGroupFilters.keyword,swProductBundleGroup.searchOptions.selected); swProductBundleGroup.resetCurrentCount();"
 											>
 									</div>
 									<!-- Options items -->
@@ -241,7 +241,7 @@
 											</h4>
 											<!-- Selected filters -->
 											<div class="s-bundle-add-items s-workflow-objs">
-												<div class="spinner" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
+												<div class="spinner" ng-show="swProductBundleGroup.loading"><i class="fa fa-refresh fa-spin"></i></div>
 												<ul class="list-unstyled s-order-item-options s-negative-obj"
 													ng-show="swProductBundleGroup.productBundleGroupFilters.value.length">
 													<li class="s-bundle-add-obj" ng-repeat="filterItem in swProductBundleGroup.productBundleGroupFilters.value track by $index">
@@ -263,8 +263,8 @@
 											</div>
 											<!-- //Selected filters -->
 											<!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
-											<div class="s-load-more" ng-click="swProductBundleGroup.increaseCurrentCount(); swProductBundleGroup.productBundleGroupFilters.getFiltersByTerm(swProductBundleGroup.productBundleGroupFilters.keyword,searchOptions.selected);">
-												<button class="{'btn s-btn-dgrey btn-sm disabled' : loading === true, 'btn s-btn-dgrey btn-sm' : loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="loading"></i><span ng-if="!showAll">(Showing {{swProductBundleGroup.pageRecordsStart}} to {{swProductBundleGroup.pageRecordsEnd}} of {{swProductBundleGroup.recordsCount}})</span></button>
+											<div class="s-load-more" ng-click="swProductBundleGroup.increaseCurrentCount(); swProductBundleGroup.getFiltersByTerm(swProductBundleGroup.productBundleGroupFilters.keyword,swProductBundleGroup.searchOptions.selected);">
+												<button class="{'btn s-btn-dgrey btn-sm disabled' : swProductBundleGroup.loading === true, 'btn s-btn-dgrey btn-sm' : swProductBundleGroup.loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="swProductBundleGroup.loading"></i><span ng-if="!swProductBundleGroup.showAll">(Showing {{swProductBundleGroup.pageRecordsStart}} to {{swProductBundleGroup.pageRecordsEnd}} of {{swProductBundleGroup.recordsCount}})</span></button>
 											</div>
 											<!-- //Load more button -->
 										</div>
@@ -286,7 +286,7 @@
 													data-collection-config="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig"
 													data-filter-group="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0]"
 													data-filter-group-item="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
-													data-filter-properties-list="filterPropertiesList"
+													data-filter-properties-list="swProductBundleGroup.filterPropertiesList"
 													data-save-collection="swProductBundleGroup.productBundleGroup.$$save();getCollection();"
 													>
 												</ul>

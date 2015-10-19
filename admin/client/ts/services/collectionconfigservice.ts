@@ -128,7 +128,7 @@ module slatwalladmin{
                 pageShow: this.pageShow,
                 keywords: this.keywords,
                 defaultColumns: (!this.columns || !this.columns.length),
-                allRecords: this.allRecords
+                allRecords: this.allRecords,
             };
         };
 

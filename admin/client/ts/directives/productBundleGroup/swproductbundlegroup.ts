@@ -5,7 +5,7 @@ module slatwalladmin {
 	
 	export class SWProductBundleGroupController {
 		
-		public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "partialsPath"];
+		public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "partialsPath"];
 		public $id;
 		public showAdvanced; 
 		public productBundleGroup; 
@@ -27,6 +27,9 @@ module slatwalladmin {
 		public collection; 
 		public collectionConfig; 
 		public selected; 
+		public searchCollectionConfig; 
+		public formName;
+		public filterPropertiesList;
 		
 		/*		
 		scope.collection = { 
@@ -39,7 +42,8 @@ module slatwalladmin {
 		
 		constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
 					private collectionConfigService:slatwalladmin.CollectionConfig, 
-					private productBundleService,  private metadataservice, private utilityservice, private partialsPath){
+					private productBundleService,  private metadataservice, private utilityservice, 
+					private $slatwall, private partialsPath){
 						
 			this.$id = 'productBundleGroup';
 			this.maxRecords = 10;
@@ -79,8 +83,8 @@ module slatwalladmin {
 					value:"All"
 				},
 				setSelected:(searchOption)=>{
-					this.selected = searchOption;
-					this.productBundleGroupFilters.getFiltersByTerm(this.productBundleGroupFilters.keyword,searchOption);
+					this.searchOptions.selected = searchOption;
+					this.getFiltersByTerm(this.productBundleGroupFilters.keyword,searchOption);
 				}
 			};
 					
@@ -91,7 +95,7 @@ module slatwalladmin {
 				}
 			};
 			
-			this.filterTemplatePath = this.partialsPath +"productBund/productbundlefilter.html";
+			this.filterTemplatePath = this.partialsPath +"productBundle/productbundlefilter.html";
 			this.productBundleGroupFilters = {};
 			this.productBundleGroupFilters.value = [];
 			
@@ -137,11 +141,9 @@ module slatwalladmin {
 				this.removeProductBundleGroup();
 				
 			}
-		};
-				
-				
+		};			
 
-		 public getCollection = () =>{
+		public getCollection = () =>{
 			this.collectionConfig.getEntity().then((response)=>{
 				this.collection = response;
 				this.$log.debug("Collection Response");
@@ -170,45 +172,57 @@ module slatwalladmin {
 					this.productBundleGroupFilters.value = [];
 					_loadingCount = this.searchOptions.options.length - 1;
 					for(var i in this.searchOptions.options){
+						this.$log.debug("INT");
+						this.$log.debug(i);
 						if(i > 0){
 							var option = this.searchOptions.options[i];
-							((keyword,option)=>{
+							((keyword,option) =>{
+						
+								var searchAllCollectionConfig = this.collectionConfigService.newCollectionConfig(this.searchOptions.options[i].value); 
 								
-								this.$slatwall.getEntity(this.searchOptions.options[i].value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+option.value, currentPage:this.currentPage, pageShow:this.pageShow})
-									.then((value)=>{
-									this.$log.debug(value);    
-									this.$log.debug("Total: " + value.recordsCount);
-									this.$log.debug("Records Start: " + value.pageRecordsStart);
-									this.$log.debug("Records End: " + value.pageRecordsEnd);
+								searchAllCollectionConfig.setKeywords(keyword); 
+								searchAllCollectionConfig.setCurrentPage(this.currentPage); 
+								searchAllCollectionConfig.setPageShow(this.pageShow); 
+								//searchAllCollectionConfig.setAllRecords(true);
+								
+								
+								searchAllCollectionConfig.getEntity().then((value)=>{
+									this.$log.debug("FORMATTING FOR FOLLOWING OPTION");
+									this.$log.debug(option);
+									var formattedProductBundleGroupFilters = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
 									
-										var formattedProductBundleGroupFilters = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
-											for(var j in formattedProductBundleGroupFilters){
-												if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1){
-													//Only get the correct amount for each iteration
-													this.$log.debug(this.productBundleGroupFilters.value.length);
-													this.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
-												}   
-											}
+									for(var j in formattedProductBundleGroupFilters){
+										if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1){
+											this.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
+											this.$log.debug(formattedProductBundleGroupFilters[j]);
+										}   
+									}
+									this.$log.debug("allegedly sorted");
+									this.$log.debug(this.productBundleGroupFilters.value);
 									
 									// Increment Down The Loading Count
 									_loadingCount--;
 									// If the loadingCount drops to 0, then we can update scope
 									if(_loadingCount == 0){
 										//This sorts the array of objects by the objects' "type" property alphabetically
-										this.productBundleGroupFilters.value = this.utilityService.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
+										this.productBundleGroupFilters.value = this.utilityservice.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
 										this.$log.debug(this.productBundleGroupFilters.value);
 										
 									}
 									this.loading = false;
 								});
-							})(keyword,option);
+							})(keyword, option);
 						} 
 					}
 				}else{
 					
-						this.showAll = false; //We want to display a count when using specific filter type so, set to false.
-					this.$slatwall.getEntity(filterTerm.value, { keywords: keyword, deferKey:'getProductBundleGroupFilterByTerm' + filterTerm.value, currentPage:this.currentPage, pageShow:this.pageShow})
-					.then((value)=>{
+					this.searchCollectionConfig = this.collectionConfigService.newCollectionConfig(filterTerm.value); 
+								
+					this.searchCollectionConfig.setKeywords(keyword); 
+					this.searchCollectionConfig.setCurrentPage(this.currentPage); 
+					this.searchCollectionConfig.setPageShow(this.pageShow); 
+						
+					this.searchCollectionConfig.getEntity().then((value)=>{
 						
 						this.recordsCount = value.recordsCount;
 						this.pageRecordsStart = value.pageRecordsStart;
@@ -223,12 +237,50 @@ module slatwalladmin {
 					});
 				}
 			}, 500);			
-		}			
+		}	
+		
+		
+		public addFilterToProductBundle = (filterItem,include,index) =>{
+			this.$log.debug('addFilterToProductBundle');
+			this.$log.debug(filterItem);
+			var collectionFilterItem = {};
+			collectionFilterItem.name = filterItem.name;
+			collectionFilterItem.type = filterItem.type;
+			collectionFilterItem.displayPropertyIdentifier = filterItem.type; 
+			collectionFilterItem.propertyIdentifier = filterItem.propertyIdentifier; 
+			collectionFilterItem.displayValue = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+			collectionFilterItem.value = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+			
+			if(include === false){
+				collectionFilterItem.comparisonOperator = '!=';
+			}else{
+				collectionFilterItem.comparisonOperator = '=';
+			}
+			
+			if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
+				collectionFilterItem.logicalOperator = 'OR';
+			}
+			//Adds filter item to designated filtergroup
+			this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
+			//Removes the filter item from the left hand search result
+			this.productBundleGroupFilters.value.splice(index,1);
+			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
+		}
+				
+		public removeProductBundleGroupFilter = (index) =>{
+			//Pushes item back into array
+			this.productBundleGroupFilters.value.push(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
+			//Sorts Array
+			this.productBundleGroupFilters.value = this.utilityservice.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
+			//Removes the filter item from the filtergroup
+			this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
+			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
+		};		
 	}
 	
 	export class SWProductBundleGroup implements ng.IDirective{
         
-		public static $inject=["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "partialsPath"];
+		public static $inject=["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "partialsPath"];
 		public templateUrl; 
 		public restrict = "EA"; 
 		public scope = {}	
@@ -245,7 +297,8 @@ module slatwalladmin {
 		
 		constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
 					private collectionConfigService:slatwalladmin.CollectionConfig, 
-					private productBundleService,  private metadataservice, private utilityservice, private partialsPath){
+					private productBundleService,  private metadataservice, private utilityservice,
+					private $slatwall, private partialsPath){
 			this.templateUrl = partialsPath + "productbundle/productbundlegroup.html";	
 		}
 
@@ -256,8 +309,8 @@ module slatwalladmin {
 	
 	angular.module('slatwalladmin')
 	.directive('swProductBundleGroup',
-		["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "partialsPath", 
-			($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, partialsPath) => 
-				new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, partialsPath)
+		["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "partialsPath", 
+			($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, partialsPath) => 
+				new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, partialsPath)
 			]);
 }
