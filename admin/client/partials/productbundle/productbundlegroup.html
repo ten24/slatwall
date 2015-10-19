@@ -69,9 +69,9 @@
 									>
 								</span>
 							
-								<sw-form ng-if="formName && formName !== ''" 
-									name="{{formName}}" 
-									data-object="productBundleGroup"    
+								<sw-form ng-if="swProductBundleGroup.formName && swProductBundleGroup.formName !== ''" 
+									name="{{swProductBundleGroup.formName}}" 
+									data-object="swProductBundleGroup.productBundleGroup"    
 									data-context="save"
 									>
 									<div class="row">
@@ -107,7 +107,7 @@
 										data-is-dirty="true"
 										></sw-property-display>
 										
-									<span ng-show="productBundleGroup.data['amountType'] === 'fixed' || productBundleGroup.data['amountType'] === 'skuPricePercentageIncrease' || productBundleGroup.data['amountType'] === 'skuPricePercentageDecrease'">
+									<span ng-show="swProductBundleGroup.productBundleGroup.data['amountType'] === 'fixed' || swProductBundleGroup.productBundleGroup.data['amountType'] === 'skuPricePercentageIncrease' || swProductBundleGroup.productBundleGroup.data['amountType'] === 'skuPricePercentageDecrease'">
 										<sw-property-display
 											data-object="swProductBundleGroup.productBundleGroup"
 											data-property="amount"
@@ -144,8 +144,8 @@
 								<h4 class="s-clear-fix">
 									Bundle Items
 									<button type="button" ng-click="swProductBundleGroup.openCloseAndRefresh() " class="pull-right s-button-no-style"> 
-										<span ng-show="!showAdvanced">Advanced</span> 
-										<span ng-show="showAdvanced">Basic</span> 
+										<span ng-show="!swProductBundleGroup.showAdvanced">Advanced</span> 
+										<span ng-show="swProductBundleGroup.showAdvanced">Basic</span> 
 										View
 									</button>  
 								</h4>
@@ -264,7 +264,7 @@
 											<!-- //Selected filters -->
 											<!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
 											<div class="s-load-more" ng-click="swProductBundleGroup.increaseCurrentCount(); swProductBundleGroup.productBundleGroupFilters.getFiltersByTerm(swProductBundleGroup.productBundleGroupFilters.keyword,searchOptions.selected);">
-												<button class="{'btn s-btn-dgrey btn-sm disabled' : loading === true, 'btn s-btn-dgrey btn-sm' : loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="loading"></i><span ng-if="!showAll">(Showing {{pageRecordsStart}} to {{pageRecordsEnd}} of {{recordsCount}})</span></button>
+												<button class="{'btn s-btn-dgrey btn-sm disabled' : loading === true, 'btn s-btn-dgrey btn-sm' : loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="loading"></i><span ng-if="!showAll">(Showing {{swProductBundleGroup.pageRecordsStart}} to {{swProductBundleGroup.pageRecordsEnd}} of {{swProductBundleGroup.recordsCount}})</span></button>
 											</div>
 											<!-- //Load more button -->
 										</div>

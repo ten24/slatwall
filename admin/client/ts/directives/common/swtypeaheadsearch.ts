@@ -26,7 +26,7 @@ module slatwalladmin {
 		private typeaheadCollectionConfig; 
 		private typeaheadCollectionConfigs; 
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.collectionConfigService){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.CollectionConfig){
 			
 			this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity); 
 			this.typeaheadCollectionConfig.setDisplayProperties(this.properties);

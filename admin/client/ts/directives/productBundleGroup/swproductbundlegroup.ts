@@ -5,7 +5,7 @@ module slatwalladmin {
 	
 	export class SWProductBundleGroupController {
 		
-		public static $inject=["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "partialsPath"];
+		public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "partialsPath"];
 		public $id;
 		public showAdvanced; 
 		public productBundleGroup; 
@@ -26,55 +26,21 @@ module slatwalladmin {
 		public value;
 		public collection; 
 		public collectionConfig; 
+		public selected; 
 		
-		/*
-				
+		/*		
 		scope.collection = { 
 			baseEntityName:"Sku",
 			baseEntityAlias:"_sku",
 			collectionConfig:scope.productBundleGroup.data.skuCollectionConfig,
 			collectionObject:'Sku'
 		};
+		*/
 		
-		
-		scope.searchOptions = {
-			options:[
-					{
-						name:"All",
-						value:"All"
-					},
-					{
-					name:"Product Type",
-					value:"productType"
-					},
-					{
-					name:"Brand",
-					value:"brand"
-					},
-					{
-					name:"Products",
-					value:"product"
-					},
-					{
-					name:"Skus",
-					value:"sku"
-					}
-			],
-			selected:{
-				name:"All",
-				value:"All"
-			},
-			setSelected:function(searchOption){
-				this.selected = searchOption;
-				scope.productBundleGroupFilters.getFiltersByTerm(scope.productBundleGroupFilters.keyword,searchOption);
-			}
-		};*/
-		
-		constructor(protected $log:ng.ILogService, protected $timeout:ng.ITimeoutService, protected $slatwall, protected collectionConfigService, protected partialsPath){
-			this.init(); 
-		}
-		
-		public init = () =>{
+		constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
+					private collectionConfigService:slatwalladmin.CollectionConfig, 
+					private productBundleService,  private metadataservice, private utilityservice, private partialsPath){
+						
 			this.$id = 'productBundleGroup';
 			this.maxRecords = 10;
 			this.recordsCount = 0;  
@@ -85,8 +51,39 @@ module slatwalladmin {
 			this.currentPage = 1;
 			this.pageShow = 10;
 			
-			this.getCollection();
-				
+			this.searchOptions = {
+				options:[
+					{
+						name:"All",
+						value:"All"
+					},
+					{
+						name:"Product Type",
+						value:"productType"
+					},
+					{
+						name:"Brand",
+						value:"brand"
+					},
+					{
+						name:"Products",
+						value:"product"
+					},
+					{
+						name:"Skus",
+						value:"sku"
+					}
+				],
+				selected:{
+					name:"All",
+					value:"All"
+				},
+				setSelected:(searchOption)=>{
+					this.selected = searchOption;
+					this.productBundleGroupFilters.getFiltersByTerm(this.productBundleGroupFilters.keyword,searchOption);
+				}
+			};
+					
 			this.navigation = {
 				value:'Basic',
 				setValue:(value)=>{
@@ -103,15 +100,16 @@ module slatwalladmin {
 			}
 			
 			var options = {
-					filterGroupsConfig:angular.toJson(this.productBundleGroup.data.skuCollectionConfig.filterGroups),
-					columnsConfig:angular.toJson(this.productBundleGroup.data.skuCollectionConfig.columns),
-					currentPage:1, 
-					pageShow:10
+					filterGroupsConfig:this.productBundleGroup.data.skuCollectionConfig.filterGroups,
+					columnsConfig:this.productBundleGroup.data.skuCollectionConfig.columns,
 			};
 			
-			this.collectionConfig = this.collectionConfigService.newCollectionConfig('Sku');
-			this.collectionConfig.setOptions(options); 
-		}
+			this.collectionConfig = collectionConfigService.newCollectionConfig('Sku');
+			this.collectionConfig.loadFilterGroups(options.filterGroupsConfig);
+			this.collectionConfig.loadColumns(options.columnsConfig);  
+			
+			this.getCollection();
+		}	
 		
 		public openCloseAndRefresh = () => {    
 			this.showAdvanced = !this.showAdvanced;
@@ -245,7 +243,9 @@ module slatwalladmin {
         public controllerAs="swProductBundleGroup";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private $log:ng.ILogService, private collectionConfigService:slatwalladmin.CollectionConfig, private productBundleService:slatwalladmin.ProductBundleService, private partialsPath){
+		constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
+					private collectionConfigService:slatwalladmin.CollectionConfig, 
+					private productBundleService,  private metadataservice, private utilityservice, private partialsPath){
 			this.templateUrl = partialsPath + "productbundle/productbundlegroup.html";	
 		}
 
@@ -256,8 +256,8 @@ module slatwalladmin {
 	
 	angular.module('slatwalladmin')
 	.directive('swProductBundleGroup',
-		["$timeout", "$log", "collectionConfigService", "productBundleService", "$slatwall", "partialsPath", 
-			($timeout, $log, collectionConfigService, productBundleService, $slatwall, partialsPath) => 
-				new SWProductBundleGroup($slatwall, $log, $timeout, collectionConfigService, productBundleService, partialsPath)
+		["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "partialsPath", 
+			($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, partialsPath) => 
+				new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, partialsPath)
 			]);
 }

@@ -111,6 +111,10 @@ module slatwalladmin{
         loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]) =>{
             this.filterGroups = filterGroupsConfig;
         }
+        
+        loadColumns= (columns:Column[]) =>{
+            this.columns = columns; 
+        }
 
         getCollectionConfig= () =>{
             return {
