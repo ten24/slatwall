@@ -19,9 +19,9 @@
 	<cfproperty name="dimensionDefinitions" />
 	<cfproperty name="orderByType" />
 	<cfproperty name="reportDateTimeDefinitions" />
-	<cfproperty name="reportType">
-	<cfproperty name="limitResults" default="0">
-	<cfproperty name="showReport" default="false">
+	<cfproperty name="reportType" />
+	<cfproperty name="limitResults" />
+	<cfproperty name="showReport" />
 
 	<!--- Metric / Dimension States --->
 	<cfproperty name="metrics" />
@@ -45,6 +45,20 @@
 
 	<!--- Currency Code --->
 	<cfproperty name="currencyCode" />
+
+	<cffunction name="getLimitResults" access="public" output="false">
+		<cfif not structKeyExists(variables, "limitResults")>
+			<cfset variables.limitResults = 0 />
+		</cfif>
+		<cfreturn variables.limitResults />
+	</cffunction>
+
+	<cffunction name="getShowReport" access="public" output="false">
+		<cfif not structKeyExists(variables, "showReport")>
+			<cfset variables.showReport = false />
+		</cfif>
+		<cfreturn variables.showReport />
+	</cffunction>
 
 	<cffunction name="getCurrentPage" access="public" output="false">
 		 <cfif not structKeyExists(variables, "currentPage")>
@@ -691,7 +705,7 @@
 				<cfset variables.chartData["series"][1]["data"] = [] />
 				<cfset xAxisData["opposite"] = true />
 				<cfset xAxisData["type"] = "category">
-				<cfloop query="#chartDataQuery#">
+				<cfloop query="chartDataQuery">
 					<cfset var data = [] />
 					<cfset arrayAppend(data, evaluate("chartDataQuery.#dimensionDefinition.alias#"))>
 					<cfset arrayAppend(data, evaluate("chartDataQuery.#dimensionDefinition.alias#Total"))>
