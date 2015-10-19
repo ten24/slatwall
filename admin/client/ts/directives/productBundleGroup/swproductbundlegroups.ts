@@ -42,6 +42,8 @@ angular.module('slatwalladmin')
 					
 				};
 				$scope.addProductBundleGroup = function(){
+					$log.debug("Adding product bundle group");
+					
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
 					productBundleService.decorateProductBundleGroup(productBundleGroup);
 					
