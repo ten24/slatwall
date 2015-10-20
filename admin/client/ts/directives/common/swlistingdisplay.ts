@@ -18,11 +18,13 @@ module slatwalladmin {
         private buttonGroup = [];
         private collectionPromise;
         private collectionObject;
-        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
+        public static $inject = ['$scope','$element','$transclude','$timeout','$q','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
         constructor(
             public $scope,
             public $element,
             public $transclude,
+            public $timeout,
+            public $q,
             public $slatwall:ngSlatwall.SlatwallService, 
             public partialsPath:slatwalladmin.partialsPath, 
             public utilityService:slatwalladmin.UtilityService,
@@ -31,6 +33,8 @@ module slatwalladmin {
             public selectionService:slatwalladmin.SelectionService,
             public observerService:slatwalladmin.ObserverService
         ){
+            this.$q = $q;
+            this.$timeout = $timeout;
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
@@ -40,72 +44,99 @@ module slatwalladmin {
             this.paginationService = paginationService;
             this.selectionService = selectionService;
             this.observerService = observerService;
-            //this is performed early to populate columns with swlistingcolumn info
-            this.$transclude = $transclude;
-            this.$transclude(this.$scope,()=>{});
             
+            this.paginator = paginationService.createPagination();
+            
+            
+            this.hasCollectionPromise = false;
+            if(angular.isUndefined(this.getChildCount)){
+                this.getChildCount = false;
+            }
+            
+            
+            if(!this.collection || !angular.isString(this.collection)){
+                this.hasCollectionPromise = true;
+            }
+            
+            this.setupDefaultCollectionInfo();
+            this.setupColumns();
+            
+            console.log(this.collection);
+            console.log(this.collectionObject);            
+            this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
+            this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
+            
+            this.initData();
+            
+            this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
+                
+                this.$q.when(this.collectionPromise).then((data)=>{
+                    console.log('collectionPromise');
+                    this.collectionData = data;
+                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+                    this.paginator.setPageRecordsInfo(this.collectionData);
+                    console.log(this.paginator);
+                    
+                });
+            });
+//            this.$scope.$watch('collectionPromise',(newValue,oldValue)=>{
+//                console.log('collectionPromiseChanged');
+//                
+//            });
+            
+            
+
+            
+            
+            
+            
+            
+            this.tableID = 'LD'+this.utilityService.createID();
+            //if getCollection doesn't exist then create it
             if(angular.isUndefined(this.getCollection)){
                 console.log('definde getcollection');
-                this.getCollection = ()=>{
-                    this.collectionConfig.setPageShow(this.paginator.getPageShow());
-                    this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-                    this.collectionConfig.setKeywords(this.paginator.keywords);
-                    this.collectionPromise = this.collectionConfig.getEntity();
-                    
-                    this.collectionPromise.then((data)=>{
-                        this.collectionData = data;
-                        this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
-                        this.paginator.setPageRecordsInfo(this.collectionData);
-                        //prepare an exampleEntity for use
-                        this.init();
-                        
-                    });    
-                    return this.collectionPromise;
-                }    
+                this.getCollection = this.setupDefaultGetCollection();
             }
-             
-            this.paginator = paginationService.createPagination();
             this.paginator.getCollection = this.getCollection;
-            this.tableID = 'LD'+this.utilityService.createID();
-             //if collection Value is string instead of an object then create a collection
-            var hasCollectionPromise = false;
-            if(angular.isString(this.collection)){
-                this.collectionObject = this.collection;
-                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-                
-                if(!this.collectionConfig.columns){
-                    this.collectionConfig.columns = [];    
-                }
-                
-                //if collection is object
-            }else{
-                hasCollectionPromise = true;
+            //this.getCollection();
+            
+            
+        }
+        
+        private setupDefaultCollectionInfo = () =>{
+            if(this.hasCollectionPromise){
                 this.collectionObject = this.collection.collectionObject;
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-                this.collectionConfig.loadJson(this.collection.collectionConfig);
+                console.log(this.collection.collectionConfig);
+                this.collectionConfig.loadJson(this.collection.collectionConfig);  
+                console.log(this.collectionConfig);
+            }else{
+                this.collectionObject = this.collection;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);      
             }
+            this.collectionConfig.setPageShow(this.paginator.getPageShow());
+            this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
+            this.collectionConfig.setKeywords(this.paginator.keywords); 
+        }
+        
+        private setupDefaultGetCollection = () =>{
             
-            angular.forEach(this.columns, (column)=>{
-                var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
-                var title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-                column.isVisible = column.isVisible || true;
-                //this.collectionConfig.columns.push(column);
-                this.collectionConfig.addDisplayProperty(column.propertyIdentifier,title,column);
-            });
+            this.collectionPromise = this.collectionConfig.getEntity();
+            return ()=>{
+                
+                this.collectionPromise.then((data)=>{
+                });
+            };    
+        }
+        
+        public initData = () =>{
             this.collectionConfig.setPageShow(this.paginator.pageShow);
             this.collectionConfig.setCurrentPage(this.paginator.currentPage);
-            this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
-            
-            this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
             
             //setup export action
             if(angular.isDefined(this.exportAction)){
                 this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
             }
-            
-            //Setup table class
-            this.tableclass = this.tableclass || '';
-            this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
             
             //Setup Select
             if(this.selectFieldName && this.selectFieldName.length){
@@ -113,6 +144,7 @@ module slatwalladmin {
                 this.tableclass = this.utilityService.listAppend(this.tableclass,'table-select',' ');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-selectfield="'+this.selectFieldName+'"', ' ');    
             }
+            
             //Setup MultiSelect
             if(this.multiselectFieldName && this.multiselectFieldName.length){
                 this.multiselectable = true;
@@ -125,7 +157,7 @@ module slatwalladmin {
             }
             if(this.multiselectable && !this.columns.length){
                 //check if it has an active flag and if so then add the active flag
-                if(this.exampleEntity.metaData.activeProperty && !hasCollectionPromise){
+                if(this.exampleEntity.metaData.activeProperty && !this.hasCollectionPromise){
                     this.collectionConfig.addFilter('activeFlag',1);
                 }
                 
@@ -148,12 +180,12 @@ module slatwalladmin {
                 this.expandable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
                 //add parent property root filter
-                if(!hasCollectionPromise){
+                if(!this.hasCollectionPromise){
                     this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS');
                 }
                 //add children column
                 if(this.childPropertyName && this.childPropertyName.length) {
-                    if(!hasCollectionPromise){
+                    if(this.getChildCount || !this.hasCollectionPromise){
                         this.collectionConfig.addDisplayAggregate(
                             this.childPropertyName,
                             'COUNT',
@@ -161,7 +193,6 @@ module slatwalladmin {
                         );
                     }
                 }               
-                
                 this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyname+'.'+this.exampleEntity.$$getIDName(),' ');
                 this.collectionConfig.setAllRecords(true);    
@@ -189,47 +220,12 @@ module slatwalladmin {
             }
             
             
-            this.getCollection();
-            
-        }
-        
-        public updateMultiselectValues = ()=>{
-            this.multiselectValues = this.selectionService.getSelections('ListingDisplay');   
-        }
-        
-        public escapeRegExp = (str)=> {
-            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-        }
-        
-        public replaceAll = (str, find, replace)=> {
-           return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-        }
-        
-        public getPageRecordKey = (propertyIdentifier)=>{
-            if(propertyIdentifier){
-                var propertyIdentifierWithoutAlias = '';
-                if(propertyIdentifier.indexOf('_') === 0){
-                    propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1,propertyIdentifier.length);
-                }else{
-                    propertyIdentifierWithoutAlias = propertyIdentifier;
-                }
-                return this.replaceAll(propertyIdentifierWithoutAlias,'.','_')
-            }
-            return '';
-        }
-        
-        public init = () =>{
-            
             //set defaults if value is not specified
             //this.edit = this.edit || $location.edit
             this.processObjectProperties = this.processObjectProperties || '';
             this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
             this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
-            this.collectionID = this.collectionData.collectionID;
-            this.collectionObject = this.collectionData.collectionObject;
             this.norecordstext = this.$slatwall.getRBKey('entity.'+this.collectionObject+'.norecords');
-            
-           
             
             //Setup Sortability
             if(this.sortProperty && this.sortProperty.length){
@@ -390,6 +386,72 @@ module slatwalladmin {
             if(this.administrativeCount){
                 this.administrativeCount++;
             }
+            
+            //Setup table class
+            this.tableclass = this.tableclass || '';
+            this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+            
+            
+        }
+        
+        public setupColumns = ()=>{
+            //if columns doesn't exist then make it
+            if(!this.collectionConfig.columns){
+                this.collectionConfig.columns = [];    
+            }
+            
+            //if a collectionConfig was not passed in then we can run run swListingColumns
+            //this is performed early to populate columns with swlistingcolumn info
+            this.$transclude = $transclude;
+            this.$transclude(this.$scope,()=>{});
+            
+            //assumes no alias formatting
+            angular.forEach(this.columns, (column)=>{
+                var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
+                var title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+                if(angular.isUndefined(column.isVisible)){
+                    column.isVisible = true;
+                }
+                this.collectionConfig.addDisplayProperty(column.propertyIdentifier,title,column);
+            });
+            //if the passed in collection has columns perform some formatting
+            if(this.hasCollectionPromise){
+                //assumes alias formatting from collectionConfig
+                angular.forEach(this.collectionConfig.columns, (column)=>{
+                  var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
+                  column.title = column.title || this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+                  if(angular.isUndefined(column.isVisible)){
+                      column.isVisible = true;
+                  }
+                });
+            }
+            
+        
+        }
+        
+        public updateMultiselectValues = ()=>{
+            this.multiselectValues = this.selectionService.getSelections('ListingDisplay');   
+        }
+        
+        public escapeRegExp = (str)=> {
+            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+        }
+        
+        public replaceAll = (str, find, replace)=> {
+           return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+        }
+        
+        public getPageRecordKey = (propertyIdentifier)=>{
+            if(propertyIdentifier){
+                var propertyIdentifierWithoutAlias = '';
+                if(propertyIdentifier.indexOf('_') === 0){
+                    propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.')+1,propertyIdentifier.length);
+                }else{
+                    propertyIdentifierWithoutAlias = propertyIdentifier;
+                }
+                return this.replaceAll(propertyIdentifierWithoutAlias,'.','_')
+            }
+            return '';
         }
         
         private getAdminAttributesByType = (type:string):string =>{
@@ -425,6 +487,7 @@ module slatwalladmin {
              collection:"=",
              collectionConfig:"=",
              getCollection:"&?",
+             collectionPromise:"=",
              edit:"=",
             
              /*Optional*/
@@ -481,7 +544,9 @@ module slatwalladmin {
              createModal:"=",
              createAction:"@",
              createQueryString:"@",
-             exportAction:"@"
+             exportAction:"@",
+             
+             getChildCount:"="
         };
         public controller=SWListingDisplayController;
         public controllerAs="swListingDisplay";

@@ -98,15 +98,15 @@ module slatwalladmin {
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
             
-                    if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
-                        $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
-                            var template = angular.element(html);
-                            
-                            template = $compile(template)(scope);
-                            element.html(template);
-                            element.on('click',scope.swExpandableRecord.toggleChild);
-                        });
-                    }
+            if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
+                $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
+                    var template = angular.element(html);
+                    
+                    template = $compile(template)(scope);
+                    element.html(template);
+                    element.on('click',scope.swExpandableRecord.toggleChild);
+                });
+            }
             
             
 		}

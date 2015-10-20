@@ -1,3 +1,4 @@
+{{swListingDisplay.collectionConfig.columns}}
 <div class="s-table-header-nav s-listing-head-margin">
 	<div class="col-xs-6 s-no-padding-left" ng-if="swListingDisplay.title">
 		<ul class="list-inline list-unstyled">
@@ -182,7 +183,6 @@
 						<i class="fa fa-arrows"></i>
 					</a>
 				</td>-->
-				
 				<!--Expandable Check-->
 				<td 
 					ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns" 
@@ -197,7 +197,7 @@
 					data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
 					data-entity="swListingDisplay.exampleEntity"
 					data-collection-config="swListingDisplay.collectionConfig"
-					data-records="swListingDisplay.collectionData.pageRecords"
+					data-records="swListingDisplay.collectionData.pageRecords || swListingDisplay.collectionData.records"
 					data-record-index="pageRecordKey"
 					data-record-depth="pageRecord.depth"
 				>
@@ -254,7 +254,7 @@
 				</td>
 			</tr>
 			
-			<tr ng-if="swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length">
+			<tr ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
 				<td colspan="#thistag.columnCount#" style="text-align:center;">
 					no records
 				</td>

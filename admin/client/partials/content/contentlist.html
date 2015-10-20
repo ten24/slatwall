@@ -19,9 +19,11 @@
 	</div>
 	
 	<sw-listing-display
-		ng-if="$root.loadedResourceBundle && collection"	
+		ng-if="$root.loadedResourceBundle && collectionListingPromise && collection"	
+		data-collection-promise="collectionListingPromise"
 		data-collection="collection"
 		data-get-collection="getCollection"
+		data-record-edit-action="admin:entity.editcontent"
 	>
 	</sw-listing-display>
 
@@ -120,5 +122,6 @@
 			
 		</div>
 	</content>	
+	
 	
 </section>

@@ -93,7 +93,8 @@ angular.module('slatwalladmin')
                             propertyIdentifier: '_content.title',
                             isVisible: true,
                             ormtype: 'string',
-                            isSearchable: true
+                            isSearchable: true,
+                            tdclass: 'primary'
                         };
                         columnsConfig.unshift(column);
                     }
@@ -141,8 +142,8 @@ angular.module('slatwalladmin')
                     }
                     options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
                     options.columnsConfig = angular.toJson(columnsConfig);
-                    var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
-                    collectionListingPromise.then(function (value) {
+                    scope.collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
+                    scope.collectionListingPromise.then(function (value) {
                         angular.forEach(value.pageRecords, function (node) {
                             node.site_domainNames = node.site_domainNames.split(",")[0];
                         });
@@ -153,6 +154,7 @@ angular.module('slatwalladmin')
                         scope.firstLoad = true;
                         scope.loadingCollection = false;
                     });
+                    scope.collectionListingPromise;
                 };
                 //scope.getCollection(false);
                 scope.keywords = "";
