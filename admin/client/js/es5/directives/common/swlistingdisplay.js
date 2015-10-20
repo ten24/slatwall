@@ -368,4 +368,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swListingDisplay', ['partialsPath', function (partialsPath) { return new SWListingDisplay(partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swlistingdisplay.js.map
+//# sourceMappingURL=../../directives/common/swlistingdisplay.js.map

@@ -10,4 +10,4 @@ angular.module('slatwalladmin')
         };
     }]);
 
-//# sourceMappingURL=percentage.js.map
+//# sourceMappingURL=../filters/percentage.js.map
