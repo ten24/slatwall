@@ -10,4 +10,4 @@ var slatwalladmin;
     slatwalladmin.BaseService = BaseService;
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/baseservice.js.map
+//# sourceMappingURL=baseservice.js.map

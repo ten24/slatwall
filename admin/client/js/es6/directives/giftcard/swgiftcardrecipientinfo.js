@@ -28,4 +28,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/giftcard/swgiftcardrecipientinfo.js.map
+//# sourceMappingURL=swgiftcardrecipientinfo.js.map
