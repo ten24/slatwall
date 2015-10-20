@@ -35,23 +35,13 @@
 					sw-confirm 
 					data-confirm-text="Confirm"
 					data-message-text="Are you sure you want to delete this product bundle group?" 
-					data-callback="swProductBundleGroup.deleteEntity(swProductBundleGroup.productBundleGroup.data.$$editing);"
+					data-callback="swProductBundleGroup.deleteEntity()"
 					data-use-rb-key="false"
 					data-simple=false
 					data-yes-text="Yes"
 					data-no-text="No">
 				<i class="fa fa-trash"></i>
 				</a>
-				<!-- The above should use this but having z-index issue over the modal
-					sw-confirm 
-					data-confirm-text="Confirm"
-					data-message-text="Are you sure you want to delete this product bundle group?" 
-					data-callback="deleteEntity(productBundleGroup.data.$$editing);"
-					data-use-rb-key="false"
-					data-simple=false
-					data-yes-text="Yes"
-					data-no-text="No"
-					-->
 			</div>
 		</div>
 	</div>
@@ -179,11 +169,11 @@
 													</li>
 												</ul>
 												<ul class="list-unstyled list-inline s-middle">
-													<li class="s-bundle-details" ng-show="swProductBundleGroup.productBundleGroupFilter.type">
-														<span ng-bind="swProductBundleGroup.productBundleGroupFilter.type"></span>:<span ng-bind="swProductBundleGroup.productBundleGroupFilter.name"></span>
+													<li class="s-bundle-details" ng-show="productBundleGroupFilter.type">
+														<span ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name"></span>
 													</li>
 													<li class="s-bundle-details" ng-show="!productBundleGroupFilter.type">
-														<span ng-bind="swProductBundleGroup.productBundleGroupFilter.displayPropertyIdentifier"></span>:<span ng-bind="swProductBundleGroup.productBundleGroupFilter.value"></span>
+														<span ng-bind="productBundleGroupFilter.displayPropertyIdentifier"></span>:<span ng-bind="productBundleGroupFilter.value"></span>
 													</li>
 												</ul>
 												<ul class="list-unstyled list-inline s-last">
@@ -287,7 +277,7 @@
 													data-filter-group="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0]"
 													data-filter-group-item="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
 													data-filter-properties-list="swProductBundleGroup.filterPropertiesList"
-													data-save-collection="swProductBundleGroup.productBundleGroup.$$save();getCollection();"
+													data-save-collection="swProductBundleGroup.productBundleGroup.$$save(); swProductBundleGroup.getCollection();"
 													>
 												</ul>
 											</div>
@@ -297,9 +287,9 @@
 									</div>
 								</div>
 								<sw-collection-table
-									data-collection="collection"
+									data-collection="swProductBundleGroup.collection"
 									data-collection-config="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig"
-									ng-if="collection"
+									ng-if="swProductBundleGroup.collection"
 									>
 								</sw-collection-table>
 							</div>
