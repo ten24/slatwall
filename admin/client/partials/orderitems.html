@@ -53,8 +53,8 @@
 									
 								>
 								</sw-pagination-bar>
-		<div sw-loading="orderItems" >
-			
+		<div sw-loading="$root.loadedResourceBundle && orderItems">
+			{{paginator.getRecordsCount}}
 			<div class="table-responsive">
 				<table class="table table-bordered s-order-item-table" ng-show="paginator.getRecordsCount()">
 					<thead>

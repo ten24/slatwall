@@ -7,7 +7,8 @@ angular.module('slatwalladmin')
     'partialsPath',
     'paginationService',
     'observerService',
-    function ($log, $timeout, $slatwall, partialsPath, paginationService, observerService) {
+    'collectionConfigService',
+    function ($log, $timeout, $slatwall, partialsPath, paginationService, observerService, collectionConfigService) {
         return {
             restrict: 'E',
             templateUrl: partialsPath + 'content/contentlist.html',
@@ -29,6 +30,7 @@ angular.module('slatwalladmin')
                 var orderByConfig;
                 scope.getCollection = function (isSearching) {
                     var columnsConfig = [
+                        { "propertyIdentifier": "_content_childContents", "title": "", "isVisible": true, "isDeletable": true, "isSearchable": true, "isExportable": true, "ormtype": "string", "aggregate": { "aggregateFunction": "COUNT", "aggregateAlias": "childContentsCount" } },
                         {
                             propertyIdentifier: '_content.contentID',
                             isVisible: false,
@@ -143,13 +145,21 @@ angular.module('slatwalladmin')
                     options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
                     options.columnsConfig = angular.toJson(columnsConfig);
                     scope.collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
+                    scope.collectionConfig = collectionConfigService.newCollectionConfig('Content');
+                    var json = {
+                        columns: columnsConfig,
+                        filterGroups: filterGroupsConfig,
+                        baseEntityName: 'Content',
+                        baseEntityAlias: '_content'
+                    };
+                    scope.collectionConfig.loadJson(angular.toJson(json));
                     scope.collectionListingPromise.then(function (value) {
                         angular.forEach(value.pageRecords, function (node) {
                             node.site_domainNames = node.site_domainNames.split(",")[0];
                         });
                         scope.collection = value;
-                        scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
-                        scope.collectionConfig.columns = columnsConfig;
+                        //scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
+                        //scope.collectionConfig.columns = columnsConfig;
                         scope.collection.collectionConfig = scope.collectionConfig;
                         scope.firstLoad = true;
                         scope.loadingCollection = false;
