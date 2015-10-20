@@ -53,4 +53,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swLogin', ['$route', '$log', '$window', 'partialsPath', '$slatwall', function ($route, $log, $window, partialsPath, $slatwall, dialogService) { return new SWLogin($route, $log, $window, partialsPath, $slatwall, dialogService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swlogin.js.map
+//# sourceMappingURL=../../directives/common/swlogin.js.map

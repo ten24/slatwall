@@ -50,4 +50,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swgiftcarddetail.js.map
+//# sourceMappingURL=../../directives/giftcard/swgiftcarddetail.js.map

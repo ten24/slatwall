@@ -97,7 +97,7 @@ paginationService
 			var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:pageShow, keywords:$scope.keywords});
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
-				$scope.paginator.setPageRecordsInfo($scope.collection.recordsCount,$scope.collection.pageRecordsStart,$scope.collection.pageRecordsEnd,$scope.collection.totalPages);
+				$scope.paginator.setPageRecordsInfo($scope.collection);
 				$scope.collectionInitial = angular.copy($scope.collection);
 				if(angular.isUndefined($scope.collectionConfig)){
                     var test = new slatwalladmin.CollectionConfig($slatwall);

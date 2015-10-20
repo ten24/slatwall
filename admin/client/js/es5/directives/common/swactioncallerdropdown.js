@@ -41,4 +41,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swActionCallerDropdown', ['partialsPath', function (partialsPath) { return new SWActionCallerDropdown(partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swactioncallerdropdown.js.map
+//# sourceMappingURL=../../directives/common/swactioncallerdropdown.js.map
