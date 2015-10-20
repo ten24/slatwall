@@ -110,7 +110,7 @@ Notes:
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
 			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
-			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attribute.getAttributeSet().getAttributeSetObject()#&#attribute.getAttributeSet().getAttributeSetObject()#ID=#attributes.entity.invokeMethod('get'&attribute.getAttributeSet().getAttributeSetObject()&'ID')#"/>
+			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attribute.getAttributeSet().getAttributeSetObject()#&#attribute.getAttributeSet().getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attribute.getAttributeSet().getAttributeSetObjectPrimaryIDPropertyName())#"/>
 			<cfset fdAttributes.removeLink = removeLink/> 
 		</cfif>
 		
