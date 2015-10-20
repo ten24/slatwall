@@ -84,6 +84,34 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
 		assertEquals(product.getDefaultSku().getRedemptionAmount(),0);
 	}
+	
+	public void function getProductSmartlist_test(){
+		var productCode = 'productCode' & createUUID();
+		var skuID1 = rereplace(createUUID(),'-','','all');
+		var skuCode1 = 'skuCode' & createUUID();
+		var skuCode2 = 'skuCode' & createUUID();
+		
+		var productData = {
+			productID="",
+			productCode=productCode,
+			productName="testProductName",
+			skus=[
+				{
+					skuid=skuID1,
+					skuCode=skuCode1
+				},
+				{
+					skuid="",
+					skuCode=skuCode2
+				}
+			]
+		};
+		var product = createPersistedTestEntity('product',productData);
+		var smartlist = variables.service.getProductSmartList();	
+		smartlist.setKeywords([skuCode1]);	
+		var records = smartlist.getPageRecords();
+		assertEquals(productCode,records[1].getProductCode());
+	}
 }
 
 

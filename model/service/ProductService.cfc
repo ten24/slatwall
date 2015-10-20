@@ -1077,6 +1077,7 @@ component extends="HibachiService" accessors="true" {
 
 		smartList.joinRelatedProperty("SlatwallProduct", "productType");
 		smartList.joinRelatedProperty("SlatwallProduct", "defaultSku");
+		smartList.joinRelatedProperty("SlatwallProduct", "skus");
 		smartList.joinRelatedProperty("SlatwallProduct", "brand", "left");
 
 		smartList.addKeywordProperty(propertyIdentifier="calculatedTitle", weight=1);
@@ -1084,6 +1085,7 @@ component extends="HibachiService" accessors="true" {
 		smartList.addKeywordProperty(propertyIdentifier="productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="productCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="productType.productTypeName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="skus.skuCode", weight=1);
 
 		return smartList;
 	}
