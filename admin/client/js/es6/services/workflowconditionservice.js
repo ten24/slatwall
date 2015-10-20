@@ -47,4 +47,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('workflowConditionService', WorkflowConditionService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=workflowconditionservice.js.map
+//# sourceMappingURL=../services/workflowconditionservice.js.map

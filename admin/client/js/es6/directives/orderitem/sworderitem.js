@@ -398,4 +398,4 @@ angular.module('slatwalladmin').directive('swOrderItem', ['$log',
         };
     }]);
 
-//# sourceMappingURL=sworderitem.js.map
+//# sourceMappingURL=../../directives/orderitem/sworderitem.js.map

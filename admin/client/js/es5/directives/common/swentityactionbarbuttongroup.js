@@ -28,4 +28,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swEntityActionBarButtonGroup', ['partialsPath', function (partialsPath) { return new SWEntityActionBarButtonGroup(partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swentityactionbarbuttongroup.js.map
+//# sourceMappingURL=../../directives/common/swentityactionbarbuttongroup.js.map

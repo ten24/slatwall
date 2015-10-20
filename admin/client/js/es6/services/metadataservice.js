@@ -89,4 +89,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('metadataService', MetaDataService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=metadataservice.js.map
+//# sourceMappingURL=../services/metadataservice.js.map

@@ -117,4 +117,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swcriteriaonetomany.js.map
+//# sourceMappingURL=../../directives/collection/swcriteriaonetomany.js.map

@@ -24,4 +24,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swoishippinglabelstamp.js.map
+//# sourceMappingURL=../../directives/orderitem/swoishippinglabelstamp.js.map

@@ -183,4 +183,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swcolumnitem.js.map
+//# sourceMappingURL=../../directives/collection/swcolumnitem.js.map
