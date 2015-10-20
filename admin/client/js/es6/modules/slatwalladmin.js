@@ -1,12 +1,12 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 (() => {
-    var app = angular.module('slatwalladmin', ['hibachi', 'ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor']);
-    app.config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'uibDatepickerConfig', 'uibDatepickerPopupConfig',
-            ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, uibDatepickerConfig, uibDatepickerPopupConfig) => {
-            uibDatepickerConfig.showWeeks = false;
-            uibDatepickerConfig.format = 'MMM dd, yyyy hh:mm a';
-            uibDatepickerPopupConfig.toggleWeeksText = null;
+    var app = angular.module('slatwalladmin', ['hibachi', 'ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngSanitize', 'ngCkeditor']);
+    app.config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
+            ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) => {
+            datepickerConfig.showWeeks = false;
+            datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
+            datepickerPopupConfig.toggleWeeksText = null;
             if (slatwallAngular.hashbang) {
                 $locationProvider.html5Mode(false).hashPrefix('!');
             }

@@ -768,7 +768,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
 				var obProperty = getAliasedProperty( "createdDateTime" );
 			} else {
-				var obProperty = getBaseEntityPrimaryAliase();
+				var obProperty = getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
 			}
 			
 			hqlOrder &= " ORDER BY #obProperty# ASC";

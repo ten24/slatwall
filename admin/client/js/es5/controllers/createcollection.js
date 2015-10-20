@@ -53,7 +53,7 @@ angular.module('slatwalladmin')
                 $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
                 $scope.collectionInitial = angular.copy($scope.collection);
                 $scope.paginator.setRecordsCount($scope.collection.recordsCount);
-                $scope.paginator.setPageRecordsInfo($scope.collection.recordsCount, $scope.collection.pageRecordsStart, $scope.collection.pageRecordsEnd, $scope.collection.totalPages);
+                $scope.paginator.setPageRecordsInfo($scope.collection);
                 if (angular.isUndefined($scope.myCollection.columns)) {
                     var colConfig = angular.fromJson(value.collectionConfig);
                     colConfig.baseEntityName = colConfig.baseEntityName.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');

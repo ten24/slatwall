@@ -465,7 +465,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// NO INTEGRATION
 					} else {
-                    
+
 						//GiftCard
                         if(arguments.data.transactiontype eq "giftCard"){
 
@@ -516,8 +516,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                     arguments.paymentTransaction.addErrors(card.getErrors());
                                 }
                             }
-		               
-                        } else { 
+
+                        } else {
 
                             // Setup amountReceived
                             if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {

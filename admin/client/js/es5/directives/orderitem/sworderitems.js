@@ -289,7 +289,7 @@ angular.module('slatwalladmin')
                             $log.debug("OrderItem Product Type");
                             $log.debug(scope.orderItems);
                         }
-                        scope.paginator.setPageRecordsInfo(scope.collection.recordsCount, scope.collection.pageRecordsStart, scope.collection.pageRecordsEnd, scope.collection.totalPages);
+                        scope.paginator.setPageRecordsInfo(scope.collection);
                         scope.loadingCollection = false;
                     }, function (value) {
                         scope.orderItems = [];

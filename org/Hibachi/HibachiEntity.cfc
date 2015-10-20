@@ -493,8 +493,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				
 			// Otherwise add a where clause for many to many
 			} else if (getPropertyMetaData( arguments.propertyName ).fieldtype == "many-to-many") {
-				
-				smartList.addWhereCondition("EXISTS (SELECT r FROM #getEntityName()# t INNER JOIN t.#getPropertyMetaData( arguments.propertyName ).name# r WHERE r.#exampleEntity.getPrimaryIDPropertyName()# = a#lcase(exampleEntity.getEntityName())#.#exampleEntity.getPrimaryIDPropertyName()# AND t.#getPrimaryIDPropertyName()# = '#getPrimaryIDValue()#')");
+
+				smartList.addWhereCondition("EXISTS (SELECT r FROM #getEntityName()# t INNER JOIN t.#getPropertyMetaData( arguments.propertyName ).name# r WHERE r.id = a#lcase(exampleEntity.getEntityName())#.id AND t.id = '#getPrimaryIDValue()#')");
 				
 			}
 			

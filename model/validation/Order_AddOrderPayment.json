@@ -8,7 +8,7 @@
     	},
     	"giftCardOrderTypeReturn":{
     		"order.typeCode":{"eq":"otReturnOrder"}, 
-    		"newOrderPayment":{"method":"isGiftCardReturnOrderPayment"}
+    		"newOrderPayment":{"method":"isReturnWithGiftCardOrderPayment"}
     	}, 
     	"giftCardPayment":{
     		"newOrderPayment.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}, 
