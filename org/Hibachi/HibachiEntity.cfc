@@ -487,7 +487,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				// Loop over the properties in the example entity to 
 				for(var i=1; i<=arrayLen(exampleEntity.getProperties()); i++) {
 					if( structKeyExists(exampleEntity.getProperties()[i], "fkcolumn") && exampleEntity.getProperties()[i].fkcolumn == getPropertyMetaData( arguments.propertyName ).fkcolumn ) {
-						smartList.addFilter("#exampleEntity.getProperties()[i].name#.id", getPrimaryIDValue());
+						smartList.addFilter("#exampleEntity.getProperties()[i].name#.#getPrimaryIDPropertyName()#", getPrimaryIDValue());
 					}
 				}
 				
