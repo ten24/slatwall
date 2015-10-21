@@ -1,5 +1,5 @@
-<div> 
-	
-											
-	
-</div> 
+<p ng-show="swAddOptionGroup.showInvalidFlag">This sku already exists please try a different combination</p>
+<p ng-show="swAddOptionGroup.showValidFlag">This sku can be saved</p>
+<div ng-if="swAddOptionGroup.usedOptions" ng-repeat="optionGroupId in swAddOptionGroup.optionGroupIds track by $index">
+	<div sw-options-for-option-group option-group-id="{{optionGroupId}}"></div>
+</div>

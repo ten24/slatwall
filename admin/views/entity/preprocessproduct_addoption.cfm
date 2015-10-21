@@ -62,11 +62,13 @@ Notes:
 
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="option" fieldType="select" valueOptions="#rc.product.getUnusedProductOptions()#" edit="#rc.edit#">
+			<!---<hb:HibachiPropertyDisplay object="#rc.processObject#" property="option" fieldType="select" valueOptions="#rc.product.getUnusedProductOptions()#" edit="#rc.edit#">--->
+			<div sw-add-option-group option-groups="'#rc.product.getOptionGroupsAsList()#'" product-id="#rc.product.getProductID()#"></div>
+
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 
-	<div sw-add-option-group product-id="#rc.product.getProductID()#"></div>
+
 
 </hb:HibachiEntityProcessForm>
 </cfoutput>

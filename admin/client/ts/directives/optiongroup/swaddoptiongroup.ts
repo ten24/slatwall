@@ -3,64 +3,182 @@
 module slatwalladmin {
 	'use strict';
 	
+	export class optionWithGroup {
+		constructor(
+			public optionID:string,
+			public optionGroupID:string,
+			public match:boolean
+		){
+			
+		}
+	}
+	
 	export class SWAddOptionGroupController {
 		
+		public optionGroups;
+		public optionGroupIds; 
 		public productId; 
 		public product; 
 		public productTypeID; 
-		public optionGroups; 
-		public optionGroupCollectionConfig;
-		public productCollectionConfig; 
+		public productCollectionConfig;
+		public skuCollectionConfig;
+		public skus; 
+		public usedOptions; 
+		public selection; 
+		public showValidFlag; 
+		public showInvalidFlag; 
 		
-		public static $inject=["$slatwall", "$timeout", "collectionConfigService"];
+		public static $inject=["$slatwall", "$timeout", "collectionConfigService", "observerService"];
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.collectionConfigService){
-			console.log("constructing");
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.CollectionConfig, private observerService){
+
+			this.optionGroupIds = this.optionGroups.split(",");
+			this.selection = [];
 			
-			this.optionGroupCollectionConfig = collectionConfigService.newCollectionConfig("OptionGroup");
-			this.optionGroupCollectionConfig.setDisplayProperties("optionGroupID, optionGroupName, productTypes.productTypeID");
+			this.showValidFlag = false; 
+			this.showInvalidFlag = false;
+			
+			//this is done descending so that the option groups will line up when we compare them 
+			for(var i=this.optionGroupIds.length-1; i>=0; i--){
+				this.selection.push(new optionWithGroup("", this.optionGroupIds[i], false)); 
+			} 
+			
 			
 			this.productCollectionConfig = collectionConfigService.newCollectionConfig("Product");
 			this.productCollectionConfig.setDisplayProperties("productID, productName, productType.productTypeID");
 			this.productCollectionConfig.getEntity(this.productId).then((response)=>{
-				this.product = response; 
+				
+				this.product = response; 				
 				this.productTypeID = response.productType_productTypeID;
-				this.updateOptionGroup(response.productType_productTypeID);
+				this.skuCollectionConfig = collectionConfigService.newCollectionConfig("Sku");
+				this.skuCollectionConfig.setDisplayProperties("skuID, skuCode, product.productID"); 
+				this.skuCollectionConfig.addFilter("product.productID", this.productId);
+				this.skuCollectionConfig.setAllRecords(true);
+				
+				this.usedOptions = [];
+				
+				this.skuCollectionConfig.getEntity().then((response)=>{
+					this.skus = response.records; 	
+					angular.forEach(this.skus, (sku)=>{
+						var optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
+						optionCollectionConfig.setDisplayProperties("optionID, optionName, optionCode, optionGroup.optionGroupID");
+						optionCollectionConfig.setAllRecords(true);
+						optionCollectionConfig.addFilter("skus.skuID", sku.skuID);
+						optionCollectionConfig.getEntity().then((response)=>{
+							console.log("usedoptions")
+							console.log(response.records);
+							this.usedOptions.push(response.records);
+						});
+					});
+				}); 
 			}); 
 			
-			
+			this.observerService.attach(this.validateOptions, "validateOptions");			
 		}
 		
-		public updateOptionGroup = (relatedProductTypeID?) =>{
-			if(angular.isDefined(relatedProductTypeID)){
-				this.optionGroupCollectionConfig.addFilter("productTypes.productTypeID", relatedProductTypeID); 
-			} else { 
-				this.optionGroupCollectionConfig.addFilter("productTypes.productTypeID", this.productTypeID);
+		public validateOptions = (args:Array<any>) => {
+			console.log("validating options"); 
+			console.log(args[0]);
+			console.log(args[1]);
+			console.log("has complete selection " + this.hasCompleteSelection());
+			
+			//if( !this.hasCompleteSelection() ){
+			this.addToSelection(args[0], args[1].optionGroupID); 		
+			//} 
+			
+			if( this.hasCompleteSelection() ){
+				console.log("validating:   " + this.validateSelection());
+				if(this.validateSelection()){
+					this.showValidFlag = true; 
+					this.showInvalidFlag = false; 
+				} else { 
+					this.showValidFlag = false; 
+					this.showInvalidFlag = true; 
+				}
 			}
-			this.optionGroupCollectionConfig.getEntity().then((response)=>{
-				this.optionGroups = response.pageRecords; 
-				console.log(this.optionGroups);
-			});
+			
+			console.log(this.selection); 
 		}
-	
+		
+		private validateSelection = () => {
+			var valid = true; 
+			angular.forEach(this.usedOptions, (combination) => {
+				if(valid){
+					console.log("compare here")
+					console.log(combination); 
+					console.log(this.selection); 
+					var counter = 0;
+					angular.forEach(combination, (usedOption) => {
+						if(this.selection[counter].optionGroupID === usedOption.optionGroup_optionGroupID
+						&& this.selection[counter].optionID != usedOption.optionID
+						){
+							this.selection[counter].match = true; 
+						}
+						counter++; 
+					});
+					if(!this.allSelectionFieldsValidForThisCombination()){
+						valid = false; 
+					} 
+				}
+			}); 
+			
+			return valid; 
+		}	
+		
+		private allSelectionFieldsValidForThisCombination = () =>{
+			var matches = 0; 
+			angular.forEach(this.selection, (pair)=>{
+				if(!pair.match){
+					matches++; 
+				}
+				//reset 
+				pair.match = false; 
+			}); 
+			return matches != this.selection.length; 
+		}
+			
+		private hasCompleteSelection = () =>{ 
+			var answer = true; 
+			angular.forEach(this.selection, (pair)=>{
+				console.log("length" + pair.optionID.length);
+				if(pair.optionID.length === 0){
+					answer = false; 
+				}
+			});
+			return answer;
+		}
+		
+		private addToSelection = (optionId:string, optionGroupId:string) => { 
+			console.log("adding to selection");
+			console.log(optionId);
+			console.log(optionGroupId);
+			angular.forEach(this.selection, (pair)=>{
+				if(pair.optionGroupID === optionGroupId){
+					pair.optionID = optionId; 
+					return true; 
+				}
+			});
+			return false; 
+		}
 		
 	}
     
     export class SWAddOptionGroup implements ng.IDirective{
         
-		public static $inject=["$slatwall", "$timeout", "collectionConfigService", "partialsPath"];
+		public static $inject=["$slatwall", "$timeout", "collectionConfigService", "observerService", "partialsPath"];
 		public templateUrl; 
 		public restrict = "EA"; 
 		public scope = {}	
 		
 		public bindToController = {
-			productId:"@"
+			productId:"@", 
+			optionGroups:"="
 		}
 		public controller=SWAddOptionGroupController;
         public controllerAs="swAddOptionGroup";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.collectionConfigService, private partialsPath:slatwalladmin.partialsPath){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.CollectionConfig, private observerService:slatwalladmin.ObserverService, private partialsPath){
 			this.templateUrl = partialsPath + "entity/OptionGroup/addoptiongroup.html";	
 		}
 
@@ -70,8 +188,8 @@ module slatwalladmin {
     }
     
     angular.module('slatwalladmin').directive('swAddOptionGroup',
-		["$slatwall", "$timeout", "collectionConfigService", "partialsPath", 
-			($slatwall, $timeout, collectionConfigService, partialsPath) => 
-				new SWAddOptionGroup($slatwall, $timeout, collectionConfigService, partialsPath)]); 
+		["$slatwall", "$timeout", "collectionConfigService", "observerService", "partialsPath", 
+			($slatwall, $timeout, collectionConfigService, observerService, partialsPath) => 
+				new SWAddOptionGroup($slatwall, $timeout, collectionConfigService, observerService, partialsPath)]); 
 
 }

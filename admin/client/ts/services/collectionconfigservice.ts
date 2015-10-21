@@ -38,7 +38,7 @@ module slatwalladmin{
         ){}
     }
 
-    class Join{
+    export class Join{
         constructor(public associationName:string,
                     public alias:string
         ){}
@@ -254,7 +254,7 @@ module slatwalladmin{
                 columnObject.aggregate = options.aggregate;
             }
             //add any non-conventional options
-            for(key in options){
+            for(var key in options){
                 if(!columnObject[key]){
                     columnObject[key] = options[key];    
                 }    
