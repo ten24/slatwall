@@ -11,6 +11,10 @@ module slatwalladmin {
 		){
 			
 		}
+		
+		public toString = () => {
+			return this.optionID;
+		}
 	}
 	
 	export class SWAddOptionGroupController {
@@ -25,12 +29,17 @@ module slatwalladmin {
 		public skus; 
 		public usedOptions; 
 		public selection; 
+		public selectedOptionList;
 		public showValidFlag; 
 		public showInvalidFlag; 
 		
-		public static $inject=["$slatwall", "$timeout", "collectionConfigService", "observerService"];
+		public static $inject=["$slatwall", "$timeout", "collectionConfigService", "observerService", "utilityService"];
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.CollectionConfig, private observerService){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, 
+				    private collectionConfigService:slatwalladmin.CollectionConfig, 
+					private observerService:slatwalladmin.ObserverService,
+					private utilityService:slatwalladmin.UtilityService
+		){
 
 			this.optionGroupIds = this.optionGroups.split(",");
 			this.selection = [];
@@ -46,10 +55,12 @@ module slatwalladmin {
 			
 			this.productCollectionConfig = collectionConfigService.newCollectionConfig("Product");
 			this.productCollectionConfig.setDisplayProperties("productID, productName, productType.productTypeID");
+			
 			this.productCollectionConfig.getEntity(this.productId).then((response)=>{
 				
 				this.product = response; 				
 				this.productTypeID = response.productType_productTypeID;
+				
 				this.skuCollectionConfig = collectionConfigService.newCollectionConfig("Sku");
 				this.skuCollectionConfig.setDisplayProperties("skuID, skuCode, product.productID"); 
 				this.skuCollectionConfig.addFilter("product.productID", this.productId);
@@ -60,13 +71,14 @@ module slatwalladmin {
 				this.skuCollectionConfig.getEntity().then((response)=>{
 					this.skus = response.records; 	
 					angular.forEach(this.skus, (sku)=>{
+						
 						var optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
+						
 						optionCollectionConfig.setDisplayProperties("optionID, optionName, optionCode, optionGroup.optionGroupID");
 						optionCollectionConfig.setAllRecords(true);
 						optionCollectionConfig.addFilter("skus.skuID", sku.skuID);
+						
 						optionCollectionConfig.getEntity().then((response)=>{
-							console.log("usedoptions")
-							console.log(response.records);
 							this.usedOptions.push(response.records);
 						});
 					});
@@ -76,19 +88,19 @@ module slatwalladmin {
 			this.observerService.attach(this.validateOptions, "validateOptions");			
 		}
 		
+		public getOptionList = () => {
+			return this.utilityService.arrayToList(this.selection);  
+		}
+		
 		public validateOptions = (args:Array<any>) => {
-			console.log("validating options"); 
-			console.log(args[0]);
-			console.log(args[1]);
-			console.log("has complete selection " + this.hasCompleteSelection());
-			
-			//if( !this.hasCompleteSelection() ){
+
 			this.addToSelection(args[0], args[1].optionGroupID); 		
-			//} 
 			
 			if( this.hasCompleteSelection() ){
 				console.log("validating:   " + this.validateSelection());
 				if(this.validateSelection()){
+					this.selectedOptionList = this.getOptionList();
+					console.log(this.selectedOptionList);
 					this.showValidFlag = true; 
 					this.showInvalidFlag = false; 
 				} else { 
@@ -96,21 +108,16 @@ module slatwalladmin {
 					this.showInvalidFlag = true; 
 				}
 			}
-			
-			console.log(this.selection); 
 		}
 		
 		private validateSelection = () => {
 			var valid = true; 
 			angular.forEach(this.usedOptions, (combination) => {
 				if(valid){
-					console.log("compare here")
-					console.log(combination); 
-					console.log(this.selection); 
 					var counter = 0;
 					angular.forEach(combination, (usedOption) => {
 						if(this.selection[counter].optionGroupID === usedOption.optionGroup_optionGroupID
-						&& this.selection[counter].optionID != usedOption.optionID
+						   && this.selection[counter].optionID != usedOption.optionID
 						){
 							this.selection[counter].match = true; 
 						}
@@ -178,7 +185,10 @@ module slatwalladmin {
         public controllerAs="swAddOptionGroup";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.CollectionConfig, private observerService:slatwalladmin.ObserverService, private partialsPath){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, 
+					private collectionConfigService:slatwalladmin.CollectionConfig, 
+					private observerService:slatwalladmin.ObserverService, private partialsPath
+		){
 			this.templateUrl = partialsPath + "entity/OptionGroup/addoptiongroup.html";	
 		}
 

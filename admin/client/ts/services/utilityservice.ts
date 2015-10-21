@@ -161,6 +161,21 @@ module slatwalladmin{
               return text;
           }
           //list functions
+          public arrayToList = (array:Array<any>, delimiter?:string) =>{
+              var list = ""; 
+
+              for(var i=0; i<array.length; i++){
+                  list = list.concat(array[i].toString());
+                  if(delimiter != null){
+                      list = list.concat(delimiter); 
+                  } else { 
+                      list = list.concat(",");
+                  }
+              }
+              
+              return list; 
+          }
+          
          public listFind = (list:string='',value:string,delimiter:string=','):void =>{
               var splitString = list.split(delimiter);
               var stringFound = -1;

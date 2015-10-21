@@ -876,12 +876,66 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService('productService').getProductOptionsByGroup( this );
 	}
 
-	public array function getUnusedProductOptions() {
-		if( !structKeyExists(variables, "unusedProductOptions") ) {
-			variables.unusedProductOptions = getService('optionService').getUnusedProductOptions( getProductID(), structKeyList(getOptionGroupsStruct()) );
+	public array function hasUnusedProductOptions(){
+
+		var optionGroups = [];
+		var usedOptions = [];
+		var first = true;
+
+		for(var sku in this.getSkus()){
+			for(var option in sku.getOptions()){
+				if(first){
+					ArrayAppend(optionGroups, option.getOptionGroup());
+					ArrayAppend(usedOptions, option);
+					first = false;
+				} else {
+					ArrayAppend(usedOptions, option);
+				}
+			}
 		}
-		return variables.unusedProductOptions;
+
+		for(var optionGroup in optionGroups){
+			for(var option in optionGroup.getOptions()){
+				if(!ArrayContains(usedOptions,options)){
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
+
+	public array function getUnusedProductOptions(){
+
+		var optionGroups = [];
+		var usedOptions = [];
+		var unusedOptions = [];
+		var first = true;
+
+		for(var sku in this.getSkus()){
+			for(var option in sku.getOptions()){
+				if(first){
+					ArrayAppend(optionGroups, option.getOptionGroup());
+					ArrayAppend(usedOptions, option);
+					first = false;
+				} else {
+					ArrayAppend(usedOptions, option);
+				}
+			}
+		}
+
+		for(var optionGroup in optionGroups){
+			for(var option in optionGroup.getOptions()){
+				if(!ArrayContains(usedOptions,option)){
+					ArrayAppend(unusedOptions, option);
+				}
+			}
+		}
+
+		return unusedOptions;
+	}
+
+
 
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
