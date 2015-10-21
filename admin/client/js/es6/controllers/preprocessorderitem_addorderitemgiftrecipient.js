@@ -130,4 +130,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../controllers/preprocessorderitem_addorderitemgiftrecipient.js.map
+//# sourceMappingURL=preprocessorderitem_addorderitemgiftrecipient.js.map
