@@ -188,6 +188,9 @@ var slatwalladmin;
             this.capitalize = function (s) {
                 return s && s[0].toUpperCase() + s.slice(1);
             };
+            this.addColumn = function (column) {
+                _this.addColumn(column.propertyIdentifier, column.title, column);
+            };
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
@@ -248,7 +251,7 @@ var slatwalladmin;
                     _this.addColumn(_this.formatCollectionName(column), title, options);
                 });
             };
-            this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias) {
+            this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
                 var alias = _this.baseEntityAlias;
                 var doJoin = false;
                 var collection = propertyIdentifier;
@@ -283,6 +286,7 @@ var slatwalladmin;
                     var join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;
                 }
+                angular.extend(column, options);
                 //Add columns
                 _this.addColumn(column.propertyIdentifier, undefined, column);
                 if (doJoin) {

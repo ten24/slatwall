@@ -29,50 +29,51 @@ angular.module('slatwalladmin')
                 scope.orderBy;
                 var orderByConfig;
                 scope.getCollection = function (isSearching) {
-                    var columnsConfig = [
-                        { "propertyIdentifier": "_content_childContents", "title": "", "isVisible": true, "isDeletable": true, "isSearchable": true, "isExportable": true, "ormtype": "string", "aggregate": { "aggregateFunction": "COUNT", "aggregateAlias": "childContentsCount" } },
-                        {
-                            propertyIdentifier: '_content.contentID',
-                            isVisible: false,
-                            ormtype: 'id',
-                            isSearchable: true
-                        },
-                        {
-                            propertyIdentifier: '_content.site.siteID',
-                            isVisible: false,
-                            ormtype: 'id',
-                            isSearchable: false
-                        },
-                        {
-                            propertyIdentifier: '_content.site.domainNames',
-                            isVisible: false,
-                            isSearchable: true
-                        },
-                        {
-                            propertyIdentifier: '_content.urlTitlePath',
-                            isVisible: false,
-                            isSearchable: true
-                        },
-                        //need to get template via settings
-                        {
-                            propertyIdentifier: '_content.allowPurchaseFlag',
-                            isVisible: true,
-                            ormtype: 'boolean',
-                            isSearchable: false
-                        },
-                        {
-                            propertyIdentifier: '_content.productListingPageFlag',
-                            isVisible: true,
-                            ormtype: 'boolean',
-                            isSearchable: false
-                        },
-                        {
-                            propertyIdentifier: '_content.activeFlag',
-                            isVisible: true,
-                            ormtype: 'boolean',
-                            isSearchable: false
-                        }
-                    ];
+                    scope.collectionConfig = collectionConfigService.newCollectionConfig('Content');
+                    //                    var columnsConfig = [
+                    //                        {"propertyIdentifier":"_content_childContents","title":"","isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","aggregate":{"aggregateFunction":"COUNT","aggregateAlias":"childContentsCount"}},
+                    //                        {
+                    //                            propertyIdentifier:'_content.contentID',
+                    //                            isVisible:false,
+                    //                            ormtype:'id',
+                    //                            isSearchable:true
+                    //                        },
+                    //                         {
+                    //                            propertyIdentifier:'_content.site.siteID',
+                    //                            isVisible:false,
+                    //                            ormtype:'id',
+                    //                            isSearchable:false
+                    //                        },
+                    //                        {
+                    //                                propertyIdentifier: '_content.site.domainNames',
+                    //                                isVisible: false,
+                    //                                isSearchable: true
+                    //                        },
+                    //                        {
+                    //                                propertyIdentifier: '_content.urlTitlePath',
+                    //                                isVisible: false,
+                    //                                isSearchable: true
+                    //                        },
+                    //                        //need to get template via settings
+                    //                        {
+                    //                            propertyIdentifier:'_content.allowPurchaseFlag',
+                    //                            isVisible:true,
+                    //                            ormtype:'boolean',
+                    //                            isSearchable:false
+                    //                        }, 
+                    //                        {
+                    //                            propertyIdentifier:'_content.productListingPageFlag',
+                    //                            isVisible:true,
+                    //                            ormtype:'boolean',
+                    //                            isSearchable:false
+                    //                        },
+                    //                        {
+                    //                            propertyIdentifier:'_content.activeFlag',
+                    //                            isVisible:true,
+                    //                            ormtype:'boolean',
+                    //                            isSearchable:false
+                    //                        }
+                    //                    ];
                     var options = {
                         currentPage: '1',
                         pageShow: '1',
@@ -145,7 +146,6 @@ angular.module('slatwalladmin')
                     options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
                     options.columnsConfig = angular.toJson(columnsConfig);
                     scope.collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
-                    scope.collectionConfig = collectionConfigService.newCollectionConfig('Content');
                     var json = {
                         columns: columnsConfig,
                         filterGroups: filterGroupsConfig,

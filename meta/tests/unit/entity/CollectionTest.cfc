@@ -86,7 +86,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(pageRecords);
 //	}
 
+//	public void function ormtest(){
+//		var test = ORMExecuteQuery("SELECT COUNT(_content) FROM SlatwallContent as _content left join _content.childContents as _content_childContents left join _content.parentContent as _content_parentContent left join _content.site as _content_site where ( _content_parentContent IS null AND _content_site.siteID = 'ff8080814fd8080e014ff1bee02c006d' ) GROUP BY _content ");
+//		"SELECT new Map( 
+//			title as title, contentID as contentID, urlTitlePath as urlTitlePath, allowPurchaseFlag as allowPurchaseFlag, productListingPageFlag as productListingPageFlag, activeFlag as activeFlag, COUNT(_content_childContents) as childContentsCount, _content_site.siteID as site_siteID, _content_site.domainNames as site_domainNames) FROM SlatwallContent as _content left join _content.childContents as _content_childContents left join _content.parentContent as _content_parentContent left join _content.site as _content_site where ( _content_parentContent IS null AND _content_site.siteID = :Pa92d0cacb461407dadc463f529a5cad3 ) GROUP BY _content , _content_site ORDER BY _content.createdDateTime desc"
+//		
+//		request.debug(test);
+//	}
+
 	public void function addDisplayAggregateTest(){
+
+		
 
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.setDisplayProperties('product.productName,price');

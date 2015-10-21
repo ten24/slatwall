@@ -954,6 +954,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!structKeyExists(variables,"records")) {
 					var HQL = getSelectionCountHQL() & getHQL(true);
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
+					if(isNull(recordCount)){
+						recordCount = 0;
+					}
 					variables.recordsCount = recordCount;
 					if(getCacheable()) {
 						application.entityCollection[ getCacheName() ] = {};

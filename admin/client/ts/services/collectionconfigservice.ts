@@ -84,7 +84,7 @@ module slatwalladmin{
             this.filterGroups = [{filterGroup: []}];    
         };
 
-        newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string)=>{
+        newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
             return new CollectionConfig(this.$slatwall, this.utilityService, baseEntityName, baseEntityAlias);
         };
 
@@ -201,6 +201,10 @@ module slatwalladmin{
         private capitalize = (s)  => {
             return s && s[0].toUpperCase() + s.slice(1);
         };
+        
+        private addColumn=(column:Column)=>{
+            this.addColumn(column.propertyIdentifier,column.title,column);
+        }
 
         private addColumn= (column: string, title: string = '', options:Object = {}) =>{
             var isVisible = true,
@@ -280,7 +284,7 @@ module slatwalladmin{
             });
         };
         
-        addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string)=>{
+        addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options)=>{
             var alias = this.baseEntityAlias;
             
             var doJoin = false;
@@ -291,6 +295,8 @@ module slatwalladmin{
                 collection = this.utilityService.mid(propertyIdentifier,0,propertyIdentifier.lastIndexOf('.'));
                 propertyKey = '.' + this.utilityService.listLast(propertyIdentifier,'.');
             }
+            
+            
             
             var column = {
                 propertyIdentifier:alias + '.' + propertyIdentifier,
@@ -321,6 +327,7 @@ module slatwalladmin{
                 var join = new Join(collection,this.buildPropertyIdentifier(alias,collection));
                 doJoin = true;
             }
+            angular.extend(column,options);
             //Add columns
             this.addColumn(column.propertyIdentifier,undefined,column);
             if(doJoin){
