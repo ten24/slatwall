@@ -13,4 +13,4 @@ var slatwalladmin;
     slatwalladmin.Alert = Alert;
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=alert.js.map
+//# sourceMappingURL=../model/alert.js.map

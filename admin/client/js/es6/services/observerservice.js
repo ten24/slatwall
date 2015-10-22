@@ -9,7 +9,7 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     class ObserverService extends slatwalladmin.BaseService {
-        constructor() {
+        constructor(utilityService) {
             /**
              * @ngdoc property
              * @name ObserverService#observers
@@ -18,6 +18,7 @@ var slatwalladmin;
              * @returns {object} object
              */
             super();
+            this.utilityService = utilityService;
             /* Declare methods */
             /**
              * @ngdoc method
@@ -29,14 +30,15 @@ var slatwalladmin;
              * @description adds events listeners
              */
             this.attach = (callback, event, id) => {
-                if (id) {
-                    if (!this.observers[event]) {
-                        this.observers[event] = {};
-                    }
-                    if (!this.observers[event][id])
-                        this.observers[event][id] = [];
-                    this.observers[event][id].push(callback);
+                if (!id) {
+                    id = this.utilityService.createID();
                 }
+                if (!this.observers[event]) {
+                    this.observers[event] = {};
+                }
+                if (!this.observers[event][id])
+                    this.observers[event][id] = [];
+                this.observers[event][id].push(callback);
             };
             /**
              * @ngdoc method
@@ -95,8 +97,9 @@ var slatwalladmin;
             this.observers = {};
         }
     }
+    ObserverService.$inject = ['utilityService'];
     slatwalladmin.ObserverService = ObserverService;
-    angular.module('slatwalladmin').service('observerService', ObserverService);
+    angular.module('hibachi').service('observerService', ObserverService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=observerservice.js.map
+//# sourceMappingURL=../services/observerservice.js.map

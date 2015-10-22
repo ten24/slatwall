@@ -610,10 +610,9 @@ component extends="FW1.framework" {
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
-		for(header in request.context.headers){
+		for(var header in request.context.headers){
 			response.setHeader(header,request.context.headers[header]);
 		}
-		
 		var responseString = '';
 		
 		if(structKeyExists(request.context, "messages") && !structKeyExists(request.context.apiResponse.content,'messages')) {
