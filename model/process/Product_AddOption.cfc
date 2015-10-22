@@ -54,4 +54,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="options";
 
+	public boolean function hasUnusedProductOptionCombinations(){
+		return this.getProduct().hasUnusedProductOptionCombinations();
+	}
+
 }

@@ -40,15 +40,16 @@ module slatwalladmin {
 					private observerService:slatwalladmin.ObserverService,
 					private utilityService:slatwalladmin.UtilityService
 		){
-
+			
 			this.optionGroupIds = this.optionGroups.split(",");
+			this.optionGroupIds.sort(); 
+			
 			this.selection = [];
 			
 			this.showValidFlag = false; 
 			this.showInvalidFlag = false;
 			
-			//this is done descending so that the option groups will line up when we compare them 
-			for(var i=this.optionGroupIds.length-1; i>=0; i--){
+			for(var i=0; i<this.optionGroupIds.length; i++){
 				this.selection.push(new optionWithGroup("", this.optionGroupIds[i], false)); 
 			} 
 			
@@ -79,7 +80,9 @@ module slatwalladmin {
 						optionCollectionConfig.addFilter("skus.skuID", sku.skuID);
 						
 						optionCollectionConfig.getEntity().then((response)=>{
-							this.usedOptions.push(response.records);
+							this.usedOptions.push(
+								utilityService.arraySorter(response.records, ["optionGroup_optionGroupID"])
+							);
 						});
 					});
 				}); 
@@ -97,10 +100,8 @@ module slatwalladmin {
 			this.addToSelection(args[0], args[1].optionGroupID); 		
 			
 			if( this.hasCompleteSelection() ){
-				console.log("validating:   " + this.validateSelection());
 				if(this.validateSelection()){
 					this.selectedOptionList = this.getOptionList();
-					console.log(this.selectedOptionList);
 					this.showValidFlag = true; 
 					this.showInvalidFlag = false; 
 				} else { 
@@ -112,6 +113,7 @@ module slatwalladmin {
 		
 		private validateSelection = () => {
 			var valid = true; 
+
 			angular.forEach(this.usedOptions, (combination) => {
 				if(valid){
 					var counter = 0;
@@ -147,7 +149,6 @@ module slatwalladmin {
 		private hasCompleteSelection = () =>{ 
 			var answer = true; 
 			angular.forEach(this.selection, (pair)=>{
-				console.log("length" + pair.optionID.length);
 				if(pair.optionID.length === 0){
 					answer = false; 
 				}
@@ -156,9 +157,6 @@ module slatwalladmin {
 		}
 		
 		private addToSelection = (optionId:string, optionGroupId:string) => { 
-			console.log("adding to selection");
-			console.log(optionId);
-			console.log(optionGroupId);
 			angular.forEach(this.selection, (pair)=>{
 				if(pair.optionGroupID === optionGroupId){
 					pair.optionID = optionId; 

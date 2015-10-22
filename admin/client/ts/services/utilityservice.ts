@@ -162,18 +162,11 @@ module slatwalladmin{
           }
           //list functions
           public arrayToList = (array:Array<any>, delimiter?:string) =>{
-              var list = ""; 
-
-              for(var i=0; i<array.length; i++){
-                  list = list.concat(array[i].toString());
-                  if(delimiter != null){
-                      list = list.concat(delimiter); 
-                  } else { 
-                      list = list.concat(",");
-                  }
-              }
-              
-              return list; 
+              if(delimiter != null){
+                  return array.join(delimiter); 
+              } else { 
+                  return array.join(); 
+              } 
           }
           
          public listFind = (list:string='',value:string,delimiter:string=','):void =>{
@@ -223,7 +216,7 @@ module slatwalladmin{
                             tempArray.push(array[itemIndex]);  
                         }
                     }
-                    if(keysToSortBy[1].length){
+                    if(keysToSortBy[1] != null){
                         tempArray.sort(function(a, b){
                             if(a[secondKey]< b[secondKey]){
                                 return -1;
