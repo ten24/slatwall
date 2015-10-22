@@ -31,9 +31,7 @@ var slatwalladmin;
                 if (_this.hasCollectionPromise) {
                     _this.collectionObject = _this.collection.collectionObject;
                     _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
-                    console.log(_this.collection.collectionConfig);
                     _this.collectionConfig.loadJson(_this.collection.collectionConfig);
-                    console.log(_this.collectionConfig);
                 }
                 else {
                     _this.collectionObject = _this.collection;
@@ -92,8 +90,6 @@ var slatwalladmin;
                 }
                 //Setup Hierachy Expandable
                 if (_this.parentPropertyName && _this.parentPropertyName.length) {
-                    console.log('expandable');
-                    console.log(_this.expandable);
                     if (angular.isUndefined(_this.expandable)) {
                         _this.expandable = true;
                     }
@@ -326,8 +322,6 @@ var slatwalladmin;
             }
             this.setupDefaultCollectionInfo();
             this.setupColumns();
-            console.log(this.collection);
-            console.log(this.collectionObject);
             this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
             this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
             this.initData();
@@ -345,7 +339,6 @@ var slatwalladmin;
             this.tableID = 'LD' + this.utilityService.createID();
             //if getCollection doesn't exist then create it
             if (angular.isUndefined(this.getCollection)) {
-                console.log('definde getcollection');
                 this.getCollection = this.setupDefaultGetCollection();
             }
             this.paginator.getCollection = this.getCollection;

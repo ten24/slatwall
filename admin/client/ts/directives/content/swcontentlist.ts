@@ -25,7 +25,6 @@ module slatwalladmin {
             private collectionConfigService:slatwalladmin.CollectionService
         ){
                this.$log.debug('slatwallcontentList init');
-               console.log(this);
 	           var pageShow = 50;
                if(this.pageShow !== 'Auto'){
                    pageShow = this.pageShow;
@@ -260,8 +259,6 @@ module slatwalladmin {
         } 
         
         public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
-            console.log('directive');
-            console.log(scope);
             scope.$on('$destroy', function handler() {
                observerService.detachByEvent('optionsChanged');
                observerService.detachByEvent('sortByColumn');
