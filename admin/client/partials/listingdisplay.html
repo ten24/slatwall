@@ -1,4 +1,4 @@
-{{swListingDisplay.collectionConfig.columns}}
+
 <div class="s-table-header-nav s-listing-head-margin">
 	<div class="col-xs-6 s-no-padding-left" ng-if="swListingDisplay.title">
 		<ul class="list-inline list-unstyled">
@@ -242,14 +242,26 @@
 						data-confirm="true" 
 					></sw-action-caller>
 					
+					<!-- Add -->
+					<sw-action-caller 
+						ng-if="swListingDisplay.recordAddAction && swListingDisplay.recordAddAction.length"
+						data-action="{{swListingDisplay.recordAddAction}}" 
+						data-query-string="{{'&'+swListingDisplay.parentPropertyName+'ID='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordAddQueryString}}" 
+						data-class="btn btn-default btn-xs" 
+						data-icon="plus" 
+						data-iconOnly="true" 
+						data-confirm="true" 
+					></sw-action-caller>
+					
 					<!--- Process -->
 					<!--<sw-process-caller 
-						action="{{swListingDisplay.recordProcessAction}}" 
-						entity="#attributes.recordProcessEntity#" 
-						processContext="#attributes.recordProcessContext#" 
-						queryString="#listPrepend(attributes.recordProcessQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#" 
+						ng-if="swListingDisplay.recordProcessAction && swListingDisplay.recordProcessAction.length"
+						data-action="{{swListingDisplay.recordProcessAction}}" 
+						data-entity="swListingDisplay.recordProcessEntity" 
+						data-process-context="{{swListingDisplay.recordProcessContext}}" 
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordProcessQueryString}}" 
 						class="btn btn-default hibachi-ajax-submit" 
-						id="#thisID#" 
+						ng-attr-id="{{swListingDisplay.exampleEntity.$$getIDName()}}" 
 					></sw-process-caller>-->
 				</td>
 			</tr>

@@ -189,7 +189,7 @@ module slatwalladmin {
                             isSearchable: true
                        }
                    );
-                   this.collectionConfig.addGroupBy('_content_site');
+                   
                    angular.forEach(filterGroupsConfig[0].filterGroup,(filter)=>{
                        
                        this.collectionConfig.addFilter(filter.propertyIdentifier,filter.value,filter.comparisonOperator,filter.logicalOperator);

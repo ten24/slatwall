@@ -12,21 +12,36 @@
 						<sw-options
 							data-object-name="Site"
 						></sw-options>
+						
 					</div>
 				</div>
 			</div>
 		</nav>
 	</div>
-	
+	<!--?slatAction=entity.preprocesscontent&processContext=create&parentContentID=48993f68981f1787367aab51f78907df&siteID=5124bffa3f1fea7b013f2084af4b0010
+		-->
 	<sw-listing-display
 		ng-if="$root.loadedResourceBundle && swContentList.collectionListingPromise && swContentList.collection"	
 		data-collection-promise="swContentList.collectionListingPromise"
 		data-collection="swContentList.collection"
 		data-get-collection="swContentList.getCollection"
 		data-record-edit-action="admin:entity.editcontent"
+		data-record-add-action="entity.preprocesscontent"
+		data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
+			  
 	>
 	</sw-listing-display>
-
+<!--data-record-processes-config="{
+			recordProcessAction:'entity.preprocesscontent',
+			recordProcessActionProperties:"@",
+			recordProcessQueryString:"@",
+			recordProcessContext:'create',
+			
+			recordProcessEntity:"=",
+			recordProcessEntityData:"=",
+			recordProcessUpdateTableID:"=",
+			recordProcessButtonDisplayFlag:"=",
+		}"-->
 	
 	
 </section>

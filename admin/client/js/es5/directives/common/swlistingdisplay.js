@@ -82,6 +82,8 @@ var slatwalladmin;
                 if (!_this.parentPropertyName || (_this.parentPropertyName && !_this.parentPropertyName.length)) {
                     if (_this.exampleEntity.metaData.hb_parentPropertyName) {
                         _this.parentPropertyName = _this.exampleEntity.metaData.hb_parentPropertyName;
+                        _this.parentPropertyMetaData = _this.exampleEntity.metaData[_this.parentPropertyName];
+                        _this.parentEntity = _this.$slatwall.getEntityExample(_this.parentPropertyMetaData.cfc);
                     }
                 }
                 if (!_this.childPropertyName || (_this.childPropertyName && !_this.childPropertyName.length)) {
@@ -151,17 +153,22 @@ var slatwalladmin;
                     _this.administrativeCount++;
                     _this.adminattributes = _this.getAdminAttributesByType('delete');
                 }
-                //Process
-                if (_this.recordProcessAction && _this.recordProcessAction.length && _this.recordProcessButtonDisplayFlag) {
+                //Add
+                if (_this.recordAddAction && _this.recordAddAction.length) {
                     _this.administrativeCount++;
-                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-processcontext="' + _this.recordProcessContext + '"', " ");
-                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-processentity="' + _this.recordProcessEntity.getClassName() + '"', " ");
-                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-processentityid="' + _this.recordProcessEntity.getPrimaryIDValue() + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processaction="' + _this.recordProcessAction + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processcontext="' + _this.recordProcessContext + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processquerystring="' + _this.recordProcessQueryString + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processupdatetableid="' + _this.recordProcessUpdateTableID + '"', " ");
+                    _this.adminattributes = _this.getAdminAttributesByType('add');
                 }
+                //Process
+                // if(this.recordProcessAction && this.recordProcessAction.length && this.recordProcessButtonDisplayFlag){
+                //     this.administrativeCount++;
+                //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+                //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentity="'+this.recordProcessEntity.metaData.className+'"', " ");
+                //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentityid="'+this.recordProcessEntity.$$getID+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processaction="'+this.recordProcessAction+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processquerystring="'+this.recordProcessQueryString+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processupdatetableid="'+this.recordProcessUpdateTableID+'"', " ");
+                // }
                 //Setup the primary representation column if no columns were passed in
                 /*
                 <cfif not arrayLen(thistag.columns)>
@@ -378,13 +385,26 @@ var slatwalladmin;
                 recordDeleteAction: "@",
                 recordDeleteActionProperty: "@",
                 recordDeleteQueryString: "@",
-                recordProcessAction: "@",
-                recordProcessActionProperty: "@",
-                recordProcessQueryString: "@",
-                recordProcessContext: "@",
-                recordProcessEntity: "=",
-                recordProcessUpdateTableID: "=",
-                recordProcessButtonDisplayFlag: "=",
+                recordAddAction: "@",
+                recordAddActionProperty: "@",
+                recordAddQueryString: "@",
+                recordAddModal: "=",
+                recordAddDisabled: "=",
+                recordProcessesConfig: "=",
+                /* record processes config is an array of actions. Example:
+                [
+                   {
+                       recordProcessAction:"@",
+                       recordProcessActionProperty:"@",
+                       recordProcessQueryString:"@",
+                       recordProcessContext:"@",
+                       recordProcessEntity:"=",
+                       recordProcessEntityData:"=",
+                       recordProcessUpdateTableID:"=",
+                       recordProcessButtonDisplayFlag:"=",
+                   }
+                ]
+                */
                 /*Hierachy Expandable*/
                 parentPropertyName: "@",
                 /*Sorting*/

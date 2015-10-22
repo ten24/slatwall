@@ -155,7 +155,6 @@ var slatwalladmin;
                     isVisible: false,
                     isSearchable: true
                 });
-                _this.collectionConfig.addGroupBy('_content_site');
                 angular.forEach(filterGroupsConfig[0].filterGroup, function (filter) {
                     _this.collectionConfig.addFilter(filter.propertyIdentifier, filter.value, filter.comparisonOperator, filter.logicalOperator);
                 });

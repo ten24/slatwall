@@ -489,7 +489,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			break;
 		}
 		
-		return " #aggregateFunction#(#arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
+		return " #aggregateFunction#(DISTINCT #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
 	}
 	
 	public any function getCacheName() {
@@ -1104,7 +1104,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	private any function getSelectionCountHQL(){
-		return 'SELECT COUNT(#getCollectionConfigStruct().baseEntityAlias#.id) ';
+		return 'SELECT COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) ';
 	}
 	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
