@@ -18,8 +18,6 @@
 			</div>
 		</nav>
 	</div>
-	<!--?slatAction=entity.preprocesscontent&processContext=create&parentContentID=48993f68981f1787367aab51f78907df&siteID=5124bffa3f1fea7b013f2084af4b0010
-		-->
 	<sw-listing-display
 		ng-if="$root.loadedResourceBundle && swContentList.collectionListingPromise && swContentList.collection"	
 		data-collection-promise="swContentList.collectionListingPromise"
@@ -28,6 +26,7 @@
 		data-record-edit-action="admin:entity.editcontent"
 		data-record-add-action="entity.preprocesscontent"
 		data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
+		data-expandable-open-root="true"
 			  
 	>
 	</sw-listing-display>

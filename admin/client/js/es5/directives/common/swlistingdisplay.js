@@ -24,7 +24,6 @@ var slatwalladmin;
             this.allprocessobjectproperties = "false";
             this.selectable = false;
             this.multiselectable = false;
-            this.expandable = false;
             this.sortable = false;
             this.exampleEntity = "";
             this.buttonGroup = [];
@@ -93,7 +92,11 @@ var slatwalladmin;
                 }
                 //Setup Hierachy Expandable
                 if (_this.parentPropertyName && _this.parentPropertyName.length) {
-                    _this.expandable = true;
+                    console.log('expandable');
+                    console.log(_this.expandable);
+                    if (angular.isUndefined(_this.expandable)) {
+                        _this.expandable = true;
+                    }
                     _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-expandable', ' ');
                     //add parent property root filter
                     if (!_this.hasCollectionPromise) {
@@ -407,6 +410,9 @@ var slatwalladmin;
                 */
                 /*Hierachy Expandable*/
                 parentPropertyName: "@",
+                //booleans
+                expandable: "=",
+                expandableOpenRoot: "=",
                 /*Sorting*/
                 sortProperty: "@",
                 sortContextIDColumn: "@",

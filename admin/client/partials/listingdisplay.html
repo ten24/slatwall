@@ -191,6 +191,7 @@
 					ng-if="column.isVisible"
 					sw-expandable-record
 					data-expandable="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
+					data-auto-open="swListingDisplay.expandableOpenRoot"
 					data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)}}"
 					data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
 					data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"

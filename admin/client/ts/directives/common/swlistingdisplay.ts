@@ -12,7 +12,7 @@ module slatwalladmin {
         private allprocessobjectproperties:string = "false";
         private selectable:boolean = false;
         private multiselectable:boolean = false;
-        private expandable:boolean = false;
+        private expandable:boolean;
         private sortable:boolean = false;
         private exampleEntity:any = "";
         private buttonGroup = [];
@@ -178,8 +178,12 @@ module slatwalladmin {
             }
              //Setup Hierachy Expandable
             if(this.parentPropertyName && this.parentPropertyName.length){
+                console.log('expandable');
+                console.log(this.expandable);
+                if(angular.isUndefined(this.expandable)){
+                    this.expandable = true;
+                }
                 
-                this.expandable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
                 //add parent property root filter
                 if(!this.hasCollectionPromise){
@@ -539,6 +543,9 @@ module slatwalladmin {
              
              /*Hierachy Expandable*/
              parentPropertyName:"@",
+             //booleans
+             expandable:"=",
+             expandableOpenRoot:"=",
             
              /*Sorting*/
              sortProperty:"@",
