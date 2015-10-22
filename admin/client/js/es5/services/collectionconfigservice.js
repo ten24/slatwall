@@ -326,8 +326,8 @@ var slatwalladmin;
                     _this.filterGroups = [{ filterGroup: [] }];
                 }
                 var collection = propertyIdentifier;
-                var propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
                 //if the propertyIdenfifier is a chain
+                var propertyKey = '';
                 if (propertyIdentifier.indexOf('.') !== -1) {
                     collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
                     propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
@@ -340,7 +340,7 @@ var slatwalladmin;
                     join = new Join(propertyIdentifier, _this.buildPropertyIdentifier(alias, propertyIdentifier));
                     doJoin = true;
                 }
-                else {
+                else if (propertyKey !== '') {
                     filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
                     join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;

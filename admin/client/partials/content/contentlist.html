@@ -18,18 +18,45 @@
 			</div>
 		</nav>
 	</div>
-	<sw-listing-display
-		ng-if="$root.loadedResourceBundle && swContentList.collectionListingPromise && swContentList.collection"	
-		data-collection-promise="swContentList.collectionListingPromise"
-		data-collection="swContentList.collection"
-		data-get-collection="swContentList.getCollection"
-		data-record-edit-action="admin:entity.editcontent"
-		data-record-add-action="entity.preprocesscontent"
-		data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
-		data-expandable-open-root="true"
-			  
-	>
-	</sw-listing-display>
+	<div class="s-table-header-nav s-listing-head-margin">
+		<div class="col-xs-6 s-no-padding-left">
+			<ul class="list-inline list-unstyled">
+				<!-- to implement searching-->
+				<li>
+					<div class="s-select-list-wrapper">
+						<div class="form-group">
+							<div class="input-group">
+								<div class="s-input-btn">
+									<input  type="text"
+										class="form-control input-sm"
+										placeholder="Search"
+										name="srch-term"
+										ng-model="swContentList.keywords"
+										ng-change="swContentList.searchCollection()"
+										/>
+									<i ng-show="swContentList.loadingCollection" class="fa fa-refresh fa-spin"></i>
+									<i ng-hide="swContentList.loadingCollection" class="fa fa-search"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- s-select-list-wrapper -->
+				</li>
+			</ul>
+			
+		</div>
+		<sw-listing-display
+			ng-if="$root.loadedResourceBundle && swContentList.collectionListingPromise && swContentList.collection"	
+			data-collection-promise="swContentList.collectionListingPromise"
+			data-collection="swContentList.collection"
+			data-get-collection="swContentList.getCollection"
+			data-record-edit-action="admin:entity.editcontent"
+			data-record-add-action="entity.preprocesscontent"
+			data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
+			data-expandable-open-root="true"
+			data-expandable="!swContentList.isSearching"
+		>
+		</sw-listing-display>
 <!--data-record-processes-config="{
 			recordProcessAction:'entity.preprocesscontent',
 			recordProcessActionProperties:"@",
@@ -41,6 +68,7 @@
 			recordProcessUpdateTableID:"=",
 			recordProcessButtonDisplayFlag:"=",
 		}"-->
+	</div>
 	
 	
 </section>

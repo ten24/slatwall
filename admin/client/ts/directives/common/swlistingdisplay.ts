@@ -71,26 +71,15 @@ module slatwalladmin {
             this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
                 
                 this.$q.when(this.collectionPromise).then((data)=>{
-                    console.log('collectionPromise');
-                    this.collectionData = data;
-                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
-                    this.paginator.setPageRecordsInfo(this.collectionData);
-                    console.log(this.paginator);
-                    
+                    this.$timeout(()=>{
+                        this.collectionData = data;
+                        this.setupDefaultCollectionInfo();
+                        this.setupColumns();
+                        this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+                        this.paginator.setPageRecordsInfo(this.collectionData);
+                    });
                 });
             });
-//            this.$scope.$watch('collectionPromise',(newValue,oldValue)=>{
-//                console.log('collectionPromiseChanged');
-//                
-//            });
-            
-            
-
-            
-            
-            
-            
-            
             this.tableID = 'LD'+this.utilityService.createID();
             //if getCollection doesn't exist then create it
             if(angular.isUndefined(this.getCollection)){
@@ -99,7 +88,6 @@ module slatwalladmin {
             }
             this.paginator.getCollection = this.getCollection;
             //this.getCollection();
-            
             
         }
         

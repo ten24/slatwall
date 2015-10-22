@@ -333,17 +333,15 @@ var slatwalladmin;
             this.initData();
             this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
                 _this.$q.when(_this.collectionPromise).then(function (data) {
-                    console.log('collectionPromise');
-                    _this.collectionData = data;
-                    _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
-                    _this.paginator.setPageRecordsInfo(_this.collectionData);
-                    console.log(_this.paginator);
+                    _this.$timeout(function () {
+                        _this.collectionData = data;
+                        _this.setupDefaultCollectionInfo();
+                        _this.setupColumns();
+                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+                        _this.paginator.setPageRecordsInfo(_this.collectionData);
+                    });
                 });
             });
-            //            this.$scope.$watch('collectionPromise',(newValue,oldValue)=>{
-            //                console.log('collectionPromiseChanged');
-            //                
-            //            });
             this.tableID = 'LD' + this.utilityService.createID();
             //if getCollection doesn't exist then create it
             if (angular.isUndefined(this.getCollection)) {
