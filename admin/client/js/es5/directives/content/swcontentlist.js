@@ -14,7 +14,6 @@ var slatwalladmin;
             this.observerService = observerService;
             this.collectionConfigService = collectionConfigService;
             this.$log.debug('slatwallcontentList init');
-            console.log(this);
             var pageShow = 50;
             if (this.pageShow !== 'Auto') {
                 pageShow = this.pageShow;
@@ -218,8 +217,6 @@ var slatwalladmin;
             this.controller = SWContentListController;
             this.controllerAs = "swContentList";
             this.link = function (scope, element, attrs, controller, transclude) {
-                console.log('directive');
-                console.log(scope);
                 scope.$on('$destroy', function handler() {
                     observerService.detachByEvent('optionsChanged');
                     observerService.detachByEvent('sortByColumn');

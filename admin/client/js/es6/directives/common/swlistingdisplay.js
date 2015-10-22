@@ -30,9 +30,7 @@ var slatwalladmin;
                 if (this.hasCollectionPromise) {
                     this.collectionObject = this.collection.collectionObject;
                     this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-                    console.log(this.collection.collectionConfig);
                     this.collectionConfig.loadJson(this.collection.collectionConfig);
-                    console.log(this.collectionConfig);
                 }
                 else {
                     this.collectionObject = this.collection;
@@ -91,8 +89,6 @@ var slatwalladmin;
                 }
                 //Setup Hierachy Expandable
                 if (this.parentPropertyName && this.parentPropertyName.length) {
-                    console.log('expandable');
-                    console.log(this.expandable);
                     if (angular.isUndefined(this.expandable)) {
                         this.expandable = true;
                     }
@@ -325,28 +321,23 @@ var slatwalladmin;
             }
             this.setupDefaultCollectionInfo();
             this.setupColumns();
-            console.log(this.collection);
-            console.log(this.collectionObject);
             this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
             this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
             this.initData();
             this.$scope.$watch('swListingDisplay.collectionPromise', (newValue, oldValue) => {
                 this.$q.when(this.collectionPromise).then((data) => {
-                    console.log('collectionPromise');
-                    this.collectionData = data;
-                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
-                    this.paginator.setPageRecordsInfo(this.collectionData);
-                    console.log(this.paginator);
+                    this.$timeout(() => {
+                        this.collectionData = data;
+                        this.setupDefaultCollectionInfo();
+                        this.setupColumns();
+                        this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
+                        this.paginator.setPageRecordsInfo(this.collectionData);
+                    });
                 });
             });
-            //            this.$scope.$watch('collectionPromise',(newValue,oldValue)=>{
-            //                console.log('collectionPromiseChanged');
-            //                
-            //            });
             this.tableID = 'LD' + this.utilityService.createID();
             //if getCollection doesn't exist then create it
             if (angular.isUndefined(this.getCollection)) {
-                console.log('definde getcollection');
                 this.getCollection = this.setupDefaultGetCollection();
             }
             this.paginator.getCollection = this.getCollection;
