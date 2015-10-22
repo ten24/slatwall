@@ -3,4 +3,4 @@
 angular.module('hibachi', []).config([function () {
     }]);
 
-//# sourceMappingURL=hibachi.js.map
+//# sourceMappingURL=../modules/hibachi.js.map
