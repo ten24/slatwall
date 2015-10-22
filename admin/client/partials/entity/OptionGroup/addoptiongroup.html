@@ -1,6 +1,6 @@
-<p ng-show="swAddOptionGroup.showInvalidFlag">This sku already exists please try a different combination</p>
+<p ng-show="swAddOptionGroup.showInvalidFlag" class="alert alert-error fade in">This sku already exists please try a different combination</p>
 
-<div ng-if="swAddOptionGroup.showValidFlag"> 
+<div ng-if="swAddOptionGroup.showValidFlag" class="alert alert-success fade in"> 
 	<p>This sku can be saved</p>
 	<input class="hide" name="options" ng-model="swAddOptionGroup.selectedOptionList" />
 </div> 

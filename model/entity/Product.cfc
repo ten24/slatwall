@@ -876,7 +876,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService('productService').getProductOptionsByGroup( this );
 	}
 
-	public array function hasUnusedProductOptions(){
+	public boolean function hasUnusedProductOptions(){
 
 		var optionGroups = [];
 		var usedOptions = [];
@@ -887,17 +887,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				if(first){
 					ArrayAppend(optionGroups, option.getOptionGroup());
 					ArrayAppend(usedOptions, option);
-					first = false;
 				} else {
 					ArrayAppend(usedOptions, option);
 				}
 			}
+			first = false;
 		}
 
 		for(var optionGroup in optionGroups){
 			for(var option in optionGroup.getOptions()){
-				if(!ArrayContains(usedOptions,options)){
-					return true;
+				for(var usedOption in usedOptions){
+					if(optionGroup.getOptionGroupID() EQ usedOption.getOptionGroup().getOptionGroupID()
+					   && usedOption.getOptionID() NEQ option.getOptionID()
+					){
+						return true;
+					}
 				}
 			}
 		}
@@ -905,7 +909,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return false;
 	}
 
-	public array function getUnusedProductOptions(){
+	public any function getUnusedProductOptions(){
 
 		var optionGroups = [];
 		var usedOptions = [];
@@ -917,25 +921,27 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				if(first){
 					ArrayAppend(optionGroups, option.getOptionGroup());
 					ArrayAppend(usedOptions, option);
-					first = false;
 				} else {
 					ArrayAppend(usedOptions, option);
 				}
 			}
+			first = false;
 		}
 
 		for(var optionGroup in optionGroups){
 			for(var option in optionGroup.getOptions()){
-				if(!ArrayContains(usedOptions,option)){
-					ArrayAppend(unusedOptions, option);
+				for(var usedOption in usedOptions){
+					if(optionGroup.getOptionGroupID() EQ usedOption.getOptionGroup().getOptionGroupID()
+					   && usedOption.getOptionID() NEQ option.getOptionID()
+					){
+						ArrayAppend(unusedOptions, option);
+					}
 				}
 			}
 		}
 
 		return unusedOptions;
 	}
-
-
 
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
