@@ -876,71 +876,42 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getService('productService').getProductOptionsByGroup( this );
 	}
 
-	public boolean function hasUnusedProductOptions(){
+	public boolean function hasUnusedProductOptionCombinations(){
 
 		var optionGroups = [];
 		var usedOptions = [];
-		var first = true;
 
-		for(var sku in this.getSkus()){
-			for(var option in sku.getOptions()){
-				if(first){
-					ArrayAppend(optionGroups, option.getOptionGroup());
-					ArrayAppend(usedOptions, option);
-				} else {
-					ArrayAppend(usedOptions, option);
-				}
-			}
-			first = false;
-		}
-
-		for(var optionGroup in optionGroups){
-			for(var option in optionGroup.getOptions()){
-				for(var usedOption in usedOptions){
-					if(optionGroup.getOptionGroupID() EQ usedOption.getOptionGroup().getOptionGroupID()
-					   && usedOption.getOptionID() NEQ option.getOptionID()
-					){
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
+		return this.getNumberOfUnusedProductOptionCombinations() > 0;
 	}
 
-	public any function getUnusedProductOptions(){
+	public any function getNumberOfUnusedProductOptionCombinations(){
 
 		var optionGroups = [];
-		var usedOptions = [];
+		var usedCombinations = [];
 		var unusedOptions = [];
 		var first = true;
 
 		for(var sku in this.getSkus()){
+			var combination = [];
 			for(var option in sku.getOptions()){
 				if(first){
 					ArrayAppend(optionGroups, option.getOptionGroup());
-					ArrayAppend(usedOptions, option);
+					ArrayAppend(combination, option);
 				} else {
-					ArrayAppend(usedOptions, option);
+					ArrayAppend(combination, option);
 				}
 			}
 			first = false;
+			ArrayAppend(usedCombinations, combination);
 		}
+
+		var possibilities = 1;
 
 		for(var optionGroup in optionGroups){
-			for(var option in optionGroup.getOptions()){
-				for(var usedOption in usedOptions){
-					if(optionGroup.getOptionGroupID() EQ usedOption.getOptionGroup().getOptionGroupID()
-					   && usedOption.getOptionID() NEQ option.getOptionID()
-					){
-						ArrayAppend(unusedOptions, option);
-					}
-				}
-			}
+			possibilities = possibilities * ArrayLen(optionGroup.getOptions());
 		}
 
-		return unusedOptions;
+		return possibilities - ArrayLen(usedCombinations);
 	}
 
 	public array function getUnusedProductOptionGroups() {

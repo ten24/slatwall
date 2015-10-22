@@ -169,16 +169,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		product.getSkus()[1].addOption(og2.getOptions()[1]);
 		product.getSkus()[1].addOption(og3.getOptions()[1]);
 
-		request.debug(product.getUnusedProductOptions());
+		request.debug(product.getNumberOfUnusedProductOptionCombinations());
 
-		assertEquals(4, ArrayLen(product.getUnusedProductOptions()));
-		assertTrue(product.hasUnusedProductOptions());
+		assertEquals(8, product.getNumberOfUnusedProductOptionCombinations());
+		assertTrue(product.hasUnusedProductOptionCombinations());
 	}
 
 	public void function getUnusedProductOptionsTestCaseNoOptions(){
 
 		var optionGroup1 = createUUID();
 		var optionG11 = createUUID();
+		var optionG12 = createUUID();
 
 		var optionGroup1Data = {
 			optionGroupID = optionGroup1,
@@ -193,6 +194,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var optionGroup2 = createUUID();
 		var optionG21 = createUUID();
+		var optionG22 = createUUID();
 
 		var optionGroup2Data = {
 			optionGroupID = optionGroup2,
@@ -207,6 +209,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var optionGroup3 = createUUID();
 		var optionG31 = createUUID();
+		var optionG32 = createUUID();
 
 		var optionGroup3Data = {
 			optionGroupID = optionGroup3,
@@ -225,15 +228,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			skus = [
 				{
 					skuID = ''
-				},
-				{
-					skuID = ''
-				},
-				{
-					skuID = ''
-				},
-				{
-					skuID = ''
 				}
 			]
 		};
@@ -249,10 +243,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug("|       |");
 		request.debug(og3.getOptions()[1].getOptionID());
 
-		request.debug(product.getUnusedProductOptions());
+		request.debug(product.getNumberOfUnusedProductOptionCombinations());
 
-		assertEquals(0, ArrayLen(product.getUnusedProductOptions()));
-		assertFalse(product.hasUnusedProductOptions());
+		assertEquals(0, product.getNumberOfUnusedProductOptionCombinations());
+		assertFalse(product.hasUnusedProductOptionCombinations());
 	}
 }
 
