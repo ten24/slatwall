@@ -41,7 +41,7 @@
 		            <li ng-show="swPaginationBar.paginator.showPreviousJump()" ng-click="swPaginationBar.paginator.previousJump()">
 		                <a>...</a>
 		            </li>
-		            <li ng-repeat="i in swPaginationBar.paginator.totalPagesArray" ng-class="{active:swPaginationBar.paginator.getCurrentPage() === i}" ng-click="swPaginationBar.paginator.setCurrentPage(i)" ng-show="swPaginationBar.paginator.showPageNumber(i)">
+		            <li ng-repeat="i in swPaginationBar.paginator.totalPagesArray" ng-class="{active:swPaginationBar.paginator.getCurrentPage() === i}" ng-click="swPaginationBar.paginator.setCurrentPage(i)" ng-if="swPaginationBar.paginator.showPageNumber(i)">
 		                <a ng-bind="i"></a>
 		            </li>
 		            <li ng-show="swPaginationBar.paginator.showNextJump()" ng-click="swPaginationBar.paginator.nextJump()">
