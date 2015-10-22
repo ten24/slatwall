@@ -69,10 +69,6 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	// ===================== START: DAO Passthrough ===========================
 
-	public array function getUnusedProductOptions(required string productID, required string existingOptionGroupIDList){
-		return getOptionDAO().getUnusedProductOptions(argumentCollection=arguments);
-	}
-
 	public array function getUnusedProductOptionGroups(required string productTypeID, required string existingOptionGroupIDList){
 		return getOptionDAO().getUnusedProductOptionGroups(argumentCollection=arguments);
 	}

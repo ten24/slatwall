@@ -48,51 +48,6 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 	
-	<cffunction name="getUnusedProductOptions" returntype="any" access="public">
-		<cfargument name="productID" type="string" required="true" />
-		<cfargument name="existingOptionGroupIDList" type="string" required="true" />
-		
-		<cfset var rs = "" />
-		<cfset var result = [] />
-		
-		<cfquery name="rs">
-			SELECT
-				SwOption.optionID,
-				SwOption.optionName,
-				SwOptionGroup.optionGroupName
-			FROM
-				SwOption
-			INNER JOIN
-			  	SwOptionGroup 
-			ON 
-				SwOptionGroup.optionGroupID = SwOption.optionGroupID
-			WHERE
-				SwOption.optionGroupID IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
-			  AND
-			  	NOT EXISTS(
-			  		SELECT DISTINCT
-						a.optionID
-					FROM
-					  	SwSkuOption a
-					  INNER JOIN
-					  	SwSku b on a.skuID = b.skuID
-					WHERE
-					  	b.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
-					  AND
-					  	a.optionID = SwOption.optionID 
-			  	)
-			ORDER BY
-				SwOptionGroup.optionGroupName,
-				SwOption.optionName
-		</cfquery>
-		
-		<cfloop query="rs">
-			<cfset arrayAppend(result, {name="#rs.optionGroupName# - #rs.optionName#", value=rs.optionID}) />
-		</cfloop>
-		
-		<cfreturn result />
-	</cffunction>
-	
 	<cffunction name="getUnusedProductOptionGroups">
 		<cfargument name="productTypeID" type="string" required="true" />
 		<cfargument name="existingOptionGroupIDList" type="string" required="true" />
