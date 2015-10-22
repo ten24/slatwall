@@ -196,10 +196,23 @@ Notes:
 				<hb:HibachiPropertyRow>
 					<hb:HibachiPropertyList>
 
-						<hb:HibachiListingDisplay smartList="#optionsSmartList#" multiselectfieldname="options" edit="true">
+						<!--<hb:HibachiListingDisplay smartList="#optionsSmartList#" multiselectfieldname="options" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
 							<hb:HibachiListingColumn propertyIdentifier="optionName" />
-						</hb:HibachiListingDisplay>
+						</hb:HibachiListingDisplay>-->
+						<sw-listing-display
+							data-collection="'Option'"
+							data-multiselect-field-name="options"
+							data-edit="true"
+							
+						>
+							<sw-listing-column
+								data-property-identifier="optionGroup.optionGroupName"
+							></sw-listing-column>
+							<sw-listing-column
+								data-property-identifier="optionName"
+							></sw-listing-column>
+						</sw-listing-display>
 
 					</hb:HibachiPropertyList>
 				</hb:HibachiPropertyRow>
