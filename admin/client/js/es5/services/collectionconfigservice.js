@@ -362,13 +362,24 @@ var slatwalladmin;
                 if (readOnly === void 0) { readOnly = false; }
                 _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
             };
-            this.setOrderBy = function (propertyIdentifier, direction) {
-                if (direction === void 0) { direction = 'DESC'; }
-                if (angular.isUndefined(_this.orderBy)) {
+            //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+            this.setOrderBy = function (orderByList) {
+                var orderBys = orderByList.split(',');
+                for (var orderBy in orderBys) {
+                    _this.addOrderBy(orderBy);
+                }
+            };
+            this.addOrderBy = function (orderByString) {
+                if (!_this.orderBy) {
                     _this.orderBy = [];
                 }
-                _this.addJoin(propertyIdentifier);
-                _this.orderBy.push(new OrderBy(_this.formatCollectionName(propertyIdentifier), direction));
+                var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
+                var direction = _this.utilityService.listLast(orderByString, '|');
+                var orderBy = {
+                    propertyIdentifier: propertyIdentifier,
+                    direction: direction
+                };
+                _this.orderBy.push(orderBy);
             };
             this.setCurrentPage = function (pageNumber) {
                 _this.currentPage = pageNumber;

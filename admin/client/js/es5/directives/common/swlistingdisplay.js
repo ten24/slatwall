@@ -326,6 +326,7 @@ var slatwalladmin;
             this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
             this.initData();
             this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
+                console.log('newData');
                 _this.$q.when(_this.collectionPromise).then(function (data) {
                     _this.$timeout(function () {
                         _this.collectionData = data;

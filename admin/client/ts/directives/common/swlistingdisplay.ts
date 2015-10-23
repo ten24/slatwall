@@ -67,9 +67,10 @@ module slatwalladmin {
             this.initData();
             
             this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
-                
+                console.log('newData');
                 this.$q.when(this.collectionPromise).then((data)=>{
                     this.$timeout(()=>{
+                        
                         this.collectionData = data;
                         this.setupDefaultCollectionInfo();
                         this.setupColumns();

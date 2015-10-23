@@ -428,15 +428,30 @@ module slatwalladmin{
             );
 
         };
-
-        setOrderBy= (propertyIdentifier:string, direction:string='DESC') =>{
-            if(angular.isUndefined(this.orderBy)){
-                this.orderBy = [];
+        //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+        setOrderBy = (orderByList)=>{
+            var orderBys = orderByList.split(',');
+            for(var orderBy in orderBys){
+                this.addOrderBy(orderBy);
             }
-            this.addJoin(propertyIdentifier);
-            this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
         };
         
+        addOrderBy = (orderByString)=>{
+            if(!this.orderBy){
+                this.orderBy = [];    
+            }
+            
+            var propertyIdentifier = this.utilityService.listFirst(orderByString,'|');
+            var direction = this.utilityService.listLast(orderByString,'|');
+            
+            var orderBy = {
+                propertyIdentifier:propertyIdentifier,
+                direction:direction
+            };
+            
+            this.orderBy.push(orderBy);
+        }
+
         setCurrentPage= (pageNumber) =>{
             this.currentPage = pageNumber;
         };
