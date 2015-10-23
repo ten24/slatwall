@@ -21,4 +21,4 @@ angular.module('slatwalladmin').directive('swHeaderWithTabs', ['$http', '$compil
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swheaderwithtabs.js.map
+//# sourceMappingURL=swheaderwithtabs.js.map

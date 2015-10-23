@@ -22,4 +22,4 @@ angular.module('slatwalladmin').directive('swDirective', ['$compile', function($
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swdirective.js.map
+//# sourceMappingURL=swdirective.js.map

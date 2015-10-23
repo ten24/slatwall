@@ -15,4 +15,4 @@ angular.module('slatwalladmin').directive("swvalidationrequired", [function() {
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/validation/swvalidationrequired.js.map
+//# sourceMappingURL=swvalidationrequired.js.map

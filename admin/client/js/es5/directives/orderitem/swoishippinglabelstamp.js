@@ -12,4 +12,4 @@ angular.module('slatwalladmin').directive('swoishippinglabelstamp', ['partialsPa
   };
 }]);
 
-//# sourceMappingURL=../../directives/orderitem/swoishippinglabelstamp.js.map
+//# sourceMappingURL=swoishippinglabelstamp.js.map

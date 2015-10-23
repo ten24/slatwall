@@ -17,4 +17,4 @@ angular.module('slatwalladmin').directive('swForm', ['formService', function(for
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/form/swform.js.map
+//# sourceMappingURL=swform.js.map

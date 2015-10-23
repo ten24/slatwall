@@ -90,4 +90,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../services/paginationservice.js.map
+//# sourceMappingURL=paginationservice.js.map

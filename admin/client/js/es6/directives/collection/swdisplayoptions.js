@@ -140,4 +140,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swdisplayoptions.js.map
+//# sourceMappingURL=swdisplayoptions.js.map

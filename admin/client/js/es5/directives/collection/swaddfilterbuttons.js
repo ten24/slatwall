@@ -18,4 +18,4 @@ angular.module('slatwalladmin').directive('swAddFilterButtons', ['$http', '$comp
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swaddfilterbuttons.js.map
+//# sourceMappingURL=swaddfilterbuttons.js.map

@@ -8,4 +8,4 @@ angular.module('slatwalladmin').directive('swExportAction', ['$log', 'partialsPa
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swexportaction.js.map
+//# sourceMappingURL=swexportaction.js.map

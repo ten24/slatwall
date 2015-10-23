@@ -60,4 +60,4 @@ angular.module('slatwalladmin').directive('swPropertyDisplay', ['$log', 'partial
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swpropertydisplay.js.map
+//# sourceMappingURL=swpropertydisplay.js.map

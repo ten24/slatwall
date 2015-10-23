@@ -17,4 +17,4 @@ angular.module('slatwalladmin').directive('swFormField', ['$log', '$templateCach
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfield.js.map
+//# sourceMappingURL=swformfield.js.map

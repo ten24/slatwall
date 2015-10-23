@@ -54,4 +54,4 @@ angular.module('slatwalladmin').controller('preprocessaccount_addaccountpayment'
   };
 }]);
 
-//# sourceMappingURL=../controllers/preprocessaccount_addaccountpayment.js.map
+//# sourceMappingURL=preprocessaccount_addaccountpayment.js.map

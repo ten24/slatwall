@@ -34,4 +34,4 @@ angular.module('slatwalladmin').factory('selectionService', [function() {
   return selectService;
 }]);
 
-//# sourceMappingURL=../services/selectionservice.js.map
+//# sourceMappingURL=selectionservice.js.map

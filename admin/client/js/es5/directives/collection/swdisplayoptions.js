@@ -120,4 +120,4 @@ angular.module('slatwalladmin').directive('swDisplayOptions', ['$http', '$compil
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swdisplayoptions.js.map
+//# sourceMappingURL=swdisplayoptions.js.map

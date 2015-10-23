@@ -158,4 +158,4 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
   };
 }]);
 
-//# sourceMappingURL=../../directives/content/swcontentlist.js.map
+//# sourceMappingURL=swcontentlist.js.map

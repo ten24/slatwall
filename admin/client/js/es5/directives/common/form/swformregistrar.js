@@ -29,4 +29,4 @@ angular.module('slatwalladmin').directive('swFormRegistrar', ['formService', fun
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/form/swformregistrar.js.map
+//# sourceMappingURL=swformregistrar.js.map

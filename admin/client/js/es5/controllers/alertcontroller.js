@@ -5,4 +5,4 @@ angular.module('slatwalladmin').controller('alertController', ['$scope', 'alertS
   $scope.alerts = alertService.getAlerts();
 }]);
 
-//# sourceMappingURL=../controllers/alertcontroller.js.map
+//# sourceMappingURL=alertcontroller.js.map

@@ -36,4 +36,4 @@ angular.module('slatwalladmin').factory('workflowConditionService', ['$log', '$s
   return workflowConditionService;
 }]);
 
-//# sourceMappingURL=../services/workflowconditionservice.js.map
+//# sourceMappingURL=workflowconditionservice.js.map

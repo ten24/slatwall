@@ -69,4 +69,4 @@ angular.module('slatwalladmin').directive('swFilterGroups', ['$http', '$compile'
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swfiltergroups.js.map
+//# sourceMappingURL=swfiltergroups.js.map

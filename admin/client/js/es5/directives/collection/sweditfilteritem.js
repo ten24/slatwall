@@ -244,4 +244,4 @@ angular.module('slatwalladmin').directive('swEditFilterItem', ['$http', '$compil
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/sweditfilteritem.js.map
+//# sourceMappingURL=sweditfilteritem.js.map

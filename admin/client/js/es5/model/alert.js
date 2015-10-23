@@ -9,4 +9,4 @@ var slatwalladmin;
   slatwalladmin.Alert = Alert;
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../model/alert.js.map
+//# sourceMappingURL=alert.js.map

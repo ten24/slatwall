@@ -60,4 +60,4 @@ angular.module('slatwalladmin').directive('swOrderItemDetailStamp', ['partialsPa
   };
 }]);
 
-//# sourceMappingURL=../../directives/orderitem/sworderitemdetailstamp.js.map
+//# sourceMappingURL=sworderitemdetailstamp.js.map

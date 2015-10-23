@@ -65,4 +65,4 @@ angular.module('slatwalladmin').factory('metadataService', ['$filter', '$log', f
   return metadataService;
 }]);
 
-//# sourceMappingURL=../services/metadataservice.js.map
+//# sourceMappingURL=metadataservice.js.map

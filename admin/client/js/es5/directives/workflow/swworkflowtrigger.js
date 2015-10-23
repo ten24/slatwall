@@ -52,4 +52,4 @@ angular.module('slatwalladmin').directive('swWorkflowTrigger', ['$log', '$slatwa
   };
 }]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowtrigger.js.map
+//# sourceMappingURL=swworkflowtrigger.js.map

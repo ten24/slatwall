@@ -109,4 +109,4 @@ var slatwallAdmin;
         }]);
 })(slatwallAdmin || (slatwallAdmin = {}));
 
-//# sourceMappingURL=../modules/slatwalladmin.js.map
+//# sourceMappingURL=slatwalladmin.js.map

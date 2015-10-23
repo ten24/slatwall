@@ -16,4 +16,4 @@ angular.module('slatwalladmin').directive('swContentEditor', ['$log', '$location
   };
 }]);
 
-//# sourceMappingURL=../../directives/content/swcontenteditor.js.map
+//# sourceMappingURL=swcontenteditor.js.map

@@ -26,4 +26,4 @@ angular.module('slatwalladmin').directive('swList', ['$log', '$slatwall', 'parti
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/entity/swlist.js.map
+//# sourceMappingURL=swlist.js.map

@@ -49,4 +49,4 @@ angular.module('slatwalladmin').directive('swDisplayItem', ['$http', '$compile',
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swdisplayitem.js.map
+//# sourceMappingURL=swdisplayitem.js.map

@@ -95,4 +95,4 @@ angular.module('slatwalladmin').factory('paginationService', [function() {
   return paginationService;
 }]);
 
-//# sourceMappingURL=../services/paginationservice.js.map
+//# sourceMappingURL=paginationservice.js.map

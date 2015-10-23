@@ -10,4 +10,4 @@ angular.module('slatwalladmin').controller('pageDialog', ['$scope', '$location',
   $scope.pageDialogStyle = {"z-index": 3000};
 }]);
 
-//# sourceMappingURL=../controllers/pagedialog.js.map
+//# sourceMappingURL=pagedialog.js.map

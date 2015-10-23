@@ -17,4 +17,4 @@ angular.module('slatwalladmin').directive('swCollection', ['$http', '$compile', 
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swcollection.js.map
+//# sourceMappingURL=swcollection.js.map

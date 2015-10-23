@@ -18,4 +18,4 @@ angular.module('slatwalladmin').directive('swColumnSorter', ['$log', 'observerSe
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swcolumnsorter.js.map
+//# sourceMappingURL=swcolumnsorter.js.map

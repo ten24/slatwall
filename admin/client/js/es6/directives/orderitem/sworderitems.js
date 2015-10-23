@@ -371,4 +371,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/orderitem/sworderitems.js.map
+//# sourceMappingURL=sworderitems.js.map

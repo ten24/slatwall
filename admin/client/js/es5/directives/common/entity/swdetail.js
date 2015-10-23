@@ -44,4 +44,4 @@ angular.module('slatwalladmin').directive('swDetail', ['$location', '$log', '$sl
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/entity/swdetail.js.map
+//# sourceMappingURL=swdetail.js.map

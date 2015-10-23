@@ -96,4 +96,4 @@ angular.module('slatwalladmin')
         return _observerService;
     }]);
 
-//# sourceMappingURL=../services/observerservice.js.map
+//# sourceMappingURL=observerservice.js.map

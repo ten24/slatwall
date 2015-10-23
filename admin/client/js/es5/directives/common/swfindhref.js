@@ -16,4 +16,4 @@ angular.module('slatwalladmin').directive('swFindHref', ['$location', '$log', fu
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swfindhref.js.map
+//# sourceMappingURL=swfindhref.js.map

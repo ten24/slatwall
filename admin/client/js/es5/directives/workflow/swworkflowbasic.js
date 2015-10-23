@@ -8,4 +8,4 @@ angular.module('slatwalladmin').directive('swWorkflowBasic', ['$log', '$location
   };
 }]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowbasic.js.map
+//# sourceMappingURL=swworkflowbasic.js.map

@@ -81,4 +81,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swcriteriaonetomany.js.map
+//# sourceMappingURL=swcriteriaonetomany.js.map

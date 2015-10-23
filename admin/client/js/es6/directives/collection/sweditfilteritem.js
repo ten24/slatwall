@@ -287,4 +287,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/sweditfilteritem.js.map
+//# sourceMappingURL=sweditfilteritem.js.map

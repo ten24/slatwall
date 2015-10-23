@@ -132,4 +132,4 @@ angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout'
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swpaginationbar.js.map
+//# sourceMappingURL=swpaginationbar.js.map

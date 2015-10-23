@@ -89,4 +89,4 @@ angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', 
   };
 }]);
 
-//# sourceMappingURL=../../directives/content/swcontentnode.js.map
+//# sourceMappingURL=swcontentnode.js.map
