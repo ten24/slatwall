@@ -27,11 +27,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	    if (structKeyExists(arguments.rc, "context") && arguments.rc.context == "getProcessObjectDefinition"){
             publicService.getProcessObjectDefinition(rc);
         }else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getCart"){
-			publicService.invokeMethod("getCartData", {rc=arguments.rc});
+			publicService.invokeMethod("getCartData", {data=arguments.rc});
 		}else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getAccount"){
-            publicService.invokeMethod("getAccountData", {rc=arguments.rc});
+            publicService.invokeMethod("getAccountData", {data=arguments.rc});
         }else{
-			publicService.invokeMethod("getPublicContexts", {rc=arguments.rc});
+			publicService.invokeMethod("getPublicContexts", {data=arguments.rc});
 		}
 	}
 	
@@ -51,7 +51,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
         	rc.context = "getAccountData";
             this.get(rc);
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
-            publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
+            publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
         }else{
             this.get(rc);
         }

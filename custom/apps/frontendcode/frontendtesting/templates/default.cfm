@@ -1,7 +1,7 @@
 <cfoutput>
 <cfinclude template="header.cfm" >
 <div>
-  <div ng-controller="slatwall">
+  <div ng-controller="slatwall as sw">
     <section>
         <div>           
             <div class="container" >
@@ -82,23 +82,15 @@
             </div>
         </div>
     </section>
-    
-    <section>
-        <hr>
-            <br>
-        <div>           
-            <div class="container"> 
-                <h2>Create Account:</h2>
-                <swf:form entity-name="Account" process-object="create"></swf:process>
-            </div>
-        </div>
-    </section>
-    
     <section>
         <div>           
             <div class="container" > 
                 <h2>Login Account:</h2>
-                <swf:form entity-name="Account" process-object="login"></swf:process>
+                <swf-form process-object="Account_login" action="$login">
+                    <swf-form-field name="Email Address" type="email" sw-model="formData.emailAddress" class="formControl"></swf-form-field>
+                    <swf-form-field name="Password" type="password" sw-model="formData.password" class="formControl"></swf-form-field>
+                    <swf-form-field name="Login" type="submit" class="formControl">Login</swf-form-field>
+                </swf-form>
             </div>
         </div>
     </section>
@@ -106,7 +98,10 @@
         <div>           
             <div class="container" > 
                 <h2>Add Promotion Code:</h2>
-                <swf:form entity-name="Cart" process-object="addPromotionCode"></swf:process>
+                    <swf-form process-object="Order_addPromotionCode" action="$addPromotionCode">
+                       <swf-form-field name="Promotion Code" type="text" class="formControl"></swf-form-field>
+                       <swf-form-field name="Add Promo Code" type="submit" class="formControl">Add Promotion Code</swf-form-field>
+                    </swf-form>
             </div>
         </div>
     </section>
@@ -132,13 +127,10 @@
                 <h2>Testing</h2>
                 <b>Basic Info:</b>
                 {{account.firstName}} {{account.lastName}}
+                {{formData}}
                 
-                <b>Shipping Address:</b>
-                {{cart.shippingAddress | json}}
-                
-                <b>OrderItems:</b>
                 <ul>
-                <div ng-repeat="item in cart.orderitems"><li>{{item}}</li></div>
+                
                 </ul>
             </div>
         </div>
@@ -155,6 +147,9 @@
     <button type="submit">Login</button>
     
 </form>
+
+
+
 
 
 

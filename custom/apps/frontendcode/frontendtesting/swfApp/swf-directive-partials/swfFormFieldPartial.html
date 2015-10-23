@@ -1,16 +1,13 @@
 <div class="form-group">
 	<p class="text-center loader {{class}}" ng-if="loader"><i class="fa fa-spinner fa-spin" ng-if="loader"></i></p>
-	<!--- handle the label and loader  --->
     <label ng-bind="name" ng-if="name && type !== 'yesno' && type !== 'submit'" class="control-label" for="{{name}}"></label>
-    <!-- handle the actual element -->
     <ng-switch on="type">
-    	
-    	<input type="text" ng-switch-when="text" ng-model="value" class="{{class}}" name="{{name}}"></input>
-    	<input type="email" ng-switch-when="email" ng-model="value" class="{{class}}" name="{{name}}"></input>
-    	<input type="password" ng-switch-when="password" ng-model="value" class="{{class}}" name="{{name}}"></input>
-    	<input type="file" ng-switch-when="file" ng-model="value" class="{{class}}" name="{{name}}"></input>
-    	<textarea ng-switch-when="textarea" class="{{class}}" id="{{name}}TextArea" ng-model="value" name="{{name}}"></textarea>
-    	<input type="checkbox" ng-switch-when="checkbox" ng-model="value" value="{{value}}" class="{{class}}" name="{{name}}"></input>
+    	<input type="text" ng-switch-when="text" ng-model="swModel" class="{{class}}" name="{{name}}"></input>
+    	<input type="email" ng-switch-when="email" ng-model="swModel" class="{{class}}" name="{{name}}"></input>
+    	<input type="password" ng-switch-when="password" ng-model="swModel"  class="{{class}}" name="{{name}}"></input>
+    	<input type="file" ng-switch-when="file" ng-model="value" ng-model="swModel" class="{{class}}" name="{{name}}"></input>
+    	<textarea ng-switch-when="textarea" class="{{class}}" ng-model="swModel" id="{{name}}TextArea" ng-model="value" name="{{name}}"></textarea>
+    	<input type="checkbox" ng-switch-when="checkbox" ng-model="swModel" value="{{value}}" class="{{class}}" name="{{name}}"></input>
     	
     	<select ng-switch-when="multiselect" class="{{class}}" name="{{name}}" multiple="true">
               <option value="{{option.value}}" ng-repeat="option in optionValues" ng-if="option.selected" selected>{{option.name}}</option>
@@ -42,10 +39,8 @@
         </div>
         
         <div ng-switch-when="submit" name="submit">
-                <input type="submit" class="btn" name="submit" text="{{name}}" ng-click="form.$save({ entityName: entityName, processObject: pObject })"/>
+                <input type="submit" class="btn" name="submit" text="{{name}}" value="{{name}}" ng-click="submit();"></input>
         </div>
     </ng-switch>
-    <!-- handle the error display for this element -->
-    <div class="error" ng-show="form.failureActions.length || form.processObject.errors.length">There were errors saving this form: </div>
+    <div class="error" ng-show="form.failureActions.length">There were errors saving this form: </div>
 </div>
-<!--- ng-model-options="{updateOn: 'blur'}" --->
