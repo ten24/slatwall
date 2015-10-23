@@ -21,4 +21,4 @@ angular.module('slatwalladmin').directive('sworderitemrow', [function() {
   var eventTemplate = "<td>Event</td>";
 }]);
 
-//# sourceMappingURL=../../directives/orderitem/sworderitemrow.js.map
+//# sourceMappingURL=sworderitemrow.js.map

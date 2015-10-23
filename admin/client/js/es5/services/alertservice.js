@@ -61,4 +61,4 @@ var slatwalladmin;
   angular.module('slatwalladmin').service('alertService', slatwalladmin.AlertService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/alertservice.js.map
+//# sourceMappingURL=alertservice.js.map

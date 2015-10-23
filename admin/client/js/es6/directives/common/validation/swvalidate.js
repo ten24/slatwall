@@ -366,4 +366,4 @@ angular.module('slatwalladmin').directive('swValidate', ['$log', '$slatwall', fu
         };
     }]);
 
-//# sourceMappingURL=../../../directives/common/validation/swvalidate.js.map
+//# sourceMappingURL=swvalidate.js.map

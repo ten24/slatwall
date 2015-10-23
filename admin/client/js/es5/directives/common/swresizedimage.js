@@ -17,4 +17,4 @@ angular.module('slatwalladmin').directive('swresizedimage', ["$http", "$log", "$
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swresizedimage.js.map
+//# sourceMappingURL=swresizedimage.js.map

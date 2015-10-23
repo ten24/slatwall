@@ -24,4 +24,4 @@ angular.module('slatwalladmin').directive('swWorkflowTask', ['$log', '$location'
   };
 }]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowtask.js.map
+//# sourceMappingURL=swworkflowtask.js.map

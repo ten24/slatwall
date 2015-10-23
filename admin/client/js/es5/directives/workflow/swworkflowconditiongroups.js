@@ -25,4 +25,4 @@ angular.module('slatwalladmin').directive('swWorkflowConditionGroups', ['$log', 
   };
 }]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowconditiongroups.js.map
+//# sourceMappingURL=swworkflowconditiongroups.js.map

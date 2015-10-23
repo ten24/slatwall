@@ -30,4 +30,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/orderitem/sworderitemrow.js.map
+//# sourceMappingURL=sworderitemrow.js.map

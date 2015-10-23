@@ -153,4 +153,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/common/swpaginationbar.js.map
+//# sourceMappingURL=swpaginationbar.js.map

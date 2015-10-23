@@ -4,4 +4,4 @@ angular.module('slatwalladmin').controller('otherwiseController', ['$scope', fun
   $scope.$id = "otherwiseController";
 }]);
 
-//# sourceMappingURL=../controllers/otherwisecontroller.js.map
+//# sourceMappingURL=otherwisecontroller.js.map

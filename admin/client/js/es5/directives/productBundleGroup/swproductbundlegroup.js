@@ -225,4 +225,4 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
   };
 }]);
 
-//# sourceMappingURL=../../directives/productBundleGroup/swproductbundlegroup.js.map
+//# sourceMappingURL=swproductbundlegroup.js.map

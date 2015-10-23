@@ -129,4 +129,4 @@ angular.module('slatwalladmin').directive('swCriteriaString', ['$log', '$slatwal
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swcriteriastring.js.map
+//# sourceMappingURL=swcriteriastring.js.map

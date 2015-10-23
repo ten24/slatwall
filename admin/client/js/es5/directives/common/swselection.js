@@ -24,4 +24,4 @@ angular.module('slatwalladmin').directive('swSelection', ['$log', 'selectionServ
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swselection.js.map
+//# sourceMappingURL=swselection.js.map

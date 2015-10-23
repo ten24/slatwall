@@ -61,4 +61,4 @@ angular.module('slatwalladmin').factory('slatwallInterceptor', ['$q', '$log', 'a
   return interceptor;
 }]);
 
-//# sourceMappingURL=../services/slatwallInterceptor.js.map
+//# sourceMappingURL=slatwallInterceptor.js.map

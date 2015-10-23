@@ -58,4 +58,4 @@ angular.module('slatwalladmin').directive('swScrollTrigger', ['$rootScope', '$wi
     }};
 }]);
 
-//# sourceMappingURL=../../directives/common/swscrolltrigger.js.map
+//# sourceMappingURL=swscrolltrigger.js.map

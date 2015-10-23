@@ -24,4 +24,4 @@ var logger;
         }]);
 })(logger || (logger = {}));
 
-//# sourceMappingURL=../services/exceptionhandler.js.map
+//# sourceMappingURL=exceptionhandler.js.map

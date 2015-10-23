@@ -32,4 +32,4 @@ angular.module('slatwalladmin').directive('swProductBundleGroups', ['$http', '$l
   };
 }]);
 
-//# sourceMappingURL=../../directives/productBundleGroup/swproductbundlegroups.js.map
+//# sourceMappingURL=swproductbundlegroups.js.map

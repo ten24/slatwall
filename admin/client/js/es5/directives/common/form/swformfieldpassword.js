@@ -12,4 +12,4 @@ angular.module('slatwalladmin').directive('swFormFieldPassword', ['$log', '$slat
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldpassword.js.map
+//# sourceMappingURL=swformfieldpassword.js.map

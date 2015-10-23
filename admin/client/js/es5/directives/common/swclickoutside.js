@@ -32,4 +32,4 @@ angular.module('slatwalladmin').directive('swClickOutside', ['$document', '$time
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swclickoutside.js.map
+//# sourceMappingURL=swclickoutside.js.map

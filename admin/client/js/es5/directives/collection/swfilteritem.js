@@ -43,4 +43,4 @@ angular.module('slatwalladmin').directive('swFilterItem', ['$log', 'collectionSe
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swfilteritem.js.map
+//# sourceMappingURL=swfilteritem.js.map

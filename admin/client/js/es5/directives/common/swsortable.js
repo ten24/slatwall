@@ -29,4 +29,4 @@ angular.module('slatwalladmin').directive("sw:sortable", ['expression', 'compile
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swsortable.js.map
+//# sourceMappingURL=swsortable.js.map

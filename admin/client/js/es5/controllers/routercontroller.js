@@ -16,4 +16,4 @@ angular.module('slatwalladmin').controller('routerController', ['$scope', '$rout
   }
 }]);
 
-//# sourceMappingURL=../controllers/routercontroller.js.map
+//# sourceMappingURL=routercontroller.js.map

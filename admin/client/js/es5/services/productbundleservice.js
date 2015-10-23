@@ -63,4 +63,4 @@ angular.module('slatwalladmin').factory('productBundleService', ['$log', '$slatw
   return productBundleService;
 }]);
 
-//# sourceMappingURL=../services/productbundleservice.js.map
+//# sourceMappingURL=productbundleservice.js.map

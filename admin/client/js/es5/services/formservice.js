@@ -66,4 +66,4 @@ angular.module('slatwalladmin').factory('formService', ['$log', function($log) {
   return formService;
 }]);
 
-//# sourceMappingURL=../services/formservice.js.map
+//# sourceMappingURL=formservice.js.map

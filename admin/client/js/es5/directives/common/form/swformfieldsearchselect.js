@@ -50,4 +50,4 @@ angular.module('slatwalladmin').directive('swFormFieldSearchSelect', ['$http', '
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldsearchselect.js.map
+//# sourceMappingURL=swformfieldsearchselect.js.map

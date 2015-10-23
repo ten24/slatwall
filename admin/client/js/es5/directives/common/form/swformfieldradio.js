@@ -49,4 +49,4 @@ angular.module('slatwalladmin').directive('swFormFieldRadio', ['$log', '$timeout
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldradio.js.map
+//# sourceMappingURL=swformfieldradio.js.map

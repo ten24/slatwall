@@ -171,4 +171,4 @@ angular.module('slatwalladmin').directive('swColumnItem', ['$http', '$compile', 
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swcolumnitem.js.map
+//# sourceMappingURL=swcolumnitem.js.map

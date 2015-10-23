@@ -12,4 +12,4 @@ angular.module('slatwalladmin').directive('swFormFieldText', ['$log', '$slatwall
   };
 }]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldtext.js.map
+//# sourceMappingURL=swformfieldtext.js.map

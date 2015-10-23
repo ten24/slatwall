@@ -80,4 +80,4 @@ angular.module('slatwalladmin').factory('utilityService', [function() {
   return utilityService;
 }]);
 
-//# sourceMappingURL=../services/utilityservice.js.map
+//# sourceMappingURL=utilityservice.js.map

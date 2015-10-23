@@ -64,4 +64,4 @@ angular.module('slatwalladmin').directive('swCriteriaOneToMany', ['$log', '$slat
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swcriteriaonetomany.js.map
+//# sourceMappingURL=swcriteriaonetomany.js.map

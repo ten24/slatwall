@@ -63,4 +63,4 @@ angular.module('slatwalladmin').directive('swCriteriaBoolean', ['$log', '$slatwa
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swcriteriaboolean.js.map
+//# sourceMappingURL=swcriteriaboolean.js.map

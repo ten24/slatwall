@@ -121,4 +121,4 @@ angular.module('slatwalladmin').controller('globalSearch', ['$scope', '$log', '$
   };
 }]);
 
-//# sourceMappingURL=../controllers/globalsearch.js.map
+//# sourceMappingURL=globalsearch.js.map

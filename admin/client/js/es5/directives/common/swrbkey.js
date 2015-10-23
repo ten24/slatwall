@@ -22,4 +22,4 @@ angular.module('slatwalladmin').directive('swRbkey', ['$slatwall', '$rootScope',
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swrbkey.js.map
+//# sourceMappingURL=swrbkey.js.map

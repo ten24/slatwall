@@ -12,4 +12,4 @@ angular.module('slatwalladmin').directive('swHref', [function() {
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swhref.js.map
+//# sourceMappingURL=swhref.js.map

@@ -180,4 +180,4 @@ angular.module('slatwalladmin').factory('collectionService', ['$filter', '$log',
   return collectionService;
 }]);
 
-//# sourceMappingURL=../services/collectionservice.js.map
+//# sourceMappingURL=collectionservice.js.map

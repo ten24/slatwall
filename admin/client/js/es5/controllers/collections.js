@@ -201,4 +201,4 @@ angular.module('slatwalladmin').controller('collections', ['$scope', '$location'
   };
 }]);
 
-//# sourceMappingURL=../controllers/collections.js.map
+//# sourceMappingURL=collections.js.map

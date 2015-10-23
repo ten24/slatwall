@@ -21,4 +21,4 @@ angular.module('slatwalladmin').factory('dialogService', [
     }
 ]);
 
-//# sourceMappingURL=../services/dialogservice.js.map
+//# sourceMappingURL=dialogservice.js.map

@@ -4,4 +4,4 @@ var logger;
   angular.module('logger', []).run([function() {}]);
 })(logger || (logger = {}));
 
-//# sourceMappingURL=../modules/loggingmodule.js.map
+//# sourceMappingURL=loggingmodule.js.map

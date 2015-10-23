@@ -39,4 +39,4 @@ angular.module('slatwalladmin').directive('swCollectionTable', ['$http', '$compi
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swcollectiontable.js.map
+//# sourceMappingURL=swcollectiontable.js.map

@@ -31,4 +31,4 @@ angular.module('slatwalladmin').directive('swOptions', ['$log', '$slatwall', 'ob
   };
 }]);
 
-//# sourceMappingURL=../../directives/common/swoptions.js.map
+//# sourceMappingURL=swoptions.js.map

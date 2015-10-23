@@ -6,4 +6,4 @@ var logger;
         }]);
 })(logger || (logger = {}));
 
-//# sourceMappingURL=../modules/loggingmodule.js.map
+//# sourceMappingURL=loggingmodule.js.map

@@ -746,4 +746,4 @@ angular.module('slatwalladmin').directive('swConditionCriteria', ['$http', '$com
   };
 }]);
 
-//# sourceMappingURL=../../directives/collection/swconditioncriteria.js.map
+//# sourceMappingURL=swconditioncriteria.js.map
