@@ -46,6 +46,7 @@ var slatwalladmin;
         }
         return Join;
     })();
+    slatwalladmin.Join = Join;
     var OrderBy = (function () {
         function OrderBy(propertyIdentifier, direction) {
             this.propertyIdentifier = propertyIdentifier;
@@ -227,7 +228,7 @@ var slatwalladmin;
                     columnObject.aggregate = options.aggregate;
                 }
                 //add any non-conventional options
-                for (key in options) {
+                for (var key in options) {
                     if (!columnObject[key]) {
                         columnObject[key] = options[key];
                     }
@@ -407,4 +408,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new CollectionConfig($slatwall, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/collectionconfigservice.js.map
+//# sourceMappingURL=collectionconfigservice.js.map

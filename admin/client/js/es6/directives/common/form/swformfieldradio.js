@@ -63,4 +63,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldradio.js.map
+//# sourceMappingURL=swformfieldradio.js.map

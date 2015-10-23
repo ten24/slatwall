@@ -227,4 +227,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swContentList', ['partialsPath', 'observerService', (partialsPath, observerService) => new SWContentList(partialsPath, observerService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/content/swcontentlist.js.map
+//# sourceMappingURL=swcontentlist.js.map

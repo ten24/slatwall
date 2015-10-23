@@ -20,4 +20,4 @@ angular.module('slatwalladmin').directive("swvalidationgte", [function () {
         };
     }]);
 
-//# sourceMappingURL=../../../directives/common/validation/swvalidationgte.js.map
+//# sourceMappingURL=swvalidationgte.js.map

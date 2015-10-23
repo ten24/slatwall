@@ -41,6 +41,7 @@ var slatwalladmin;
             this.alias = alias;
         }
     }
+    slatwalladmin.Join = Join;
     class OrderBy {
         constructor(propertyIdentifier, direction) {
             this.propertyIdentifier = propertyIdentifier;
@@ -212,7 +213,7 @@ var slatwalladmin;
                     columnObject.aggregate = options.aggregate;
                 }
                 //add any non-conventional options
-                for (key in options) {
+                for (var key in options) {
                     if (!columnObject[key]) {
                         columnObject[key] = options[key];
                     }
@@ -381,4 +382,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', ($slatwall, utilityService) => new CollectionConfig($slatwall, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/collectionconfigservice.js.map
+//# sourceMappingURL=collectionconfigservice.js.map

@@ -11,4 +11,4 @@ var slatwalladmin;
     slatwalladmin.PageDialog = PageDialog;
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../model/pagedialog.js.map
+//# sourceMappingURL=pagedialog.js.map

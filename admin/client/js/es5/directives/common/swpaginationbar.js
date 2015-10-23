@@ -35,4 +35,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout', 'partialsPath', 'paginationService', function ($log, $timeout, partialsPath, paginationService) { return new SWPaginationBar($log, $timeout, partialsPath, paginationService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swpaginationbar.js.map
+//# sourceMappingURL=swpaginationbar.js.map
