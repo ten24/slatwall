@@ -161,6 +161,14 @@ module slatwalladmin{
               return text;
           }
           //list functions
+          public arrayToList = (array:Array<any>, delimiter?:string) =>{
+              if(delimiter != null){
+                  return array.join(delimiter); 
+              } else { 
+                  return array.join(); 
+              } 
+          }
+          
          public listFind = (list:string='',value:string,delimiter:string=','):void =>{
               var splitString = list.split(delimiter);
               var stringFound = -1;
@@ -208,7 +216,7 @@ module slatwalladmin{
                             tempArray.push(array[itemIndex]);  
                         }
                     }
-                    if(keysToSortBy[1].length){
+                    if(keysToSortBy[1] != null){
                         tempArray.sort(function(a, b){
                             if(a[secondKey]< b[secondKey]){
                                 return -1;
