@@ -140,7 +140,13 @@ angular.module('slatwalladmin')
                 }
                 /** Increases the current page count by one */
                 scope.increaseCurrentCount = function () {
-                    scope.currentPage++;
+                    if (angular.isDefined(scope.totalPages) &&
+                        scope.totalPages != scope.currentPage) {
+                        scope.currentPage++;
+                    }
+                    else {
+                        scope.currentPage = 1;
+                    }
                 };
                 /** resets the current page to zero when the searchbox is changed */
                 scope.resetCurrentCount = function () {
@@ -166,7 +172,11 @@ angular.module('slatwalladmin')
                                             $log.debug(value);
                                             $log.debug("Total: " + value.recordsCount);
                                             $log.debug("Records Start: " + value.pageRecordsStart);
+                                            scope.pageRecordsStart = value.pageRecordsStart;
                                             $log.debug("Records End: " + value.pageRecordsEnd);
+                                            scope.pageRecordsEnd = value.pageRecordsEnd;
+                                            $log.debug("Total Pages " + value.totalPages);
+                                            scope.totalPages = value.totalPages;
                                             var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords, option);
                                             for (var j in formattedProductBundleGroupFilters) {
                                                 if (!arrayContains(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup, formattedProductBundleGroupFilters[j])) {
@@ -196,6 +206,8 @@ angular.module('slatwalladmin')
                                 scope.recordsCount = value.recordsCount;
                                 scope.pageRecordsStart = value.pageRecordsStart;
                                 scope.pageRecordsEnd = value.pageRecordsEnd;
+                                $log.debug("Total Pages " + value.totalPages);
+                                scope.totalPages = value.totalPages;
                                 $log.debug('getFiltersByTerm');
                                 $log.debug(value);
                                 scope.productBundleGroupFilters.value = productBundleService.formatProductBundleGroupFilters(value.pageRecords, filterTerm) || [];
@@ -255,4 +267,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swproductbundlegroup.js.map
+//# sourceMappingURL=../../directives/productBundleGroup/swproductbundlegroup.js.map

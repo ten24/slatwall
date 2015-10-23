@@ -50,7 +50,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 
 	public any function getTaxRates(required any requestBean) {
 
-		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Resquest
+		// Create new TaxRatesResponseBean to be populated with XML Data retrieved from Quotation Request
 		var responseBean = new Slatwall.model.transient.tax.TaxRatesResponseBean();
 		
 		var taxExempt = false;

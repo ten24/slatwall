@@ -10,11 +10,9 @@ angular.module('slatwalladmin')
             templateUrl: partialsPath + "admincreatesuperuser.html",
             link: function (scope, element, attrs) {
                 scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
-                console.log('account added');
-                console.log(scope.Account_SetupInitialAdmin);
             }
         };
     }
 ]);
 
-//# sourceMappingURL=swadmincreatesuperuser.js.map
+//# sourceMappingURL=../../directives/workflow/swadmincreatesuperuser.js.map

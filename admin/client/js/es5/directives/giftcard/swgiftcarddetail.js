@@ -17,6 +17,7 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.init();
         }
+        SWGiftCardDetailController.$inject = ["$slatwall"];
         return SWGiftCardDetailController;
     })();
     slatwalladmin.SWGiftCardDetailController = SWGiftCardDetailController;
@@ -49,4 +50,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swgiftcarddetail.js.map
+//# sourceMappingURL=../../directives/giftcard/swgiftcarddetail.js.map

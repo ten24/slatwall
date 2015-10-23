@@ -872,4 +872,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swconditioncriteria.js.map
+//# sourceMappingURL=../../directives/collection/swconditioncriteria.js.map

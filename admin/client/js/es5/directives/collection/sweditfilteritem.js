@@ -290,4 +290,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=sweditfilteritem.js.map
+//# sourceMappingURL=../../directives/collection/sweditfilteritem.js.map

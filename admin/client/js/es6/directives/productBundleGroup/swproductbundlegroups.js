@@ -40,4 +40,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swproductbundlegroups.js.map
+//# sourceMappingURL=../../directives/productBundleGroup/swproductbundlegroups.js.map

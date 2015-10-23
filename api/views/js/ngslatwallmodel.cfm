@@ -66,7 +66,7 @@ Notes:
 		<cfoutput>
 			/// <reference path="../../../../client/typings/tsd.d.ts" />
 			/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-			angular.module('ngSlatwallModel',['ngSlatwall']).config(['$provide',function ($provide
+			angular.module('ngSlatwallModel',['hibachi','ngSlatwall']).config(['$provide',function ($provide
 			 ) {
 	    	<!--- js entity specific code here --->
 	    	$provide.decorator( '$slatwall', [ 
@@ -108,15 +108,21 @@ Notes:
 			        angular.extend(_config, slatwallAngular.slatwallConfig);
 			    }	
 			    
-			    
-	            	
                 var _jsEntities = {};
+				var _jsEntityInstances = {};
                 var entities = {};
                 var validations = {};
                 var defaultValues = {};
                 <cfloop array="#rc.entities#" index="local.entity">
                 	entities['#local.entity.getClassName()#'] = #serializeJson(local.entity.getPropertiesStruct())#;
                 	entities['#local.entity.getClassName()#'].className = '#local.entity.getClassName()#';
+                	<cfset local.metaData = getMetaData(local.entity)>
+                	<cfif structKeyExists(local.metaData,'hb_parentPropertyName')>
+                		entities['#local.entity.getClassName()#'].hb_parentPropertyName = '#local.metaData.hb_parentPropertyName#';
+                	</cfif>
+                	<cfif structKeyExists(local.metaData,'hb_childPropertyName')>
+                		entities['#local.entity.getClassName()#'].hb_childPropertyName = '#local.metaData.hb_childPropertyName#';
+                	</cfif>
                 	validations['#local.entity.getClassName()#'] = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
                 	defaultValues['#local.entity.getClassName()#'] = {
                 	<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
@@ -173,8 +179,8 @@ Notes:
 						z:''
 	                };
                 </cfloop>
-                	console.log($delegate);
                 angular.forEach(entities,function(entity){
+					
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
 						var entityDataPromise = $delegate.getEntity(entity.className,options);
@@ -230,6 +236,12 @@ Notes:
 						
 						this.metaData = entity;
 						this.metaData.className = entity.className;
+						if(entity.hb_parentPropertyName){
+							this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
+						}
+						if(entity.hb_childPropertyName){
+							this.metaData.hb_childPropertyName = entity.hb_childPropertyName;
+						}
 						
 						this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 							return $delegate.rbKey(rbKey,replaceStringData);
@@ -339,6 +351,15 @@ Notes:
 						},
 						$$getValidationByPropertyAndContext:function(property,context){
 							return _getValidationByPropertyAndContext(this,property,context);
+						},
+						$$getTitleByPropertyIdentifier(propertyIdentifier){
+							if(propertyIdentifier.split('.').length > 1){
+								var listFirst = utilityService.listFirst(propertyIdentifier,'.');
+								var relatedEntityName = this.metaData[listFirst].cfc;
+								var exampleEntity = $delegate.newEntity(relatedEntityName);
+								return exampleEntity = exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst,''));
+							}
+							return this.metaData.$$getPropertyTitle(propertyIdentifier);
 						}
 						<!--- used to retrieve info about the object properties --->
 						,$$getMetaData:function( propertyName ) {
@@ -513,8 +534,6 @@ Notes:
 									<!--- TODO: ability to add post options to the transient collection --->
 									
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
-										console.log('test');
-											console.log(this);
 
 										var thisEntityInstance = this;
 										if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
@@ -554,6 +573,7 @@ Notes:
 											//this should retreive id from the metadata
 											return this.data[this.$$getIDName()];
 										};
+										
 										_jsEntities[ entity.className ].prototype['$$getIDName']=function(){
 											var IDNameString = property.name;
 											return IDNameString;
@@ -572,8 +592,16 @@ Notes:
 						}
 						}
 					});
+					
                 });
 				$delegate.setJsEntities(_jsEntities);
+				
+				angular.forEach(_jsEntities,(jsEntity)=>{
+					var jsEntityInstance = new jsEntity;
+					_jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
+				});
+				
+				$delegate.setJsEntityInstances(_jsEntityInstances);
 				
 				var _init = function(entityInstance,data){
 	                for(var key in data) {
@@ -719,49 +747,6 @@ Notes:
 	                }
 	            }
 	            
-	            var utilityService = {
-	                formatValue:function(value,formatType,formatDetails,entityInstance){
-	                    if(angular.isUndefined(formatDetails)){
-	                        formatDetails = {};
-	                    }
-	                    var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno"];
-	                    
-	                    if(typeList.indexOf(formatType)){
-	                        utilityService['format_'+formatType](value,formatDetails,entityInstance);
-	                    }
-	                    return value;
-	                },
-	                format_currency:function(value,formatDetails,entityInstance){
-	                    if(angular.isUndefined){
-	                        formatDetails = {};
-	                    }
-	                },
-	                format_date:function(value,formatDetails,entityInstance){
-	                    if(angular.isUndefined){
-	                        formatDetails = {};
-	                    }
-	                },
-	                format_datetime:function(value,formatDetails,entityInstance){
-	                    if(angular.isUndefined){
-	                        formatDetails = {};
-	                    }
-	                },
-	                format_pixels:function(value,formatDetails,entityInstance){
-	                    if(angular.isUndefined){
-	                        formatDetails = {};
-	                    }
-	                },
-	                format_yesno:function(value,formatDetails,entityInstance){
-	                    if(angular.isUndefined){
-	                        formatDetails = {};
-	                    }
-	                    if(Boolean(value) === true ){
-	                        return entityInstance.metaData.$$getRBKey("define.yes");
-	                    }else if(value === false || value.trim() === 'No' || value.trim === 'NO' || value.trim() === '0'){
-	                        return entityInstance.metaData.$$getRBKey("define.no");
-	                    }
-	                }
-	            }
 	            
 	            var _getFormattedValue = function(propertyName,formatType,entityInstance){
 	                var value = entityInstance.$$getPropertyByName(propertyName);
@@ -1243,7 +1228,7 @@ Notes:
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngSlatwallModel')>
 </cfif>
 <cfscript>
-	local.filePath = expandPath('/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
+	local.filePath = expandPath('/Slatwall/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
 	fileWrite(local.filePath,local.jsOutput);	
 </cfscript>
 <!---

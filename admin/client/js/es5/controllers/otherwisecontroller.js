@@ -6,4 +6,4 @@ angular.module('slatwalladmin').controller('otherwiseController', [
     }
 ]);
 
-//# sourceMappingURL=otherwisecontroller.js.map
+//# sourceMappingURL=../controllers/otherwisecontroller.js.map

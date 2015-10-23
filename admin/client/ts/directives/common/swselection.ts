@@ -3,10 +3,12 @@ angular.module('slatwalladmin')
 .directive('swSelection', [
 	'$log',
     'selectionService',
-    'partialsPath',
+    'observerService',
+    'partialsPath', 
 	function(
 		$log,
         selectionService,
+        observerService,
         partialsPath
 	){
 		return {
@@ -16,10 +18,14 @@ angular.module('slatwalladmin')
                 selection:"=",
                 selectionid:"@",
                 id:"=",
-                isRadio:"="
+                isRadio:"=",
+                name:"@",
+                disabled:"="
             },
 			link: function(scope,$element,$attrs){
-                
+                if(!scope.name){
+                    scope.name = 'selection';    
+                }
                 if(selectionService.hasSelection(scope.selectionid,scope.selection)){
                     scope.toggleValue = true;    
                 }
@@ -34,6 +40,7 @@ angular.module('slatwalladmin')
                     }else{
                         selectionService.removeSelection(selectionid,selection);
                     }
+                    observerService.notify('swSelectionToggleSelection',{selectionid,selection});
                 }
 			}
 		};
