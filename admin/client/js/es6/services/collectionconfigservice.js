@@ -340,12 +340,24 @@ var slatwalladmin;
             this.addCollectionFilter = (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria = 'One', fieldtype, readOnly = false) => {
                 this.filterGroups[0].filterGroup.push(new CollectionFilter(this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
             };
-            this.setOrderBy = (propertyIdentifier, direction = 'DESC') => {
-                if (angular.isUndefined(this.orderBy)) {
+            //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+            this.setOrderBy = (orderByList) => {
+                var orderBys = orderByList.split(',');
+                for (var orderBy in orderBys) {
+                    this.addOrderBy(orderBy);
+                }
+            };
+            this.addOrderBy = (orderByString) => {
+                if (!this.orderBy) {
                     this.orderBy = [];
                 }
-                this.addJoin(propertyIdentifier);
-                this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
+                var propertyIdentifier = this.utilityService.listFirst(orderByString, '|');
+                var direction = this.utilityService.listLast(orderByString, '|');
+                var orderBy = {
+                    propertyIdentifier: propertyIdentifier,
+                    direction: direction
+                };
+                this.orderBy.push(orderBy);
             };
             this.setCurrentPage = (pageNumber) => {
                 this.currentPage = pageNumber;
@@ -382,4 +394,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', ($slatwall, utilityService) => new CollectionConfig($slatwall, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=collectionconfigservice.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map

@@ -68,4 +68,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swcriteriamanytoone.js.map
+//# sourceMappingURL=../../directives/collection/swcriteriamanytoone.js.map

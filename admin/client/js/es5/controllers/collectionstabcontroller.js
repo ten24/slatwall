@@ -7,4 +7,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=collectionstabcontroller.js.map
+//# sourceMappingURL=../controllers/collectionstabcontroller.js.map
