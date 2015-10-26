@@ -15,10 +15,8 @@ module slatwalladmin {
             private selectionService
         ){
             this.$log.debug('init product_create controller');
-            console.log(this);
             //on select change get collection
             this.$scope.preprocessproduct_createCtrl.productTypeChanged = (selectedOption)=>{
-                console.log(selectedOption);
                 this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
                 this.$scope.preprocessproduct_createCtrl.getCollection();
                 this.selectionService.clearSelection('ListingDisplay');
