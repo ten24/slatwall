@@ -63,7 +63,6 @@ Notes:
 			<!--- Submit the baseProductType as well in case of a validation error --->
 			<input type="hidden" name="baseProductType" value="#rc.processObject.getBaseProductType()#" />
 			<!--- inject angular here --->
-			{{preprocessproduct_createCtrl.options}}
 			<cfset fieldAttributes = 'ng-model="preprocessproduct_createCtrl.selectedOption" ng-options="option.label for option in preprocessproduct_createCtrl.options track by option.value" ng-change="preprocessproduct_createCtrl.productTypeChanged(preprocessproduct_createCtrl.selectedOption)"'/>
 			<hb:HibachiPropertyRow>
 				<hb:HibachiPropertyList divClass="col-md-6">
