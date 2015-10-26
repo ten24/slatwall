@@ -1,7 +1,7 @@
 <cfoutput>
 <cfinclude template="header.cfm" >
 <div>
-  <div ng-controller="slatwall as sw">
+  <div ng-controller="swfController as slatwall">
     <section>
         <div>           
             <div class="container" >
@@ -9,7 +9,7 @@
                     <h2>Form Field Display:</h2>
                     <h3>This directive is used to build all the other frontend tags.</h3>
                 </div>
-                 <p class="directives">
+                <p class="directives">
                     
                     <dl>
                         <h4>Type Attribute Values</h4>
@@ -84,79 +84,213 @@
     </section>
     <section>
         <div>           
-            <div class="container" > 
-                <h2>Login Account:</h2>
-                <swf-form process-object="Account_login" action="$login">
-                    <swf-form-field name="Email Address" type="email" sw-model="formData.emailAddress" class="formControl"></swf-form-field>
-                    <swf-form-field name="Password" type="password" sw-model="formData.password" class="formControl"></swf-form-field>
-                    <swf-form-field name="Login" type="submit" class="formControl">Login</swf-form-field>
-                </swf-form>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div>           
-            <div class="container" > 
-                <h2>Add Promotion Code:</h2>
-                    <swf-form process-object="Order_addPromotionCode" action="$addPromotionCode">
-                       <swf-form-field name="Promotion Code" type="text" class="formControl"></swf-form-field>
-                       <swf-form-field name="Add Promo Code" type="submit" class="formControl">Add Promotion Code</swf-form-field>
-                    </swf-form>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div>           
-            <div class="container" > 
-                <h2>Cart Data</h2>
-                <pre><small>{{cart | json}}</small></pre>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div>           
-            <div class="container" > 
-                <h2>Account Data</h2>
-                <pre><small>{{account | json}}</small></pre>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div>           
-            <div class="container" > 
-                <h2>Testing</h2>
-                <b>Basic Info:</b>
-                {{account.firstName}} {{account.lastName}}
-                {{formData}}
+            <div class="container" >
+                <div class="s-ds-header">
+                    <h2>Building Forms</h2>
+                    <h3>Using regular html or a combination of swf-form and swf-form-field</h3>
+                    <h4>There are a couple restrictions on valid form naming characters. A field can't start with a '$'</h4>
+                </div>
+               <section>
+               <!---<section>
+                    <div>           
+                        <div class="container" > 
+                            <dl>
+                                <h4>Example Forms</h4>
+                                <hr>
+                                <dt>Login Using Decoratoed Bootstrap Form</dt>            
+                                <dd>
+                                   <!-- start decorated bootstrap form -->
+                                   <swf-form process-object="Account_login" action="$login">
+                                        <div class="form-group">
+                                            <label for="email">Email</label>
+                                            <input type="email" class="form-control" id="email" placeholder="Email" sw-model="Account_login.emailAddress">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            <input type="password" class="form-control" id="password" placeholder="Password" sw-model="Account_login.password">
+                                        </div>
+                                        <input type="submit" class="btn btn-primary" ng-click="submit()">Login</button>
+                                   </swf-form>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+               </section>--->
+               
+               <section>
+                    <div>           
+                        <div class="container" > 
+                       <dl>
+                            <h4>Example Forms</h4>
+                            <hr>
+                            <dt>Login/Logout</dt>            
+                            <dd>
+                            <!-- start login form -->
+                            <swf-login></swf-login>
+                            
+                            <!-- start logout form -->
+                            <swf-form 
+                                process-object="Account_logout" 
+                                action="$logout"
+                                hide-until="Account_login">
+                                <span>Signed in as {{slatwall.account.firstName}} {{slatwall.account.lastName}}</span><br>      
+                                <swf-form-field 
+                                    name="Logout" 
+                                    type="submit" 
+                                    class="formControl">Logout</swf-form-field>
+                            </swf-form>
+                            
+                            
+                            
+                            </dd>
+                        </div>
+                    </div>
+                </section>
                 
-                <ul>
+                <section>
+                    <div>           
+                        <div class="container" > 
+                            <dl>
+                                <h4>Example Forms</h4>
+                                <hr>
+                            <dt>Promo Codes</dt>            
+                            <dd>
+                                <!-- add promo code -->
+                                <!-------------------->
+                                <swf-form process-object="Order_addPromotionCode" action="$addPromotionCode">
+                                   <swf-form-field name="promotionCode" label-text="Promo Code:" type="text" class="formControl" sw-model="Order_addPromotionCode.promotionCode"></swf-form-field>
+                                   <swf-form-field name="Add Promo Code" type="submit" class="formControl"></swf-form-field>
+                                </swf-form>
+                                <!-------------------->
+                            </dd>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div>           
+                        <div class="container" > 
+                            <dl>
+                                <h4>Example Forms</h4>
+                                <hr>
+                            <dt>create a new account and then login</dt>            
+                            <dd>
+                                <!---------Create an Account----------->
+                                <swf-form process-object="Account_create" actions="$createAccount,$login">
+                                   <swf-form-field name="firstName" label-text="First Name:" type="text" class="formControl" sw-model="Account_create.firstName"></swf-form-field>
+                                   <swf-form-field name="lastName" label-text="Last Name:" type="text" class="formControl" sw-model="Account_create.lastName"></swf-form-field>
+                                   <swf-form-field name="phone" label-text="Phone:" type="text" placeholder="xxx-xxx-xxxx" class="formControl" sw-model="Account_create.phone"></swf-form-field>
+                                   <swf-form-field name="company" label-text="Company:" type="text" class="formControl" sw-model="Account_create.company"></swf-form-field>
+                                   <swf-form-field name="emailAddress" label-text="Email:" type="text" class="formControl" sw-model="Account_create.emailAddress"></swf-form-field>
+                                   <swf-form-field name="emailAddressConfirm" label-text="Confirm Email:" type="text" class="formControl" sw-model="Account_create.emailAddressConfirm"></swf-form-field>
+                                   <swf-form-field name="password" label-text="Password:" type="password" class="formControl" sw-model="Account_create.password"></swf-form-field>
+                                   <swf-form-field name="passwordConfirm" label-text="Confirm Password:" type="password" class="formControl" sw-model="Account_create.passwordConfirm"></swf-form-field>
+                                   <swf-form-field name="Create Account" type="submit" class="formControl"></swf-form-field>
+                                </swf-form>
+                                <!----End create account and login------>
+                            </dd>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div>           
+                        <div class="container" > 
+                        	<dl>
+                            <h4>Cart</h4>
+                            <hr>
+                            <dt>Using the cart object to display cart data</dt>             
+                            <dd>
+                                <pre><small>{{slatwall.cart | json}}</small></pre>
+                            </dd>
+                        </div>
+                    </div>
+                </section>
                 
-                </ul>
+                <section>
+                    <div>           
+                        <div class="container" > 
+                            <dl>
+                            <h4>Account</h4>
+                            <hr>
+                            <dt>Using the account object to display cart data</dt>            
+                            <dd>
+                                <pre><small>{{slatwall.account | json}}</small></pre>
+                            </dd>
+                        </div>
+                    </div>
+                </section>
+                
             </div>
         </div>
     </section>
-
-<form slatwall-submit="login">
-
-    Email: <input type="text" name="emailAddress" ng-model="slatwall.processObjects.login.emailAddress" />
-    <span class="error" ng-repeat="error in slatwall.processObjects.login.errors.emaillAddress" ng-bind="error"></span>
-        
-    Password: <input type="password" name="password" ng-model="slatwall.processObjects.login.password" />
-    <span class="error" ng-repeat="error in slatwall.processObjects.login.errors.password" ng-bind="error"></span>
-
-    <button type="submit">Login</button>
     
-</form>
-
-
-
-
-
-
   </div>
+    <!-- Validations Section                                                  -->
+    <!-- rules: minQuantity,maxQuantity,required,equalTo,lessThan,greaterThan -->
+    <!-- set the throttle on entire form or single fields                     -->
+    <!-- will focus to the first invalid validation                           -->
+    <!-- Before a field is marked as invalid, the validation is lazy          -->
+    <!-- Once a field is marked invalid, it is eagerly validated              -->
+    <!-- If the user enters something in a non-marked field, and tabs/clicks away from it (onblur), it is validated -->
+    <!-- Built in validation messages: 
+            required – Makes the element required.
+            remote – Requests a resource to check the element for validity.
+            minlength – Makes the element require a given minimum length.
+            maxlength – Makes the element require a given maxmimum length.
+            rangelength – Makes the element require a given value range.
+            min – Makes the element require a given minimum.
+            max – Makes the element require a given maximum.
+            range – Makes the element require a given value range.
+            email – Makes the element require a valid email
+            url – Makes the element require a valid url
+            date – Makes the element require a date.
+            dateISO – Makes the element require an ISO date.
+            number – Makes the element require a decimal number.
+            digits – Makes the element require digits only.
+            creditcard – Makes the element require a credit card number.
+            equalTo – Requires the element to be the same as another one
+    
+    --->
+    <!---<swf-forms-validation validation-for="login">
+    	<!-- this form has two elements: email and password -->
+        <swf-validation for="email" rules="email,required" position="right" validation-class="error">
+            <validation-message for="minQuantity">Must be above 0!</validation-message>
+            <validation-message for="maxQuantity">Must be below 100!</validation-message>
+            <validation-message for="required">email address required *</validation-message>
+        </swf-validation>
+        
+        <swf-validation for="password" rules="required,alphanumeric">
+            <validation-message for="required">password required *</validation-message>
+            <validation-message for="alphanumeric">valid characters are a-z A-Z 0-9</validation-message>
+        </swf-validation>
+        
+        <swf-validation for="firstName" rules="required">
+            <validation-message for="required">password required *</validation-message>
+        </swf-validation>
+        
+    </swf-forms-validation>--->
+                            
+  
+  
+  
 </div>
 </cfoutput>
 <cfinclude template="footer.cfm" >
+<style type="text/css">
+  .css-form input.ng-invalid.ng-touched {
+    border: 1px solid red;
+  }
+
+  .css-form input.ng-valid.ng-touched {
+    border: 1px solid gray;
+  }
+  
+  .error {
+  	color: red;
+  	font-size: 11px;
+  	padding-top:10px;
+  	padding-bottom: 10px;
+  }
+</style>
 <style >
     dl {
         
@@ -245,3 +379,10 @@
         border-radius: 4px;
     }
 </style>
+                            <!--
+                            <swf-form process-object="Account_login" action="$login">
+                                <label>Email Address: <input type="text" name="inputEmailAddress" ng-model="Account_login.inputEmailAddress"></input></label>
+                                <label>Password: <input type="password" name="inputPassword" ng-model="Account_login.inputPassword"></input></label>
+                                <input type="submit" name="submitLogin" ng-click="submit()"></input>
+                            </swf-form>
+                            -->

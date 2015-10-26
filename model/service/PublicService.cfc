@@ -79,10 +79,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		var accountProcess = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'login' );
 		arguments.data.$.slatwall.addActionResult( "public:account.login", accountProcess.hasErrors() );
 		if (accountProcess.hasErrors()){
-			//find the errors - are they on account or cart?
 			if (data.$.slatwall.getAccount().hasErrors()){
 				acountProcess.$errors = data.$.slatwall.getAccount().getErrors();
 			}
+			addErrors(data, data.$.slatwall.getAccount().getProcessObject("login").getErrors());
 		}
 		return accountProcess;
 	}
@@ -91,18 +91,20 @@ component extends="HibachiService"  accessors="true" output="false"
 	    the default behavior for a GET request to process context /api/scope/process/*/	
 	public any function getProcessObjectDefinition(required struct data){
         
-        if (structKeyExists(data, entityName) && lCase(data.entityName) == "account"){
-        	var processObject = evaluate("data.$.slatwall.getAccount().getProcessObject('#data.processObject#')");
-        }else if(structKeyExists(data, entityName) && (lCase(data.entityName) == "order" || lCase(data.entityName) == "cart")){
-        	var processObject = evaluate("data.$.slatwall.cart().getProcessObject('#data.processObject#')");
-        }else{
-        	var processObject = evaluate("data.$.slatwall.#data.entityName#().getProcessObject('#data.processObject#')");
-        }
-        
-        arguments.data.ajaxResponse['processObject'] = processObject.getThisMetaData();
-        arguments.data.ajaxResponse['processObject']['validations'] = processObject.getValidations();
-        arguments.data.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
-        arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
+        try{
+            if (structKeyExists(data, entityName) && lCase(data.entityName) == "account"){
+            	var processObject = evaluate("data.$.slatwall.getAccount().getProcessObject('#data.processObject#')");
+            }else if(structKeyExists(data, entityName) && (lCase(data.entityName) == "order" || lCase(data.entityName) == "cart")){
+            	var processObject = evaluate("data.$.slatwall.cart().getProcessObject('#data.processObject#')");
+            }else{
+            	var processObject = evaluate("data.$.slatwall.#data.entityName#().getProcessObject('#data.processObject#')");
+            }
+            
+            arguments.data.ajaxResponse['processObject'] = processObject.getThisMetaData();
+            arguments.data.ajaxResponse['processObject']['validations'] = processObject.getValidations();
+            arguments.data.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
+            arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
+        }catch(any e){}
         
         var entity = evaluate('data.$.slatwall.get#data.entityName#()');
         var entityMeta = entity.getThisMetaData();
@@ -145,7 +147,10 @@ component extends="HibachiService"  accessors="true" output="false"
 	public any function logout( required struct data ){ 
 		
 		var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'logout' );
-		arguments.data.$.slatwall.addActionResult( "public:account.logout", false );
+		arguments.data.$.slatwall.addActionResult( "public:account.logout", account.hasErrors() );
+		if(account.hasErrors()){
+			addErrors(data, data.$.slatwall.getAccount().getProcessObject("logout").getErrors());
+		}
 		return account;
 	}	
 	
@@ -155,7 +160,6 @@ component extends="HibachiService"  accessors="true" output="false"
 	 *	@http-verb POST
 	 *	@description  CreateAccount Creates a new user account.  
 	 *	@http-return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
-	 *	@param firstName {string}
 	 *	@param firstName {string}
 	 *	@param lastName {string}
 	 *	@param company {string}
@@ -170,7 +174,9 @@ component extends="HibachiService"  accessors="true" output="false"
 		param name="arguments.data.createAuthenticationFlag" default="1";
 		var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'create');
 		arguments.data.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
-		
+		if(account.hasErrors()){
+            addErrors(data, data.$.slatwall.getAccount().getProcessObject("create").getErrors());
+        }
 	}
 	
 	/**
@@ -776,5 +782,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	
+	public any function addErrors( required struct data , errors){
+        if (!structKeyExists(arguments.data.ajaxResponse, "errors")){
+        	arguments.data.ajaxResponse["errors"] = {};
+        }
+        arguments.data.ajaxResponse["errors"] = errors;
+    }	
 }

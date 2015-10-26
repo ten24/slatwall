@@ -1,5 +1,5 @@
 /***************************************************************************************
-*****************************************************************************************
+ ***************************************************************************************
  ***************************************************************************************
  **
  ** 	attr.type have the following options:
@@ -30,13 +30,13 @@
  **		attr.fieldAttributes" type="string" default=""
  **		
  ***************************************************************************************
-  ***************************************************************************************
+ ***************************************************************************************
  ***************************************************************************************
  */
 angular.module('slatwall')
 .directive('swfFormField', [
-'$log','$templateCache','$window',
-	function($log, $templateCache, $window){ 
+'$log','$templateCache','$window', '$compile',
+	function($log, $templateCache, $window, $compile){ 
 		return {
 			restrict: 'E',
 			require: '^?swfForm',
@@ -48,8 +48,11 @@ angular.module('slatwall')
 				valueObjectProperty: "=?",
 				options: "@?",
 				fieldAttributes: "@?",
-				doProcess: "@?",
-				swModel: "="
+				swModel: "=",
+				labelText: "@?",
+				labelClass: "@?",
+				errorText: "@?",
+				errorClass: "@?"
 			},
 			transclude: true,
 			templateUrl:'custom/apps/frontendcode/frontendtesting/swfApp/swf-directive-partials/swfFormFieldPartial.html',
@@ -62,11 +65,8 @@ angular.module('slatwall')
 				scope.class				  = attrs.class|| "formControl";
 				scope.valueObject		  = attrs.valueObject;
 				scope.fieldAttributes     = attrs.fieldAttributes || "";
-				scope.doProcess	      	  = attrs.doProcess || "";
 				scope.optionValues        = [];
-			    scope.swModel;
-				var obj = scope.$eval(attrs.ngModel);
-				console.log("O" , obj)
+			    
 				
 				/** handle turning the options into an array of objects */
 				if (attrs.options && angular.isString(attrs.options)){
@@ -89,9 +89,8 @@ angular.module('slatwall')
 				if (attrs.type=="yesno" && (attrs.value && angular.isString(attrs.value))){
 					scope.selected == attrs.value;
 				}
-				
 			}
-		};
+		}
 	}
 ]);
 	

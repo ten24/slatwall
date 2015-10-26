@@ -1,7 +1,5 @@
 //{
 
-/// <reference path="../../admin/client/ts/filters/percentage.ts" />
-
 /// <reference path="../../admin/client/ts/controllers/alertcontroller.ts" />
 
 /// <reference path="../../admin/client/ts/controllers/collections.ts" />
@@ -25,6 +23,8 @@
 /// <reference path="../../admin/client/ts/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
 
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
+
+/// <reference path="../../admin/client/ts/filters/percentage.ts" />
 
 /// <reference path="../../admin/client/ts/model/alert.ts" />
 
@@ -74,6 +74,8 @@
 
 /// <reference path="../../admin/client/ts/services/workflowconditionservice.ts" />
 
+/// <reference path="../../admin/client/ts/controllers/frontend/frontend-controller.ts" />
+
 /// <reference path="../../admin/client/ts/directives/collection/swaddfilterbuttons.ts" />
 
 /// <reference path="../../admin/client/ts/directives/collection/swcollection.ts" />
@@ -111,6 +113,14 @@
 /// <reference path="../../admin/client/ts/directives/collection/swfiltergroups.ts" />
 
 /// <reference path="../../admin/client/ts/directives/collection/swfilteritem.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
+
+/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
 
 /// <reference path="../../admin/client/ts/directives/common/swactioncaller.ts" />
 
@@ -165,14 +175,6 @@
 /// <reference path="../../admin/client/ts/directives/common/swselection.ts" />
 
 /// <reference path="../../admin/client/ts/directives/common/swsortable.ts" />
-
-/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
-
-/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
-
-/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
-
-/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
 
 /// <reference path="../../admin/client/ts/directives/frontend/swfAddressForm.ts" />
 
@@ -232,8 +234,6 @@
 
 /// <reference path="../../admin/client/ts/directives/workflow/swworkflowtriggers.ts" />
 
-/// <reference path="../../admin/client/ts/controllers/frontend/frontend-controller.ts" />
-
 /// <reference path="../../admin/client/ts/services/frontend/accountService.ts" />
 
 /// <reference path="../../admin/client/ts/services/frontend/cartService.ts" />
@@ -241,10 +241,6 @@
 /// <reference path="../../admin/client/ts/services/frontend/entityService.ts" />
 
 /// <reference path="../../admin/client/ts/services/frontend/processObjectService.ts" />
-
-/// <reference path="../../admin/client/ts/directives/common/entity/swdetail.ts" />
-
-/// <reference path="../../admin/client/ts/directives/common/entity/swlist.ts" />
 
 /// <reference path="../../admin/client/ts/directives/common/form/swform.ts" />
 
@@ -267,6 +263,10 @@
 /// <reference path="../../admin/client/ts/directives/common/form/swformregistrar.ts" />
 
 /// <reference path="../../admin/client/ts/directives/common/form/swinput.ts" />
+
+/// <reference path="../../admin/client/ts/directives/common/entity/swdetail.ts" />
+
+/// <reference path="../../admin/client/ts/directives/common/entity/swlist.ts" />
 
 /// <reference path="../../admin/client/ts/directives/common/validation/swvalidate.ts" />
 
