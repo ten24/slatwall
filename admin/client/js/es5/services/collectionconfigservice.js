@@ -190,7 +190,9 @@ var slatwalladmin;
                 return s && s[0].toUpperCase() + s.slice(1);
             };
             this.addColumn = function (column) {
-                _this.addColumn(column.propertyIdentifier, column.title, column);
+                if (_this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentfier', column.propertyIdentifier) === -1) {
+                    _this.addColumn(column.propertyIdentifier, column.title, column);
+                }
             };
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }

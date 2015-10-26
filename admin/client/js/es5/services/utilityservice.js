@@ -45,6 +45,17 @@ var slatwalladmin;
                 }
                 return query_string;
             };
+            this.ArrayFindByPropertyValue = function (arr, property, value) {
+                arr.forEach(function (arrItem, index) {
+                    if (arrItem[property] && arrItem[property] === value) {
+                        console.log('findbypropvalue');
+                        console.log(arrItem[property]);
+                        console.log(value);
+                        return index;
+                    }
+                });
+                return -1;
+            };
             this.listLast = function (list, delimiter) {
                 if (list === void 0) { list = ''; }
                 if (delimiter === void 0) { delimiter = ','; }

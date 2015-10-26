@@ -203,7 +203,9 @@ module slatwalladmin{
         };
         
         private addColumn=(column:Column)=>{
-            this.addColumn(column.propertyIdentifier,column.title,column);
+            if(this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentfier',column.propertyIdentifier) === -1){
+                this.addColumn(column.propertyIdentifier,column.title,column);
+            }
         }
 
         private addColumn= (column: string, title: string = '', options:Object = {}) =>{

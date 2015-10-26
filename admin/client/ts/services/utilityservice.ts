@@ -43,6 +43,18 @@ module slatwalladmin{
             return query_string;
         }
         
+        public ArrayFindByPropertyValue = (arr:any[],property:string,value:any):number =>{
+            arr.forEach((arrItem,index)=>{
+               if(arrItem[property] && arrItem[property] === value){
+                   console.log('findbypropvalue');
+                   console.log(arrItem[property]);
+                   console.log(value);
+                    return index;    
+               } 
+            }); 
+            return -1;   
+        }
+        
         public listLast = (list:string='',delimiter:string=','):string =>{
             
             var listArray = list.split(delimiter);

@@ -44,7 +44,6 @@ module slatwalladmin {
             this.paginationService = paginationService;
             this.selectionService = selectionService;
             this.observerService = observerService;
-            
             this.paginator = paginationService.createPagination();
             
             
@@ -56,27 +55,41 @@ module slatwalladmin {
             
             if(!this.collection || !angular.isString(this.collection)){
                 this.hasCollectionPromise = true;
+            }else{
+                this.collectionObject = this.collection;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);     
             }
             
             this.setupDefaultCollectionInfo();
+            
+            
+             //if columns doesn't exist then make it
+            if(!this.collectionConfig.columns){
+                this.collectionConfig.columns = [];    
+            }
+            
+            //if a collectionConfig was not passed in then we can run run swListingColumns
+            //this is performed early to populate columns with swlistingcolumn info
+            this.$transclude = $transclude;
+            this.$transclude(this.$scope,()=>{});
+            
             this.setupColumns();
             
             this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
             this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
             
-            this.initData();
             
+            this.initData();
             this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
-                this.$q.when(this.collectionPromise).then((data)=>{
-                    this.$timeout(()=>{
-                        
+                if(newValue){
+                   this.$q.when(this.collectionPromise).then((data)=>{
                         this.collectionData = data;
                         this.setupDefaultCollectionInfo();
                         this.setupColumns();
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                         this.paginator.setPageRecordsInfo(this.collectionData);
-                    });
-                });
+                    }); 
+                }
             });
             this.tableID = 'LD'+this.utilityService.createID();
             //if getCollection doesn't exist then create it
@@ -93,9 +106,6 @@ module slatwalladmin {
                 this.collectionObject = this.collection.collectionObject;
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
                 this.collectionConfig.loadJson(this.collection.collectionConfig);  
-            }else{
-                this.collectionObject = this.collection;
-                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);      
             }
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
@@ -106,7 +116,6 @@ module slatwalladmin {
             
             this.collectionPromise = this.collectionConfig.getEntity();
             return ()=>{
-                
                 this.collectionPromise.then((data)=>{
                 });
             };    
@@ -150,8 +159,6 @@ module slatwalladmin {
             if(!this.parentPropertyName || (this.parentPropertyName && !this.parentPropertyName.length) ){
                 if(this.exampleEntity.metaData.hb_parentPropertyName){
                     this.parentPropertyName = this.exampleEntity.metaData.hb_parentPropertyName;
-                    this.parentPropertyMetaData = this.exampleEntity.metaData[this.parentPropertyName];
-                    this.parentEntity = this.$slatwall.getEntityExample(this.parentPropertyMetaData.cfc);
                 }
             }
             if(!this.childPropertyName || (this.childPropertyName && !this.childPropertyName.length) ){
@@ -384,21 +391,9 @@ module slatwalladmin {
             //Setup table class
             this.tableclass = this.tableclass || '';
             this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
-            
-            
         }
         
         public setupColumns = ()=>{
-            //if columns doesn't exist then make it
-            if(!this.collectionConfig.columns){
-                this.collectionConfig.columns = [];    
-            }
-            
-            //if a collectionConfig was not passed in then we can run run swListingColumns
-            //this is performed early to populate columns with swlistingcolumn info
-            this.$transclude = $transclude;
-            this.$transclude(this.$scope,()=>{});
-            
             //assumes no alias formatting
             angular.forEach(this.columns, (column)=>{
                 var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
@@ -573,6 +568,11 @@ module slatwalladmin {
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
 			scope.$on('$destroy',()=>{
                observerService.detachByID(scope.collection); 
+            });
+            
+            scope.$watch('swListingDisplay.collectionConfig',(newValue,oldValue)=>{
+                console.log('newCollectionConifg');
+               console.log(newValue); 
             });
 		}
 	}
