@@ -84,7 +84,8 @@ var slatwalladmin;
                 records: "=",
                 recordIndex: "=",
                 recordDepth: "=",
-                childCount: "="
+                childCount: "=",
+                autoOpen: "="
             };
             this.controller = SWExpandableRecordController;
             this.controllerAs = "swExpandableRecord";
@@ -92,9 +93,15 @@ var slatwalladmin;
                 if (scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount) {
                     $templateRequest(partialsPath + "expandablerecord.html").then(function (html) {
                         var template = angular.element(html);
+                        //get autoopen reference to ensure only the root is autoopenable
+                        var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
+                        scope.swExpandableRecord.autoOpen = false;
                         template = $compile(template)(scope);
                         element.html(template);
                         element.on('click', scope.swExpandableRecord.toggleChild);
+                        if (autoOpen) {
+                            scope.swExpandableRecord.toggleChild();
+                        }
                     });
                 }
             };

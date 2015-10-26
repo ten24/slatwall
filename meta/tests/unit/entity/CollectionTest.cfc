@@ -86,7 +86,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(pageRecords);
 //	}
 
+	
+
 	public void function addDisplayAggregateTest(){
+
+		
 
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.setDisplayProperties('product.productName,price');

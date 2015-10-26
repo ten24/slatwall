@@ -12,12 +12,12 @@
 						<sw-options
 							data-object-name="Site"
 						></sw-options>
+						
 					</div>
 				</div>
 			</div>
 		</nav>
 	</div>
-
 	<div class="s-table-header-nav s-listing-head-margin">
 		<div class="col-xs-6 s-no-padding-left">
 			<ul class="list-inline list-unstyled">
@@ -31,11 +31,11 @@
 										class="form-control input-sm"
 										placeholder="Search"
 										name="srch-term"
-										ng-model="keywords"
-										ng-change="searchCollection()"
+										ng-model="swContentList.keywords"
+										ng-change="swContentList.searchCollection()"
 										/>
-									<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-									<i ng-hide="loadingCollection" class="fa fa-search"></i>
+									<i ng-show="swContentList.loadingCollection" class="fa fa-refresh fa-spin"></i>
+									<i ng-hide="swContentList.loadingCollection" class="fa fa-search"></i>
 								</div>
 							</div>
 						</div>
@@ -43,75 +43,32 @@
 					<!-- s-select-list-wrapper -->
 				</li>
 			</ul>
-			{{siteOptions}}
-			{{options}}
-		</div>
-		
-		<div class="col-xs-6 s-table-view-options s-no-padding-right" >
-			<ul class="list-inline list-unstyled">
-					
-				<li>
-					<span sw-pagination-bar
-						data-collection="collection"
-						data-current-page="currentPage"
-						data-page-show="pageShow"
-						data-page-show-options="pageShowOptions"
-						data-page-start="pageStart"
-						data-page-end="pageEnd"
-						data-records-count="recordsCount"
-						data-get-collection="getCollection()"
-						>
-					</span>
-				</li>
-				
-				<!--
-				<li>
-					<div class="btn-group navbar-left dropdown">
-						<button type="button" class="btn btn-sm s-btn-dgrey dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i></button>
-						<ul class="dropdown-menu pull-right" role="menu">
-							<li><a title="Export List" class="adminentityexportSlatwallCollection " target="_self" href="?slatAction=entity.exportSlatwallCollection">Export List</a></li> 
-						</ul>
-					</div>
-				</li>-->
-			</ul>
-		</div>
-	</div>
-	<content class="s-body-box"  sw-loading="firstLoad && !loadingCollection">
-		<div class="table-responsive">
-			<table id="contentList" class="table table-bordered table-hover">
-				<thead>
-					<tr>
-						<th class="s-sortable ng-binding ng-scope" 
-							ng-repeat-start="column in collectionConfig.columns" 
-							ng-repeat-end="" 
-							ng-show="column.isVisible"
-							sw-column-sorter
-							data-column="column">
-						</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody sw-scroll-trigger
-					infinite-scroll="appendToCollection()"
-					infinite-scroll-disabled="autoScrollDisabled"
-					infinite-scroll-distance="1"
-					id="contentListTable"
-					
-				>	
-					<tr sw-content-node
-						ng-repeat="pageRecord in collection.pageRecords"
-						data-content-data="pageRecord"
-						data-load-children="true"
-					></tr>
-					<tr ng-hide="collection.pageRecords.length">
-						<td colspan="100">
-							<div class="alert alert-info" style="margin:0px;" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
-						</td>
-					</tr>
-			    </tbody>
-			</table>
 			
 		</div>
-	</content>	
+		<sw-listing-display
+			ng-if="$root.loadedResourceBundle && swContentList.collectionListingPromise && swContentList.collection"	
+			data-collection-promise="swContentList.collectionListingPromise"
+			data-collection="swContentList.collection"
+			data-get-collection="swContentList.getCollection"
+			data-record-edit-action="admin:entity.editcontent"
+			data-record-add-action="entity.preprocesscontent"
+			data-record-add-query-string="&processContext=create&siteID={{swContentList.selectedSite.siteID}}"
+			data-expandable-open-root="true"
+			data-expandable="!swContentList.isSearching"
+		>
+		</sw-listing-display>
+<!--data-record-processes-config="{
+			recordProcessAction:'entity.preprocesscontent',
+			recordProcessActionProperties:"@",
+			recordProcessQueryString:"@",
+			recordProcessContext:'create',
+			
+			recordProcessEntity:"=",
+			recordProcessEntityData:"=",
+			recordProcessUpdateTableID:"=",
+			recordProcessButtonDisplayFlag:"=",
+		}"-->
+	</div>
+	
 	
 </section>

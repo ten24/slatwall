@@ -137,6 +137,14 @@ var slatwalladmin;
                 return text;
             };
             //list functions
+            this.arrayToList = (array, delimiter) => {
+                if (delimiter != null) {
+                    return array.join(delimiter);
+                }
+                else {
+                    return array.join();
+                }
+            };
             this.listFind = (list = '', value, delimiter = ',') => {
                 var splitString = list.split(delimiter);
                 var stringFound = -1;
@@ -181,7 +189,7 @@ var slatwalladmin;
                             tempArray.push(array[itemIndex]);
                         }
                     }
-                    if (keysToSortBy[1].length) {
+                    if (keysToSortBy[1] != null) {
                         tempArray.sort(function (a, b) {
                             if (a[secondKey] < b[secondKey]) {
                                 return -1;

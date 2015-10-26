@@ -154,6 +154,14 @@ var slatwalladmin;
                 return text;
             };
             //list functions
+            this.arrayToList = function (array, delimiter) {
+                if (delimiter != null) {
+                    return array.join(delimiter);
+                }
+                else {
+                    return array.join();
+                }
+            };
             this.listFind = function (list, value, delimiter) {
                 if (list === void 0) { list = ''; }
                 if (delimiter === void 0) { delimiter = ','; }
@@ -202,7 +210,7 @@ var slatwalladmin;
                             tempArray.push(array[itemIndex]);
                         }
                     }
-                    if (keysToSortBy[1].length) {
+                    if (keysToSortBy[1] != null) {
                         tempArray.sort(function (a, b) {
                             if (a[secondKey] < b[secondKey]) {
                                 return -1;
