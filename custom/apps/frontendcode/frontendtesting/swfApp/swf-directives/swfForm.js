@@ -11,7 +11,6 @@ angular.module('slatwall').directive('swfForm', [
         '$timeout',
         '$rootScope',
         function(ProcessObject, AccountFactory, CartFactory, $compile, $templateCache, $timeout, $rootScope) {
-             
             return {
                 restrict: 'E',
                 transclude: true,
@@ -79,11 +78,11 @@ angular.module('slatwall').directive('swfForm', [
                         /** We use these for our models */
                         $scope.formData = {};
                         $scope.getFormData = function(){
-                        	console.log("Returning form data");
+                        	//console.log("Returning form data");
                         	angular.forEach(this[this.processObject], function(val, key){
                         		/** check for form elements that have a name that doesn't start with $ */
                         	   	if (key.toString().indexOf('$') == -1){
-                        	   		console.log("Key", key);
+                        	   		//console.log("Key", key);
                         	   		this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
                         	   	}
                         	}, $scope);
@@ -97,7 +96,6 @@ angular.module('slatwall').directive('swfForm', [
                         $scope.parseErrors = function(result){
                         	if (angular.isDefined(result.errors) && result.errors.length != 0){
                         		angular.forEach(result.errors, function(val, key){
-                        			console.log("Errors: ", key, result.errors[key], this[this.processObject][key]);
                         			if (angular.isDefined(this[this.processObject][key])){
                         				var primaryElement = $element.find("[error-for='"+key+"']");
                         				$timeout(function() {
@@ -113,7 +111,6 @@ angular.module('slatwall').directive('swfForm', [
                         $scope.clearErrors = function(){
                         	var errorElements = $element.find("[error-for]");
                         	errorElements.empty();
-                        	console.log(errorElements);
                         }
                         
                         /** sets the correct factory to use for submission */
@@ -156,7 +153,7 @@ angular.module('slatwall').directive('swfForm', [
                         
                         /** starts the process of calling single or multiple doActions */
                         this.submit = function(){
-                        	console.log("Submitting form: ");
+                        	//console.log("Submitting form: ");
                         	var action = $scope.action || $scope.actions;
                         	$scope.clearErrors();
                         	$scope.formData = $scope.getFormData() || "";
@@ -176,15 +173,14 @@ angular.module('slatwall').directive('swfForm', [
                             }
                         }
                         
-                        
+                        this.resetForm = function(){
+                        	/** this stub will reset the form */
+                        }
                         
                         /** search dom hiding any forms listed in a onSuccess method on startup */
                         if ($attrs.onSuccess != undefined){
                             $rootScope.$emit("onStart", {"show": $scope.processObject, "hide": $attrs.onSuccess});
                         }
-                        
-                        
-                        
                 },
                 scope: {
                     entityName: "@?",

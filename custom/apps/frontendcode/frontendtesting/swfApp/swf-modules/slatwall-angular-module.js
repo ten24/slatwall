@@ -1,4 +1,4 @@
-var module = angular.module('slatwall', ['ngResource']).run(function() {})
+var module = angular.module('slatwall', ['ngResource', 'hibachi']).run(function() {})
 .factory('$exceptionHandler', function() {
   return function(exception, cause) {
     exception.message += ' (caused by "' + cause + '")';

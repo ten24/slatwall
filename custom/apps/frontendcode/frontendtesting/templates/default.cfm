@@ -91,14 +91,14 @@
                     <h4>There are a couple restrictions on valid form naming characters. A field can't start with a '$'</h4>
                 </div>
                <section>
-               <!---	
+            <!---	
                <section>
                     <div>           
                         <div class="container" > 
                             <dl>
                                 <h4>Example Forms</h4>
                                 <hr>
-                                <dt>Login Using Decoratoed Bootstrap Form</dt>            
+                                <dt>Login Using Decorated Form</dt>            
                                 <dd>
                                    <!-- start decorated bootstrap form -->
                                    <swf-form process-object="Account_login" action="$login" on-success="Account_logout">
@@ -128,12 +128,9 @@
                             <hr>
                             <dt>Login/Logout</dt>            
                             <dd>
-                            <!-- start login /logout forms -->
-                            
-                            <swf-login></swf-login>
-                            
-                            <swf-logout></swf-logout>
-                            
+                                <!-- start login /logout forms -->
+                                <swf-login></swf-login>
+                                <swf-logout></swf-logout>
                             </dd>
                          </dl>
                         </div>
@@ -215,6 +212,17 @@
     </section>
     
   </div>
+  <!--- This is a template for the form fields on * the forms.
+    <swf-form-field-template template-for='*'>
+        
+        <div class="form-group">
+            <label label-for="*"></label>
+            <input primary-type="*">
+        </div>
+        
+        <input name="" primary-type="submit" class="btn btn-primary"></input>
+    </swf-form-field-template>
+    --->
     <!-- Validations Section                                                  -->
     <!-- rules: minQuantity,maxQuantity,required,equalTo,lessThan,greaterThan -->
     <!-- set the throttle on entire form or single fields                     -->
@@ -234,7 +242,6 @@
             email – Makes the element require a valid email
             url – Makes the element require a valid url
             date – Makes the element require a date.
-            dateISO – Makes the element require an ISO date.
             number – Makes the element require a decimal number.
             digits – Makes the element require digits only.
             creditcard – Makes the element require a credit card number.

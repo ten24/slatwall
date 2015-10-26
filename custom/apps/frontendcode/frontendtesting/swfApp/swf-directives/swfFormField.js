@@ -34,8 +34,7 @@
  ***************************************************************************************
  */
 angular.module('slatwall')
-.directive('swfFormField', [
-'$log','$templateCache','$window', '$compile',
+.directive('swfFormField', ['$log','$templateCache','$window', '$compile',
 	function($log, $templateCache, $window, $compile){ 
 		return {
 			restrict: 'E',
@@ -52,13 +51,12 @@ angular.module('slatwall')
 				labelText: "@?",
 				labelClass: "@?",
 				errorText: "@?",
-				errorClass: "@?"
+				errorClass: "@?",
+				formTemplate: "@?"
 			},
 			transclude: true,
-			templateUrl:'custom/apps/frontendcode/frontendtesting/swfApp/swf-directive-partials/swfFormFieldPartial.html',
+			templateUrl: PARTIALS_PATH + 'custom/apps/frontendcode/frontendtesting/swfApp/swf-directive-partials/swfFormFieldPartial.html',
 			link: function(scope, element, attrs, formCtrl){
-				
-				
 				scope.processObject = {};
 				scope.valueObjectProperty = attrs.valueObjectProperty;
 				scope.type                = attrs.type || "text" ;
