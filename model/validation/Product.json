@@ -17,7 +17,7 @@
 		"productCode":						[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
 		"productType":						[{"contexts":"save","required":true}],
 		"transactionExistsFlag":			[{"contexts":"delete","eq":false}],
-		"unusedProductOptions":				[{"contexts":"addOption","minCollection":1}],
+		"unusedProductOptions":				[{"contexts":"addOption","method":"hasUnusedProductOptionCombinations"}],
 		"unusedProductOptionGroups":		[{"contexts":"addOptionGroup","minCollection":1}],
 		"unusedProductSubscriptionTerms":	[{"contexts":"addSubscriptionTerm","minCollection":1}],
 		"urlTitle":							[{"contexts":"save","required":true,"unique":true}]

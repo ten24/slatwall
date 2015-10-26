@@ -151,12 +151,6 @@ var slatwalladmin;
                 });
                 this.collectionListingPromise = this.collectionConfig.getEntity();
                 this.collectionListingPromise.then((value) => {
-                    angular.forEach(value.pageRecords, (node) => {
-                        node.site_domainNames = node.site_domainNames.split(",")[0];
-                    });
-                    this.collection = value;
-                    //this.collectionConfig = angular.fromJson(this.collection.collectionConfig);
-                    //this.collectionConfig.columns = columnsConfig;
                     this.collection.collectionConfig = this.collectionConfig;
                     this.firstLoad = true;
                     this.loadingCollection = false;

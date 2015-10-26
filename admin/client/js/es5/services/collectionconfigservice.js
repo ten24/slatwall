@@ -46,6 +46,7 @@ var slatwalladmin;
         }
         return Join;
     })();
+    slatwalladmin.Join = Join;
     var OrderBy = (function () {
         function OrderBy(propertyIdentifier, direction) {
             this.propertyIdentifier = propertyIdentifier;
@@ -227,7 +228,7 @@ var slatwalladmin;
                     columnObject.aggregate = options.aggregate;
                 }
                 //add any non-conventional options
-                for (key in options) {
+                for (var key in options) {
                     if (!columnObject[key]) {
                         columnObject[key] = options[key];
                     }

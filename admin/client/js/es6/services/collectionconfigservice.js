@@ -41,6 +41,7 @@ var slatwalladmin;
             this.alias = alias;
         }
     }
+    slatwalladmin.Join = Join;
     class OrderBy {
         constructor(propertyIdentifier, direction) {
             this.propertyIdentifier = propertyIdentifier;
@@ -212,7 +213,7 @@ var slatwalladmin;
                     columnObject.aggregate = options.aggregate;
                 }
                 //add any non-conventional options
-                for (key in options) {
+                for (var key in options) {
                     if (!columnObject[key]) {
                         columnObject[key] = options[key];
                     }
@@ -339,12 +340,24 @@ var slatwalladmin;
             this.addCollectionFilter = (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria = 'One', fieldtype, readOnly = false) => {
                 this.filterGroups[0].filterGroup.push(new CollectionFilter(this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
             };
-            this.setOrderBy = (propertyIdentifier, direction = 'DESC') => {
-                if (angular.isUndefined(this.orderBy)) {
+            //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+            this.setOrderBy = (orderByList) => {
+                var orderBys = orderByList.split(',');
+                for (var orderBy in orderBys) {
+                    this.addOrderBy(orderBy);
+                }
+            };
+            this.addOrderBy = (orderByString) => {
+                if (!this.orderBy) {
                     this.orderBy = [];
                 }
-                this.addJoin(propertyIdentifier);
-                this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
+                var propertyIdentifier = this.utilityService.listFirst(orderByString, '|');
+                var direction = this.utilityService.listLast(orderByString, '|');
+                var orderBy = {
+                    propertyIdentifier: propertyIdentifier,
+                    direction: direction
+                };
+                this.orderBy.push(orderBy);
             };
             this.setCurrentPage = (pageNumber) => {
                 this.currentPage = pageNumber;
