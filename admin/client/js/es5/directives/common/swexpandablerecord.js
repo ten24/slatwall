@@ -117,4 +117,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swExpandableRecord', ['$compile', '$templateRequest', '$timeout', 'partialsPath', function ($compile, $templateRequest, $timeout, partialsPath) { return new SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swexpandablerecord.js.map
+//# sourceMappingURL=../../directives/common/swexpandablerecord.js.map

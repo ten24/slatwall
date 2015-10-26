@@ -102,4 +102,4 @@ var slatwalladmin;
     angular.module('hibachi').service('observerService', ObserverService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=observerservice.js.map
+//# sourceMappingURL=../services/observerservice.js.map

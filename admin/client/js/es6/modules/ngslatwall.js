@@ -77,7 +77,7 @@ var ngSlatwall;
                         throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
                     }
                     var currentEntityName = this.utilityService.listLast(propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
-                    var currentPropertyIdentifier = this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (this.utilityService.listFirst(propertyIdentifier, '._').length));
+                    var currentPropertyIdentifier = this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (this.utilityService.listFirst(propertyIdentifier, '.').length + 1));
                     return this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
                 }
                 return entityName;
@@ -578,4 +578,4 @@ var ngSlatwall;
     angular.module('ngSlatwall').provider('$slatwall', $Slatwall);
 })(ngSlatwall || (ngSlatwall = {}));
 
-//# sourceMappingURL=ngslatwall.js.map
+//# sourceMappingURL=../modules/ngslatwall.js.map
