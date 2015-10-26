@@ -35,7 +35,7 @@ angular.module('slatwall')
     
     dataFactory.$logout = function () {
         var urlBase = '/index.cfm/api/scope/logout/?ajaxRequest=1';
-        return $http.post(urlBase, toFormParams(data), {headers: formType});
+        return $http.get(urlBase, {headers: formType});
     };
     
     dataFactory.$guestAccountCreatePassword = function (data) {
@@ -49,12 +49,12 @@ angular.module('slatwall')
     };
     
     dataFactory.$createAccount = function (data) {
-        var urlBase = '/index.cfm/api/scope/forgotPassword/?ajaxRequest=1';
+        var urlBase = '/index.cfm/api/scope/createAccount/?ajaxRequest=1';
         return $http.post(urlBase, toFormParams(data), {headers: formType});
     };
     
     dataFactory.$resetPassword = function (data) {
-        var urlBase = '/index.cfm/api/scope/forgotPassword/?ajaxRequest=1';
+        var urlBase = '/index.cfm/api/scope/resetPassword/?ajaxRequest=1';
         return $http.post(urlBase, toFormParams(data), {headers: formType});
     };
     

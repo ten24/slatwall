@@ -91,7 +91,8 @@
                     <h4>There are a couple restrictions on valid form naming characters. A field can't start with a '$'</h4>
                 </div>
                <section>
-               <!---<section>
+               <!---	
+               <section>
                     <div>           
                         <div class="container" > 
                             <dl>
@@ -100,49 +101,41 @@
                                 <dt>Login Using Decoratoed Bootstrap Form</dt>            
                                 <dd>
                                    <!-- start decorated bootstrap form -->
-                                   <swf-form process-object="Account_login" action="$login">
+                                   <swf-form process-object="Account_login" action="$login" on-success="Account_logout">
                                         <div class="form-group">
                                             <label for="email">Email</label>
-                                            <input type="email" class="form-control" id="email" placeholder="Email" sw-model="Account_login.emailAddress">
+                                            <input type="email" class="form-control" id="email" placeholder="Email" ng-model="Account_login.emailAddress">
                                         </div>
+                                        
                                         <div class="form-group">
                                             <label for="password">Password</label>
-                                            <input type="password" class="form-control" id="password" placeholder="Password" sw-model="Account_login.password">
+                                            <input type="password" class="form-control" id="password" placeholder="Password" ng-model="Account_login.password">
                                         </div>
-                                        <input type="submit" class="btn btn-primary" ng-click="submit()">Login</button>
+                                        
+                                        <swf-form-field name="Login" type="submit" class="btn btn-primary"></swf-form-field>
                                    </swf-form>
                                 </dd>
                             </dl>
                         </div>
                     </div>
-               </section>--->
-               
+               </section>
+               --->
                <section>
                     <div>           
                         <div class="container" > 
-                       <dl>
+                        <dl>
                             <h4>Example Forms</h4>
                             <hr>
                             <dt>Login/Logout</dt>            
                             <dd>
-                            <!-- start login form -->
+                            <!-- start login /logout forms -->
+                            
                             <swf-login></swf-login>
                             
-                            <!-- start logout form -->
-                            <swf-form 
-                                process-object="Account_logout" 
-                                action="$logout"
-                                hide-until="Account_login">
-                                <span>Signed in as {{slatwall.account.firstName}} {{slatwall.account.lastName}}</span><br>      
-                                <swf-form-field 
-                                    name="Logout" 
-                                    type="submit" 
-                                    class="formControl">Logout</swf-form-field>
-                            </swf-form>
-                            
-                            
+                            <swf-logout></swf-logout>
                             
                             </dd>
+                         </dl>
                         </div>
                     </div>
                 </section>
@@ -156,12 +149,10 @@
                             <dt>Promo Codes</dt>            
                             <dd>
                                 <!-- add promo code -->
-                                <!-------------------->
                                 <swf-form process-object="Order_addPromotionCode" action="$addPromotionCode">
                                    <swf-form-field name="promotionCode" label-text="Promo Code:" type="text" class="formControl" sw-model="Order_addPromotionCode.promotionCode"></swf-form-field>
                                    <swf-form-field name="Add Promo Code" type="submit" class="formControl"></swf-form-field>
                                 </swf-form>
-                                <!-------------------->
                             </dd>
                         </div>
                     </div>
@@ -175,7 +166,7 @@
                             <dt>create a new account and then login</dt>            
                             <dd>
                                 <!---------Create an Account----------->
-                                <swf-form process-object="Account_create" actions="$createAccount,$login">
+                                <swf-form process-object="Account_create" action="$createAccount">
                                    <swf-form-field name="firstName" label-text="First Name:" type="text" class="formControl" sw-model="Account_create.firstName"></swf-form-field>
                                    <swf-form-field name="lastName" label-text="Last Name:" type="text" class="formControl" sw-model="Account_create.lastName"></swf-form-field>
                                    <swf-form-field name="phone" label-text="Phone:" type="text" placeholder="xxx-xxx-xxxx" class="formControl" sw-model="Account_create.phone"></swf-form-field>

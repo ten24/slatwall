@@ -156,6 +156,7 @@ angular.module('slatwall').directive('swfForm', [
                         
                         /** starts the process of calling single or multiple doActions */
                         this.submit = function(){
+                        	console.log("Submitting form: ");
                         	var action = $scope.action || $scope.actions;
                         	$scope.clearErrors();
                         	$scope.formData = $scope.getFormData() || "";

@@ -2,19 +2,20 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/angular.min.js"></script>
 <script src="/client/lib/angular/angular-resource.min.js"></script>
-<!--- Modify to use the directory where swfApp is located --->
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-modules/slatwall-angular-module.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfForm.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfFormField.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfPropertyDisplay.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfLogin.js"></script>
+<script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-directives/swfLogout.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-controllers/swfController.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/cartService.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/accountService.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/processObjectService.js"></script>
 
 <!---<link rel="import" href="/slatwall-angular-frontend-includes.html">--->
-<!---<script src="/admin/client/js/es5/modules/loggingmodule.js"></script>--->
+<script src="/admin/client/js/es5/modules/loggingmodule.js"></script>
+
 <html lang="en" ng-app="slatwall">
 <head>
 	<meta charset="utf-8">

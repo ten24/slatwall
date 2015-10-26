@@ -30,9 +30,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			publicService.invokeMethod("getCartData", {data=arguments.rc});
 		}else if ( structKeyExists(arguments.rc, "context") && arguments.rc.url contains "getAccount"){
             publicService.invokeMethod("getAccountData", {data=arguments.rc});
-        }else{
-			publicService.invokeMethod("getPublicContexts", {data=arguments.rc});
-		}
+        }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
+            publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+        }
 	}
 	
 	public any function post( required struct rc ) {
