@@ -53,7 +53,7 @@ Notes:
 
 		<cfset var rs = "" />
 
-		<cfquery name="rs">
+		<cfquery name="rs" maxrows=1>
 			SELECT
 				count(o.optionID) AS total
 			FROM SwOption AS o
@@ -64,9 +64,9 @@ Notes:
 				p.productID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#" />
 		</cfquery>
 
-		<cfloop query="rs">
-			<cfreturn rs.total />
-		</cfloop>
+
+		<cfreturn rs.total[1] />
+
 
 	</cffunction>
 
@@ -75,7 +75,7 @@ Notes:
 
 		<cfset var rs = "" />
 
-		<cfquery name="rs">
+		<cfquery name="rs" maxrows=1>
 			SELECT
 				count(o.optionID) AS total
 			FROM SwOption AS o
@@ -83,9 +83,8 @@ Notes:
 				o.optionGroupID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#optionGroupID#" />
 		</cfquery>
 
-		<cfloop query="rs">
-			<cfreturn rs.total />
-		</cfloop>
+
+		<cfreturn rs.total[1] />
 
 	</cffunction>
 
