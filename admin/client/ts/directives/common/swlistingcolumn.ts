@@ -34,8 +34,8 @@ module slatwalladmin {
        };
         public controller=SWListingColumnController;
         public controllerAs="swListingColumn";
-        
-		constructor(){
+        public static $inject = ['utilityService'];
+		constructor(private utilityService){
             
 		}
 		
@@ -53,11 +53,12 @@ module slatwalladmin {
                 editable:scope.swListingColumn.editable,
                 buttonGroup:scope.swListingColumn.buttonGroup
             };
-            scope.$parent.swListingDisplay.columns.push(column);
-            
+            if(utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+                scope.$parent.swListingDisplay.columns.push(column);
+            }
 		}
 	}
     
-	angular.module('slatwalladmin').directive('swListingColumn',[() => new SWListingColumn()]);
+	angular.module('slatwalladmin').directive('swListingColumn',['utilityService',(utilityService) => new SWListingColumn(utilityService)]);
 }
 

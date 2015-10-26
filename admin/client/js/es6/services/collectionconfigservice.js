@@ -177,7 +177,9 @@ var slatwalladmin;
                 return s && s[0].toUpperCase() + s.slice(1);
             };
             this.addColumn = (column) => {
-                this.addColumn(column.propertyIdentifier, column.title, column);
+                if (this.utilityService.ArrayFindByPropertyValue(this.columns, 'propertyIdentfier', column.propertyIdentifier) === -1) {
+                    this.addColumn(column.propertyIdentifier, column.title, column);
+                }
             };
             this.addColumn = (column, title = '', options = {}) => {
                 var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();

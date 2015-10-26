@@ -13,6 +13,7 @@ var slatwalladmin;
             this.paginationService = paginationService;
             this.observerService = observerService;
             this.collectionConfigService = collectionConfigService;
+            this.openRoot = true;
             this.$log.debug('slatwallcontentList init');
             var pageShow = 50;
             if (this.pageShow !== 'Auto') {
@@ -152,6 +153,7 @@ var slatwalladmin;
                 });
                 _this.collectionListingPromise = _this.collectionConfig.getEntity();
                 _this.collectionListingPromise.then(function (value) {
+                    _this.collection = value;
                     _this.collection.collectionConfig = _this.collectionConfig;
                     _this.firstLoad = true;
                     _this.loadingCollection = false;
@@ -177,6 +179,7 @@ var slatwalladmin;
             };
             var siteChanged = function (selectedSiteOption) {
                 _this.selectedSite = selectedSiteOption;
+                _this.openRoot = true;
                 _this.getCollection();
             };
             this.observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');

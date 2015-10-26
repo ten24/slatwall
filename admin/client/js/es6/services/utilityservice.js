@@ -37,6 +37,17 @@ var slatwalladmin;
                 }
                 return query_string;
             };
+            this.ArrayFindByPropertyValue = (arr, property, value) => {
+                arr.forEach((arrItem, index) => {
+                    if (arrItem[property] && arrItem[property] === value) {
+                        console.log('findbypropvalue');
+                        console.log(arrItem[property]);
+                        console.log(value);
+                        return index;
+                    }
+                });
+                return -1;
+            };
             this.listLast = (list = '', delimiter = ',') => {
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];

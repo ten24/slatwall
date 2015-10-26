@@ -152,7 +152,7 @@
 				<th ng-if="swListingDisplay.administrativeCount" class="admin admin{{swListingDisplay.administativeCount}}" {{swListingDisplay.adminattributes}}>&nbsp;</th>
 			</tr>
 		</thead>
-		<tbody ng-class="{'sortable':swListingDisplay.sortable}">
+		<tbody ng-class="{'sortable':swListingDisplay.sortable}" ng-if="swListingDisplay.collectionData.pageRecords">
 			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-show="pageRecord.dataIsVisible !== false">
 				<!--Selectable-->
 				<td ng-if="swListingDisplay.selectable" class="s-table-select">
