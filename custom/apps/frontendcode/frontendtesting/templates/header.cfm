@@ -13,7 +13,7 @@
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/accountService.js"></script>
 <script src="/custom/apps/frontendcode/frontendtesting/swfApp/swf-services/processObjectService.js"></script>
 
-<!---<link rel="import" href="/slatwall-angular-frontend-includes.html">--->
+<!--<link rel="import" href="/slatwall-angular-frontend-includes.html">-->
 <script src="/admin/client/js/es5/modules/loggingmodule.js"></script>
 
 <html lang="en" ng-app="slatwall">
@@ -23,9 +23,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<cfoutput>
-	<meta name="description" content="">
-	<meta name="author" content="">
-	<title>${site.siteName}</title>
+    	<meta name="description" content="">
+    	<meta name="author" content="">
+    	<title>${site.siteName}</title>
 	</cfoutput>
 	
 	<!--- Styles --->

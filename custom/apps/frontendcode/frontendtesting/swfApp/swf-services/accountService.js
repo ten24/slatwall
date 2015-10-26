@@ -88,13 +88,13 @@ angular.module('slatwall')
         return $http.post(urlBase, toFormParams(data), {headers: formType});
     };
     
-    dataFactory.$deleteAccountPaymentMethod = function (data) {
-        var urlBase = '/index.cfm/api/scope/deleteAccountPaymentMethod/?ajaxRequest=1';
+    dataFactory.$addAccountPaymentMethod = function (data) {
+        var urlBase = '/index.cfm/api/scope/addAccountPaymentMethod/?ajaxRequest=1';
         return $http.post(urlBase, toFormParams(data), {headers: formType});
     };
     
-    dataFactory.$addAccountPaymentMethod = function (data) {
-        var urlBase = '/index.cfm/api/scope/addAccountPaymentMethod/?ajaxRequest=1';
+    dataFactory.$deleteAccountPaymentMethod = function (data) {
+        var urlBase = '/index.cfm/api/scope/deleteAccountPaymentMethod/?ajaxRequest=1';
         return $http.post(urlBase, toFormParams(data), {headers: formType});
     };
     
