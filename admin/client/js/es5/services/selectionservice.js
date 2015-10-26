@@ -47,6 +47,9 @@ var slatwalladmin;
             this.getSelections = function (selectionid) {
                 return _this._selection[selectionid];
             };
+            this.clearSelection = function (selectionid) {
+                _this._selection[selectionid] = [];
+            };
         }
         return SelectionService;
     })(slatwalladmin.BaseService);

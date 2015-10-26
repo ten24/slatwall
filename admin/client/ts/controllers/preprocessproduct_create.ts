@@ -5,9 +5,15 @@ module slatwalladmin {
 	export class ProductCreateController{
                 
                 
-        public static $inject=["$scope",'$element','$log', "$slatwall","collectionConfigService"];        
+        public static $inject=["$scope",'$element','$log', "$slatwall","collectionConfigService","selectionService"];        
         
-		constructor(private $scope: IOrderItemGiftRecipientScope, private $element, private $log:ng.ILogService,  private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService){
+		constructor(
+            private $scope: IOrderItemGiftRecipientScope, 
+            private $element, private $log:ng.ILogService,  
+            private $slatwall:ngSlatwall.$Slatwall, 
+            private collectionConfigService,
+            private selectionService
+        ){
             this.$log.debug('init product_create controller');
             console.log(this);
             //on select change get collection
@@ -15,11 +21,13 @@ module slatwalladmin {
                 console.log(selectedOption);
                 this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
                 this.$scope.preprocessproduct_createCtrl.getCollection();
+                this.selectionService.clearSelection('ListingDisplay');
             }  
             
             this.$scope.preprocessproduct_createCtrl.getCollection = ()=>{
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
                 this.collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
+                this.collectionConfig.addDisplayProperty('optionID',undefined,{isVisible:false});
                 //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
                 this.collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
                 this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID',this.$scope.preprocessproduct_createCtrl.selectedOption.value,'=','OR');

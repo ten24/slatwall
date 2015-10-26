@@ -39,6 +39,9 @@ module slatwalladmin{
         getSelections=(selectionid:string):any =>{
             return this._selection[selectionid];    
         };
+        clearSelection=(selectionid):void=>{
+            this._selection[selectionid] = [];  
+        };
     }
     angular.module('slatwalladmin').service('selectionService',SelectionService);
 }
