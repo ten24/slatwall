@@ -1,5 +1,6 @@
 {
 	"properties":{
+		"orderItemGiftRecipients":   [{"contexts":"addRecipientsToOrderItem","method":"hasUnassignedGiftCards"}],
 		"orderItemType":			[{"contexts":"save","required":true}],
 		"orderItemStatusType":		[{"contexts":"save","required":true}],
 		"orderStatusCode":			[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],

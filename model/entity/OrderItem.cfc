@@ -108,6 +108,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getNumberOfUnassignedGiftCards(){
 
+		if(!this.isGiftCardOrderItem()){
+			return 0;
+		}
+
 		var giftCards = this.getGiftCards();
 		var orderItemGiftRecipients = this.getOrderItemGiftRecipients();
 		var count = this.getQuantity();
@@ -122,6 +126,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 		return count;
 
+	}
+
+	public boolean function hasUnassignedGiftCards(){
+		return getNumberOfUnassignedGiftCards() > 0;
 	}
 
 	public boolean function isGiftCardOrderItem(){
