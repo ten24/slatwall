@@ -65,11 +65,12 @@ var slatwalladmin;
     SWExpandableRecordController.$inject = ['$timeout', 'utilityService', '$slatwall', 'collectionConfigService'];
     slatwalladmin.SWExpandableRecordController = SWExpandableRecordController;
     class SWExpandableRecord {
-        constructor($compile, $templateRequest, $timeout, partialsPath) {
+        constructor($compile, $templateRequest, $timeout, partialsPath, utilityService) {
             this.$compile = $compile;
             this.$templateRequest = $templateRequest;
             this.$timeout = $timeout;
             this.partialsPath = partialsPath;
+            this.utilityService = utilityService;
             this.restrict = 'EA';
             this.scope = {};
             this.bindToController = {
@@ -82,17 +83,36 @@ var slatwalladmin;
                 records: "=",
                 recordIndex: "=",
                 recordDepth: "=",
-                childCount: "="
+                childCount: "=",
+                autoOpen: "=",
+                multiselectIdPaths: "="
             };
             this.controller = SWExpandableRecordController;
             this.controllerAs = "swExpandableRecord";
             this.link = (scope, element, attrs) => {
                 if (scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount) {
+                    if (scope.swExpandableRecord.recordValue) {
+                        var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
+                        var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
+                        angular.forEach(multiselectIdPathsArray, (multiselectIdPath) => {
+                            var position = this.utilityService.listFind(multiselectIdPath, id, '/');
+                            var multiselectPathLength = multiselectIdPath.split('/').length;
+                            if (position !== -1 && position < multiselectPathLength - 1) {
+                                scope.swExpandableRecord.toggleChild();
+                            }
+                        });
+                    }
                     $templateRequest(partialsPath + "expandablerecord.html").then((html) => {
                         var template = angular.element(html);
+                        //get autoopen reference to ensure only the root is autoopenable
+                        var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
+                        scope.swExpandableRecord.autoOpen = false;
                         template = $compile(template)(scope);
                         element.html(template);
                         element.on('click', scope.swExpandableRecord.toggleChild);
+                        if (autoOpen) {
+                            scope.swExpandableRecord.toggleChild();
+                        }
                     });
                 }
             };
@@ -100,11 +120,12 @@ var slatwalladmin;
             this.$templateRequest = $templateRequest;
             this.partialsPath = partialsPath;
             this.$timeout = $timeout;
+            this.utilityService = utilityService;
         }
     }
-    SWExpandableRecord.$inject = ['$compile', '$templateRequest', '$timeout', 'partialsPath'];
+    SWExpandableRecord.$inject = ['$compile', '$templateRequest', '$timeout', 'partialsPath', 'utilityService'];
     slatwalladmin.SWExpandableRecord = SWExpandableRecord;
-    angular.module('slatwalladmin').directive('swExpandableRecord', ['$compile', '$templateRequest', '$timeout', 'partialsPath', ($compile, $templateRequest, $timeout, partialsPath) => new SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath)]);
+    angular.module('slatwalladmin').directive('swExpandableRecord', ['$compile', '$templateRequest', '$timeout', 'partialsPath', 'utilityService', ($compile, $templateRequest, $timeout, partialsPath, utilityService) => new SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swexpandablerecord.js.map

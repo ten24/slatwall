@@ -55,16 +55,6 @@ module slatwalladmin{
             return this._pristinePropertyValue[property];
         }
         
-        clearForm = (form:Form):void =>{
-            this.$log.debug('clear form');
-            this.$log.debug(form);
-            for(var key in form){
-                if(key.charAt(0) !== '$'){
-                    this.$log.debug(form[key]);
-                }
-            }
-        }
-        
         setForm = (form:Form):void =>{
             this._forms[form.name] = form;
         }
@@ -99,20 +89,29 @@ module slatwalladmin{
         }
         
         resetForm = (form:Form):void =>{
-            for(var key in form){
-                if(key.charAt(0) !== '$'){
+            
+            this.$log.debug('resetting form');
+            this.$log.debug(form); 
+            
+            for(var key in form){            
+                if(angular.isDefined(form[key]) 
+                    && typeof form[key].$setViewValue == 'function' 
+                    && angular.isDefined(form[key].$viewValue)){
+                    this.$log.debug(form[key]); 
                     if(angular.isDefined(this.getPristinePropertyValue(key))){
                         form[key].$setViewValue(this.getPristinePropertyValue(key));
                     }else{
                         form[key].$setViewValue('');
                     }
+                    form[key].$setUntouched(true); 
                     form[key].$render();
-                    
+                    this.$log.debug(form[key]); 
                 }
             }
             
             form.$submitted = false;
             form.$setPristine();
+            form.$setUntouched(); 
         }
     }  
     angular.module('slatwalladmin')

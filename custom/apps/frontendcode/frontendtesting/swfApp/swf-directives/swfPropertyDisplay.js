@@ -3,11 +3,7 @@ angular.module('slatwall')
 '$log',
 'partialsPath',
 '$filter',
-	function(
-	$log,
-	partialsPath,
-	$filter
-	){
+	function($log,partialsPath,$filter){
 		return {
 			require:'^?form',
 			restrict: 'AE',

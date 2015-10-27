@@ -52,7 +52,7 @@ angular.module('slatwall').directive('swfForm', [
                         	throw("ProcessObject Nameing Exception");
                         }
                         
-                        /*Retrieves the process object so we can get data.
+                        /*<-->Retrieves the process object so we can get data.
                         **/
                         var processObj = ProcessObject.get({ entityName: entityName, processObject: processObject },
                         function() {

@@ -80,6 +80,12 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	//Non-Persistent
+	
+	public string function getAttributeSetObjectPrimaryIDPropertyName(){
+		return getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getAttributeSetObject());
+	}
+	
 	public array function getAttributes(orderby, sortType="text", direction="asc") {
 		if(!structKeyExists(arguments, "orderby")) {
 			return variables.Attributes;

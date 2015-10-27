@@ -34,7 +34,6 @@ module slatwalladmin {
                        childCollectionConfig.collection = this.entity;
                        childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
                        childCollectionConfig.setAllRecords(true);
-                    
                        angular.forEach(this.collectionConfig.columns,(column)=>{
                            childCollectionConfig.addColumn(column.propertyIdentifier,column.tilte,column);
                        });
@@ -81,37 +80,58 @@ module slatwalladmin {
             records:"=",
             recordIndex:"=",
             recordDepth:"=",
-            childCount:"="
+            childCount:"=",
+            autoOpen:"=",
+            multiselectIdPaths:"="
         };
         
         public controller=SWExpandableRecordController;
         public controllerAs="swExpandableRecord";
-        public static $inject = ['$compile','$templateRequest','$timeout','partialsPath'];
-		constructor(private $compile:ng.ICompileService, private $templateRequest:ng.ITemplateRequestService, private $timeout:ng.ITimeoutService, private partialsPath:slatwalladmin.partialsPath){
+        public static $inject = ['$compile','$templateRequest','$timeout','partialsPath','utilityService'];
+		constructor(private $compile:ng.ICompileService, private $templateRequest:ng.ITemplateRequestService, private $timeout:ng.ITimeoutService, private partialsPath:slatwalladmin.partialsPath,private utilityService){
             this.$compile = $compile;
             this.$templateRequest = $templateRequest;
             this.partialsPath = partialsPath;
             this.$timeout = $timeout;
+            this.utilityService = utilityService;
 		}
         
         
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-            
-                    if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
-                        $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
-                            var template = angular.element(html);
-                            
-                            template = $compile(template)(scope);
-                            element.html(template);
-                            element.on('click',scope.swExpandableRecord.toggleChild);
-                        });
+            if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
+                if(scope.swExpandableRecord.recordValue){
+                    var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
+                    var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
+                    angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
+                        var position = this.utilityService.listFind(multiselectIdPath,id,'/');
+                        var multiselectPathLength = multiselectIdPath.split('/').length;
+                        if(position !== -1 && position < multiselectPathLength -1){
+                            scope.swExpandableRecord.toggleChild();
+                        }
+                    });
+                    
+                }
+                 
+                $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
+                    var template = angular.element(html);
+                    
+                    //get autoopen reference to ensure only the root is autoopenable
+                    var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
+                    scope.swExpandableRecord.autoOpen = false;
+                    template = $compile(template)(scope);
+                    element.html(template);
+                    element.on('click',scope.swExpandableRecord.toggleChild);
+                    if(autoOpen){
+                        scope.swExpandableRecord.toggleChild();    
                     }
+                });
+            }
             
             
 		}
 	}
     
-	angular.module('slatwalladmin').directive('swExpandableRecord',['$compile','$templateRequest','$timeout','partialsPath',($compile,$templateRequest,$timeout,partialsPath) => new SWExpandableRecord($compile,$templateRequest,$timeout,partialsPath)]);
+	angular.module('slatwalladmin').directive('swExpandableRecord',['$compile','$templateRequest','$timeout','partialsPath','utilityService',($compile,$templateRequest,$timeout,partialsPath,utilityService) => new SWExpandableRecord($compile,$templateRequest,$timeout,partialsPath,utilityService)]);
 }
 

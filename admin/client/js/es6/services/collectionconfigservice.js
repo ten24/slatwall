@@ -41,6 +41,7 @@ var slatwalladmin;
             this.alias = alias;
         }
     }
+    slatwalladmin.Join = Join;
     class OrderBy {
         constructor(propertyIdentifier, direction) {
             this.propertyIdentifier = propertyIdentifier;
@@ -87,6 +88,12 @@ var slatwalladmin;
                 this.pageShow = jsonCollection.pageShow;
                 this.allRecords = jsonCollection.allRecords;
             };
+            this.loadFilterGroups = (filterGroupsConfig = [{ filterGroup: [] }]) => {
+                this.filterGroups = filterGroupsConfig;
+            };
+            this.loadColumns = (columns) => {
+                this.columns = columns;
+            };
             this.getCollectionConfig = () => {
                 return {
                     baseEntityAlias: this.baseEntityAlias,
@@ -99,7 +106,7 @@ var slatwalladmin;
                     pageShow: this.pageShow,
                     keywords: this.keywords,
                     defaultColumns: (!this.columns || !this.columns.length),
-                    allRecords: this.allRecords
+                    allRecords: this.allRecords,
                 };
             };
             this.getEntityName = () => {
@@ -175,46 +182,53 @@ var slatwalladmin;
             this.capitalize = (s) => {
                 return s && s[0].toUpperCase() + s.slice(1);
             };
+            this.addColumn = (column) => {
+                if (!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
+                    this.addColumn(column.propertyIdentifier, column.title, column);
+                }
+            };
             this.addColumn = (column, title = '', options = {}) => {
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
-                if (angular.isUndefined(this.columns)) {
-                    this.columns = [];
-                }
-                if (!angular.isUndefined(options['isVisible'])) {
-                    isVisible = options['isVisible'];
-                }
-                if (!angular.isUndefined(options['isDeletable'])) {
-                    isDeletable = options['isDeletable'];
-                }
-                if (!angular.isUndefined(options['isSearchable'])) {
-                    isSearchable = options['isSearchable'];
-                }
-                if (!angular.isUndefined(options['isExportable'])) {
-                    isExportable = options['isExportable'];
-                }
-                if (angular.isUndefined(options['isExportable']) && !isVisible) {
-                    isExportable = false;
-                }
-                if (!angular.isUndefined(options['ormtype'])) {
-                    ormtype = options['ormtype'];
-                }
-                else if (this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype) {
-                    ormtype = this.collection.metaData[lastProperty].ormtype;
-                }
-                if (angular.isDefined(this.collection.metaData[lastProperty])) {
-                    persistent = this.collection.metaData[lastProperty].persistent;
-                }
-                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
-                if (options.aggregate) {
-                    columnObject.aggregate = options.aggregate;
-                }
-                //add any non-conventional options
-                for (key in options) {
-                    if (!columnObject[key]) {
-                        columnObject[key] = options[key];
+                if (!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns, 'propertyIdentifier', column) === -1) {
+                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+                    if (angular.isUndefined(this.columns)) {
+                        this.columns = [];
                     }
+                    if (!angular.isUndefined(options['isVisible'])) {
+                        isVisible = options['isVisible'];
+                    }
+                    if (!angular.isUndefined(options['isDeletable'])) {
+                        isDeletable = options['isDeletable'];
+                    }
+                    if (!angular.isUndefined(options['isSearchable'])) {
+                        isSearchable = options['isSearchable'];
+                    }
+                    if (!angular.isUndefined(options['isExportable'])) {
+                        isExportable = options['isExportable'];
+                    }
+                    if (angular.isUndefined(options['isExportable']) && !isVisible) {
+                        isExportable = false;
+                    }
+                    if (!angular.isUndefined(options['ormtype'])) {
+                        ormtype = options['ormtype'];
+                    }
+                    else if (this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype) {
+                        ormtype = this.collection.metaData[lastProperty].ormtype;
+                    }
+                    if (angular.isDefined(this.collection.metaData[lastProperty])) {
+                        persistent = this.collection.metaData[lastProperty].persistent;
+                    }
+                    var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
+                    if (options.aggregate) {
+                        columnObject.aggregate = options.aggregate;
+                    }
+                    //add any non-conventional options
+                    for (var key in options) {
+                        if (!columnObject[key]) {
+                            columnObject[key] = options[key];
+                        }
+                    }
+                    this.columns.push(columnObject);
                 }
-                this.columns.push(columnObject);
             };
             this.setDisplayProperties = (propertyIdentifier, title = '', options = {}) => {
                 var _DividedColumns = propertyIdentifier.trim().split(',');
@@ -231,7 +245,7 @@ var slatwalladmin;
                     this.addColumn(this.formatCollectionName(column), title, options);
                 });
             };
-            this.addDisplayAggregate = (propertyIdentifier, aggregateFunction, aggregateAlias) => {
+            this.addDisplayAggregate = (propertyIdentifier, aggregateFunction, aggregateAlias, options) => {
                 var alias = this.baseEntityAlias;
                 var doJoin = false;
                 var collection = propertyIdentifier;
@@ -266,6 +280,7 @@ var slatwalladmin;
                     var join = new Join(collection, this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;
                 }
+                angular.extend(column, options);
                 //Add columns
                 this.addColumn(column.propertyIdentifier, undefined, column);
                 if (doJoin) {
@@ -302,8 +317,8 @@ var slatwalladmin;
                     this.filterGroups = [{ filterGroup: [] }];
                 }
                 var collection = propertyIdentifier;
-                var propertyKey = '.' + this.utilityService.listLast(propertyIdentifier, '.');
                 //if the propertyIdenfifier is a chain
+                var propertyKey = '';
                 if (propertyIdentifier.indexOf('.') !== -1) {
                     collection = this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
                     propertyKey = '.' + this.utilityService.listLast(propertyIdentifier, '.');
@@ -316,7 +331,7 @@ var slatwalladmin;
                     join = new Join(propertyIdentifier, this.buildPropertyIdentifier(alias, propertyIdentifier));
                     doJoin = true;
                 }
-                else {
+                else if (propertyKey !== '') {
                     filter.propertyIdentifier = this.buildPropertyIdentifier(alias, collection) + propertyKey;
                     join = new Join(collection, this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;
@@ -335,12 +350,24 @@ var slatwalladmin;
             this.addCollectionFilter = (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria = 'One', fieldtype, readOnly = false) => {
                 this.filterGroups[0].filterGroup.push(new CollectionFilter(this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
             };
-            this.setOrderBy = (propertyIdentifier, direction = 'DESC') => {
-                if (angular.isUndefined(this.orderBy)) {
+            //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+            this.setOrderBy = (orderByList) => {
+                var orderBys = orderByList.split(',');
+                for (var orderBy in orderBys) {
+                    this.addOrderBy(orderBy);
+                }
+            };
+            this.addOrderBy = (orderByString) => {
+                if (!this.orderBy) {
                     this.orderBy = [];
                 }
-                this.addJoin(propertyIdentifier);
-                this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
+                var propertyIdentifier = this.utilityService.listFirst(orderByString, '|');
+                var direction = this.utilityService.listLast(orderByString, '|');
+                var orderBy = {
+                    propertyIdentifier: propertyIdentifier,
+                    direction: direction
+                };
+                this.orderBy.push(orderBy);
             };
             this.setCurrentPage = (pageNumber) => {
                 this.currentPage = pageNumber;

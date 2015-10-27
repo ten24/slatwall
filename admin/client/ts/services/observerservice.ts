@@ -31,7 +31,7 @@ module slatwalladmin{
          * @param {string} id unique id for the object that is listening i.e. namespace
          * @description adds events listeners
          */
-        attach = (callback:any, event:string, id:string):void => {
+        attach = (callback:any, event:string, id?:string):void => {
             if(!id){
                 id = this.utilityService.createID();
             }

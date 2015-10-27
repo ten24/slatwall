@@ -4,11 +4,13 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWListingDisplayController = (function () {
-        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService, selectionService, observerService) {
+        function SWListingDisplayController($scope, $element, $transclude, $timeout, $q, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService, selectionService, observerService) {
             var _this = this;
             this.$scope = $scope;
             this.$element = $element;
             this.$transclude = $transclude;
+            this.$timeout = $timeout;
+            this.$q = $q;
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
@@ -22,54 +24,114 @@ var slatwalladmin;
             this.allprocessobjectproperties = "false";
             this.selectable = false;
             this.multiselectable = false;
-            this.expandable = false;
             this.sortable = false;
             this.exampleEntity = "";
             this.buttonGroup = [];
-            this.updateMultiselectValues = function () {
-                _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
-            };
-            this.getCollection = function () {
+            this.setupDefaultCollectionInfo = function () {
+                if (_this.hasCollectionPromise) {
+                    _this.collectionObject = _this.collection.collectionObject;
+                    _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
+                    _this.collectionConfig.loadJson(_this.collection.collectionConfig);
+                }
                 _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
                 _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
                 _this.collectionConfig.setKeywords(_this.paginator.keywords);
+            };
+            this.setupDefaultGetCollection = function () {
                 _this.collectionPromise = _this.collectionConfig.getEntity();
-                _this.collectionPromise.then(function (data) {
-                    _this.collectionData = data;
-                    _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
-                    _this.paginator.setPageRecordsInfo(_this.collectionData);
-                    //prepare an exampleEntity for use
-                    _this.init();
-                });
-                return _this.collectionPromise;
+                return function () {
+                    _this.collectionPromise.then(function (data) {
+                    });
+                };
             };
-            this.escapeRegExp = function (str) {
-                return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-            };
-            this.replaceAll = function (str, find, replace) {
-                return str.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
-            };
-            this.getPageRecordKey = function (propertyIdentifier) {
-                if (propertyIdentifier) {
-                    var propertyIdentifierWithoutAlias = '';
-                    if (propertyIdentifier.indexOf('_') === 0) {
-                        propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.') + 1, propertyIdentifier.length);
-                    }
-                    else {
-                        propertyIdentifierWithoutAlias = propertyIdentifier;
-                    }
-                    return _this.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+            this.initData = function () {
+                _this.collectionConfig.setPageShow(_this.paginator.pageShow);
+                _this.collectionConfig.setCurrentPage(_this.paginator.currentPage);
+                //setup export action
+                if (angular.isDefined(_this.exportAction)) {
+                    _this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
                 }
-                return '';
-            };
-            this.init = function () {
+                //Setup Select
+                if (_this.selectFieldName && _this.selectFieldName.length) {
+                    _this.selectable = true;
+                    _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-select', ' ');
+                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-selectfield="' + _this.selectFieldName + '"', ' ');
+                }
+                //Setup MultiSelect
+                if (_this.multiselectFieldName && _this.multiselectFieldName.length) {
+                    _this.multiselectable = true;
+                    _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-multiselect', ' ');
+                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-multiselectpropertyidentifier="' + _this.multiselectPropertyIdentifier + '"', ' ');
+                    //attach observer so we know when a selection occurs
+                    _this.observerService.attach(_this.updateMultiselectValues, 'swSelectionToggleSelection', _this.collectionObject);
+                }
+                if (_this.multiselectable && !_this.columns.length) {
+                    //check if it has an active flag and if so then add the active flag
+                    if (_this.exampleEntity.metaData.activeProperty && !_this.hasCollectionPromise) {
+                        _this.collectionConfig.addFilter('activeFlag', 1);
+                    }
+                }
+                //Look for Hierarchy in example entity
+                if (!_this.parentPropertyName || (_this.parentPropertyName && !_this.parentPropertyName.length)) {
+                    if (_this.exampleEntity.metaData.hb_parentPropertyName) {
+                        _this.parentPropertyName = _this.exampleEntity.metaData.hb_parentPropertyName;
+                    }
+                }
+                if (!_this.childPropertyName || (_this.childPropertyName && !_this.childPropertyName.length)) {
+                    if (_this.exampleEntity.metaData.hb_childPropertyName) {
+                        _this.childPropertyName = _this.exampleEntity.metaData.hb_childPropertyName;
+                    }
+                }
+                //Setup Hierachy Expandable
+                if (_this.parentPropertyName && _this.parentPropertyName.length) {
+                    if (angular.isUndefined(_this.expandable)) {
+                        _this.expandable = true;
+                    }
+                    _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-expandable', ' ');
+                    //add parent property root filter
+                    if (!_this.hasCollectionPromise) {
+                        _this.collectionConfig.addFilter(_this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), 'NULL', 'IS');
+                    }
+                    //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
+                    //add children column
+                    if (_this.childPropertyName && _this.childPropertyName.length) {
+                        if (_this.getChildCount || !_this.hasCollectionPromise) {
+                            _this.collectionConfig.addDisplayAggregate(_this.childPropertyName, 'COUNT', _this.childPropertyName + 'Count');
+                        }
+                    }
+                    _this.allpropertyidentifiers = _this.utilityService.listAppend(_this.allpropertyidentifiers, _this.exampleEntity.$$getIDName() + 'Path');
+                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-parentidproperty=' + _this.parentPropertyname + '.' + _this.exampleEntity.$$getIDName(), ' ');
+                    _this.collectionConfig.setAllRecords(true);
+                }
+                //            if(
+                //                !this.edit 
+                //                && this.multiselectable 
+                //                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+                //                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
+                //            ){
+                //                if(this.multiselectValues && this.multiselectValues.length){
+                //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');   
+                //                }else{
+                //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
+                //                }
+                //            }
+                if (_this.multiselectIdPaths && _this.multiselectIdPaths.length) {
+                    angular.forEach(_this.multiselectIdPaths.split(','), function (value) {
+                        var id = _this.utilityService.listLast(value, '/');
+                        _this.selectionService.addSelection('ListingDisplay', id);
+                    });
+                }
+                if (_this.multiselectValues && _this.multiselectValues.length) {
+                    //select all owned ids
+                    angular.forEach(_this.multiselectValues.split(','), function (value) {
+                        _this.selectionService.addSelection('ListingDisplay', value);
+                    });
+                }
                 //set defaults if value is not specified
                 //this.edit = this.edit || $location.edit
                 _this.processObjectProperties = _this.processObjectProperties || '';
                 _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
-                _this.collectionConfig = _this.collectionConfig || _this.collectionData.collectionConfig;
-                _this.collectionID = _this.collectionData.collectionID;
-                _this.collectionObject = _this.collectionData.collectionObject;
+                //this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
                 _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
                 //Setup Sortability
                 if (_this.sortProperty && _this.sortProperty.length) {
@@ -91,17 +153,22 @@ var slatwalladmin;
                     _this.administrativeCount++;
                     _this.adminattributes = _this.getAdminAttributesByType('delete');
                 }
-                //Process
-                if (_this.recordProcessAction && _this.recordProcessAction.length && _this.recordProcessButtonDisplayFlag) {
+                //Add
+                if (_this.recordAddAction && _this.recordAddAction.length) {
                     _this.administrativeCount++;
-                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-processcontext="' + _this.recordProcessContext + '"', " ");
-                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-processentity="' + _this.recordProcessEntity.getClassName() + '"', " ");
-                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-processentityid="' + _this.recordProcessEntity.getPrimaryIDValue() + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processaction="' + _this.recordProcessAction + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processcontext="' + _this.recordProcessContext + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processquerystring="' + _this.recordProcessQueryString + '"', " ");
-                    _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-processupdatetableid="' + _this.recordProcessUpdateTableID + '"', " ");
+                    _this.adminattributes = _this.getAdminAttributesByType('add');
                 }
+                //Process
+                // if(this.recordProcessAction && this.recordProcessAction.length && this.recordProcessButtonDisplayFlag){
+                //     this.administrativeCount++;
+                //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+                //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentity="'+this.recordProcessEntity.metaData.className+'"', " ");
+                //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentityid="'+this.recordProcessEntity.$$getID+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processaction="'+this.recordProcessAction+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processquerystring="'+this.recordProcessQueryString+'"', " ");
+                //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processupdatetableid="'+this.recordProcessUpdateTableID+'"', " ");
+                // }
                 //Setup the primary representation column if no columns were passed in
                 /*
                 <cfif not arrayLen(thistag.columns)>
@@ -164,6 +231,53 @@ var slatwalladmin;
                 if (_this.administrativeCount) {
                     _this.administrativeCount++;
                 }
+                //Setup table class
+                _this.tableclass = _this.tableclass || '';
+                _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
+            };
+            this.setupColumns = function () {
+                //assumes no alias formatting
+                angular.forEach(_this.columns, function (column) {
+                    var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collectionObject, column.propertyIdentifier);
+                    var title = _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+                    if (angular.isUndefined(column.isVisible)) {
+                        column.isVisible = true;
+                    }
+                    _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
+                });
+                //if the passed in collection has columns perform some formatting
+                if (_this.hasCollectionPromise) {
+                    //assumes alias formatting from collectionConfig
+                    angular.forEach(_this.collectionConfig.columns, function (column) {
+                        var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collectionObject, _this.utilityService.listRest(column.propertyIdentifier, '.'));
+                        column.title = column.title || _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+                        if (angular.isUndefined(column.isVisible)) {
+                            column.isVisible = true;
+                        }
+                    });
+                }
+            };
+            this.updateMultiselectValues = function () {
+                _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
+            };
+            this.escapeRegExp = function (str) {
+                return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+            };
+            this.replaceAll = function (str, find, replace) {
+                return str.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
+            };
+            this.getPageRecordKey = function (propertyIdentifier) {
+                if (propertyIdentifier) {
+                    var propertyIdentifierWithoutAlias = '';
+                    if (propertyIdentifier.indexOf('_') === 0) {
+                        propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.') + 1, propertyIdentifier.length);
+                    }
+                    else {
+                        propertyIdentifierWithoutAlias = propertyIdentifier;
+                    }
+                    return _this.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+                }
+                return '';
             };
             this.getAdminAttributesByType = function (type) {
                 var recordActionName = 'record' + type.toUpperCase() + 'Action';
@@ -180,6 +294,8 @@ var slatwalladmin;
             this.getExportAction = function () {
                 return _this.exportAction + _this.collectionID;
             };
+            this.$q = $q;
+            this.$timeout = $timeout;
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
@@ -189,103 +305,51 @@ var slatwalladmin;
             this.paginationService = paginationService;
             this.selectionService = selectionService;
             this.observerService = observerService;
+            this.paginator = paginationService.createPagination();
+            this.hasCollectionPromise = false;
+            if (angular.isUndefined(this.getChildCount)) {
+                this.getChildCount = false;
+            }
+            if (!this.collection || !angular.isString(this.collection)) {
+                this.hasCollectionPromise = true;
+            }
+            else {
+                this.collectionObject = this.collection;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            }
+            this.setupDefaultCollectionInfo();
+            //if columns doesn't exist then make it
+            if (!this.collectionConfig.columns) {
+                this.collectionConfig.columns = [];
+            }
+            //if a collectionConfig was not passed in then we can run run swListingColumns
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, function () { });
-            this.paginator = paginationService.createPagination();
-            this.paginator.getCollection = this.getCollection;
+            this.setupColumns();
+            this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
+            this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
+            this.initData();
+            this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
+                if (newValue) {
+                    _this.$q.when(_this.collectionPromise).then(function (data) {
+                        _this.collectionData = data;
+                        _this.setupDefaultCollectionInfo();
+                        _this.setupColumns();
+                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+                        _this.paginator.setPageRecordsInfo(_this.collectionData);
+                    });
+                }
+            });
             this.tableID = 'LD' + this.utilityService.createID();
-            //if collection Value is string instead of an object then create a collection
-            if (angular.isString(this.collection)) {
-                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
-                if (!this.collectionConfig.columns) {
-                    this.collectionConfig.columns = [];
-                }
-                angular.forEach(this.columns, function (column) {
-                    var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collection, column.propertyIdentifier);
-                    var title = _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
-                    column.isVisible = column.isVisible || true;
-                    //this.collectionConfig.columns.push(column);
-                    _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
-                });
-                this.collectionConfig.setPageShow(this.paginator.pageShow);
-                this.collectionConfig.setCurrentPage(this.paginator.currentPage);
-                this.exampleEntity = this.$slatwall.newEntity(this.collection);
-                this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
+            //if getCollection doesn't exist then create it
+            if (angular.isUndefined(this.getCollection)) {
+                this.getCollection = this.setupDefaultGetCollection();
             }
-            //setup export action
-            if (angular.isDefined(this.exportAction)) {
-                this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
-            }
-            //Setup table class
-            this.tableclass = this.tableclass || '';
-            this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
-            //Setup Select
-            if (this.selectFieldName && this.selectFieldName.length) {
-                this.selectable = true;
-                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-select', ' ');
-                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-selectfield="' + this.selectFieldName + '"', ' ');
-            }
-            //Setup MultiSelect
-            if (this.multiselectFieldName && this.multiselectFieldName.length) {
-                this.multiselectable = true;
-                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
-                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
-                //attach observer so we know when a selection occurs
-                this.observerService.attach(this.updateMultiselectValues, 'swSelectionToggleSelection', this.collection);
-            }
-            if (this.multiselectable && !this.columns.length) {
-                //check if it has an active flag and if so then add the active flag
-                if (this.exampleEntity.metaData.activeProperty) {
-                    this.collectionConfig.addFilter('activeFlag', 1);
-                }
-            }
-            //Look for Hierarchy in example entity
-            if (!this.parentPropertyName || (this.parentPropertyName && !this.parentPropertyName.length)) {
-                if (this.exampleEntity.metaData.hb_parentPropertyName) {
-                    this.parentPropertyName = this.exampleEntity.metaData.hb_parentPropertyName;
-                }
-            }
-            if (!this.childPropertyName || (this.childPropertyName && !this.childPropertyName.length)) {
-                if (this.exampleEntity.metaData.hb_childPropertyName) {
-                    this.childPropertyName = this.exampleEntity.metaData.hb_childPropertyName;
-                }
-            }
-            //Setup Hierachy Expandable
-            if (this.parentPropertyName && this.parentPropertyName.length) {
-                this.expandable = true;
-                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-expandable', ' ');
-                //add parent property root filter
-                this.collectionConfig.addFilter(this.parentPropertyName + '.' + this.exampleEntity.$$getIDName(), 'NULL', 'IS');
-                //add children column
-                if (this.childPropertyName && this.childPropertyName.length) {
-                    this.collectionConfig.addDisplayAggregate(this.childPropertyName, 'COUNT', this.childPropertyName + 'Count');
-                }
-                this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, this.exampleEntity.$$getIDName() + 'Path');
-                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
-                this.collectionConfig.setAllRecords(true);
-            }
-            //            if(
-            //                !this.edit 
-            //                && this.multiselectable 
-            //                && (!this.parentPropertyName || !!this.parentPropertyName.length)
-            //                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
-            //            ){
-            //                if(this.multiselectValues && this.multiselectValues.length){
-            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');   
-            //                }else{
-            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
-            //                }
-            //            }
-            if (this.multiselectValues && this.multiselectValues.length) {
-                //select all owned ids
-                angular.forEach(this.multiselectValues.split(','), function (value) {
-                    _this.selectionService.addSelection('ListingDisplay', value);
-                });
-            }
-            this.getCollection();
+            this.paginator.getCollection = this.getCollection;
+            //this.getCollection();
         }
-        SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService', 'selectionService', 'observerService'];
+        SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$timeout', '$q', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService', 'selectionService', 'observerService'];
         return SWListingDisplayController;
     })();
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;
@@ -302,6 +366,8 @@ var slatwalladmin;
                 /*required*/
                 collection: "=",
                 collectionConfig: "=",
+                getCollection: "&?",
+                collectionPromise: "=",
                 edit: "=",
                 /*Optional*/
                 title: "@",
@@ -318,15 +384,31 @@ var slatwalladmin;
                 recordDeleteAction: "@",
                 recordDeleteActionProperty: "@",
                 recordDeleteQueryString: "@",
-                recordProcessAction: "@",
-                recordProcessActionProperty: "@",
-                recordProcessQueryString: "@",
-                recordProcessContext: "@",
-                recordProcessEntity: "=",
-                recordProcessUpdateTableID: "=",
-                recordProcessButtonDisplayFlag: "=",
+                recordAddAction: "@",
+                recordAddActionProperty: "@",
+                recordAddQueryString: "@",
+                recordAddModal: "=",
+                recordAddDisabled: "=",
+                recordProcessesConfig: "=",
+                /* record processes config is an array of actions. Example:
+                [
+                   {
+                       recordProcessAction:"@",
+                       recordProcessActionProperty:"@",
+                       recordProcessQueryString:"@",
+                       recordProcessContext:"@",
+                       recordProcessEntity:"=",
+                       recordProcessEntityData:"=",
+                       recordProcessUpdateTableID:"=",
+                       recordProcessButtonDisplayFlag:"=",
+                   }
+                ]
+                */
                 /*Hierachy Expandable*/
                 parentPropertyName: "@",
+                //booleans
+                expandable: "=",
+                expandableOpenRoot: "=",
                 /*Sorting*/
                 sortProperty: "@",
                 sortContextIDColumn: "@",
@@ -338,6 +420,7 @@ var slatwalladmin;
                 /*Multiselect*/
                 multiselectFieldName: "@",
                 multiselectPropertyIdentifier: "@",
+                multiselectIdPaths: "@",
                 multiselectValues: "@",
                 /*Helper / Additional / Custom*/
                 tableattributes: "@",
@@ -349,7 +432,8 @@ var slatwalladmin;
                 createModal: "=",
                 createAction: "@",
                 createQueryString: "@",
-                exportAction: "@"
+                exportAction: "@",
+                getChildCount: "="
             };
             this.controller = SWListingDisplayController;
             this.controllerAs = "swListingDisplay";

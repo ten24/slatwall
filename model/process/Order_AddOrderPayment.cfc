@@ -304,23 +304,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 	}
 
-	public boolean function isGiftCardReturnOrderPayment(){
+	public boolean function isReturnWithGiftCardOrderPayment(){
 
-		var account = variables.order.getAccount();
-		var orderReturnItems = variables.order.getOrderItems();
-		var orderReturnItemIDs = [];
+		var orderPayments = variables.order.getOrderPayments();
+		var orderReturns = variables.order.getOrderReturns();
 
-		for (var item in orderReturnItems) {
-			arrayAppend(orderReturnItemIDs, item.getOrderItemID());
-		}
-
-		var paymentMethodsAndAmountsQuery = getDAO('OrderDAO').matchOrderItemsReturnPaymentMenthods(orderReturnItemIDs, account.getAccountID());
-
-
-
-		for (var row in paymentMethodsAndAmountsQuery ) {
-			if (row.paymentMethodID == "50d8cd61009931554764385482347f3a"){
-				return true;
+		if(ArrayLen(orderReturns) > 0){
+			ArrayAppend(orderPayments, variables.newOrderPayment);
+			for (var payment in orderPayments ) {
+				//is this a gift card payment
+				if (payment.getPaymentMethodID() == "50d8cd61009931554764385482347f3a"){
+					return true;
+				}
 			}
 		}
 
