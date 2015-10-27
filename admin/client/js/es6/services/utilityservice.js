@@ -38,15 +38,13 @@ var slatwalladmin;
                 return query_string;
             };
             this.ArrayFindByPropertyValue = (arr, property, value) => {
+                let currentIndex = -1;
                 arr.forEach((arrItem, index) => {
                     if (arrItem[property] && arrItem[property] === value) {
-                        console.log('findbypropvalue');
-                        console.log(arrItem[property]);
-                        console.log(value);
-                        return index;
+                        currentIndex = index;
                     }
                 });
-                return -1;
+                return currentIndex;
             };
             this.listLast = (list = '', delimiter = ',') => {
                 var listArray = list.split(delimiter);
@@ -161,11 +159,11 @@ var slatwalladmin;
                 var stringFound = -1;
                 for (var i = 0; i < splitString.length; i++) {
                     var stringPart = splitString[i];
-                    if (stringPart != value)
-                        continue;
-                    stringFound = i;
-                    break;
+                    if (stringPart === value) {
+                        stringFound = i;
+                    }
                 }
+                return stringFound;
             };
             this.listLen = (list = '', delimiter = ',') => {
                 var splitString = list.split(delimiter);
