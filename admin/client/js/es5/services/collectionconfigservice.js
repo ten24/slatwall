@@ -190,52 +190,54 @@ var slatwalladmin;
                 return s && s[0].toUpperCase() + s.slice(1);
             };
             this.addColumn = function (column) {
-                if (_this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentfier', column.propertyIdentifier) === -1) {
+                if (_this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
                     _this.addColumn(column.propertyIdentifier, column.title, column);
                 }
             };
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
-                if (angular.isUndefined(_this.columns)) {
-                    _this.columns = [];
-                }
-                if (!angular.isUndefined(options['isVisible'])) {
-                    isVisible = options['isVisible'];
-                }
-                if (!angular.isUndefined(options['isDeletable'])) {
-                    isDeletable = options['isDeletable'];
-                }
-                if (!angular.isUndefined(options['isSearchable'])) {
-                    isSearchable = options['isSearchable'];
-                }
-                if (!angular.isUndefined(options['isExportable'])) {
-                    isExportable = options['isExportable'];
-                }
-                if (angular.isUndefined(options['isExportable']) && !isVisible) {
-                    isExportable = false;
-                }
-                if (!angular.isUndefined(options['ormtype'])) {
-                    ormtype = options['ormtype'];
-                }
-                else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
-                    ormtype = _this.collection.metaData[lastProperty].ormtype;
-                }
-                if (angular.isDefined(_this.collection.metaData[lastProperty])) {
-                    persistent = _this.collection.metaData[lastProperty].persistent;
-                }
-                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
-                if (options.aggregate) {
-                    columnObject.aggregate = options.aggregate;
-                }
-                //add any non-conventional options
-                for (var key in options) {
-                    if (!columnObject[key]) {
-                        columnObject[key] = options[key];
+                if (_this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
+                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+                    if (angular.isUndefined(_this.columns)) {
+                        _this.columns = [];
                     }
+                    if (!angular.isUndefined(options['isVisible'])) {
+                        isVisible = options['isVisible'];
+                    }
+                    if (!angular.isUndefined(options['isDeletable'])) {
+                        isDeletable = options['isDeletable'];
+                    }
+                    if (!angular.isUndefined(options['isSearchable'])) {
+                        isSearchable = options['isSearchable'];
+                    }
+                    if (!angular.isUndefined(options['isExportable'])) {
+                        isExportable = options['isExportable'];
+                    }
+                    if (angular.isUndefined(options['isExportable']) && !isVisible) {
+                        isExportable = false;
+                    }
+                    if (!angular.isUndefined(options['ormtype'])) {
+                        ormtype = options['ormtype'];
+                    }
+                    else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
+                        ormtype = _this.collection.metaData[lastProperty].ormtype;
+                    }
+                    if (angular.isDefined(_this.collection.metaData[lastProperty])) {
+                        persistent = _this.collection.metaData[lastProperty].persistent;
+                    }
+                    var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
+                    if (options.aggregate) {
+                        columnObject.aggregate = options.aggregate;
+                    }
+                    //add any non-conventional options
+                    for (var key in options) {
+                        if (!columnObject[key]) {
+                            columnObject[key] = options[key];
+                        }
+                    }
+                    _this.columns.push(columnObject);
                 }
-                _this.columns.push(columnObject);
             };
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }

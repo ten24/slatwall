@@ -44,15 +44,20 @@ module slatwalladmin{
         }
         
         public ArrayFindByPropertyValue = (arr:any[],property:string,value:any):number =>{
+            console.log('propertyIdentifier');
+            console.log(arr);
+            console.log(value);
+            let currentIndex = -1;
             arr.forEach((arrItem,index)=>{
                if(arrItem[property] && arrItem[property] === value){
                    console.log('findbypropvalue');
                    console.log(arrItem[property]);
                    console.log(value);
-                    return index;    
+                   console.log();
+                   currentIndex = index;  
                } 
             }); 
-            return -1;   
+            return currentIndex;   
         }
         
         public listLast = (list:string='',delimiter:string=','):string =>{

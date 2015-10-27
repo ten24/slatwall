@@ -218,7 +218,7 @@ module slatwalladmin {
             //this.edit = this.edit || $location.edit
             this.processObjectProperties = this.processObjectProperties || '';
             this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
-            this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
+            //this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
             this.norecordstext = this.$slatwall.getRBKey('entity.'+this.collectionObject+'.norecords');
             
             //Setup Sortability
