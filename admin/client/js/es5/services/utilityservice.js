@@ -46,16 +46,9 @@ var slatwalladmin;
                 return query_string;
             };
             this.ArrayFindByPropertyValue = function (arr, property, value) {
-                console.log('propertyIdentifier');
-                console.log(arr);
-                console.log(value);
                 var currentIndex = -1;
                 arr.forEach(function (arrItem, index) {
                     if (arrItem[property] && arrItem[property] === value) {
-                        console.log('findbypropvalue');
-                        console.log(arrItem[property]);
-                        console.log(value);
-                        console.log();
                         currentIndex = index;
                     }
                 });

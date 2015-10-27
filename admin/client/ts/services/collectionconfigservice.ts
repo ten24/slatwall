@@ -203,14 +203,14 @@ module slatwalladmin{
         };
         
         private addColumn=(column:Column)=>{
-            if(this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
                 this.addColumn(column.propertyIdentifier,column.title,column);
             }
         }
 
         private addColumn= (column: string, title: string = '', options:Object = {}) =>{
             
-            if(this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
+            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
                 var isVisible = true,
                     isDeletable = true,
                     isSearchable = true,

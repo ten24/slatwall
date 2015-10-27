@@ -190,14 +190,14 @@ var slatwalladmin;
                 return s && s[0].toUpperCase() + s.slice(1);
             };
             this.addColumn = function (column) {
-                if (_this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
+                if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
                     _this.addColumn(column.propertyIdentifier, column.title, column);
                 }
             };
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                if (_this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
+                if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
                     var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
                     if (angular.isUndefined(_this.columns)) {
                         _this.columns = [];
