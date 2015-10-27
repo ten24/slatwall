@@ -124,7 +124,7 @@ var slatwalladmin;
                 //this.edit = this.edit || $location.edit
                 _this.processObjectProperties = _this.processObjectProperties || '';
                 _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
-                _this.collectionConfig = _this.collectionConfig || _this.collectionData.collectionConfig;
+                //this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
                 _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
                 //Setup Sortability
                 if (_this.sortProperty && _this.sortProperty.length) {

@@ -15,9 +15,9 @@ module slatwalladmin {
             this.$slatwall = $slatwall;
 			this.utilityService = utilityService;
             this.collectionConfigService = collectionConfigService;
-            console.log(this);
         }
         public toggleChild = ()=>{
+           this.$timeout(()=>{
                this.childrenOpen = !this.childrenOpen;
                 if(!this.childrenLoaded){
                        var childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
@@ -35,8 +35,6 @@ module slatwalladmin {
                        childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
                        childCollectionConfig.setAllRecords(true);
                        angular.forEach(this.collectionConfig.columns,(column)=>{
-                           console.log('test');
-                           console.log(column);
                            childCollectionConfig.addColumn(column.propertyIdentifier,column.tilte,column);
                        });
                     
@@ -65,6 +63,7 @@ module slatwalladmin {
                 angular.forEach(this.children,(child)=>{
                     child.dataIsVisible=this.childrenOpen;
                 });
+           });   
        }
     }
         

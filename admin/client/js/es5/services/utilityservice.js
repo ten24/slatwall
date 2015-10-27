@@ -46,15 +46,13 @@ var slatwalladmin;
                 return query_string;
             };
             this.ArrayFindByPropertyValue = function (arr, property, value) {
+                var currentIndex = -1;
                 arr.forEach(function (arrItem, index) {
                     if (arrItem[property] && arrItem[property] === value) {
-                        console.log('findbypropvalue');
-                        console.log(arrItem[property]);
-                        console.log(value);
-                        return index;
+                        currentIndex = index;
                     }
                 });
-                return -1;
+                return currentIndex;
             };
             this.listLast = function (list, delimiter) {
                 if (list === void 0) { list = ''; }
