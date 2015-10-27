@@ -107,6 +107,14 @@ module slatwalladmin{
             this.pageShow = jsonCollection.pageShow;
             this.allRecords = jsonCollection.allRecords;
         };
+        
+        loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]) =>{
+            this.filterGroups = filterGroupsConfig;
+        }
+        
+        loadColumns= (columns:Column[]) =>{
+            this.columns = columns; 
+        }
 
         getCollectionConfig= () =>{
             return {
@@ -120,7 +128,7 @@ module slatwalladmin{
                 pageShow: this.pageShow,
                 keywords: this.keywords,
                 defaultColumns: (!this.columns || !this.columns.length),
-                allRecords: this.allRecords
+                allRecords: this.allRecords,
             };
         };
 

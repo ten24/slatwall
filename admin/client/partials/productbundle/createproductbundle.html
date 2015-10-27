@@ -113,12 +113,12 @@
 	      <ul class="nav navbar-nav pull-right">
 	        <li ng-class="{'active s-loading': newSaving === true, 'active': newSaving === false}">
 	        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
-	        		ng-click="saveProductBundle();"
+	        		ng-click="saveProductBundle($index, true)"
 	        	>Save & New</a>
 	        </li>
 	        <li ng-class="{'active s-loading': closeSaving === true, 'active': closeSaving === false}">
 	        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
-	        		ng-click="saveProductBundle($index);"
+	        		ng-click="saveProductBundle($index, false)"
 	        	>Save & Finish</a>
 	        </li>
 	      </ul>
