@@ -1,3 +1,4 @@
+
 <div class="s-table-header-nav s-listing-head-margin">
 	<div class="col-xs-6 s-no-padding-left" ng-if="swListingDisplay.title">
 		<ul class="list-inline list-unstyled">
@@ -151,7 +152,7 @@
 				<th ng-if="swListingDisplay.administrativeCount" class="admin admin{{swListingDisplay.administativeCount}}" {{swListingDisplay.adminattributes}}>&nbsp;</th>
 			</tr>
 		</thead>
-		<tbody ng-class="{'sortable':swListingDisplay.sortable}">
+		<tbody ng-class="{'sortable':swListingDisplay.sortable}" ng-if="swListingDisplay.collectionData.pageRecords">
 			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-show="pageRecord.dataIsVisible !== false">
 				<!--Selectable-->
 				<td ng-if="swListingDisplay.selectable" class="s-table-select">
@@ -182,7 +183,6 @@
 						<i class="fa fa-arrows"></i>
 					</a>
 				</td>-->
-				
 				<!--Expandable Check-->
 				<td 
 					ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns" 
@@ -191,13 +191,14 @@
 					ng-if="column.isVisible"
 					sw-expandable-record
 					data-expandable="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
+					data-auto-open="swListingDisplay.expandableOpenRoot"
 					data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)}}"
 					data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
 					data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
 					data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
 					data-entity="swListingDisplay.exampleEntity"
 					data-collection-config="swListingDisplay.collectionConfig"
-					data-records="swListingDisplay.collectionData.pageRecords"
+					data-records="swListingDisplay.collectionData.pageRecords || swListingDisplay.collectionData.records"
 					data-record-index="pageRecordKey"
 					data-record-depth="pageRecord.depth"
 				>
@@ -242,19 +243,31 @@
 						data-confirm="true" 
 					></sw-action-caller>
 					
+					<!-- Add -->
+					<sw-action-caller 
+						ng-if="swListingDisplay.recordAddAction && swListingDisplay.recordAddAction.length"
+						data-action="{{swListingDisplay.recordAddAction}}" 
+						data-query-string="{{'&'+swListingDisplay.parentPropertyName+'ID='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordAddQueryString}}" 
+						data-class="btn btn-default btn-xs" 
+						data-icon="plus" 
+						data-iconOnly="true" 
+						data-confirm="true" 
+					></sw-action-caller>
+					
 					<!--- Process -->
 					<!--<sw-process-caller 
-						action="{{swListingDisplay.recordProcessAction}}" 
-						entity="#attributes.recordProcessEntity#" 
-						processContext="#attributes.recordProcessContext#" 
-						queryString="#listPrepend(attributes.recordProcessQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#" 
+						ng-if="swListingDisplay.recordProcessAction && swListingDisplay.recordProcessAction.length"
+						data-action="{{swListingDisplay.recordProcessAction}}" 
+						data-entity="swListingDisplay.recordProcessEntity" 
+						data-process-context="{{swListingDisplay.recordProcessContext}}" 
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordProcessQueryString}}" 
 						class="btn btn-default hibachi-ajax-submit" 
-						id="#thisID#" 
+						ng-attr-id="{{swListingDisplay.exampleEntity.$$getIDName()}}" 
 					></sw-process-caller>-->
 				</td>
 			</tr>
 			
-			<tr ng-if="swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length">
+			<tr ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
 				<td colspan="#thistag.columnCount#" style="text-align:center;">
 					no records
 				</td>

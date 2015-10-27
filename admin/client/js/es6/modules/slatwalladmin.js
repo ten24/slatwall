@@ -144,4 +144,4 @@
         }]);
 })();
 
-//# sourceMappingURL=slatwalladmin.js.map
+//# sourceMappingURL=../modules/slatwalladmin.js.map

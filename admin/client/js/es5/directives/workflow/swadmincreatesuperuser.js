@@ -15,4 +15,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swadmincreatesuperuser.js.map
+//# sourceMappingURL=../../directives/workflow/swadmincreatesuperuser.js.map

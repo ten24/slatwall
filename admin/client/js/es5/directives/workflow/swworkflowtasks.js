@@ -173,4 +173,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swworkflowtasks.js.map
+//# sourceMappingURL=../../directives/workflow/swworkflowtasks.js.map

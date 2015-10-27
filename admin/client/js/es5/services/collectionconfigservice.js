@@ -46,6 +46,7 @@ var slatwalladmin;
         }
         return Join;
     })();
+    slatwalladmin.Join = Join;
     var OrderBy = (function () {
         function OrderBy(propertyIdentifier, direction) {
             this.propertyIdentifier = propertyIdentifier;
@@ -188,48 +189,55 @@ var slatwalladmin;
             this.capitalize = function (s) {
                 return s && s[0].toUpperCase() + s.slice(1);
             };
+            this.addColumn = function (column) {
+                if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
+                    _this.addColumn(column.propertyIdentifier, column.title, column);
+                }
+            };
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
-                if (angular.isUndefined(_this.columns)) {
-                    _this.columns = [];
-                }
-                if (!angular.isUndefined(options['isVisible'])) {
-                    isVisible = options['isVisible'];
-                }
-                if (!angular.isUndefined(options['isDeletable'])) {
-                    isDeletable = options['isDeletable'];
-                }
-                if (!angular.isUndefined(options['isSearchable'])) {
-                    isSearchable = options['isSearchable'];
-                }
-                if (!angular.isUndefined(options['isExportable'])) {
-                    isExportable = options['isExportable'];
-                }
-                if (angular.isUndefined(options['isExportable']) && !isVisible) {
-                    isExportable = false;
-                }
-                if (!angular.isUndefined(options['ormtype'])) {
-                    ormtype = options['ormtype'];
-                }
-                else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
-                    ormtype = _this.collection.metaData[lastProperty].ormtype;
-                }
-                if (angular.isDefined(_this.collection.metaData[lastProperty])) {
-                    persistent = _this.collection.metaData[lastProperty].persistent;
-                }
-                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
-                if (options.aggregate) {
-                    columnObject.aggregate = options.aggregate;
-                }
-                //add any non-conventional options
-                for (key in options) {
-                    if (!columnObject[key]) {
-                        columnObject[key] = options[key];
+                if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
+                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+                    if (angular.isUndefined(_this.columns)) {
+                        _this.columns = [];
                     }
+                    if (!angular.isUndefined(options['isVisible'])) {
+                        isVisible = options['isVisible'];
+                    }
+                    if (!angular.isUndefined(options['isDeletable'])) {
+                        isDeletable = options['isDeletable'];
+                    }
+                    if (!angular.isUndefined(options['isSearchable'])) {
+                        isSearchable = options['isSearchable'];
+                    }
+                    if (!angular.isUndefined(options['isExportable'])) {
+                        isExportable = options['isExportable'];
+                    }
+                    if (angular.isUndefined(options['isExportable']) && !isVisible) {
+                        isExportable = false;
+                    }
+                    if (!angular.isUndefined(options['ormtype'])) {
+                        ormtype = options['ormtype'];
+                    }
+                    else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
+                        ormtype = _this.collection.metaData[lastProperty].ormtype;
+                    }
+                    if (angular.isDefined(_this.collection.metaData[lastProperty])) {
+                        persistent = _this.collection.metaData[lastProperty].persistent;
+                    }
+                    var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
+                    if (options.aggregate) {
+                        columnObject.aggregate = options.aggregate;
+                    }
+                    //add any non-conventional options
+                    for (var key in options) {
+                        if (!columnObject[key]) {
+                            columnObject[key] = options[key];
+                        }
+                    }
+                    _this.columns.push(columnObject);
                 }
-                _this.columns.push(columnObject);
             };
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
@@ -248,7 +256,7 @@ var slatwalladmin;
                     _this.addColumn(_this.formatCollectionName(column), title, options);
                 });
             };
-            this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias) {
+            this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
                 var alias = _this.baseEntityAlias;
                 var doJoin = false;
                 var collection = propertyIdentifier;
@@ -283,6 +291,7 @@ var slatwalladmin;
                     var join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;
                 }
+                angular.extend(column, options);
                 //Add columns
                 _this.addColumn(column.propertyIdentifier, undefined, column);
                 if (doJoin) {
@@ -322,8 +331,8 @@ var slatwalladmin;
                     _this.filterGroups = [{ filterGroup: [] }];
                 }
                 var collection = propertyIdentifier;
-                var propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
                 //if the propertyIdenfifier is a chain
+                var propertyKey = '';
                 if (propertyIdentifier.indexOf('.') !== -1) {
                     collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
                     propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
@@ -336,7 +345,7 @@ var slatwalladmin;
                     join = new Join(propertyIdentifier, _this.buildPropertyIdentifier(alias, propertyIdentifier));
                     doJoin = true;
                 }
-                else {
+                else if (propertyKey !== '') {
                     filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
                     join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;
@@ -358,13 +367,24 @@ var slatwalladmin;
                 if (readOnly === void 0) { readOnly = false; }
                 _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
             };
-            this.setOrderBy = function (propertyIdentifier, direction) {
-                if (direction === void 0) { direction = 'DESC'; }
-                if (angular.isUndefined(_this.orderBy)) {
+            //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+            this.setOrderBy = function (orderByList) {
+                var orderBys = orderByList.split(',');
+                for (var orderBy in orderBys) {
+                    _this.addOrderBy(orderBy);
+                }
+            };
+            this.addOrderBy = function (orderByString) {
+                if (!_this.orderBy) {
                     _this.orderBy = [];
                 }
-                _this.addJoin(propertyIdentifier);
-                _this.orderBy.push(new OrderBy(_this.formatCollectionName(propertyIdentifier), direction));
+                var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
+                var direction = _this.utilityService.listLast(orderByString, '|');
+                var orderBy = {
+                    propertyIdentifier: propertyIdentifier,
+                    direction: direction
+                };
+                _this.orderBy.push(orderBy);
             };
             this.setCurrentPage = function (pageNumber) {
                 _this.currentPage = pageNumber;
@@ -403,4 +423,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new CollectionConfig($slatwall, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=collectionconfigservice.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map

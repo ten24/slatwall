@@ -30,4 +30,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swworkflowconditiongroups.js.map
+//# sourceMappingURL=../../directives/workflow/swworkflowconditiongroups.js.map

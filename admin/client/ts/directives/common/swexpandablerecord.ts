@@ -34,7 +34,6 @@ module slatwalladmin {
                        childCollectionConfig.collection = this.entity;
                        childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
                        childCollectionConfig.setAllRecords(true);
-                    
                        angular.forEach(this.collectionConfig.columns,(column)=>{
                            childCollectionConfig.addColumn(column.propertyIdentifier,column.tilte,column);
                        });
@@ -81,7 +80,8 @@ module slatwalladmin {
             records:"=",
             recordIndex:"=",
             recordDepth:"=",
-            childCount:"="
+            childCount:"=",
+            autoOpen:"="
         };
         
         public controller=SWExpandableRecordController;
@@ -98,17 +98,21 @@ module slatwalladmin {
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
             
-                    if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
-                        $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
-                            var template = angular.element(html);
-                            
-                            template = $compile(template)(scope);
-                            element.html(template);
-                            element.on('click',scope.swExpandableRecord.toggleChild);
-                        });
-                    }
-            
-            
+                if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
+                    $templateRequest(partialsPath+"expandablerecord.html").then((html)=>{
+                        var template = angular.element(html);
+                        
+                        //get autoopen reference to ensure only the root is autoopenable
+                        var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
+                        scope.swExpandableRecord.autoOpen = false;
+                        template = $compile(template)(scope);
+                        element.html(template);
+                        element.on('click',scope.swExpandableRecord.toggleChild);
+                        if(autoOpen){
+                            scope.swExpandableRecord.toggleChild();    
+                        }
+                    });
+                }
 		}
 	}
     

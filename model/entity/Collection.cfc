@@ -351,11 +351,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
 		var HibachiBaseEntity = "";
-		if(find(getDao('HibachiDao').getApplicationKey(),arguments.collectionObject)){
-			HibachiBaseEntity = arguments.collectionObject;
-		}else{
-			HibachiBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
-		}
+		HibachiBaseEntity = arguments.collectionObject;
 		
 		variables.collectionObject = arguments.collectionObject;
 		if(variables.collectionConfig eq '{}' ){
@@ -493,7 +489,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			break;
 		}
 		
-		return " #aggregateFunction#(#arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
+		return " #aggregateFunction#(DISTINCT #arguments.propertyIdentifier#) as #arguments.aggregate.aggregateAlias#";
 	}
 	
 	public any function getCacheName() {
@@ -681,7 +677,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	private string function getFromHQL(required string baseEntityName, required string baseEntityAlias, required any joins){
-		var fromHQL = ' FROM #arguments.baseEntityName# as #arguments.baseEntityAlias#';
+		var hibachiBaseEntityName = '';
+		if(find(getDao('HibachiDao').getApplicationKey(),arguments.baseEntityName)){
+			hibachiBaseEntityName = arguments.baseEntityName;
+		}else{
+			hibachiBaseEntityName = getService('hibachiService').getProperlyCasedFullEntityName(arguments.baseEntityName);
+		}
+		
+		var fromHQL = ' FROM #hibachiBaseEntityName# as #arguments.baseEntityAlias#';
 		addHQLAlias(arguments.baseEntityName,arguments.baseEntityAlias);
 		for(var join in arguments.joins){
 			fromHQL &= addJoinHQL(arguments.baseEntityAlias,join);
@@ -951,6 +954,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!structKeyExists(variables,"records")) {
 					var HQL = getSelectionCountHQL() & getHQL(true);
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
+					if(isNull(recordCount)){
+						recordCount = 0;
+					}
 					variables.recordsCount = recordCount;
 					if(getCacheable()) {
 						application.entityCollection[ getCacheName() ] = {};
@@ -1098,7 +1104,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	private any function getSelectionCountHQL(){
-		return 'SELECT COUNT(#getCollectionConfigStruct().baseEntityAlias#.id) ';
+		return 'SELECT COUNT(DISTINCT #getCollectionConfigStruct().baseEntityAlias#.id) ';
 	}
 	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){

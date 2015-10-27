@@ -41,6 +41,7 @@ var slatwalladmin;
             this.alias = alias;
         }
     }
+    slatwalladmin.Join = Join;
     class OrderBy {
         constructor(propertyIdentifier, direction) {
             this.propertyIdentifier = propertyIdentifier;
@@ -175,6 +176,11 @@ var slatwalladmin;
             this.capitalize = (s) => {
                 return s && s[0].toUpperCase() + s.slice(1);
             };
+            this.addColumn = (column) => {
+                if (this.utilityService.ArrayFindByPropertyValue(this.columns, 'propertyIdentfier', column.propertyIdentifier) === -1) {
+                    this.addColumn(column.propertyIdentifier, column.title, column);
+                }
+            };
             this.addColumn = (column, title = '', options = {}) => {
                 var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
                 if (angular.isUndefined(this.columns)) {
@@ -209,7 +215,7 @@ var slatwalladmin;
                     columnObject.aggregate = options.aggregate;
                 }
                 //add any non-conventional options
-                for (key in options) {
+                for (var key in options) {
                     if (!columnObject[key]) {
                         columnObject[key] = options[key];
                     }
@@ -231,7 +237,7 @@ var slatwalladmin;
                     this.addColumn(this.formatCollectionName(column), title, options);
                 });
             };
-            this.addDisplayAggregate = (propertyIdentifier, aggregateFunction, aggregateAlias) => {
+            this.addDisplayAggregate = (propertyIdentifier, aggregateFunction, aggregateAlias, options) => {
                 var alias = this.baseEntityAlias;
                 var doJoin = false;
                 var collection = propertyIdentifier;
@@ -266,6 +272,7 @@ var slatwalladmin;
                     var join = new Join(collection, this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;
                 }
+                angular.extend(column, options);
                 //Add columns
                 this.addColumn(column.propertyIdentifier, undefined, column);
                 if (doJoin) {
@@ -302,8 +309,8 @@ var slatwalladmin;
                     this.filterGroups = [{ filterGroup: [] }];
                 }
                 var collection = propertyIdentifier;
-                var propertyKey = '.' + this.utilityService.listLast(propertyIdentifier, '.');
                 //if the propertyIdenfifier is a chain
+                var propertyKey = '';
                 if (propertyIdentifier.indexOf('.') !== -1) {
                     collection = this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
                     propertyKey = '.' + this.utilityService.listLast(propertyIdentifier, '.');
@@ -316,7 +323,7 @@ var slatwalladmin;
                     join = new Join(propertyIdentifier, this.buildPropertyIdentifier(alias, propertyIdentifier));
                     doJoin = true;
                 }
-                else {
+                else if (propertyKey !== '') {
                     filter.propertyIdentifier = this.buildPropertyIdentifier(alias, collection) + propertyKey;
                     join = new Join(collection, this.buildPropertyIdentifier(alias, collection));
                     doJoin = true;
@@ -335,12 +342,24 @@ var slatwalladmin;
             this.addCollectionFilter = (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria = 'One', fieldtype, readOnly = false) => {
                 this.filterGroups[0].filterGroup.push(new CollectionFilter(this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
             };
-            this.setOrderBy = (propertyIdentifier, direction = 'DESC') => {
-                if (angular.isUndefined(this.orderBy)) {
+            //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+            this.setOrderBy = (orderByList) => {
+                var orderBys = orderByList.split(',');
+                for (var orderBy in orderBys) {
+                    this.addOrderBy(orderBy);
+                }
+            };
+            this.addOrderBy = (orderByString) => {
+                if (!this.orderBy) {
                     this.orderBy = [];
                 }
-                this.addJoin(propertyIdentifier);
-                this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
+                var propertyIdentifier = this.utilityService.listFirst(orderByString, '|');
+                var direction = this.utilityService.listLast(orderByString, '|');
+                var orderBy = {
+                    propertyIdentifier: propertyIdentifier,
+                    direction: direction
+                };
+                this.orderBy.push(orderBy);
             };
             this.setCurrentPage = (pageNumber) => {
                 this.currentPage = pageNumber;
@@ -377,4 +396,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', ($slatwall, utilityService) => new CollectionConfig($slatwall, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=collectionconfigservice.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map

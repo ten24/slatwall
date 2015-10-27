@@ -39,10 +39,13 @@ var slatwalladmin;
             this.getSelections = (selectionid) => {
                 return this._selection[selectionid];
             };
+            this.clearSelection = (selectionid) => {
+                this._selection[selectionid] = [];
+            };
         }
     }
     slatwalladmin.SelectionService = SelectionService;
     angular.module('slatwalladmin').service('selectionService', SelectionService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=selectionservice.js.map
+//# sourceMappingURL=../services/selectionservice.js.map

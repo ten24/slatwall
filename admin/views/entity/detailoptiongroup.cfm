@@ -63,6 +63,9 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/options" />
 			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/description" />
+			<cfif not rc.optiongroup.getGlobalFlag()>
+				<hb:HibachiEntityDetailItem property="producttypes" />
+			</cfif>
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.optiongroup.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.optiongroup#" attributeSet="#attributeSet#" />

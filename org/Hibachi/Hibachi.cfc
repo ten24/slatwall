@@ -604,6 +604,7 @@ component extends="FW1.framework" {
 	}
 	
 	public void function renderApiResponse(){
+		param name="request.context.headers.contentType" default="application/json";
 		param name="request.context.apiResponse.content" default="#structNew()#"; 
 		//need response header for api
 		var context = getPageContext();
@@ -619,7 +620,7 @@ component extends="FW1.framework" {
 		}
 		
 		//leaving a note here in case we ever wish to support XML for api responses
-		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/json'){
+		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
 			responseString = serializeJSON(request.context.apiResponse.content);
 			
 			// If running CF9 we need to fix strings that were improperly cast to numbers
@@ -627,7 +628,7 @@ component extends="FW1.framework" {
 				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
 			}
 		}
-		if(isStruct(request.context.apiResponse.content) && request.context.headers['Content-Type'] eq 'application/xml'){
+		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
 			//response String to xml placeholder
 		}
 		writeOutput( responseString );
