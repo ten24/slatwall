@@ -51,33 +51,32 @@ module slatwalladmin{
             angular.extend(productBundleGroup.data,prototype);
         }
     
-        public formatProductBundleGroupFilters = (productBundleGroupFilters,filterTerm):any =>{
-            this.$log.debug('FORMATTING PRODUCT BUNDLE FILTERs');
-            this.$log.debug(productBundleGroupFilters);
+        public formatProductBundleGroupFilters = (productBundelGroupFilters,filterTerm):any =>{
+            this.$log.debug('formatProductBundleGroupFilters');
             this.$log.debug(filterTerm);
             if(filterTerm.value === 'sku'){
-                for(var i in productBundleGroupFilters){
-                    productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value+'Code'];
-                    productBundleGroupFilters[i].type = filterTerm.name;
-                    productBundleGroupFilters[i].entityType = filterTerm.value;
-                    productBundleGroupFilters[i].propertyIdentifier='_sku.skuID';
+                for(var i in productBundelGroupFilters){
+                    productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Code'];
+                    productBundelGroupFilters[i].type = filterTerm.name;
+                    productBundelGroupFilters[i].entityType = filterTerm.value;
+                    productBundelGroupFilters[i].propertyIdentifier='_sku.skuID';
                 }
             } else{
-                for(var i in productBundleGroupFilters){
-                    productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value+'Name'];
-                    productBundleGroupFilters[i].type = filterTerm.name;
-                    productBundleGroupFilters[i].entityType = filterTerm.value;
+                for(var i in productBundelGroupFilters){
+                    productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
+                    productBundelGroupFilters[i].type = filterTerm.name;
+                    productBundelGroupFilters[i].entityType = filterTerm.value;
                     if(filterTerm.value === 'brand' || filterTerm.value === 'productType'){
-                        productBundleGroupFilters[i].propertyIdentifier='_sku.product.'+filterTerm.value+'.'+filterTerm.value+'ID';
+                        productBundelGroupFilters[i].propertyIdentifier='_sku.product.'+filterTerm.value+'.'+filterTerm.value+'ID';
                     }else{
-                        productBundleGroupFilters[i].propertyIdentifier='_sku.'+filterTerm.value+'.'+filterTerm.value+'ID';
+                        productBundelGroupFilters[i].propertyIdentifier='_sku.'+filterTerm.value+'.'+filterTerm.value+'ID';
                     }
                     
                 }
             }
             
-            this.$log.debug(productBundleGroupFilters);
-            return productBundleGroupFilters;
+            this.$log.debug(productBundelGroupFilters);
+            return productBundelGroupFilters;
         }
     }
     angular.module('slatwalladmin').service('productBundleService',ProductBundleService);

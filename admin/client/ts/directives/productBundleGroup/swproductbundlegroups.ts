@@ -34,7 +34,7 @@ angular.module('slatwalladmin')
 					obj.data.$$editing = false;
 				});
 				
-				$scope.removeProductBundleGroup = function(index){
+				this.removeProductBundleGroup = function(index){
 					$scope.productBundleGroups.splice(index,1);
 					$log.debug("Deleting PBG #" + index);
 					$log.debug($scope.productBundleGroups);
@@ -42,14 +42,8 @@ angular.module('slatwalladmin')
 					
 				};
 				$scope.addProductBundleGroup = function(){
-					$log.debug("LOOKY LOOKY HERE HERE");
-					
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-					$log.debug(productBundleGroup.data);
-					
 					productBundleService.decorateProductBundleGroup(productBundleGroup);
-
-					$log.debug(productBundleGroup.data);
 					
 					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
 				};
