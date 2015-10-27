@@ -58,9 +58,7 @@ module slatwalladmin {
 					
 					if(this.hideSearch){
 						this.hideSearch = false; 
-					} else if(this.search.length == 0){
-						this.hideSearch = true; 
-					}
+					} 
 					
 					this.results = new Array(); 
 					this.typeaheadCollectionConfig.setKeywords(search);
@@ -91,6 +89,9 @@ module slatwalladmin {
 						
 					});
 				}, 500); 
+			} else { 
+				this.results = [];
+				this.hideSearch = true; 
 			}
 		}
 		
