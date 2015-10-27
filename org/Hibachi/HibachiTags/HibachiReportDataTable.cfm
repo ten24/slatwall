@@ -115,13 +115,7 @@
 					</cfloop>
 					
 					<!--- Get next page --->
-					
-					tableData.RecordCount = #tableData.RecordCount#<br/>
-					
-					getDataTableEndRow = #attributes.report.getDataTableEndRow()#<br/>
-					
-					
-			        <li <cfif tableData.RecordCount LTE attributes.report.getDataTableEndRow()>class="disabled" disabled</cfif> >
+					<li <cfif tableData.RecordCount LTE attributes.report.getDataTableEndRow()>class="disabled" disabled</cfif> >
 			            <a href="##" data-pagination="#nextItem#" class="hibachi-report-pagination" aria-label="Next">
 			            	<span aria-hidden="true">&raquo;</span>
 			            </a>
