@@ -179,11 +179,15 @@ var slatwalladmin;
                 var stringFound = -1;
                 for (var i = 0; i < splitString.length; i++) {
                     var stringPart = splitString[i];
-                    if (stringPart != value)
-                        continue;
-                    stringFound = i;
-                    break;
+                    console.log(splitString);
+                    console.log('stringpart');
+                    console.log(value);
+                    console.log(stringPart);
+                    if (stringPart === value) {
+                        stringFound = i;
+                    }
                 }
+                return stringFound;
             };
             this.listLen = function (list, delimiter) {
                 if (list === void 0) { list = ''; }

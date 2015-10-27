@@ -67,11 +67,13 @@ var slatwalladmin;
     })();
     slatwalladmin.SWExpandableRecordController = SWExpandableRecordController;
     var SWExpandableRecord = (function () {
-        function SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath) {
+        function SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath, utilityService) {
+            var _this = this;
             this.$compile = $compile;
             this.$templateRequest = $templateRequest;
             this.$timeout = $timeout;
             this.partialsPath = partialsPath;
+            this.utilityService = utilityService;
             this.restrict = 'EA';
             this.scope = {};
             this.bindToController = {
@@ -85,12 +87,27 @@ var slatwalladmin;
                 recordIndex: "=",
                 recordDepth: "=",
                 childCount: "=",
-                autoOpen: "="
+                autoOpen: "=",
+                multiselectIdPaths: "="
             };
             this.controller = SWExpandableRecordController;
             this.controllerAs = "swExpandableRecord";
             this.link = function (scope, element, attrs) {
                 if (scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount) {
+                    if (scope.swExpandableRecord.recordValue) {
+                        console.log('expand');
+                        var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
+                        var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
+                        angular.forEach(multiselectIdPathsArray, function (multiselectIdPath) {
+                            var position = _this.utilityService.listFind(multiselectIdPath, id, '/');
+                            var multiselectPathLength = multiselectIdPath.split('/').length;
+                            console.log(position);
+                            console.log(multiselectPathLength);
+                            if (position !== -1 && position < multiselectPathLength - 1) {
+                                scope.swExpandableRecord.toggleChild();
+                            }
+                        });
+                    }
                     $templateRequest(partialsPath + "expandablerecord.html").then(function (html) {
                         var template = angular.element(html);
                         //get autoopen reference to ensure only the root is autoopenable
@@ -109,12 +126,13 @@ var slatwalladmin;
             this.$templateRequest = $templateRequest;
             this.partialsPath = partialsPath;
             this.$timeout = $timeout;
+            this.utilityService = utilityService;
         }
-        SWExpandableRecord.$inject = ['$compile', '$templateRequest', '$timeout', 'partialsPath'];
+        SWExpandableRecord.$inject = ['$compile', '$templateRequest', '$timeout', 'partialsPath', 'utilityService'];
         return SWExpandableRecord;
     })();
     slatwalladmin.SWExpandableRecord = SWExpandableRecord;
-    angular.module('slatwalladmin').directive('swExpandableRecord', ['$compile', '$templateRequest', '$timeout', 'partialsPath', function ($compile, $templateRequest, $timeout, partialsPath) { return new SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath); }]);
+    angular.module('slatwalladmin').directive('swExpandableRecord', ['$compile', '$templateRequest', '$timeout', 'partialsPath', 'utilityService', function ($compile, $templateRequest, $timeout, partialsPath, utilityService) { return new SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swexpandablerecord.js.map

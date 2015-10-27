@@ -179,16 +179,20 @@ module slatwalladmin{
               } 
           }
           
-         public listFind = (list:string='',value:string,delimiter:string=','):void =>{
+         public listFind = (list:string='',value:string,delimiter:string=','):number =>{
               var splitString = list.split(delimiter);
               var stringFound = -1;
               for (var i = 0; i < splitString.length; i++) {
                   var stringPart = splitString[i];
-                  if (stringPart != value) continue;
-
-                  stringFound = i;
-                  break;
+                  console.log(splitString);
+                  console.log('stringpart');
+                  console.log(value);
+                  console.log(stringPart);
+                  if (stringPart === value){
+                      stringFound = i;
+                  }
               }
+             return stringFound;
           }
           public listLen = (list:string='',delimiter:string=','):number =>{
               

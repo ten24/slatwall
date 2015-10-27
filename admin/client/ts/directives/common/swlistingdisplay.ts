@@ -177,6 +177,7 @@ module slatwalladmin {
                 if(!this.hasCollectionPromise){
                     this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS');
                 }
+                //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
                 //add children column
                 if(this.childPropertyName && this.childPropertyName.length) {
                     if(this.getChildCount || !this.hasCollectionPromise){
@@ -204,13 +205,19 @@ module slatwalladmin {
 //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
 //                }
 //            }
+            
+            if(this.multiselectIdPaths && this.multiselectIdPaths.length){
+                angular.forEach(this.multiselectIdPaths.split(','),(value)=>{
+                    var id = this.utilityService.listLast(value,'/');
+                    this.selectionService.addSelection('ListingDisplay',id);
+                });
+            }
+            
             if(this.multiselectValues && this.multiselectValues.length){
                 //select all owned ids
                 angular.forEach(this.multiselectValues.split(','),(value)=>{
                     this.selectionService.addSelection('ListingDisplay',value);
                 });
-                
-                
             }
             
             
@@ -536,6 +543,7 @@ module slatwalladmin {
              /*Multiselect*/
              multiselectFieldName:"@",
              multiselectPropertyIdentifier:"@",
+             multiselectIdPaths:"@",
              multiselectValues:"@",
             
              /*Helper / Additional / Custom*/

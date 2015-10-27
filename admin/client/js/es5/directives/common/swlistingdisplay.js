@@ -92,6 +92,7 @@ var slatwalladmin;
                     if (!_this.hasCollectionPromise) {
                         _this.collectionConfig.addFilter(_this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), 'NULL', 'IS');
                     }
+                    //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
                     //add children column
                     if (_this.childPropertyName && _this.childPropertyName.length) {
                         if (_this.getChildCount || !_this.hasCollectionPromise) {
@@ -114,6 +115,12 @@ var slatwalladmin;
                 //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
                 //                }
                 //            }
+                if (_this.multiselectIdPaths && _this.multiselectIdPaths.length) {
+                    angular.forEach(_this.multiselectIdPaths.split(','), function (value) {
+                        var id = _this.utilityService.listLast(value, '/');
+                        _this.selectionService.addSelection('ListingDisplay', id);
+                    });
+                }
                 if (_this.multiselectValues && _this.multiselectValues.length) {
                     //select all owned ids
                     angular.forEach(_this.multiselectValues.split(','), function (value) {
@@ -413,6 +420,7 @@ var slatwalladmin;
                 /*Multiselect*/
                 multiselectFieldName: "@",
                 multiselectPropertyIdentifier: "@",
+                multiselectIdPaths: "@",
                 multiselectValues: "@",
                 /*Helper / Additional / Custom*/
                 tableattributes: "@",

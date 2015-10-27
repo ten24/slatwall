@@ -201,6 +201,7 @@
 					data-records="swListingDisplay.collectionData.pageRecords || swListingDisplay.collectionData.records"
 					data-record-index="pageRecordKey"
 					data-record-depth="pageRecord.depth"
+					data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
 				>
 					<!--indent the primary for expandable-->
 					<span ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" style="margin-left:{{24+(pageRecord.depth*15)||0}}px" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]">
