@@ -184,10 +184,6 @@ module slatwalladmin{
               var stringFound = -1;
               for (var i = 0; i < splitString.length; i++) {
                   var stringPart = splitString[i];
-                  console.log(splitString);
-                  console.log('stringpart');
-                  console.log(value);
-                  console.log(stringPart);
                   if (stringPart === value){
                       stringFound = i;
                   }

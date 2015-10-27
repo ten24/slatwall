@@ -578,10 +578,6 @@ module slatwalladmin {
                observerService.detachByID(scope.collection); 
             });
             
-            scope.$watch('swListingDisplay.collectionConfig',(newValue,oldValue)=>{
-                console.log('newCollectionConifg');
-               console.log(newValue); 
-            });
 		}
 	}
     

@@ -441,10 +441,6 @@ var slatwalladmin;
                 scope.$on('$destroy', function () {
                     observerService.detachByID(scope.collection);
                 });
-                scope.$watch('swListingDisplay.collectionConfig', function (newValue, oldValue) {
-                    console.log('newCollectionConifg');
-                    console.log(newValue);
-                });
             };
             this.partialsPath = partialsPath;
             this.templateUrl = this.partialsPath + 'listingdisplay.html';

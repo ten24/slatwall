@@ -101,14 +101,11 @@ module slatwalladmin {
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
             if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
                 if(scope.swExpandableRecord.recordValue){
-                    console.log('expand');
                     var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
                     var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
                     angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
                         var position = this.utilityService.listFind(multiselectIdPath,id,'/');
                         var multiselectPathLength = multiselectIdPath.split('/').length;
-                        console.log(position);
-                        console.log(multiselectPathLength);
                         if(position !== -1 && position < multiselectPathLength -1){
                             scope.swExpandableRecord.toggleChild();
                         }

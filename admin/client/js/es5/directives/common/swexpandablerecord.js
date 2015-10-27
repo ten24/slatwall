@@ -95,14 +95,11 @@ var slatwalladmin;
             this.link = function (scope, element, attrs) {
                 if (scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount) {
                     if (scope.swExpandableRecord.recordValue) {
-                        console.log('expand');
                         var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
                         var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
                         angular.forEach(multiselectIdPathsArray, function (multiselectIdPath) {
                             var position = _this.utilityService.listFind(multiselectIdPath, id, '/');
                             var multiselectPathLength = multiselectIdPath.split('/').length;
-                            console.log(position);
-                            console.log(multiselectPathLength);
                             if (position !== -1 && position < multiselectPathLength - 1) {
                                 scope.swExpandableRecord.toggleChild();
                             }
