@@ -20,6 +20,9 @@
     	"generateSubscriptionSkus":{
     	    "generateSkusFlag": {"eq":1},
     		"baseProductType":	{"eq":"subscription"}
+    	},
+    	"createGiftCard":{
+    		"baseProductType": {"eq":"gift-card"}
     	}
 	},
 	"properties":{
@@ -27,7 +30,8 @@
 		"productCode": 				[{"required":true}],
 		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
 		"subscriptionBenefits": 	[{"conditions":"baseProductTypeSubscription","required":true}],
-		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}]
+		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}],
+		"redemptionAmount":			[{"conditions":"createGiftCard", "dataType":"numeric","minValue":0}]
 	}
 }
 
