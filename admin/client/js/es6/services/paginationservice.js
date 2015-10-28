@@ -184,4 +184,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('paginationService', PaginationService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=paginationservice.js.map
+//# sourceMappingURL=../services/paginationservice.js.map

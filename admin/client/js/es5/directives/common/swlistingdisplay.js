@@ -33,10 +33,6 @@ var slatwalladmin;
                     _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
                     _this.collectionConfig.loadJson(_this.collection.collectionConfig);
                 }
-                else {
-                    _this.collectionObject = _this.collection;
-                    _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
-                }
                 _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
                 _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
                 _this.collectionConfig.setKeywords(_this.paginator.keywords);
@@ -79,8 +75,6 @@ var slatwalladmin;
                 if (!_this.parentPropertyName || (_this.parentPropertyName && !_this.parentPropertyName.length)) {
                     if (_this.exampleEntity.metaData.hb_parentPropertyName) {
                         _this.parentPropertyName = _this.exampleEntity.metaData.hb_parentPropertyName;
-                        _this.parentPropertyMetaData = _this.exampleEntity.metaData[_this.parentPropertyName];
-                        _this.parentEntity = _this.$slatwall.getEntityExample(_this.parentPropertyMetaData.cfc);
                     }
                 }
                 if (!_this.childPropertyName || (_this.childPropertyName && !_this.childPropertyName.length)) {
@@ -98,6 +92,7 @@ var slatwalladmin;
                     if (!_this.hasCollectionPromise) {
                         _this.collectionConfig.addFilter(_this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), 'NULL', 'IS');
                     }
+                    //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
                     //add children column
                     if (_this.childPropertyName && _this.childPropertyName.length) {
                         if (_this.getChildCount || !_this.hasCollectionPromise) {
@@ -120,6 +115,12 @@ var slatwalladmin;
                 //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
                 //                }
                 //            }
+                if (_this.multiselectIdPaths && _this.multiselectIdPaths.length) {
+                    angular.forEach(_this.multiselectIdPaths.split(','), function (value) {
+                        var id = _this.utilityService.listLast(value, '/');
+                        _this.selectionService.addSelection('ListingDisplay', id);
+                    });
+                }
                 if (_this.multiselectValues && _this.multiselectValues.length) {
                     //select all owned ids
                     angular.forEach(_this.multiselectValues.split(','), function (value) {
@@ -130,7 +131,7 @@ var slatwalladmin;
                 //this.edit = this.edit || $location.edit
                 _this.processObjectProperties = _this.processObjectProperties || '';
                 _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
-                _this.collectionConfig = _this.collectionConfig || _this.collectionData.collectionConfig;
+                //this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
                 _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
                 //Setup Sortability
                 if (_this.sortProperty && _this.sortProperty.length) {
@@ -235,14 +236,6 @@ var slatwalladmin;
                 _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
             };
             this.setupColumns = function () {
-                //if columns doesn't exist then make it
-                if (!_this.collectionConfig.columns) {
-                    _this.collectionConfig.columns = [];
-                }
-                //if a collectionConfig was not passed in then we can run run swListingColumns
-                //this is performed early to populate columns with swlistingcolumn info
-                _this.$transclude = $transclude;
-                _this.$transclude(_this.$scope, function () { });
                 //assumes no alias formatting
                 angular.forEach(_this.columns, function (column) {
                     var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collectionObject, column.propertyIdentifier);
@@ -320,21 +313,33 @@ var slatwalladmin;
             if (!this.collection || !angular.isString(this.collection)) {
                 this.hasCollectionPromise = true;
             }
+            else {
+                this.collectionObject = this.collection;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            }
             this.setupDefaultCollectionInfo();
+            //if columns doesn't exist then make it
+            if (!this.collectionConfig.columns) {
+                this.collectionConfig.columns = [];
+            }
+            //if a collectionConfig was not passed in then we can run run swListingColumns
+            //this is performed early to populate columns with swlistingcolumn info
+            this.$transclude = $transclude;
+            this.$transclude(this.$scope, function () { });
             this.setupColumns();
             this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
             this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
             this.initData();
             this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
-                _this.$q.when(_this.collectionPromise).then(function (data) {
-                    _this.$timeout(function () {
+                if (newValue) {
+                    _this.$q.when(_this.collectionPromise).then(function (data) {
                         _this.collectionData = data;
                         _this.setupDefaultCollectionInfo();
                         _this.setupColumns();
                         _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
                         _this.paginator.setPageRecordsInfo(_this.collectionData);
                     });
-                });
+                }
             });
             this.tableID = 'LD' + this.utilityService.createID();
             //if getCollection doesn't exist then create it
@@ -415,6 +420,7 @@ var slatwalladmin;
                 /*Multiselect*/
                 multiselectFieldName: "@",
                 multiselectPropertyIdentifier: "@",
+                multiselectIdPaths: "@",
                 multiselectValues: "@",
                 /*Helper / Additional / Custom*/
                 tableattributes: "@",
@@ -446,4 +452,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swListingDisplay', ['partialsPath', function (partialsPath) { return new SWListingDisplay(partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swlistingdisplay.js.map
+//# sourceMappingURL=../../directives/common/swlistingdisplay.js.map

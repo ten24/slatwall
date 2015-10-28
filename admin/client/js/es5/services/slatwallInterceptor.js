@@ -123,4 +123,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('slatwallInterceptor', SlatwallInterceptor);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=slatwallInterceptor.js.map
+//# sourceMappingURL=../services/slatwallInterceptor.js.map

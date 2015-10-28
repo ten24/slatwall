@@ -37,6 +37,15 @@ var slatwalladmin;
                 }
                 return query_string;
             };
+            this.ArrayFindByPropertyValue = (arr, property, value) => {
+                let currentIndex = -1;
+                arr.forEach((arrItem, index) => {
+                    if (arrItem[property] && arrItem[property] === value) {
+                        currentIndex = index;
+                    }
+                });
+                return currentIndex;
+            };
             this.listLast = (list = '', delimiter = ',') => {
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];
@@ -150,11 +159,11 @@ var slatwalladmin;
                 var stringFound = -1;
                 for (var i = 0; i < splitString.length; i++) {
                     var stringPart = splitString[i];
-                    if (stringPart != value)
-                        continue;
-                    stringFound = i;
-                    break;
+                    if (stringPart === value) {
+                        stringFound = i;
+                    }
                 }
+                return stringFound;
             };
             this.listLen = (list = '', delimiter = ',') => {
                 var splitString = list.split(delimiter);
@@ -214,4 +223,4 @@ var slatwalladmin;
     angular.module('hibachi').service('utilityService', UtilityService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=utilityservice.js.map
+//# sourceMappingURL=../services/utilityservice.js.map

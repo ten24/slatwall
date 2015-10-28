@@ -15,7 +15,8 @@ var slatwalladmin;
     })();
     slatwalladmin.SWListingColumnController = SWListingColumnController;
     var SWListingColumn = (function () {
-        function SWListingColumn() {
+        function SWListingColumn(utilityService) {
+            this.utilityService = utilityService;
             this.restrict = 'EA';
             this.scope = true;
             this.bindToController = {
@@ -45,13 +46,16 @@ var slatwalladmin;
                     editable: scope.swListingColumn.editable,
                     buttonGroup: scope.swListingColumn.buttonGroup
                 };
-                scope.$parent.swListingDisplay.columns.push(column);
+                if (utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
+                    scope.$parent.swListingDisplay.columns.push(column);
+                }
             };
         }
+        SWListingColumn.$inject = ['utilityService'];
         return SWListingColumn;
     })();
     slatwalladmin.SWListingColumn = SWListingColumn;
-    angular.module('slatwalladmin').directive('swListingColumn', [function () { return new SWListingColumn(); }]);
+    angular.module('slatwalladmin').directive('swListingColumn', ['utilityService', function (utilityService) { return new SWListingColumn(utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swlistingcolumn.js.map
+//# sourceMappingURL=../../directives/common/swlistingcolumn.js.map

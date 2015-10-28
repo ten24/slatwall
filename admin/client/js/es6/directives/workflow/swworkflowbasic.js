@@ -17,4 +17,4 @@ angular.module('slatwalladmin').directive('swWorkflowBasic', [
         };
     }]);
 
-//# sourceMappingURL=swworkflowbasic.js.map
+//# sourceMappingURL=../../directives/workflow/swworkflowbasic.js.map

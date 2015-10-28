@@ -13,6 +13,7 @@ var slatwalladmin;
             this.paginationService = paginationService;
             this.observerService = observerService;
             this.collectionConfigService = collectionConfigService;
+            this.openRoot = true;
             this.$log.debug('slatwallcontentList init');
             var pageShow = 50;
             if (this.pageShow !== 'Auto') {
@@ -152,12 +153,7 @@ var slatwalladmin;
                 });
                 _this.collectionListingPromise = _this.collectionConfig.getEntity();
                 _this.collectionListingPromise.then(function (value) {
-                    angular.forEach(value.pageRecords, function (node) {
-                        node.site_domainNames = node.site_domainNames.split(",")[0];
-                    });
                     _this.collection = value;
-                    //this.collectionConfig = angular.fromJson(this.collection.collectionConfig);
-                    //this.collectionConfig.columns = columnsConfig;
                     _this.collection.collectionConfig = _this.collectionConfig;
                     _this.firstLoad = true;
                     _this.loadingCollection = false;
@@ -183,6 +179,7 @@ var slatwalladmin;
             };
             var siteChanged = function (selectedSiteOption) {
                 _this.selectedSite = selectedSiteOption;
+                _this.openRoot = true;
                 _this.getCollection();
             };
             this.observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
@@ -230,4 +227,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swContentList', ['partialsPath', 'observerService', function (partialsPath, observerService) { return new SWContentList(partialsPath, observerService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swcontentlist.js.map
+//# sourceMappingURL=../../directives/content/swcontentlist.js.map
