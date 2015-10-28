@@ -1325,7 +1325,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
-						if(arguments.order.getPaymentAmountDue() > 0){
+						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
 							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 						}
 
@@ -1695,10 +1695,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-			
+
 			//update the calculated properties
 			arguments.order.updateCalculatedProperties(true);
-			
+
 		}
 		return arguments.order;
 	}

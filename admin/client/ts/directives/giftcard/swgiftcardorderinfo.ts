@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 module slatwalladmin { 
 	'use strict'; 
 	
@@ -5,16 +7,15 @@ module slatwalladmin {
 		public order; 
 		public giftCard;  
 		
-		public static $inject = ["$slatwall"];
+		public static $inject = ["collectionConfigService"];
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall){
-			this.$slatwall = $slatwall; 
+		constructor(private collectionConfigService:CollectionConfig){
 			this.init(); 	
 		} 
 		
 		public init = ():void =>{
 
-			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
+			var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
 			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
 			orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 			orderConfig.setAllRecords(true);
@@ -27,7 +28,7 @@ module slatwalladmin {
 	
 	export class GiftCardOrderInfo implements ng.IDirective { 
 		
-		public static $inject = ["$slatwall", "partialsPath"];
+		public static $inject = ["collectionConfigService", "partialsPath"];
 		
 		public restrict:string; 
 		public templateUrl:string;
@@ -39,7 +40,7 @@ module slatwalladmin {
 		public controller = SWGiftCardOrderInfoController; 
 		public controllerAs = "swGiftCardOrderInfo";
 			
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){ 
+		constructor(private collectionConfigService:CollectionConfig, private partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/orderinfo.html";
 			this.restrict = "EA";
 		}
@@ -51,8 +52,8 @@ module slatwalladmin {
 	
 	angular.module('slatwalladmin')
 	.directive('swGiftCardOrderInfo',
-		["$slatwall", "partialsPath", 
-			($slatwall, partialsPath) => 
-				new GiftCardOrderInfo($slatwall, partialsPath)
+		["collectionConfigService", "partialsPath", 
+			(collectionConfigService, partialsPath) => 
+				new GiftCardOrderInfo(collectionConfigService, partialsPath)
 			]);
 }
