@@ -66,11 +66,11 @@ component extends="HibachiService" accessors="true" {
 	property name="typeService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-	
+
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);
 	}
-	
+
 	public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 		getHibachiTagService().cfSetting(requesttimeout="3600");
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
@@ -435,24 +435,13 @@ component extends="HibachiService" accessors="true" {
 
 	public any function processProduct_addOption(required any product, required any processObject) {
 
-		var newOption = getOptionService().getOption(arguments.processObject.getOption());
 		var newOptionsData = {
-			options = newOption.getOptionID(),
+			options = arguments.processObject.getOptions(),
 			price = arguments.product.getDefaultSku().getPrice()
 		};
+
 		if(!isNull(arguments.product.getDefaultSku().getListPrice())) {
 			newOptionsData.listPrice = arguments.product.getDefaultSku().getListPrice();
-		}
-
-		// Loop over each of the existing skus
-		for(var s=1; s<=arrayLen(arguments.product.getSkus()); s++) {
-			// Loop over each of the existing options for those skus
-			for(var o=1; o<=arrayLen(arguments.product.getSkus()[s].getOptions()); o++) {
-				// If this option is not of the same option group, and it isn't already in the list, then we can add it to the list
-				if(arguments.product.getSkus()[s].getOptions()[o].getOptionGroup().getOptionGroupID() != newOption.getOptionGroup().getOptionGroupID() && !listFindNoCase(newOptionsData.options, arguments.product.getSkus()[s].getOptions()[o].getOptionID())) {
-					newOptionsData.options = listAppend(newOptionsData.options, arguments.product.getSkus()[s].getOptions()[o].getOptionID());
-				}
-			}
 		}
 
 		getSkuService().createSkus(arguments.product, newOptionsData);
@@ -652,7 +641,7 @@ component extends="HibachiService" accessors="true" {
 		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm( arguments.processObject.getSubscriptionTermID() );
 		var newSku = getSkuService().newSku();
 
-		
+
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setRenewalPrice( arguments.processObject.getRenewalPrice() );
 		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
@@ -671,11 +660,11 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.product;
 	}
-	
+
 	public any function createSingleSku(required any product, required any processObject){
-		
+
 		var thisSku = this.newSku();
-		
+
 		thisSku.setProduct(arguments.product);
 		thisSku.setPrice(arguments.processObject.getPrice());
 		thisSku.setImageFile(thisSku.generateImageFileName());
@@ -688,9 +677,9 @@ component extends="HibachiService" accessors="true" {
 		arguments.product.setDefaultSku( thisSku );
 		return arguments.product;
 	}
-	
+
 	public any function createGiftCardProduct(required any product, required any processObject){
-		
+
 		arguments.product = createSingleSku(arguments.product,arguments.processObject);
 		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
 		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
@@ -862,7 +851,7 @@ component extends="HibachiService" accessors="true" {
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
 		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
-		
+
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
@@ -889,9 +878,9 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_updateDefaultImageFileNames( required any product ) {
-		
+
 		for(var sku in arguments.product.getSkus()) {
-				var name = sku.generateImageFileName(); 
+				var name = sku.generateImageFileName();
 				var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
 				var fullFilePath = "#uploadDirectory#/#sku.getImageFile()#";
 				var newPath = "#uploadDirectory#/#name#";
@@ -929,7 +918,7 @@ component extends="HibachiService" accessors="true" {
 				for(var processSkuCurrency in processObject.getSkuCurrencies()){
 					skuCurrencyFound=false;
 					skuCurrenciesToRemove=[];
-				
+
 					for(var skuCurrency in skus[i].getSkuCurrencies()){
 						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
 							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
@@ -938,7 +927,7 @@ component extends="HibachiService" accessors="true" {
 							if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
 								skuCurrency.setListPrice(processSkuCurrency.listPrice);
 							}
-							
+
 							if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
 								arrayAppend(skuCurrenciesToRemove,skuCurrency);
 							}
@@ -960,7 +949,7 @@ component extends="HibachiService" accessors="true" {
 						}
 						newSkuCurrency.setSku(skus[i]);
 						save(newSkuCurrency);
-						
+
 					}
 				}
 

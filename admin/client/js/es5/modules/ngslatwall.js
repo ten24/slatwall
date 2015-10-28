@@ -78,7 +78,7 @@ var ngSlatwall;
                         throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
                     }
                     var currentEntityName = _this.utilityService.listLast(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
-                    var currentPropertyIdentifier = _this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (_this.utilityService.listFirst(propertyIdentifier, '._').length));
+                    var currentPropertyIdentifier = _this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (_this.utilityService.listFirst(propertyIdentifier, '.').length + 1));
                     return _this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
                 }
                 return entityName;

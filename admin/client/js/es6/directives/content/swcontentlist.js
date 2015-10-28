@@ -12,6 +12,7 @@ var slatwalladmin;
             this.paginationService = paginationService;
             this.observerService = observerService;
             this.collectionConfigService = collectionConfigService;
+            this.openRoot = true;
             this.$log.debug('slatwallcontentList init');
             var pageShow = 50;
             if (this.pageShow !== 'Auto') {
@@ -151,12 +152,7 @@ var slatwalladmin;
                 });
                 this.collectionListingPromise = this.collectionConfig.getEntity();
                 this.collectionListingPromise.then((value) => {
-                    angular.forEach(value.pageRecords, (node) => {
-                        node.site_domainNames = node.site_domainNames.split(",")[0];
-                    });
                     this.collection = value;
-                    //this.collectionConfig = angular.fromJson(this.collection.collectionConfig);
-                    //this.collectionConfig.columns = columnsConfig;
                     this.collection.collectionConfig = this.collectionConfig;
                     this.firstLoad = true;
                     this.loadingCollection = false;
@@ -182,6 +178,7 @@ var slatwalladmin;
             };
             var siteChanged = (selectedSiteOption) => {
                 this.selectedSite = selectedSiteOption;
+                this.openRoot = true;
                 this.getCollection();
             };
             this.observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
