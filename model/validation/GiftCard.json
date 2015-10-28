@@ -3,7 +3,7 @@
 	"properties":{
 	    "giftCardCode":	               [{"contexts":"save","required":true},
 					        			{"contexts":"edit,delete", "method":"canEditOrDelete"}],
-		"giftCardID":		       [{"contexts":"updateEmailAddress","method":"isAssigned"}], 
-        	"ownerEmailAddress":           [{"contexts":"save","required":true}]
+		"ownerAccount":		       	   [{"contexts":"updateEmailAddress","null":true}], 
+        "ownerEmailAddress":           [{"contexts":"save","required":true}]
 	}
 }

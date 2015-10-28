@@ -92,13 +92,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 
-	public boolean function isAssigned(){
-		if(this.hasOwnerAccount()){
-			return true;
-		}
-		return false;
-	}
-
 	public boolean function isExpired(){
 		if(getService("SettingService").getSettingValue("skuGiftCardEnforceExpirationTerm")){
 			return !dateCompare(this.getExpirationDate(), now()) == 1;
