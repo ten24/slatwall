@@ -136,7 +136,6 @@ module slatwalladmin{
             return false;
         };
         public setPageRecordsInfo = (collection):void =>{
-            console.log('LOL')
             this.setRecordsCount(collection.recordsCount);
             if(this.getRecordsCount() === 0 ){
                 this.setPageStart(0);
