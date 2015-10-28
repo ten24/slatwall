@@ -107,6 +107,14 @@ module slatwalladmin{
             this.pageShow = jsonCollection.pageShow;
             this.allRecords = jsonCollection.allRecords;
         };
+        
+        loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]) =>{
+            this.filterGroups = filterGroupsConfig;
+        }
+        
+        loadColumns= (columns:Column[]) =>{
+            this.columns = columns; 
+        }
 
         getCollectionConfig= () =>{
             return {
@@ -120,7 +128,7 @@ module slatwalladmin{
                 pageShow: this.pageShow,
                 keywords: this.keywords,
                 defaultColumns: (!this.columns || !this.columns.length),
-                allRecords: this.allRecords
+                allRecords: this.allRecords,
             };
         };
 
@@ -203,69 +211,74 @@ module slatwalladmin{
         };
         
         private addColumn=(column:Column)=>{
-            this.addColumn(column.propertyIdentifier,column.title,column);
+            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+                this.addColumn(column.propertyIdentifier,column.title,column);
+            }
         }
 
         private addColumn= (column: string, title: string = '', options:Object = {}) =>{
-            var isVisible = true,
-                isDeletable = true,
-                isSearchable = true,
-                isExportable = true,
-                persistent ,
-                ormtype = 'string',
-                lastProperty=column.split('.').pop();
             
-            if(angular.isUndefined(this.columns)){
-                this.columns = [];
+            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
+                var isVisible = true,
+                    isDeletable = true,
+                    isSearchable = true,
+                    isExportable = true,
+                    persistent ,
+                    ormtype = 'string',
+                    lastProperty=column.split('.').pop();
+                
+                if(angular.isUndefined(this.columns)){
+                    this.columns = [];
+                }
+                if(!angular.isUndefined(options['isVisible'])){
+                    isVisible = options['isVisible'];
+                }
+                if(!angular.isUndefined(options['isDeletable'])){
+                    isDeletable = options['isDeletable'];
+                }
+                if(!angular.isUndefined(options['isSearchable'])){
+                    isSearchable = options['isSearchable'];
+                }
+                if(!angular.isUndefined(options['isExportable'])){
+                    isExportable = options['isExportable'];
+                }
+                if(angular.isUndefined(options['isExportable']) && !isVisible){
+                    isExportable = false;
+                }
+                if(!angular.isUndefined(options['ormtype'])){
+                    ormtype = options['ormtype'];
+                }else if(this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype){
+                    ormtype = this.collection.metaData[lastProperty].ormtype;
+                }
+    
+                if(angular.isDefined(this.collection.metaData[lastProperty])){
+                    persistent = this.collection.metaData[lastProperty].persistent;
+                }
+                var columnObject = new Column(
+                    column,
+                    title,
+                    isVisible,
+                    isDeletable,
+                    isSearchable,
+                    isExportable,
+                    persistent,
+                    ormtype,
+                    options['attributeID'],
+                    options['attributeSetObject']
+                );
+                if(options.aggregate){
+                    columnObject.aggregate = options.aggregate;
+                }
+                //add any non-conventional options
+                for(var key in options){
+                    if(!columnObject[key]){
+                        columnObject[key] = options[key];    
+                    }    
+                }
+                
+                
+                this.columns.push(columnObject);
             }
-            if(!angular.isUndefined(options['isVisible'])){
-                isVisible = options['isVisible'];
-            }
-            if(!angular.isUndefined(options['isDeletable'])){
-                isDeletable = options['isDeletable'];
-            }
-            if(!angular.isUndefined(options['isSearchable'])){
-                isSearchable = options['isSearchable'];
-            }
-            if(!angular.isUndefined(options['isExportable'])){
-                isExportable = options['isExportable'];
-            }
-            if(angular.isUndefined(options['isExportable']) && !isVisible){
-                isExportable = false;
-            }
-            if(!angular.isUndefined(options['ormtype'])){
-                ormtype = options['ormtype'];
-            }else if(this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype){
-                ormtype = this.collection.metaData[lastProperty].ormtype;
-            }
-
-            if(angular.isDefined(this.collection.metaData[lastProperty])){
-                persistent = this.collection.metaData[lastProperty].persistent;
-            }
-            var columnObject = new Column(
-                column,
-                title,
-                isVisible,
-                isDeletable,
-                isSearchable,
-                isExportable,
-                persistent,
-                ormtype,
-                options['attributeID'],
-                options['attributeSetObject']
-            );
-            if(options.aggregate){
-                columnObject.aggregate = options.aggregate;
-            }
-            //add any non-conventional options
-            for(var key in options){
-                if(!columnObject[key]){
-                    columnObject[key] = options[key];    
-                }    
-            }
-            
-            
-            this.columns.push(columnObject);
         };
 
 

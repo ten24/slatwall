@@ -53,16 +53,16 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfset selectedListingDisplays = rc.product.getListingPages() />
-<cfset selectedListingPageIDs = "" />
-<cfloop array="#selectedListingDisplays#" index="lp">
-	<cfset selectedListingPageIDs = listAppend(selectedListingPageIDs, lp.getPrimaryIDValue()) />
+<cfset selectedListingPageIDPaths = "" />
+<cfloop array="#selectedListingDisplays#" index="local.lp">
+	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
 </cfloop>
 <cfoutput>
 	<sw-listing-display
 		ng-if="$root.loadedResourceBundle"	
 		data-collection="'Content'"
 		data-multiselect-field-name="listingPages"
-		data-multiselect-values="#selectedListingPageIDs#"
+		data-multiselect-id-paths="#selectedListingPageIDPaths#"
 		data-edit="#rc.edit#"
 	>
 		<sw-listing-column data-property-identifier="site.siteName" />

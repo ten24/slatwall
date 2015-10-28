@@ -45,6 +45,15 @@ var slatwalladmin;
                 }
                 return query_string;
             };
+            this.ArrayFindByPropertyValue = function (arr, property, value) {
+                var currentIndex = -1;
+                arr.forEach(function (arrItem, index) {
+                    if (arrItem[property] && arrItem[property] === value) {
+                        currentIndex = index;
+                    }
+                });
+                return currentIndex;
+            };
             this.listLast = function (list, delimiter) {
                 if (list === void 0) { list = ''; }
                 if (delimiter === void 0) { delimiter = ','; }
@@ -170,11 +179,11 @@ var slatwalladmin;
                 var stringFound = -1;
                 for (var i = 0; i < splitString.length; i++) {
                     var stringPart = splitString[i];
-                    if (stringPart != value)
-                        continue;
-                    stringFound = i;
-                    break;
+                    if (stringPart === value) {
+                        stringFound = i;
+                    }
                 }
+                return stringFound;
             };
             this.listLen = function (list, delimiter) {
                 if (list === void 0) { list = ''; }

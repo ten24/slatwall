@@ -43,6 +43,16 @@ module slatwalladmin{
             return query_string;
         }
         
+        public ArrayFindByPropertyValue = (arr:any[],property:string,value:any):number =>{
+            let currentIndex = -1;
+            arr.forEach((arrItem,index)=>{
+               if(arrItem[property] && arrItem[property] === value){
+                   currentIndex = index;  
+               } 
+            }); 
+            return currentIndex;   
+        }
+        
         public listLast = (list:string='',delimiter:string=','):string =>{
             
             var listArray = list.split(delimiter);
@@ -169,16 +179,16 @@ module slatwalladmin{
               } 
           }
           
-         public listFind = (list:string='',value:string,delimiter:string=','):void =>{
+         public listFind = (list:string='',value:string,delimiter:string=','):number =>{
               var splitString = list.split(delimiter);
               var stringFound = -1;
               for (var i = 0; i < splitString.length; i++) {
                   var stringPart = splitString[i];
-                  if (stringPart != value) continue;
-
-                  stringFound = i;
-                  break;
+                  if (stringPart === value){
+                      stringFound = i;
+                  }
               }
+             return stringFound;
           }
           public listLen = (list:string='',delimiter:string=','):number =>{
               

@@ -24,6 +24,7 @@ module slatwalladmin {
             private observerService:slatwalladmin.ObserverService,
             private collectionConfigService:slatwalladmin.CollectionService
         ){
+               this.openRoot = true;
                this.$log.debug('slatwallcontentList init');
 	           var pageShow = 50;
                if(this.pageShow !== 'Auto'){
@@ -186,9 +187,10 @@ module slatwalladmin {
                    
                    this.collectionListingPromise = this.collectionConfig.getEntity();
 	        		this.collectionListingPromise.then((value)=>{
-	        			this.collection.collectionConfig = this.collectionConfig;
-                       this.firstLoad = true;
-                       this.loadingCollection = false;
+                        this.collection = value;
+	        		    this.collection.collectionConfig = this.collectionConfig;
+                        this.firstLoad = true;
+                        this.loadingCollection = false;
 	        		});
                    this.collectionListingPromise;
 	        	};
@@ -216,6 +218,7 @@ module slatwalladmin {
                
            var siteChanged = (selectedSiteOption)=>{
                this.selectedSite = selectedSiteOption;
+               this.openRoot = true;
                this.getCollection();
            }
            
