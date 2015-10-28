@@ -887,31 +887,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getNumberOfUnusedProductOptionCombinations(){
 
 		var optionGroups = [];
-		var usedCombinations = [];
 		var unusedOptions = [];
 		var first = true;
 
-		for(var sku in this.getSkus()){
-			var combination = [];
-			for(var option in sku.getOptions()){
-				if(first){
-					ArrayAppend(optionGroups, option.getOptionGroup());
-					ArrayAppend(combination, option);
-				} else {
-					ArrayAppend(combination, option);
-				}
-			}
-			first = false;
-			ArrayAppend(usedCombinations, combination);
+		var optionGroupIDs = getDAO("OptionDAO").getAllUsedProductOptionGroupIDs(this.getProductID());
+		var numberOfUsedProductOptions = getDAO("OptionDAO").getNumberOfUsedProductOptions(this.getProductID());
+
+		if(ArrayLen(optionGroupIDs) > 0){
+			var usedCombinations = numberOfUsedProductOptions / ArrayLen(optionGroupIDs);
+		} else {
+			var usedCombinations = 1;
 		}
 
 		var possibilities = 1;
 
-		for(var optionGroup in optionGroups){
-			possibilities = possibilities * ArrayLen(optionGroup.getOptions());
+		for(var optionGroupID in optionGroupIDs){
+			possibilities = possibilities * getDAO("OptionDAO").getNumberOfOptionsForOptionGroup(OptionGroupID);
+
 		}
 
-		return possibilities - ArrayLen(usedCombinations);
+		return possibilities - usedCombinations;
 	}
 
 	public array function getUnusedProductOptionGroups() {

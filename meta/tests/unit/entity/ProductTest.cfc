@@ -150,16 +150,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			productName = '',
 			skus = [
 				{
-					skuID = ''
-				},
-				{
-					skuID = ''
-				},
-				{
-					skuID = ''
-				},
-				{
-					skuID = ''
+					skuID = CreateUUID()
 				}
 			]
 		};
