@@ -68,7 +68,7 @@ Notes:
 			WHERE
 				SwOptionGroup.optionGroupID NOT IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
 			AND
-				( SwOptionGroup.globalFLag = true OR SwOptionGroupProductType.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeID#"> )
+				( SwOptionGroup.globalFLag = '1' OR SwOptionGroupProductType.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeID#"> )
 			ORDER BY 
 				SwOptionGroup.optionGroupName
 		</cfquery>
