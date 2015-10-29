@@ -644,7 +644,7 @@ component extends="HibachiService" accessors="true" {
 
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setRenewalPrice( arguments.processObject.getRenewalPrice() );
-		if( !isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
+		if(!isNull(arguments.processObject.getListPrice()) && isNumeric( arguments.processObject.getListPrice() )) {
 			newSku.setListPrice( arguments.processObject.getListPrice() );
 		}
 		newSku.setSkuCode( arguments.product.getProductCode() & "-#arrayLen(arguments.product.getSkus()) + 1#");

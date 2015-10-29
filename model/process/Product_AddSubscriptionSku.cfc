@@ -84,8 +84,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getListPrice() {
-		if(!structKeyExists(variables, "listPrice")) {
+		if(!structKeyExists(variables, "listPrice") && !isNull(getProduct().getListPrice())) {
 			variables.listPrice = getProduct().getListPrice();
+		} else {
+			variables.listPrice = this.getPrice();
 		}
 		return variables.listPrice;
 	}

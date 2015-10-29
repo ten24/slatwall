@@ -1145,6 +1145,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.assignedAttributeSetSmartList;
 	}
 
+	public any function getSubscriptionSkuSmartList(){
+		if(!structkeyExists(variables, "subscriptionSkuSmartList")){
+			//get all subscription skus
+			variables.subscriptionSkuSmartList = getService("skuService").getSkuSmartList();
+			variables.subscriptionSkuSmartList.joinRelatedProperty("SlatwallSku", "subscriptionTerm", "inner");
+
+		}
+
+		return variables.subscriptionSkuSmartList;
+	}
+
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
