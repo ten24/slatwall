@@ -268,9 +268,9 @@ var slatwalladmin;
                     var propertyMetaData = this.$slatwall.getEntityMetaData(lastEntityName)[this.utilityService.listLast(propertyIdentifier, '.')];
                     var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
                     //if is a one-to-many propertyKey then add a groupby
-                    if (isOneToMany) {
-                        this.addGroupBy(alias);
-                    }
+                    //                if(isOneToMany){
+                    //                    this.addGroupBy(alias);
+                    //                }
                     column.propertyIdentifier = this.buildPropertyIdentifier(alias, propertyIdentifier);
                     var join = new Join(propertyIdentifier, column.propertyIdentifier);
                     doJoin = true;
@@ -404,4 +404,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', ($slatwall, utilityService) => new CollectionConfig($slatwall, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=collectionconfigservice.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map

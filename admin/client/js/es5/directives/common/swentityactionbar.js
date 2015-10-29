@@ -55,4 +55,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swEntityActionBar', ['partialsPath', function (partialsPath) { return new SWEntityActionBar(partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swentityactionbar.js.map
+//# sourceMappingURL=../../directives/common/swentityactionbar.js.map

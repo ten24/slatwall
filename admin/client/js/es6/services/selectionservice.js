@@ -48,4 +48,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('selectionService', SelectionService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=selectionservice.js.map
+//# sourceMappingURL=../services/selectionservice.js.map

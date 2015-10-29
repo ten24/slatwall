@@ -286,9 +286,9 @@ var slatwalladmin;
                     var propertyMetaData = _this.$slatwall.getEntityMetaData(lastEntityName)[_this.utilityService.listLast(propertyIdentifier, '.')];
                     var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
                     //if is a one-to-many propertyKey then add a groupby
-                    if (isOneToMany) {
-                        _this.addGroupBy(alias);
-                    }
+                    //                if(isOneToMany){
+                    //                    this.addGroupBy(alias);
+                    //                }
                     column.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
                     var join = new Join(propertyIdentifier, column.propertyIdentifier);
                     doJoin = true;
@@ -430,4 +430,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new CollectionConfig($slatwall, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=collectionconfigservice.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map
