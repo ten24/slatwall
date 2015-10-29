@@ -144,7 +144,7 @@
 								<div class="col-xs-12 col-md-6 s-selected-items">
 									<!-- Selected filters -->
 									<div class="s-bundle-add-items s-workflow-objs">
-										<div class="well well-sm"  ng-show="!swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length">
+										<div class="well well-sm"  ng-show="!swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[swProductBundleGroup.index].filterGroup.length">
 											<ul class="list-unstyled">
 												<li sw-rbkey="'admin.define.no_items_selected'">
 													<!-- #$.slatwall.rbKey('admin.define.no_items_selected')# -->
@@ -154,8 +154,8 @@
 												</li>
 											</ul>
 										</div>
-										<ul class="list-unstyled s-order-item-options" ng-show="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length">
-											<li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup track by $index">
+										<ul class="list-unstyled s-order-item-options" ng-show="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[swProductBundleGroup.index].filterGroup.length">
+											<li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[swProductBundleGroup.index].filterGroup track by $index">
 												<ul class="list-unstyled list-inline">
 													<!-- You can change the s-include to s-exclude for stye diff -->
 													<li class="s-item-type s-tooltip" 
@@ -271,11 +271,11 @@
 											<div class="row">
 												<!--filterGroups gets taken apart here -->
 												<ul class="col-xs-12 list-unstyled"
-													ng-if="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
+													ng-if="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[swProductBundleGroup.index].filterGroup"
 													sw-filter-groups
 													data-collection-config="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig"
-													data-filter-group="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0]"
-													data-filter-group-item="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
+													data-filter-group="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[swProductBundleGroup.index]"
+													data-filter-group-item="swProductBundleGroup.productBundleGroup.data.skuCollectionConfig.filterGroups[swProductBundleGroup.index].filterGroup"
 													data-filter-properties-list="swProductBundleGroup.filterPropertiesList"
 													data-save-collection="swProductBundleGroup.productBundleGroup.$$save(); swProductBundleGroup.getCollection();"
 													>
@@ -297,7 +297,7 @@
 						<!-- //Search for product -->
 						
 						<button type="button" class="btn btn-sm btn-primary" ng-click="swProductBundleGroup.productBundleGroup.$$save();swProductBundleGroup.productBundleGroup.data.$$toggleEdit()"><i class="fa fa-plus" ></i> Save</button>
-						<button type="button" class="btn btn-sm btn-primary" ng-click="swProductBundleGroup.productBundleGroup.$$save();swProductBundleGroup.productBundleGroup.data.$$toggleEdit();addProductBundleGroup();"><i class="fa fa-plus" ></i> Save & Add Bundle Group</button>
+						<button type="button" class="btn btn-sm btn-primary" ng-click="swProductBundleGroup.productBundleGroup.$$save();swProductBundleGroup.productBundleGroup.data.$$toggleEdit();swProductBundleGroup.addProductBundleGroup();"><i class="fa fa-plus" ></i> Save & Add Bundle Group</button>
 					</div>
 				</div>
 			</div>
