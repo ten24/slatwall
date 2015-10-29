@@ -320,7 +320,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// setup the new price as the old price in the event of a passthrough
 		var newPrice = arguments.sku.getPrice();
-
+		
 		switch(arguments.priceGroupRate.getAmountType()) {
 			case "percentageOff" :
 				var newPrice = precisionEvaluate(arguments.sku.getPrice() - (arguments.sku.getPrice() * (arguments.priceGroupRate.getAmount() / 100)));

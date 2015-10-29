@@ -121,7 +121,7 @@ Notes:
 		<cfargument name="skuID" type="string">
 		
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.skus pgrs WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrs.skuID=:skuID", {priceGroupID=arguments.priceGroupID, skuID=arguments.skuID}, true ) >
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.skus pgrs WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrs.skuID=:skuID", {priceGroupID=arguments.priceGroupID, skuID=arguments.skuID}, false, {maxresults=1} )[1] >
 		
 	</cffunction>
 	
@@ -130,7 +130,7 @@ Notes:
 		<cfargument name="productID" type="string">
 		
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.products pgrp WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrp.productID=:productID", {priceGroupID=arguments.priceGroupID,productID=arguments.productID}, true) >
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.products pgrp WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrp.productID=:productID", {priceGroupID=arguments.priceGroupID,productID=arguments.productID}, false, {maxresults=1})[1] >
 		
 	</cffunction>
 	
@@ -139,7 +139,7 @@ Notes:
 		<cfargument name="productTypeID" type="string">
 		
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.productTypes pgrpt WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrpt.productTypeID=:productTypeID", {priceGroupID=arguments.priceGroupID, productTypeID=arguments.productTypeID}, true) >
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.productTypes pgrpt WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrpt.productTypeID=:productTypeID", {priceGroupID=arguments.priceGroupID, productTypeID=arguments.productTypeID}, false, {maxresults=1})[1] >
 		
 	</cffunction>
 	
@@ -147,7 +147,7 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 		
 		<!--- The results should be unique but previous code made me unsure if that is true. --->
-		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgr.globalFlag=1", {priceGroupID=arguments.priceGroupID}, true) >
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgr.globalFlag=1", {priceGroupID=arguments.priceGroupID}, false, {maxresults=1})[1] >
 		
 	</cffunction>
 </cfcomponent>
