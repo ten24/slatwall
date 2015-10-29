@@ -37,4 +37,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swformregistrar.js.map
+//# sourceMappingURL=swformregistrar.js.map

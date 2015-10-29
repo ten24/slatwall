@@ -3994,8 +3994,8 @@ tabel .s-table-header {
   border-color: #cccccc;
   -webkit-border-bottom-right-radius: 2px;
   -webkit-border-bottom-left-radius: 2px;
-  -moz-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-bottom-right: 2px;
+  -moz-border-radius-bottom-left: 2px;
   border-bottom-right-radius: 2px;
   border-bottom-left-radius: 2px;
   overflow: hidden;
@@ -4051,7 +4051,6 @@ tabel .s-table-header {
   margin: 15px;
 }
 .s-search-filter .dropdown-menu {
-  top: 30px;
   left: 0px;
 }
 .s-search-filter .dropdown-menu .s-photo {
@@ -4137,6 +4136,11 @@ tabel .s-table-header {
   z-index: 2000;
   color: #AAA;
   font-size: 15px;
+}
+.s-search-filter.s-gift-card .s-results {
+  position: relative;
+  display: block;
+  width: 100%;
 }
 .s-gift-card-table .admin {
   text-align: right !important;

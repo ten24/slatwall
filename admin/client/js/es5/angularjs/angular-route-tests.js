@@ -29,4 +29,4 @@ $routeProvider
 var current;
 current.locals['test-key'] = 'test-value';
 
-//# sourceMappingURL=../angularjs/angular-route-tests.js.map
+//# sourceMappingURL=angular-route-tests.js.map

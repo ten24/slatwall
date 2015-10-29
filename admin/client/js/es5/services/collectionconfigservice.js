@@ -100,6 +100,13 @@ var slatwalladmin;
                 _this.pageShow = jsonCollection.pageShow;
                 _this.allRecords = jsonCollection.allRecords;
             };
+            this.loadFilterGroups = function (filterGroupsConfig) {
+                if (filterGroupsConfig === void 0) { filterGroupsConfig = [{ filterGroup: [] }]; }
+                _this.filterGroups = filterGroupsConfig;
+            };
+            this.loadColumns = function (columns) {
+                _this.columns = columns;
+            };
             this.getCollectionConfig = function () {
                 return {
                     baseEntityAlias: _this.baseEntityAlias,
@@ -112,7 +119,7 @@ var slatwalladmin;
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
                     defaultColumns: (!_this.columns || !_this.columns.length),
-                    allRecords: _this.allRecords
+                    allRecords: _this.allRecords,
                 };
             };
             this.getEntityName = function () {
@@ -423,4 +430,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new CollectionConfig($slatwall, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/collectionconfigservice.js.map
+//# sourceMappingURL=collectionconfigservice.js.map

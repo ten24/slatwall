@@ -245,15 +245,20 @@ Notes:
 	
 						<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
 							<div class="s-search-filter s-gift-card">
-		                        <div class="input-group">
-									<form>
-										<div class="s-search">
-		                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="giftRecipientControl.searchText" ng-change="giftRecipientControl.updateResults(giftRecipientControl.searchText)">
-											<i class="fa fa-search"></i>
-										</div>
-									</form>
-									
-	                				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
+		                        
+								<form>
+									<div class="s-search">
+	                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="giftRecipientControl.searchText" ng-change="giftRecipientControl.updateResults(giftRecipientControl.searchText)">
+										<i class="fa fa-search"></i>
+									</div>
+								</form>
+	
+		                        <div class="s-results" ng-hide="giftRecipientControl.searchText.length == 0">
+		                            <!-- Only show if there is text -->
+		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText != ''" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
+		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
+		                            </button>
+									<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
 	  									<!-- Item-->
 	  									<li ng-repeat="account in collection.pageRecords">
 	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
@@ -273,13 +278,6 @@ Notes:
 	  									</li>
 	  									<!-- //Item-->
 		                			</ul>
-	
-		                        </div>
-		                        <div>
-		                            <!-- Only show if there is text -->
-		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText != ''" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
-		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
-		                            </button>
 		                        </div>
 								<div class="s-add-info-dropdown" ng-hide="!giftRecipientControl.adding">
 									<div class="s-add-info-dropdown-inner">

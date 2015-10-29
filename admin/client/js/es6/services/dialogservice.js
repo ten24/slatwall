@@ -38,4 +38,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('dialogService', DialogService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/dialogservice.js.map
+//# sourceMappingURL=dialogservice.js.map
