@@ -42,20 +42,13 @@ angular.module('slatwalladmin')
 					
 				};
 				$scope.addProductBundleGroup = function(){
-					$log.debug("LOOKY LOOKY HERE HERE");
 					
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-					$log.debug(productBundleGroup.data);
 					
 					productBundleService.decorateProductBundleGroup(productBundleGroup);
-
-					$log.debug(productBundleGroup.data);
 					
 					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
-				};
-				
-				
-				
+				};		
 			}]
 		};
 	}
