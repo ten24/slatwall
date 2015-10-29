@@ -50,17 +50,12 @@
 		<div class="s-title">
 			Expiration
 		</div>
-		<div class="col-xs-11 col-sm-10 col-md-9 s-content">
-			<div class="s-title">
-				Expiration
-			</div>
-			<div class="s-body">
-				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length > 0" ng-bind="swGiftCardOverview.giftCard.expirationDate"></span>
-				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length == 0">Never</span>
-				<a href="##" class="s-action hide" title="edit">
-					<i class="fa fa-pencil"></i>
-				</a>
-			</div>
+		<div class="s-body">
+			<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length > 0" ng-bind="swGiftCardOverview.giftCard.expirationDate"></span>
+			<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length == 0">Never</span>
+			<a href="##" class="s-action hide" title="edit">
+				<i class="fa fa-pencil"></i>
+			</a>
 		</div>
 	</div>
 </div>
