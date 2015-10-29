@@ -1410,7 +1410,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             )
 			&& (
 				order.getTotal() == 0
-				|| orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() )
+				|| arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() )
+			)
+			&& (
+				arguments.orderFulfillment.hasGiftCardRecipients()
 			)
 		){
 
@@ -1757,7 +1760,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				|| (!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
 					&& arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag()))
 				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())
-				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")) {
+				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")
+			) {
 
 				// Loop over delivery items from processObject and add them with stock to the orderDelivery
 				for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
@@ -1765,7 +1769,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Local pointer to the orderItem
 					var thisOrderItem = arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()[i];
 
-					if(thisOrderItem.getQuantityUndelivered()) {
+					if(thisOrderItem.getQuantityUndelivered() && thisOrderItem.hasAllGiftCardsAssigned()) {
 						// Create a new orderDeliveryItem
 						var orderDeliveryItem = this.newOrderDeliveryItem();
 
@@ -1863,9 +1867,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
 
 
-				//bypass auto fulfillment when recipients haven't been added
-				if(orderDeliveryItem.hasAllGiftCardsAssigned()){
-					//bypass auto fulfillment for non auto generated codes
+				//bypass auto fulfillment for non auto generated codes
+				if(orderDeliveryItem.getOrderItem().hasAllGiftCardsAssigned()){
 					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
 						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
 					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){

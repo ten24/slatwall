@@ -108,16 +108,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	public numeric function getNumberOfUnassignedGiftCards(){
 
-		var giftCards = this.getGiftCards();
+		if(!this.isGiftCardOrderItem()){
+			return 0;
+		}
+
 		var orderItemGiftRecipients = this.getOrderItemGiftRecipients();
 		var count = this.getQuantity();
 
 		for(var recipient in orderItemGiftRecipients){
-			if(!isNull(recipient.getQuantity())){
-				count = count - recipient.getQuantity();
-			} else {
-				count--;
-			}
+			count = count - recipient.getQuantity();
 		}
 
 		return count;
@@ -125,7 +124,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public boolean function hasAllGiftCardsAssigned(){
-		return this.getNumberOfUnassignedGiftCards() != 0;
+		return this.getNumberOfUnassignedGiftCards() == 0;
 	}
 
 	public boolean function isGiftCardOrderItem(){
