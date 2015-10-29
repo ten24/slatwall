@@ -92,6 +92,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
 	property name="collectionEntityObject" type="any" persistent="false";
+	property name="hasDisplayAggregate" type="boolean" persistent="false";
 	
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
@@ -260,7 +261,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			//if is a one-to-many propertyKey then add a groupby
 			if(isOneToMany){
-				addGroupBy(alias);
+				//need to specify all possible non-aggregate selects and orderbys in groupby
+				
+				
 			}
 			
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
@@ -279,6 +282,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//Do Join if Needed
 		if(doJoin) addJoin(join);
 	}
+	
 	
 	//Build correct PropertyIdentifier Alias
 	public string function BuildPropertyIdentifier(required string alias, required string pIdentifier, string joinChar = '_'){
@@ -347,6 +351,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 		variables.collectionConfig = '{}';
 		variables.processObjects = [];
+		variables.hasDisplayAggregate = false;
 	}
 	
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
@@ -469,6 +474,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//GETTER FUNCTIONS
 	//limiting return values to prevent ORM injection
 	private string function getAggregateHQL(required any aggregate, required string propertyIdentifier){
+		setHasDisplayAggregate(true);
 		var aggregateFunction = '';
 		switch(arguments.aggregate.aggregateFunction){
 			
@@ -871,7 +877,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					} 
 				}else{
 					HQL = getHQL();
-					//writedump(HQL);abort;
 					HQLParams = getHQLParams();
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
@@ -1228,6 +1233,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					orderByHQL &= getOrderByHQL();
 				}
 			}//<--end if build select
+			if(
+				getHasDisplayAggregate() 
+				&& (
+					!structKeyExists(collectionConfig,'groupBys') 
+					|| (
+						structKeyExists(collectionConfig,'groupBys') 
+						&& len(collectionConfig.groupBys)
+					)
+				)
+			){
+				var groupBys = [];
+				//add a group by for all selects that are not aggregates
+				for(var column in collectionConfig.columns){
+					if(!structKeyExists(column,'aggregate') && !structKeyExists(column,'persistent')){
+						arrayAppend(groupBys,column.propertyIdentifier);
+					}
+				}
+				
+				if(!structKeyExists(collectionConfig,'orderBy') || !arrayLen(collectionConfig.orderBy)){
+					arrayAppend(groupBys,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime");
+				}else{
+					//add a group by for all order bys
+					for(var orderBy in collectionConfig.orderBy){
+						arrayAppend(groupBy,orderBy.propertyIdentifier);
+					}
+				}
+				collectionConfig.groupBys = arrayToList(groupBys);
+				
+			}
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);

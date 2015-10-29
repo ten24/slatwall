@@ -80,45 +80,27 @@ var slatwalladmin;
                 _this.getCollection();
             };
             this.previousPage = function () {
-                if (!_this.hasPrevious()) {
-                    _this.currentPage = _this.getCurrentPage() - 1;
-                }
-                _this.getCollection();
+                if (_this.getCurrentPage() == 1)
+                    return;
+                _this.setCurrentPage(_this.getCurrentPage() - 1);
             };
             this.nextPage = function () {
-                if (!_this.hasNext()) {
+                if (_this.getCurrentPage() < _this.getTotalPages()) {
                     _this.currentPage = _this.getCurrentPage() + 1;
+                    _this.getCollection();
                 }
-                _this.getCollection();
             };
             this.hasPrevious = function () {
-                return !!(_this.getPageStart() <= 1);
+                return (_this.getPageStart() <= 1);
             };
             this.hasNext = function () {
-                return !!(_this.getPageEnd() === _this.getRecordsCount());
+                return (_this.getPageEnd() === _this.getRecordsCount());
             };
             this.showPreviousJump = function () {
-                if (angular.isDefined(_this.getCurrentPage()) && _this.getCurrentPage() > 3) {
-                    _this.totalPagesArray = [];
-                    for (var i = 0; i < _this.getTotalPages(); i++) {
-                        if (_this.getCurrentPage() < 7 && _this.getCurrentPage() > 3) {
-                            if (i !== 0) {
-                                _this.totalPagesArray.push(i + 1);
-                            }
-                        }
-                        else {
-                            _this.totalPagesArray.push(i + 1);
-                        }
-                    }
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return (angular.isDefined(_this.getCurrentPage()) && _this.getCurrentPage() > 3);
             };
             this.showNextJump = function () {
-                return !!(_this.getCurrentPage() < _this.getTotalPages() - 3
-                    && _this.getTotalPages() > 6);
+                return !!(_this.getCurrentPage() < _this.getTotalPages() - 3 && _this.getTotalPages() > 6);
             };
             this.previousJump = function () {
                 _this.setCurrentPage(_this.currentPage - 3);
@@ -157,8 +139,16 @@ var slatwalladmin;
                 _this.setPageEnd(collection.pageRecordsEnd);
                 _this.setTotalPages(collection.totalPages);
                 _this.totalPagesArray = [];
-                for (var i = 0; i < _this.getTotalPages(); i++) {
-                    _this.totalPagesArray.push(i + 1);
+                if (angular.isUndefined(_this.getCurrentPage()) || _this.getCurrentPage() < 5) {
+                    var start = 1;
+                    var end = (_this.getTotalPages() <= 10) ? _this.getTotalPages() : 10;
+                }
+                else {
+                    var start = (!_this.showNextJump()) ? _this.getTotalPages() - 4 : _this.getCurrentPage() - 3;
+                    var end = (_this.showNextJump()) ? _this.getCurrentPage() + 5 : _this.getTotalPages() + 1;
+                }
+                for (var i = start; i < end; i++) {
+                    _this.totalPagesArray.push(i);
                 }
             };
             this.uuid = uuid;
@@ -175,9 +165,9 @@ var slatwalladmin;
             _super.call(this);
             this.utilityService = utilityService;
             this.paginations = {};
-            this.createPagination = function (collection, getCollection) {
+            this.createPagination = function () {
                 var uuid = _this.utilityService.createID(10);
-                _this.paginations[uuid] = new Pagination(uuid, collection, getCollection);
+                _this.paginations[uuid] = new Pagination(uuid);
                 return _this.paginations[uuid];
             };
             this.getPagination = function (uuid) {

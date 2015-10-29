@@ -1,11 +1,13 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class SWGiftCardOrderInfoController {
-        constructor($slatwall) {
-            this.$slatwall = $slatwall;
+        constructor(collectionConfigService) {
+            this.collectionConfigService = collectionConfigService;
             this.init = () => {
-                var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
+                var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
                 orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
                 orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
                 orderConfig.setAllRecords(true);
@@ -13,15 +15,14 @@ var slatwalladmin;
                     this.order = response.records[0];
                 });
             };
-            this.$slatwall = $slatwall;
             this.init();
         }
     }
-    SWGiftCardOrderInfoController.$inject = ["$slatwall"];
+    SWGiftCardOrderInfoController.$inject = ["collectionConfigService"];
     slatwalladmin.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
     class GiftCardOrderInfo {
-        constructor($slatwall, partialsPath) {
-            this.$slatwall = $slatwall;
+        constructor(collectionConfigService, partialsPath) {
+            this.collectionConfigService = collectionConfigService;
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
@@ -36,11 +37,11 @@ var slatwalladmin;
             this.restrict = "EA";
         }
     }
-    GiftCardOrderInfo.$inject = ["$slatwall", "partialsPath"];
+    GiftCardOrderInfo.$inject = ["collectionConfigService", "partialsPath"];
     slatwalladmin.GiftCardOrderInfo = GiftCardOrderInfo;
     angular.module('slatwalladmin')
-        .directive('swGiftCardOrderInfo', ["$slatwall", "partialsPath",
-            ($slatwall, partialsPath) => new GiftCardOrderInfo($slatwall, partialsPath)
+        .directive('swGiftCardOrderInfo', ["collectionConfigService", "partialsPath",
+            (collectionConfigService, partialsPath) => new GiftCardOrderInfo(collectionConfigService, partialsPath)
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 

@@ -34,7 +34,7 @@ angular.module('slatwalladmin')
 					obj.data.$$editing = false;
 				});
 				
-				this.removeProductBundleGroup = function(index){
+				$scope.removeProductBundleGroup = function(index){
 					$scope.productBundleGroups.splice(index,1);
 					$log.debug("Deleting PBG #" + index);
 					$log.debug($scope.productBundleGroups);
@@ -42,14 +42,13 @@ angular.module('slatwalladmin')
 					
 				};
 				$scope.addProductBundleGroup = function(){
+					
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
+					
 					productBundleService.decorateProductBundleGroup(productBundleGroup);
 					
 					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
-				};
-				
-				
-				
+				};		
 			}]
 		};
 	}

@@ -73,45 +73,27 @@ var slatwalladmin;
                 this.getCollection();
             };
             this.previousPage = () => {
-                if (!this.hasPrevious()) {
-                    this.currentPage = this.getCurrentPage() - 1;
-                }
-                this.getCollection();
+                if (this.getCurrentPage() == 1)
+                    return;
+                this.setCurrentPage(this.getCurrentPage() - 1);
             };
             this.nextPage = () => {
-                if (!this.hasNext()) {
+                if (this.getCurrentPage() < this.getTotalPages()) {
                     this.currentPage = this.getCurrentPage() + 1;
+                    this.getCollection();
                 }
-                this.getCollection();
             };
             this.hasPrevious = () => {
-                return !!(this.getPageStart() <= 1);
+                return (this.getPageStart() <= 1);
             };
             this.hasNext = () => {
-                return !!(this.getPageEnd() === this.getRecordsCount());
+                return (this.getPageEnd() === this.getRecordsCount());
             };
             this.showPreviousJump = () => {
-                if (angular.isDefined(this.getCurrentPage()) && this.getCurrentPage() > 3) {
-                    this.totalPagesArray = [];
-                    for (var i = 0; i < this.getTotalPages(); i++) {
-                        if (this.getCurrentPage() < 7 && this.getCurrentPage() > 3) {
-                            if (i !== 0) {
-                                this.totalPagesArray.push(i + 1);
-                            }
-                        }
-                        else {
-                            this.totalPagesArray.push(i + 1);
-                        }
-                    }
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return (angular.isDefined(this.getCurrentPage()) && this.getCurrentPage() > 3);
             };
             this.showNextJump = () => {
-                return !!(this.getCurrentPage() < this.getTotalPages() - 3
-                    && this.getTotalPages() > 6);
+                return !!(this.getCurrentPage() < this.getTotalPages() - 3 && this.getTotalPages() > 6);
             };
             this.previousJump = () => {
                 this.setCurrentPage(this.currentPage - 3);
@@ -150,8 +132,16 @@ var slatwalladmin;
                 this.setPageEnd(collection.pageRecordsEnd);
                 this.setTotalPages(collection.totalPages);
                 this.totalPagesArray = [];
-                for (var i = 0; i < this.getTotalPages(); i++) {
-                    this.totalPagesArray.push(i + 1);
+                if (angular.isUndefined(this.getCurrentPage()) || this.getCurrentPage() < 5) {
+                    var start = 1;
+                    var end = (this.getTotalPages() <= 10) ? this.getTotalPages() : 10;
+                }
+                else {
+                    var start = (!this.showNextJump()) ? this.getTotalPages() - 4 : this.getCurrentPage() - 3;
+                    var end = (this.showNextJump()) ? this.getCurrentPage() + 5 : this.getTotalPages() + 1;
+                }
+                for (var i = start; i < end; i++) {
+                    this.totalPagesArray.push(i);
                 }
             };
             this.uuid = uuid;
@@ -165,9 +155,9 @@ var slatwalladmin;
             super();
             this.utilityService = utilityService;
             this.paginations = {};
-            this.createPagination = (collection, getCollection) => {
+            this.createPagination = () => {
                 var uuid = this.utilityService.createID(10);
-                this.paginations[uuid] = new Pagination(uuid, collection, getCollection);
+                this.paginations[uuid] = new Pagination(uuid);
                 return this.paginations[uuid];
             };
             this.getPagination = (uuid) => {

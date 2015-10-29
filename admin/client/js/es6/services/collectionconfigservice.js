@@ -88,6 +88,12 @@ var slatwalladmin;
                 this.pageShow = jsonCollection.pageShow;
                 this.allRecords = jsonCollection.allRecords;
             };
+            this.loadFilterGroups = (filterGroupsConfig = [{ filterGroup: [] }]) => {
+                this.filterGroups = filterGroupsConfig;
+            };
+            this.loadColumns = (columns) => {
+                this.columns = columns;
+            };
             this.getCollectionConfig = () => {
                 return {
                     baseEntityAlias: this.baseEntityAlias,
@@ -100,7 +106,7 @@ var slatwalladmin;
                     pageShow: this.pageShow,
                     keywords: this.keywords,
                     defaultColumns: (!this.columns || !this.columns.length),
-                    allRecords: this.allRecords
+                    allRecords: this.allRecords,
                 };
             };
             this.getEntityName = () => {
@@ -262,9 +268,9 @@ var slatwalladmin;
                     var propertyMetaData = this.$slatwall.getEntityMetaData(lastEntityName)[this.utilityService.listLast(propertyIdentifier, '.')];
                     var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
                     //if is a one-to-many propertyKey then add a groupby
-                    if (isOneToMany) {
-                        this.addGroupBy(alias);
-                    }
+                    //                if(isOneToMany){
+                    //                    this.addGroupBy(alias);
+                    //                }
                     column.propertyIdentifier = this.buildPropertyIdentifier(alias, propertyIdentifier);
                     var join = new Join(propertyIdentifier, column.propertyIdentifier);
                     doJoin = true;
