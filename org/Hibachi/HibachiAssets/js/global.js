@@ -42,6 +42,9 @@ jQuery(document).ready(function() {
 });
 
 function initUIElements( scopeSelector ) {
+    
+    jQuery("input[name='redemptionAmount']").hide();
+    jQuery("label[for='redemptionAmount']").hide();
 
 	var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
 	var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
@@ -251,12 +254,27 @@ function initUIElements( scopeSelector ) {
 			updateReport();
 		}
 	});
+
+	//change to a different type of graph
+	jQuery( scopeSelector ).find(jQuery("#hibachi-report-type")).sortable({
+		stop: function( event, ui ){ 
+			addLoadingDiv( 'hibachi-report' ); 
+			updateReport(); 
+		}
+	});
 	
 	//sort by metric or dimension
 	jQuery( scopeSelector ).find(jQuery('#hibachi-order-by')).sortable({
 		stop: function( event, ui ) {
 			addLoadingDiv( 'hibachi-report' );
 			jQuery('select[name="orderbytype"]').val( newOrderByTypeValue );
+			updateReport(); 
+		}
+	});
+
+	jQuery( scopeSelector ).find(jQuery('#hibachi-limit-results')).sortable({
+		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' ); 
 			updateReport(); 
 		}
 	});
@@ -333,26 +351,38 @@ function setupEventHandlers() {
 
 		var modalLink = initModal( jQuery(this) );
 
-		jQuery('#adminModal').load( modalLink, function(){
-
-			initUIElements('#adminModal');
-			
-			//returns 401 in the case of unauthorized access and boots to the appropriate login page
-			//Hibachi.cfc 308-311
-			if(xhr.status == 401){
-				window.location.href = "/?slataction=" + xhr.statusText;
+		jQuery.ajax({
+			url:modalLink,
+			method:'get',
+			success: function(response){
+				jQuery('#adminModal').html(response);
+				jQuery('#adminModal').modal();
+				
+				var elem = angular.element(document.getElementById('ngApp'));
+			    var injector = elem.injector();
+			    var $compile = injector.get('$compile'); 
+			    var $rootScope = injector.get('$rootScope'); 
+			    
+			    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+				initUIElements('#adminModal');
+				
+				jQuery('#adminModal').css({
+					'width': 'auto'
+				});
+				
+				jQuery('#adminModal input').each(function(index,input){
+					//used to digest previous jquery value into the ng-model
+					jQuery(input).trigger('input');
+				});
+			},
+			error:function(response,status){
+				//returns 401 in the case of unauthorized access and boots to the appropriate login page
+				//Hibachi.cfc 308-311
+				if(xhr.status == 401){
+					window.location.href = "/?slataction=" + xhr.statusText;
+				}
 			}
-
-			/*
-			jQuery('#adminModal').css({
-				'width': 'auto',
-				'margin-left': function () {
-		            return -(jQuery('#adminModal').width() / 2);
-		        }
-			});
-			*/
 		});
-
 	});
 
 	jQuery('body').on('click', '.modalload-fullwidth', function(e){
@@ -392,6 +422,16 @@ function setupEventHandlers() {
 		});
 
 	});
+    
+    jQuery("select[name='redemptionAmountType']").change(function(){
+        if( jQuery("select[name='redemptionAmountType']").val() == "sameAsPrice"){
+            jQuery("input[name='redemptionAmount']").hide();
+            jQuery("label[for='redemptionAmount']").hide();
+        } else { 
+            jQuery("input[name='redemptionAmount']").show();   
+            jQuery("label[for='redemptionAmount']").show();
+        }
+    }); 
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
@@ -485,7 +525,15 @@ function setupEventHandlers() {
 	jQuery('body').on('click', '.listing-sort', function(e) {
 		e.preventDefault();
 		var data = {};
-		data[ 'OrderBy' ] = jQuery(this).closest('th').data('propertyidentifier') + '|' + jQuery(this).data('sortdirection');
+		var propertyIdentifiers = jQuery(this).closest('th').data('propertyidentifier').split('.'); 
+		data[ 'OrderBy' ] = "";
+		
+		for(var i=propertyIdentifiers.length-1; i>=0; i--){
+			data[ 'OrderBy' ] += propertyIdentifiers[i] + '|' + jQuery(this).data('sortdirection') + ",";
+		}
+		
+		data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
+		
 		listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 	});
 
@@ -754,9 +802,22 @@ function setupEventHandlers() {
 					if(("preProcessView" in r)) {
 						jQuery('#adminModal').html(r.preProcessView);
 						jQuery('#adminModal').modal();
+						
+						var elem = angular.element(document.getElementById('ngApp'));
+					    var injector = elem.injector();
+					    var $compile = injector.get('$compile'); 
+					    var $rootScope = injector.get('$rootScope'); 
+					    
+					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
 						initUIElements('#adminModal');
+						
 						jQuery('#adminModal').css({
 							'width': 'auto'
+						});
+						
+						jQuery('#adminModal input').each(function(index,input){
+							//used to digest previous jquery value into the ng-model
+							jQuery(input).trigger('input');
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){
@@ -840,6 +901,7 @@ function setupEventHandlers() {
 		jQuery('input[name="metrics"]').val( vArr.join(',').trim() );
 		updateReport();
 	});
+
 	jQuery('body').on('click', '.hibachi-report-data-table-load', function(e){
 		e.preventDefault();
 		addLoadingDiv( 'hibachi-report' );
@@ -852,6 +914,29 @@ function setupEventHandlers() {
 		updateReport();
 	});
 
+	jQuery('body').on('change', '#hibachi-report-type', function(e){
+		e.preventDefault(); 
+		addLoadingDiv( 'hibachi-report' )
+		updateReport();
+	});
+	
+	jQuery('body').on("change", "#hibachi-show-report", function(e){ 
+		addLoadingDiv( 'hibachi-report' );
+		updateReport(); 
+	});
+	
+	jQuery('body').on('change', "#hibachi-limit-results", function(e){
+		e.preventDefault(); 
+		addLoadingDiv( 'hibachi-report' ); 
+		updateReport(); 
+	});
+	
+	jQuery('body').on("click",".hibachi-report-pagination", function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' ); 
+		var pagination = $(this).attr("data-pagination"); 
+		updateReport( pagination); 
+	}); 
 
 	//Accordion Binding
 	jQuery('body').on('click','.j-closeall', function(e){
@@ -1611,8 +1696,19 @@ function updateReport( page ) {
 		reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
 		dimensions: jQuery('input[name="dimensions"]').val(),
 		metrics: jQuery('input[name="metrics"]').val(),
+		reportType: jQuery('select[name="reporttype"]').val(), 
 		orderByType: jQuery('select[name="orderbytype"]').val()
 	};
+
+	if(jQuery('input[name="showReport"]').is(':checked')){
+		data.showReport = true; 
+	} else { 
+		data.showReport = false; 
+	}
+	
+	if(jQuery('select[name="limitresults"]').val() != undefined){ 
+		data.limitResults = jQuery('select[name="limitresults"]').val();
+	}
 
 	if(page != undefined) {
 		data.currentPage = page;
@@ -1629,14 +1725,26 @@ function updateReport( page ) {
 			removeLoadingDiv( 'hibachi-report' );
 		},
 		success: function( r ) {
-			if(r.report.chartData != undefined && r.report.configureBar != undefined && r.report.dataTable != undefined) {
-				jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
-				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
-				jQuery('#hibachi-report-table').html(r.report.dataTable);
-			} else if (page != undefined && r.report.dataTable != undefined) {
-				jQuery('#hibachi-report-table').html(r.report.dataTable);
+			if(r.report.hideChart !== undefined){ 
+				jQuery("#hibachi-report-chart").remove();
+				jQuery("#hibachi-report-chart-wrapper").hide();
+			} else { 
+				if(r.report.chartData.series !== undefined){
+					var html = "<div id='hibachi-report-chart'></div>";
+					jQuery("#hibachi-report-chart-wrapper").html(html);
+					var chart = new Highcharts.Chart(r.report.chartData);	
+				}
+				jQuery("#hibachi-report-chart-wrapper").show();
 			}
-
+			
+			if(r.report.hideReport !== undefined){
+				jQuery("#reportDataTable").remove();
+			} else { 
+				jQuery('#hibachi-report-table').html(r.report.dataTable);
+				jQuery("#hibachi-report-table").show();
+			}
+				
+			jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
 			initUIElements('#hibachi-report');
 			removeLoadingDiv( 'hibachi-report' );
 		}

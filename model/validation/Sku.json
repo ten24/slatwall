@@ -2,7 +2,10 @@
 	"conditions":{
 	    "notSkuBundle":{
 	        "bundleFlag":{"eq":0}
-	    }
+	    },  
+    	"createGiftCardSku":{
+    		"product": {"method":"isGiftCardSku"}
+    	}
 	},
 	"properties":{
 		"defaultFlag":				[{"contexts":"delete","eq":false}],
@@ -16,6 +19,7 @@
 		"renewalPrice":				[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"skuCode":					[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
 		"transactionExistsFlag":	[{"contexts":"delete","eq":false}],
-		"physicalCounts":			[{"contexts":"delete","maxCollection":0}]
+		"physicalCounts":			[{"contexts":"delete","maxCollection":0}],
+		"redemptionAmount":	[{"conditions":"createGiftCardSku", "dataType":"numeric", "minValue":0}]
 	}
 }

@@ -7,30 +7,29 @@
         <span ng-if="!propertyDisplay.object.metaData.isProcessObject && !propertyDisplay.title" 
             sw-rbkey="'entity.'+object.metaData.className+'.'+property" >
         </span> -->
-        <span ng-if="!propertyDisplay.title" ng-bind="object.metaData.$$getPropertyTitle(property)"></span>:
+        <span ng-bind="propertyDisplay.title || object.metaData.$$getPropertyTitle(property)"></span>:
         <span ng-if="propertyDisplay.object.validations.properties[propertyDisplay.property][0].required && propertyDisplay.fieldType === 'text'">*</span>
-        <span ng-if="propertyDisplay.title" ng-bind="propertyDisplay.title"><span id="propertyDisplay.title" style="display:none;"></span>:
-        <span 	class="j-tool-tip-item"
-            data-toggle="tooltip"
-            data-placement="top"
-            tooltip="{{propertyDisplay.hint}}"
-            ng-show="propertyDisplay.hint"
-            >
+        <span class="j-tool-tip-item"
+              ng-if="propertyDisplay.hint"
+              popover="{{propertyDisplay.hint}}"
+              popover-trigger="mouseenter"
+              popover-placement="top"
+              popover-popup-delay="50"
+              popover-append-to-body="true"
+                >
             <i class="fa fa-question-circle"></i>
         </span>
     </label>
     <div class="col-md-9 s-form-input">
         <!-- Model-->
-        <span 	sw-form-field
-            data-property-display="propertyDisplay"
-            >
+        <span sw-form-field ng-if="editing"
+            data-property-display="propertyDisplay">
         </span>
         <!-- Display -->
         <p  class="form-control-static"
             ng-if="propertyDisplay.fieldType !== 'hidden' && propertyDisplay.fieldType !== 'select'"
-            ng-bind="propertyDisplay.object.data[propertyDisplay.property]"
-            ng-show="!propertyDisplay.editing"
-            >
+            ng-bind="(applyFilter(propertyDisplay.object.data[propertyDisplay.property], propertyDisplay.object.metaData[propertyDisplay.property].hb_formattype))"
+            ng-show="!propertyDisplay.editing">
             <!-- property value -->
         </p>
         <p  class="form-control-static"

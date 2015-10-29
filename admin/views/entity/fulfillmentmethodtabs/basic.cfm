@@ -8,6 +8,7 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="activeFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="autoFulfillFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodType" edit="#rc.fulfillmentMethod.isNew()#">
 		</hb:HibachiPropertyList>

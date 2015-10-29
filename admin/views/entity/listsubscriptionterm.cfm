@@ -51,7 +51,9 @@ Notes:
 
 
 <cfparam name="rc.subscriptionTermSmartList" type="any" />
-
+<cfif getHibachiScope().getService('subscriptionService').hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() >
+	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info') />
+</cfif>
 <cfoutput>
 	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionTermSmartList#" showCreate="false">

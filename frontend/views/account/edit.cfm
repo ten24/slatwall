@@ -68,23 +68,6 @@ Notes:
 				<input type="text" name="phoneNumber" value="#phoneValue#" />
 				<swa:SlatwallErrorDisplay object="#rc.account#" errorName="primaryPhoneNumber" for="phoneNumber" />
 			</dd>
-			<!---<cfset attributeValueIndex = 0 />
-			<cfloop array="#rc.attributeSets#" index="local.attributeSet">
-				<cfloop array="#local.attributeSet.getAttributes()#" index="local.attribute">
-					<cfset attributeValueIndex ++ />
-					<cfif local.attribute.getActiveFlag()>
-						<cfset local.attributeValue = rc.account.getAttributeValue(local.attribute.getAttributeID(), true) />
-						<dt>
-							<label for="attribute.#local.attribute.getAttributeID()#">#local.attribute.getAttributeName()#<cfif local.attribute.getRequiredFlag() EQ 1> *</cfif></label>
-						</dt>
-						<dd>
-							<input type="hidden" name="attributeValues[#attributeValueIndex#].attributeValueID" value="#local.attributeValue.getAttributeValueID()#" />
-							<input type="hidden" name="attributeValues[#attributeValueIndex#].attribute.attributeID" value="#local.attribute.getAttributeID()#" />
-							<swa:SlatwallFormField fieldName="attributeValues[#attributeValueIndex#].attributeValue" fieldType="#local.attribute.getAttributeInputType()#" value="#local.attributeValue.getAttributeValue()#" valueOptions="#local.attribute.getAttributeOptionsOptions()#" />
-						</dd>
-					</cfif>
-				</cfloop>
-			</cfloop> --->
 		</dl>
 		<input type="hidden" name="slatAction" value="frontend:account.save" />
 		<button type="submit">Save</button>

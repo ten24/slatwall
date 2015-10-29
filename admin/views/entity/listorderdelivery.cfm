@@ -55,7 +55,8 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityActionBar type="listing" object="#rc.orderDeliverySmartList#" showCreate="false" />
 	<hb:HibachiListingDisplay smartList="#rc.orderDeliverySmartList#"
-			recorddetailaction="admin:entity.detailorderdelivery">
+				recorddetailaction="admin:entity.detailorderdelivery"
+				recordEditAction="admin:entity.editorderdelivery">
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />	

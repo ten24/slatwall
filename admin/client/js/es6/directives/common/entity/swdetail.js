@@ -21,9 +21,11 @@ angular.module('slatwalladmin')
                 };
                 var setupMetaData = function () {
                     scope[scope.entityName.toLowerCase()] = scope.entity;
-                    scope.detailTabs = scope.entity.metaData.$$getDetailTabs();
-                    $log.debug('detailtabs');
-                    $log.debug(scope.detailTabs);
+                    scope.entity.metaData.$$getDetailTabs().then(function (value) {
+                        scope.detailTabs = value.data;
+                        $log.debug('detailtabs');
+                        $log.debug(scope.detailTabs);
+                    });
                 };
                 var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
                 scope.tabPartialPath = partialsPath + 'entity/';

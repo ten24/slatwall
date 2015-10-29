@@ -1,0 +1,10 @@
+<i  
+	class="fa fa-caret-{{swExpandableRecord.childrenOpen ? 'down' : 'right'}} {{swExpandableRecord.edit ? '' : 'disabled'}} s-listing-arrow"
+	style="margin-left:{{swExpandableRecord.recordDepth*15||0}}px"
+>
+
+</i> 
+<a ng-if="swExpandableRecord.link" ng-href="{{swExpandableRecord.link}}" class="s-contents-page-title">
+	<span ng-bind="swExpandableRecord.recordValue"></span>
+</a>
+<span ng-if="!swExpandableRecord.link" ng-bind="swExpandableRecord.recordValue"></span>

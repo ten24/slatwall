@@ -99,6 +99,6 @@ Notes:
 			<hb:HibachiMessageDisplay />
 			<hb:HibachiReportViewer report="#rc.report#" />
 		</div>
+		
 	</div>
-
 </cfoutput>

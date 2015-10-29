@@ -49,16 +49,16 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.paymentMethod" type="any" />
 <cfparam name="rc.paymentMethodType" type="string" default="#rc.paymentMethod.getPaymentMethodType()#" />
 <cfparam name="rc.edit" type="boolean" default="false" />
-
+<cfif getHibachiScope().getService('subscriptionService').hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() >
+	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info') />
+</cfif>
 <cfoutput>
 	<cfif rc.paymentMethod.isNew()>
 		<cfset rc.paymentMethod.setPaymentMethodType(rc.paymentMethodType) />
 	</cfif>
-	
 	<hb:HibachiEntityDetailForm object="#rc.paymentMethod#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.paymentMethod#" edit="#rc.edit#" />
 	
