@@ -155,4 +155,4 @@ var slatwalladmin;
         }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/optiongroup/swaddoptiongroup.js.map
+//# sourceMappingURL=swaddoptiongroup.js.map

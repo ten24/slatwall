@@ -16,4 +16,4 @@ angular.module('slatwalladmin')
         };
     }]);
 
-//# sourceMappingURL=../../directives/common/swhref.js.map
+//# sourceMappingURL=swhref.js.map

@@ -131,7 +131,6 @@ var My;
 (function (My) {
     var Namespace;
     (function (Namespace) {
-        Namespace.x; // need to export something for module to kick in
     })(Namespace = My.Namespace || (My.Namespace = {}));
 })(My || (My = {}));
 // IModule Registering Test
@@ -614,4 +613,4 @@ function NgModelControllerTyping() {
     };
 }
 
-//# sourceMappingURL=../angularjs/angular-tests.js.map
+//# sourceMappingURL=angular-tests.js.map
