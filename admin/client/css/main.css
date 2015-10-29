@@ -460,7 +460,7 @@ label {
   transition: all 0.5s ease-in-out;
 }
 .modal-body {
-  max-height: 400px;
+  min-height: 60vh;
   overflow-y: auto;
   overflow-x: auto;
 }
