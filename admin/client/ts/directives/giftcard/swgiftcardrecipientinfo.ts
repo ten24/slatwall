@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 module slatwalladmin { 
 	'use strict'; 
 	
@@ -13,7 +15,7 @@ module slatwalladmin {
 	
 	export class GiftCardRecipientInfo implements ng.IDirective { 
 		
-		public static $inject = ["$slatwall", "partialsPath"];
+		public static $inject = ["partialsPath"];
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {}; 
@@ -23,7 +25,7 @@ module slatwalladmin {
 		public controller = swGiftCardRecipientInfoController; 
 		public controllerAs = "swGiftCardRecipientInfo";
 			
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){ 
+		constructor(private partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/recipientinfo.html";
 			this.restrict = "EA";
 		}
@@ -32,8 +34,8 @@ module slatwalladmin {
 	
 	angular.module('slatwalladmin')
 	.directive('swGiftCardRecipientInfo',
-		["$slatwall", "partialsPath", 
-			($slatwall, partialsPath) => 
-				new GiftCardRecipientInfo($slatwall, partialsPath)
+		["partialsPath", 
+			(partialsPath) => 
+				new GiftCardRecipientInfo(partialsPath)
 			]);
 }

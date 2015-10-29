@@ -1323,7 +1323,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
-						if(arguments.order.getPaymentAmountDue() > 0){
+						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
 							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 						}
 
