@@ -124,6 +124,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
+	public boolean function hasAllGiftCardsAssigned(){
+		return this.getNumberOfUnassignedGiftCards() != 0;
+	}
+
 	public boolean function isGiftCardOrderItem(){
 		return this.getSku().isGiftCardSku();
 	}

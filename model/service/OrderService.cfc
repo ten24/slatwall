@@ -1862,12 +1862,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
 
-				//bypass auto fulfillment for non auto generated codes
-				if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
-					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
-				} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
-					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
+
+				//bypass auto fulfillment when recipients haven't been added
+				if(orderDeliveryItem.hasAllGiftCardsAssigned()){
+					//bypass auto fulfillment for non auto generated codes
+					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
+						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
+					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
+						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
+					}
 				}
+
 
 				if(!isNull(order) && order.hasErrors()){
                  	arguments.orderDelivery.addErrors(order.getErrors());
