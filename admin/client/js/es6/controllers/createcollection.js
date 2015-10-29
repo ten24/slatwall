@@ -174,4 +174,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=createcollection.js.map
+//# sourceMappingURL=../controllers/createcollection.js.map

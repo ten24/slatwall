@@ -61,4 +61,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swgiftcardbalance.js.map
+//# sourceMappingURL=../../directives/giftcard/swgiftcardbalance.js.map
