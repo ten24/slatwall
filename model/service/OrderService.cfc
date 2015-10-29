@@ -305,7 +305,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
 					// If the sku, price, attributes & stock all match then just increase the quantity
 
-					if(arguments.processObject.matchesOrderItem( orderItem ) ){
+					if(arguments.processObject.matchesOrderItem( orderItem )){
 						foundItem = true;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
 						orderItem.validate(context='save');
@@ -426,8 +426,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         break;
                     }
                 }
-            } else {
-                arguments.order.addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
             }
         }
 
@@ -1695,10 +1693,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-			
+
 			//update the calculated properties
 			arguments.order.updateCalculatedProperties(true);
-			
+
 		}
 		return arguments.order;
 	}
