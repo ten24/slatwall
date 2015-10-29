@@ -27,7 +27,8 @@
 	<input type="email" name="_rowRecipientEmail" class="form-control" ng-model="giftRecipientRowControl.recipient.email" required>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
-	<input type="text" name="_rowRecipientGiftMessage" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false">
+	<textarea rows="4" cols="20" type="text" name="_rowRecipientGiftMessage" maxlength="250" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false"></textarea>
+	<div class="s-message-count"><strong>{{giftRecipientRowControl.getMessageCharactersLeft()}}</strong>/250</div>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
 	<select class="form-control" 
