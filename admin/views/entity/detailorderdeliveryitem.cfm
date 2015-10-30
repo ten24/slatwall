@@ -50,19 +50,18 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.emailSmartList" type="any" />
+<cfparam name="rc.orderDeliveryItem" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.orderDeliveryItem#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDeliveryItem#" edit="#rc.edit#" backAction="admin:entity.detailOrderDelivery" backQueryString="orderDeliveryID=#rc.orderDeliveryItem.getOrderDelivery().getOrderDeliveryID()#"></hb:HibachiEntityActionBar>
 
-<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" createModal="true" />
+		<hb:HibachiEntityDetailGroup object="#rc.orderDeliveryItem#">
+			<hb:HibachiEntityDetailItem property="quantity">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliveryitemtabs/giftcards">
+		</hb:HibachiEntityDetailGroup >
 
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailSmartList#"
-						   recordDetailAction="admin:entity.detailemail"
-						   recordEditAction="admin:entity.editemail"
-						   recordEditQueryString="redirectAction=admin:entity.listemail">
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailSubject" search="true" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailTo" search="true" />
-</hb:HibachiListingDisplay>
 
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
-

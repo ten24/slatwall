@@ -162,6 +162,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
 	property name="giftCardExpirationTermOptions" persistent="false";	
+	property name="formattedRedemptionAmount" persistant="false"; 
 	// Deprecated Properties
 	
 	
@@ -243,6 +244,25 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 		} 
 		return 0; 
+	}
+
+	public string function getFormattedRedemptionAmount(){
+
+		if(this.isGiftCardSku() && structKeyExists(variables, "redemptionAmountType")){
+			switch(variables.redemptionAmountType){
+				case "percentage":
+					return getService("HibachiUtilityService").formatValue_percentage(this.getRedemptionAmount());
+					break;
+				default:
+					formatDetails = {};
+					formatDetails.currencyCode = this.getCurrencyCode(); 
+					return getService("HibachiUtilityService").formatValue_Currency(this.getRedemptionAmount(), formatDetails);
+					break;
+			}
+		} else {
+			return "";
+		}
+		
 	}
 	
 	// START: Image Methods

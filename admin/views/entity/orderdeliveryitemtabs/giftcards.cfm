@@ -46,23 +46,19 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.emailSmartList" type="any" />
+<cfparam name="rc.orderDeliveryItem" type="any" />
 
 <cfoutput>
-
-<hb:HibachiEntityActionBar type="listing" object="#rc.emailSmartList#" createModal="true" />
-
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.emailSmartList#"
-						   recordDetailAction="admin:entity.detailemail"
-						   recordEditAction="admin:entity.editemail"
-						   recordEditQueryString="redirectAction=admin:entity.listemail">
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailSubject" search="true" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailTo" search="true" />
-</hb:HibachiListingDisplay>
-
+    <hb:HibachiListingDisplay smartList="#rc.orderDeliveryItem.getOrderDelivery().getOrderDeliveryGiftCardSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 </cfoutput>
-
