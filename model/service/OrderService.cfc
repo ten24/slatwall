@@ -756,6 +756,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
+		//Setup Site Origin if using slatwall cms
+		if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
+			arguments.order.setOrderCreatedSite(getHibachiScope().getSite());
+		}
 		
 		// Setup Account
 		if(arguments.processObject.getNewAccountFlag()) {
@@ -1093,6 +1097,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
 				if(!arguments.order.hasErrors()) {
 					
+					//Setup Site Origin if using slatwall cms
+					if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
+						arguments.order.setOrderPlacedSite(getHibachiScope().getSite());
+					}
+
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
 					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
