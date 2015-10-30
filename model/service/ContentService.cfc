@@ -78,7 +78,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getCMSTemplateOptions(required any content){
 		var templateDirectory = arguments.content.getSite().getTemplatesPath();
 		if(directoryExists(templateDirectory)) {
-			var directoryList = directoryList(templateDirectory,false,"query");
+			var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
 			var templates = [];
 			for(var directory in directoryList){
 				var template ={};
