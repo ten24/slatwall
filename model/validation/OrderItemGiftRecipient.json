@@ -1,6 +1,6 @@
 {
 	"properties":{
-		"giftCard":					[{"contexts":"edit,delete", "method":"canEditOrDelete"}], 
+		"giftCards":					[{"contexts":"edit,delete", "method":"canEditOrDelete"}], 
 	    "firstName":	            [{"contexts":"save","required":true}],
         "lastName":	                [{"contexts":"save","required":true}],
         "emailAddress":             [{"contexts":"save","required":true}],
