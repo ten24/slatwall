@@ -102,4 +102,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldsearchselect.js.map
+//# sourceMappingURL=swformfieldsearchselect.js.map

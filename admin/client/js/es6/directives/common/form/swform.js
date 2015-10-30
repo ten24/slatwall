@@ -20,4 +20,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swform.js.map
+//# sourceMappingURL=swform.js.map

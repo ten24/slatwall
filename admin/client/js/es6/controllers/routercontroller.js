@@ -22,4 +22,4 @@ angular.module('slatwalladmin').controller('routerController', [
         }
     }]);
 
-//# sourceMappingURL=../controllers/routercontroller.js.map
+//# sourceMappingURL=routercontroller.js.map

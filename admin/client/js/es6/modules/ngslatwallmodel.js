@@ -48,7 +48,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1446149512559',
+                    auditDateTime: '1446219616213',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -99,7 +99,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: '1447ec00fe54dbd9bff099eeda7aa81e',
+                    verificationCode: '2424e9d1ce17e99e76b8d346e9b7c8a1',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1690,7 +1690,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "b343e50ee074152790e69edd4a33bd11",
+                    accountPasswordResetID: "daf04891ffc06dcc3e35ae4d37bbc79d",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3921,4 +3921,4 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
             }]);
     }]);
 
-//# sourceMappingURL=../modules/ngslatwallmodel.js.map
+//# sourceMappingURL=ngslatwallmodel.js.map
