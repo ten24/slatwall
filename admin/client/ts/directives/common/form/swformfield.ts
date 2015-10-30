@@ -22,7 +22,7 @@ module slatwalladmin {
 					propertyDisplay:"="
 				},
 				templateUrl:this.partialsPath+'formfields/formfield.html',
-				link: function(scope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController){
+				link: (scope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) =>{
 					if(angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === ''){
 						scope.propertyDisplay.isDirty = true;
 					} 

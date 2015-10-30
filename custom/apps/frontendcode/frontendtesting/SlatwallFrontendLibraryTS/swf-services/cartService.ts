@@ -111,4 +111,5 @@ module slatwallFrontend {
             return this.dataFactory;
         }
     }
+    angular.module('slatwallFrontend').service('CartFactory',['$http',($http) => new CartFactory($http)]);
 }

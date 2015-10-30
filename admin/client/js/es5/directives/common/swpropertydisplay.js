@@ -13,6 +13,7 @@ var slatwalladmin;
             return this.GetInstance();
         }
         swPropertyDisplay.prototype.GetInstance = function () {
+            var _this = this;
             return {
                 require: '^form',
                 restrict: 'AE',
@@ -32,11 +33,11 @@ var slatwalladmin;
                     noValidate: "="
                 },
                 templateUrl: this.partialsPath + "propertydisplay.html",
-                link: function (scope, element, attrs, formController) {
+                link: function (scope, elem, attrs, formController) {
                     //if the item is new, then all fields at the object level are dirty
-                    this.$log.debug('editingproper');
-                    this.$log.debug(scope.property);
-                    this.$log.debug(scope.title);
+                    _this.$log.debug('editingproper');
+                    _this.$log.debug(scope.property);
+                    _this.$log.debug(scope.title);
                     if (!angular.isDefined(scope.object)) {
                         scope.object = formController.$$swFormInfo.object;
                     }
@@ -82,9 +83,9 @@ var slatwalladmin;
                     scope.$id = 'propertyDisplay:' + scope.property;
                     /* register form that the propertyDisplay belongs to*/
                     scope.propertyDisplay.form = formController;
-                    this.$log.debug(scope.propertyDisplay);
-                    this.$log.debug('propertyDisplay');
-                    this.$log.debug(scope.propertyDisplay);
+                    _this.$log.debug(scope.propertyDisplay);
+                    _this.$log.debug('propertyDisplay');
+                    _this.$log.debug(scope.propertyDisplay);
                 }
             };
         };

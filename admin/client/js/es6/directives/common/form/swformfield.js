@@ -26,7 +26,7 @@ var slatwalladmin;
                     propertyDisplay: "="
                 },
                 templateUrl: this.partialsPath + 'formfields/formfield.html',
-                link: function (scope, element, attrs, formController) {
+                link: (scope, element, attrs, formController) => {
                     if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
                         scope.propertyDisplay.isDirty = true;
                     }

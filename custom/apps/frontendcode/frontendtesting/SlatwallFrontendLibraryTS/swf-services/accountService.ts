@@ -123,7 +123,6 @@ module slatwallFrontend {
         }
         private http: ng.IHttpService;
         static $inject = ['$http'];
-        
         constructor($http: ng.IHttpService) {
             this.http = $http;
         }
@@ -132,4 +131,6 @@ module slatwallFrontend {
             return this.dataFactory;
         }
     }
+    angular.module('slatwallFrontend').service('AccountFactory',['$http',($http) => new AccountFactory($http)]);
 }
+

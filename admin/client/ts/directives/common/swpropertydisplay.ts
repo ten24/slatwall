@@ -12,7 +12,7 @@ module slatwalladmin {
             return this.GetInstance();
         }
 
-        GetInstance(): any {
+        public GetInstance(): any {
             return {
 			require:'^form',
 			restrict: 'AE',
@@ -33,7 +33,8 @@ module slatwalladmin {
 					
 			},
 			templateUrl: this.partialsPath+"propertydisplay.html",
-			link: function(scope, element, attrs, formController){
+			link : (scope, elem: JQuery, attrs: ng.IAttributes, formController) =>{
+				
 				//if the item is new, then all fields at the object level are dirty
 				this.$log.debug('editingproper');
 				this.$log.debug(scope.property);

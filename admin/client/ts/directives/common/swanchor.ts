@@ -1,5 +1,5 @@
-/// <reference path='../../../../../../client/typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../../../client/typings/tsd.d.ts' />
+/// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../../client/typings/tsd.d.ts' />
 module slatwalladmin {
 
     export class swAnchor implements ng.IDirective {
@@ -10,18 +10,10 @@ module slatwalladmin {
         }
 
         Get(): any{
-            return {
-				restrict: 'A',
-				transclude:false,
-				scope:false,
-    			controllerAs: "$ctrl",
-				controller: ($scope, $attrs) =>{ 
-                    
-					$scope.$emit('anchor', {anchorType: $attrs.swAnchor, scope: $scope});
-					
-                },
-				replace:false,
-				link: function(){}
+			return {
+			link: (scope) =>{
+				scope.$emit('anchor', {anchorType: "form", scope: scope});
+				}
 			}
         }
     }

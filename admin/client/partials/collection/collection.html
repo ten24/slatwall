@@ -1,4 +1,36 @@
-<div  >
+<!-- login -->
+
+<sw-form
+    is-process-form="true"
+    form-class="css-form"
+    error-class="error"
+    process-object="Account_login" 
+    action="$login"
+    on-success="Account_logout">
+         
+    <swf-form-field 
+        name="emailAddress"
+        type="email" 
+        sw-model="Account_login.emailAddress"
+        label-text="Email Address:"
+        class="formControl"></swf-form-field>
+   
+    <swf-form-field
+        name="password"
+        type="password" 
+        sw-model="Account_login.password"
+        label-text="Password:"
+        class="formControl"></swf-form-field>
+    
+    <swf-form-field
+        name="Login" 
+        type="submit" 
+        class="formControl">Login</swf-form-field>
+        
+</sw-form>
+
+
+<div>
 	<div class="col-xs-12 s-filter-content s-filter-content-table-view">
 
 		<!-- Filters and Display Options -->

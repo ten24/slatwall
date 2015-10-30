@@ -5,12 +5,12 @@ module slatwallFrontend {
             dataFactory: {},
             Get: () => {};
     }
-    export class CartFactory implements IPostFactory {
+    export class ProcessObject implements IPostFactory {
         /**
          * DataFactory contains all endpoints available to the Account Object.
          */
-        dataFactory ={
-            $get(processObject, entityName) {
+        dataFactory = {
+            $get: (processObject, entityName) => {
                 var urlBase = "/index.cfm/api/scope/getProcessObjectDefinition/?ajaxRequest=1&processObject="+processObject+"&entityName="+entityName+"";
                 return this.http.get(urlBase);
             }
@@ -26,9 +26,10 @@ module slatwallFrontend {
         /**
          * Returns an instance of the dataFactory
          */
-        Get(): {} {
+        Get = (): {} =>{
             return this.dataFactory;
         }
     }
+    angular.module('slatwalladmin').service('ProcessObject',['$http',($http) => new ProcessObject($http)]);
 }
 
