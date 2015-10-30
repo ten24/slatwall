@@ -34,5 +34,14 @@ module slatwalladmin {
             }
             return false;
         }
+        
+        public reset = () =>{
+            this.firstName = null;
+            this.lastName = null;
+            this.email = null; 
+            this.account = null;
+            this.editing = false; 
+            this.quantity = 1; 
+        }
     }
 }

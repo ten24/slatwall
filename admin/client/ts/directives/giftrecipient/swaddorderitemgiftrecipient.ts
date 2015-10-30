@@ -68,24 +68,21 @@ module slatwalladmin {
 		}
 
 		addGiftRecipient = ():void =>{
-			console.log("is valid" + "   " + this.currentGiftRecipient.valid());
-			console.log(this.showInvalidAddFormMessage);
 			if(this.currentGiftRecipient.valid()){
 				this.adding = false; 
 				var giftRecipient = new slatwalladmin.GiftRecipient();
 				angular.extend(giftRecipient,this.currentGiftRecipient);
 				this.orderItemGiftRecipients.push(giftRecipient);
-				this.currentGiftRecipient = new slatwalladmin.GiftRecipient(); 
+				this.currentGiftRecipient.reset();
 				this.searchText = ""; 
 			} else { 
 				this.showInvalidAddFormMessage = true;
-				console.log(this.showInvalidAddFormMessage);
 			}
 		}
 		
 		cancelAddRecipient = ():void =>{
 			this.adding = false; 
-			this.currentGiftRecipient = new slatwalladmin.GiftRecipient(); 
+			this.currentGiftRecipient.reset();
 			this.searchText = ""; 
 		}
 
