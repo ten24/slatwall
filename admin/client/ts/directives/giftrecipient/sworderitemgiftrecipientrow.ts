@@ -15,17 +15,20 @@ angular.module('slatwalladmin')
 				recipient:"=",
 				recipients:"=",
 				quantity:"=",
-				index:"="
+				showInvalidRecipientMessage:"=",
+				recipientRowForm:"=?"
 			}, 
 			bindToController: {
 				recipient:"=",
 				recipients:"=",
-				quantity:"="
+				quantity:"=",
+				showInvalidRecipientMessage:"=",
+				recipientRowForm:"=?"
 			},
 			controller: function(){ 
-				this.edit = (recipient:any) =>{
+				this.edit = (recipient:slatwalladmin.GiftRecipient) =>{
 					
-					angular.forEach(this.recipients,(recipient)=>{
+					angular.forEach(this.recipients,(recipient:slatwalladmin.GiftRecipient)=>{
 						recipient.editing=false; 
 					});
 					if(!recipient.editing){
@@ -33,12 +36,14 @@ angular.module('slatwalladmin')
 					}
 				}
 
-				this.delete = (recipient:any) =>{
+				this.delete = (recipient:slatwalladmin.GiftRecipient) =>{
 					this.recipients.splice(this.recipients.indexOf(recipient), 1);
 				}	
 				
-				this.saveGiftRecipient = (recipient:any) =>{
-						recipient.editing = false; 
+				this.saveGiftRecipient = (recipient:slatwalladmin.GiftRecipient) =>{
+					console.log(this.recipientRowForm)
+					this.showInvalidRecipientMessage = false; 
+					recipient.editing = false; 		
 				}
 				
 				
@@ -53,7 +58,7 @@ angular.module('slatwalladmin')
 				this.getUnassignedCount = ():number =>{
 					var unassignedCount = this.getQuantity(); 
 				
-					angular.forEach(this.recipients,(recipient)=>{
+					angular.forEach(this.recipients,(recipient:slatwalladmin.GiftRecipient)=>{
 						unassignedCount -= recipient.quantity;
 					});
 					

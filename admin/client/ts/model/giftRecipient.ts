@@ -1,3 +1,5 @@
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 module slatwalladmin {
     'use strict';
 
@@ -23,18 +25,7 @@ module slatwalladmin {
             this.editing = false; 
             this.account = false; 
         }
-        
-        public valid = () =>{
-            if(this.firstName != null &&
-               this.lastName != null &&
-               this.email != null &&
-               this.quantity != null
-            ){
-                return true;
-            }
-            return false;
-        }
-        
+
         public reset = () =>{
             this.firstName = null;
             this.lastName = null;

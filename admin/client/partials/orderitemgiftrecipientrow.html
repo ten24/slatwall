@@ -16,12 +16,11 @@
 	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
 	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
 </td>
-
 <td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
 	<input type="text" name="_rowRecipientFirstName" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName" required>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
-    <input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName" required>
+	<input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName" required>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
 	<input type="email" name="_rowRecipientEmail" class="form-control" ng-model="giftRecipientRowControl.recipient.email" required>
@@ -29,6 +28,7 @@
 <td class="s-table-input-element" ng-hide="!recipient.editing">
 	<input type="text" name="_rowRecipientGiftMessage" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false">
 </td>
+
 <td class="s-table-input-element" ng-hide="!recipient.editing">
 	<select class="form-control" 
 		name="_rowRecipientQuantity"
@@ -38,5 +38,7 @@
 	</select>
 </td>
 <td class="admin admin2" ng-hide="!recipient.editing">
-	<a class="btn btn-default btn-xs btn-save" href="##" ng-click="giftRecipientRowControl.saveGiftRecipient(recipient)">Save</a>
+	<a class="btn btn-default btn-xs btn-save" href="##" ng-click="giftRecipientRowControl.saveGiftRecipient(giftRecipientRowControl.recipient)">Save</a>
 </td>
+
+ 
