@@ -24,4 +24,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swcriteria.js.map
+//# sourceMappingURL=../../directives/collection/swcriteria.js.map

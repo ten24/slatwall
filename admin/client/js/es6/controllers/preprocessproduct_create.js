@@ -47,4 +47,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').controller('preprocessproduct_create', ProductCreateController);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=preprocessproduct_create.js.map
+//# sourceMappingURL=../controllers/preprocessproduct_create.js.map

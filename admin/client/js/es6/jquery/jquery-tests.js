@@ -3016,4 +3016,4 @@ function test_promise_then_not_return_deferred() {
     promise = promise.always();
 }
 
-//# sourceMappingURL=jquery-tests.js.map
+//# sourceMappingURL=../jquery/jquery-tests.js.map

@@ -234,4 +234,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=collections.js.map
+//# sourceMappingURL=../controllers/collections.js.map

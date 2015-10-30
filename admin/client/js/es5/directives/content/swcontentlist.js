@@ -227,4 +227,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swContentList', ['partialsPath', 'observerService', function (partialsPath, observerService) { return new SWContentList(partialsPath, observerService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swcontentlist.js.map
+//# sourceMappingURL=../../directives/content/swcontentlist.js.map
