@@ -49,32 +49,33 @@ var slatwalladmin;
                 };
                 angular.extend(productBundleGroup.data, prototype);
             };
-            this.formatProductBundleGroupFilters = function (productBundelGroupFilters, filterTerm) {
-                _this.$log.debug('formatProductBundleGroupFilters');
+            this.formatProductBundleGroupFilters = function (productBundleGroupFilters, filterTerm) {
+                _this.$log.debug('FORMATTING PRODUCT BUNDLE FILTERs');
+                _this.$log.debug(productBundleGroupFilters);
                 _this.$log.debug(filterTerm);
                 if (filterTerm.value === 'sku') {
-                    for (var i in productBundelGroupFilters) {
-                        productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value + 'Code'];
-                        productBundelGroupFilters[i].type = filterTerm.name;
-                        productBundelGroupFilters[i].entityType = filterTerm.value;
-                        productBundelGroupFilters[i].propertyIdentifier = '_sku.skuID';
+                    for (var i in productBundleGroupFilters) {
+                        productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Code'];
+                        productBundleGroupFilters[i].type = filterTerm.name;
+                        productBundleGroupFilters[i].entityType = filterTerm.value;
+                        productBundleGroupFilters[i].propertyIdentifier = '_sku.skuID';
                     }
                 }
                 else {
-                    for (var i in productBundelGroupFilters) {
-                        productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value + 'Name'];
-                        productBundelGroupFilters[i].type = filterTerm.name;
-                        productBundelGroupFilters[i].entityType = filterTerm.value;
+                    for (var i in productBundleGroupFilters) {
+                        productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Name'];
+                        productBundleGroupFilters[i].type = filterTerm.name;
+                        productBundleGroupFilters[i].entityType = filterTerm.value;
                         if (filterTerm.value === 'brand' || filterTerm.value === 'productType') {
-                            productBundelGroupFilters[i].propertyIdentifier = '_sku.product.' + filterTerm.value + '.' + filterTerm.value + 'ID';
+                            productBundleGroupFilters[i].propertyIdentifier = '_sku.product.' + filterTerm.value + '.' + filterTerm.value + 'ID';
                         }
                         else {
-                            productBundelGroupFilters[i].propertyIdentifier = '_sku.' + filterTerm.value + '.' + filterTerm.value + 'ID';
+                            productBundleGroupFilters[i].propertyIdentifier = '_sku.' + filterTerm.value + '.' + filterTerm.value + 'ID';
                         }
                     }
                 }
-                _this.$log.debug(productBundelGroupFilters);
-                return productBundelGroupFilters;
+                _this.$log.debug(productBundleGroupFilters);
+                return productBundleGroupFilters;
             };
             this.$log = $log;
             this.$slatwall = $slatwall;

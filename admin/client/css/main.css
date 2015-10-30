@@ -2072,6 +2072,9 @@ tabel .s-table-header {
   color: #767676;
   padding: 6px 12px 6px 12px;
 }
+.pagination > li.disabled {
+  pointer-events: none;
+}
 .s-setting-options-body .s-filter-item {
   vertical-align: top;
   display: inline-block;
