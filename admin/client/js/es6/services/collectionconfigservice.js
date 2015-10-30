@@ -354,9 +354,9 @@ var slatwalladmin;
             //orderByList in this form: "property|direction" concrete: "skuName|ASC"
             this.setOrderBy = (orderByList) => {
                 var orderBys = orderByList.split(',');
-                for (var orderBy in orderBys) {
+                angular.forEach(orderBys, (orderBy) => {
                     this.addOrderBy(orderBy);
-                }
+                });
             };
             this.addOrderBy = (orderByString) => {
                 if (!this.orderBy) {
@@ -365,7 +365,7 @@ var slatwalladmin;
                 var propertyIdentifier = this.utilityService.listFirst(orderByString, '|');
                 var direction = this.utilityService.listLast(orderByString, '|');
                 var orderBy = {
-                    propertyIdentifier: propertyIdentifier,
+                    propertyIdentifier: this.formatCollectionName(propertyIdentifier),
                     direction: direction
                 };
                 this.orderBy.push(orderBy);

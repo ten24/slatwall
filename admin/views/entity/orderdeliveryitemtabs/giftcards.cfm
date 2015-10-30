@@ -46,26 +46,19 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.orderDelivery" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.orderDeliveryItem" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.orderDelivery#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/orderdeliveryitems">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup >
-
-
-	</hb:HibachiEntityDetailForm>
+    <hb:HibachiListingDisplay smartList="#rc.orderDeliveryItem.getOrderDelivery().getOrderDeliveryGiftCardSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

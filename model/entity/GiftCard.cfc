@@ -101,7 +101,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	}
 
 	public boolean function canEditOrDelete(){
-		if(isNull(this.getActiveFlag())||this.getActiveFlag()){
+		if(!isNull(this.getActiveFlag())||this.getActiveFlag()){
 			return false;
 		} else {
 			return true;
