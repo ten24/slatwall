@@ -36,4 +36,4 @@ var slatwalladmin;
         }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swgiftcardoverview.js.map
+//# sourceMappingURL=../../directives/giftcard/swgiftcardoverview.js.map

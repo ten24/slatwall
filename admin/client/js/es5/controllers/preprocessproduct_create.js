@@ -24,7 +24,7 @@ var slatwalladmin;
                 //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
                 _this.collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
                 _this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID', _this.$scope.preprocessproduct_createCtrl.selectedOption.value, '=', 'OR');
-                _this.collectionConfig.setOrderBy('optionName|ASC');
+                _this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
                 _this.$scope.preprocessproduct_createCtrl.collectionListingPromise = _this.collectionConfig.getEntity();
                 _this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then(function (data) {
                     _this.$scope.preprocessproduct_createCtrl.collection = data;
@@ -49,4 +49,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').controller('preprocessproduct_create', ProductCreateController);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=preprocessproduct_create.js.map
+//# sourceMappingURL=../controllers/preprocessproduct_create.js.map

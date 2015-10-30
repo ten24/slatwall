@@ -103,4 +103,4 @@ var slatwalladmin;
             ($slatwall, partialsPath) => new SWAddOrderItemGiftRecipient($slatwall, partialsPath)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swaddorderitemgiftrecipient.js.map
+//# sourceMappingURL=../../directives/giftrecipient/swaddorderitemgiftrecipient.js.map

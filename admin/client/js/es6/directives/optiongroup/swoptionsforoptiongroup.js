@@ -53,4 +53,4 @@ var slatwalladmin;
             ($slatwall, $timeout, collectionConfigService, observerService, partialsPath) => new SWOptionsForOptionGroup($slatwall, $timeout, collectionConfigService, observerService, partialsPath)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swoptionsforoptiongroup.js.map
+//# sourceMappingURL=../../directives/optiongroup/swoptionsforoptiongroup.js.map

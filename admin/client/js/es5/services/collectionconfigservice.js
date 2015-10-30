@@ -130,6 +130,7 @@ var slatwalladmin;
                     columnsConfig: angular.toJson(_this.columns),
                     filterGroupsConfig: angular.toJson(_this.filterGroups),
                     joinsConfig: angular.toJson(_this.joins),
+                    orderByConfig: angular.toJson(_this.orderBy),
                     groupBysConfig: angular.toJson(_this.groupBys),
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
@@ -377,9 +378,9 @@ var slatwalladmin;
             //orderByList in this form: "property|direction" concrete: "skuName|ASC"
             this.setOrderBy = function (orderByList) {
                 var orderBys = orderByList.split(',');
-                for (var orderBy in orderBys) {
+                angular.forEach(orderBys, function (orderBy) {
                     _this.addOrderBy(orderBy);
-                }
+                });
             };
             this.addOrderBy = function (orderByString) {
                 if (!_this.orderBy) {
@@ -388,7 +389,7 @@ var slatwalladmin;
                 var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
                 var direction = _this.utilityService.listLast(orderByString, '|');
                 var orderBy = {
-                    propertyIdentifier: propertyIdentifier,
+                    propertyIdentifier: _this.formatCollectionName(propertyIdentifier),
                     direction: direction
                 };
                 _this.orderBy.push(orderBy);
@@ -430,4 +431,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new CollectionConfig($slatwall, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=collectionconfigservice.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map

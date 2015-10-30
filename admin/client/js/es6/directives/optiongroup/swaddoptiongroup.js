@@ -148,4 +148,4 @@ var slatwalladmin;
             ($slatwall, $timeout, collectionConfigService, observerService, partialsPath) => new SWAddOptionGroup($slatwall, $timeout, collectionConfigService, observerService, partialsPath)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swaddoptiongroup.js.map
+//# sourceMappingURL=../../directives/optiongroup/swaddoptiongroup.js.map

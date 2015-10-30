@@ -33,4 +33,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout', 'partialsPath', 'paginationService', ($log, $timeout, partialsPath, paginationService) => new SWPaginationBar($log, $timeout, partialsPath, paginationService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swpaginationbar.js.map
+//# sourceMappingURL=../../directives/common/swpaginationbar.js.map

@@ -23,4 +23,4 @@ angular.module('slatwalladmin').directive("swvalidationminlength", [function () 
         };
     }]);
 
-//# sourceMappingURL=swvalidationminlength.js.map
+//# sourceMappingURL=../../../directives/common/validation/swvalidationminlength.js.map
