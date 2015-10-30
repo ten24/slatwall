@@ -256,7 +256,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				default:
 					formatDetails = {};
 					formatDetails.currencyCode = this.getCurrencyCode(); 
-					return getService("HibachiUtilityService").formatValue_Currency(this.getRedemptionAmount());
+					return getService("HibachiUtilityService").formatValue_Currency(this.getRedemptionAmount(), formatDetails);
 					break;
 			}
 		} else {
