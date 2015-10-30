@@ -29,7 +29,7 @@ module slatwalladmin {
                 //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
                 this.collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
                 this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID',this.$scope.preprocessproduct_createCtrl.selectedOption.value,'=','OR');
-                this.collectionConfig.setOrderBy('optionGroup.sortOrder|DESC,sortOrder|DESC');
+                this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
                 this.$scope.preprocessproduct_createCtrl.collectionListingPromise = this.collectionConfig.getEntity();
                 this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
                     this.$scope.preprocessproduct_createCtrl.collection = data;    

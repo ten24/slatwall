@@ -141,6 +141,7 @@ module slatwalladmin{
                 columnsConfig: angular.toJson(this.columns),
                 filterGroupsConfig: angular.toJson(this.filterGroups),
                 joinsConfig: angular.toJson(this.joins),
+                orderByConfig:angular.toJson(this.orderBy), 
                 groupBysConfig: angular.toJson(this.groupBys),
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
@@ -444,9 +445,9 @@ module slatwalladmin{
         //orderByList in this form: "property|direction" concrete: "skuName|ASC"
         setOrderBy = (orderByList)=>{
             var orderBys = orderByList.split(',');
-            for(var orderBy in orderBys){
+            angular.forEach(orderBys,(orderBy)=>{
                 this.addOrderBy(orderBy);
-            }
+            });
         };
         
         addOrderBy = (orderByString)=>{
@@ -458,7 +459,7 @@ module slatwalladmin{
             var direction = this.utilityService.listLast(orderByString,'|');
             
             var orderBy = {
-                propertyIdentifier:propertyIdentifier,
+                propertyIdentifier:this.formatCollectionName(propertyIdentifier),
                 direction:direction
             };
             

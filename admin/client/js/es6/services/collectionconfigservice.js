@@ -117,6 +117,7 @@ var slatwalladmin;
                     columnsConfig: angular.toJson(this.columns),
                     filterGroupsConfig: angular.toJson(this.filterGroups),
                     joinsConfig: angular.toJson(this.joins),
+                    orderByConfig: angular.toJson(this.orderBy),
                     groupBysConfig: angular.toJson(this.groupBys),
                     currentPage: this.currentPage,
                     pageShow: this.pageShow,
