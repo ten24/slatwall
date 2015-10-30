@@ -7,8 +7,7 @@ var slatwalladmin;
     }
     slatwalladmin.swGiftCardOverviewController = swGiftCardOverviewController;
     class GiftCardOverview {
-        constructor($slatwall, partialsPath) {
-            this.$slatwall = $slatwall;
+        constructor(partialsPath) {
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
@@ -20,11 +19,11 @@ var slatwalladmin;
             this.restrict = "EA";
         }
     }
-    GiftCardOverview.$inject = ["$slatwall", "partialsPath"];
+    GiftCardOverview.$inject = ["partialsPath"];
     slatwalladmin.GiftCardOverview = GiftCardOverview;
     angular.module('slatwalladmin')
-        .directive('swGiftCardOverview', ["$slatwall", "partialsPath",
-            ($slatwall, partialsPath) => new GiftCardOverview($slatwall, partialsPath)
+        .directive('swGiftCardOverview', ["partialsPath",
+            (partialsPath) => new GiftCardOverview(partialsPath)
     ])
         .controller('MyController', ['$scope', function ($scope) {
             $scope.textToCopy = 'I can copy by clicking!';

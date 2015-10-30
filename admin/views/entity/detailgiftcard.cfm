@@ -55,12 +55,7 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
-
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBarButtonGroup>
-
-		<hb:HibachiProcessCaller action="admin:entity.preProcessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
 	</hb:HibachiEntityActionBar>
 
 	<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>

@@ -1,26 +1,28 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWGiftCardHistoryController = (function () {
-        function SWGiftCardHistoryController($slatwall) {
+        function SWGiftCardHistoryController(collectionConfigService) {
             var _this = this;
-            this.$slatwall = $slatwall;
+            this.collectionConfigService = collectionConfigService;
             this.init = function () {
                 var initialBalance = 0;
                 var totalDebit = 0;
-                var transactionConfig = new slatwalladmin.CollectionConfig(_this.$slatwall, 'GiftCardTransaction');
+                var transactionConfig = _this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
                 transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime");
                 transactionConfig.addFilter('giftCard.giftCardID', _this.giftCard.giftCardID);
                 transactionConfig.setAllRecords(true);
-                transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
-                var transactionPromise = _this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
-                var emailBounceConfig = new slatwalladmin.CollectionConfig(_this.$slatwall, 'EmailBounce');
+                transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime");
+                var transactionPromise = transactionConfig.getEntity();
+                var emailBounceConfig = _this.collectionConfigService.newCollectionConfig('EmailBounce');
                 emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
                 emailBounceConfig.addFilter('relatedObject', "giftCard");
                 emailBounceConfig.addFilter('relatedObjectID', _this.giftCard.giftCardID);
                 emailBounceConfig.setAllRecords(true);
-                emailBounceConfig.setOrderBy("rejectedEmailSendTime", "DESC");
-                var emailBouncePromise = _this.$slatwall.getEntity("EmailBounce", emailBounceConfig.getOptions());
+                emailBounceConfig.setOrderBy("rejectedEmailSendTime");
+                var emailBouncePromise = emailBounceConfig.getEntity();
                 emailBouncePromise.then(function (response) {
                     _this.bouncedEmails = response.records;
                 });
@@ -67,7 +69,7 @@ var slatwalladmin;
                         }
                     });
                 });
-                var orderConfig = new slatwalladmin.CollectionConfig(_this.$slatwall, 'Order');
+                var orderConfig = _this.collectionConfigService.newCollectionConfig('Order');
                 orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
                 orderConfig.addFilter('orderID', _this.giftCard.originalOrderItem_order_orderID);
                 orderConfig.setAllRecords(true);
@@ -75,16 +77,15 @@ var slatwalladmin;
                     _this.order = response.records[0];
                 });
             };
-            this.$slatwall = $slatwall;
             this.init();
         }
-        SWGiftCardHistoryController.$inject = ["$slatwall"];
+        SWGiftCardHistoryController.$inject = ["collectionConfigService"];
         return SWGiftCardHistoryController;
     })();
     slatwalladmin.SWGiftCardHistoryController = SWGiftCardHistoryController;
     var GiftCardHistory = (function () {
-        function GiftCardHistory($slatwall, partialsPath) {
-            this.$slatwall = $slatwall;
+        function GiftCardHistory(collectionConfigService, partialsPath) {
+            this.collectionConfigService = collectionConfigService;
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
@@ -100,14 +101,14 @@ var slatwalladmin;
             this.templateUrl = partialsPath + "/entity/giftcard/history.html";
             this.restrict = "EA";
         }
-        GiftCardHistory.$inject = ["$slatwall", "partialsPath"];
+        GiftCardHistory.$inject = ["collectionConfigService", "partialsPath"];
         return GiftCardHistory;
     })();
     slatwalladmin.GiftCardHistory = GiftCardHistory;
     angular.module('slatwalladmin')
-        .directive('swGiftCardHistory', ["$slatwall", "partialsPath",
-        function ($slatwall, partialsPath) {
-            return new GiftCardHistory($slatwall, partialsPath);
+        .directive('swGiftCardHistory', ["collectionConfigService", "partialsPath",
+        function (collectionConfigService, partialsPath) {
+            return new GiftCardHistory(collectionConfigService, partialsPath);
         }
     ]);
 })(slatwalladmin || (slatwalladmin = {}));

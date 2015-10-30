@@ -133,8 +133,10 @@ Notes:
 			AND
 				op.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referencedOrderID#" />
 		</cfquery>
-
-		<cfreturn local.giftCardOrderPayment.amount />
+		<cfif local.giftCardOrderPayment.amount[1] eq "">
+			<cfreturn 0 />
+		</cfif>
+		<cfreturn local.giftCardOrderPayment.amount[1] />
 
 	</cffunction>
 

@@ -112,24 +112,19 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return 0;
 		}
 
-		var giftCards = this.getGiftCards();
 		var orderItemGiftRecipients = this.getOrderItemGiftRecipients();
 		var count = this.getQuantity();
 
 		for(var recipient in orderItemGiftRecipients){
-			if(!isNull(recipient.getQuantity())){
-				count = count - recipient.getQuantity();
-			} else {
-				count--;
-			}
+			count = count - recipient.getQuantity();
 		}
 
 		return count;
 
 	}
 
-	public boolean function hasUnassignedGiftCards(){
-		return getNumberOfUnassignedGiftCards() > 0;
+	public boolean function hasAllGiftCardsAssigned(){
+		return this.getNumberOfUnassignedGiftCards() == 0;
 	}
 
 	public boolean function isGiftCardOrderItem(){

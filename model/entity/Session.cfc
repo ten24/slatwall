@@ -86,6 +86,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {
 			variables.requestOrder = getService("orderService").newOrder();
+			
+			
 			//check if we are running on a CMS site by domain
 			var site = getService('SiteService').getCurrentRequestSite();
 			if(
@@ -96,6 +98,11 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
 				requestOrder.setOrderOrigin(siteOrderOrigin);
 			}
+			//Setup Site Created if using slatwall cms
+			if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
+				variables.requestOrder.setOrderCreatedSite(getHibachiScope().getSite());
+			}
+			
 		}
 		return variables.requestOrder;
 	}

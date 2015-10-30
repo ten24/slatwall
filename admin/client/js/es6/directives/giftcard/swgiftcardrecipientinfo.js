@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
@@ -7,8 +9,7 @@ var slatwalladmin;
     }
     slatwalladmin.swGiftCardRecipientInfoController = swGiftCardRecipientInfoController;
     class GiftCardRecipientInfo {
-        constructor($slatwall, partialsPath) {
-            this.$slatwall = $slatwall;
+        constructor(partialsPath) {
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
@@ -20,11 +21,11 @@ var slatwalladmin;
             this.restrict = "EA";
         }
     }
-    GiftCardRecipientInfo.$inject = ["$slatwall", "partialsPath"];
+    GiftCardRecipientInfo.$inject = ["partialsPath"];
     slatwalladmin.GiftCardRecipientInfo = GiftCardRecipientInfo;
     angular.module('slatwalladmin')
-        .directive('swGiftCardRecipientInfo', ["$slatwall", "partialsPath",
-            ($slatwall, partialsPath) => new GiftCardRecipientInfo($slatwall, partialsPath)
+        .directive('swGiftCardRecipientInfo', ["partialsPath",
+            (partialsPath) => new GiftCardRecipientInfo(partialsPath)
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 

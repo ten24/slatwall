@@ -26,7 +26,7 @@ angular.module('slatwalladmin')
                 scope.formFieldChanged = function (option) {
                     $log.debug('formfieldchanged');
                     $log.debug(option);
-                    if (selectType === 'object') {
+                    if (selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
                         scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
                         if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
                             scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;

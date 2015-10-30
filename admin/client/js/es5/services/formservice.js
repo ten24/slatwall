@@ -30,15 +30,6 @@ var slatwalladmin;
             this.getPristinePropertyValue = function (property) {
                 return _this._pristinePropertyValue[property];
             };
-            this.clearForm = function (form) {
-                _this.$log.debug('clear form');
-                _this.$log.debug(form);
-                for (var key in form) {
-                    if (key.charAt(0) !== '$') {
-                        _this.$log.debug(form[key]);
-                    }
-                }
-            };
             this.setForm = function (form) {
                 _this._forms[form.name] = form;
             };
@@ -63,19 +54,27 @@ var slatwalladmin;
                 return _form;
             };
             this.resetForm = function (form) {
+                _this.$log.debug('resetting form');
+                _this.$log.debug(form);
                 for (var key in form) {
-                    if (key.charAt(0) !== '$') {
+                    if (angular.isDefined(form[key])
+                        && typeof form[key].$setViewValue == 'function'
+                        && angular.isDefined(form[key].$viewValue)) {
+                        _this.$log.debug(form[key]);
                         if (angular.isDefined(_this.getPristinePropertyValue(key))) {
                             form[key].$setViewValue(_this.getPristinePropertyValue(key));
                         }
                         else {
                             form[key].$setViewValue('');
                         }
+                        form[key].$setUntouched(true);
                         form[key].$render();
+                        _this.$log.debug(form[key]);
                     }
                 }
                 form.$submitted = false;
                 form.$setPristine();
+                form.$setUntouched();
             };
             this.$log = $log;
             this._forms = {};

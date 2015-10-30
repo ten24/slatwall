@@ -83,15 +83,46 @@
 					</tr>
 				</cfloop>
 			</table>
-
-			<nav>
-				<cfloop from="1" to="#tableData.recordCount#" step="25" index="p">
-					<cfif attributes.report.getCurrentPage() EQ p>
-						#((p-1)/25)+1#
-					<cfelse>
-						<a data-pagination="#p#" class="hibachi-report-pagination">#((p-1)/25)+1#</a>
-					</cfif>
-				</cfloop>
+			
+			<!--- Reporting Items Pagination --->
+			<nav class="pull-right">
+				<!--- Set the previous item number --->
+				<cfset previousItem = attributes.report.getCurrentPage() - 1 />
+				
+				<!--- Set the next item number --->
+				<cfset nextItem = attributes.report.getCurrentPage() + 1 />
+								
+				<ul class="pagination">
+					
+					<!--- Get Previous page --->
+			        <li <cfif previousItem EQ 0>class="disabled" disabled</cfif> >
+			            <a href="##" data-pagination="#previousItem#" class="hibachi-report-pagination" aria-label="Previous">
+			            	<span aria-hidden="true">&laquo;</span>
+			            </a>
+			        </li>
+			        
+					<!--- Show all pages --->
+					<cfloop from="1" to="#tableData.recordCount#" step="25" index="p">
+						<cfif attributes.report.getCurrentPage() EQ p>
+							<li class="active">
+								<a href="##">#p#</a>
+							</li>
+						<cfelse>
+							<li>
+								<a href="##" data-pagination="#p#" class="hibachi-report-pagination">#P#</a>
+							</li>
+						</cfif>
+					</cfloop>
+					
+					<!--- Get next page --->
+					<li <cfif tableData.RecordCount LTE attributes.report.getDataTableEndRow()>class="disabled" disabled</cfif> >
+			            <a href="##" data-pagination="#nextItem#" class="hibachi-report-pagination" aria-label="Next">
+			            	<span aria-hidden="true">&raquo;</span>
+			            </a>
+			        </li>
+					
+			    </ul>
+				
 			</nav>
 		</div>
 	</cfoutput>

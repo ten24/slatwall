@@ -101,7 +101,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	}
 
 	public boolean function canEditOrDelete(){
-		if(isNull(this.getActiveFlag())||this.getActiveFlag()){
+		if(!isNull(this.getActiveFlag())||this.getActiveFlag()){
 			return false;
 		} else {
 			return true;
@@ -129,8 +129,8 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 
-	public string function hasEmailBounce(){
-		return getDAO("EmailBounceDAO").rejectedEmailExists(this.getorderItemGiftRecipient().getEmailAddress());
+	public boolean function hasEmailBounce(){
+		return getDAO("EmailBounceDAO").rejectedEmailExists(this.getOrderItemGiftRecipient().getEmailAddress());
 	}
 
 	// ============ START: Non-Persistent Property Methods =================

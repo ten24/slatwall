@@ -100,6 +100,13 @@ var slatwalladmin;
                 _this.pageShow = jsonCollection.pageShow;
                 _this.allRecords = jsonCollection.allRecords;
             };
+            this.loadFilterGroups = function (filterGroupsConfig) {
+                if (filterGroupsConfig === void 0) { filterGroupsConfig = [{ filterGroup: [] }]; }
+                _this.filterGroups = filterGroupsConfig;
+            };
+            this.loadColumns = function (columns) {
+                _this.columns = columns;
+            };
             this.getCollectionConfig = function () {
                 return {
                     baseEntityAlias: _this.baseEntityAlias,
@@ -112,7 +119,7 @@ var slatwalladmin;
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
                     defaultColumns: (!_this.columns || !_this.columns.length),
-                    allRecords: _this.allRecords
+                    allRecords: _this.allRecords,
                 };
             };
             this.getEntityName = function () {
@@ -123,6 +130,7 @@ var slatwalladmin;
                     columnsConfig: angular.toJson(_this.columns),
                     filterGroupsConfig: angular.toJson(_this.filterGroups),
                     joinsConfig: angular.toJson(_this.joins),
+                    orderByConfig: angular.toJson(_this.orderBy),
                     groupBysConfig: angular.toJson(_this.groupBys),
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
@@ -279,9 +287,9 @@ var slatwalladmin;
                     var propertyMetaData = _this.$slatwall.getEntityMetaData(lastEntityName)[_this.utilityService.listLast(propertyIdentifier, '.')];
                     var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
                     //if is a one-to-many propertyKey then add a groupby
-                    if (isOneToMany) {
-                        _this.addGroupBy(alias);
-                    }
+                    //                if(isOneToMany){
+                    //                    this.addGroupBy(alias);
+                    //                }
                     column.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
                     var join = new Join(propertyIdentifier, column.propertyIdentifier);
                     doJoin = true;
@@ -370,9 +378,9 @@ var slatwalladmin;
             //orderByList in this form: "property|direction" concrete: "skuName|ASC"
             this.setOrderBy = function (orderByList) {
                 var orderBys = orderByList.split(',');
-                for (var orderBy in orderBys) {
+                angular.forEach(orderBys, function (orderBy) {
                     _this.addOrderBy(orderBy);
-                }
+                });
             };
             this.addOrderBy = function (orderByString) {
                 if (!_this.orderBy) {
@@ -381,7 +389,7 @@ var slatwalladmin;
                 var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
                 var direction = _this.utilityService.listLast(orderByString, '|');
                 var orderBy = {
-                    propertyIdentifier: propertyIdentifier,
+                    propertyIdentifier: _this.formatCollectionName(propertyIdentifier),
                     direction: direction
                 };
                 _this.orderBy.push(orderBy);

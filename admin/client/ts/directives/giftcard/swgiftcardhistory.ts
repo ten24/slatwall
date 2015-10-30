@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 module slatwalladmin { 
 	'use strict'; 
 	
@@ -7,11 +9,10 @@ module slatwalladmin {
 		public giftCard; 
 		public order; 
 		
-		public static $inject = ["$slatwall"];
+		public static $inject = ["collectionConfigService"];
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall){
-			this.$slatwall = $slatwall; 
+		constructor(private collectionConfigService:CollectionConfig){
 			this.init();
 		} 
 		
@@ -19,20 +20,20 @@ module slatwalladmin {
 			var initialBalance:number = 0;
 			var totalDebit:number = 0; 
 			
-			var transactionConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCardTransaction');
+			var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
 			transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime");
 			transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
 			transactionConfig.setAllRecords(true);
-			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
-			var transactionPromise = this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
+			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime");
+			var transactionPromise = transactionConfig.getEntity();
 			
-			var emailBounceConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'EmailBounce');
+			var emailBounceConfig = this.collectionConfigService.newCollectionConfig('EmailBounce');
 			emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
 			emailBounceConfig.addFilter('relatedObject', "giftCard");
 			emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
 			emailBounceConfig.setAllRecords(true);
-			emailBounceConfig.setOrderBy("rejectedEmailSendTime", "DESC");
-			var emailBouncePromise = this.$slatwall.getEntity("EmailBounce", emailBounceConfig.getOptions());
+			emailBounceConfig.setOrderBy("rejectedEmailSendTime");
+			var emailBouncePromise = emailBounceConfig.getEntity();
 			
 			emailBouncePromise.then((response)=>{
 				this.bouncedEmails = response.records; 
@@ -91,7 +92,7 @@ module slatwalladmin {
 				});
 			});		
 			
-			var orderConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'Order');
+			var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
 			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
 			orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 			orderConfig.setAllRecords(true);
@@ -104,7 +105,7 @@ module slatwalladmin {
 	
 	export class GiftCardHistory implements ng.IDirective { 
 		
-		public static $inject = ["$slatwall", "partialsPath"];
+		public static $inject = ["collectionConfigService", "partialsPath"];
 		
 		public restrict:string; 
 		public templateUrl:string;
@@ -118,7 +119,7 @@ module slatwalladmin {
 		public controller=SWGiftCardHistoryController;
 		public controllerAs="swGiftCardHistory"; 
 			
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){ 
+		constructor(private collectionConfigService:slatwalladmin.CollectionConfig, private partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/history.html";
 			this.restrict = "EA";
 		}
@@ -131,8 +132,8 @@ module slatwalladmin {
 	
 	angular.module('slatwalladmin')
 	.directive('swGiftCardHistory',
-		["$slatwall", "partialsPath", 
-			($slatwall, partialsPath) => 
-				new GiftCardHistory($slatwall, partialsPath)
+		["collectionConfigService", "partialsPath", 
+			(collectionConfigService, partialsPath) => 
+				new GiftCardHistory(collectionConfigService, partialsPath)
 			]);
 }

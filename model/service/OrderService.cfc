@@ -305,7 +305,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
 					// If the sku, price, attributes & stock all match then just increase the quantity
 
-					if(arguments.processObject.matchesOrderItem( orderItem ) ){
+					if(arguments.processObject.matchesOrderItem( orderItem )){
 						foundItem = true;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
 						orderItem.validate(context='save');
@@ -426,8 +426,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         break;
                     }
                 }
-            } else {
-                arguments.order.addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
             }
         }
 
@@ -929,6 +927,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrder_create(required any order, required any processObject, required struct data={}) {
+		//Setup Site Origin if using slatwall cms
+		if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
+			arguments.order.setOrderCreatedSite(getHibachiScope().getSite());
+		}
 
 		// Setup Account
 		if(arguments.processObject.getNewAccountFlag()) {
@@ -1280,6 +1282,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
 				if(!arguments.order.hasErrors()) {
 
+					//Setup Site Origin if using slatwall cms
+					if(!isNull(getHibachiScope().getSite()) && getHibachiScope().getSite().isSlatwallCMS()){
+						arguments.order.setOrderPlacedSite(getHibachiScope().getSite());
+					}
+
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
 					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || arguments.order.hasSavableOrderPaymentForSubscription() ) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
@@ -1325,7 +1332,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
-						if(arguments.order.getPaymentAmountDue() > 0){
+						if(arguments.order.getPaymentAmountDue() > 0 && arguments.order.hasGiftCardOrderPaymentAmount()){
 							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 						}
 
@@ -1412,7 +1419,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             )
 			&& (
 				order.getTotal() == 0
-				|| orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() )
+				|| arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() )
+			)
+			&& (
+				arguments.orderFulfillment.hasGiftCardRecipients()
 			)
 		){
 
@@ -1695,10 +1705,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Re-Calculate tax now that the new promotions and price groups have been applied
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
-			
+
 			//update the calculated properties
 			arguments.order.updateCalculatedProperties(true);
-			
+
 		}
 		return arguments.order;
 	}
@@ -1759,7 +1769,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				|| (!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
 					&& arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag()))
 				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())
-				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")) {
+				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")
+			) {
 
 				// Loop over delivery items from processObject and add them with stock to the orderDelivery
 				for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
@@ -1767,7 +1778,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Local pointer to the orderItem
 					var thisOrderItem = arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()[i];
 
-					if(thisOrderItem.getQuantityUndelivered()) {
+					if(thisOrderItem.getQuantityUndelivered() && thisOrderItem.hasAllGiftCardsAssigned()) {
 						// Create a new orderDeliveryItem
 						var orderDeliveryItem = this.newOrderDeliveryItem();
 
@@ -1864,12 +1875,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
 
+
 				//bypass auto fulfillment for non auto generated codes
-				if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
-					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
-				} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
-					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
+				if(orderDeliveryItem.getOrderItem().hasAllGiftCardsAssigned()){
+					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
+						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
+					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
+						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
+					}
 				}
+
 
 				if(!isNull(order) && order.hasErrors()){
                  	arguments.orderDelivery.addErrors(order.getErrors());

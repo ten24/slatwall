@@ -8,8 +8,7 @@ var slatwalladmin;
     })();
     slatwalladmin.swGiftCardOverviewController = swGiftCardOverviewController;
     var GiftCardOverview = (function () {
-        function GiftCardOverview($slatwall, partialsPath) {
-            this.$slatwall = $slatwall;
+        function GiftCardOverview(partialsPath) {
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
@@ -20,14 +19,14 @@ var slatwalladmin;
             this.templateUrl = partialsPath + "/entity/giftcard/overview.html";
             this.restrict = "EA";
         }
-        GiftCardOverview.$inject = ["$slatwall", "partialsPath"];
+        GiftCardOverview.$inject = ["partialsPath"];
         return GiftCardOverview;
     })();
     slatwalladmin.GiftCardOverview = GiftCardOverview;
     angular.module('slatwalladmin')
-        .directive('swGiftCardOverview', ["$slatwall", "partialsPath",
-        function ($slatwall, partialsPath) {
-            return new GiftCardOverview($slatwall, partialsPath);
+        .directive('swGiftCardOverview', ["partialsPath",
+        function (partialsPath) {
+            return new GiftCardOverview(partialsPath);
         }
     ])
         .controller('MyController', ['$scope', function ($scope) {
