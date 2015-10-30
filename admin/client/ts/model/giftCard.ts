@@ -1,7 +1,7 @@
 module slatwalladmin {
     'use strict';
 
-    export class GiftRecipient {
+    export class GiftCard {
         constructor(
             public giftCardID: string,
             public giftCardCode: string, 
