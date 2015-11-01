@@ -1,6 +1,6 @@
 /// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../../client/typings/tsd.d.ts' />
-module slatwalladmin {
+module slatwalladmin {//this is hibachi.directive / frontEnd
 
     export class swPropertyDisplay implements ng.IDirective {
 		public static $inject = ['$log', 'partialsPath', '$filter'];

@@ -2,67 +2,6 @@
 /// <reference path='../../../../../../client/typings/tsd.d.ts' />
 module slatwalladmin {
 
-    interface IResponseHandler {
-        parseResponse(response:{}):{};
-        handleError();
-        handleSuccess();
-        displayErrors();
-        displaySuccess();
-    }
-    
-    interface IApiHandler {
-        contentType: {};
-        getContentType():{};
-        baseEndPoint: string;
-        getEndPoint(): string;
-        setEndPoint(endPoint: string);
-        actionMethods: Array<string>;
-        http: ng.IHttpService;
-        doAction(action:string, params:{}): void;
-        getAllActionMethods():{};
-        actionExists(action):boolean;
-        responseHandler(errorHandler:IResponseHandler);
-    }
-    
-    export class AccountHandler implements IApiHandler {
-        contentType = {'Content-Type': 'application/x-www-form-urlencoded'};
-        baseEndPoint = "/index.cfm/api/scope/";
-        http = null;
-        actionMethods = new Array();
-        getContentType = () =>{
-            return this.contentType;
-        }
-        getEndPoint = () =>{
-            return this.baseEndPoint;
-        }
-        setEndPoint = (endPoint) =>{
-            this.baseEndPoint = endPoint;
-        }
-        doAction = (action:string, params:{}) => {
-            if (this.actionExists(action)){
-                this.http.post(this.baseEndPoint + action, params, {headers: this.contentType} )
-                .success(function(response){
-                    this.responseHandler(response)   
-                })
-                .error(function(response){
-                    this.responseHandler(response)   
-                });
-            }
-        }
-        getAllActionMethods = () =>{
-            return this.actionMethods;
-        }
-        actionExists = (action) => {
-            for (var method in this.actionMethods){
-                if (method.name = action){
-                    return true;
-                }
-            }
-            return false;
-        }
-        responseHandler = () => {}; //defer to the developer using this AccountHandler
-        constructor($http:ng.IHttpService){this.http = $http;}
-    }
     export class swFormController {
         constructor(){
             //stub
@@ -74,7 +13,7 @@ module slatwalladmin {
         /*public restrict = "E";
         public transclude = true;
         public controllerAs = "ctrl";
-        public scope = {
+        public bindToController = {
                 object:"=?",
                 context:"@?",
                 name:"@?",
@@ -94,19 +33,9 @@ module slatwalladmin {
         link = (scope) => { scope.context = scope.context || 'save'; };
 
         constructor(public formService, public ProcessObject, public AccountFactory, public CartFactory, public $compile, public $templateCache, public $timeout, public $rootScope, public partialsPath, public $http) {
-            this.formService = formService;
-            this.ProcessObject = ProcessObject;
-            this.AccountFactory = AccountFactory;
-            this.CartFactory = CartFactory;
-            this.$compile = $compile;
-            this.$templateCache = $templateCache;
-            this.$timeout = $timeout;
-            this.$rootScope = $rootScope;
-            this.partialsPath = partialsPath;
-            this.$http = $http;
             return this.Get();
         }
-
+        
         Get(): any {
             return {
                 //this config needs to be rewritten as public fields on this class
@@ -132,7 +61,7 @@ module slatwalladmin {
                 },
                 //needs to be refactored into standalone contorller class
                 controller: ($scope, $element, $attrs) => { 
-                   
+                    //$scope becomes this
                     /** only use if the developer has specified these features with isProcessForm */
                     if (!$attrs.processObject || $attrs.isProcessForm != "true") { return false }
 
@@ -175,7 +104,7 @@ module slatwalladmin {
                     if (processObject == undefined || entityName == undefined) {
                         throw ("ProcessObject Nameing Exception");
                     }
-
+                    //slatwall.newEntity(processObject)
                     var processObj = this.ProcessObject.GetInstance();
                     /** parse the response */
                     processObj = processObj.$get({ processObject: processObject, entityName: entityName }).success(

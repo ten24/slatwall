@@ -2,50 +2,6 @@
 /// <reference path='../../../../../../client/typings/tsd.d.ts' />
 var slatwalladmin;
 (function (slatwalladmin) {
-    var AccountHandler = (function () {
-        function AccountHandler($http) {
-            var _this = this;
-            this.contentType = { 'Content-Type': 'application/x-www-form-urlencoded' };
-            this.baseEndPoint = "/index.cfm/api/scope/";
-            this.http = null;
-            this.actionMethods = new Array();
-            this.getContentType = function () {
-                return _this.contentType;
-            };
-            this.getEndPoint = function () {
-                return _this.baseEndPoint;
-            };
-            this.setEndPoint = function (endPoint) {
-                _this.baseEndPoint = endPoint;
-            };
-            this.doAction = function (action, params) {
-                if (_this.actionExists(action)) {
-                    _this.http.post(_this.baseEndPoint + action, params, { headers: _this.contentType })
-                        .success(function (response) {
-                        this.responseHandler(response);
-                    })
-                        .error(function (response) {
-                        this.responseHandler(response);
-                    });
-                }
-            };
-            this.getAllActionMethods = function () {
-                return _this.actionMethods;
-            };
-            this.actionExists = function (action) {
-                for (var method in _this.actionMethods) {
-                    if (method.name = action) {
-                        return true;
-                    }
-                }
-                return false;
-            };
-            this.responseHandler = function () { }; //defer to the developer using this AccountHandler
-            this.http = $http;
-        }
-        return AccountHandler;
-    })();
-    slatwalladmin.AccountHandler = AccountHandler;
     var swFormController = (function () {
         function swFormController() {
             //stub
@@ -68,7 +24,7 @@ var slatwalladmin;
             /*public restrict = "E";
             public transclude = true;
             public controllerAs = "ctrl";
-            public scope = {
+            public bindToController = {
                     object:"=?",
                     context:"@?",
                     name:"@?",
@@ -86,16 +42,6 @@ var slatwalladmin;
             //templateUrl = this.partialsPath + "formPartial.html";
             //replace = true;
             this.link = function (scope) { scope.context = scope.context || 'save'; };
-            this.formService = formService;
-            this.ProcessObject = ProcessObject;
-            this.AccountFactory = AccountFactory;
-            this.CartFactory = CartFactory;
-            this.$compile = $compile;
-            this.$templateCache = $templateCache;
-            this.$timeout = $timeout;
-            this.$rootScope = $rootScope;
-            this.partialsPath = partialsPath;
-            this.$http = $http;
             return this.Get();
         }
         swForm.prototype.Get = function () {
@@ -124,6 +70,7 @@ var slatwalladmin;
                 },
                 //needs to be refactored into standalone contorller class
                 controller: function ($scope, $element, $attrs) {
+                    //$scope becomes this
                     /** only use if the developer has specified these features with isProcessForm */
                     if (!$attrs.processObject || $attrs.isProcessForm != "true") {
                         return false;
@@ -167,6 +114,7 @@ var slatwalladmin;
                     if (processObject == undefined || entityName == undefined) {
                         throw ("ProcessObject Nameing Exception");
                     }
+                    //slatwall.newEntity(processObject)
                     var processObj = _this.ProcessObject.GetInstance();
                     /** parse the response */
                     processObj = processObj.$get({ processObject: processObject, entityName: entityName }).success(

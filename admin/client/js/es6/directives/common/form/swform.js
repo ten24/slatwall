@@ -2,6 +2,12 @@
 /// <reference path='../../../../../../client/typings/tsd.d.ts' />
 var slatwalladmin;
 (function (slatwalladmin) {
+    class swFormController {
+        constructor() {
+            //stub
+        }
+    }
+    slatwalladmin.swFormController = swFormController;
     class swForm {
         constructor(formService, ProcessObject, AccountFactory, CartFactory, $compile, $templateCache, $timeout, $rootScope, partialsPath, $http) {
             this.formService = formService;
@@ -17,7 +23,7 @@ var slatwalladmin;
             /*public restrict = "E";
             public transclude = true;
             public controllerAs = "ctrl";
-            public scope = {
+            public bindToController = {
                     object:"=?",
                     context:"@?",
                     name:"@?",
@@ -34,21 +40,12 @@ var slatwalladmin;
                   };*/
             //templateUrl = this.partialsPath + "formPartial.html";
             //replace = true;
-            this.link = (scope) => { scope.context = scope.context || 'save'; console.log("Here it is:", Date.now()); };
-            this.formService = formService;
-            this.ProcessObject = ProcessObject;
-            this.AccountFactory = AccountFactory;
-            this.CartFactory = CartFactory;
-            this.$compile = $compile;
-            this.$templateCache = $templateCache;
-            this.$timeout = $timeout;
-            this.$rootScope = $rootScope;
-            this.partialsPath = partialsPath;
-            this.$http = $http;
+            this.link = (scope) => { scope.context = scope.context || 'save'; };
             return this.Get();
         }
         Get() {
             return {
+                //this config needs to be rewritten as public fields on this class
                 transclude: true,
                 templateUrl: this.partialsPath + "formPartial.html",
                 controllerAs: "ctrl",
@@ -69,7 +66,9 @@ var slatwalladmin;
                     hideUntil: "@?",
                     isProcessForm: "@"
                 },
+                //needs to be refactored into standalone contorller class
                 controller: ($scope, $element, $attrs) => {
+                    //$scope becomes this
                     /** only use if the developer has specified these features with isProcessForm */
                     if (!$attrs.processObject || $attrs.isProcessForm != "true") {
                         return false;
@@ -113,11 +112,18 @@ var slatwalladmin;
                     if (processObject == undefined || entityName == undefined) {
                         throw ("ProcessObject Nameing Exception");
                     }
+                    //slatwall.newEntity(processObject)
                     var processObj = this.ProcessObject.GetInstance();
                     /** parse the response */
                     processObj = processObj.$get({ processObject: processObject, entityName: entityName }).success(
                     /** parse */
                     function (response) {
+                        $scope.parseProcessObjectResponse(response);
+                    }).error(function () {
+                        throw ("Endpoint does not exist exception");
+                    });
+                    /** handles the process object structure */
+                    $scope.parseProcessObjectResponse = (response) => {
                         processObj = response;
                         if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
                             processObj.processObject["meta"] = [];
@@ -133,9 +139,7 @@ var slatwalladmin;
                             processObj.processObject["NAME"] = processObjName;
                             return processObj.processObject;
                         }
-                    }).error(function () {
-                        throw ("Endpoint does not exist exception");
-                    });
+                    };
                     /** We use these for our models */
                     $scope.formData = {};
                     $scope.getFormData = function () {
