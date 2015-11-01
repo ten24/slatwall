@@ -16,14 +16,16 @@ angular.module('slatwalladmin')
 				recipients:"=",
 				quantity:"=",
 				showInvalidRecipientMessage:"=",
-				recipientRowForm:"=?"
+				recipientRowForm:"=?",
+				index:"="
 			}, 
 			bindToController: {
 				recipient:"=",
 				recipients:"=",
 				quantity:"=",
 				showInvalidRecipientMessage:"=",
-				recipientRowForm:"=?"
+				recipientRowForm:"=?",
+				index:"="
 			},
 			controller: function(){ 
 				this.edit = (recipient:slatwalladmin.GiftRecipient) =>{

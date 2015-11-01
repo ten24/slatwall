@@ -592,6 +592,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
 		var totalQuantity = 0;
         var count = 0;
+       
         if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= request.context["quantity"]){
             while(totalQuantity < request.context["quantity"]){
                 var currentRecipient = count & "recipient";

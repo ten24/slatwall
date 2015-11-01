@@ -18,16 +18,15 @@ module slatwalladmin {
 		public addRecipientForm;
 		public formController;
 		
-		public static $inject=["$slatwall", "$controller"];
+		public static $inject=["$slatwall"];
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $controller:ng.IControllerService){
+		constructor(private $slatwall:ngSlatwall.$Slatwall){
 			this.adding = false; 
 			this.searchText = ""; 
 			var count = 1;
 			this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 			this.orderItemGiftRecipients = [];
 			this.showInvalidAddFormMessage = false;
-			this.formController = $controller("formController");
 			console.log(this.formController);
 		}
 		
@@ -141,7 +140,7 @@ module slatwalladmin {
         public controllerAs="addGiftRecipientControl";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $controller:ng.IControllerService, private partialsPath){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath){
 			this.templateUrl = partialsPath + "entity/OrderItemGiftRecipient/addorderitemgiftrecipient.html";
 		}
 
@@ -150,8 +149,8 @@ module slatwalladmin {
     }
     
     angular.module('slatwalladmin').directive('swAddOrderItemGiftRecipient',
-		["$slatwall", "$controller", "partialsPath", 
-			($slatwall, $controller, partialsPath) => 
-				new SWAddOrderItemGiftRecipient($slatwall, $controller, partialsPath)]); 
+		["$slatwall", "partialsPath", 
+			($slatwall, partialsPath) => 
+				new SWAddOrderItemGiftRecipient($slatwall, partialsPath)]); 
 
 }
