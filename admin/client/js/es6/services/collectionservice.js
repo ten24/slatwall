@@ -200,4 +200,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('collectionService', CollectionService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/collectionservice.js.map
+//# sourceMappingURL=collectionservice.js.map

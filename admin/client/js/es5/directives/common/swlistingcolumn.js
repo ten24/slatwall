@@ -58,4 +58,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swListingColumn', ['utilityService', function (utilityService) { return new SWListingColumn(utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swlistingcolumn.js.map
+//# sourceMappingURL=swlistingcolumn.js.map

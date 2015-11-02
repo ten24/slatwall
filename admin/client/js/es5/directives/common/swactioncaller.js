@@ -228,4 +228,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swActionCaller', [function () { return new SWActionCaller(); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swactioncaller.js.map
+//# sourceMappingURL=swactioncaller.js.map

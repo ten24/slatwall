@@ -66,4 +66,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swProcessCaller', ['partialsPath', 'utilityService', (partialsPath, utilityService) => new SWProcessCaller(partialsPath, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swprocesscaller.js.map
+//# sourceMappingURL=swprocesscaller.js.map

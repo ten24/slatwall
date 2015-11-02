@@ -22,4 +22,4 @@ angular.module('slatwalladmin').directive("swvalidationregex", [function () {
         };
     }]);
 
-//# sourceMappingURL=../../../directives/common/validation/swvalidationregex.js.map
+//# sourceMappingURL=swvalidationregex.js.map

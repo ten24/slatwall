@@ -115,4 +115,4 @@ angular.module('slatwalladmin').directive('swInput', ['$log',
         };
     }]);
 
-//# sourceMappingURL=../../../directives/common/form/swinput.js.map
+//# sourceMappingURL=swinput.js.map
