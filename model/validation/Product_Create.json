@@ -29,8 +29,8 @@
 	    "productName": 				[{"required":true}],
 		"productCode": 				[{"required":true}],
 		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
-		"subscriptionBenefits": 	[{"conditions":"baseProductTypeSubscription","required":true}],
-		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}],
+		"subscriptionBenefits": 	[{"conditions":"generateSubscriptionSkus","required":true}],
+		"subscriptionTerms":		[{"conditions":"generateSubscriptionSkus","required":true}],
 		"redemptionAmount":			[{"conditions":"createGiftCard", "dataType":"numeric","minValue":0}]
 	}
 }
