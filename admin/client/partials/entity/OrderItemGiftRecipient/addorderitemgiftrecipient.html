@@ -2,7 +2,7 @@
 <h5>Assign Gift Cards</h5>
 <input name="quantity" ng-model="addGiftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" class="hide" readonly>
 <input type="hidden" name="assignedGiftRecipientQuantity" ng-value="addGiftRecipientControl.getAssignedCount()" /> 
-<div class="table-responsive s-gift-card-table">			
+<div class="table-responsive s-gift-card-table" ng-form="addGiftRecipientControl.addGiftRecipientForm">			
 	<div ng-show="addGiftRecipientControl.showInvalidRowMessage" class="alert alert-error" role="alert" sw-rbkey="'admin.entity.addorderitemgiftrecipient.invalid'"></div>  
 	<div ng-show="addGiftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{addGiftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="addGiftRecipientControl.getUnassignedCount() == 1">s</span> to assign</strong></div>
 	<div ng-show="addGiftRecipientControl.getUnassignedCount() != addGiftRecipientControl.quantity">
@@ -26,7 +26,7 @@
 					recipients="addGiftRecipientControl.orderItemGiftRecipients" 
 					quantity="addGiftRecipientControl.quantity" 
 					show-invalid-recipient-message="addGiftRecipientControl.showInvalidRowMessage"
-					recipient-row-form="addGiftRecipientControl.recipientRowForm">
+					add-gift-recipient-form="giftRecipientRowControl.addGiftRecipientForm">
 				</tr>
 			</tbody>
 		</table>

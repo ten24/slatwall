@@ -14,8 +14,7 @@ module slatwalladmin {
         public currentGiftRecipient:slatwalladmin.GiftRecipient;
 		public showInvalidAddFormMessage; 
 		public showInvalidRowMessage;
-		public recipientRowForm;
-		public addRecipientForm;
+		public addGiftRecipientForm;
 		public formController;
 		
 		public static $inject=["$slatwall"];
@@ -73,7 +72,7 @@ module slatwalladmin {
 		}
 
 		addGiftRecipient = ():void =>{
-				console.log(this.addRecipientForm);
+				console.log(this.addGiftRecipientForm);
 				this.adding = false; 
 				var giftRecipient = new slatwalladmin.GiftRecipient();
 				angular.extend(giftRecipient,this.currentGiftRecipient);
@@ -132,8 +131,7 @@ module slatwalladmin {
 			"currentgiftRecipient":"=",
 			"showInvalidAddFormMessage":"=?",
 			"showInvalidRowMessage":"=?",
-			"addRecipientForm":"=?",
-			"recipientRowForm":"=?"
+			"addGiftRecipientForm":"=?"
 		};
 		
 		public controller=SWAddOrderItemRecipientController;

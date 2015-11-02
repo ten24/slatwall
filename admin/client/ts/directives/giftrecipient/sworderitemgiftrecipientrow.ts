@@ -16,7 +16,7 @@ angular.module('slatwalladmin')
 				recipients:"=",
 				quantity:"=",
 				showInvalidRecipientMessage:"=",
-				recipientRowForm:"=?",
+				addGiftRecipientorm:"=?",
 				index:"="
 			}, 
 			bindToController: {
@@ -24,12 +24,11 @@ angular.module('slatwalladmin')
 				recipients:"=",
 				quantity:"=",
 				showInvalidRecipientMessage:"=",
-				recipientRowForm:"=?",
+				addGiftRecipientorm:"=?",
 				index:"="
 			},
 			controller: function(){ 
 				this.edit = (recipient:slatwalladmin.GiftRecipient) =>{
-					
 					angular.forEach(this.recipients,(recipient:slatwalladmin.GiftRecipient)=>{
 						recipient.editing=false; 
 					});
