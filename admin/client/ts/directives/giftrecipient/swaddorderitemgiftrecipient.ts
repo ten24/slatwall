@@ -14,8 +14,8 @@ module slatwalladmin {
         public currentGiftRecipient:slatwalladmin.GiftRecipient;
 		public showInvalidAddFormMessage; 
 		public showInvalidRowMessage;
-		public addGiftRecipientForm;
-		public formController;
+		public recipientAddForm;
+		public tableForm;
 		
 		public static $inject=["$slatwall"];
 		
@@ -26,7 +26,6 @@ module slatwalladmin {
 			this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 			this.orderItemGiftRecipients = [];
 			this.showInvalidAddFormMessage = false;
-			console.log(this.formController);
 		}
 		
 		addGiftRecipientFromAccountList = (account:any):void =>{
@@ -72,19 +71,24 @@ module slatwalladmin {
 		}
 
 		addGiftRecipient = ():void =>{
-				console.log(this.addGiftRecipientForm);
-				this.adding = false; 
-				var giftRecipient = new slatwalladmin.GiftRecipient();
-				angular.extend(giftRecipient,this.currentGiftRecipient);
-				this.orderItemGiftRecipients.push(giftRecipient);
-				this.searchText = ""; 
-				this.showInvalidAddFormMessage = true;
+				if(this.recipientAddForm.$valid){
+					this.showInvalidAddFormMessage = true;
+					this.adding = false; 
+					var giftRecipient = new slatwalladmin.GiftRecipient();
+					angular.extend(giftRecipient,this.currentGiftRecipient);
+					this.orderItemGiftRecipients.push(giftRecipient);
+					this.searchText = ""; 
+					this.currentGiftRecipient.reset(); 
+				} else { 
+					this.showInvalidAddFormMessage = true;
+				}
 		}
 		
 		cancelAddRecipient = ():void =>{
 			this.adding = false; 
 			this.currentGiftRecipient.reset();
 			this.searchText = ""; 
+			this.showInvalidAddFormMessage = false;
 		}
 
 		startFormWithName = (searchString = this.searchText):void =>{
@@ -131,7 +135,8 @@ module slatwalladmin {
 			"currentgiftRecipient":"=",
 			"showInvalidAddFormMessage":"=?",
 			"showInvalidRowMessage":"=?",
-			"addGiftRecipientForm":"=?"
+			"tableForm":"=",
+			"recipientAddForm":"="
 		};
 		
 		public controller=SWAddOrderItemRecipientController;
