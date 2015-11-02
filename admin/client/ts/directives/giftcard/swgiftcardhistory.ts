@@ -13,38 +13,41 @@ module slatwalladmin {
 		
 		
 		constructor(private collectionConfigService:CollectionConfig){
-			this.init();
-		} 
 		
-		public init = ():void =>{
 			var initialBalance:number = 0;
 			var totalDebit:number = 0; 
 			
 			var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-			transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime");
+			transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount,debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime");
 			transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
 			transactionConfig.setAllRecords(true);
 			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime");
-			var transactionPromise = transactionConfig.getEntity();
 			
 			var emailBounceConfig = this.collectionConfigService.newCollectionConfig('EmailBounce');
 			emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
 			emailBounceConfig.addFilter('relatedObject', "giftCard");
+			console.log(this.giftCard.giftCardID);
 			emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
 			emailBounceConfig.setAllRecords(true);
 			emailBounceConfig.setOrderBy("rejectedEmailSendTime");
-			var emailBouncePromise = emailBounceConfig.getEntity();
 			
-			emailBouncePromise.then((response)=>{
+			emailBounceConfig.getEntity().then((response)=>{
+				console.log(response);
 				this.bouncedEmails = response.records; 
 			});
 		
-			transactionPromise.then((response)=>{
+			 transactionConfig.getEntity().then((response)=>{
+				console.log(response);
 				this.transactions = response.records; 
 				
 				var initialCreditIndex = this.transactions.length-1;
 				var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
 				var currentBalance = initialBalance; 
+				console.log(initialCreditIndex);
+				console.log(this.transactions[initialCreditIndex].creditAmount);
+				console.log(initialBalance);
+				console.log(currentBalance);
+				
 				angular.forEach(this.transactions, (transaction, index)=>{
 				
 					if(typeof transaction.debitAmount !== "string"){
@@ -88,12 +91,15 @@ module slatwalladmin {
 							}); 
 						}
 					}
+					
+					console.log("transactions");
+					console.log(this.transactions);
 				
 				});
 			});		
 			
 			var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
-			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
+			orderConfig.setDisplayProperties("orderID,orderNumber,orderOpenDateTime,account.firstName,account.lastName,account.accountID,account.primaryEmailAddress.emailAddress");
 			orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 			orderConfig.setAllRecords(true);
 		
