@@ -129,9 +129,10 @@ var slatwalladmin;
                         processObj = response;
                         if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
                             processObj.processObject["meta"] = [];
-                            for (var p in processObj.processObject["PROPERTIES"]) {
+                            for (var _i = 0, _a = processObj.processObject["PROPERTIES"]; _i < _a.length; _i++) {
+                                var p = _a[_i];
                                 angular.forEach(processObj.processObject["entityMeta"], function (n) {
-                                    if (n["NAME"] == processObj.processObject["PROPERTIES"][p]["NAME"]) {
+                                    if (n["NAME"] == p["NAME"]) {
                                         processObj.processObject["meta"].push(n);
                                     }
                                 });
@@ -182,12 +183,13 @@ var slatwalladmin;
                         var cart = _this.CartFactory.GetInstance();
                         var factories = [account, cart];
                         var factoryFound = false;
-                        for (var factory in factories) {
+                        for (var _i = 0; _i < factories.length; _i++) {
+                            var factory = factories[_i];
                             if (!factoryFound) {
-                                angular.forEach(factories[factory], function (val, key) {
+                                angular.forEach(factory, function (val, key) {
                                     if (!factoryFound) {
                                         if (key == fn) {
-                                            $scope.factoryIterator = factories[factory];
+                                            $scope.factoryIterator = factory;
                                             factoryFound = true;
                                         }
                                     }
@@ -221,8 +223,9 @@ var slatwalladmin;
                     /** does either a single or multiple actions */
                     $scope.doAction = function (actionObject) {
                         if (angular.isArray(actionObject)) {
-                            for (var submitFunction in actionObject) {
-                                $scope.iterateFactory(actionObject[submitFunction]);
+                            for (var _i = 0; _i < actionObject.length; _i++) {
+                                var submitFunction = actionObject[_i];
+                                $scope.iterateFactory(submitFunction);
                             }
                         }
                         else if (angular.isString(actionObject)) {

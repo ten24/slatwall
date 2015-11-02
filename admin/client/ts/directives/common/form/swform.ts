@@ -73,14 +73,14 @@ module slatwalladmin {
                     $scope.$timeout = this.$timeout;
                     
                     /** parse the name */
-                    var entityName = $attrs.processObject.split("_")[0];
+                    let entityName = $attrs.processObject.split("_")[0];
                     if (entityName == "Order") { entityName = "Cart" };
-                    var processObject = $attrs.processObject.split("_")[1];
+                    let processObject = $attrs.processObject.split("_")[1];
                     
                     /** check if this form should be hidden until another form submits successfully */
                     $scope.hideUntilHandler = function() {
                         if ($attrs.hideUntil != undefined) {
-                            var e = $element;
+                            let e = $element;
                             e.hide();
                         }
                     } ()
@@ -121,10 +121,10 @@ module slatwalladmin {
                         processObj = response;
                         if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
                             processObj.processObject["meta"] = [];
-                            for (var p in processObj.processObject["PROPERTIES"]) {
+                            for (var p of processObj.processObject["PROPERTIES"]) {
 
                                 angular.forEach(processObj.processObject["entityMeta"], (n) => {
-                                    if (n["NAME"] == processObj.processObject["PROPERTIES"][p]["NAME"]) {
+                                    if (n["NAME"] == p["NAME"]) {
                                         processObj.processObject["meta"].push(n);
                                     }
                                 });
@@ -158,9 +158,9 @@ module slatwalladmin {
                         if (angular.isDefined(result.errors) && result.errors.length != 0) {
                             angular.forEach(result.errors, (val, key) => {
                                 if (angular.isDefined($scope["formCtrl"][$scope.processObject][key])) {
-                                    var primaryElement = $element.find("[error-for='" + key + "']");
+                                    let primaryElement = $element.find("[error-for='" + key + "']");
                                     this.$timeout(function() {
-                                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+                                    primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
                                     }, 0);
                                     $scope["formCtrl"][$scope.processObject][key].$setValidity(key, false);//set field invalid
                                 }
@@ -170,23 +170,23 @@ module slatwalladmin {
                     
                     /** find and clear all errors on form */
                     $scope.clearErrors = function() {
-                        var errorElements = $element.find("[error-for]");
+                        let errorElements = $element.find("[error-for]");
                         errorElements.empty();
                     }
                     
                     /** sets the correct factory to use for submission */
                     $scope.setFactoryIterator = (fn) => {
 
-                        var account = this.AccountFactory.GetInstance();
-                        var cart = this.CartFactory.GetInstance();
-                        var factories = [account, cart];
-                        var factoryFound = false;
-                        for (var factory in factories) {
+                        let account = this.AccountFactory.GetInstance();
+                        let cart = this.CartFactory.GetInstance();
+                        let factories = [account, cart];
+                        let factoryFound = false;
+                        for (var factory of factories) {
                             if (!factoryFound) {
-                                angular.forEach(factories[factory], (val, key) => {
+                                angular.forEach(factory, (val, key) => {
                                     if (!factoryFound) {
                                         if (key == fn) {
-                                            $scope.factoryIterator = factories[factory];
+                                            $scope.factoryIterator = factory;
                                             factoryFound = true;
                                         }
                                     }
@@ -220,8 +220,8 @@ module slatwalladmin {
                     /** does either a single or multiple actions */
                     $scope.doAction = (actionObject) => {
                         if (angular.isArray(actionObject)) {
-                            for (var submitFunction in actionObject) {
-                                $scope.iterateFactory(actionObject[submitFunction]);
+                            for (var submitFunction of actionObject) {
+                                $scope.iterateFactory(submitFunction);
                             }
                         } else if (angular.isString(actionObject)) {
                             $scope.iterateFactory(actionObject);
@@ -237,7 +237,7 @@ module slatwalladmin {
                     
                     /** create the generic submit function */
                     $scope.submit = function() {
-                        var action = $scope.action || $scope.actions;
+                        let action = $scope.action || $scope.actions;
                         $scope.clearErrors();
                         $scope.formData = $scope.getFormData() || "";
                         $scope.doAction(action);

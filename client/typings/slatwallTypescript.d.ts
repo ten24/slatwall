@@ -63,6 +63,7 @@
 /// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
 /// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
 /// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
+/// <reference path="../../admin/client/ts/directives/common/iterator.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swactioncaller.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swactioncallerdropdown.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swanchor.ts" />
