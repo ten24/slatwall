@@ -26,34 +26,32 @@ module slatwalladmin {
 			transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
 			transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
 			transactionConfig.setAllRecords(true);
-			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime|ASC");
+			transactionConfig.setOrderBy("createdDateTime|DESC");
 			
 			var emailBounceConfig = this.collectionConfigService.newCollectionConfig('EmailBounce');
 			emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
 			emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
 			emailBounceConfig.setAllRecords(true);
-			emailBounceConfig.setOrderBy("rejectedEmailSendTime|ASC");
+			emailBounceConfig.setOrderBy("rejectedEmailSendTime|DESC");
 			
 			emailBounceConfig.getEntity().then((response)=>{
 				this.bouncedEmails = response.records; 
 
 				transactionConfig.getEntity().then((response)=>{
 					this.transactions = response.records; 
-					
 					var initialCreditIndex = this.transactions.length-1;
 					var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
 					var currentBalance = initialBalance; 
 					
-					angular.forEach(this.transactions, (transaction, index)=>{
-					
+					for(var i = initialCreditIndex; i>=0; i--){
+						var transaction = this.transactions[i];
 						if(typeof transaction.debitAmount !== "string"){
 							transaction.debit = true;
 							totalDebit += transaction.debitAmount; 
-						} else { 
-							if(index != initialCreditIndex){
+						} else if(typeof transaction.creditAmount !== "string") { 
+							if(i != initialCreditIndex){
 								currentBalance += transaction.creditAmount; 
 							}
-							
 							transaction.debit = false;
 						}
 						
@@ -61,7 +59,7 @@ module slatwalladmin {
 					
 						transaction.balance = tempCurrentBalance;
 						
-						if(index == initialCreditIndex){			
+						if(i == initialCreditIndex){			
 							var emailSent = { 
 								emailSent: true, 
 								debit:false, 
@@ -71,23 +69,24 @@ module slatwalladmin {
 							
 							var activeCard = {
 								activated: true, 
-								debit: false,
+								debit:false,
 								activeAt: transaction.orderPayment_order_orderOpenDateTime,
 								balance: initialBalance
 							}
 							
-							this.transactions.splice(index, 0, activeCard); 
-							this.transactions.splice(index, 0, emailSent); 
+							this.transactions.splice(i, 0, activeCard); 
+							this.transactions.splice(i, 0, emailSent); 
 							
 							if(angular.isDefined(this.bouncedEmails)){
 								angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
 									email.bouncedEmail = true; 
 									email.balance = initialBalance; 
-									this.transactions.splice(index, 0, email);
+									this.transactions.splice(i, 0, email);
 								}); 
 							}
 						}		
-					});
+					}
+					
 				});
 			});		
 			
