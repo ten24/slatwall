@@ -82,8 +82,15 @@ Notes:
 							<!--- Order Item Details --->
 							<cfif rc.processObject.getSku().isGiftCardSku()>
 								<div ng-form="giftRecipientControl.quantityForm">
-									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.$invalid" sw-rbkey="admin.processorder_addorderitem.quantity.invalid"></div>
-									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#" fieldAttributes="ng-model='giftRecipientControl.quantity' sw-numbers-only min-number='giftRecipientControl.getAssignedCount()' max-number='1000'">
+									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.quantity.$invalid" 
+										 sw-rbkey="'admin.processorder_addorderitem.quantity.invalid'"></div>
+									<div class="form-group ">
+										<label for="quantity" class="control-label col-sm-4" style="text-align:left;">Quantity</label>
+										<div class="col-sm-8">
+											<input type="text" ng-bind="giftRecipientControl.quantity" readonly class="hide">
+											<input type="number" value="1" class="form-control" ng-model="giftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" max-number="1000">
+										</div>
+									</div>
 								</div>
 							<cfelse>
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
