@@ -6,20 +6,37 @@ module slatwalladmin {
         public require = "ngModel";
         public scope = {
             ngModel:'=',
-            minNumber:'=?'
+            minNumber:'=?', 
+            maxNumber:'=?'
         }
         
         public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
 
-            modelCtrl.$parsers.push(function (inputValue) {
+
+            modelCtrl.$parsers.push((inputValue) =>{
                 var modelValue = modelCtrl.$modelValue;
-                
                 if(inputValue != "" && !isNaN(Number(inputValue))){ 
-                    if((angular.isDefined($scope.minNumber) && Number(inputValue) > $scope.minNumber) || !angular.isDefined($scope.minNumber)){
-                        modelValue = Number(inputValue);
-                    } else if (angular.isDefined($scope.minNumber)){
-                        modelValue = $scope.minNumber;
+                    if(angular.isDefined($scope.minNumber)){
+                        if(Number(inputValue) >= $scope.minNumber || !angular.isDefined($scope.minNumber)){
+                            modelCtrl.$setValidity("minNumber", true);
+                        } else if (angular.isDefined($scope.minNumber)){
+                            modelCtrl.$setValidity("minNumber", false);
+                        }
                     }
+                    if(angular.isDefined($scope.maxNumber)){
+                        if(Number(inputValue) <= $scope.maxNumber || !angular.isDefined($scope.maxNumber)){
+                            modelCtrl.$setValidity("maxNumber", true);
+                        } else if (angular.isDefined($scope.maxNumber)){
+                            modelCtrl.$setValidity("maxNumber", false);
+                        }
+                    }
+                }
+                console.log(modelCtrl);
+                if(modelCtrl.$valid){
+                    modelValue = Number(inputValue);   
+                } else { 
+                    modelValue = $scope.minNumber;
+                    modelCtrl.$setViewValue($scope.minNumber);
                 }
 
                 return modelValue;
