@@ -61,7 +61,7 @@ Notes:
 	</cfquery>
 
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update site to set sitecode to siteID">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update autofulfillflag for fulfillment methods">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 
