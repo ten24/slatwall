@@ -26,7 +26,7 @@ var slatwalladmin;
                         }
                     });
                     _this.currentBalance = _this.initialBalance - totalDebit;
-                    _this.balancePercentage = ((_this.currentBalance / _this.initialBalance) * 100);
+                    _this.balancePercentage = parseInt(((_this.currentBalance / _this.initialBalance) * 100).toString());
                 });
             };
             this.init();
@@ -66,4 +66,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/giftcard/swgiftcardbalance.js.map
+//# sourceMappingURL=swgiftcardbalance.js.map

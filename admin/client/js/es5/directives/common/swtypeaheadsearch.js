@@ -138,4 +138,4 @@ var slatwalladmin;
         }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swtypeaheadsearch.js.map
+//# sourceMappingURL=swtypeaheadsearch.js.map

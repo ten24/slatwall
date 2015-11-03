@@ -81,4 +81,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('productBundleService', ProductBundleService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/productbundleservice.js.map
+//# sourceMappingURL=productbundleservice.js.map

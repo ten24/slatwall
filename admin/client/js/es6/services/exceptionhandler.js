@@ -52,4 +52,4 @@ var logger;
     angular.module('logger', []).factory('$exceptionHandler', ['$injector', ($injector) => new logger.ExceptionHandler($injector)]);
 })(logger || (logger = {})); //<--end module
 
-//# sourceMappingURL=../services/exceptionhandler.js.map
+//# sourceMappingURL=exceptionhandler.js.map

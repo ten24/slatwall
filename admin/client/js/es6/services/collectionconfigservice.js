@@ -405,4 +405,4 @@ var slatwalladmin;
         .factory('collectionConfigService', ['$slatwall', 'utilityService', ($slatwall, utilityService) => new CollectionConfig($slatwall, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/collectionconfigservice.js.map
+//# sourceMappingURL=collectionconfigservice.js.map

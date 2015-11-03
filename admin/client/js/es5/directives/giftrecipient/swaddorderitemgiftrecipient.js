@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
@@ -36,20 +38,29 @@ var slatwalladmin;
                 return unassignedCount;
             };
             this.addGiftRecipient = function () {
+                if (_this.recipientAddForm.$valid) {
+                    _this.showInvalidAddFormMessage = true;
+                    _this.adding = false;
+                    var giftRecipient = new slatwalladmin.GiftRecipient();
+                    angular.extend(giftRecipient, _this.currentGiftRecipient);
+                    _this.orderItemGiftRecipients.push(giftRecipient);
+                    _this.searchText = "";
+                    _this.currentGiftRecipient.reset();
+                }
+                else {
+                    _this.showInvalidAddFormMessage = true;
+                }
+            };
+            this.cancelAddRecipient = function () {
                 _this.adding = false;
-                var giftRecipient = new slatwalladmin.GiftRecipient();
-                angular.extend(giftRecipient, _this.currentGiftRecipient);
-                _this.orderItemGiftRecipients.push(giftRecipient);
-                _this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+                _this.currentGiftRecipient.reset();
                 _this.searchText = "";
+                _this.showInvalidAddFormMessage = false;
             };
             this.startFormWithName = function (searchString) {
                 if (searchString === void 0) { searchString = _this.searchText; }
                 _this.adding = true;
-                if (searchString == "") {
-                    _this.currentGiftRecipient.firstName = searchString;
-                }
-                else {
+                if (searchString != "") {
                     _this.currentGiftRecipient.firstName = searchString;
                     _this.searchText = "";
                 }
@@ -74,6 +85,7 @@ var slatwalladmin;
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
             this.orderItemGiftRecipients = [];
+            this.showInvalidAddFormMessage = false;
         }
         SWAddOrderItemRecipientController.$inject = ["$slatwall"];
         return SWAddOrderItemRecipientController;
@@ -83,6 +95,7 @@ var slatwalladmin;
         function SWAddOrderItemGiftRecipient($slatwall, partialsPath) {
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
+            this.require = "^form";
             this.restrict = "EA";
             this.transclude = true;
             this.scope = {};
@@ -91,7 +104,11 @@ var slatwalladmin;
                 "orderItemGiftRecipients": "=",
                 "adding": "=",
                 "searchText": "=",
-                "currentgiftRecipient": "="
+                "currentgiftRecipient": "=",
+                "showInvalidAddFormMessage": "=?",
+                "showInvalidRowMessage": "=?",
+                "tableForm": "=",
+                "recipientAddForm": "="
             };
             this.controller = SWAddOrderItemRecipientController;
             this.controllerAs = "addGiftRecipientControl";
@@ -109,4 +126,4 @@ var slatwalladmin;
         }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/giftrecipient/swaddorderitemgiftrecipient.js.map
+//# sourceMappingURL=swaddorderitemgiftrecipient.js.map

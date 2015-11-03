@@ -53,4 +53,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swEntityActionBar', ['partialsPath', (partialsPath) => new SWEntityActionBar(partialsPath)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swentityactionbar.js.map
+//# sourceMappingURL=swentityactionbar.js.map
