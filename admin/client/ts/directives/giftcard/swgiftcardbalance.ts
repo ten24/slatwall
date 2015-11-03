@@ -42,7 +42,7 @@ module slatwalladmin {
 					});
 					this.currentBalance = this.initialBalance - totalDebit; 
 		
-					this.balancePercentage = ((this.currentBalance / this.initialBalance)*100);					
+					this.balancePercentage = parseInt(((this.currentBalance / this.initialBalance)*100).toString());					
 				});	
 			}
 		}
