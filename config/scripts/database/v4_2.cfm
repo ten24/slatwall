@@ -53,11 +53,11 @@ Notes:
 <cftry>
 
 	<cfquery name="local.updateautofulfilltrue" dbtype="query">
-		update SwFulfillmentMethod set autoFulfillFlag=1 where fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> or fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto">
+		update SwFulfillmentMethod set autoFulfillFlag=1 where fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> or fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"> and autoFulfillFlag is null
 	</cfquery>
 
 	<cfquery name="local.updateautofulfillfalse" dbtype="query">
-		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto">
+		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"> and autoFulfillFlag is null
 	</cfquery>
 
 	<cfcatch>
