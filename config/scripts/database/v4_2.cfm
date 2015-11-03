@@ -46,30 +46,32 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<cfset local.scriptHasErrors = false />
+
+<!--- Update SwContent create materialized paths for title called titlePath based on existing title --->
+<cftry>
+
+	<cfquery name="local.updateautofulfilltrue" dbtype="query">
+		update SwFulfillmentMethod set autoFulfillFlag=1 where fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> or fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"> and autoFulfillFlag is null
+	</cfquery>
+
+	<cfquery name="local.updateautofulfillfalse" dbtype="query">
+		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"> and autoFulfillFlag is null
+	</cfquery>
+
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update autofulfillflag for fulfillment methods">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
 
 
-<cfparam name="rc.giftCardSmartList" type="any" />
+</cftry>
 
-<cfoutput>
 
-	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
-
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-
-	<hb:HibachiListingDisplay smartList="#rc.giftCardSmartList#"
-							  recordDetailAction="admin:entity.detailgiftcard"
-							  recordEditAction="admin:entity.editgiftcard">
-
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
-</cfoutput>
+<cfif local.scriptHasErrors>
+	<cflog file="Slatwall" text="General Log - Part of Script v4_2 had errors when running">
+	<cfthrow detail="Part of Script v4_1 had errors when running">
+<cfelse>
+	<cflog file="Slatwall" text="General Log - Script v4_2 has run with no errors">
+</cfif>

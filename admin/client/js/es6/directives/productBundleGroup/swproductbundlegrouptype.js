@@ -123,7 +123,7 @@ angular.module('slatwalladmin')
                         var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
                         promise.then(function (response) {
                             //Calls close function
-                            if (promise.valid) {
+                            if (promise.$$state.status) {
                                 $scope.closeAddScreen();
                             }
                         });

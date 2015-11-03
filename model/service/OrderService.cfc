@@ -592,6 +592,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
 		var totalQuantity = 0;
         var count = 0;
+       
         if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= request.context["quantity"]){
             while(totalQuantity < request.context["quantity"]){
                 var currentRecipient = count & "recipient";
@@ -832,6 +833,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderPayment in arguments.order.getOrderPayments()) {
             if(orderPayment.getPaymentMethodType() eq "giftCard"){
                var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
+				
 				if(totalReceived gt 0) {
 					var transactionData = {
 						amount = precisionEvaluate(totalReceived * -1),
@@ -2232,7 +2234,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.orderPayment );
 
 		// If we are trying to charge multiple pre-authorizations at once we may need to run multiple transacitons
-
 		if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations) gt 1 && arguments.processObject.getAmount() gt uncapturedAuthorizations[1].chargeableAmount) {
 			var totalAmountCharged = 0;
 
@@ -2270,6 +2271,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 		} else {
+
 			// Create a new payment transaction
 			var paymentTransaction = getPaymentService().newPaymentTransaction();
 
@@ -2286,13 +2288,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				transactionType = arguments.processObject.getTransactionType(),
 				amount = arguments.processObject.getAmount()
 			};
+
 			if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations)) {
 				transactionData.preAuthorizationCode = uncapturedAuthorizations[1].authorizationCode;
 				transactionData.preAuthorizationProvirederTransactionID = uncapturedAuthorizations[1].providerTransactionID;
 			}
 
-			// Run the transaction only if it hasn't already been processed
-            if(!arguments.orderPayment.getGiftCardPaymentProcessedFlag()){
+			// Run the transaction only if it hasn't already been processed or if it's an order cancellation
+            if(!arguments.orderPayment.getGiftCardPaymentProcessedFlag() || transactionData.amount < 0){
                 paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 			}
 

@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
@@ -35,19 +37,28 @@ var slatwalladmin;
                 return unassignedCount;
             };
             this.addGiftRecipient = () => {
+                if (this.recipientAddForm.$valid) {
+                    this.showInvalidAddFormMessage = true;
+                    this.adding = false;
+                    var giftRecipient = new slatwalladmin.GiftRecipient();
+                    angular.extend(giftRecipient, this.currentGiftRecipient);
+                    this.orderItemGiftRecipients.push(giftRecipient);
+                    this.searchText = "";
+                    this.currentGiftRecipient.reset();
+                }
+                else {
+                    this.showInvalidAddFormMessage = true;
+                }
+            };
+            this.cancelAddRecipient = () => {
                 this.adding = false;
-                var giftRecipient = new slatwalladmin.GiftRecipient();
-                angular.extend(giftRecipient, this.currentGiftRecipient);
-                this.orderItemGiftRecipients.push(giftRecipient);
-                this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+                this.currentGiftRecipient.reset();
                 this.searchText = "";
+                this.showInvalidAddFormMessage = false;
             };
             this.startFormWithName = (searchString = this.searchText) => {
                 this.adding = true;
-                if (searchString == "") {
-                    this.currentGiftRecipient.firstName = searchString;
-                }
-                else {
+                if (searchString != "") {
                     this.currentGiftRecipient.firstName = searchString;
                     this.searchText = "";
                 }
@@ -72,6 +83,7 @@ var slatwalladmin;
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
             this.orderItemGiftRecipients = [];
+            this.showInvalidAddFormMessage = false;
         }
     }
     SWAddOrderItemRecipientController.$inject = ["$slatwall"];
@@ -80,6 +92,7 @@ var slatwalladmin;
         constructor($slatwall, partialsPath) {
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
+            this.require = "^form";
             this.restrict = "EA";
             this.transclude = true;
             this.scope = {};
@@ -88,7 +101,11 @@ var slatwalladmin;
                 "orderItemGiftRecipients": "=",
                 "adding": "=",
                 "searchText": "=",
-                "currentgiftRecipient": "="
+                "currentgiftRecipient": "=",
+                "showInvalidAddFormMessage": "=?",
+                "showInvalidRowMessage": "=?",
+                "tableForm": "=",
+                "recipientAddForm": "="
             };
             this.controller = SWAddOrderItemRecipientController;
             this.controllerAs = "addGiftRecipientControl";

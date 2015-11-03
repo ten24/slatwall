@@ -10,66 +10,64 @@ var slatwalladmin;
                 var initialBalance = 0;
                 var totalDebit = 0;
                 var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-                transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime");
+                transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
                 transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
                 transactionConfig.setAllRecords(true);
-                transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime");
-                var transactionPromise = transactionConfig.getEntity();
+                transactionConfig.setOrderBy("createdDateTime|DESC");
                 var emailBounceConfig = this.collectionConfigService.newCollectionConfig('EmailBounce');
                 emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
-                emailBounceConfig.addFilter('relatedObject', "giftCard");
                 emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
                 emailBounceConfig.setAllRecords(true);
-                emailBounceConfig.setOrderBy("rejectedEmailSendTime");
-                var emailBouncePromise = emailBounceConfig.getEntity();
-                emailBouncePromise.then((response) => {
+                emailBounceConfig.setOrderBy("rejectedEmailSendTime|DESC");
+                emailBounceConfig.getEntity().then((response) => {
                     this.bouncedEmails = response.records;
-                });
-                transactionPromise.then((response) => {
-                    this.transactions = response.records;
-                    var initialCreditIndex = this.transactions.length - 1;
-                    var initialBalance = this.transactions[initialCreditIndex].creditAmount;
-                    var currentBalance = initialBalance;
-                    angular.forEach(this.transactions, (transaction, index) => {
-                        if (typeof transaction.debitAmount !== "string") {
-                            transaction.debit = true;
-                            totalDebit += transaction.debitAmount;
-                        }
-                        else {
-                            if (index != initialCreditIndex) {
-                                currentBalance += transaction.creditAmount;
+                    transactionConfig.getEntity().then((response) => {
+                        this.transactions = response.records;
+                        var initialCreditIndex = this.transactions.length - 1;
+                        var initialBalance = this.transactions[initialCreditIndex].creditAmount;
+                        var currentBalance = initialBalance;
+                        for (var i = initialCreditIndex; i >= 0; i--) {
+                            var transaction = this.transactions[i];
+                            if (typeof transaction.debitAmount !== "string") {
+                                transaction.debit = true;
+                                totalDebit += transaction.debitAmount;
                             }
-                            transaction.debit = false;
-                        }
-                        var tempCurrentBalance = currentBalance - totalDebit;
-                        transaction.balance = tempCurrentBalance;
-                        if (index == initialCreditIndex) {
-                            var emailSent = {
-                                emailSent: true,
-                                debit: false,
-                                sentAt: transaction.orderPayment_order_orderOpenDateTime,
-                                balance: initialBalance
-                            };
-                            var activeCard = {
-                                activated: true,
-                                debit: false,
-                                activeAt: transaction.orderPayment_order_orderOpenDateTime,
-                                balance: initialBalance
-                            };
-                            this.transactions.splice(index, 0, activeCard);
-                            this.transactions.splice(index, 0, emailSent);
-                            if (angular.isDefined(this.bouncedEmails)) {
-                                angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex) => {
-                                    email.bouncedEmail = true;
-                                    email.balance = initialBalance;
-                                    this.transactions.splice(index, 0, email);
-                                });
+                            else if (typeof transaction.creditAmount !== "string") {
+                                if (i != initialCreditIndex) {
+                                    currentBalance += transaction.creditAmount;
+                                }
+                                transaction.debit = false;
+                            }
+                            var tempCurrentBalance = currentBalance - totalDebit;
+                            transaction.balance = tempCurrentBalance;
+                            if (i == initialCreditIndex) {
+                                var emailSent = {
+                                    emailSent: true,
+                                    debit: false,
+                                    sentAt: transaction.orderPayment_order_orderOpenDateTime,
+                                    balance: initialBalance
+                                };
+                                var activeCard = {
+                                    activated: true,
+                                    debit: false,
+                                    activeAt: transaction.orderPayment_order_orderOpenDateTime,
+                                    balance: initialBalance
+                                };
+                                this.transactions.splice(i, 0, activeCard);
+                                this.transactions.splice(i, 0, emailSent);
+                                if (angular.isDefined(this.bouncedEmails)) {
+                                    angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex) => {
+                                        email.bouncedEmail = true;
+                                        email.balance = initialBalance;
+                                        this.transactions.splice(i, 0, email);
+                                    });
+                                }
                             }
                         }
                     });
                 });
                 var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
-                orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
+                orderConfig.setDisplayProperties("orderID,orderNumber,orderOpenDateTime,account.firstName,account.lastName,account.accountID,account.primaryEmailAddress.emailAddress");
                 orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
                 orderConfig.setAllRecords(true);
                 orderConfig.getEntity().then((response) => {

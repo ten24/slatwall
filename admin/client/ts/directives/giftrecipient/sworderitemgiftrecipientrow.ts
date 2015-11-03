@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 angular.module('slatwalladmin')
 .directive('swOrderItemGiftRecipientRow', [
 	'$templateCache',
@@ -13,17 +15,22 @@ angular.module('slatwalladmin')
 				recipient:"=",
 				recipients:"=",
 				quantity:"=",
+				showInvalidRecipientMessage:"=",
+				tableForm:"=?",
 				index:"="
 			}, 
 			bindToController: {
 				recipient:"=",
 				recipients:"=",
-				quantity:"="
+				quantity:"=",
+				showInvalidRecipientMessage:"=",
+				tableForm:"=?",
+				index:"="
 			},
 			controller: function(){ 
-				this.edit = (recipient:any) =>{
-					
-					angular.forEach(this.recipients,(recipient)=>{
+				
+				this.edit = (recipient:slatwalladmin.GiftRecipient) =>{	
+					angular.forEach(this.recipients,(recipient:slatwalladmin.GiftRecipient)=>{
 						recipient.editing=false; 
 					});
 					if(!recipient.editing){
@@ -31,12 +38,17 @@ angular.module('slatwalladmin')
 					}
 				}
 
-				this.delete = (recipient:any) =>{
+				this.delete = (recipient:slatwalladmin.GiftRecipient) =>{
 					this.recipients.splice(this.recipients.indexOf(recipient), 1);
 				}	
 				
-				this.saveGiftRecipient = (recipient:any) =>{
-						recipient.editing = false; 
+				this.saveGiftRecipient = (recipient:slatwalladmin.GiftRecipient) =>{
+					if(this.tableForm.$valid){
+						this.showInvalidRecipientMessage = false; 
+						recipient.editing = false; 	
+					} else { 
+						this.showInvalidRecipientMessage = true;
+					}
 				}
 				
 				
@@ -51,7 +63,7 @@ angular.module('slatwalladmin')
 				this.getUnassignedCount = ():number =>{
 					var unassignedCount = this.getQuantity(); 
 				
-					angular.forEach(this.recipients,(recipient)=>{
+					angular.forEach(this.recipients,(recipient:slatwalladmin.GiftRecipient)=>{
 						unassignedCount -= recipient.quantity;
 					});
 					
