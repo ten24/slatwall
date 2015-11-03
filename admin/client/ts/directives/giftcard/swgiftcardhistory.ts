@@ -36,7 +36,7 @@ module slatwalladmin {
 			
 			emailBounceConfig.getEntity().then((response)=>{
 				this.bouncedEmails = response.records; 
-				console.log(this.bouncedEmails);
+
 				transactionConfig.getEntity().then((response)=>{
 					this.transactions = response.records; 
 					

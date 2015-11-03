@@ -74,11 +74,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 
 	public string function getGiftCardPin(){
 		if(isNull(variables.giftCardPin)){
-			var pin = "";
-			for(var i=1; i<4; i++){
-				pin = pin & RandRange(0, 9);
-			}
-			return pin;
+			return RandRange(100, 999);
 		}
 		return variables.giftCardPin;
 	}

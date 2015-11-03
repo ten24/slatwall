@@ -30,7 +30,7 @@ module slatwalladmin {
                             modelCtrl.$setValidity("maxNumber", false);
                         }
                     }
-                    console.log(modelCtrl);
+
                     if(modelCtrl.$valid){
                         modelValue = Number(inputValue);  
                     } else { 
