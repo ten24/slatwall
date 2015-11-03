@@ -82,7 +82,7 @@ Notes:
 							<!--- Order Item Details --->
 							<cfif rc.processObject.getSku().isGiftCardSku()>
 								<div ng-form="giftRecipientControl.quantityForm">
-									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.quantity.$invalid" 
+									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.$invalid" 
 										 sw-rbkey="'admin.processorder_addorderitem.quantity.invalid'"></div>
 									<div class="form-group ">
 										<label for="quantity" class="control-label col-sm-4" style="text-align:left;">Quantity</label>

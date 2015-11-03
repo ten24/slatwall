@@ -30,13 +30,11 @@ module slatwalladmin {
                             modelCtrl.$setValidity("maxNumber", false);
                         }
                     }
-
+                    console.log(modelCtrl);
                     if(modelCtrl.$valid){
                         modelValue = Number(inputValue);  
-                        modelCtrl.$setViewValue(inputValue.toString());
                     } else { 
                         modelValue = $scope.minNumber;
-                        modelCtrl.$setViewValue($scope.minNumber.toString()); 
                     }
                 }
 
