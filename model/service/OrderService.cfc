@@ -835,11 +835,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
 				
 				if(totalReceived gt 0) {
-					var processObject = orderPayment.getProcessObject("createTransaction");
-					processObject.setAmount(precisionEvaluate(totalReceived * -1));
-					processObject.settransactionType('giftCard');
-
-					this.processOrderPayment(orderPayment, processObject, 'createTransaction');
+					var transactionData = {
+						amount = precisionEvaluate(totalReceived * -1),
+						transactionType = 'giftCard'
+					};
+					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
 				}
             } else if(orderPayment.getStatusCode() eq "opstActive") {
 				var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
