@@ -169,18 +169,6 @@ Notes:
 
 	<cfscript>
 
-	public string function getEmailTemplateOptionIDList( required any entity){
-		var templateSmartList = this.getEmailTemplateSmartList();
-		templateSmartList.addFilter('emailTemplateObject', arguments.entity);
-		templateSmartList.addSelect('emailTemplateID', 'emailTemplateID');
-		var records = templateSmartList.getRecords(); 
-		var IDList = "";
-		for(var i=1; i<=arrayLen(records); i++){
-			IDList = listAppend(IDList, records[i]['emailTemplateID']);
-		}
-		return IDList; 
-	}
-
 	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate ) {
 		var email = this.newEmail();
 		email = this.processEmail(email, arguments, 'createFromTemplate');

@@ -1888,14 +1888,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 
 
-				if(arguments.orderDelivery.getFulfillmentMethodType() == "email"){
+				if(arguments.orderDelivery.getOrderFulfillment().getFulfillmentMethodType() == "email"){
 					var email = getEmailService().newEmail(); 
 					var emailData = {
-						emailTemplateID = getSettingService().getSettingValue(settingName='skuEmailFulfillmentTemplate', object=orderDeliveryItem.getSku())
+						emailTemplateID = getSettingService().getSettingValue(settingName='skuEmailFulfillmentTemplate', object=orderDeliveryItem.getSku()),
+						sku = orderDeliveryItem.getSku()
 					};
 					var email = getEmailService().processEmail_createFromTemplate(email, emailData); 
 					email.setEmailTo(arguments.orderDelivery.getOrderFulfillment().getEmailAddress());
-					email = getEmailService().processEmail(email, {}, 'addToQueue');
+					email = getEmailService().sendEmail(email);
 				}
 
 				if(!isNull(order) && order.hasErrors()){

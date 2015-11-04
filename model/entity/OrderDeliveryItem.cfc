@@ -71,6 +71,7 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 
 	// Non-Persistent Properties
 	property name="quantityReturned" persistent="false";
+	property name="sku" persistent="false" type="any";
 
 	public numeric function getQuantityReturned() {
 		if(!structKeyExists(variables, "quantityReturned")) {
@@ -80,6 +81,13 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 			}
 		}
 		return variables.quantityReturned;
+	}
+
+	public any function getSku() {
+		if(!isNull(this.getOrderItem())){
+			return this.getOrderItem().getSku();
+		}
+		return false; 
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
