@@ -33,14 +33,13 @@ angular.module('slatwalladmin').directive('swConfirm',
  ['$slatwall', '$log','$compile','$modal','partialsPath',   
     function($slatwall, $log, $compile, $modal, partialsPath){
         
-    		var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText, callback){
+    		var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText){
     			
     			/* Keys */
     			var confirmKey = "[confirm]";
     			var messageKey = "[message]";
     			var noKey = "[no]";
     			var yesKey = "[yes]";
-    			var callbackKey = "[callback]";
     			var swRbKey = "sw-rbkey=";
     			
     			/* Values */
@@ -48,7 +47,6 @@ angular.module('slatwalladmin').directive('swConfirm',
     			var messageVal = "<message>";
     			var noVal = "<no>";
     			var yesVal = "<yes>";
-    			var callbackVal = "<callback>";
     			
     			/* Parse Tags */
     			var startTag = "\"'";
@@ -85,8 +83,8 @@ angular.module('slatwalladmin').directive('swConfirm',
     				parsedKeyString 	= templateString.replace(confirmKey, confirmText)
     																	  .replace(messageText, messageText)
     																	  .replace(noKey, noText)
-    																	  .replace(yesKey, yesText)
-    																	  .replace(callback, callback);
+    																	  .replace(yesKey, yesText);
+    																	  
     				$log.debug(finishedString);
     				finishedString	 = parsedKeyString.replace(confirm, empty)
     																	  .replace(messageVal, empty)
@@ -104,8 +102,7 @@ angular.module('slatwalladmin').directive('swConfirm',
         			finishedString	= parsedKeyString.replace(confirmKey, empty)
         																 .replace(messageKey, empty)
         																 .replace(noKey, empty)
-        																 .replace(yesKey, empty)
-        																 .replace(callbackKey, callback);
+        																 .replace(yesKey, empty);
         			$log.debug(finishedString);
         			return finishedString;
         		}
@@ -128,8 +125,7 @@ angular.module('slatwalladmin').directive('swConfirm',
                 	   	var noText  = attr.noText  								|| "define.no";
                     var confirmText = attr.confirmText 					|| "define.delete";
                     var messageText = attr.messageText				|| "define.delete_message";
-                    var callback = scope.callback    							|| "onSuccess()";
-                    var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText, callback);
+                    var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText);
 
                     var modalInstance = $modal.open({
                       template: templateString,
