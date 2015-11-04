@@ -69,7 +69,7 @@ angular.module('slatwalladmin').directive('swConfirm',
                         "<div class='modal-body' [message]>" + "<message>" + "</div>" +
                         	"<div class='modal-footer'>" +
                         	"<button class='btn btn-sm btn-default btn-inverse' ng-click='cancel()' [no]><no></button>" +
-                        	"<button class='btn btn-sm btn-default btn-primary' ng-click='[callback]' [yes]><yes></button></div></div></div>";
+                        	"<button class='btn btn-sm btn-default btn-primary' ng-click='fireCallback(callback)' [yes]><yes></button></div></div></div>";
     				
     			
     			
@@ -118,8 +118,8 @@ angular.module('slatwalladmin').directive('swConfirm',
         	        },
             link: function (scope, element, attr) {
             	/* Grab the template and build the modal on click */
-            $log.debug("Modal is: ");
-            $log.debug($modal);
+                $log.debug("Modal is: ");
+                $log.debug($modal);
             	element.bind('click', function() {
             			/* Default Values */
                 	   	var useRbKey = attr.useRbKey   						|| "false";
@@ -128,12 +128,13 @@ angular.module('slatwalladmin').directive('swConfirm',
                 	   	var noText  = attr.noText  								|| "define.no";
                     var confirmText = attr.confirmText 					|| "define.delete";
                     var messageText = attr.messageText				|| "define.delete_message";
-                    var callback = attr.callback    							|| "onSuccess()";
+                    var callback = scope.callback    							|| "onSuccess()";
                     var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText, callback);
-                      
+
                     var modalInstance = $modal.open({
                       template: templateString,
-                      controller: 'confirmationController'
+                      controller: 'confirmationController',
+                      scope: scope
                     });
                     
                     /**
