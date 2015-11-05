@@ -928,12 +928,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-				subtotal = precisionEvaluate(subtotal + getOrderItems()[i].getExtendedPrice());
-			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				subtotal = precisionEvaluate(subtotal - getOrderItems()[i].getExtendedPrice());
-			} else {
-				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
+			//Don't count child order items twice
+			if(isNull(getOrderItems()[i].getParentOrderItem()) || !isNull(getOrderItems()[i]).getProductBundleGroup()){
+				if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
+					subtotal = precisionEvaluate(subtotal + getOrderItems()[i].getExtendedPrice());
+				} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
+					subtotal = precisionEvaluate(subtotal - getOrderItems()[i].getExtendedPrice());
+				} else {
+					throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
+				}
 			}
 		}
 		return subtotal;
