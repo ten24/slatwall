@@ -138,7 +138,6 @@ angular.module('slatwalladmin').directive('swConfirm',
                      */
                     modalInstance.result.then(function(result) {
                         $log.debug("Result:" + result);
-                    		scope.callback();
                     		return true;
                     }, function() {
                         //There was an error
