@@ -8,8 +8,12 @@
 	
 	<div class="s-results" ng-hide="swTypeaheadSearch.hideSearch == null">
 		<!-- Only show if there is text -->
+<<<<<<< HEAD
 		
 		<button type="button" class="btn btn-primary" ng-hide="swTypeaheadSearch.searchText.length == null || swTypeaheadSearch.searchText.length == 0" ng-hide="swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.addButtonItem(item)">
+=======
+		<button type="button" class="btn btn-primary" ng-show="swTypeaheadSearch.searchText.length" ng-click="swTypeaheadSearch.addButtonItem(item)">
+>>>>>>> 97eadf515570659dbb0ef9fbcf1a579b83bcd84e
 			<i class="fa fa-plus" ></i> Add "<span ng-bind="swTypeaheadSearch.searchText"></span>"
 		</button>
 		<ul ng-show="swTypeaheadSearch.searchText.length > 0" ng-hide="swTypeaheadSearch.hideSearch" class="dropdown-menu">

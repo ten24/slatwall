@@ -141,6 +141,7 @@ module slatwalladmin{
                 columnsConfig: angular.toJson(this.columns),
                 filterGroupsConfig: angular.toJson(this.filterGroups),
                 joinsConfig: angular.toJson(this.joins),
+                orderByConfig:angular.toJson(this.orderBy), 
                 groupBysConfig: angular.toJson(this.groupBys),
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
@@ -328,9 +329,9 @@ module slatwalladmin{
                 var propertyMetaData = this.$slatwall.getEntityMetaData(lastEntityName)[this.utilityService.listLast(propertyIdentifier,'.')];
                 var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
                 //if is a one-to-many propertyKey then add a groupby
-                if(isOneToMany){
-                    this.addGroupBy(alias);
-                }
+//                if(isOneToMany){
+//                    this.addGroupBy(alias);
+//                }
                 
                 column.propertyIdentifier = this.buildPropertyIdentifier(alias,propertyIdentifier);
                 var join = new Join(propertyIdentifier,column.propertyIdentifier);
@@ -444,9 +445,9 @@ module slatwalladmin{
         //orderByList in this form: "property|direction" concrete: "skuName|ASC"
         setOrderBy = (orderByList)=>{
             var orderBys = orderByList.split(',');
-            for(var orderBy in orderBys){
+            angular.forEach(orderBys,(orderBy)=>{
                 this.addOrderBy(orderBy);
-            }
+            });
         };
         
         addOrderBy = (orderByString)=>{
@@ -458,7 +459,7 @@ module slatwalladmin{
             var direction = this.utilityService.listLast(orderByString,'|');
             
             var orderBy = {
-                propertyIdentifier:propertyIdentifier,
+                propertyIdentifier:this.formatCollectionName(propertyIdentifier),
                 direction:direction
             };
             

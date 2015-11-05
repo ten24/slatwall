@@ -500,7 +500,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                     }
                                 }
                             } else {
-
+                            	
                                 var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
 
                                 giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());

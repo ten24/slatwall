@@ -65,13 +65,11 @@ Notes:
 							  recordDetailAction="admin:entity.detailgiftcard"
 							  recordEditAction="admin:entity.editgiftcard">
 
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
         <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
         <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>
-
 </cfoutput>

@@ -96,14 +96,16 @@ var slatwalladmin;
                 if (scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount) {
                     if (scope.swExpandableRecord.recordValue) {
                         var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
-                        var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
-                        angular.forEach(multiselectIdPathsArray, function (multiselectIdPath) {
-                            var position = _this.utilityService.listFind(multiselectIdPath, id, '/');
-                            var multiselectPathLength = multiselectIdPath.split('/').length;
-                            if (position !== -1 && position < multiselectPathLength - 1) {
-                                scope.swExpandableRecord.toggleChild();
-                            }
-                        });
+                        if (scope.swExpandableRecord.multiselectIdPaths && scope.swExpandableRecord.multiselectIdPaths.length) {
+                            var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
+                            angular.forEach(multiselectIdPathsArray, function (multiselectIdPath) {
+                                var position = _this.utilityService.listFind(multiselectIdPath, id, '/');
+                                var multiselectPathLength = multiselectIdPath.split('/').length;
+                                if (position !== -1 && position < multiselectPathLength - 1) {
+                                    scope.swExpandableRecord.toggleChild();
+                                }
+                            });
+                        }
                     }
                     $templateRequest(partialsPath + "expandablerecord.html").then(function (html) {
                         var template = angular.element(html);

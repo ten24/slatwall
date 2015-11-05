@@ -13,15 +13,15 @@
 /// <reference path="../../admin/client/ts/controllers/preprocessproduct_create.ts" />
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
 /// <reference path="../../admin/client/ts/filters/percentage.ts" />
-/// <reference path="../../admin/client/ts/model/alert.ts" />
-/// <reference path="../../admin/client/ts/model/giftCard.ts" />
-/// <reference path="../../admin/client/ts/model/giftRecipient.ts" />
-/// <reference path="../../admin/client/ts/model/pagedialog.ts" />
 /// <reference path="../../admin/client/ts/modules/hibachi.ts" />
 /// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
 /// <reference path="../../admin/client/ts/modules/ngslatwall.ts" />
 /// <reference path="../../admin/client/ts/modules/ngslatwallmodel.ts" />
 /// <reference path="../../admin/client/ts/modules/slatwalladmin.ts" />
+/// <reference path="../../admin/client/ts/model/alert.ts" />
+/// <reference path="../../admin/client/ts/model/giftCard.ts" />
+/// <reference path="../../admin/client/ts/model/giftRecipient.ts" />
+/// <reference path="../../admin/client/ts/model/pagedialog.ts" />
 /// <reference path="../../admin/client/ts/services/alertservice.ts" />
 /// <reference path="../../admin/client/ts/services/baseservice.ts" />
 /// <reference path="../../admin/client/ts/services/collectionconfigservice.ts" />
@@ -56,10 +56,13 @@
 /// <reference path="../../admin/client/ts/directives/collection/swfiltergroupitem.ts" />
 /// <reference path="../../admin/client/ts/directives/collection/swfiltergroups.ts" />
 /// <reference path="../../admin/client/ts/directives/collection/swfilteritem.ts" />
+<<<<<<< HEAD
 /// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
 /// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
 /// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
 /// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
+=======
+>>>>>>> 97eadf515570659dbb0ef9fbcf1a579b83bcd84e
 /// <reference path="../../admin/client/ts/directives/common/swactioncaller.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swactioncallerdropdown.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swclickoutside.ts" />
@@ -88,6 +91,13 @@
 /// <reference path="../../admin/client/ts/directives/common/swselection.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swsortable.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swtypeaheadsearch.ts" />
+<<<<<<< HEAD
+=======
+/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
+>>>>>>> 97eadf515570659dbb0ef9fbcf1a579b83bcd84e
 /// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardbalance.ts" />
 /// <reference path="../../admin/client/ts/directives/giftcard/swgiftcarddetail.ts" />
 /// <reference path="../../admin/client/ts/directives/giftcard/swgiftcardhistory.ts" />

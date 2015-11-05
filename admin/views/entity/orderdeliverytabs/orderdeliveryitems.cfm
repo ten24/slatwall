@@ -52,18 +52,10 @@ Notes:
 <cfparam name="rc.orderDelivery" type="any" />
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryItemsSmartList()#">
+	<hb:HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryItemsSmartList()#"
+							 recordDetailAction="admin:entity.detailorderdeliveryitem">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.title" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
-	</hb:HibachiListingDisplay>
-
-	<hb:HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryGiftCardSmartList()#">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
-		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>
 </cfoutput>
