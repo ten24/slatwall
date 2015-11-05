@@ -271,7 +271,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		//get bundle price
 		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			price = getProductBundlePrice();
-		}else{
+		}else if(isNull(this.getParentOrderItem()) || (!isNull(this.getParentOrderItem().getSku())
+				&& this.getParentOrderItem().getSku().getProduct().getProductType().getSystemCode() != 'productBundle')){
+			//only return price if it's not within a product bundle
 			price = getPrice();
 		}
 
