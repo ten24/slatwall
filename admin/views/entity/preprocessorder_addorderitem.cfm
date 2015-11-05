@@ -82,7 +82,7 @@ Notes:
 							<!--- Order Item Details --->
 							<cfif rc.processObject.getSku().isGiftCardSku()>
 								<div ng-form="giftRecipientControl.quantityForm">
-									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.$invalid" 
+									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.$invalid"
 										 sw-rbkey="'admin.processorder_addorderitem.quantity.invalid'"></div>
 									<div class="form-group ">
 										<label for="quantity" class="control-label col-sm-4" style="text-align:left;">Quantity</label>
@@ -229,122 +229,8 @@ Notes:
 					</hb:HibachiPropertyRow>
 
 					<cfif rc.processObject.getSku().isGiftCardSku()>
-<<<<<<< HEAD
-					<div>
-						<!--- Process Add Order Item Gift Recipient --->
-						<hr/>
-						<h5>Assign Gift Cards</h5>
-                        <input type="hidden" name="assignedGiftRecipientQuantity" ng-value="giftRecipientControl.getAssignedCount()" /> 
-						<div class="table-responsive s-gift-card-table">			
-							<div ng-show="giftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{giftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="giftRecipientControl.getUnassignedCount() == 1">s</span> to assign</strong></div>
-							<div ng-show="giftRecipientControl.getUnassignedCount() != giftRecipientControl.quantity">
-								<table class="table table-bordered table-hover">
-							        <thead>
-							            <tr>
-							                <th>#$.slatwall.rbKey('define.firstName')#</th>
-                                            <th>#$.slatwall.rbKey('define.lastName')#</th>
-									        <th>#$.slatwall.rbKey('define.email')#</th>
-									        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
-									        <th>#$.slatwall.rbKey('define.quantity')#</th>
-									        <th></th>
-							            </tr>
-							        </thead>
-							        <tbody>
-							        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" index="$index" recipients="giftRecipientControl.orderItemGiftRecipients" quantity="giftRecipientControl.quantity">
-	                        
-							        	</tr>
-							        </tbody>
-							    </table>
-							</div>
-						</div>
-	
-						<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
-							<div class="s-search-filter s-gift-card">
-		                        
-								<form>
-									<div class="s-search">
-	                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="giftRecipientControl.searchText" ng-change="giftRecipientControl.updateResults(giftRecipientControl.searchText)">
-										<i class="fa fa-search"></i>
-									</div>
-								</form>
-	
-		                        <div class="s-results" ng-hide="giftRecipientControl.searchText.length == 0">
-		                            <!-- Only show if there is text -->
-		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText != ''" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
-		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
-		                            </button>
-									<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
-	  									<!-- Item-->
-	  									<li ng-repeat="account in collection.pageRecords">
-	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
-	  											<div class="row">
-	  												<div class="col-xs-2 s-photo">
-	  													<img src="{{account.gravatar}}">
-	  												</div>
-	  												<div class="col-xs-10 s-info">
-	  													<div class="s-name">
-															<span ng-bind="account.firstName"></span> 
-															<span ng-bind="account.lastName"></span>
-														</div>
-	  													<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
-	  												</div>
-	  											</div>
-	  										</a>
-	  									</li>
-	  									<!-- //Item-->
-		                			</ul>
-		                        </div>
-								<div class="s-add-info-dropdown" ng-hide="!giftRecipientControl.adding">
-									<div class="s-add-info-dropdown-inner">
-								
-										<h5>Create New Recipient</h5>
-										<div class="form-group">
-											<label>First Name<i class="fa fa-asterisk"></i></label>
-											<input name="_recipientFirstName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.firstName" required>
-										</div>
-										<div class="form-group">
-											<label>Last Name<i class="fa fa-asterisk"></i></label>
-											<input name="_recipientLastName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.lastName" required>
-										</div>
-										<div class="form-group">
-											<label>Email<i class="fa fa-asterisk"></i></label>
-											<input name="_recipientEmail" type="email" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.email" required>
-										</div>
-										<div class="form-group">
-											<label>Message (limited to 250)</label>
-											<textarea name="_recipientMessage" class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage" ng-trim="false"></textarea>
-											<div class="s-character-count">
-												Remaining characters: <strong><span ng-bind="giftRecipientControl.getMessageCharactersLeft()"></span></strong>
-											</div>
-										</div>
-										<div class="form-group">
-											<label>Qty</label>
-											<select class="form-control"
-                                                    name="_recipientQuantity"
-                                                    type="number"
-													ng-model="giftRecipientControl.currentGiftRecipient.quantity"
-													ng-options="quantity for quantity in giftRecipientControl.getUnassignedCountArray() track by quantity"
-                                                    required
-											>
-											</select>
-										</div>
-										<div>
-											<button type="button" class="btn btn-sm btn-primary" ng-click="giftRecipientControl.addGiftRecipient()">Add Recipient</button>
-        									<button type="button" class="btn btn-sm btn-default">Cancel</button>
-										</div>
-									</div>
-								</div>
-							</div>
-	            			<!---End Search--->
-						</div>
-						<!---End Gift Recipient--->
-	
-					</div>
-				</cfif>
-=======
 						<div sw-add-order-item-gift-recipient quantity="giftRecipientControl.quantity" order-item-gift-recipients="giftRecipientControl.orderItemGiftRecipients"></div>
 					</cfif>
->>>>>>> 97eadf515570659dbb0ef9fbcf1a579b83bcd84e
 			</span>
 		<cfelse>
 			<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
