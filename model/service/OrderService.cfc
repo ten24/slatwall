@@ -592,9 +592,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
 		var totalQuantity = 0;
         var count = 0;
-       
-        if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= request.context["quantity"]){
-            while(totalQuantity < request.context["quantity"]){
+
+        if(!isNull(arguments.processObject.getAssignedGiftRecipientQuantity()) && arguments.processObject.getAssignedGiftRecipientQuantity() <= arguments.processObject.getQuantity()){
+            while(totalQuantity < arguments.processObject.getQuantity()){
                 var currentRecipient = count & "recipient";
                 if(!isNull(arguments.orderItem)){
                     var recipientProcessObject = arguments.orderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
@@ -613,9 +613,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     break;
                 }
             }
-        } else {
-             arguments.orderItem.getOrder().addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
-        }
+        } 
 
         return arguments.orderItem;
 	}
