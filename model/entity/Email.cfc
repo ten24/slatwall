@@ -78,6 +78,7 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 	// Non-Persistent Properties
 	property name="logEmailFlag" persistent="false";
 	property name="voidSendFlag" persistent="false";
+	property name="relatedObjectPrimaryIDField";
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -93,6 +94,14 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 			variables.voidSendFlag = false;
 		}
 		return variables.voidSendFlag;
+	}
+
+	public string function getRelatedObjectPrimaryIDPropertyName(){
+		if(structKeyExists(variables, "relatedObject") && structKeyExists(variables, "relatedObjectID")){
+			var relatedObject = getService("HibachiService").get(variables.relatedObject, variables.relatedObjectID);
+			return relatedObject.getPrimaryIDPropertyName();
+		}
+		return "";
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
