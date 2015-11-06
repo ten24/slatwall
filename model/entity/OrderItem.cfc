@@ -124,7 +124,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public boolean function hasUnassignedGiftCards(){
-		return this.getNumberOfUnassignedGiftCards() > 0; 
+		return this.getNumberOfUnassignedGiftCards() > 0;
 	}
 
 	public boolean function hasAllGiftCardsAssigned(){
@@ -271,7 +271,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		//get bundle price
 		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			price = getProductBundlePrice();
-		}else{
+		}else if(!isNull(getPrice())){
 			price = getPrice();
 		}
 
