@@ -59,6 +59,7 @@ Notes:
 		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" /> 
 		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.sku#" />
