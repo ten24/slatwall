@@ -49,6 +49,8 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	// Injected Entity
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
 
+    property name="assignedGiftRecipientQuantity";
+    property name="quantity";
 
 
 }
