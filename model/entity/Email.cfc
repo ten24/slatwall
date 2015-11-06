@@ -97,9 +97,8 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 	}
 
 	public string function getRelatedObjectPrimaryIDPropertyName(){
-		if(structKeyExists(variables, "relatedObject") && structKeyExists(variables, "relatedObjectID")){
-			var relatedObject = getService("HibachiService").get(variables.relatedObject, variables.relatedObjectID);
-			return relatedObject.getPrimaryIDPropertyName();
+		if(structKeyExists(variables, "relatedObject")){
+			return getService("HibachiService").getPrimaryIDPropertyNameByEntityName(variables.relatedObject);
 		}
 		return "";
 	}

@@ -87,7 +87,7 @@ component displayname="Order Delivery Item" entityname="SlatwallOrderDeliveryIte
 		if(!isNull(this.getOrderItem())){
 			return this.getOrderItem().getSku();
 		}
-		return false; 
+		return; 
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
