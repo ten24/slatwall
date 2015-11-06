@@ -929,7 +929,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
 			//Don't count child order items twice
-			if(isNull(getOrderItems()[i].getParentOrderItem()) || !isNull(getOrderItems()[i]).getProductBundleGroup()){
+			if(isNull(getOrderItems()[i].getParentOrderItem())){
 				if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 					subtotal = precisionEvaluate(subtotal + getOrderItems()[i].getExtendedPrice());
 				} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
