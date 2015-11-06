@@ -927,16 +927,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getSubtotal() {
 		var subtotal = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			//Don't count child order items twice
-			if(isNull(getOrderItems()[i].getParentOrderItem())){
-				if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-					subtotal = precisionEvaluate(subtotal + getOrderItems()[i].getExtendedPrice());
-				} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-					subtotal = precisionEvaluate(subtotal - getOrderItems()[i].getExtendedPrice());
-				} else {
-					throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
-				}
+		var orderItems = getDAO("OrderDAO").getRootOrderItems(getOrderID());
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+				subtotal = precisionEvaluate(subtotal + orderItems[i].getExtendedPrice());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				subtotal = precisionEvaluate(subtotal - orderItems[i].getExtendedPrice());
+			} else {
+				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}
 		}
 		return subtotal;
