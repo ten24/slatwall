@@ -349,6 +349,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		orderItem.getChildOrderItems()[1].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[1]);
 		orderItem.getChildOrderItems()[2].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[2]);
 		assertEquals(9.25, orderItem.getProductBundlePrice());
+		assertEquals(9.25, orderItem.getProductBundleGroupPrice());
 		assertEquals(9.25, orderItem.getExtendedPrice());
 		assertEquals(0, orderItem.getChildOrderItems()[1].getExtendedPrice());
 		assertEquals(0, orderItem.getChildOrderItems()[2].getExtendedPrice());
