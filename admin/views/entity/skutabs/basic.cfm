@@ -25,6 +25,10 @@
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="price" edit="#rc.edit#">
 			<cfif rc.product.getBaseProductType() EQ "subscription">
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalPrice" edit="#rc.edit#">
+				<cfif !isNull(rc.product.getRenewalSku())>
+					<hb:HibachiPropertyDisplay object="#rc.product.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.product.getRenewalSku().getSkuID()#')#"/>
+					<input type="hidden" name="renewalSku.skuID" value="#rc.product.getRenewalSku().getSkuID()#" />  
+				</cfif>
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
