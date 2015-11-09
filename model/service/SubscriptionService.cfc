@@ -393,12 +393,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// set the account for order
 			arguments.processObject.getOrder().setAccount( arguments.subscriptionUsage.getAccount() );
 			
-			// add order item to order
+			// determine renewal sku 
+			if(!isNull(arguments.subscriptionUsage.getRenewalSku())){
+				var renewalSkuID = arguments.subscriptionUsage.getRenewalSku().getSkuID();
+			} else if(!isNull(arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getRenewalSku())) { 
+				var renewalSkuID = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getRenewalSku().getSkuID();
+			} else { 
+				var renewalSkuID = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID();
+			}
+
 			var itemData = {
 				preProcessDisplayedFlag=1,
-				skuID=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID(),
+				skuID=renewalSkuID,
 				currencyCode=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrder().getCurrencyCode()
 			};
+
+			// add order item to order
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
 			// Grab the original order fulfillment

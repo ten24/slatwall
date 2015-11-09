@@ -148,6 +148,14 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		}
 		return "";
 	}
+
+	public numeric function getRenewalPrice(){
+		if(!isNull(this.getRenewalSku())){
+			return this.getRenewalSku().getRenewalSku();
+		} else { 
+			return variables.renewalPrice;
+		}
+	}
 	
 	public string function getCurrentStatusType() {
 		if(!isNull(getCurrentStatus())) {

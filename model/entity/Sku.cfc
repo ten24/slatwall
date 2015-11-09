@@ -643,6 +643,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.registrantEmailList;
 	}
 
+	public numeric function getRenewalPrice(){
+		if(!structKeyExists(variables, "renewalPrice")){
+			variables.renewalPrice = getSkuPrice();
+		} 
+		return variables.renewalPrice;
+	}
+
 	// @hint Returns the status of this event
 	public any function getEventStatus() {
 		if(!structKeyExists(variables, "eventStatus")) {
