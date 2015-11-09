@@ -175,6 +175,15 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		}
 		return "";
 	}
+
+	public any function getSubscriptionSkuSmartList(){
+    	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
+    		var smartList = getService("ProductService").getSkuSmartList();
+    		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		variables.subscriptionSkuSmartList = smartList;
+    	}
+    	return variables.subscriptionSkuSmartList;
+    }
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		

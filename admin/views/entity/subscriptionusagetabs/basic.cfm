@@ -10,9 +10,6 @@
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="currentStatusType" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoRenewFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoPayFlag" edit="#rc.edit#">
-			<cfif !isNull(rc.subscriptionUsage.getRenewalSku())>
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getRenewalSku().getSkuID()#')#"/>
-			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="accountPaymentMethod" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
@@ -21,6 +18,22 @@
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="gracePeriodTerm" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextBillDate" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextReminderEmailDate" edit="#rc.edit#">
+			<cfif !isNull(rc.subscriptionUsage.getRenewalSku()) && !rc.edit>
+				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getRenewalSku().getSkuID()#')#"/>
+			<cfelseif rc.edit>
+				<swa:SlatwallErrorDisplay object="#rc.subscriptionUsage#" errorName="renewalSku" />
+				<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionSkuSmartList()#" 
+										  selectValue="#rc.product.getRenewalSku().getSkuID()#"
+										  selectFieldName="renewalSku.skuID" 
+										  title="#$.slatwall.rbKey('define.renewalSku')#" 
+										  edit="#rc.edit#">
+					<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+					<hb:HibachiListingColumn propertyIdentifier="skuName" />
+					<hb:HibachiListingColumn propertyIdentifier="skuDescription" />
+					<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
+					<hb:HibachiListingColumn propertyIdentifier="price" />
+				</hb:HibachiListingDisplay>
+			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 

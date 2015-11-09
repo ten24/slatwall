@@ -85,7 +85,7 @@ Notes:
 			</div>
 			<div class="cold-md-12">
 				<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
-				<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
+				<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
 					<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 					<hb:HibachiListingColumn propertyIdentifier="skuName" />
 					<hb:HibachiListingColumn propertyIdentifier="skuDescription" />
