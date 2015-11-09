@@ -1,1 +1,0 @@
-{"version":3,"sources":["admin/client/ts/controllers/otherwisecontroller.ts"],"names":[],"mappings":"AAAA,YAAY,CAAC;AACb,OAAO,CAAC,MAAM,CAAC,eAAe,CAAC,CAAC,UAAU,CAAC,qBAAqB,EAAE;IACjE,QAAQ;IACR,UACC,MAAM;QAEN,MAAM,CAAC,GAAG,GAAC,qBAAqB,CAAC;IAClC,CAAC;CACD,CAAC,CAAC","file":"controllers/otherwisecontroller.js","sourcesContent":[null],"sourceRoot":"/source/"}
