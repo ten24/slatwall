@@ -80,9 +80,9 @@ Notes:
 					amount="#arguments.requestBean.getTransactionAmount()#"
 					invoice="#arguments.requestBean.getOrderID()#"
 					CVV="#arguments.requestBean.getSecurityCode()#"
-					email="#argumetns.requestBean.getAccountPrimaryEmailAddress()#"
+					email="#arguments.requestBean.getAccountPrimaryEmailAddress()#"
 					emailcustomer="false"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					avsstreet="#arguments.requestBean.getBillingStreetAddress()#"
 					avszip="#arguments.requestBean.getBillingPostalCode()#"
 					clientip="#cgi.REMOTE_ADDR#"
@@ -100,9 +100,9 @@ Notes:
 					amount="#arguments.requestBean.getTransactionAmount()#"
 					invoice="#arguments.requestBean.getOrderID()#"
 					CVV="#arguments.requestBean.getSecurityCode()#"
-					email="#argumetns.requestBean.getAccountPrimaryEmailAddress()#"
+					email="#arguments.requestBean.getAccountPrimaryEmailAddress()#"
 					emailcustomer="false"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					avsstreet="#arguments.requestBean.getBillingStreetAddress()#"
 					avszip="#arguments.requestBean.getBillingPostalCode()#"
 					clientip="#cgi.REMOTE_ADDR#"
@@ -132,7 +132,7 @@ Notes:
 					invoice="#arguments.requestBean.getOrderID()#"
 					refnum="#arguments.requestBean.getOriginalChargeProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					clientip="#cgi.REMOTE_ADDR#"
 				>
 			</cfcase>
@@ -146,7 +146,7 @@ Notes:
 					invoice="#arguments.requestBean.getOrderID()#"
 					refnum="#arguments.requestBean.getOriginalProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					clientip="#cgi.REMOTE_ADDR#"
 				>
 			</cfcase>
