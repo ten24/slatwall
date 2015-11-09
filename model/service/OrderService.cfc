@@ -259,6 +259,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 								// Otherwise just set then new address in the order fulfillment
 								} else {
+
 									orderFulfillment.setShippingAddress( arguments.processObject.getShippingAddress() );
 								}
 							}

@@ -145,7 +145,6 @@ Notes:
 							</hb:HibachiListingDisplay>
 
 
-
 					</cfif>
 
 
@@ -253,12 +252,7 @@ Notes:
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 						</hb:HibachiListingDisplay>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalSkuID" />
-						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalSkuID" fieldName="renewalSkuIDs" valueoptions="#rc.product.getRenewalSkuOptions()#" edit="#rc.edit#">
-					</div>
+
 				</div>
 
 			<!--- Gift Card --->
