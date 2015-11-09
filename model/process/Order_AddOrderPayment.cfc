@@ -122,7 +122,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!isNull(getNewOrderPayment().getGiftCardNumberEncrypted())){
 			return getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumberEncrypted()));
 		} else {
-			return false;
+			return;
 		}
 	}
 

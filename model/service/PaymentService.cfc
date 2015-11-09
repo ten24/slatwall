@@ -484,7 +484,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                 giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
                                 giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
 
-                                if(giftCard.getBalanceAmount() LTE amount){
+								if(giftCard.isExpired()){
+
+									amount = 0;
+									arguments.paymentTransaction.addError("runTransaction", getHibachiScope().getRBKey("validate.giftCard.isExpired"), true);
+									return arguments.paymentTransaction;
+
+								} else if(giftCard.getBalanceAmount() LTE amount){
                                     amount = giftCard.getBalanceAmount();
                                 }
 
@@ -500,7 +506,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                     }
                                 }
                             } else {
-                            	
+
                                 var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
 
                                 giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
