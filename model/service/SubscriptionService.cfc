@@ -139,6 +139,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		subscriptionUsage.setExpirationDate( arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate() );
 		subscriptionUsage.setNextBillDate( subscriptionUsage.getExpirationDate() );
 		subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
+		subscriptionUsage.setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
 		
 		// add active status to subscription usage
 		setSubscriptionUsageStatus(subscriptionUsage, 'sstActive');
