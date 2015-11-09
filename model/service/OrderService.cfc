@@ -592,9 +592,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
 		var totalQuantity = 0;
         var count = 0;
-       
-        if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= request.context["quantity"]){
-            while(totalQuantity < request.context["quantity"]){
+
+        if(!isNull(arguments.processObject.getAssignedGiftRecipientQuantity()) && arguments.processObject.getAssignedGiftRecipientQuantity() <= arguments.processObject.getQuantity()){
+            while(totalQuantity < arguments.processObject.getQuantity()){
                 var currentRecipient = count & "recipient";
                 if(!isNull(arguments.orderItem)){
                     var recipientProcessObject = arguments.orderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
@@ -613,9 +613,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     break;
                 }
             }
-        } else {
-             arguments.orderItem.getOrder().addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
-        }
+        } 
 
         return arguments.orderItem;
 	}
@@ -1417,7 +1415,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderFulfillment.getFulfillmentMethodType() == "auto"
             || (
                 !isNull(arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()) &&
-                arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()
+                		arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()
             )
 			&& (
 				order.getTotal() == 0
@@ -1882,11 +1880,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(orderDeliveryItem.getOrderItem().hasAllGiftCardsAssigned()){
 					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
 						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
-					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
+					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
 						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
 					}
 				}
 
+
+				if(arguments.orderDelivery.getOrderFulfillment().getFulfillmentMethodType() == "email"){
+					var email = getEmailService().newEmail(); 
+					var emailData = {
+						emailTemplateID = getSettingService().getSettingValue(settingName='skuEmailFulfillmentTemplate', object=orderDeliveryItem.getSku()),
+						sku = orderDeliveryItem.getSku()
+					};
+					var email = getEmailService().processEmail_createFromTemplate(email, emailData); 
+					email.setEmailTo(arguments.orderDelivery.getOrderFulfillment().getEmailAddress());
+					email = getEmailService().sendEmail(email);
+				}
 
 				if(!isNull(order) && order.hasErrors()){
                  	arguments.orderDelivery.addErrors(order.getErrors());
