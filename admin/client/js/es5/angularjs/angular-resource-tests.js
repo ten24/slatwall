@@ -121,4 +121,4 @@ mod = mod.factory('factory name', resourceServiceFactoryFunction);
 var resourceServiceProvider;
 resourceServiceProvider.defaults.stripTrailingSlashes = false;
 
-//# sourceMappingURL=../angularjs/angular-resource-tests.js.map
+//# sourceMappingURL=angular-resource-tests.js.map

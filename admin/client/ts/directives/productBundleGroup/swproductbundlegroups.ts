@@ -38,8 +38,6 @@ angular.module('slatwalladmin')
 					$scope.productBundleGroups.splice(index,1);
 					$log.debug("Deleting PBG #" + index);
 					$log.debug($scope.productBundleGroups);
-					
-					
 				};
 				$scope.addProductBundleGroup = function(){
 					

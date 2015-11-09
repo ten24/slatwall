@@ -76,7 +76,7 @@ Notes:
 <cfparam name="giftCard" type="any" />
 
 <cfsilent>
-	<cfset email.setEmailTo("#giftCard.getOwnerAddress()#")>
+	<cfset email.setEmailTo("#giftCard.getOwnerEmailAddress()#")>
 	<cfset email.setRelatedObject("giftCard")>
 	<cfset email.setRelatedObjectID("#giftCard.getGiftCardID()#")>
 	<cfset email.setLogEmailFlag("True")>

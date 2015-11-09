@@ -149,8 +149,7 @@ module slatwalladmin {
 			if (angular.isNumber(type)){
 				this.removeProductBundleGroupFilter(type);
 			}else{
-				this.removeProductBundleGroup(this.index);
-				
+				this.removeProductBundleGroup(this.index);		
 			}
 		};			
 

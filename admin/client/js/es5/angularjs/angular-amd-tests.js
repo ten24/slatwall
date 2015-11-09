@@ -5,4 +5,4 @@ define(["require", "exports", 'angular'], function (require, exports, localName)
     var mod2 = mod;
 });
 
-//# sourceMappingURL=../angularjs/angular-amd-tests.js.map
+//# sourceMappingURL=angular-amd-tests.js.map

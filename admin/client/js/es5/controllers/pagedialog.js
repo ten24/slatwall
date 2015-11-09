@@ -18,4 +18,4 @@ angular.module('slatwalladmin').controller('pageDialog', [
     }
 ]);
 
-//# sourceMappingURL=../controllers/pagedialog.js.map
+//# sourceMappingURL=pagedialog.js.map

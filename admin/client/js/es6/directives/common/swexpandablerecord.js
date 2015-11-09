@@ -130,4 +130,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swExpandableRecord', ['$compile', '$templateRequest', '$timeout', 'partialsPath', 'utilityService', ($compile, $templateRequest, $timeout, partialsPath, utilityService) => new SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath, utilityService)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/common/swexpandablerecord.js.map
+//# sourceMappingURL=swexpandablerecord.js.map

@@ -24,17 +24,17 @@ module slatwalladmin {
 				transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
 				transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
 				transactionConfig.setAllRecords(true);
+				transactionConfig.setOrderBy("createdDateTime|DESC");
 				
 				var transactionPromise = transactionConfig.getEntity();
 				
 				transactionPromise.then((response)=>{
-					this.transactions = response.records; 
+					this.transactions = response.records;
+					
+					var initialCreditIndex = this.transactions.length-1;
+					this.initialBalance = this.transactions[initialCreditIndex].creditAmount;  
 	
 					angular.forEach(this.transactions,(transaction, index)=>{
-						
-						if(typeof transaction.creditAmount !== "string"){
-							this.initialBalance += transaction.creditAmount;
-						}
 						
 						if(typeof transaction.debitAmount !== "string"){
 							totalDebit += transaction.debitAmount; 
@@ -42,7 +42,7 @@ module slatwalladmin {
 					});
 					this.currentBalance = this.initialBalance - totalDebit; 
 		
-					this.balancePercentage = ((this.currentBalance / this.initialBalance)*100);					
+					this.balancePercentage = parseInt(((this.currentBalance / this.initialBalance)*100).toString());					
 				});	
 			}
 		}
