@@ -145,6 +145,7 @@ Notes:
 							</hb:HibachiListingDisplay>
 
 
+
 					</cfif>
 
 
@@ -255,18 +256,8 @@ Notes:
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSkus" />
-						<hb:HibachiListingDisplay smartlist="#rc.product.getSubscriptionSkuSmartList()#" multiselectFieldName="renewalSkus" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSkus')#">
-							<hb:HibachiListingColumn propertyIdentifier="skuCode" tdclass="primary" />
-							<hb:HibachiListingColumn propertyIdentifier="product.productName" />
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.autoRenewFlag" />
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.autoPayFlag" />
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.renewalTerm.termHours" />
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.renewalTerm.termDays" />
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.renewalTerm.termMonths" />
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.renewalTerm.termYears" />
-						</hb:HibachiListingDisplay>
+						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalSkuID" />
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalSkuID" fieldName="renewalSkuIDs" valueoptions="#rc.product.getRenewalSkuOptions()#" edit="#rc.edit#">
 					</div>
 				</div>
 

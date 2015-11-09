@@ -57,7 +57,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="contents";
 	property name="options";
 	property name="price";
-	property name="renewalSkus";
+	property name="renewalSkuID";
 	property name="renewalSubscriptionBenefits";
 	property name="subscriptionBenefits";
 	property name="subscriptionTerms";

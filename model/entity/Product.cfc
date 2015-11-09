@@ -178,6 +178,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.productTypeOptions;
 	}
 
+	public array function getRenewalSkuOptions(){
+		if(!structKeyExists(variables, "renewalSkuOptions")){
+			var records = getSubscriptionSkuSmartList().getRecords();
+			variables.renewalSkuOptions = [];
+			for(var i=1; i<=arrayLen(records); i++) {
+					var recordStruct = {};
+					recordStruct['name'] = records[i].getSimpleRepresentation();
+					recordStruct['value']=records[i].getSkuID();
+					arrayAppend(variables.renewalSkuOptions, recordStruct);
+			}
+		}
+		return variables.renewalSkuOptions;
+	}
+
 
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
