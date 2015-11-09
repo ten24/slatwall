@@ -33,7 +33,6 @@ var slatwalladmin;
             this.pageShowOptionChanged = function (pageShowOption) {
                 _this.setPageShow(pageShowOption.value);
                 _this.setCurrentPage(1);
-                _this.getCollection();
             };
             this.getTotalPages = function () {
                 return _this.totalPages;

@@ -39,7 +39,14 @@ var slatwalladmin;
             this.setupDefaultGetCollection = () => {
                 this.collectionPromise = this.collectionConfig.getEntity();
                 return () => {
-                    this.collectionPromise.then((data) => {
+                    this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
+                    this.collectionConfig.setPageShow(this.paginator.getPageShow());
+                    this.collectionConfig.getEntity().then((data) => {
+                        this.collectionData = data;
+                        this.setupDefaultCollectionInfo();
+                        this.setupColumns();
+                        this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
+                        this.paginator.setPageRecordsInfo(this.collectionData);
                     });
                 };
             };

@@ -40,7 +40,14 @@ var slatwalladmin;
             this.setupDefaultGetCollection = function () {
                 _this.collectionPromise = _this.collectionConfig.getEntity();
                 return function () {
-                    _this.collectionPromise.then(function (data) {
+                    _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
+                    _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+                    _this.collectionConfig.getEntity().then(function (data) {
+                        _this.collectionData = data;
+                        _this.setupDefaultCollectionInfo();
+                        _this.setupColumns();
+                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+                        _this.paginator.setPageRecordsInfo(_this.collectionData);
                     });
                 };
             };

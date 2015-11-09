@@ -14,13 +14,13 @@ var slatwalladmin;
                 transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
                 transactionConfig.addFilter('giftCard.giftCardID', _this.giftCard.giftCardID);
                 transactionConfig.setAllRecords(true);
+                transactionConfig.setOrderBy("createdDateTime|DESC");
                 var transactionPromise = transactionConfig.getEntity();
                 transactionPromise.then(function (response) {
                     _this.transactions = response.records;
+                    var initialCreditIndex = _this.transactions.length - 1;
+                    _this.initialBalance = _this.transactions[initialCreditIndex].creditAmount;
                     angular.forEach(_this.transactions, function (transaction, index) {
-                        if (typeof transaction.creditAmount !== "string") {
-                            _this.initialBalance += transaction.creditAmount;
-                        }
                         if (typeof transaction.debitAmount !== "string") {
                             totalDebit += transaction.debitAmount;
                         }

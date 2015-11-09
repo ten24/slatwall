@@ -27,7 +27,6 @@ var slatwalladmin;
             this.pageShowOptionChanged = (pageShowOption) => {
                 this.setPageShow(pageShowOption.value);
                 this.setCurrentPage(1);
-                this.getCollection();
             };
             this.getTotalPages = () => {
                 return this.totalPages;
