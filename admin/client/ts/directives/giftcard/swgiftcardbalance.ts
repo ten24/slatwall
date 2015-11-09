@@ -19,6 +19,7 @@ module slatwalladmin {
 			public init = ():void =>{
 				this.initialBalance = 0;
 				var totalDebit:number = 0; 
+				var totalCredit:number = 0;
 				
 				var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
 				transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
@@ -36,11 +37,15 @@ module slatwalladmin {
 	
 					angular.forEach(this.transactions,(transaction, index)=>{
 						
-						if(typeof transaction.debitAmount !== "string"){
+						if(!angular.isString(transaction.debitAmount)){
 							totalDebit += transaction.debitAmount; 
 						}
+						
+						if(!angular.isString(transaction.creditAmount)){
+							totalCredit += transaction.creditAmount; 
+						}
 					});
-					this.currentBalance = this.initialBalance - totalDebit; 
+					this.currentBalance = totalCredit - totalDebit; 
 		
 					this.balancePercentage = parseInt(((this.currentBalance / this.initialBalance)*100).toString());					
 				});	
