@@ -159,7 +159,7 @@ Notes:
 		<cfset responseBean.setTransactionID(q_auth.UMrefNum) />
 		<cfset responseBean.setAuthorizationCode(q_auth.UMauthCode) />
 		<cfset responseBean.setStatusCode(q_auth.UMstatus) />
-		<cfset responseBean.addMessage(messageCode=q_auth.UMstatus, message=q_auth.UMresult) />
+		<cfset responseBean.addMessage(messageName=q_auth.UMstatus, message=q_auth.UMresult) />
 		
 		<cfif q_auth.UMstatus neq "Approved">
 			<cfset responseBean.addError(q_auth.UMstatus, q_auth.UMresult) />
