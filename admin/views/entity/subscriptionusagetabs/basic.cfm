@@ -11,6 +11,8 @@
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="subscriptionOrderItemType" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoRenewFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoPayFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="initialTerm" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getInitialSku()#" property="skuCode" edit="false" title="#$.slatwall.getRBKey('define.initialSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getInitialSku().getSkuID()#')#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="accountPaymentMethod" edit="#rc.edit#">
 		</hb:HibachiPropertyList>

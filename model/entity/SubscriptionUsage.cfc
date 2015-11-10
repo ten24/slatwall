@@ -86,6 +86,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="initialSku" persistent="false";
 	property name="currentStatus" persistent="false";
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
@@ -199,6 +200,20 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			}
 		}
 		return "";
+	}
+
+	public any function getInitialSku(){
+		var orderItems =  this.getSubscriptionOrderItems();
+		if(arrayLen(orderItems) > 0){
+			var oldestItem = orderItems[1];
+			for(var item in orderItems){
+				if(datecompare(item.getCreatedDateTime(), oldestItem.getCreatedDateTime()) < 0){
+					oldestItem = item;
+				}
+			}
+			return oldestItem.getOrderItem().getSku();
+		}
+		return;
 	}
 
 	public any function getSubscriptionSkuSmartList(){

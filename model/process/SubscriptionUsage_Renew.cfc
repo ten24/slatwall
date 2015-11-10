@@ -125,7 +125,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public string function getProrateExpirationDate() {
 		if(!isNull(getSubscriptionUsage().getRenewalSku())){
-			return getSubscriptionUsage().getRenewalSku().getSubscriptionTerm().getRenewalTerm().getEndDate( getSubscriptionUsage().getEndDate( now() );
+			return getSubscriptionUsage().getRenewalSku().getSubscriptionTerm().getRenewalTerm().getEndDate( now() );
 		}
 		return getSubscriptionUsage().getSubscriptionOrderItems()[1].getOrderItem().getSku().getSubscriptionTerm().getRenewalTerm().getEndDate( now() );
 	}
