@@ -183,7 +183,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
 			subscriptionOrderItemSmartList.setPageRecordsShow(1);
 			subscriptionOrderItemSmartList.addOrder("createdDateTime | DESC");
-			var records = subscriptionOrderItemSmartList.getRecords();
+			var records = subscriptionOrderItemSmartList.getPageRecords();
 
            	if(arrayLen(records)){
 				switch(records[1].getSubscriptionOrderItemType().getSystemCode()){
@@ -206,7 +206,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
 		subscriptionOrderItemSmartList.setPageRecordsShow(1);
 		subscriptionOrderItemSmartList.addOrder("createdDateTime | ASC");
-        var records = subscriptionOrderItemSmartList.getRecords();
+        var records = subscriptionOrderItemSmartList.getPageRecords();
         if(arrayLen(records)){
         	return records[1].getOrderItem().getSku();
         }
