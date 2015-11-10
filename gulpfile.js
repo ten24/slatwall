@@ -8,8 +8,6 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
-    gzip = require('gulp-gzip'),
-    properties = require ("properties"),
     fs = require('fs'),
     debug = require('gulp-debug'),
     inject = require('gulp-inject'),
@@ -23,7 +21,15 @@ var gulp = require('gulp'),
 	 ngmin = require("gulp-ngmin"),
 	changed = require('gulp-changed');
 	ngAnnotate = require('gulp-ng-annotate');
-	
+
+	browserifyconfig = {
+    publicPath: __dirname + '/www/public',
+    app: {
+        path: __dirname + '/www/app',
+        main: 'index.ts',
+        result: 'application.js'
+    }
+};
 	var config = new Config();
 	
 /*
@@ -63,7 +69,7 @@ gulp.task('watch', function() {
 	//gulp.watch([config.ngSlatwallcfm],['flattenNgslatwall']);
     gulp.watch([config.allTypeScript], 
     [
-    	'compile-ts-to5',
+    	//'compile-ts-to5',
     	//'compile-ts',
 		'gen-ts-refs'
 		
@@ -148,7 +154,8 @@ gulp.task('gen-ts-refs', function () {
 	        starttag: '//{',
 	        endtag: '//}',
 	        transform: function (filepath) {
-	            return '/// <reference path="../..' + filepath + '" />';
+	        	
+	            return '/// <reference path="' + filepath.replace('/org/Hibachi/client/','../') + '" />';
 	        }
 	    }))
 	    .pipe(chmod(777))
@@ -285,13 +292,54 @@ gulp.task('compress',function(){
   .pipe(gulp.dest('./' + config.compilePath + 'es5'));
 });
 
+gulp.task('compilets', function(){
+	var sourceTsFiles = [config.allTypeScript,                //path to typescript files
+                         config.libraryTypeScriptDefinitions, //reference to library .d.ts files
+                         config.appTypeScriptReferences];     //reference to app.d.ts files
+
+    var tsResult = gulp.src(sourceTsFiles)
+    					//.pipe(changed(config.tsOutputPathto5))
+                       //.pipe(sourcemaps.init())
+                       .pipe(tsc({
+                           target: 'ES5',
+                           declarationFiles: false,
+                           noExternalResolve: true,
+                           module:'amd',
+                       }));
+		
+        tsResult.dts.pipe(gulp.dest('./org/Hibachi/client/js/'));
+        
+         tsResult.dts.pipe(gulp.dest(config.tsOutputPathto5));
+        return tsResult.js
+        				
+                        .pipe(sourcemaps.write('.'))
+                        .pipe(chmod(777))
+                        .pipe(gulp.dest('./org/Hibachi/client/js/'));
+       /* tsResult.pipe(concat('all.js'))
+	  .pipe(ngAnnotate())
+	  .pipe(uglify({
+	    screw_ie8: true // Seriously, die
+	  }))
+	  .pipe(rename(function(path){
+	      path.extname = '.min.js'
+	  }))
+	  .pipe(sourcemaps.write('./'))
+	  .pipe(chmod(777))
+	  .pipe(gulp.dest('./org/Hibachi/client/js/'));*/
+});
+
 gulp.task('default', function(){
 	runSequence(
-		'flattenNgSlatwallModel'
+		
+		/*'flattenNgSlatwallModel'
 		,'compile-ts-to5'
-		,'compile-ts'
-		,'gen-ts-refs'
-		,'compress'
-		,'watch'
+		,'compile-ts'*/
+		//,'gen-ts-refs'
+		/*,'compress'
+		*/
+		'gen-ts-refs'
+    ,'watch'
+		
+		//'compilets'
 	);
 });

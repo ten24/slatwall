@@ -1,0 +1,5 @@
+export =  ()=> {
+  
+  /* JS */
+  require('angular');
+};
