@@ -23,7 +23,7 @@
 			<cfelseif rc.edit>
 				<swa:SlatwallErrorDisplay object="#rc.subscriptionUsage#" errorName="renewalSku" />
 				<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionSkuSmartList()#" 
-										  selectValue="#rc.product.getRenewalSku().getSkuID()#"
+										  selectValue="#rc.subscriptionUsage.getRenewalSku().getSkuID()#"
 										  selectFieldName="renewalSku.skuID" 
 										  title="#$.slatwall.rbKey('define.renewalSku')#" 
 										  edit="#rc.edit#">
