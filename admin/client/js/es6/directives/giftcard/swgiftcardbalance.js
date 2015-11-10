@@ -9,6 +9,7 @@ var slatwalladmin;
             this.init = () => {
                 this.initialBalance = 0;
                 var totalDebit = 0;
+                var totalCredit = 0;
                 var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
                 transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
                 transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
@@ -20,11 +21,14 @@ var slatwalladmin;
                     var initialCreditIndex = this.transactions.length - 1;
                     this.initialBalance = this.transactions[initialCreditIndex].creditAmount;
                     angular.forEach(this.transactions, (transaction, index) => {
-                        if (typeof transaction.debitAmount !== "string") {
+                        if (!angular.isString(transaction.debitAmount)) {
                             totalDebit += transaction.debitAmount;
                         }
+                        if (!angular.isString(transaction.creditAmount)) {
+                            totalCredit += transaction.creditAmount;
+                        }
                     });
-                    this.currentBalance = this.initialBalance - totalDebit;
+                    this.currentBalance = totalCredit - totalDebit;
                     this.balancePercentage = parseInt(((this.currentBalance / this.initialBalance) * 100).toString());
                 });
             };

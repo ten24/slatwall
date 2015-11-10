@@ -613,7 +613,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     break;
                 }
             }
-        } 
+        }
 
         return arguments.orderItem;
 	}
@@ -831,7 +831,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderPayment in arguments.order.getOrderPayments()) {
             if(orderPayment.getPaymentMethodType() eq "giftCard"){
                var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
-				
+
 				if(totalReceived gt 0) {
 					var transactionData = {
 						amount = precisionEvaluate(totalReceived * -1),
@@ -1887,12 +1887,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 				if(arguments.orderDelivery.getOrderFulfillment().getFulfillmentMethodType() == "email"){
-					var email = getEmailService().newEmail(); 
+					var email = getEmailService().newEmail();
 					var emailData = {
 						emailTemplateID = getSettingService().getSettingValue(settingName='skuEmailFulfillmentTemplate', object=orderDeliveryItem.getSku()),
 						sku = orderDeliveryItem.getSku()
 					};
-					var email = getEmailService().processEmail_createFromTemplate(email, emailData); 
+					var email = getEmailService().processEmail_createFromTemplate(email, emailData);
 					email.setEmailTo(arguments.orderDelivery.getOrderFulfillment().getEmailAddress());
 					email = getEmailService().sendEmail(email);
 				}
