@@ -179,41 +179,38 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public string function getSubscriptionOrderItemType() {
-		var orderItems =  this.getSubscriptionOrderItems();
-		if(arrayLen(orderItems) > 0){
-			var newestItem = orderItems[1];
-			for(var item in orderItems){
-				if(datecompare(item.getCreatedDateTime(), newestItem.getCreatedDateTime()) > 0){
-					newestItem = item;
+			var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
+			subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
+			subscriptionOrderItemSmartList.setPageRecordsShow(1);
+			subscriptionOrderItemSmartList.addOrder("createdDateTime | DESC");
+			var records = subscriptionOrderItemSmartList.getRecords();
+
+           	if(arrayLen(records)){
+				switch(records[1].getSubscriptionOrderItemType().getSystemCode()){
+					case "soitRenewal":
+						return "Renewal";
+						break;
+					case "soitInitial":
+						return "Intial";
+						break;
+					default:
+						return "Change";
+						break;
 				}
-			}
-			switch(newestItem.getSubscriptionOrderItemType().getSystemCode()){
-				case "soitRenewal":
-					return "Renewal";
-					break;
-				case "soitInitial":
-					return "Intial";
-					break;
-				default:
-					return "Change";
-					break;
-			}
-		}
-		return "";
+           	}
+           	return "";
 	}
 
 	public any function getInitialSku(){
-		var orderItems =  this.getSubscriptionOrderItems();
-		if(arrayLen(orderItems) > 0){
-			var oldestItem = orderItems[1];
-			for(var item in orderItems){
-				if(datecompare(item.getCreatedDateTime(), oldestItem.getCreatedDateTime()) < 0){
-					oldestItem = item;
-				}
-			}
-			return oldestItem.getOrderItem().getSku();
-		}
-		return;
+		var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
+		subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
+		subscriptionOrderItemSmartList.setPageRecordsShow(1);
+		subscriptionOrderItemSmartList.addOrder("createdDateTime | ASC");
+        var records = subscriptionOrderItemSmartList.getRecords();
+        if(arrayLen(records)){
+        	return records[1].getOrderItem().getSku();
+        }
+        return;
 	}
 
 	public any function getSubscriptionSkuSmartList(){
