@@ -8,6 +8,7 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="currentStatusType" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="subscriptionOrderItemType" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoRenewFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoPayFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="#rc.edit#">
@@ -22,10 +23,10 @@
 				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getRenewalSku().getSkuID()#')#"/>
 			<cfelseif rc.edit>
 				<swa:SlatwallErrorDisplay object="#rc.subscriptionUsage#" errorName="renewalSku" />
-				<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionSkuSmartList()#" 
+				<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionSkuSmartList()#"
 										  selectValue="#rc.subscriptionUsage.getRenewalSku().getSkuID()#"
-										  selectFieldName="renewalSku.skuID" 
-										  title="#$.slatwall.rbKey('define.renewalSku')#" 
+										  selectFieldName="renewalSku.skuID"
+										  title="#$.slatwall.rbKey('define.renewalSku')#"
 										  edit="#rc.edit#">
 					<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 					<hb:HibachiListingColumn propertyIdentifier="skuName" />
