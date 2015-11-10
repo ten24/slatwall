@@ -64,6 +64,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="renewalPrice" hb_rbKey="entity.sku.renewalPrice";
 	property name="subscriptionBenefits";
 	property name="renewalSubscriptionBenefits";
+	property name="renewalSku";
 
 	// Data Properties (Related Entity Populate)
 
@@ -97,6 +98,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.renewalPrice = getProduct().getPrice();
 		}
 		return variables.renewalPrice;
+	}
+
+	public any function getRenewalSku(){
+		return this.getService("SkuService").getSku(variables.renewalSku);
 	}
 
 	// ========================  END: Defaults =============================

@@ -83,6 +83,16 @@ Notes:
 					<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 				</hb:HibachiListingDisplay>
 			</div>
+			<div class="cold-md-12">
+				<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
+				<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
+					<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+					<hb:HibachiListingColumn propertyIdentifier="skuName" />
+					<hb:HibachiListingColumn propertyIdentifier="skuDescription" />
+					<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
+					<hb:HibachiListingColumn propertyIdentifier="price" />
+				</hb:HibachiListingDisplay>
+			</div>
 		</div>
 		
 	</hb:HibachiEntityProcessForm>

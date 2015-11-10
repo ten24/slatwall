@@ -26,6 +26,22 @@
 			</cfif>
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
+			<cfif rc.product.getBaseProductType() eq "subscription" && !isNull(rc.product.getRenewalSku()) && !rc.edit>
+				<hb:HibachiPropertyDisplay object="#rc.product.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.product.getRenewalSku().getSkuID()#')#"/>
+			<cfelseif rc.edit>
+				<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
+				<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#"
+										  selectValue="#rc.product.getRenewalSku().getSkuID()#"
+										  selectFieldName="renewalSku.skuID" 
+										  title="#$.slatwall.rbKey('define.renewalSku')#" 
+										  edit="#rc.edit#">
+					<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+					<hb:HibachiListingColumn propertyIdentifier="skuName" />
+					<hb:HibachiListingColumn propertyIdentifier="skuDescription" />
+					<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
+					<hb:HibachiListingColumn propertyIdentifier="price" />
+				</hb:HibachiListingDisplay>
+			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

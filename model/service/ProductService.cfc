@@ -670,6 +670,7 @@ component extends="HibachiService" accessors="true" {
 			newSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 		}
 		newSku.setProduct( arguments.product );
+		newSku.setRenewalSku( arguments.processObject.getRenewalSku());
 
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 
@@ -803,6 +804,7 @@ component extends="HibachiService" accessors="true" {
 				thisSku.setRenewalPrice(arguments.processObject.getPrice());
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
 				thisSku.setSkuCode(product.getProductCode() & "-#i#");
+				thisSku.setRenewalSku(arguments.processObject.getRenewalSku());
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}
@@ -810,7 +812,9 @@ component extends="HibachiService" accessors="true" {
 					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 				}
 				if(i==1) {
-					product.setDefaultSku( thisSku );
+					arguments.product.setDefaultSku( thisSku );
+					arguments.product.setRenewalSku( arguments.processObject.getRenewalSku() );
+
 				}
 			}
 		}
@@ -823,6 +827,7 @@ component extends="HibachiService" accessors="true" {
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
+
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 

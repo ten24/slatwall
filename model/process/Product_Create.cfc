@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="options";
 	property name="price";
 	property name="renewalSubscriptionBenefits";
+	property name="renewalSku";
 	property name="subscriptionBenefits";
 	property name="subscriptionTerms";
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
@@ -65,6 +66,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function setupDefaults() {
 		variables.generateSkusFlag = true;
+	}
+
+	public any function getRenewalSku(){
+		return this.getService("SkuService").getSku(variables.renewalSku);
 	}
 	
 	
