@@ -78,7 +78,7 @@ Notes:
 			<td>#rc.sku.getQuantity('QNDOSA')#</td>
 			<td><a href="#$.slatwall.buildURL(action='entity.listorderitem', querystring='F:sku.skuid=#rc.sku.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitReturn')#">#rc.sku.getQuantity('QNRORO')#</a></td>
 			<td><a href="#$.slatwall.buildURL(action='entity.listvendororderitem', querystring='F:stock.sku.skuid=#rc.sku.getskuID()#&F:vendorOrder.vendorOrderStatusType.systemCode=vostNew,vostPartiallyReceived&F:vendorOrderItemType.systemCode=voitPurchase')#">#rc.sku.getQuantity('QNROVO')#</a></td>
-			<td><a href="#$.slatwall.buildURL(action='entity.liststockadjustmentitem', querystring='F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.sku.skuID=#rc.sku.getskuID()')#">#rc.sku.getQuantity('QNROSA')#</a></td>
+			<td><a href="#$.slatwall.buildURL(action='entity.liststockadjustmentitem', querystring='F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.sku.skuID=#rc.sku.getskuID()#')#">#rc.sku.getQuantity('QNROSA')#</a></td>
 			<td>#rc.sku.getQuantity('QC')#</td>
 			<td>#rc.sku.getQuantity('QE')#</td>
 			<td>#rc.sku.getQuantity('QNC')#</td>
