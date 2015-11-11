@@ -2,7 +2,7 @@
 /// <reference path='../../../../../client/typings/tsd.d.ts' />
 
 
-module slatwalladmin {
+module hibachi.pagination {
     'use strict';
     
     export class SWPaginationBarController{
@@ -33,6 +33,6 @@ module slatwalladmin {
 		}
 	}
     
-	angular.module('slatwalladmin').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
+	angular.module('hibachi.pagination').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
 }
 

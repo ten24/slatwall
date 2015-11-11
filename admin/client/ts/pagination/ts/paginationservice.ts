@@ -1,7 +1,7 @@
 /// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../client/typings/tsd.d.ts' />
 /*collection service is used to maintain the state of the ui*/
-module slatwalladmin{
+module hibachi.pagination{
 
 
     export class Pagination{
@@ -186,5 +186,5 @@ module slatwalladmin{
             return this.paginations[uuid];
         };
     }
-    angular.module('slatwalladmin').service('paginationService', PaginationService);
+    angular.module('hibachi.pagination').service('paginationService', PaginationService);
 }

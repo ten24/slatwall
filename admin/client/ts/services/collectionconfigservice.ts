@@ -152,6 +152,7 @@ module slatwalladmin{
             if(angular.isDefined(this.id)){
                 options['id'] = this.id;
             }
+            
             return options;
         };
 

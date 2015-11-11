@@ -2,7 +2,7 @@
 <div class="s-table-header-nav s-listing-head-margin">
 	<div class="col-xs-6 s-no-padding-left" ng-if="swListingDisplay.title">
 		<ul class="list-inline list-unstyled">
-			<li>
+			<li>{{swListingDisplay.paginator
 				<h4 class="s-table-title" ng-bind="swListingDisplay.title"></h4>
 			</li>
 		</ul>
@@ -287,5 +287,6 @@
 		data-paginator="swListingDisplay.paginator"
 		>
 	</sw-pagination-bar>
+	}}
 
 

@@ -2,13 +2,13 @@ var webpack = require('webpack');
 //var angular = require('angular');
 var path = require('path');
 var PATHS = {
-    app:__dirname + '/src/hibachi'
+    app:__dirname + '/src'
 };
 var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
 module.exports = {  
   context:PATHS.app,
   entry: {
-    app:'./core/bootstrap.ts'
+    app:'./bootstrap.ts'
   },
   output: {
     path: PATHS.app,
@@ -19,11 +19,14 @@ module.exports = {
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.js'],
     alias:{
-  		//'angular':'../../../lib/angular/angular.min.js'
-  		//,'ui.bootstrap':'../../lib/angular-ui-bootstrap/ui.bootstrap.min.js'
-  		//,'angular-resource':'../../lib/angular/angular-resource.min.js'
-  		//,'angular-cookies':'../../lib/angular/angular-cookies.min.js'
-  		//,'logging':'./modules/logger/logger.ts'
+  		'angular':'../lib/angular/angular.min.js'
+  		,'ui.bootstrap':'../lib/angular-ui-bootstrap/ui.bootstrap.min.js'
+  		,'angular-resource':'../../lib/angular/angular-resource.min.js'
+  		,'angular-cookies':'../../lib/angular/angular-cookies.min.js'
+  		,'angular-route':'../lib/angular/angular-route.min.js'
+      ,'angular-animate':'../lib/angular/angular-animate.min.js'
+      ,'angular-sanitize':'../lib/angular/angular-sanitize.min.js'
+      //,'ng-ckeditor':'../lib/ng-ckeditor/ng-ckeditor.min.js'
   	}
   },
   
@@ -36,6 +39,7 @@ module.exports = {
     //,new webpack.optimize.UglifyJsPlugin()
   ],
   module: {
+    noParse: [ /bower_components/ ],
     loaders: [
       { 
       	test: /\.ts$/, loader: 'ts-loader',

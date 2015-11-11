@@ -1,5 +1,0 @@
-export =  ()=> {
-  
-  /* JS */
-  require('angular');
-};

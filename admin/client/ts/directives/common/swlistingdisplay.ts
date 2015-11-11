@@ -80,17 +80,28 @@ module slatwalladmin {
             
             
             this.initData();
-            this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
-                if(newValue){
-                   this.$q.when(this.collectionPromise).then((data)=>{
-                        this.collectionData = data;
-                        this.setupDefaultCollectionInfo();
-                        this.setupColumns();
-                        this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
-                        this.paginator.setPageRecordsInfo(this.collectionData);
-                    }); 
-                }
-            });
+            if(hasCollectionPromise){
+                this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
+                    if(newValue){
+                       this.$q.when(this.collectionPromise).then((data)=>{
+                            this.collectionData = data;
+                            this.setupDefaultCollectionInfo();
+                            this.setupColumns();
+                            this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+                            this.paginator.setPageRecordsInfo(this.collectionData);
+                        }); 
+                    }
+                });
+            }else{
+                this.collectionPromise.then((data)=>{
+                    this.collectionData = data;
+                    this.setupDefaultCollectionInfo();
+                    this.setupColumns();
+                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+                    this.paginator.setPageRecordsInfo(this.collectionData);
+                });    
+            }
+            
             this.tableID = 'LD'+this.utilityService.createID();
             //if getCollection doesn't exist then create it
             if(angular.isUndefined(this.getCollection)){

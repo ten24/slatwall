@@ -3,16 +3,7 @@
 
 class PercentageFilter{
     
-    //@ngInject
-    constructor(
-    
-    ){
-       
-    }
-    
-    public static Factory(
-        
-    ){
+    public static Factory(){
         return (input, decimals, suffix)=> {
             decimals = angular.isNumber(decimals)? decimals :  3;
             suffix = suffix || '%';
