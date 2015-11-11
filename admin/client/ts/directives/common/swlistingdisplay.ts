@@ -7,18 +7,11 @@ module slatwalladmin {
     
     export class SWListingDisplayController{
         /* local state variables */
-        private columns = [];
+       
         private adminattributes;
         private administrativeCount;
         private allpropertyidentifiers:string = "";
         private allprocessobjectproperties:string = "false";
-        private childPropertyName;
-        private selectable:boolean = false;
-        private multiselectable:boolean = false;
-        private expandable:boolean;
-        private sortable:boolean = false;
-        private exampleEntity:any = "";
-        private exportAction;
         private buttonGroup = [];
         private collectionID;
         private collectionPromise;
@@ -26,13 +19,21 @@ module slatwalladmin {
         private collectionObject;
         private collectionConfig;
         private collection;
+        private childPropertyName;
+        private columns = [];
+        private columnCount; 
         private entity; 
-        private hasCollectionPromise; 
+        private expandable:boolean;
+        private exampleEntity:any = ""; 
+        private exportAction;  
         private getCollection;
         private getChildCount;
+        private hasCollectionPromise;
+        private multiselectable:boolean = false;
         private multiselectFieldName;
         private multiselectIdPaths;
         private multiselectPropertyIdentifier;
+        private multiselectValues;
         private norecordstext;
         private paginator;
         private parentPropertyName; 
@@ -43,6 +44,8 @@ module slatwalladmin {
         private recordDeleteAction
         private recordProcessButtonDisplayFlag;
         private selectFieldName;
+        private selectable:boolean = false;
+        private sortable:boolean = false;
         private sortProperty;
         private tableID;
         private tableclass;
@@ -442,7 +445,7 @@ module slatwalladmin {
         
         public setupColumns = ()=>{
             //assumes no alias formatting
-            angular.forEach(this.columns, (column)=>{
+            angular.forEach(this.columns.reverse(), (column)=>{
                 var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
                 var title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                 if(angular.isUndefined(column.isVisible)){
@@ -461,8 +464,6 @@ module slatwalladmin {
                   }
                 });
             }
-            
-        
         }
         
         public updateMultiselectValues = ()=>{
@@ -490,7 +491,7 @@ module slatwalladmin {
             return '';
         }
         
-        private getAdminAttributesByType = (type:string):string =>{
+        private getAdminAttributesByType = (type:string):void =>{
             var recordActionName = 'record'+type.toUpperCase()+'Action';
             var recordActionPropertyName = recordActionName + 'Property';
             var recordActionQueryStringName = recordActionName + 'QueryString';

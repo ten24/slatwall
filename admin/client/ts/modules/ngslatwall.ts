@@ -490,7 +490,7 @@ module ngSlatwall {
             
             return keyValue;
         }
-        getRBKey= (key,locale,checkedKeys,originalKey) => {
+        getRBKey= (key,locale?,checkedKeys?,originalKey?) => {
             ////$log.debug('getRBKey');
             ////$log.debug('loading:'+this._loadingResourceBundle);
             ////$log.debug('loaded'+this._loadedResourceBundle);
