@@ -8,16 +8,46 @@ module slatwalladmin {
     export class SWListingDisplayController{
         /* local state variables */
         private columns = [];
+        private adminattributes;
+        private administrativeCount;
         private allpropertyidentifiers:string = "";
         private allprocessobjectproperties:string = "false";
+        private childPropertyName;
         private selectable:boolean = false;
         private multiselectable:boolean = false;
         private expandable:boolean;
         private sortable:boolean = false;
         private exampleEntity:any = "";
+        private exportAction;
         private buttonGroup = [];
+        private collectionID;
         private collectionPromise;
+        private collectionData;
         private collectionObject;
+        private collectionConfig;
+        private collection;
+        private entity; 
+        private hasCollectionPromise; 
+        private getCollection;
+        private getChildCount;
+        private multiselectFieldName;
+        private multiselectIdPaths;
+        private multiselectPropertyIdentifier;
+        private norecordstext;
+        private paginator;
+        private parentPropertyName; 
+        private processObjectProperties;
+        private recordAddAction;
+        private recordDetailAction;
+        private recordEditAction;
+        private recordDeleteAction
+        private recordProcessButtonDisplayFlag;
+        private selectFieldName;
+        private sortProperty;
+        private tableID;
+        private tableclass;
+        private tableattributes;
+        
         public static $inject = ['$scope','$element','$transclude','$timeout','$q','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
         constructor(
             public $scope,
@@ -26,16 +56,17 @@ module slatwalladmin {
             public $timeout,
             public $q,
             public $slatwall:ngSlatwall.SlatwallService, 
-            public partialsPath:slatwalladmin.partialsPath, 
+            public partialsPath, 
             public utilityService:slatwalladmin.UtilityService,
             public collectionConfigService:slatwalladmin.CollectionConfig,
-            public paginationService:slatwadmin.paginationService,
+            public paginationService:slatwalladmin.PaginationService,
             public selectionService:slatwalladmin.SelectionService,
             public observerService:slatwalladmin.ObserverService
         ){
             this.$q = $q;
             this.$timeout = $timeout;
             this.$slatwall = $slatwall;
+            this.$transclude = $transclude;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
             this.$scope = $scope;
@@ -43,9 +74,13 @@ module slatwalladmin {
             this.collectionConfigService = collectionConfigService;
             this.paginationService = paginationService;
             this.selectionService = selectionService;
-            this.observerService = observerService;
-            this.paginator = paginationService.createPagination();
+            this.observerService = observerService;       
+            this.intialSetup();
             
+        }
+        
+        private intialSetup = () => {
+             this.paginator = this.paginationService.createPagination();
             
             this.hasCollectionPromise = false;
             if(angular.isUndefined(this.getChildCount)){
@@ -53,10 +88,10 @@ module slatwalladmin {
             }
             
             
-            if(!this.collection || !angular.isString(this.collection)){
+            if(this.collection){
                 this.hasCollectionPromise = true;
             }else{
-                this.collectionObject = this.collection;
+                this.collectionObject = this.entity;
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);     
             }
             
@@ -70,7 +105,7 @@ module slatwalladmin {
             
             //if a collectionConfig was not passed in then we can run run swListingColumns
             //this is performed early to populate columns with swlistingcolumn info
-            this.$transclude = $transclude;
+            
             this.$transclude(this.$scope,()=>{});
             
             this.setupColumns();
@@ -98,7 +133,6 @@ module slatwalladmin {
             }
             this.paginator.getCollection = this.getCollection;
             //this.getCollection();
-            
         }
         
         private setupDefaultCollectionInfo = () =>{
@@ -109,7 +143,7 @@ module slatwalladmin {
             }
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-            this.collectionConfig.setKeywords(this.paginator.keywords); 
+            this.collectionConfig.setKeywords(this.paginator.keywords);//?
         }
 
         private setupDefaultGetCollection = () =>{
@@ -195,7 +229,7 @@ module slatwalladmin {
                     }
                 }               
                 this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
-                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyname+'.'+this.exampleEntity.$$getIDName(),' ');
+                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),' ');
                 this.collectionConfig.setAllRecords(true);    
             }
             
@@ -463,7 +497,7 @@ module slatwalladmin {
             var recordActionModalName = recordActionName + 'Modal';
             this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'action="'+this[recordActionName]+'"', " ");
             if(this[recordActionPropertyName] && this[recordActionPropertyName].length){
-                this.adminattributes = this.utiltyService.listAppend(this.adminattribtues,'data-'+type+'actionproperty="'+this[recordActionPropertyName]+'"', " ");
+                this.adminattributes = this.utilityService.listAppend(this.adminattributes,'data-'+type+'actionproperty="'+this[recordActionPropertyName]+'"', " ");
             }
             this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'querystring="'+this[recordActionQueryStringName]+'"', " ");
             this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'modal="'+this[recordActionModalName]+'"', " ");    
@@ -494,6 +528,7 @@ module slatwalladmin {
             
              /*Optional*/
              title:"@",
+             entity:"@",
             
              /*Admin Actions*/
              recordEditAction:"@",
