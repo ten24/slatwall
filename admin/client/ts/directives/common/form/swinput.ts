@@ -11,8 +11,7 @@ angular.module('slatwalladmin').directive('swInput',
  function(
 	$log, 
 	$compile,
-	utilityService
-) {
+	utilityService){
 	var getValidationDirectives = function(propertyDisplay){
 		var spaceDelimitedList = '';
 		var name = propertyDisplay.property;

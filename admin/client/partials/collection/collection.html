@@ -1,35 +1,44 @@
-<!-- login -->
-
-<sw-form
-    is-process-form="true"
-    form-class="css-form"
-    error-class="error"
-    process-object="Account_login" 
-    action="$login"
-    on-success="Account_logout">
-         
-    <swf-form-field 
-        name="emailAddress"
-        type="email" 
-        sw-model="Account_login.emailAddress"
-        label-text="Email Address:"
-        class="formControl"></swf-form-field>
-   
-    <swf-form-field
-        name="password"
-        type="password" 
-        sw-model="Account_login.password"
-        label-text="Password:"
-        class="formControl"></swf-form-field>
+<!-- generic login form -->
+ <!---Object - 
+        propertyIdentifier - ng-name in the template { Allow object as well and override. 
+        _Account as Object }---><!-- data-property-identifier -->
+    <!--- email address with label --->
+    <!--- data-object --->
+<sw-form exportCollection()
+    data-is-process-form="true"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-process-object="Account_login"
+    data-action="$login"> 
     
-    <swf-form-field
-        name="Login" 
-        type="submit" 
-        class="formControl">Login</swf-form-field>
-        
+    <swf-property-display 
+        data-name="emailAddress"
+        data-type="email"
+        data-object="Account_login.emailAddress" 
+        data-label-text="Email Address:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- password field with label --->    
+    
+    <swf-property-display
+        data-name="password"
+        data-type="password"
+        data-object="Account_login.password"
+        data-label-text="Password:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- submit button calls the correct action based on whats configured on the form 
+          action caller - process caller (link button dropdown) --->
+    <swf-property-display
+        data-name="Login" 
+        data-type="submit" 
+        data-class="formControl">Login
+    </swf-property-display>
 </sw-form>
-
-<ng-form name="formname"><sw-template></sw-template></ng-form>
 
 <div>
 	<div class="col-xs-12 s-filter-content s-filter-content-table-view">

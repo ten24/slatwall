@@ -82,9 +82,6 @@ var slatwalladmin;
                     scope.$id = 'propertyDisplay:' + scope.property;
                     /* register form that the propertyDisplay belongs to*/
                     scope.propertyDisplay.form = formController;
-                    this.$log.debug(scope.propertyDisplay);
-                    this.$log.debug('propertyDisplay');
-                    this.$log.debug(scope.propertyDisplay);
                 }
             };
         }

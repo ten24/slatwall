@@ -1,7 +1,15 @@
-/***************************************************************************************
- ***************************************************************************************
- ***************************************************************************************
- **
+/**********************************************************************************************
+ **********************************************************************************************
+ **********************************************************************************************
+ **		Property Display (This one is specifically for the frontend so that it can be modified)
+ **		isHidden
+ **		requiredFlag
+ **		title
+ **		hint
+ **		editting
+ **		object
+ **		class
+ **		___________________________________________
  ** 	attr.type have the following options:
  **		
  **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
@@ -17,7 +25,6 @@
  **		submit				|	submit button to post these properties back to the server.
  **		------------------------------------------------------------------------------------------------------
  **		
- **		
  **		attr.valueObject" type="any" default="" />
  **		attr.valueObjectProperty" type="string" default="" />
  **		
@@ -29,12 +36,12 @@
  **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
  **		attr.fieldAttributes" type="string" default=""
  **		
- ***************************************************************************************
- ***************************************************************************************
- ***************************************************************************************
+ *********************************************************************************************
+ *********************************************************************************************
+ *********************************************************************************************
  */
 angular.module('slatwalladmin')
-.directive('swfFormField', ['$log','$templateCache','$window', '$compile', 'partialsPath',
+.directive('swfPropertyDisplay', ['$log','$templateCache','$window', '$compile', 'partialsPath',
 	function($log, $templateCache, $window, $compile, partialsPath){ 
 		return {
 			restrict: 'E',
@@ -43,11 +50,15 @@ angular.module('slatwalladmin')
 				type: "@?",
 				name: "@?",
 				class: "@?",
+				edit: "@?",
+				title: "@?",
+				hint: "@?",
 				valueObject: "=?",
 				valueObjectProperty: "=?",
 				options: "@?",
 				fieldAttributes: "@?",
-				swModel: "=",
+				object: "=",
+				label:"@?",
 				labelText: "@?",
 				labelClass: "@?",
 				errorText: "@?",
@@ -55,7 +66,7 @@ angular.module('slatwalladmin')
 				formTemplate: "@?"
 			},
 			transclude: true,
-			templateUrl: partialsPath + '/swfFormFieldPartial.html',
+			templateUrl: partialsPath + 'swfpropertydisplaypartial.html',
 			link: function(scope, element, attrs, formCtrl){
 				scope.processObject = {};
 				scope.valueObjectProperty = attrs.valueObjectProperty;
@@ -63,9 +74,21 @@ angular.module('slatwalladmin')
 				scope.class				  = attrs.class|| "formControl";
 				scope.valueObject		  = attrs.valueObject;
 				scope.fieldAttributes     = attrs.fieldAttributes || "";
+				scope.label			      = attrs.label || "true";
 				scope.optionValues        = [];
-			    scope.up = scope.$parent.$parent;
-				/** handle turning the options into an array of objects */
+				scope.propertyDisplay = {
+					type: scope.type,
+					name: scope.name,
+					class: scope.class,
+					valueObject: scope.valueObject,
+					object: scope.object,
+					label: scope.label,
+					optionValues: scope.optionValues,
+					edit: scope.editting,
+					title: scope.title,
+					value: scope.value
+				};
+				
 				if (attrs.options && angular.isString(attrs.options)){
 					var optionsArray = [];
 					optionsArray = attrs.options.toString().split(",");
@@ -76,6 +99,8 @@ angular.module('slatwalladmin')
 						scope.optionValues.push(newOption);
 					}, scope);
 				}
+			    scope.up = scope.$parent.$parent;//<--use observer
+				/** handle turning the options into an array of objects */
                 
                 scope.submit = function(){
                 	scope.up.submit(); //<--propagate up the chain 

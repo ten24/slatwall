@@ -10,26 +10,7 @@ module slatwalladmin {
     export class swForm implements ng.IDirective {
         public static $inject = ['formService', 'ProcessObject', 'AccountFactory', 'CartFactory',
             '$compile', '$templateCache', '$timeout', '$rootScope', 'partialsPath', '$http'];
-        /*public restrict = "E";
-        public transclude = true;
-        public controllerAs = "ctrl";
-        public bindToController = {
-                object:"=?",
-                context:"@?",
-                name:"@?",
-                entityName: "@?",
-                processObject: "@?",
-                hiddenFields: "=?",
-                action: "&?",
-                actions: "@?",
-                formClass: "@?",
-                formData: "=?",
-                onSuccess: "@?",
-                hideUntil: "@?",
-                isProcessForm: "@"
-		      };*/
-        //templateUrl = this.partialsPath + "formPartial.html";
-        //replace = true;
+        
         link = (scope) => { scope.context = scope.context || 'save'; };
 
         constructor(public formService, public ProcessObject, public AccountFactory, public CartFactory, public $compile, public $templateCache, public $timeout, public $rootScope, public partialsPath, public $http) {

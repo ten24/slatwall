@@ -21,26 +21,6 @@ var slatwalladmin;
             this.$rootScope = $rootScope;
             this.partialsPath = partialsPath;
             this.$http = $http;
-            /*public restrict = "E";
-            public transclude = true;
-            public controllerAs = "ctrl";
-            public bindToController = {
-                    object:"=?",
-                    context:"@?",
-                    name:"@?",
-                    entityName: "@?",
-                    processObject: "@?",
-                    hiddenFields: "=?",
-                    action: "&?",
-                    actions: "@?",
-                    formClass: "@?",
-                    formData: "=?",
-                    onSuccess: "@?",
-                    hideUntil: "@?",
-                    isProcessForm: "@"
-                  };*/
-            //templateUrl = this.partialsPath + "formPartial.html";
-            //replace = true;
             this.link = function (scope) { scope.context = scope.context || 'save'; };
             return this.Get();
         }

@@ -1,16 +1,16 @@
-<div class="form-group">
+<div>
 	<p class="text-center loader {{class}}" ng-if="loader"><i class="fa fa-spinner fa-spin" ng-if="loader"></i></p>
     
     <!-- Check if a label should be defined for this set of elements -->
-    <label ng-if="name && type !== 'yesno' && type !== 'submit' && labelText && !labelClass" class="form-control" for="{{name}}" ng-bind="labelText"></label>
-    <label ng-if="name && type !== 'yesno' && type !== 'submit' && labelText && labelClass"  class="{{labelClass}}" for="{{name}}" ng-bind="labelText"></label>
+    <label ng-if="name && type !== 'yesno' && type !== 'submit' && labelText && !labelClass " class="form-control" for="{{name}}" ng-bind="labelText"></label>
+    <label ng-if="name && type !== 'yesno' && type !== 'submit' && labelText && labelClass "  class="{{labelClass}}" for="{{name}}" ng-bind="labelText"></label>
     
     <!-- Figure out which type of element we have and display it .-->
     <ng-switch on="type">
-    	<input type="text" ng-switch-when="text" ng-model="swModel" class="{{class}}" name="{{name}}"></input>
-    	<input type="email" ng-switch-when="email" ng-model="swModel" class="{{class}}" name="{{name}}"></input>
-    	<input type="password" ng-switch-when="password" ng-model="swModel" class="{{class}}" name="{{name}}"></input>
-    	<input type="file" ng-switch-when="file" ng-model="swModel"  class="{{class}}" name="{{name}}"></input>
+    	<input type="text" ng-switch-when="text" ng-model="object" class="{{class}}" name="{{name}}"></input>
+    	<input type="email" ng-switch-when="email" ng-model="object" class="{{class}}" name="{{name}}"></input>
+    	<input type="password" ng-switch-when="password" ng-model="object" class="{{class}}" name="{{name}}"></input>
+    	<input type="file" ng-switch-when="file" ng-model="object"  class="{{class}}" name="{{name}}"></input>
     	<textarea ng-switch-when="textarea" class="{{class}}"  id="{{name}}TextArea" ng-model="value" name="{{name}}"></textarea>
     	<input type="checkbox" ng-switch-when="checkbox" value="{{value}}" class="{{class}}" name="{{name}}"></input>
     	
@@ -38,7 +38,7 @@
         </div>
         
         <div ng-switch-when="yesno" name="{{name}}">
-        	<label ng-bind="name"></label>
+        	    <label ng-bind="name"></label>
                 <label class="radio-inline"><input type="radio" name="{{name}}" value="1" text="Yes"/>Yes</label>
                 <label class="radio-inline"><input type="radio" name="{{name}}" value="0" text="No" checked="true"/>No</label>
         </div>
@@ -48,10 +48,8 @@
         </div>
     </ng-switch>
     
-    
     <!-- handle errors -->
     <div ng-if="!errorClass" class="error" error-for="{{name}}"></div>
     <div ng-if="errorClass"  class="{{errorClass}}" error-for="{{name}}"></div>
-    
     
 </div>
