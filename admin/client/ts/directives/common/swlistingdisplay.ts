@@ -43,6 +43,8 @@ module slatwalladmin {
         private recordEditAction;
         private recordDeleteAction
         private recordProcessButtonDisplayFlag;
+        private searchText;
+        private savedSearchText;
         private selectFieldName;
         private selectable:boolean = false;
         private sortable:boolean = false;
@@ -50,6 +52,8 @@ module slatwalladmin {
         private tableID;
         private tableclass;
         private tableattributes;
+        
+        private _timeoutPromise;
         
         public static $inject = ['$scope','$element','$transclude','$timeout','$q','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
         constructor(
@@ -466,6 +470,25 @@ module slatwalladmin {
             }
         }
         
+        public search = () =>{
+            
+            if(this.searchText.length > 2){
+                this.savedSearchText = this.searchText; 
+                if(this._timeoutPromise){
+					this.$timeout.cancel(this._timeoutPromise); 
+				}
+                
+                this._timeoutPromise = this.$timeout(()=>{
+					this.collectionConfig.setKeywords(this.savedSearchText);
+                    this.collectionPromise = this.collectionConfig.getEntity();
+				}, 500);
+            } else { 
+                this.savedSearchText="";
+                this.collectionConfig.setKeywords(this.savedSearchText);
+                this.collectionPromise = this.collectionConfig.getEntity();
+            }
+        }
+        
         public updateMultiselectValues = ()=>{
             this.multiselectValues = this.selectionService.getSelections('ListingDisplay');   
         }
@@ -571,6 +594,9 @@ module slatwalladmin {
              //booleans
              expandable:"=",
              expandableOpenRoot:"=",
+             
+             /*Searching*/
+             searchText:"=",
             
              /*Sorting*/
              sortProperty:"@",

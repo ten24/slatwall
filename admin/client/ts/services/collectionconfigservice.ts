@@ -218,7 +218,6 @@ module slatwalladmin{
         }
 
         private addColumn= (column: string, title: string = '', options:Object = {}) =>{
-            
             if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
                 var isVisible = true,
                     isDeletable = true,
@@ -250,6 +249,17 @@ module slatwalladmin{
                     ormtype = options['ormtype'];
                 }else if(this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype){
                     ormtype = this.collection.metaData[lastProperty].ormtype;
+                }else {
+                    var properties = column.split('.');
+                    if(properties.length > 2){
+                        var secondToLastProperty = properties[properties.length-2];
+                        if(this.collection.metaData[secondToLastProperty] && this.collection.metaData[secondToLastProperty].cfc){
+                            var propertyMetaData = this.$slatwall.getPropertyByEntityNameAndPropertyName(this.collection.metaData[secondToLastProperty].cfc,lastProperty);
+                            if(propertyMetaData.ormtype){
+                                ormtype = propertyMetaData.ormtype;
+                            }
+                        }
+                    }
                 }
     
                 if(angular.isDefined(this.collection.metaData[lastProperty])){
