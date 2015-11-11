@@ -1,6 +1,22 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypeScript.d.ts" />
 import hibachimodule = require('../hibachi/hibachi.module');
+
+//declare variables out of scope
+declare var slatwallAngular:any;
+//adding slatwall interface to jquery
+interface ISlatwallConfig{
+    baseURL;
+    debugFlag;
+}
+interface ISlatwall{
+    getConfig():ISlatwallConfig
+}
+interface SlatwallJQueryStatic extends JQueryStatic{
+    slatwall:ISlatwall
+}
+declare var $:SlatwallJQueryStatic;
+
 export = angular.module('slatwalladmin',[
   hibachimodule.name,
   //'ngSlatwall','ngSlatwallModel',
@@ -14,84 +30,84 @@ export = angular.module('slatwalladmin',[
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
      datepickerPopupConfig.toggleWeeksText = null;
-//     if(slatwallAngular.hashbang){
-//         $locationProvider.html5Mode( false ).hashPrefix('!');
-//     }
-//     //
-//     $provide.constant("baseURL", $.slatwall.getConfig().baseURL);
-//    
-//     var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
-//    
-//     $provide.constant("partialsPath", _partialsPath);
-//     $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-//    
-//
-//     angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
-//         var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
-//         var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
-//         $provide.constant(constantKey, constantPartialsPath);
-//     });
-//    
-    // $logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
-//     $filterProvider.register('likeFilter',function(){
-//         return function(text){
-//             if(angular.isDefined(text) && angular.isString(text)){
-//                 return text.replace(new RegExp('%', 'g'), '');
-//                
-//             }
-//         };
-//     });
-//    
-//     $filterProvider.register('truncate',function(){
-//         return function (input, chars, breakOnWord) {
-//             if (isNaN(chars)) return input;
-//             if (chars <= 0) return '';
-//             if (input && input.length > chars) {
-//                 input = input.substring(0, chars);
-//                 if (!breakOnWord) {
-//                     var lastspace = input.lastIndexOf(' ');
-//                     //get last space
-//                     if (lastspace !== -1) {
-//                         input = input.substr(0, lastspace);
-//                     }
-//                 }else{
-//                     while(input.charAt(input.length-1) === ' '){
-//                         input = input.substr(0, input.length -1);
-//                     }
-//                 }
-//                 return input + '...';
-//             }
-//             return input;
-//         };
-//     });
-//    
-//     $httpProvider.interceptors.push('slatwallInterceptor');
-//
-//     // route provider configuration
-//     $routeProvider.when('/entity/:entityName/', {
-//         template: function(params){
-//             var entityDirectiveExists = $injector.has('sw'+params.entityName+'ListDirective');
-//             if(entityDirectiveExists){
-//                 return '<sw-'+params.entityName.toLowerCase()+'-list>';
-//             }else{
-//                 return '<sw-list></sw-list>';
-//             }
-//         },
-//         controller: 'routerController'
-//     }).when('/entity/:entityName/:entityID', {
-//         template: function(params){
-//             var entityDirectiveExists = $injector.has('sw'+params.entityName+'DetailDirective');
-//             if(entityDirectiveExists){
-//                 return '<sw-'+params.entityName.toLowerCase()+'-detail>';
-//             }else{
-//                 return '<sw-detail></sw-detail>';
-//             }
-//         },
-//         controller: 'routerController',
-//     }).otherwise({
-//         //controller:'otherwiseController'        
-//         templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
-//     });  
+     if(slatwallAngular.hashbang){
+         $locationProvider.html5Mode( false ).hashPrefix('!');
+     }
+     //
+     $provide.constant("baseURL", $.slatwall.getConfig().baseURL);
+    
+     var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
+    
+     $provide.constant("partialsPath", _partialsPath);
+     $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
+    
+
+     angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
+         var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
+         var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
+         $provide.constant(constantKey, constantPartialsPath);
+     });
+    
+     $logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
+     $filterProvider.register('likeFilter',function(){
+         return function(text){
+             if(angular.isDefined(text) && angular.isString(text)){
+                 return text.replace(new RegExp('%', 'g'), '');
+                
+             }
+         };
+     });
+    
+     $filterProvider.register('truncate',function(){
+         return function (input, chars, breakOnWord) {
+             if (isNaN(chars)) return input;
+             if (chars <= 0) return '';
+             if (input && input.length > chars) {
+                 input = input.substring(0, chars);
+                 if (!breakOnWord) {
+                     var lastspace = input.lastIndexOf(' ');
+                     //get last space
+                     if (lastspace !== -1) {
+                         input = input.substr(0, lastspace);
+                     }
+                 }else{
+                     while(input.charAt(input.length-1) === ' '){
+                         input = input.substr(0, input.length -1);
+                     }
+                 }
+                 return input + '...';
+             }
+             return input;
+         };
+     });
+    
+     $httpProvider.interceptors.push('slatwallInterceptor');
+
+     // route provider configuration
+     $routeProvider.when('/entity/:entityName/', {
+         template: function(params){
+             var entityDirectiveExists = $injector.has('sw'+params.entityName+'ListDirective');
+             if(entityDirectiveExists){
+                 return '<sw-'+params.entityName.toLowerCase()+'-list>';
+             }else{
+                 return '<sw-list></sw-list>';
+             }
+         },
+         controller: 'routerController'
+     }).when('/entity/:entityName/:entityID', {
+         template: function(params){
+             var entityDirectiveExists = $injector.has('sw'+params.entityName+'DetailDirective');
+             if(entityDirectiveExists){
+                 return '<sw-'+params.entityName.toLowerCase()+'-detail>';
+             }else{
+                 return '<sw-detail></sw-detail>';
+             }
+         },
+         controller: 'routerController',
+     }).otherwise({
+         //controller:'otherwiseController'        
+         templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
+     });  
 
  }]);
 
