@@ -17,12 +17,12 @@ module slatwalladmin {
         private collectionPromise;
         private collectionData;
         private collectionObject;
-        private collectionConfig;
+        private collectionConfig:slatwalladmin.CollectionConfig;
         private collection;
         private childPropertyName;
         private columns = [];
         private columnCount; 
-        private entity; 
+        private entity:string; 
         private expandable:boolean;
         private exampleEntity:any = ""; 
         private exportAction;  
@@ -609,7 +609,7 @@ module slatwalladmin {
 		public templateUrl;
         public static $inject = ['partialsPath'];
 		constructor(
-            public partialsPath:hibachi.partialsPath 
+            public partialsPath 
         ){
             this.partialsPath = partialsPath;
 			this.templateUrl = this.partialsPath+'listingdisplay.html';

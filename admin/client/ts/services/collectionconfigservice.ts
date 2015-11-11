@@ -60,7 +60,7 @@ module slatwalladmin{
             private utilityService,
             public  baseEntityName?:string,
             public  baseEntityAlias?:string,
-            private columns?:Column[],
+            public columns?:Column[],
             private filterGroups:Array=[{filterGroup: []}],
             private joins?:Join[],
             private orderBy?:OrderBy[],
@@ -298,7 +298,7 @@ module slatwalladmin{
             });
         };
         
-        addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options)=>{
+        addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?)=>{
             var alias = this.baseEntityAlias;
             
             var doJoin = false;
@@ -371,7 +371,7 @@ module slatwalladmin{
             });
         };
 
-        addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
+        addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string) =>{
             var alias = this.baseEntityAlias;
             var join;
             var doJoin = false;
