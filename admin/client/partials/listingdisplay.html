@@ -19,7 +19,8 @@
 								<input  type="text"
 									class="form-control input-sm"
 									placeholder=""
-									name=""
+									ng-model="swListingDisplay.searchText"
+									ng-change="swListingDisplay.search()"
 									/>
 								<i class="fa fa-refresh fa-spin"></i>
 								<i class="fa fa-search"></i>
