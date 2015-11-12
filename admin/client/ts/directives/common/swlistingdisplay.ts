@@ -472,29 +472,6 @@ module slatwalladmin {
             }
         }
         
-        public search = () =>{
-            
-            if(this.searchText.length > 2){
-                this.searching = true; 
-                this.savedSearchText = this.searchText; 
-                if(this._timeoutPromise){
-					this.$timeout.cancel(this._timeoutPromise); 
-				}
-                
-                this._timeoutPromise = this.$timeout(()=>{
-                   
-					this.collectionConfig.setKeywords(this.savedSearchText);
-                    this.collectionPromise = this.collectionConfig.getEntity();
-                    
-				}, 500);
-            } else { 
-                this.savedSearchText="";
-                this.searching=false; 
-                this.collectionConfig.setKeywords(this.savedSearchText);
-                this.collectionPromise = this.collectionConfig.getEntity();
-            }
-        }
-        
         public updateMultiselectValues = ()=>{
             this.multiselectValues = this.selectionService.getSelections('ListingDisplay');   
         }

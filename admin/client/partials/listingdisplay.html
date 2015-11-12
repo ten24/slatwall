@@ -8,30 +8,12 @@
 		</ul>
 	</div>
 	<!-- search begin -->
-	<div class="col-xs-6 s-no-padding-left">
-		<ul class="list-inline list-unstyled">
-			<!-- to implement searching-->
-			<li>
-				<div class="s-select-list-wrapper">
-					<div class="form-group">
-						<div class="input-group">
-							<div class="s-input-btn">
-								<input  type="text"
-									class="form-control input-sm"
-									placeholder=""
-									ng-model="swListingDisplay.searchText"
-									ng-change="swListingDisplay.search()"
-									/>
-								<i ng-show="swListingDisplay.searching" class="fa fa-refresh fa-spin"></i>
-								<i ng-hide="swListingDisplay.searching" class="fa fa-search"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- s-select-list-wrapper -->
-			</li>
-		</ul>
-	</div>
+	<sw-listing-global-search 
+		data-collection-config="swListingDisplay.collectionConfig"
+		data-collection-promise="swListingDisplay.collectionPromise"
+		data-search-text="swListingDisplay.searchText"
+		data-searching="swListingDisplay.searching">
+	</sw-listing-global-search>
 </div><!--- reyjay's class --->
 
 
