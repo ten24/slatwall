@@ -152,7 +152,7 @@ module slatwalladmin {
             }
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-            //this.collectionConfig.setKeywords(this.paginator.keywords);//?
+            this.collectionConfig.setKeywords(this.paginator.keywords);
         }
 
         private setupDefaultGetCollection = () =>{
