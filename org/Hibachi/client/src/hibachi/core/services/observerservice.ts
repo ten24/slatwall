@@ -9,8 +9,8 @@
  *
  */
 
-import BaseService = require('./baseservice');
-import UtilityService = require('./utilityservice');
+import {BaseService} from "./baseservice";
+import {UtilityService} from "./utilityservice";
 
 class ObserverService extends BaseService{
     private observers;
@@ -109,4 +109,4 @@ class ObserverService extends BaseService{
       }
     }
 }
-export = ObserverService;
+export {ObserverService};

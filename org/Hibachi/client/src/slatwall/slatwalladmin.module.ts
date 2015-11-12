@@ -1,23 +1,13 @@
 /// <reference path="../../typings/tsd.d.ts" />
 /// <reference path="../../typings/slatwallTypeScript.d.ts" />
-import hibachimodule = require('../hibachi/hibachi.module');
+import {hibachimodule} from "../hibachi/hibachi.module";
+import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
 
 //declare variables out of scope
 declare var slatwallAngular:any;
-//adding slatwall interface to jquery
-interface ISlatwallConfig{
-    baseURL;
-    debugFlag;
-}
-interface ISlatwall{
-    getConfig():ISlatwallConfig
-}
-interface SlatwallJQueryStatic extends JQueryStatic{
-    slatwall:ISlatwall
-}
 declare var $:SlatwallJQueryStatic;
 
-export = angular.module('slatwalladmin',[
+var slatwalladminmodule = angular.module('slatwalladmin',[
   hibachimodule.name,
   //'ngSlatwall','ngSlatwallModel',
   'ui.bootstrap',
@@ -109,8 +99,10 @@ export = angular.module('slatwalladmin',[
          templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
      });  
 
- }]);
-
+ }])
+.service('slatwallInterceptor', SlatwallInterceptor);
+;
+export{slatwalladminmodule};
 // ((): void => {
     
 //     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);

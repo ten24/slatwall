@@ -1,14 +1,21 @@
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
-import alertmodule = require('./alert/alert.module');
-import coremodule = require('./core/core.module');
-import paginationmodule = require('./pagination/pagination.module');
+//import alertmodule = require('./alert/alert.module');
+import {alertmodule} from "./alert/alert.module";
+import {coremodule} from "./core/core.module";
+import {paginationmodule} from "./pagination/pagination.module";
+import {dialogmodule} from "./dialog/dialog.module";
 
-export = angular.module('hibachi',[
+var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
     coremodule.name,
-    paginationmodule.name
+    paginationmodule.name,
+    dialogmodule.name
 ]).config(()=>{
     console.log('moduleloaded');    
 })
+
+export{
+    hibachimodule  
+};
 //.controller('appcontroller',controller.ProductCreateController);

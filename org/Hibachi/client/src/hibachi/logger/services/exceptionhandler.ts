@@ -1,7 +1,7 @@
 /// <reference path="../../../../typings/tsd.d.ts" />
 /// <reference path="../../../../typings/slatwallTypeScript.d.ts" />
 //depends on alert module
-import AlertService = require('../../alert/service/alertservice')
+import {AlertService} from "../../alert/service/alertservice";
 /*<------------------------------------------------------------------------
     This is out main class where we actually handle the exception by 
     instantiating the http config and passing it along with the 
@@ -57,7 +57,9 @@ class ExceptionHandler {
 }//<--end class
 //let angular know about our class. notive we pass in the $injector and instantiate the class in one go
 //again using the fat arrow for scope.
-export = ExceptionHandler;
+export {
+    ExceptionHandler
+};
 
 
 

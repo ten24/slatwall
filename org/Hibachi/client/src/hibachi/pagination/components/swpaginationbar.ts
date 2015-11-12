@@ -56,7 +56,10 @@ class SWPaginationBarController{
 //        // return directive;
 //    }
 //}
-export = SWPaginationBar;
+export {
+    SWPaginationBar,
+    SWPaginationBarController
+};
 
 	//angular.module('hibachi.pagination').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
 

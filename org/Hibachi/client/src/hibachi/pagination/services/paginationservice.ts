@@ -3,7 +3,7 @@
 /*collection service is used to maintain the state of the ui*/
 
 
-export class Pagination{
+class Pagination{
 
     public pageShow:number=10;
     public currentPage:number = 1;
@@ -160,12 +160,12 @@ export class Pagination{
 
 }
 
-export interface IPaginationService{
+interface IPaginationService{
     createPagination():Pagination;
     getPagination(uuid:string):Pagination;
 }
 
-export class PaginationService implements IPaginationService{
+class PaginationService implements IPaginationService{
     //@ngInject
 
     private paginations = {};
@@ -186,4 +186,9 @@ export class PaginationService implements IPaginationService{
         if(!uuid) return;
         return this.paginations[uuid];
     };
+}
+export{
+    PaginationService,
+    Pagination,
+    IPaginationService
 }

@@ -1,18 +1,22 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 /// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 //services
-import pagination = require('./services/paginationservice');
-import SWPaginationBar = require('./components/swpaginationbar');
+import {PaginationService} from "./services/paginationservice";
+import {SWPaginationBar} from "./components/swpaginationbar";
 
 
-export = angular.module('hibachi.pagination', [])
+var paginationmodule = angular.module('hibachi.pagination', [])
 .run([function() {
-	console.log(pagination.PaginationService);
+	console.log(PaginationService);
 }])
 //services
-.service('paginationService', pagination.PaginationService)
+.service('paginationService', PaginationService)
 .directive('swPaginationBar', SWPaginationBar.factory());
 ;
+
+export{
+	paginationmodule
+}
 
 
 

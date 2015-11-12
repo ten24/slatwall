@@ -2,7 +2,7 @@
 /// <reference path='../../../../typings/tsd.d.ts' />
 
 //model
-class Alert {
+export class Alert {
     msg:string;
     type:string;
     
@@ -14,7 +14,6 @@ class Alert {
         this.type = type;   
     }
 } 
-export = Alert;
 
 
 

@@ -1,14 +1,14 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 //services
-import UtilityService = require('./services/utilityservice');
-import SelectionService = require('./services/selectionservice');
-import ObserverService = require('./services/observerservice');
+import {UtilityService} from "./services/utilityservice";
+import {SelectionService} from "./services/selectionservice";
+import {ObserverService} from "./services/observerservice";
 //filters
-import PercentageFilter = require('./filters/percentage');
+import {PercentageFilter} from "./filters/percentage";
 
 
-export = angular.module('hibachi.core',[]).config(()=>{
+var coremodule = angular.module('hibachi.core',[]).config(()=>{
 })
 //services
 .service('utilityService',UtilityService)
@@ -17,3 +17,6 @@ export = angular.module('hibachi.core',[]).config(()=>{
 //filters 
 .filter('percentage',[PercentageFilter.Factory])
 ;  
+export{
+	coremodule
+}

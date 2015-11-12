@@ -2,7 +2,7 @@
 /// <reference path='../../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 
-import BaseService = require('./baseservice');
+import {BaseService} from "./baseservice";
 
 class SelectionService extends BaseService{
     private _selection ={};
@@ -47,4 +47,6 @@ class SelectionService extends BaseService{
         this._selection[selectionid] = [];  
     };
 }
-export = SelectionService;
+export {
+    SelectionService
+};

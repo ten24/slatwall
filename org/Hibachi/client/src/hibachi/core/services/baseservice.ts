@@ -6,6 +6,6 @@ class BaseService{
     constructor(){ 
     }
 }
-export = BaseService;
+export{BaseService};
 
  

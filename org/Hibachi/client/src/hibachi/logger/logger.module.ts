@@ -3,15 +3,14 @@
 
 
 
-import alertmodule = require('../alert/alert.module');
-import exceptionHandler = require('./services/exceptionhandler');
+import {alertmodule} from "../alert/alert.module";
+import {ExceptionHandler} from "./services/exceptionhandler";
 
-export = angular.module('logger', [alertmodule.name])
+var loggermodule = angular.module('logger', [alertmodule.name])
 .run([function() {
 }])
-.factory('$exceptionHandler', ['$injector', ($injector) => new exceptionHandler($injector)]);;
-//angular.module('logger', []).factory('$exceptionHandler', ['$injector', ($injector) => new logger.ExceptionHandler($injector)]);
+.factory('$exceptionHandler', ['$injector', ($injector) => new ExceptionHandler($injector)]);;
 
-
-
-
+export{
+	loggermodule
+}

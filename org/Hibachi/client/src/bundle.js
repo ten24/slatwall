@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var appModule = __webpack_require__(9);
-	var loggerModule = __webpack_require__(23);
+	var loggerModule = __webpack_require__(25);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -647,9 +647,10 @@
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var hibachimodule = __webpack_require__(10);
-	module.exports = angular.module('slatwalladmin', [
-	    hibachimodule.name,
+	var hibachi_module_1 = __webpack_require__(10);
+	var slatwallinterceptor_1 = __webpack_require__(24);
+	var slatwalladminmodule = angular.module('slatwalladmin', [
+	    hibachi_module_1.hibachimodule.name,
 	    //'ngSlatwall','ngSlatwallModel',
 	    'ui.bootstrap',
 	    'ngAnimate',
@@ -734,7 +735,10 @@
 	            //controller:'otherwiseController'        
 	            templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html'
 	        });
-	    }]);
+	    }])
+	    .service('slatwallInterceptor', slatwallinterceptor_1.SlatwallInterceptor);
+	exports.slatwalladminmodule = slatwalladminmodule;
+	;
 	// ((): void => {
 	//     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
 	//     app.config(
@@ -881,16 +885,20 @@
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
-	var alertmodule = __webpack_require__(11);
-	var coremodule = __webpack_require__(14);
-	var paginationmodule = __webpack_require__(20);
-	module.exports = angular.module('hibachi', [
-	    alertmodule.name,
-	    coremodule.name,
-	    paginationmodule.name
+	//import alertmodule = require('./alert/alert.module');
+	var alert_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(14);
+	var pagination_module_1 = __webpack_require__(20);
+	var dialog_module_1 = __webpack_require__(22);
+	var hibachimodule = angular.module('hibachi', [
+	    alert_module_1.alertmodule.name,
+	    core_module_1.coremodule.name,
+	    pagination_module_1.paginationmodule.name,
+	    dialog_module_1.dialogmodule.name
 	]).config(function () {
 	    console.log('moduleloaded');
 	});
+	exports.hibachimodule = hibachimodule;
 	//.controller('appcontroller',controller.ProductCreateController); 
 
 
@@ -900,9 +908,10 @@
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var AlertService = __webpack_require__(12);
-	module.exports = angular.module('hibachi.alert', [])
-	    .service('alertService', AlertService);
+	var alertService_1 = __webpack_require__(12);
+	var alertmodule = angular.module('hibachi.alert', [])
+	    .service('alertService', alertService_1.AlertService);
+	exports.alertmodule = alertmodule;
 
 
 /***/ },
@@ -911,14 +920,15 @@
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	var Alert = __webpack_require__(13);
+	//import Alert = require('../model/alert');
+	var alert_1 = __webpack_require__(13);
 	var AlertService = (function () {
 	    function AlertService($timeout, alerts) {
 	        var _this = this;
 	        this.$timeout = $timeout;
 	        this.alerts = alerts;
 	        this.newAlert = function () {
-	            return new Alert();
+	            return new alert_1.Alert();
 	        };
 	        this.get = function () {
 	            return _this.alerts || [];
@@ -975,7 +985,7 @@
 	    ];
 	    return AlertService;
 	})();
-	module.exports = AlertService;
+	exports.AlertService = AlertService;
 
 
 /***/ },
@@ -992,7 +1002,7 @@
 	    }
 	    return Alert;
 	})();
-	module.exports = Alert;
+	exports.Alert = Alert;
 
 
 /***/ },
@@ -1002,17 +1012,18 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var UtilityService = __webpack_require__(15);
-	var SelectionService = __webpack_require__(17);
-	var ObserverService = __webpack_require__(18);
+	var utilityservice_1 = __webpack_require__(15);
+	var selectionservice_1 = __webpack_require__(17);
+	var observerservice_1 = __webpack_require__(18);
 	//filters
-	var PercentageFilter = __webpack_require__(19);
-	module.exports = angular.module('hibachi.core', []).config(function () {
+	var percentage_1 = __webpack_require__(19);
+	var coremodule = angular.module('hibachi.core', []).config(function () {
 	})
-	    .service('utilityService', UtilityService)
-	    .service('selectionService', SelectionService)
-	    .service('observerService', ObserverService)
-	    .filter('percentage', [PercentageFilter.Factory]);
+	    .service('utilityService', utilityservice_1.UtilityService)
+	    .service('selectionService', selectionservice_1.SelectionService)
+	    .service('observerService', observerservice_1.ObserverService)
+	    .filter('percentage', [percentage_1.PercentageFilter.Factory]);
+	exports.coremodule = coremodule;
 
 
 /***/ },
@@ -1027,7 +1038,7 @@
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	var BaseService = __webpack_require__(16);
+	var baseservice_1 = __webpack_require__(16);
 	var UtilityService = (function (_super) {
 	    __extends(UtilityService, _super);
 	    function UtilityService() {
@@ -1260,8 +1271,8 @@
 	        };
 	    }
 	    return UtilityService;
-	})(BaseService);
-	module.exports = UtilityService;
+	})(baseservice_1.BaseService);
+	exports.UtilityService = UtilityService;
 
 
 /***/ },
@@ -1275,7 +1286,7 @@
 	    }
 	    return BaseService;
 	})();
-	module.exports = BaseService;
+	exports.BaseService = BaseService;
 
 
 /***/ },
@@ -1290,7 +1301,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var BaseService = __webpack_require__(16);
+	var baseservice_1 = __webpack_require__(16);
 	var SelectionService = (function (_super) {
 	    __extends(SelectionService, _super);
 	    function SelectionService() {
@@ -1336,8 +1347,8 @@
 	        };
 	    }
 	    return SelectionService;
-	})(BaseService);
-	module.exports = SelectionService;
+	})(baseservice_1.BaseService);
+	exports.SelectionService = SelectionService;
 
 
 /***/ },
@@ -1359,7 +1370,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var BaseService = __webpack_require__(16);
+	var baseservice_1 = __webpack_require__(16);
 	var ObserverService = (function (_super) {
 	    __extends(ObserverService, _super);
 	    //@ngInject
@@ -1453,8 +1464,8 @@
 	    }
 	    ObserverService.$inject = ["utilityService"];
 	    return ObserverService;
-	})(BaseService);
-	module.exports = ObserverService;
+	})(baseservice_1.BaseService);
+	exports.ObserverService = ObserverService;
 
 
 /***/ },
@@ -1478,7 +1489,7 @@
 	    };
 	    return PercentageFilter;
 	})();
-	module.exports = PercentageFilter;
+	exports.PercentageFilter = PercentageFilter;
 
 
 /***/ },
@@ -1488,19 +1499,277 @@
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var pagination = __webpack_require__(21);
-	var SWPaginationBar = __webpack_require__(22);
-	;
-	module.exports = angular.module('hibachi.pagination', [])
+	var paginationservice_1 = __webpack_require__(26);
+	var swpaginationbar_1 = __webpack_require__(21);
+	var paginationmodule = angular.module('hibachi.pagination', [])
 	    .run([function () {
-	        console.log(pagination.PaginationService);
+	        console.log(paginationservice_1.PaginationService);
 	    }])
-	    .service('paginationService', pagination.PaginationService)
-	    .directive('swPaginationBar', SWPaginationBar.factory());
+	    .service('paginationService', paginationservice_1.PaginationService)
+	    .directive('swPaginationBar', swpaginationbar_1.SWPaginationBar.factory());
+	exports.paginationmodule = paginationmodule;
+	;
 
 
 /***/ },
 /* 21 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	//import pagination = require('../services/paginationservice');
+	//var PaginationService = pagination.PaginationService;
+	//'use strict';
+	var SWPaginationBarController = (function () {
+	    //@ngInject
+	    function SWPaginationBarController(paginationService) {
+	        if (angular.isUndefined(this.paginator)) {
+	            this.paginator = paginationService.createPagination();
+	        }
+	    }
+	    SWPaginationBarController.$inject = ["paginationService"];
+	    return SWPaginationBarController;
+	})();
+	exports.SWPaginationBarController = SWPaginationBarController;
+	var SWPaginationBar = (function () {
+	    //@ngInject
+	    function SWPaginationBar(partialsPath) {
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.bindToController = {
+	            paginator: "="
+	        };
+	        this.controller = SWPaginationBarController;
+	        this.controllerAs = "swPaginationBar";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = partialsPath + 'paginationbar.html';
+	    }
+	    SWPaginationBar.$inject = ["partialsPath"];
+	    SWPaginationBar.factory = function () {
+	        var directive = function (partialsPath) { return new SWPaginationBar(partialsPath); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWPaginationBar;
+	})();
+	exports.SWPaginationBar = SWPaginationBar;
+	//class SWPaginationBarFactory{
+	//    public static getFactoryFor<T extends SWPaginationBar>(classType:Function):ng.IDirectiveFactory {
+	//        var factory = (...args:any[]):T=>{
+	//            var directive = <any>classType;
+	//            return new directive(args);
+	//        }
+	//        
+	//        factory.$inject = classType.$inject;
+	//        return factory;
+	//        // var directive: ng.IDirectiveFactory = 
+	//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService); 
+	//        // directive.$inject = ['$log','$timeout','partialsPath','paginationService'];
+	//        // return directive;
+	//    }
+	//}
+	//angular.module('hibachi.pagination').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
+
+
+/***/ },
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	//services
+	var dialogservice_1 = __webpack_require__(23);
+	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
+	})
+	    .service('dialogService', dialogservice_1.DialogService);
+	exports.dialogmodule = dialogmodule;
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	var DialogService = (function () {
+	    function DialogService(partialsPath) {
+	        var _this = this;
+	        this.partialsPath = partialsPath;
+	        this.get = function () {
+	            return _this._pageDialogs || [];
+	        };
+	        this.addPageDialog = function (name, params) {
+	            var newDialog = {
+	                'path': _this.partialsPath + name + '.html',
+	                'params': params
+	            };
+	            _this._pageDialogs.push(newDialog);
+	        };
+	        this.removePageDialog = function (index) {
+	            _this._pageDialogs.splice(index, 1);
+	        };
+	        this.getPageDialogs = function () {
+	            return _this._pageDialogs;
+	        };
+	        this.removeCurrentDialog = function () {
+	            _this._pageDialogs.splice(_this._pageDialogs.length - 1, 1);
+	        };
+	        this.getCurrentDialog = function () {
+	            return _this._pageDialogs[_this._pageDialogs.length - 1];
+	        };
+	        this._pageDialogs = [];
+	    }
+	    DialogService.$inject = [
+	        'partialsPath'
+	    ];
+	    return DialogService;
+	})();
+	exports.DialogService = DialogService;
+
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SlatwallInterceptor = (function () {
+	    function SlatwallInterceptor($location, $window, $q, $log, $injector, alertService, baseURL, dialogService, utilityService) {
+	        var _this = this;
+	        this.$location = $location;
+	        this.$window = $window;
+	        this.$q = $q;
+	        this.$log = $log;
+	        this.$injector = $injector;
+	        this.alertService = alertService;
+	        this.baseURL = baseURL;
+	        this.dialogService = dialogService;
+	        this.utilityService = utilityService;
+	        this.urlParam = null;
+	        this.authHeader = 'Authorization';
+	        this.authPrefix = 'Bearer ';
+	        this.request = function (config) {
+	            _this.$log.debug('request');
+	            //bypass interceptor rules when checking template cache
+	            if (config.url.charAt(0) !== '/') {
+	                return config;
+	            }
+	            if (config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+	                //all partials are bound to instantiation key
+	                config.url = config.url + '?instantiationKey=' + $.slatwall.getConfig().instantiationKey;
+	                return config;
+	            }
+	            config.cache = true;
+	            config.headers = config.headers || {};
+	            if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
+	                config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+	            }
+	            var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
+	            if (config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')) {
+	                _this.$log.debug(config);
+	                config.method = 'POST';
+	                config.data = {};
+	                var data = {};
+	                if (angular.isDefined(config.params)) {
+	                    data = config.params;
+	                }
+	                var params = {};
+	                params.serializedJsonData = angular.toJson(data);
+	                params.context = "GET";
+	                config.data = $.param(params);
+	                delete config.params;
+	                config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+	            }
+	            return config;
+	        };
+	        this.requestError = function (rejection) {
+	            _this.$log.debug('requestError');
+	            return _this.$q.reject(rejection);
+	        };
+	        this.response = function (response) {
+	            _this.$log.debug('response');
+	            if (response.data.messages) {
+	                var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
+	                _this.alertService.addAlerts(alerts);
+	            }
+	            return response;
+	        };
+	        this.responseError = function (rejection) {
+	            _this.$log.debug('responseReject');
+	            if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401) {
+	                if (rejection.data && rejection.data.messages) {
+	                    var alerts = _this.alertService.formatMessagesToAlerts(rejection.data.messages);
+	                    _this.alertService.addAlerts(alerts);
+	                }
+	                else {
+	                    var message = {
+	                        msg: 'there was error retrieving data',
+	                        type: 'error'
+	                    };
+	                    _this.alertService.addAlert(message);
+	                }
+	            }
+	            if (rejection.status === 401) {
+	                // handle the case where the user is not authenticated
+	                if (rejection.data && rejection.data.messages) {
+	                    //var deferred = $q.defer(); 
+	                    var $http = _this.$injector.get('$http');
+	                    if (rejection.data.messages[0].message === 'timeout') {
+	                        //open dialog
+	                        _this.dialogService.addPageDialog('preprocesslogin', {});
+	                    }
+	                    else if (rejection.data.messages[0].message === 'invalid_token') {
+	                        return $http.get(baseURL + '/index.cfm/api/auth/login').then(function (loginResponse) {
+	                            _this.$window.localStorage.setItem('token', loginResponse.data.token);
+	                            rejection.config.headers = rejection.config.headers || {};
+	                            rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+	                            return $http(rejection.config).then(function (response) {
+	                                return response;
+	                            });
+	                        }, function (rejection) {
+	                            return rejection;
+	                        });
+	                    }
+	                }
+	            }
+	            return rejection;
+	        };
+	        this.$location = $location;
+	        this.$window = $window;
+	        this.$q = $q;
+	        this.$log = $log;
+	        this.$injector = $injector;
+	        this.alertService = alertService;
+	        this.baseURL = baseURL;
+	        this.dialogService = dialogService;
+	        this.utilityService = utilityService;
+	    }
+	    SlatwallInterceptor.Factory = function ($location, $window, $q, $log, $injector, alertService, baseURL, dialogService, utilityService) {
+	        return new SlatwallInterceptor($location, $window, $q, $log, $injector, alertService, baseURL, dialogService, utilityService);
+	    };
+	    SlatwallInterceptor.$inject = ['$location', '$window', '$q', '$log', '$injector', 'alertService', 'baseURL', 'dialogService', 'utilityService'];
+	    return SlatwallInterceptor;
+	})();
+	exports.SlatwallInterceptor = SlatwallInterceptor;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../../typings/tsd.d.ts" />
+	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
+	var alert_module_1 = __webpack_require__(11);
+	var exceptionhandler_1 = __webpack_require__(27);
+	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
+	    .run([function () {
+	    }])
+	    .factory('$exceptionHandler', ['$injector', function ($injector) { return new exceptionhandler_1.ExceptionHandler($injector); }]);
+	exports.loggermodule = loggermodule;
+	;
+
+
+/***/ },
+/* 26 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -1679,68 +1948,7 @@
 
 
 /***/ },
-/* 22 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	//import pagination = require('../services/paginationservice');
-	//var PaginationService = pagination.PaginationService;
-	//'use strict';
-	var SWPaginationBarController = (function () {
-	    //@ngInject
-	    function SWPaginationBarController(paginationService) {
-	        if (angular.isUndefined(this.paginator)) {
-	            this.paginator = paginationService.createPagination();
-	        }
-	    }
-	    SWPaginationBarController.$inject = ["paginationService"];
-	    return SWPaginationBarController;
-	})();
-	var SWPaginationBar = (function () {
-	    //@ngInject
-	    function SWPaginationBar(partialsPath) {
-	        this.restrict = 'E';
-	        this.scope = {};
-	        this.bindToController = {
-	            paginator: "="
-	        };
-	        this.controller = SWPaginationBarController;
-	        this.controllerAs = "swPaginationBar";
-	        this.link = function (scope, element, attrs) {
-	        };
-	        this.templateUrl = partialsPath + 'paginationbar.html';
-	    }
-	    SWPaginationBar.$inject = ["partialsPath"];
-	    SWPaginationBar.factory = function () {
-	        var directive = function (partialsPath) { return new SWPaginationBar(partialsPath); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWPaginationBar;
-	})();
-	module.exports = SWPaginationBar;
-	//angular.module('hibachi.pagination').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
-
-
-/***/ },
-/* 23 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path="../../../typings/tsd.d.ts" />
-	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
-	var alertmodule = __webpack_require__(11);
-	var exceptionHandler = __webpack_require__(24);
-	;
-	module.exports = angular.module('logger', [alertmodule.name])
-	    .run([function () {
-	    }])
-	    .factory('$exceptionHandler', ['$injector', function ($injector) { return new exceptionHandler($injector); }]);
-	//angular.module('logger', []).factory('$exceptionHandler', ['$injector', ($injector) => new logger.ExceptionHandler($injector)]);
-
-
-/***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports) {
 
 	/*<------------------------------------------------------------------------
@@ -1788,8 +1996,10 @@
 	        });
 	    }; //<--end handle method
 	    return ExceptionHandler;
-	})(); //<--end class
-	module.exports = ExceptionHandler;
+	})();
+	exports.ExceptionHandler = ExceptionHandler; //<--end class
+	//let angular know about our class. notive we pass in the $injector and instantiate the class in one go
+	//again using the fat arrow for scope.
 
 
 /***/ }

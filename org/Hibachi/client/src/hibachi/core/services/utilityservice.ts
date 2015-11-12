@@ -1,7 +1,7 @@
 /// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
-import BaseService = require('./baseservice');
+import {BaseService} from "./baseservice";
 class UtilityService extends BaseService{
     
     constructor(){
@@ -245,5 +245,7 @@ class UtilityService extends BaseService{
             return returnArray;
       }
 }
-export = UtilityService;
+export {
+    UtilityService
+};
       

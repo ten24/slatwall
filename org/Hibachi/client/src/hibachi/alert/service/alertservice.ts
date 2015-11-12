@@ -1,7 +1,8 @@
 /// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 
-import Alert = require('../model/alert');
+//import Alert = require('../model/alert');
+import {Alert} from "../model/alert";
 
 interface IAlertService {
     get ():Alert[];
@@ -87,7 +88,10 @@ class AlertService implements IAlertService{
         this.alerts.splice(0,1);
     }
 }  
-export = AlertService;
+export{
+  AlertService,
+  IAlertService  
+};
 
     
         

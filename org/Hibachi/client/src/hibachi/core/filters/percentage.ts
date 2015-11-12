@@ -15,4 +15,4 @@ class PercentageFilter{
     }
     
 }
-export = PercentageFilter;
+export {PercentageFilter};
