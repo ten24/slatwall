@@ -8,99 +8,97 @@ module slatwalladmin {
             GetInstance: () => {};
     }
     export class CartFactory implements IPostFactory {
+        
+        constructor(public $http:ng.IHttpService) {}
         /**
          * DataFactory contains all endpoints available to the Account Object.
          */
         dataFactory = {
             formType: {'Content-Type': 'application/x-www-form-urlencoded'},
             
-            $getCart ($http) {
+            $getCart: ():ng.IHttpPromise<Object> =>   {
                     var urlBase = '/index.cfm/api/scope/getCart/?ajaxRequest=1';
-                   return $http.get(urlBase);
+                   return this.$http.get(urlBase);
             },
                 
-            $getOrder ($http) {
+            $getOrder: ():ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/getCart/?ajaxRequest=1';
-                return $http.get(urlBase);
+                return this.$http.get(urlBase);
             },
             
-            $updateOrder (data, $http) {
+            $updateOrder: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/updateOrder/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $clearOrder (data, $http) {
+            $clearOrder: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/clearOrder/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $changeOrder (data, $http) {
+            $changeOrder: (data) :ng.IHttpPromise<Object> =>  {
                 var urlBase = '/index.cfm/api/scope/changeOrder/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $deleteOrder (data, $http) {
+            $deleteOrder: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/deleteOrder/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $placeOrder (data, $http) {
+            $placeOrder: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/placeOrder/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $duplicateOrder (data, $http) {
+            $duplicateOrder: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/duplicateOrder/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $addOrderItem (data, $http) {
+            $addOrderItem:(data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/addOrderItem/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $removeOrderItem (data, $http) {
+            $removeOrderItem: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/removeOrderItem/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $updateOrderFulfillment(data, $http) {
+            $updateOrderFulfillment:(data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/updateOrderFulfillment/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $addPromotionCode (data, $http) {
+            $addPromotionCode: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/addPromotionCode/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $removePromotionCode (data, $http) {
+            $removePromotionCode: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/removePromotionCode/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $addOrderPayment (data, $http) {
+            $addOrderPayment: (data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/addOrderPayment/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $removeOrderPayment (data, $http) {
+            $removeOrderPayment:(data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/removeOrderPayment/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
-            $addProductReview (data, $http) {
+            $addProductReview:(data):ng.IHttpPromise<Object> =>   {
                 var urlBase = '/index.cfm/api/scope/addProductReview/?ajaxRequest=1';
-                return $http.post(urlBase, data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
-            toFormParams(data, $http){
-                return data = $.param(data, $http) || "";
+            toFormParams: (data):string =>  {
+                return data = $.param(data) || "";
             }
-            
-            
         };
-        
-        constructor() {}
 
         /**
          * Returns an instance of the dataFactory
@@ -110,7 +108,7 @@ module slatwalladmin {
         }
 
     }
-    angular.module('slatwalladmin').service('CartFactory',['$http',($http) => new CartFactory()]);
+    angular.module('slatwalladmin').service('CartFactory',['$http',($http) => new CartFactory($http)]);
 }
 
 

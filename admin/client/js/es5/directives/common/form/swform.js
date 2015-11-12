@@ -154,7 +154,7 @@ var slatwalladmin;
                 var factoryIterator = vm.factoryIterator;
                 if (factoryIterator != undefined) {
                     var submitFn = factoryIterator[submitFunction];
-                    submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }, _this.$http).then(function (result) {
+                    submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
                         if (result.data.failureActions.length != 0) {
                             vm.parseErrors(result.data);
                         }

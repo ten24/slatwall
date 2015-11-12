@@ -209,7 +209,7 @@ module slatwalladmin {
 
                 if (factoryIterator != undefined) {
                     let submitFn = factoryIterator[submitFunction];
-                    submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }, this.$http).then(function(result) {
+                    submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function(result) {
                         if (result.data.failureActions.length != 0) {
                             vm.parseErrors(result.data);
                         } else {
