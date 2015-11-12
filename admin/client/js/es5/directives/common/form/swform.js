@@ -2,240 +2,248 @@
 /// <reference path='../../../../../../client/typings/tsd.d.ts' />
 var slatwalladmin;
 (function (slatwalladmin) {
-    var swFormController = (function () {
-        function swFormController() {
-            //stub
-        }
-        return swFormController;
-    })();
-    slatwalladmin.swFormController = swFormController;
-    var swForm = (function () {
-        function swForm(formService, ProcessObject, AccountFactory, CartFactory, $compile, $templateCache, $timeout, $rootScope, partialsPath, $http) {
-            this.formService = formService;
-            this.ProcessObject = ProcessObject;
+    /**
+     * Form Controller handles the logic for this directive.
+     */
+    var SWFormController = (function () {
+        function SWFormController($scope, $element, $slatwall, AccountFactory, CartFactory, ProcessObject, $http, $timeout) {
+            this.$scope = $scope;
+            this.$element = $element;
+            this.$slatwall = $slatwall;
             this.AccountFactory = AccountFactory;
             this.CartFactory = CartFactory;
-            this.$compile = $compile;
-            this.$templateCache = $templateCache;
-            this.$timeout = $timeout;
-            this.$rootScope = $rootScope;
-            this.partialsPath = partialsPath;
+            this.ProcessObject = ProcessObject;
             this.$http = $http;
-            this.link = function (scope) { scope.context = scope.context || 'save'; };
-            return this.Get();
+            this.$timeout = $timeout;
+            this.processObject = null;
+            this.hiddenFields = null;
+            this.entityName = null;
+            this.$rootScope = null;
+            /** only use if the developer has specified these features with isProcessForm */
+            if (this.isProcessForm == "true") {
+                this.handleSelfInspection();
+            }
         }
-        swForm.prototype.Get = function () {
+        /**
+         * Iterates through the form elements and checks if the names of any of them match
+         * the meta data that comes back from the processObject call. Supplies a generic submit
+         * method that can be called by any subclasses that inject formCtrl. On submit,
+         * this class will attach any errors to the correspnding form element.
+         */
+        SWFormController.prototype.handleSelfInspection = function () {
             var _this = this;
-            return {
-                //this config needs to be rewritten as public fields on this class
-                transclude: true,
-                templateUrl: this.partialsPath + "formPartial.html",
-                controllerAs: "ctrl",
-                restrict: "E",
-                replace: true,
-                scope: {
-                    object: "=?",
-                    context: "@?",
-                    name: "@?",
-                    entityName: "@?",
-                    processObject: "@?",
-                    hiddenFields: "=?",
-                    action: "&?",
-                    actions: "@?",
-                    formClass: "@?",
-                    formData: "=?",
-                    onSuccess: "@?",
-                    hideUntil: "@?",
-                    isProcessForm: "@"
-                },
-                //needs to be refactored into standalone contorller class
-                controller: function ($scope, $element, $attrs) {
-                    //$scope becomes this
-                    /** only use if the developer has specified these features with isProcessForm */
-                    if (!$attrs.processObject || $attrs.isProcessForm != "true") {
-                        return false;
-                    }
-                    $scope.hiddenFields = $attrs.hiddenFields || [];
-                    $scope.entityName = $attrs.entityName || "Account";
-                    $scope.processObject = $attrs.processObject || "login";
-                    $scope.action = $attrs.action;
-                    $scope.actions = $attrs.actions || [];
-                    $scope.$timeout = _this.$timeout;
-                    /** parse the name */
-                    var entityName = $attrs.processObject.split("_")[0];
-                    if (entityName == "Order") {
-                        entityName = "Cart";
-                    }
-                    ;
-                    var processObject = $attrs.processObject.split("_")[1];
-                    /** check if this form should be hidden until another form submits successfully */
-                    $scope.hideUntilHandler = function () {
-                        if ($attrs.hideUntil != undefined) {
-                            var e = $element;
-                            e.hide();
-                        }
-                    }();
-                    /** find the form scope */
-                    $scope.$on('anchor', function (event, data) {
-                        if (data.anchorType == "form" && data.scope !== undefined) {
-                            $scope["formCtrl"] = data.scope;
-                        }
-                    });
-                    /** set a listener for other success events and show hide this depending */
-                    _this.$rootScope.$on("onSuccess", function (event, data) {
-                        if (data.hide == $scope.processObject) {
-                            $element.hide();
-                        }
-                        else if (data.show == $scope.processObject) {
-                            $element.show();
-                        }
-                    });
-                    /** make sure we have our data */
-                    if (processObject == undefined || entityName == undefined) {
-                        throw ("ProcessObject Nameing Exception");
-                    }
-                    //slatwall.newEntity(processObject)
-                    var processObj = _this.ProcessObject.GetInstance();
-                    /** parse the response */
-                    processObj = processObj.$get({ processObject: processObject, entityName: entityName }).success(
-                    /** parse */
-                    function (response) {
-                        $scope.parseProcessObjectResponse(response);
-                    }).error(function () {
-                        throw ("Endpoint does not exist exception");
-                    });
-                    /** handles the process object structure */
-                    $scope.parseProcessObjectResponse = function (response) {
-                        processObj = response;
-                        if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
-                            processObj.processObject["meta"] = [];
-                            for (var _i = 0, _a = processObj.processObject["PROPERTIES"]; _i < _a.length; _i++) {
-                                var p = _a[_i];
-                                angular.forEach(processObj.processObject["entityMeta"], function (n) {
-                                    if (n["NAME"] == p["NAME"]) {
-                                        processObj.processObject["meta"].push(n);
-                                    }
-                                });
-                            }
-                            var processObjName = processObj.processObject["NAME"].split(".");
-                            processObjName = processObjName[processObjName.length - 1];
-                            processObj.processObject["NAME"] = processObjName;
-                            return processObj.processObject;
-                        }
-                    };
-                    /** We use these for our models */
-                    $scope.formData = {};
-                    $scope.getFormData = function () {
-                        var _this = this;
-                        angular.forEach($scope["formCtrl"][$scope.processObject], function (val, key) {
-                            /** Check for form elements that have a name that doesn't start with $ */
-                            if (key.toString().indexOf('$') == -1) {
-                                _this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
+            var vm = this;
+            vm.hiddenFields = this.hiddenFields || [];
+            vm.entityName = this.entityName || "Account";
+            vm.processObject = this.processObject || "login";
+            vm.action = this.action || "$login";
+            vm.actions = this.actions || [];
+            vm.$timeout = this.$timeout;
+            /** parse the name */
+            var entityName = this.processObject.split("_")[0];
+            if (entityName == "Order") {
+                entityName = "Cart";
+            }
+            ;
+            var processObject = this.processObject.split("_")[1];
+            /** find the form scope */
+            this.$scope.$on('anchor', function (event, data) {
+                console.log("$on triggers: ", data.anchorType, data.scope);
+                if (data.anchorType == "form" && data.scope !== undefined) {
+                    vm["formCtrl"] = data.scope;
+                }
+            });
+            /** make sure we have our data */
+            if (this.processObject == undefined || this.entityName == undefined) {
+                throw ("ProcessObject Exception");
+            }
+            //slatwall.newEntity(processObject)
+            var processObj = this.ProcessObject.GetInstance();
+            /** parse the response */
+            processObj = processObj.$get({ processObject: this.processObject, entityName: this.entityName }).success(
+            /** parse */
+            function (response) {
+                console.log("Process Object is Called", response);
+                vm.parseProcessObjectResponse(response);
+            }).error(function () {
+                throw ("Endpoint does not exist exception");
+            });
+            /** handles the process object structure */
+            vm.parseProcessObjectResponse = function (response) {
+                processObj = response;
+                if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
+                    processObj.processObject["meta"] = [];
+                    for (var _i = 0, _a = processObj.processObject["PROPERTIES"]; _i < _a.length; _i++) {
+                        var p = _a[_i];
+                        angular.forEach(processObj.processObject["entityMeta"], function (n) {
+                            if (n["NAME"] == p["NAME"]) {
+                                processObj.processObject["meta"].push(n);
                             }
                         });
-                        return $scope.formData || "";
-                    };
-                    /** Handle parsing through the server errors and injecting the error text for that field
-                     *  If the form only has a submit, then simply call that function and set errors.
-                     */
-                    $scope.parseErrors = function (result) {
-                        var _this = this;
-                        if (angular.isDefined(result.errors) && result.errors.length != 0) {
-                            angular.forEach(result.errors, function (val, key) {
-                                if (angular.isDefined($scope["formCtrl"][$scope.processObject][key])) {
-                                    var primaryElement = $element.find("[error-for='" + key + "']");
-                                    _this.$timeout(function () {
-                                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
-                                    }, 0);
-                                    $scope["formCtrl"][$scope.processObject][key].$setValidity(key, false); //set field invalid
-                                }
-                            }, this);
-                        }
-                    };
-                    /** find and clear all errors on form */
-                    $scope.clearErrors = function () {
-                        var errorElements = $element.find("[error-for]");
-                        errorElements.empty();
-                    };
-                    /** sets the correct factory to use for submission */
-                    $scope.setFactoryIterator = function (fn) {
-                        var account = _this.AccountFactory.GetInstance();
-                        var cart = _this.CartFactory.GetInstance();
-                        var factories = [account, cart];
-                        var factoryFound = false;
-                        for (var _i = 0; _i < factories.length; _i++) {
-                            var factory = factories[_i];
-                            if (!factoryFound) {
-                                angular.forEach(factory, function (val, key) {
-                                    if (!factoryFound) {
-                                        if (key == fn) {
-                                            $scope.factoryIterator = factory;
-                                            factoryFound = true;
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    };
-                    $scope.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
-                    $scope.toFormParams = function (data) {
-                        return data = $.param(data) || "";
-                    };
-                    /** iterates through the factory submitting data */
-                    $scope.iterateFactory = function (submitFunction) {
-                        $scope.setFactoryIterator(submitFunction);
-                        var factoryIterator = $scope.factoryIterator;
-                        if (factoryIterator != undefined) {
-                            var submitFn = factoryIterator[submitFunction];
-                            submitFn({ params: $scope.toFormParams($scope.formData), formType: $scope.formType }, _this.$http).then(function (result) {
-                                if (result.data.failureActions.length != 0) {
-                                    $scope.parseErrors(result.data);
-                                }
-                                else {
-                                    console.log("Successfully Posted Form");
-                                }
-                            }, angular.noop);
-                        }
-                        else {
-                            throw ("Action does not exist in Account or Cart: " + $scope.action);
-                        }
-                    };
-                    /** does either a single or multiple actions */
-                    $scope.doAction = function (actionObject) {
-                        if (angular.isArray(actionObject)) {
-                            for (var _i = 0; _i < actionObject.length; _i++) {
-                                var submitFunction = actionObject[_i];
-                                $scope.iterateFactory(submitFunction);
-                            }
-                        }
-                        else if (angular.isString(actionObject)) {
-                            $scope.iterateFactory(actionObject);
-                        }
-                        else {
-                            throw ("Unknown type of action exception");
-                        }
-                    };
-                    /** search dom hiding any forms listed in a onSuccess method on startup */
-                    if ($attrs.onSuccess != undefined) {
-                        _this.$rootScope.$emit("onStart", { "show": $scope.processObject, "hide": $attrs.onSuccess });
                     }
-                    /** create the generic submit function */
-                    $scope.submit = function () {
-                        var action = $scope.action || $scope.actions;
-                        $scope.clearErrors();
-                        $scope.formData = $scope.getFormData() || "";
-                        $scope.doAction(action);
-                    };
+                    var processObjName = processObj.processObject["NAME"].split(".");
+                    processObjName = processObjName[processObjName.length - 1];
+                    processObj.processObject["NAME"] = processObjName;
+                    return processObj.processObject;
                 }
             };
+            /** We use these for our models */
+            vm.formData = {};
+            /** returns all the data from the form by iterating the form elements */
+            vm.getFormData = function () {
+                var _this = this;
+                angular.forEach(vm["formCtrl"][vm.processObject], function (val, key) {
+                    /** Check for form elements that have a name that doesn't start with $ */
+                    if (key.toString().indexOf('$') == -1) {
+                        _this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
+                    }
+                });
+                return vm.formData || "";
+            };
+            /**
+              * Handle parsing through the server errors and injecting the error text for that field
+              * If the form only has a submit, then simply call that function and set errors.
+              */
+            vm.parseErrors = function (result) {
+                var _this = this;
+                if (angular.isDefined(result.errors) && result.errors.length != 0) {
+                    angular.forEach(result.errors, function (val, key) {
+                        if (angular.isDefined(vm["formCtrl"][vm.processObject][key])) {
+                            var primaryElement = _this.$element.find("[error-for='" + key + "']");
+                            vm.$timeout(function () {
+                                primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+                            }, 0);
+                            vm["formCtrl"][vm.processObject][key].$setValidity(key, false); //set field invalid
+                        }
+                    }, this);
+                }
+            };
+            /** find and clear all errors on form */
+            vm.clearErrors = function () {
+                var errorElements = _this.$element.find("[error-for]");
+                errorElements.empty();
+            };
+            /** sets the correct factory to use for submission */
+            vm.setFactoryIterator = function (fn) {
+                var account = _this.AccountFactory.GetInstance();
+                var cart = _this.CartFactory.GetInstance();
+                var factories = [account, cart];
+                var factoryFound = false;
+                for (var _i = 0; _i < factories.length; _i++) {
+                    var factory = factories[_i];
+                    if (!factoryFound) {
+                        angular.forEach(factory, function (val, key) {
+                            if (!factoryFound) {
+                                if (key == fn) {
+                                    vm.factoryIterator = factory;
+                                    factoryFound = true;
+                                }
+                            }
+                        });
+                    }
+                }
+            };
+            /** sets the type of the form to submit */
+            vm.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
+            vm.toFormParams = function (data) {
+                return data = $.param(data) || "";
+            };
+            /** iterates through the factory submitting data */
+            vm.iterateFactory = function (submitFunction) {
+                vm.setFactoryIterator(submitFunction);
+                var factoryIterator = vm.factoryIterator;
+                if (factoryIterator != undefined) {
+                    var submitFn = factoryIterator[submitFunction];
+                    submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }, _this.$http).then(function (result) {
+                        if (result.data.failureActions.length != 0) {
+                            vm.parseErrors(result.data);
+                        }
+                        else {
+                            console.log("Successfully Posted Form");
+                        }
+                    }, angular.noop);
+                }
+                else {
+                    throw ("Action does not exist in Account or Cart: " + vm.action);
+                }
+            };
+            /** does either a single or multiple actions */
+            vm.doAction = function (actionObject) {
+                if (angular.isArray(actionObject)) {
+                    for (var _i = 0; _i < actionObject.length; _i++) {
+                        var submitFunction = actionObject[_i];
+                        vm.iterateFactory(submitFunction);
+                    }
+                }
+                else if (angular.isString(actionObject)) {
+                    vm.iterateFactory(actionObject);
+                }
+                else {
+                    throw ("Unknown type of action exception");
+                }
+            };
+            /** create the generic submit function */
+            vm.submit = function () {
+                var action = vm.action || vm.actions;
+                vm.clearErrors();
+                vm.formData = vm.getFormData() || "";
+                vm.doAction(action);
+            };
         };
-        swForm.$inject = ['formService', 'ProcessObject', 'AccountFactory', 'CartFactory',
-            '$compile', '$templateCache', '$timeout', '$rootScope', 'partialsPath', '$http'];
-        return swForm;
+        /**
+         * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
+         */
+        SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', 'ProcessObject', '$http', '$timeout'];
+        return SWFormController;
     })();
-    slatwalladmin.swForm = swForm;
-    angular.module('slatwalladmin').directive('swForm', ['formService', 'ProcessObject', 'AccountFactory', 'CartFactory',
-        '$compile', '$templateCache', '$timeout', '$rootScope', 'partialsPath', '$http', function (formService, ProcessObject, AccountFactory, CartFactory, $compile, $templateCache, $timeout, $rootScope, partialsPath, $http) { return new swForm(formService, ProcessObject, AccountFactory, CartFactory, $compile, $templateCache, $timeout, $rootScope, partialsPath, $http); }]);
-})(slatwalladmin || (slatwalladmin = {}));
+    slatwalladmin.SWFormController = SWFormController;
+    var SWForm = (function () {
+        function SWForm(partialsPath, $http, $timeout) {
+            this.partialsPath = partialsPath;
+            this.templateUrl = "";
+            this.transclude = true;
+            this.restrict = "E";
+            this.replace = true;
+            this.controller = SWFormController;
+            this.controllerAs = "swFormController";
+            this.scope = {};
+            /**
+             * Binds all of our variables to the controller so we can access using this
+             */
+            this.bindToController = {
+                object: "=?",
+                context: "@?",
+                name: "@?",
+                entityName: "@?",
+                processObject: "@?",
+                hiddenFields: "=?",
+                action: "@?",
+                actions: "@?",
+                formClass: "@?",
+                formData: "=?",
+                onSuccess: "@?",
+                hideUntil: "@?",
+                isProcessForm: "@"
+            };
+            /**
+             * Sets the context of this form
+             */
+            this.link = function (scope, element, attrs, controller, transclude) {
+                scope.context = scope.context || 'save';
+            };
+            this.templateUrl = this.partialsPath + "formPartial.html";
+        }
+        /**
+         * Handles injecting the partials path into this class
+         */
+        SWForm.$inject = ['partialsPath', '$http', '$timeout'];
+        return SWForm;
+    })();
+    slatwalladmin.SWForm = SWForm;
+    /**
+     * Handles registering the swForm directive with its module as well as injecting dependancies in a minification safe way.
+     */
+    angular.module('slatwalladmin').directive('swForm', ['partialsPath', '$http', function (partialsPath, $http, $timeout) { return new SWForm(partialsPath, $http, $timeout); }]);
+})(slatwalladmin || (slatwalladmin = {})); //<--end module
 
 //# sourceMappingURL=../../../directives/common/form/swform.js.map

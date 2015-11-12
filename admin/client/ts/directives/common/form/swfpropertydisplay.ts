@@ -76,6 +76,7 @@ angular.module('slatwalladmin')
 				scope.fieldAttributes     = attrs.fieldAttributes || "";
 				scope.label			      = attrs.label || "true";
 				scope.optionValues        = [];
+				scope.formCtrl = formCtrl;
 				scope.propertyDisplay = {
 					type: scope.type,
 					name: scope.name,
@@ -99,11 +100,10 @@ angular.module('slatwalladmin')
 						scope.optionValues.push(newOption);
 					}, scope);
 				}
-			    scope.up = scope.$parent.$parent;//<--use observer
+			    
 				/** handle turning the options into an array of objects */
-                
                 scope.submit = function(){
-                	scope.up.submit(); //<--propagate up the chain 
+                	scope.formCtrl.submit(); //<--call the base submit
                 }
                 
 				/** handle setting the default value for the yes / no element  */

@@ -1,6 +1,13 @@
 <cfoutput>
 <cfinclude template="header.cfm" >
 <div>
+	<cfscript>
+		p = $.slatwall.getService("productService").getProductByProductCode("mag-01");
+		t = p.getSkusFilteredBy("price", "ASC");
+		for (n in t){
+			writeDump(var="#n.getSkuCode()# - $#n.getPrice()#", top=2);
+		}
+	</cfscript>
   <div ng-controller="swfController as slatwall">
     <section>
         <div>           
