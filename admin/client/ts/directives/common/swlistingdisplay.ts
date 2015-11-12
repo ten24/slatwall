@@ -43,6 +43,7 @@ module slatwalladmin {
         private recordEditAction;
         private recordDeleteAction
         private recordProcessButtonDisplayFlag;
+        private searching:boolean = false;
         private searchText;
         private savedSearchText;
         private selectFieldName;
@@ -130,6 +131,7 @@ module slatwalladmin {
                         this.setupColumns();
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                         this.paginator.setPageRecordsInfo(this.collectionData);
+                        this.searching = false; 
                     }); 
                 }
             });
@@ -150,7 +152,7 @@ module slatwalladmin {
             }
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-            this.collectionConfig.setKeywords(this.paginator.keywords);//?
+            //this.collectionConfig.setKeywords(this.paginator.keywords);//?
         }
 
         private setupDefaultGetCollection = () =>{
@@ -473,17 +475,21 @@ module slatwalladmin {
         public search = () =>{
             
             if(this.searchText.length > 2){
+                this.searching = true; 
                 this.savedSearchText = this.searchText; 
                 if(this._timeoutPromise){
 					this.$timeout.cancel(this._timeoutPromise); 
 				}
                 
                 this._timeoutPromise = this.$timeout(()=>{
+                   
 					this.collectionConfig.setKeywords(this.savedSearchText);
                     this.collectionPromise = this.collectionConfig.getEntity();
+                    
 				}, 500);
             } else { 
                 this.savedSearchText="";
+                this.searching=false; 
                 this.collectionConfig.setKeywords(this.savedSearchText);
                 this.collectionPromise = this.collectionConfig.getEntity();
             }

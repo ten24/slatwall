@@ -22,8 +22,8 @@
 									ng-model="swListingDisplay.searchText"
 									ng-change="swListingDisplay.search()"
 									/>
-								<i class="fa fa-refresh fa-spin"></i>
-								<i class="fa fa-search"></i>
+								<i ng-show="swListingDisplay.searching" class="fa fa-refresh fa-spin"></i>
+								<i ng-hide="swListingDisplay.searching" class="fa fa-search"></i>
 							</div>
 						</div>
 					</div>
