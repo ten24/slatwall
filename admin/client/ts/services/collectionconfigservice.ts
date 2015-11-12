@@ -264,8 +264,6 @@ module slatwalladmin{
                         } 
                     }
                 }
-                
-                console.log(ormtype);
     
                 if(properties.length === 2 && angular.isDefined(this.collection.metaData[lastProperty])){
                     persistent = this.collection.metaData[lastProperty].persistent || true;
