@@ -12,7 +12,6 @@ var hibachimodule = angular.module('hibachi',[
     paginationmodule.name,
     dialogmodule.name
 ]).config(()=>{
-    console.log('moduleloaded');    
 })
 
 export{

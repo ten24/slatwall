@@ -26,7 +26,6 @@ interface IParams{
 	
 }
 
-
 class SlatwallInterceptor implements IInterceptor{
 	public static $inject = ['$location','$window','$q','$log','$injector','alertService','baseURL','dialogService','utilityService'];
 	

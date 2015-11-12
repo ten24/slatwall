@@ -2,8 +2,8 @@
 'use strict';
 
 require('./vendor.ts')();
-var appModule = require('./slatwall/slatwalladmin.module');
-var loggerModule = require('./hibachi/logger/logger.module');
+import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
+import {loggermodule} from "./hibachi/logger/logger.module"; 
 
 //custom bootstrapper
 class bootstrapper{
@@ -26,7 +26,7 @@ class bootstrapper{
     
     bootstrapApplication = ()=> {
         angular.element(document).ready(function() {
-            angular.bootstrap(document, [loggerModule.name,appModule.name], {
+            angular.bootstrap(document, [loggermodule.name,slatwalladminmodule.name], {
             //strictDi: true
                 
           });

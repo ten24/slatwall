@@ -247,7 +247,7 @@ Notes:
 						</ul>
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
-								<li ng-controller="globalSearch">
+								<!---<li ng-controller="globalSearch">
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
 
 										<!--- Start of Search --->
@@ -280,7 +280,7 @@ Notes:
 										<!--- End of Search --->
 
 									</cfif>
-								</li>
+								</li>--->
 								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
 										<hb:HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
@@ -344,7 +344,7 @@ Notes:
 				</div>
 			</div>
 
-			<!--- Page Dialog Controller --->
+			<!--- Page Dialog Controller 
 			<div ng-controller="pageDialog">
 				<div id="topOfPageDialog" >
 					<div ng-style="{pageDialogStyle:pageDialogs.length}" ng-hide="!pageDialogs.length" ng-class="{'s-dialog-container':pageDialogs.length}" ng-repeat="pageDialog in pageDialogs" >
@@ -352,9 +352,9 @@ Notes:
 						<div ng-include="pageDialog.path" ></div>
 					</div>
 				</div>
-			</div>
+			</div>--->
 
-			<!---displays alerts to the user --->
+			<!---displays alerts to the user 
 			<span ng-controller="alertController" >
 				<span ng-repeat="alert in alerts">
 					<div style="z-index:11000" ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer fade in" role="alert" >
@@ -364,7 +364,7 @@ Notes:
 						<i style="display:none;" class="fa fa-check" ng-show="alert.type === 'success'"></i>&nbsp;<span ng-bind="alert.msg"></span>
 					</div>
 				</span>
-			</span>
+			</span>--->
 		</span>
 		<p>Angular is working: {{1 + 1 === 2}}</p>
 		<script type="text/javascript">
