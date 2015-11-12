@@ -64,9 +64,12 @@ Notes:
 <cfif !request.slatwallScope.hasApplicationValue('ngSlatwallModel')>
 	<cfsavecontent variable="local.jsOutput">
 		<cfoutput>
-			/// <reference path="../../../../client/typings/tsd.d.ts" />
-			/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-			angular.module('ngSlatwallModel',['hibachi','ngSlatwall']).config(['$provide',function ($provide
+			/// <reference path="../../typings/tsd.d.ts" />
+			/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+			import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
+			import {hibachimodule} from "../hibachi/hibachi.module";
+			import {slatwallAngular} from "../ngslatwallmodel/ngslatwallmodel.module";
+			var ngslatwallmodelmodule = angular.module('ngSlatwallModel',[hibachimodule.name,ngslatwallmodule.name]).config(['$provide',function ($provide
 			 ) {
 	    	<!--- js entity specific code here --->
 	    	$provide.decorator( '$slatwall', [ 
@@ -1216,7 +1219,10 @@ Notes:
 				
 				return $delegate;
 			}]);
-		 }]);		
+		 }]);
+		 export{
+		 	ngslatwallmodelmodule
+		 };		
 		</cfoutput>
 	</cfsavecontent>
 	
@@ -1228,7 +1234,7 @@ Notes:
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngSlatwallModel')>
 </cfif>
 <cfscript>
-	local.filePath = expandPath('/Slatwall/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
+	local.filePath = expandPath('/Slatwall/') & 'org/Hibachi/client/src/ngslatwallmodel/ngslatwallmodel.module.ts';
 	fileWrite(local.filePath,local.jsOutput);	
 </cfscript>
 <!---

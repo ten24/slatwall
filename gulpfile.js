@@ -330,8 +330,8 @@ gulp.task('compilets', function(){
 
 gulp.task('default', function(){
 	runSequence(
-		
-		/*'flattenNgSlatwallModel'
+		'flattenNgSlatwallModel',
+		/*
 		,'compile-ts-to5'
 		,'compile-ts'*/
 		//,'gen-ts-refs'

@@ -2,6 +2,7 @@
 /// <reference path="../../typings/slatwallTypeScript.d.ts" />
 import {hibachimodule} from "../hibachi/hibachi.module";
 import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
+import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 
 //declare variables out of scope
 declare var slatwallAngular:any;
@@ -9,7 +10,8 @@ declare var $:SlatwallJQueryStatic;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
   hibachimodule.name,
-  //'ngSlatwall','ngSlatwallModel',
+  ngslatwallmodule.name,
+  //'ngSlatwallModel',
   'ui.bootstrap',
   'ngAnimate',
   'ngRoute',
@@ -102,7 +104,10 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
  }])
 .service('slatwallInterceptor', SlatwallInterceptor);
 ;
-export{slatwalladminmodule};
+export{
+    slatwalladminmodule,
+    slatwallAngular
+};
 // ((): void => {
     
 //     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);

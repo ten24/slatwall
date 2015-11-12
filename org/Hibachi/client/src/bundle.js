@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(26);
+	var logger_module_1 = __webpack_require__(31);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,10 +648,12 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(25);
+	var slatwallinterceptor_1 = __webpack_require__(28);
+	var ngslatwall_module_1 = __webpack_require__(29);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    hibachi_module_1.hibachimodule.name,
-	    //'ngSlatwall','ngSlatwallModel',
+	    ngslatwall_module_1.ngslatwallmodule.name,
+	    //'ngSlatwallModel',
 	    'ui.bootstrap',
 	    'ngAnimate',
 	    'ngRoute',
@@ -890,11 +892,13 @@
 	var core_module_1 = __webpack_require__(14);
 	var pagination_module_1 = __webpack_require__(20);
 	var dialog_module_1 = __webpack_require__(23);
+	var collection_module_1 = __webpack_require__(25);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
 	    pagination_module_1.paginationmodule.name,
-	    dialog_module_1.dialogmodule.name
+	    dialog_module_1.dialogmodule.name,
+	    collection_module_1.collectionmodule.name
 	]).config(function () {
 	});
 	exports.hibachimodule = hibachimodule;
@@ -1014,6 +1018,8 @@
 	var utilityservice_1 = __webpack_require__(15);
 	var selectionservice_1 = __webpack_require__(17);
 	var observerservice_1 = __webpack_require__(18);
+	var formservice_1 = __webpack_require__(34);
+	var metadataservice_1 = __webpack_require__(35);
 	//filters
 	var percentage_1 = __webpack_require__(19);
 	var coremodule = angular.module('hibachi.core', []).config(function () {
@@ -1021,6 +1027,8 @@
 	    .service('utilityService', utilityservice_1.UtilityService)
 	    .service('selectionService', selectionservice_1.SelectionService)
 	    .service('observerService', observerservice_1.ObserverService)
+	    .service('formService', formservice_1.FormService)
+	    .service('metadataService', metadataservice_1.MetaDataService)
 	    .filter('percentage', [percentage_1.PercentageFilter.Factory]);
 	exports.coremodule = coremodule;
 
@@ -1502,7 +1510,6 @@
 	var swpaginationbar_1 = __webpack_require__(22);
 	var paginationmodule = angular.module('hibachi.pagination', [])
 	    .run([function () {
-	        console.log(paginationservice_1.PaginationService);
 	    }])
 	    .service('paginationService', paginationservice_1.PaginationService)
 	    .directive('swPaginationBar', swpaginationbar_1.SWPaginationBar.factory());
@@ -1806,6 +1813,664 @@
 
 /***/ },
 /* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	//services
+	var collectionconfigservice_1 = __webpack_require__(26);
+	var collectionservice_1 = __webpack_require__(27);
+	var collections_1 = __webpack_require__(33);
+	var collectionmodule = angular.module('hibachi.collection', []).config(function () {
+	})
+	    .controller('collections', collections_1.CollectionController)
+	    .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new collectionconfigservice_1.CollectionConfig($slatwall, utilityService); }])
+	    .service('collectionService', collectionservice_1.CollectionService);
+	exports.collectionmodule = collectionmodule;
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var Column = (function () {
+	    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.title = title;
+	        this.isVisible = isVisible;
+	        this.isDeletable = isDeletable;
+	        this.isSearchable = isSearchable;
+	        this.isExportable = isExportable;
+	        this.persistent = persistent;
+	        this.ormtype = ormtype;
+	        this.attributeID = attributeID;
+	        this.attributeSetObject = attributeSetObject;
+	    }
+	    return Column;
+	})();
+	exports.Column = Column;
+	var Filter = (function () {
+	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue) {
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.value = value;
+	        this.comparisonOperator = comparisonOperator;
+	        this.logicalOperator = logicalOperator;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.displayValue = displayValue;
+	    }
+	    return Filter;
+	})();
+	exports.Filter = Filter;
+	var CollectionFilter = (function () {
+	    function CollectionFilter(propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
+	        if (readOnly === void 0) { readOnly = false; }
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.displayValue = displayValue;
+	        this.collectionID = collectionID;
+	        this.criteria = criteria;
+	        this.fieldtype = fieldtype;
+	        this.readOnly = readOnly;
+	    }
+	    return CollectionFilter;
+	})();
+	exports.CollectionFilter = CollectionFilter;
+	var Join = (function () {
+	    function Join(associationName, alias) {
+	        this.associationName = associationName;
+	        this.alias = alias;
+	    }
+	    return Join;
+	})();
+	exports.Join = Join;
+	var OrderBy = (function () {
+	    function OrderBy(propertyIdentifier, direction) {
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.direction = direction;
+	    }
+	    return OrderBy;
+	})();
+	exports.OrderBy = OrderBy;
+	var CollectionConfig = (function () {
+	    function CollectionConfig($slatwall, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords) {
+	        var _this = this;
+	        if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
+	        if (currentPage === void 0) { currentPage = 1; }
+	        if (pageShow === void 0) { pageShow = 10; }
+	        if (keywords === void 0) { keywords = ''; }
+	        if (allRecords === void 0) { allRecords = false; }
+	        this.$slatwall = $slatwall;
+	        this.utilityService = utilityService;
+	        this.baseEntityName = baseEntityName;
+	        this.baseEntityAlias = baseEntityAlias;
+	        this.columns = columns;
+	        this.filterGroups = filterGroups;
+	        this.joins = joins;
+	        this.orderBy = orderBy;
+	        this.groupBys = groupBys;
+	        this.id = id;
+	        this.currentPage = currentPage;
+	        this.pageShow = pageShow;
+	        this.keywords = keywords;
+	        this.allRecords = allRecords;
+	        this.clearFilterGroups = function () {
+	            _this.filterGroups = [{ filterGroup: [] }];
+	        };
+	        this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
+	            return new CollectionConfig(_this.$slatwall, _this.utilityService, baseEntityName, baseEntityAlias);
+	        };
+	        this.loadJson = function (jsonCollection) {
+	            //if json then make a javascript object else use the javascript object
+	            if (angular.isString(jsonCollection)) {
+	                jsonCollection = angular.fromJson(jsonCollection);
+	            }
+	            _this.baseEntityAlias = jsonCollection.baseEntityAlias;
+	            _this.baseEntityName = jsonCollection.baseEntityName;
+	            if (angular.isDefined(jsonCollection.filterGroups)) {
+	                _this.filterGroups = jsonCollection.filterGroups;
+	            }
+	            _this.columns = jsonCollection.columns;
+	            _this.joins = jsonCollection.joins;
+	            _this.keywords = jsonCollection.keywords;
+	            _this.orderBy = jsonCollection.orderBy;
+	            _this.groupBys = jsonCollection.groupBys;
+	            _this.pageShow = jsonCollection.pageShow;
+	            _this.allRecords = jsonCollection.allRecords;
+	        };
+	        this.loadFilterGroups = function (filterGroupsConfig) {
+	            if (filterGroupsConfig === void 0) { filterGroupsConfig = [{ filterGroup: [] }]; }
+	            _this.filterGroups = filterGroupsConfig;
+	        };
+	        this.loadColumns = function (columns) {
+	            _this.columns = columns;
+	        };
+	        this.getCollectionConfig = function () {
+	            return {
+	                baseEntityAlias: _this.baseEntityAlias,
+	                baseEntityName: _this.baseEntityName,
+	                columns: _this.columns,
+	                filterGroups: _this.filterGroups,
+	                joins: _this.joins,
+	                groupBys: _this.groupBys,
+	                currentPage: _this.currentPage,
+	                pageShow: _this.pageShow,
+	                keywords: _this.keywords,
+	                defaultColumns: (!_this.columns || !_this.columns.length),
+	                allRecords: _this.allRecords
+	            };
+	        };
+	        this.getEntityName = function () {
+	            return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
+	        };
+	        this.getOptions = function () {
+	            var options = {
+	                columnsConfig: angular.toJson(_this.columns),
+	                filterGroupsConfig: angular.toJson(_this.filterGroups),
+	                joinsConfig: angular.toJson(_this.joins),
+	                orderByConfig: angular.toJson(_this.orderBy),
+	                groupBysConfig: angular.toJson(_this.groupBys),
+	                currentPage: _this.currentPage,
+	                pageShow: _this.pageShow,
+	                keywords: _this.keywords,
+	                defaultColumns: (!_this.columns || !_this.columns.length),
+	                allRecords: _this.allRecords
+	            };
+	            if (angular.isDefined(_this.id)) {
+	                options['id'] = _this.id;
+	            }
+	            return options;
+	        };
+	        this.debug = function () {
+	            return _this;
+	        };
+	        /*TODO: CLEAN THIS FUNCTION */
+	        this.formatCollectionName = function (propertyIdentifier, property) {
+	            if (property === void 0) { property = true; }
+	            var collection = '', parts = propertyIdentifier.split('.'), current_collection = _this.collection;
+	            for (var i = 0; i < parts.length; i++) {
+	                if (typeof _this.$slatwall['new' + _this.capitalize(parts[i])] !== "function") {
+	                    if (property)
+	                        collection += ((i) ? '' : _this.baseEntityAlias) + '.' + parts[i];
+	                    if (!angular.isObject(current_collection.metaData[parts[i]])) {
+	                        break;
+	                    }
+	                    else if (current_collection.metaData[parts[i]].fkcolumn) {
+	                        current_collection = _this.$slatwall['new' + current_collection.metaData[parts[i]].cfc]();
+	                    }
+	                }
+	                else {
+	                    if (angular.isObject(current_collection.metaData[parts[i]])) {
+	                        collection += ((i) ? '' : _this.baseEntityAlias) + '.' + parts[i];
+	                        current_collection = _this.$slatwall['new' + _this.capitalize(parts[i])]();
+	                    }
+	                    else {
+	                        collection += '_' + parts[i].toLowerCase();
+	                    }
+	                }
+	            }
+	            return collection;
+	        };
+	        this.addJoin = function (join) {
+	            if (!_this.joins) {
+	                _this.joins = [];
+	            }
+	            var joinFound = false;
+	            angular.forEach(_this.joins, function (configJoin) {
+	                if (configJoin.alias === join.alias) {
+	                    joinFound = true;
+	                }
+	            });
+	            if (!joinFound) {
+	                _this.joins.push(join);
+	            }
+	        };
+	        this.addAlias = function (propertyIdentifier) {
+	            var parts = propertyIdentifier.split('.');
+	            if (parts.length > 1 && parts[0] !== _this.baseEntityAlias) {
+	                return _this.baseEntityAlias + '.' + propertyIdentifier;
+	            }
+	            return propertyIdentifier;
+	        };
+	        this.capitalize = function (s) {
+	            return s && s[0].toUpperCase() + s.slice(1);
+	        };
+	        this.addColumn = function (column) {
+	            if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
+	                _this.addColumn(column.propertyIdentifier, column.title, column);
+	            }
+	        };
+	        this.addColumn = function (column, title, options) {
+	            if (title === void 0) { title = ''; }
+	            if (options === void 0) { options = {}; }
+	            if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
+	                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+	                if (angular.isUndefined(_this.columns)) {
+	                    _this.columns = [];
+	                }
+	                if (!angular.isUndefined(options['isVisible'])) {
+	                    isVisible = options['isVisible'];
+	                }
+	                if (!angular.isUndefined(options['isDeletable'])) {
+	                    isDeletable = options['isDeletable'];
+	                }
+	                if (!angular.isUndefined(options['isSearchable'])) {
+	                    isSearchable = options['isSearchable'];
+	                }
+	                if (!angular.isUndefined(options['isExportable'])) {
+	                    isExportable = options['isExportable'];
+	                }
+	                if (angular.isUndefined(options['isExportable']) && !isVisible) {
+	                    isExportable = false;
+	                }
+	                if (!angular.isUndefined(options['ormtype'])) {
+	                    ormtype = options['ormtype'];
+	                }
+	                else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
+	                    ormtype = _this.collection.metaData[lastProperty].ormtype;
+	                }
+	                if (angular.isDefined(_this.collection.metaData[lastProperty])) {
+	                    persistent = _this.collection.metaData[lastProperty].persistent;
+	                }
+	                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
+	                if (options.aggregate) {
+	                    columnObject.aggregate = options.aggregate;
+	                }
+	                //add any non-conventional options
+	                for (var key in options) {
+	                    if (!columnObject[key]) {
+	                        columnObject[key] = options[key];
+	                    }
+	                }
+	                _this.columns.push(columnObject);
+	            }
+	        };
+	        this.setDisplayProperties = function (propertyIdentifier, title, options) {
+	            if (title === void 0) { title = ''; }
+	            if (options === void 0) { options = {}; }
+	            var _DividedColumns = propertyIdentifier.trim().split(',');
+	            var _DividedTitles = title.trim().split(',');
+	            _DividedColumns.forEach(function (column, index) {
+	                column = column.trim();
+	                //this.addJoin(column);
+	                if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+	                    title = _DividedTitles[index].trim();
+	                }
+	                else {
+	                    title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
+	                }
+	                _this.addColumn(_this.formatCollectionName(column), title, options);
+	            });
+	        };
+	        this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
+	            var alias = _this.baseEntityAlias;
+	            var doJoin = false;
+	            var collection = propertyIdentifier;
+	            var propertyKey = '';
+	            if (propertyIdentifier.indexOf('.') !== -1) {
+	                collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
+	                propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
+	            }
+	            var column = {
+	                propertyIdentifier: alias + '.' + propertyIdentifier,
+	                aggregate: {
+	                    aggregateFunction: aggregateFunction,
+	                    aggregateAlias: aggregateAlias
+	                }
+	            };
+	            var isObject = _this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
+	            if (isObject) {
+	                //check if count is on a one-to-many
+	                var lastEntityName = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
+	                var propertyMetaData = _this.$slatwall.getEntityMetaData(lastEntityName)[_this.utilityService.listLast(propertyIdentifier, '.')];
+	                var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
+	                //if is a one-to-many propertyKey then add a groupby
+	                //                if(isOneToMany){
+	                //                    this.addGroupBy(alias);
+	                //                }
+	                column.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
+	                var join = new Join(propertyIdentifier, column.propertyIdentifier);
+	                doJoin = true;
+	            }
+	            else {
+	                column.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
+	                var join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
+	                doJoin = true;
+	            }
+	            angular.extend(column, options);
+	            //Add columns
+	            _this.addColumn(column.propertyIdentifier, undefined, column);
+	            if (doJoin) {
+	                _this.addJoin(join);
+	            }
+	        };
+	        this.addGroupBy = function (groupByAlias) {
+	            if (!_this.groupBys) {
+	                _this.groupBys = '';
+	            }
+	            _this.groupBys = _this.utilityService.listAppend(_this.groupBys, groupByAlias);
+	        };
+	        this.addDisplayProperty = function (propertyIdentifier, title, options) {
+	            if (title === void 0) { title = ''; }
+	            if (options === void 0) { options = {}; }
+	            var _DividedColumns = propertyIdentifier.trim().split(',');
+	            var _DividedTitles = title.trim().split(',');
+	            _DividedColumns.forEach(function (column, index) {
+	                column = column.trim();
+	                //this.addJoin(column);
+	                if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+	                    title = _DividedTitles[index].trim();
+	                }
+	                else {
+	                    title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
+	                }
+	                _this.addColumn(_this.formatCollectionName(column), title, options);
+	            });
+	        };
+	        this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
+	            if (comparisonOperator === void 0) { comparisonOperator = '='; }
+	            var alias = _this.baseEntityAlias;
+	            var join;
+	            var doJoin = false;
+	            //if filterGroups does not exists then set a default
+	            if (!_this.filterGroups) {
+	                _this.filterGroups = [{ filterGroup: [] }];
+	            }
+	            var collection = propertyIdentifier;
+	            //if the propertyIdenfifier is a chain
+	            var propertyKey = '';
+	            if (propertyIdentifier.indexOf('.') !== -1) {
+	                collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
+	                propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
+	            }
+	            //create filter group
+	            var filter = new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
+	            var isObject = _this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
+	            if (isObject) {
+	                filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
+	                join = new Join(propertyIdentifier, _this.buildPropertyIdentifier(alias, propertyIdentifier));
+	                doJoin = true;
+	            }
+	            else if (propertyKey !== '') {
+	                filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
+	                join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
+	                doJoin = true;
+	            }
+	            //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
+	            if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
+	                logicalOperator = 'AND';
+	            _this.filterGroups[0].filterGroup.push(filter);
+	            if (doJoin) {
+	                _this.addJoin(join);
+	            }
+	        };
+	        this.buildPropertyIdentifier = function (alias, propertyIdentifier, joinChar) {
+	            if (joinChar === void 0) { joinChar = '_'; }
+	            return alias + joinChar + _this.utilityService.replaceAll(propertyIdentifier, '.', '_');
+	        };
+	        this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
+	            if (criteria === void 0) { criteria = 'One'; }
+	            if (readOnly === void 0) { readOnly = false; }
+	            _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
+	        };
+	        //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+	        this.setOrderBy = function (orderByList) {
+	            var orderBys = orderByList.split(',');
+	            angular.forEach(orderBys, function (orderBy) {
+	                _this.addOrderBy(orderBy);
+	            });
+	        };
+	        this.addOrderBy = function (orderByString) {
+	            if (!_this.orderBy) {
+	                _this.orderBy = [];
+	            }
+	            var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
+	            var direction = _this.utilityService.listLast(orderByString, '|');
+	            var orderBy = {
+	                propertyIdentifier: _this.formatCollectionName(propertyIdentifier),
+	                direction: direction
+	            };
+	            _this.orderBy.push(orderBy);
+	        };
+	        this.setCurrentPage = function (pageNumber) {
+	            _this.currentPage = pageNumber;
+	        };
+	        this.setPageShow = function (NumberOfPages) {
+	            _this.pageShow = NumberOfPages;
+	        };
+	        this.setAllRecords = function (allFlag) {
+	            if (allFlag === void 0) { allFlag = false; }
+	            _this.allRecords = allFlag;
+	        };
+	        this.setKeywords = function (keyword) {
+	            _this.keywords = keyword;
+	        };
+	        this.setId = function (id) {
+	            _this.id = id;
+	        };
+	        this.getEntity = function (id) {
+	            if (angular.isDefined(id)) {
+	                _this.setId(id);
+	            }
+	            return _this.$slatwall.getEntity(_this.baseEntityName, _this.getOptions());
+	        };
+	        if (angular.isDefined(this.baseEntityName)) {
+	            this.collection = this.$slatwall['new' + this.getEntityName()]();
+	            if (angular.isUndefined(this.baseEntityAlias)) {
+	                this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
+	            }
+	        }
+	    }
+	    CollectionConfig.$inject = ['$slatwall', 'utilityService'];
+	    return CollectionConfig;
+	})();
+	exports.CollectionConfig = CollectionConfig;
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	var CollectionService = (function () {
+	    function CollectionService($filter, $log) {
+	        var _this = this;
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this.get = function () {
+	            return _this._pageDialogs || [];
+	        };
+	        //test
+	        this.setFilterCount = function (count) {
+	            _this.$log.debug('incrementFilterCount');
+	            _this._filterCount = count;
+	        };
+	        this.getFilterCount = function () {
+	            return _this._filterCount;
+	        };
+	        this.getColumns = function () {
+	            return _this._collection.collectionConfig.columns;
+	        };
+	        this.getFilterPropertiesList = function () {
+	            return _this._filterPropertiesList;
+	        };
+	        this.getFilterPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
+	            return _this._filterPropertiesList[baseEntityAlias];
+	        };
+	        this.setFilterPropertiesList = function (value, key) {
+	            if (angular.isUndefined(_this._filterPropertiesList[key])) {
+	                _this._filterPropertiesList[key] = value;
+	            }
+	        };
+	        this.stringifyJSON = function (jsonObject) {
+	            var jsonString = angular.toJson(jsonObject);
+	            return jsonString;
+	        };
+	        this.removeFilterItem = function (filterItem, filterGroup) {
+	            filterGroup.pop(filterGroup.indexOf(filterItem));
+	        };
+	        this.selectFilterItem = function (filterItem) {
+	            if (filterItem.$$isClosed) {
+	                for (var i in filterItem.$$siblingItems) {
+	                    filterItem.$$siblingItems[i].$$isClosed = true;
+	                    filterItem.$$siblingItems[i].$$disabled = true;
+	                }
+	                filterItem.$$isClosed = false;
+	                filterItem.$$disabled = false;
+	                filterItem.setItemInUse(true);
+	            }
+	            else {
+	                for (var i in filterItem.$$siblingItems) {
+	                    filterItem.$$siblingItems[i].$$disabled = false;
+	                }
+	                filterItem.$$isClosed = true;
+	                filterItem.setItemInUse(false);
+	            }
+	        };
+	        this.selectFilterGroupItem = function (filterGroupItem) {
+	            if (filterGroupItem.$$isClosed) {
+	                for (var i in filterGroupItem.$$siblingItems) {
+	                    filterGroupItem.$$siblingItems[i].$$disabled = true;
+	                }
+	                filterGroupItem.$$isClosed = false;
+	                filterGroupItem.$$disabled = false;
+	            }
+	            else {
+	                for (var i in filterGroupItem.$$siblingItems) {
+	                    filterGroupItem.$$siblingItems[i].$$disabled = false;
+	                }
+	                filterGroupItem.$$isClosed = true;
+	            }
+	            filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
+	        };
+	        this.newFilterItem = function (filterItemGroup, setItemInUse, prepareForFilterGroup) {
+	            if (angular.isUndefined(prepareForFilterGroup)) {
+	                prepareForFilterGroup = false;
+	            }
+	            var filterItem = {
+	                displayPropertyIdentifier: "",
+	                propertyIdentifier: "",
+	                comparisonOperator: "",
+	                value: "",
+	                $$disabled: false,
+	                $$isClosed: true,
+	                $$isNew: true,
+	                $$siblingItems: filterItemGroup,
+	                setItemInUse: setItemInUse
+	            };
+	            if (filterItemGroup.length !== 0) {
+	                filterItem.logicalOperator = "AND";
+	            }
+	            if (prepareForFilterGroup === true) {
+	                filterItem.$$prepareForFilterGroup = true;
+	            }
+	            filterItemGroup.push(filterItem);
+	            _this.selectFilterItem(filterItem);
+	        };
+	        this.newFilterGroupItem = function (filterItemGroup, setItemInUse) {
+	            var filterGroupItem = {
+	                filterGroup: [],
+	                $$disabled: "false",
+	                $$isClosed: "true",
+	                $$siblingItems: filterItemGroup,
+	                $$isNew: "true",
+	                setItemInUse: setItemInUse
+	            }, IFilter;
+	            if (filterItemGroup.length !== 0) {
+	                filterGroupItem.logicalOperator = "AND";
+	            }
+	            filterItemGroup.push(filterGroupItem);
+	            _this.selectFilterGroupItem(filterGroupItem);
+	            _this.newFilterItem(filterGroupItem.filterGroup, setItemInUse);
+	        };
+	        this.transplantFilterItemIntoFilterGroup = function (filterGroup, filterItem) {
+	            var filterGroupItem = {
+	                filterGroup: [],
+	                $$disabled: "false",
+	                $$isClosed: "true",
+	                $$isNew: "true"
+	            };
+	            if (angular.isDefined(filterItem.logicalOperator)) {
+	                filterGroupItem.logicalOperator = filterItem.logicalOperator;
+	                delete filterItem.logicalOperator;
+	            }
+	            filterGroupItem.setItemInUse = filterItem.setItemInUse;
+	            filterGroupItem.$$siblingItems = filterItem.$$siblingItems;
+	            filterItem.$$siblingItems = [];
+	            filterGroup.pop(filterGroup.indexOf(filterItem));
+	            filterItem.$$prepareForFilterGroup = false;
+	            filterGroupItem.filterGroup.push(filterItem);
+	            filterGroup.push(filterGroupItem);
+	        };
+	        this.formatFilterPropertiesList = function (filterPropertiesList, propertyIdentifier) {
+	            _this.$log.debug('format Filter Properties List arguments 2');
+	            _this.$log.debug(filterPropertiesList);
+	            _this.$log.debug(propertyIdentifier);
+	            var simpleGroup = {
+	                $$group: 'simple',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(simpleGroup);
+	            var drillDownGroup = {
+	                $$group: 'drilldown',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(drillDownGroup);
+	            var compareCollections = {
+	                $$group: 'compareCollections',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(compareCollections);
+	            var attributeCollections = {
+	                $$group: 'attribute',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(attributeCollections);
+	            for (var i in filterPropertiesList.data) {
+	                if (angular.isDefined(filterPropertiesList.data[i].ormtype)) {
+	                    if (angular.isDefined(filterPropertiesList.data[i].attributeID)) {
+	                        filterPropertiesList.data[i].$$group = 'attribute';
+	                    }
+	                    else {
+	                        filterPropertiesList.data[i].$$group = 'simple';
+	                    }
+	                }
+	                if (angular.isDefined(filterPropertiesList.data[i].fieldtype)) {
+	                    if (filterPropertiesList.data[i].fieldtype === 'id') {
+	                        filterPropertiesList.data[i].$$group = 'simple';
+	                    }
+	                    if (filterPropertiesList.data[i].fieldtype === 'many-to-one') {
+	                        filterPropertiesList.data[i].$$group = 'drilldown';
+	                    }
+	                    if (filterPropertiesList.data[i].fieldtype === 'many-to-many' || filterPropertiesList.data[i].fieldtype === 'one-to-many') {
+	                        filterPropertiesList.data[i].$$group = 'compareCollections';
+	                    }
+	                }
+	                filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' + filterPropertiesList.data[i].name;
+	            }
+	            filterPropertiesList.data = _this._orderBy(filterPropertiesList.data, ['-$$group', 'propertyIdentifier'], false);
+	        };
+	        this.orderBy = function (propertiesList, predicate, reverse) {
+	            return _this._orderBy(propertiesList, predicate, reverse);
+	        };
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this._collection = null;
+	        this._collectionConfig = null;
+	        this._filterPropertiesList = {};
+	        this._filterCount = 0;
+	        this._orderBy = $filter('orderBy');
+	    }
+	    CollectionService.$inject = [
+	        '$filter', '$log'
+	    ];
+	    return CollectionService;
+	})();
+	exports.CollectionService = CollectionService;
+
+
+/***/ },
+/* 28 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -1931,13 +2596,606 @@
 
 
 /***/ },
-/* 26 */
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+	var hibachi_module_1 = __webpack_require__(10);
+	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
+	var slatwallservice_1 = __webpack_require__(30);
+	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
+	exports.ngslatwallmodule = ngslatwallmodule;
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	var SlatwallService = (function () {
+	    function SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities, _jsEntityInstances) {
+	        var _this = this;
+	        this.$window = $window;
+	        this.$q = $q;
+	        this.$http = $http;
+	        this.$timeout = $timeout;
+	        this.$log = $log;
+	        this.$rootScope = $rootScope;
+	        this.$location = $location;
+	        this.$anchorScroll = $anchorScroll;
+	        this.utilityService = utilityService;
+	        this.formService = formService;
+	        this._config = _config;
+	        this._jsEntities = _jsEntities;
+	        this._jsEntityInstances = _jsEntityInstances;
+	        this._resourceBundle = {};
+	        this._resourceBundleLastModified = '';
+	        this._loadingResourceBundle = false;
+	        this._loadedResourceBundle = false;
+	        this._deferred = {};
+	        this.buildUrl = function (action, queryString) {
+	            //actionName example: slatAction. defined in FW1 and populated to config
+	            var actionName = _this.getConfigValue('action');
+	            var baseUrl = _this.getConfigValue('baseURL');
+	            queryString = queryString || '';
+	            if (angular.isDefined(queryString) && queryString.length) {
+	                if (queryString.indexOf('&') !== 0) {
+	                    queryString = '&' + queryString;
+	                }
+	            }
+	            return baseUrl + '?' + actionName + '=' + action + queryString;
+	        };
+	        this.getJsEntities = function () {
+	            return _this._jsEntities;
+	        };
+	        this.setJsEntities = function (jsEntities) {
+	            _this._jsEntities = jsEntities;
+	        };
+	        this.getJsEntityInstances = function () {
+	            return _this._jsEntityInstances;
+	        };
+	        this.setJsEntityInstances = function (jsEntityInstances) {
+	            _this._jsEntityInstances = jsEntityInstances;
+	        };
+	        this.getEntityExample = function (entityName) {
+	            return _this._jsEntityInstances[entityName];
+	        };
+	        this.getEntityMetaData = function (entityName) {
+	            return _this._jsEntityInstances[entityName].metaData;
+	        };
+	        this.getPropertyByEntityNameAndPropertyName = function (entityName, propertyName) {
+	            return _this.getEntityMetaData(entityName)[propertyName];
+	        };
+	        this.getPrimaryIDPropertyNameByEntityName = function (entityName) {
+	            return _this.getEntityMetaData(entityName).$$getIDName();
+	        };
+	        this.getEntityHasPropertyByEntityName = function (entityName, propertyName) {
+	            return angular.isDefined(_this.getEntityMetaData(entityName)[propertyName]);
+	        };
+	        this.getPropertyIsObjectByEntityNameAndPropertyIdentifier = function (entityName, propertyIdentifier) {
+	            var lastEntity = _this.getLastEntityNameInPropertyIdentifier(entityName, propertyIdentifier);
+	            var entityMetaData = _this.getEntityMetaData(lastEntity);
+	            return angular.isDefined(entityMetaData[_this.utilityService.listLast(propertyIdentifier, '.')].cfc);
+	        };
+	        this.getLastEntityNameInPropertyIdentifier = function (entityName, propertyIdentifier) {
+	            if (propertyIdentifier.split('.').length > 1) {
+	                var propertiesStruct = _this.getEntityMetaData(entityName);
+	                if (!propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')]
+	                    || !propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc) {
+	                    throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
+	                }
+	                var currentEntityName = _this.utilityService.listLast(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, '.');
+	                var currentPropertyIdentifier = _this.utilityService.right(propertyIdentifier, propertyIdentifier.length - (_this.utilityService.listFirst(propertyIdentifier, '.').length + 1));
+	                return _this.getLastEntityNameInPropertyIdentifier(currentEntityName, currentPropertyIdentifier);
+	            }
+	            return entityName;
+	        };
+	        //service method used to transform collection data to collection objects based on a collectionconfig
+	        this.populateCollection = function (collectionData, collectionConfig) {
+	            //create array to hold objects
+	            var entities = [];
+	            //loop over all collection data to create objects
+	            var slatwallService = _this;
+	            angular.forEach(collectionData, function (collectionItemData, key) {
+	                //create base Entity
+	                var entity = slatwallService['new' + collectionConfig.baseEntityName.replace('Slatwall', '')]();
+	                //populate entity with data based on the collectionConfig
+	                angular.forEach(collectionConfig.columns, function (column, key) {
+	                    //get objects base properties
+	                    var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase() + '.', '');
+	                    var propertyIdentifierArray = propertyIdentifier.split('.');
+	                    var propertyIdentifierKey = propertyIdentifier.replace(/\./g, '_');
+	                    var currentEntity = entity;
+	                    angular.forEach(propertyIdentifierArray, function (property, key) {
+	                        if (key === propertyIdentifierArray.length - 1) {
+	                            //if we are on the last item in the array
+	                            if (angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one') {
+	                                var relatedEntity = slatwallService['new' + currentEntity.metaData[property].cfc]();
+	                                relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
+	                                currentEntity['$$set' + currentEntity.metaData[property].name.charAt(0).toUpperCase() + currentEntity.metaData[property].name.slice(1)](relatedEntity);
+	                            }
+	                            else if (angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')) {
+	                                angular.forEach(collectionItemData[propertyIdentifierKey], function (arrayItem, key) {
+	                                    var relatedEntity = slatwallService['new' + currentEntity.metaData[property].cfc]();
+	                                    relatedEntity.$$init(arrayItem);
+	                                    currentEntity['$$add' + currentEntity.metaData[property].singularname.charAt(0).toUpperCase() + currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+	                                });
+	                            }
+	                            else {
+	                                currentEntity.data[property] = collectionItemData[propertyIdentifierKey];
+	                            }
+	                        }
+	                        else {
+	                            var propertyMetaData = currentEntity.metaData[property];
+	                            if (angular.isUndefined(currentEntity.data[property])) {
+	                                if (propertyMetaData.fieldtype === 'one-to-many') {
+	                                    relatedEntity = [];
+	                                }
+	                                else {
+	                                    relatedEntity = slatwallService['new' + propertyMetaData.cfc]();
+	                                }
+	                            }
+	                            else {
+	                                relatedEntity = currentEntity.data[property];
+	                            }
+	                            currentEntity['$$set' + propertyMetaData.name.charAt(0).toUpperCase() + propertyMetaData.name.slice(1)](relatedEntity);
+	                            currentEntity = relatedEntity;
+	                        }
+	                    });
+	                });
+	                entities.push(entity);
+	            });
+	            return entities;
+	        };
+	        /*basic entity getter where id is optional, returns a promise*/
+	        this.getDefer = function (deferKey) {
+	            return _this._deferred[deferKey];
+	        };
+	        this.cancelPromise = function (deferKey) {
+	            var deferred = _this.getDefer(deferKey);
+	            if (angular.isDefined(deferred)) {
+	                deferred.resolve({ messages: [{ messageType: 'error', message: 'User Cancelled' }] });
+	            }
+	        };
+	        this.newEntity = function (entityName) {
+	            return new _this._jsEntities[entityName];
+	        };
+	        /*basic entity getter where id is optional, returns a promise*/
+	        this.getEntity = function (entityName, options) {
+	            /*
+	                *
+	                * getEntity('Product', '12345-12345-12345-12345');
+	                * getEntity('Product', {keywords='Hello'});
+	                *
+	                */
+	            if (angular.isUndefined(options)) {
+	                options = {};
+	            }
+	            if (angular.isDefined(options.deferKey)) {
+	                _this.cancelPromise(options.deferKey);
+	            }
+	            var params = {};
+	            if (typeof options === 'string') {
+	                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName + '&entityID=' + options;
+	            }
+	            else {
+	                params['P:Current'] = options.currentPage || 1;
+	                params['P:Show'] = options.pageShow || 10;
+	                params.keywords = options.keywords || '';
+	                params.columnsConfig = options.columnsConfig || '';
+	                params.filterGroupsConfig = options.filterGroupsConfig || '';
+	                params.joinsConfig = options.joinsConfig || '';
+	                params.orderByConfig = options.orderByConfig || '';
+	                params.groupBysConfig = options.groupBysConfig || '';
+	                params.isDistinct = options.isDistinct || false;
+	                params.propertyIdentifiersList = options.propertyIdentifiersList || '';
+	                params.allRecords = options.allRecords || '';
+	                params.defaultColumns = options.defaultColumns || true;
+	                params.processContext = options.processContext || '';
+	                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName;
+	            }
+	            var deferred = _this.$q.defer();
+	            if (angular.isDefined(options.id)) {
+	                urlString += '&entityId=' + options.id;
+	            }
+	            /*var transformRequest = (data) => {
+	                                        
+	                return data;
+	            };
+	            //check if we are using a service to transform the request
+	            if(angular.isDefined(options.transformRequest)) => {
+	                transformRequest=options.trasformRequest;
+	            }*/
+	            var transformResponse = function (data) {
+	                if (angular.isString(data)) {
+	                    data = JSON.parse(data);
+	                }
+	                return data;
+	            };
+	            //check if we are using a service to transform the response
+	            if (angular.isDefined(options.transformResponse)) {
+	                transformResponse = function (data) {
+	                    var data = JSON.parse(data);
+	                    if (angular.isDefined(data.records)) {
+	                        data = options.transformResponse(data.records);
+	                    }
+	                    return data;
+	                };
+	            }
+	            $http.get(urlString, {
+	                params: params,
+	                timeout: deferred.promise,
+	                //transformRequest:transformRequest,
+	                transformResponse: transformResponse
+	            })
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            if (options.deferKey) {
+	                _this._deferred[options.deferKey] = deferred;
+	            }
+	            return deferred.promise;
+	        };
+	        this.getResizedImageByProfileName = function (profileName, skuIDs) {
+	            var deferred = _this.$q.defer();
+	            return $http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	        };
+	        this.getEventOptions = function (entityName) {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName=' + entityName;
+	            $http.get(urlString)
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
+	        };
+	        this.checkUniqueOrNullValue = function (object, property, value) {
+	            return $http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	                '&value=' + escape(value)).then(function (results) {
+	                return results.data.uniqueStatus;
+	            });
+	        };
+	        this.checkUniqueValue = function (object, property, value) {
+	            return $http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	                '&value=' + escape(value)).then(function (results) {
+	                return results.data.uniqueStatus;
+	            });
+	        };
+	        this.getPropertyDisplayData = function (entityName, options) {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName=' + entityName;
+	            var params = {};
+	            params.propertyIdentifiersList = options.propertyIdentifiersList || '';
+	            $http.get(urlString, { params: params })
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
+	        };
+	        this.getPropertyDisplayOptions = function (entityName, options) {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName=' + entityName;
+	            var params = {};
+	            params.property = options.property || '';
+	            if (angular.isDefined(options.argument1)) {
+	                params.argument1 = options.argument1;
+	            }
+	            $http.get(urlString, { params: params })
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
+	        };
+	        this.saveEntity = function (entityName, id, params, context) {
+	            //$log.debug('save'+ entityName);
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.post';
+	            if (angular.isDefined(entityName)) {
+	                params.entityName = entityName;
+	            }
+	            if (angular.isDefined(id)) {
+	                params.entityID = id;
+	            }
+	            if (angular.isDefined(context)) {
+	                params.context = context;
+	            }
+	            $http({
+	                url: urlString,
+	                method: 'POST',
+	                data: $.param(params),
+	                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+	            })
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
+	        };
+	        this.getExistingCollectionsByBaseEntity = function (entityName) {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
+	            $http.get(urlString)
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
+	        };
+	        this.getFilterPropertiesByBaseEntityName = function (entityName) {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
+	            $http.get(urlString)
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
+	        };
+	        this.getRBLoaded = function () {
+	            return _this._loadedResourceBundle;
+	        };
+	        this.hasResourceBundle = function () {
+	            ////$log.debug('hasResourceBundle');
+	            ////$log.debug(this._loadedResourceBundle);
+	            if (!_this._loadingResourceBundle && !_this._loadedResourceBundle) {
+	                _this._loadingResourceBundle = true;
+	                //$log.debug(this.getConfigValue('rbLocale').split('_'));
+	                var localeListArray = _this.getConfigValue('rbLocale').split('_');
+	                var rbPromise;
+	                var rbPromises = [];
+	                rbPromise = _this.getResourceBundle(_this.getConfigValue('rbLocale'));
+	                rbPromises.push(rbPromise);
+	                if (localeListArray.length === 2) {
+	                    //$log.debug('has two');
+	                    rbPromise = _this.getResourceBundle(localeListArray[0]);
+	                    rbPromises.push(rbPromise);
+	                }
+	                if (localeListArray[0] !== 'en') {
+	                    //$log.debug('get english');
+	                    _this.getResourceBundle('en_us');
+	                    _this.getResourceBundle('en');
+	                }
+	                _this.$q.all(rbPromises).then(function (data) {
+	                    _this.$rootScope.loadedResourceBundle = true;
+	                    _this._loadingResourceBundle = false;
+	                    _this._loadedResourceBundle = true;
+	                }, function (error) {
+	                    _this.$rootScope.loadedResourceBundle = true;
+	                    _this._loadingResourceBundle = false;
+	                    _this._loadedResourceBundle = true;
+	                });
+	            }
+	            return _this._loadedResourceBundle;
+	        };
+	        this.login = function (emailAddress, password) {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/api/auth/login';
+	            var params = {
+	                emailAddress: emailAddress,
+	                password: password
+	            };
+	            return $http.get(urlString, { params: params }).success(function (response) {
+	                deferred.resolve(response);
+	            }).error(function (response) {
+	                deferred.reject(response);
+	            });
+	        };
+	        this.getResourceBundle = function (locale) {
+	            var deferred = _this.$q.defer();
+	            var locale = locale || _this.getConfig().rbLocale;
+	            if (_this._resourceBundle[locale]) {
+	                return _this._resourceBundle[locale];
+	            }
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.getConfig().instantiationKey + '&locale=' + locale;
+	            $http({
+	                url: urlString,
+	                method: "GET"
+	            }).success(function (response, status, headersGetter) {
+	                _this._resourceBundle[locale] = response.data;
+	                deferred.resolve(response);
+	            }).error(function (response) {
+	                _this._resourceBundle[locale] = {};
+	                deferred.reject(response);
+	            });
+	            return deferred.promise;
+	        };
+	        this.getCurrencies = function () {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + _this.getConfig().instantiationKey;
+	            $http.get(urlString).success(function (response) {
+	                deferred.resolve(response);
+	            }).error(function (response) {
+	                deferred.reject(response);
+	            });
+	            return deferred.promise;
+	        };
+	        this.rbKey = function (key, replaceStringData) {
+	            ////$log.debug('rbkey');
+	            ////$log.debug(key);
+	            ////$log.debug(this.getConfig().rbLocale);
+	            var keyValue = _this.getRBKey(key, _this.getConfig().rbLocale);
+	            ////$log.debug(keyValue);
+	            return keyValue;
+	        };
+	        this.getRBKey = function (key, locale, checkedKeys, originalKey) {
+	            ////$log.debug('getRBKey');
+	            ////$log.debug('loading:'+this._loadingResourceBundle);
+	            ////$log.debug('loaded'+this._loadedResourceBundle);
+	            if (!_this._loadingResourceBundle && _this._loadedResourceBundle) {
+	                key = key.toLowerCase();
+	                checkedKeys = checkedKeys || "";
+	                locale = locale || 'en_us';
+	                ////$log.debug('locale');
+	                ////$log.debug(locale);
+	                var keyListArray = key.split(',');
+	                ////$log.debug('keylistAray');
+	                ////$log.debug(keyListArray);
+	                if (keyListArray.length > 1) {
+	                    var keyValue = "";
+	                    for (var i = 0; i < keyListArray.length; i++) {
+	                        var keyValue = _this.getRBKey(keyListArray[i], locale, keyValue);
+	                        //$log.debug('keyvalue:'+keyValue);
+	                        if (keyValue.slice(-8) != "_missing") {
+	                            break;
+	                        }
+	                    }
+	                    return keyValue;
+	                }
+	                var bundle = _this.getResourceBundle(locale);
+	                //$log.debug('bundle');
+	                //$log.debug(bundle);
+	                if (!bundle.then) {
+	                    if (angular.isDefined(bundle[key])) {
+	                        //$log.debug('rbkeyfound:'+bundle[key]);
+	                        return bundle[key];
+	                    }
+	                    var checkedKeysListArray = checkedKeys.split(',');
+	                    checkedKeysListArray.push(key + '_' + locale + '_missing');
+	                    checkedKeys = checkedKeysListArray.join(",");
+	                    if (angular.isUndefined(originalKey)) {
+	                        originalKey = key;
+	                    }
+	                    //$log.debug('originalKey:'+key);
+	                    //$log.debug(checkedKeysListArray);
+	                    var localeListArray = locale.split('_');
+	                    //$log.debug(localeListArray);
+	                    if (localeListArray.length === 2) {
+	                        bundle = _this.getResourceBundle(localeListArray[0]);
+	                        if (angular.isDefined(bundle[key])) {
+	                            //$log.debug('rbkey found:'+bundle[key]);
+	                            return bundle[key];
+	                        }
+	                        checkedKeysListArray.push(key + '_' + localeListArray[0] + '_missing');
+	                        checkedKeys = checkedKeysListArray.join(",");
+	                    }
+	                    var keyDotListArray = key.split('.');
+	                    if (keyDotListArray.length >= 3
+	                        && keyDotListArray[keyDotListArray.length - 2] === 'define') {
+	                        var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3] + '.define', 'define');
+	                        //$log.debug('newkey1:'+newKey);
+	                        return _this.getRBKey(newKey, locale, checkedKeys, originalKey);
+	                    }
+	                    else if (keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define') {
+	                        var newKey = key.replace(keyDotListArray[keyDotListArray.length - 2] + '.', 'define.');
+	                        //$log.debug('newkey:'+newKey);
+	                        return _this.getRBKey(newKey, locale, checkedKeys, originalKey);
+	                    }
+	                    //$log.debug(localeListArray);
+	                    if (localeListArray[0] !== "en") {
+	                        return _this.getRBKey(originalKey, 'en', checkedKeys);
+	                    }
+	                    return checkedKeys;
+	                }
+	            }
+	            return '';
+	        };
+	        this.getConfig = function () {
+	            return _this._config;
+	        };
+	        this.getConfigValue = function (key) {
+	            return _this._config[key];
+	        };
+	        this.setConfigValue = function (key, value) {
+	            _this._config[key] = value;
+	        };
+	        this.setConfig = function (config) {
+	            _this._config = config;
+	        };
+	        this.$window = $window;
+	        this.$q = $q;
+	        this.$http = $http;
+	        this.$timeout = $timeout;
+	        this.$log = $log;
+	        this.$rootScope = $rootScope;
+	        this.$location = $location;
+	        this.$anchorScroll = $anchorScroll;
+	        this.utilityService = utilityService;
+	        this.formService = formService;
+	        this._config = _config;
+	        this._jsEntities = _jsEntities;
+	        this._jsEntityInstances = _jsEntityInstances;
+	    }
+	    SlatwallService.$inject = ['$window', '$q', '$http', '$timeout', '$log', '$rootScope', '$location', '$anchorScroll', 'utilityService', 'formService'];
+	    return SlatwallService;
+	})();
+	exports.SlatwallService = SlatwallService;
+	var $Slatwall = (function () {
+	    function $Slatwall() {
+	        var _this = this;
+	        this._config = {};
+	        this.angular = angular;
+	        this.setJsEntities = function (jsEntities) {
+	            _this._jsEntities = jsEntities;
+	        };
+	        this.getConfig = function () {
+	            return _this._config;
+	        };
+	        this.getConfigValue = function (key) {
+	            return _this._config[key];
+	        };
+	        this.setConfigValue = function (key, value) {
+	            _this._config[key] = value;
+	        };
+	        this.setConfig = function (config) {
+	            _this._config = config;
+	        };
+	        this._config = {
+	            dateFormat: 'MM/DD/YYYY',
+	            timeFormat: 'HH:MM',
+	            rbLocale: '',
+	            baseURL: '',
+	            applicationKey: 'Slatwall',
+	            debugFlag: true,
+	            instantiationKey: '84552B2D-A049-4460-55F23F30FE7B26AD'
+	        };
+	        if (slatwallAngular.slatwallConfig) {
+	            angular.extend(this._config, slatwallAngular.slatwallConfig);
+	        }
+	        this.$get.$inject = [
+	            '$window',
+	            '$q',
+	            '$http',
+	            '$timeout',
+	            '$log',
+	            '$rootScope',
+	            '$location',
+	            '$anchorScroll',
+	            'utilityService',
+	            'formService'
+	        ];
+	    }
+	    $Slatwall.prototype.$get = function ($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService) {
+	        return new SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities);
+	    };
+	    return $Slatwall;
+	})();
+	exports.$Slatwall = $Slatwall;
+
+
+/***/ },
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	var alert_module_1 = __webpack_require__(11);
-	var exceptionhandler_1 = __webpack_require__(27);
+	var exceptionhandler_1 = __webpack_require__(32);
 	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
 	    .run([function () {
 	    }])
@@ -1947,7 +3205,7 @@
 
 
 /***/ },
-/* 27 */
+/* 32 */
 /***/ function(module, exports) {
 
 	/*<------------------------------------------------------------------------
@@ -1999,6 +3257,450 @@
 	exports.ExceptionHandler = ExceptionHandler; //<--end class
 	//let angular know about our class. notive we pass in the $injector and instantiate the class in one go
 	//again using the fat arrow for scope.
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var collectionconfigservice_1 = __webpack_require__(26);
+	var CollectionController = (function () {
+	    //@ngInject
+	    function CollectionController($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
+	        //init values 
+	        //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
+	        $scope.$id = "collectionsController";
+	        /*used til we convert to use route params*/
+	        var QueryString = function () {
+	            // This function is anonymous, is executed immediately and 
+	            // the return value is assigned to QueryString!
+	            var query_string = {};
+	            var query = window.location.search.substring(1);
+	            var vars = query.split("&");
+	            for (var i = 0; i < vars.length; i++) {
+	                var pair = vars[i].split("=");
+	                // If first entry with this name
+	                if (typeof query_string[pair[0]] === "undefined") {
+	                    query_string[pair[0]] = pair[1];
+	                }
+	                else if (typeof query_string[pair[0]] === "string") {
+	                    var arr = [query_string[pair[0]], pair[1]];
+	                    query_string[pair[0]] = arr;
+	                }
+	                else {
+	                    query_string[pair[0]].push(pair[1]);
+	                }
+	            }
+	            return query_string;
+	        }();
+	        //get url param to retrieve collection listing
+	        $scope.collectionID = QueryString.collectionID;
+	        $scope.paginator = paginationService.createPagination();
+	        $scope.appendToCollection = function () {
+	            if ($scope.paginator.getPageShow() === 'Auto') {
+	                $log.debug('AppendToCollection');
+	                if ($scope.autoScrollPage < $scope.collection.totalPages) {
+	                    $scope.autoScrollDisabled = true;
+	                    $scope.autoScrollPage++;
+	                    var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.autoScrollPage, pageShow: 50 });
+	                    collectionListingPromise.then(function (value) {
+	                        $scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
+	                        $scope.autoScrollDisabled = false;
+	                    }, function (reason) {
+	                    });
+	                }
+	            }
+	        };
+	        $scope.keywords = "";
+	        $scope.loadingCollection = false;
+	        var searchPromise;
+	        $scope.searchCollection = function () {
+	            if (searchPromise) {
+	                $timeout.cancel(searchPromise);
+	            }
+	            searchPromise = $timeout(function () {
+	                $log.debug('search with keywords');
+	                $log.debug($scope.keywords);
+	                //Set current page here so that the pagination does not break when getting collection
+	                $scope.paginator.setCurrentPage(1);
+	                $scope.loadingCollection = true;
+	                $scope.getCollection();
+	            }, 500);
+	        };
+	        $scope.getCollection = function () {
+	            var pageShow = 50;
+	            if ($scope.paginator.getPageShow() !== 'Auto') {
+	                pageShow = $scope.paginator.getPageShow();
+	            }
+	            //			$scope.currentPage = $scope.pagination.getCurrentPage();
+	            var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.getCurrentPage(), pageShow: pageShow, keywords: $scope.keywords });
+	            collectionListingPromise.then(function (value) {
+	                $scope.collection = value;
+	                $scope.paginator.setPageRecordsInfo($scope.collection);
+	                $scope.collectionInitial = angular.copy($scope.collection);
+	                if (angular.isUndefined($scope.collectionConfig)) {
+	                    var test = new collectionconfigservice_1.CollectionConfig($slatwall);
+	                    test.loadJson(value.collectionConfig);
+	                    $scope.collectionConfig = test.getCollectionConfig();
+	                }
+	                //check if we have any filter Groups
+	                if (angular.isUndefined($scope.collectionConfig.filterGroups)) {
+	                    $scope.collectionConfig.filterGroups = [
+	                        {
+	                            filterGroup: []
+	                        }
+	                    ];
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	                $scope.loadingCollection = false;
+	            }, function (reason) {
+	            });
+	            return collectionListingPromise;
+	        };
+	        $scope.paginator.getCollection = $scope.getCollection;
+	        $scope.getCollection();
+	        var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
+	            if (newValue !== oldValue) {
+	                if (angular.isUndefined($scope.filterPropertiesList)) {
+	                    $scope.filterPropertiesList = {};
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+	                    filterPropertiesPromise.then(function (value) {
+	                        metadataService.setPropertiesList(value, $scope.collectionConfig.baseEntityAlias);
+	                        $scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+	                        metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias], $scope.collectionConfig.baseEntityAlias);
+	                    });
+	                }
+	                unbindCollectionObserver();
+	            }
+	        });
+	        $scope.setCollectionForm = function (form) {
+	            $scope.collectionForm = form;
+	        };
+	        $scope.collectionDetails = {
+	            isOpen: false,
+	            openCollectionDetails: function () {
+	                $scope.collectionDetails.isOpen = true;
+	            }
+	        };
+	        $scope.errorMessage = {};
+	        var filterItemCounter = function (filterGroupArray) {
+	            var filterItemCount = 0;
+	            if (!angular.isDefined(filterGroupArray)) {
+	                filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
+	            }
+	            //Start out loop
+	            for (var index in filterGroupArray) {
+	                //If filter isn't new then increment the count
+	                if (!filterGroupArray[index].$$isNew
+	                    && !angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    filterItemCount++;
+	                }
+	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    //Call function recursively
+	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+	                }
+	                else {
+	                    break;
+	                }
+	            }
+	            return filterItemCount;
+	        };
+	        $scope.saveCollection = function () {
+	            $timeout(function () {
+	                $log.debug('saving Collection');
+	                var entityName = 'collection';
+	                var collection = $scope.collection;
+	                $log.debug($scope.collectionConfig);
+	                if (isFormValid($scope.collectionForm)) {
+	                    var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
+	                    $log.debug(collectionConfigString);
+	                    var data = angular.copy(collection);
+	                    data.collectionConfig = collectionConfigString;
+	                    //has to be removed in order to save transient correctly
+	                    delete data.pageRecords;
+	                    var saveCollectionPromise = $slatwall.saveEntity(entityName, collection.collectionID, data, 'save');
+	                    saveCollectionPromise.then(function (value) {
+	                        $scope.errorMessage = {};
+	                        //Set current page here so that the pagination does not break when getting collection
+	                        $scope.paginator.setCurrentPage(1);
+	                        $scope.getCollection();
+	                        $scope.collectionDetails.isOpen = false;
+	                    }, function (reason) {
+	                        //revert to original
+	                        angular.forEach(reason.errors, function (value, key) {
+	                            $scope.collectionForm[key].$invalid = true;
+	                            $scope.errorMessage[key] = value[0];
+	                        });
+	                        //$scope.collection = angular.copy($scope.collectionInitial);
+	                    });
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	            });
+	        };
+	        var isFormValid = function (angularForm) {
+	            $log.debug('validateForm');
+	            var formValid = true;
+	            for (var field in angularForm) {
+	                // look at each form input with a name attribute set
+	                // checking if it is pristine and not a '$' special field
+	                if (field[0] != '$') {
+	                    // need to use formValid variable instead of formController.$valid because checkbox dropdown is not an input
+	                    // and somehow formController didn't invalid if checkbox dropdown is invalid
+	                    if (angularForm[field].$invalid) {
+	                        formValid = false;
+	                        for (var error in angularForm[field].$error) {
+	                            if (error == 'required') {
+	                                $scope.errorMessage[field] = 'This field is required';
+	                            }
+	                        }
+	                    }
+	                    if (angularForm[field].$pristine) {
+	                        if (angular.isUndefined(angularForm[field].$viewValue)) {
+	                            angularForm[field].$setViewValue("");
+	                        }
+	                        else {
+	                            angularForm[field].$setViewValue(angularForm[field].$viewValue);
+	                        }
+	                    }
+	                }
+	            }
+	            return formValid;
+	        };
+	        $scope.copyExistingCollection = function () {
+	            $scope.collection.collectionConfig = $scope.selectedExistingCollection;
+	        };
+	        $scope.setSelectedExistingCollection = function (selectedExistingCollection) {
+	            $scope.selectedExistingCollection = selectedExistingCollection;
+	        };
+	        $scope.setSelectedFilterProperty = function (selectedFilterProperty) {
+	            $scope.selectedFilterProperty = selectedFilterProperty;
+	        };
+	        $scope.filterCount = collectionService.getFilterCount;
+	        //export action
+	        $scope.exportCollection = function () {
+	            var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
+	            var data = { "ids": selectionService.getSelections('collectionSelection') };
+	            var target = "downloadCollection";
+	            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
+	            $.each(data, function (n, v) {
+	                $('#postToIframe').append('<input type="hidden" name="' + n + '" value="' + v + '" />');
+	            });
+	            $('#postToIframe').submit().remove();
+	        };
+	    }
+	    CollectionController.$inject = ["$scope", "$location", "$log", "$timeout", "$slatwall", "collectionService", "metadataService", "selectionService", "paginationService"];
+	    return CollectionController;
+	})();
+	exports.CollectionController = CollectionController;
+	// 'use strict';
+	// angular.module('slatwalladmin')
+	// //using $location to get url params, this will probably change to using routes eventually
+	// .controller('collections', [ 
+	// 	'$scope',
+	// '$location',
+	// '$log',
+	// '$timeout',
+	// '$slatwall',
+	// 'collectionService', 
+	// 'metadataService',
+	// 'selectionService',
+	// 'paginationService',
+	// 	function(
+	// 		$scope,
+	// $location,
+	// $log,
+	// $timeout,
+	// $slatwall,
+	// collectionService,
+	// metadataService,
+	// selectionService,
+	// paginationService
+	// 	){
+	// 		
+	// 	}
+	// ]);
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var Form = (function () {
+	    function Form(name, object, editing) {
+	        this.$addControl = function (control) { };
+	        this.$removeControl = function (control) { };
+	        this.$setValidity = function (validationErrorKey, isValid, control) { };
+	        this.$setDirty = function () { };
+	        this.$setPristine = function () { };
+	        this.$commitViewValue = function () { };
+	        this.$rollbackViewValue = function () { };
+	        this.$setSubmitted = function () { };
+	        this.$setUntouched = function () { };
+	        this.name = name;
+	        this.object = object;
+	        this.editing = editing;
+	    }
+	    return Form;
+	})();
+	var FormService = (function () {
+	    function FormService($log) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.setPristinePropertyValue = function (property, value) {
+	            _this._pristinePropertyValue[property] = value;
+	        };
+	        this.getPristinePropertyValue = function (property) {
+	            return _this._pristinePropertyValue[property];
+	        };
+	        this.setForm = function (form) {
+	            _this._forms[form.name] = form;
+	        };
+	        this.getForm = function (formName) {
+	            return _this._forms[formName];
+	        };
+	        this.getForms = function () {
+	            return _this._forms;
+	        };
+	        this.getFormsByObjectName = function (objectName) {
+	            var forms = [];
+	            for (var f in _this._forms) {
+	                if (angular.isDefined(_this._forms[f].$$swFormInfo.object) && _this._forms[f].$$swFormInfo.object.metaData.className === objectName) {
+	                    forms.push(_this._forms[f]);
+	                }
+	            }
+	            return forms;
+	        };
+	        this.createForm = function (name, object, editing) {
+	            var _form = new Form(name, object, editing);
+	            _this.setForm(_form);
+	            return _form;
+	        };
+	        this.resetForm = function (form) {
+	            _this.$log.debug('resetting form');
+	            _this.$log.debug(form);
+	            for (var key in form) {
+	                if (angular.isDefined(form[key])
+	                    && typeof form[key].$setViewValue == 'function'
+	                    && angular.isDefined(form[key].$viewValue)) {
+	                    _this.$log.debug(form[key]);
+	                    if (angular.isDefined(_this.getPristinePropertyValue(key))) {
+	                        form[key].$setViewValue(_this.getPristinePropertyValue(key));
+	                    }
+	                    else {
+	                        form[key].$setViewValue('');
+	                    }
+	                    form[key].$setUntouched(true);
+	                    form[key].$render();
+	                    _this.$log.debug(form[key]);
+	                }
+	            }
+	            form.$submitted = false;
+	            form.$setPristine();
+	            form.$setUntouched();
+	        };
+	        this.$log = $log;
+	        this._forms = {};
+	        this._pristinePropertyValue = {};
+	    }
+	    FormService.$inject = ['$log'];
+	    return FormService;
+	})();
+	exports.FormService = FormService;
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	var MetaDataService = (function () {
+	    function MetaDataService($filter, $log) {
+	        var _this = this;
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this.getPropertiesList = function () {
+	            return _this._propertiesList;
+	        };
+	        this.getPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
+	            return _this._propertiesList[baseEntityAlias];
+	        };
+	        this.setPropertiesList = function (value, key) {
+	            _this._propertiesList[key] = value;
+	        };
+	        this.formatPropertiesList = function (propertiesList, propertyIdentifier) {
+	            var simpleGroup = {
+	                $$group: 'simple'
+	            };
+	            propertiesList.data.push(simpleGroup);
+	            var drillDownGroup = {
+	                $$group: 'drilldown'
+	            };
+	            propertiesList.data.push(drillDownGroup);
+	            var compareCollections = {
+	                $$group: 'compareCollections'
+	            };
+	            propertiesList.data.push(compareCollections);
+	            var attributeCollections = {
+	                $$group: 'attribute'
+	            };
+	            propertiesList.data.push(attributeCollections);
+	            for (var i in propertiesList.data) {
+	                if (angular.isDefined(propertiesList.data[i].ormtype)) {
+	                    if (angular.isDefined(propertiesList.data[i].attributeID)) {
+	                        propertiesList.data[i].$$group = 'attribute';
+	                    }
+	                    else {
+	                        propertiesList.data[i].$$group = 'simple';
+	                    }
+	                }
+	                if (angular.isDefined(propertiesList.data[i].fieldtype)) {
+	                    if (propertiesList.data[i].fieldtype === 'id') {
+	                        propertiesList.data[i].$$group = 'simple';
+	                    }
+	                    if (propertiesList.data[i].fieldtype === 'many-to-one') {
+	                        propertiesList.data[i].$$group = 'drilldown';
+	                    }
+	                    if (propertiesList.data[i].fieldtype === 'many-to-many' || propertiesList.data[i].fieldtype === 'one-to-many') {
+	                        propertiesList.data[i].$$group = 'compareCollections';
+	                    }
+	                }
+	                propertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' + propertiesList.data[i].name;
+	            }
+	            //propertiesList.data = _orderBy(propertiesList.data,['displayPropertyIdentifier'],false);
+	            //--------------------------------Removes empty lines from dropdown.
+	            var temp = [];
+	            for (var i = 0; i <= propertiesList.data.length - 1; i++) {
+	                if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1) {
+	                    _this.$log.debug("removing: " + propertiesList.data[i].displayPropertyIdentifier);
+	                    propertiesList.data[i].displayPropertyIdentifier = "hide";
+	                }
+	                else {
+	                    temp.push(propertiesList.data[i]);
+	                    _this.$log.debug(propertiesList.data[i]);
+	                }
+	            }
+	            temp.sort;
+	            propertiesList.data = temp;
+	            _this.$log.debug("----------------------PropertyList\n\n\n\n\n");
+	            propertiesList.data = _this._orderBy(propertiesList.data, ['propertyIdentifier'], false);
+	            //--------------------------------End remove empty lines.
+	        };
+	        this.orderBy = function (propertiesList, predicate, reverse) {
+	            return _this._orderBy(propertiesList, predicate, reverse);
+	        };
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this._propertiesList = {};
+	        this._orderBy = $filter('orderBy');
+	    }
+	    MetaDataService.$inject = [
+	        '$filter',
+	        '$log'
+	    ];
+	    return MetaDataService;
+	})();
+	exports.MetaDataService = MetaDataService;
 
 
 /***/ }

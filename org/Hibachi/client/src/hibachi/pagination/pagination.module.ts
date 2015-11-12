@@ -7,7 +7,6 @@ import {SWPaginationBar} from "./components/swpaginationbar";
 
 var paginationmodule = angular.module('hibachi.pagination', [])
 .run([function() {
-	console.log(PaginationService);
 }])
 //services
 .service('paginationService', PaginationService)
