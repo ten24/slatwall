@@ -22,7 +22,6 @@ module slatwalladmin {
         private childPropertyName;
         private columns = [];
         private columnCount; 
-        private entity:string; 
         private expandable:boolean;
         private exampleEntity:any = ""; 
         private exportAction;  
