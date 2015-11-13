@@ -15,13 +15,11 @@ var slatwalladmin;
             this.ProcessObject = ProcessObject;
             this.$http = $http;
             this.$timeout = $timeout;
-            this.processObject = null;
-            this.hiddenFields = null;
-            this.entityName = null;
-            this.$rootScope = null;
             /** only use if the developer has specified these features with isProcessForm */
+            console.log(this);
             if (this.isProcessForm == "true") {
-                this.handleSelfInspection();
+                console.log("Test: ", this.processObject);
+                this.handleSelfInspection(this);
             }
         }
         /**
@@ -30,24 +28,25 @@ var slatwalladmin;
          * method that can be called by any subclasses that inject formCtrl. On submit,
          * this class will attach any errors to the correspnding form element.
          */
-        handleSelfInspection() {
-            let vm = this;
+        handleSelfInspection(context) {
+            let vm = context;
             vm.hiddenFields = this.hiddenFields || [];
             vm.entityName = this.entityName || "Account";
-            vm.processObject = this.processObject || "login";
+            vm.processObject = this.processObject;
             vm.action = this.action || "$login";
             vm.actions = this.actions || [];
             vm.$timeout = this.$timeout;
+            vm.processEntity = this.$slatwall.newEntity('Account_Login');
             /** parse the name */
             let entityName = this.processObject.split("_")[0];
+            let processObject = this.processObject.split("_")[1];
+            /** Cart is an alias for an Order */
             if (entityName == "Order") {
                 entityName = "Cart";
             }
             ;
-            let processObject = this.processObject.split("_")[1];
             /** find the form scope */
             this.$scope.$on('anchor', (event, data) => {
-                console.log("$on triggers: ", data.anchorType, data.scope);
                 if (data.anchorType == "form" && data.scope !== undefined) {
                     vm["formCtrl"] = data.scope;
                 }
@@ -56,7 +55,6 @@ var slatwalladmin;
             if (this.processObject == undefined || this.entityName == undefined) {
                 throw ("ProcessObject Exception");
             }
-            //slatwall.newEntity(processObject)
             let processObj = this.ProcessObject.GetInstance();
             /** parse the response */
             processObj = processObj.$get({ processObject: this.processObject, entityName: this.entityName }).success(
@@ -97,10 +95,10 @@ var slatwalladmin;
                 });
                 return vm.formData || "";
             };
-            /**
+            /****
               * Handle parsing through the server errors and injecting the error text for that field
               * If the form only has a submit, then simply call that function and set errors.
-              */
+              ***/
             vm.parseErrors = function (result) {
                 if (angular.isDefined(result.errors) && result.errors.length != 0) {
                     angular.forEach(result.errors, (val, key) => {
@@ -182,6 +180,10 @@ var slatwalladmin;
                 vm.clearErrors();
                 vm.formData = vm.getFormData() || "";
                 vm.doAction(action);
+            };
+            /** give children access to the process */
+            vm.getProcessObject = () => {
+                return vm.processEntity;
             };
         }
     }

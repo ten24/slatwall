@@ -99,19 +99,6 @@ angular.module('slatwalladmin').directive('swInput',
             ' />';
         }
 		
-		/*else if(propertyDisplay.fieldType === "number"){
-			console.info("Found Number Input");
-			template = '<input type="number" class="form-control" '+
-			'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
-		    'ng-disabled="!propertyDisplay.editable" '+ 
-		    'ng-show="propertyDisplay.editing" '+
-		    'name="'+propertyDisplay.property+'" ' +
-		    validations+
-		    'id="swinput'+utilityService.createID(26)+'"'+
-			' />';
-			$log.debug(template);
-			$log.debug(validations);
-		}*/
 		return template; 
 	};
 	

@@ -1997,7 +1997,7 @@
                 	defaultValues['Account_ForgotPassword'] = {
                 	account:'',
 										emailAddress:'',
-									siteID:"",
+										siteID:"",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -2011,8 +2011,8 @@
                 	defaultValues['Account_Login'] = {
                 	account:'',
 										emailAddress:'',
-									password:'',
-									preProcessDisplayedFlag:0,
+										password:'',
+										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
 						z:''
@@ -2025,9 +2025,9 @@
                 	defaultValues['Account_ResetPassword'] = {
                 	account:'',
 										swprid:'',
-									password:'',
-									passwordConfirm:'',
-									accountPasswordResetID:"c6d1f6d405eefbff40f7b03094cff9ed",
+										password:'',
+										passwordConfirm:'',
+										accountPasswordResetID:"c6d1f6d405eefbff40f7b03094cff9ed",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										

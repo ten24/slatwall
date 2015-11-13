@@ -13,8 +13,6 @@ module slatwalladmin {
         actions:Array<string>,
         $timeout:any,
         $scope:ng.IScope,
-        $rootScope:ng.IRootScopeService,
-        
         //************************** Functions
         getFormData:Function,
         parseErrors:Function,
@@ -27,10 +25,11 @@ module slatwalladmin {
         parseProcessObjectResponse:Function,
         $http:ng.IHttpPromise<Function>,
         submit:Function,
-        
+        getProcessObject:Function,
         //************************** Objects
         formType:Object,
-        formData:Object
+        formData:Object,
+        processEntity:Object
         
     }
     
@@ -39,19 +38,16 @@ module slatwalladmin {
      */
     export class SWFormController {
         
-        public processObject    = null;
-        public hiddenFields     = null;
-        public entityName       = null;
-        public $rootScope       = null;
-        
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
         public static $inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', 'ProcessObject', '$http', '$timeout'];
         constructor(public $scope, public $element, public $slatwall, public AccountFactory, public CartFactory, public ProcessObject, public $http, public $timeout){
             /** only use if the developer has specified these features with isProcessForm */
+            console.log(this);
             if (this.isProcessForm == "true") {
-                this.handleSelfInspection(  );    
+                console.log("Test: ", this.processObject);
+                this.handleSelfInspection( this );    
             }
         }
         
@@ -61,37 +57,51 @@ module slatwalladmin {
          * method that can be called by any subclasses that inject formCtrl. On submit,
          * this class will attach any errors to the correspnding form element.
          */
-        handleSelfInspection ( ) {
-            
-            let vm: ViewModel   = this;
+        handleSelfInspection ( context ) {
+            /** local variables */
+            let vm: ViewModel   = context;
             vm.hiddenFields     = this.hiddenFields || [];
             vm.entityName       = this.entityName || "Account";
-            vm.processObject    = this.processObject || "login";
+            vm.processObject    = this.processObject;
             vm.action           = this.action || "$login";
             vm.actions          = this.actions || [];
             vm.$timeout         = this.$timeout;
             
-            
             /** parse the name */
-            let entityName = this.processObject.split("_")[0];
-            if (entityName == "Order") { entityName = "Cart" };
-            let processObject = this.processObject.split("_")[1];
-
+            let entityName      = this.processObject.split("_")[0];
+            let processObject   = this.processObject.split("_")[1];
+            
+            /** try to grab the meta data from the process entity in slatwall in a process exists
+             *  otherwise, just use the service method to access it.
+             */
+            /*try {
+                vm.processObjectMeta = $slatwall.newEntity( this.processObject );
+            }catch( e ){
+                vm.processObjectMeta = {"methodType" : "methodOnly"};  
+            }*/
+            
+            //console.log(vm.processObjectMeta);
+            
+            /** Cart is an alias for an Order */
+            if (entityName == "Order") { 
+                entityName = "Cart" 
+            };
+            
             /** find the form scope */
             this.$scope.$on('anchor', (event, data) => 
             {
-                console.log("$on triggers: ", data.anchorType, data.scope);
+
                 if (data.anchorType == "form" && data.scope !== undefined) {
                     vm["formCtrl"] = data.scope;
                 }
+                
             });
             
             /** make sure we have our data */
-            if (this.processObject == undefined || this.entityName == undefined) 
-            {
+            if (this.processObject == undefined || this.entityName == undefined) {
                 throw ("ProcessObject Exception");
             }
-            //slatwall.newEntity(processObject)
+            
             let processObj = this.ProcessObject.GetInstance();
             
             /** parse the response */
@@ -99,7 +109,6 @@ module slatwalladmin {
                 
                 /** parse */
                 function(response) {
-                    console.log( "Process Object is Called", response );
                     vm.parseProcessObjectResponse(response);
                 }
                 
@@ -146,10 +155,10 @@ module slatwalladmin {
                 return vm.formData || "";
             }
 
-            /** 
+            /****
               * Handle parsing through the server errors and injecting the error text for that field
               * If the form only has a submit, then simply call that function and set errors.
-              */
+              ***/
             vm.parseErrors = function(result) 
             {
                 if (angular.isDefined(result.errors) && result.errors.length != 0) {
@@ -242,6 +251,12 @@ module slatwalladmin {
                 vm.formData = vm.getFormData() || "";
                 vm.doAction(action);
             }
+            
+            /** give children access to the process */
+            vm.getProcessObject = () => {
+                return vm.processEntity;
+            }
+            
         }
     }
     
@@ -277,7 +292,9 @@ module slatwalladmin {
         /**
          * Sets the context of this form
          */
-        public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
+        public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, 
+            attrs:ng.IAttributes,controller, transclude) =>
+        {
 			scope.context = scope.context || 'save';
 		}
         

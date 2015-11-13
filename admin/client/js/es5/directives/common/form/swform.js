@@ -15,13 +15,11 @@ var slatwalladmin;
             this.ProcessObject = ProcessObject;
             this.$http = $http;
             this.$timeout = $timeout;
-            this.processObject = null;
-            this.hiddenFields = null;
-            this.entityName = null;
-            this.$rootScope = null;
             /** only use if the developer has specified these features with isProcessForm */
+            console.log(this);
             if (this.isProcessForm == "true") {
-                this.handleSelfInspection();
+                console.log("Test: ", this.processObject);
+                this.handleSelfInspection(this);
             }
         }
         /**
@@ -30,25 +28,35 @@ var slatwalladmin;
          * method that can be called by any subclasses that inject formCtrl. On submit,
          * this class will attach any errors to the correspnding form element.
          */
-        SWFormController.prototype.handleSelfInspection = function () {
+        SWFormController.prototype.handleSelfInspection = function (context) {
             var _this = this;
-            var vm = this;
+            /** local variables */
+            var vm = context;
             vm.hiddenFields = this.hiddenFields || [];
             vm.entityName = this.entityName || "Account";
-            vm.processObject = this.processObject || "login";
+            vm.processObject = this.processObject;
             vm.action = this.action || "$login";
             vm.actions = this.actions || [];
             vm.$timeout = this.$timeout;
             /** parse the name */
             var entityName = this.processObject.split("_")[0];
+            var processObject = this.processObject.split("_")[1];
+            /** try to grab the meta data from the process entity in slatwall in a process exists
+             *  otherwise, just use the service method to access it.
+             */
+            /*try {
+                vm.processObjectMeta = $slatwall.newEntity( this.processObject );
+            }catch( e ){
+                vm.processObjectMeta = {"methodType" : "methodOnly"};
+            }*/
+            //console.log(vm.processObjectMeta);
+            /** Cart is an alias for an Order */
             if (entityName == "Order") {
                 entityName = "Cart";
             }
             ;
-            var processObject = this.processObject.split("_")[1];
             /** find the form scope */
             this.$scope.$on('anchor', function (event, data) {
-                console.log("$on triggers: ", data.anchorType, data.scope);
                 if (data.anchorType == "form" && data.scope !== undefined) {
                     vm["formCtrl"] = data.scope;
                 }
@@ -57,13 +65,11 @@ var slatwalladmin;
             if (this.processObject == undefined || this.entityName == undefined) {
                 throw ("ProcessObject Exception");
             }
-            //slatwall.newEntity(processObject)
             var processObj = this.ProcessObject.GetInstance();
             /** parse the response */
             processObj = processObj.$get({ processObject: this.processObject, entityName: this.entityName }).success(
             /** parse */
             function (response) {
-                console.log("Process Object is Called", response);
                 vm.parseProcessObjectResponse(response);
             }).error(function () {
                 throw ("Endpoint does not exist exception");
@@ -100,10 +106,10 @@ var slatwalladmin;
                 });
                 return vm.formData || "";
             };
-            /**
+            /****
               * Handle parsing through the server errors and injecting the error text for that field
               * If the form only has a submit, then simply call that function and set errors.
-              */
+              ***/
             vm.parseErrors = function (result) {
                 var _this = this;
                 if (angular.isDefined(result.errors) && result.errors.length != 0) {
@@ -188,6 +194,10 @@ var slatwalladmin;
                 vm.clearErrors();
                 vm.formData = vm.getFormData() || "";
                 vm.doAction(action);
+            };
+            /** give children access to the process */
+            vm.getProcessObject = function () {
+                return vm.processEntity;
             };
         };
         /**
