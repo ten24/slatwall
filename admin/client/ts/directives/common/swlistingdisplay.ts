@@ -96,10 +96,10 @@ module slatwalladmin {
             }
             
             
-            if(this.collection){
+            if(this.collection && !angular.isString(this.collection)){
                 this.hasCollectionPromise = true;
-            }else{
-                this.collectionObject = this.entity;
+            } else {
+                this.collectionObject = this.collection;
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);     
             }
             
@@ -535,7 +535,6 @@ module slatwalladmin {
             
              /*Optional*/
              title:"@",
-             entity:"@",
             
              /*Admin Actions*/
              recordEditAction:"@",
