@@ -4,6 +4,8 @@
         _Account as Object }---><!-- data-property-identifier -->
     <!--- email address with label --->
     <!--- data-object --->
+
+<!--- Example Login Form --->
 <sw-form
     data-is-process-form="true"
     data-form-class="cssform"
@@ -19,8 +21,6 @@
         data-class="formControl"
         data-editing="true">
     </swf-property-display>
-    
-    <!--- password field with label --->    
     
     <swf-property-display
         data-name="password"
@@ -38,6 +38,26 @@
         data-type="submit" 
         data-class="formControl">Login
     </swf-property-display>
+    
+</sw-form>
+
+<!--- Example Logout Form --->
+<sw-form
+    data-is-process-form="true"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-process-object="Account_logout"
+    data-action="$logout"> 
+    
+    <!--- submit button calls the correct action based on whats configured on the form 
+          action caller - process caller (link button dropdown) --->
+    <swf-property-display
+        data-name="logout" 
+        data-type="submit" 
+        data-label-text="Logout User"
+        data-class="formControl">
+    </swf-property-display>
+    
 </sw-form>
 
 <div>

@@ -40,14 +40,135 @@
  *********************************************************************************************
  *********************************************************************************************
  */
-angular.module('slatwalladmin')
-.directive('swfPropertyDisplay', ['$log','$templateCache','$window', '$compile', 'partialsPath',
-	function($log, $templateCache, $window, $compile, partialsPath){ 
-		return {
-			restrict: 'E',
-			require: '^?swForm',
-			scope:{
-				type: "@?",
+/// <reference path='../../../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../../../client/typings/tsd.d.ts' />
+module slatwalladmin {
+	
+	/** declare an interface so we don't get errors using vm */
+	export interface IPropertyDisplayControllerViewModel {
+		processObject:Object,
+		valueObjectProperty:string,
+		type:string,
+		class:string,
+		valueObject:string,
+		fieldAttributes:string,
+		label:string,
+		name:string,
+		optionValues:Array<string>,
+		formCtrl:ng.IFormController | {},
+		propertyDisplay:Object,
+		object:{},
+		editting:boolean,
+		title:string,
+		value:any,
+		options:string,
+		submit:Function
+	}
+	/**
+     * Property Display Controller handles the logic for this directive.
+     */
+    export class SWFPropertyDisplayController {
+		/** declare our fields so we don't get errors using this */
+		public type;
+		public class;
+		public fieldAttributes;
+		public valueObject;
+		public label;
+		public name;
+		public options;
+		public valueObjectProperty;
+		public processObject;
+		public optionValues;
+		public formCtrl;
+		public propertyDisplay;
+		public object;
+		public editting;
+		public title;
+		public value;
+		public submit;
+		
+		/**
+		 * Handles the logic for the frontend version of the property display.
+		 */
+		public static $inject = ['$scope'];
+		constructor ( public $scope:ng.IScope) {
+			
+			let vm:IPropertyDisplayControllerViewModel = this;
+			vm.processObject = {};
+			vm.valueObjectProperty 	= this.valueObjectProperty;
+			vm.type                	= this.type || "text" ;
+			vm.class			   	= this.class|| "formControl";
+			vm.valueObject		  	= this.valueObject;
+			vm.fieldAttributes     	= this.fieldAttributes || "";
+			vm.label			    = this.label || "true";
+			vm.name			    	= this.name || "unnamed";
+			vm.options				= this.options;
+			vm.optionValues        	= [];
+			vm.formCtrl 			= {};
+			
+			/** in order to attach the correct controller to local vm, we need a watch to bind */
+			this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+    			if (newValue !== undefined){
+					vm.formCtrl = newValue;
+				}
+			});
+				
+			
+			vm.propertyDisplay = {
+				type: 	vm.type,
+				name: 	vm.name,
+				class: 	vm.class,
+				valueObject: vm.valueObject,
+				object: vm.object,
+				label: 	vm.label,
+				optionValues: vm.optionValues,
+				edit: 	vm.editting,
+				title: 	vm.title,
+				value: 	vm.value 
+			};
+			
+			/** handle options */	
+			if (vm.options && angular.isString(vm.options)){
+				let optionsArray = [];
+				optionsArray = vm.options.toString().split(",");
+				
+				angular.forEach(optionsArray, function(o){
+					let newOption = {
+						name:"",
+						value:""
+					};
+					newOption.name = o.name;
+					newOption.value= o.value;
+					vm.optionValues.push(newOption);
+				}, vm);
+			}
+			    
+			/** handle turning the options into an array of objects */
+			vm.submit = function(){
+				vm.formCtrl.submit();
+			}
+			
+			/** handle setting the default value for the yes / no element  */
+			if (this.type=="yesno" && (this.value && angular.isString(this.value))){
+				vm.selected == this.value;
+			}
+			
+		}
+	}
+	
+	/**
+	 * This class handles configuring formFields for use in process forms on the front end.
+	 */
+    export class SWFPropertyDisplay {
+		public restrict = "E";
+		public require = "?^swForm";
+		public transclude = true;
+		public templateUrl = "";
+		public controller = SWFPropertyDisplayController;
+		public controllerAs = "swfPropertyDisplayController";
+		public scope = {};
+		public bindToController = {
+				type: "@?",	
 				name: "@?",
 				class: "@?",
 				edit: "@?",
@@ -64,54 +185,24 @@ angular.module('slatwalladmin')
 				errorText: "@?",
 				errorClass: "@?",
 				formTemplate: "@?"
-			},
-			transclude: true,
-			templateUrl: partialsPath + 'swfpropertydisplaypartial.html',
-			link: function(scope, element, attrs, formCtrl){
-				scope.processObject = {};
-				scope.valueObjectProperty = attrs.valueObjectProperty;
-				scope.type                = attrs.type || "text" ;
-				scope.class				  = attrs.class|| "formControl";
-				scope.valueObject		  = attrs.valueObject;
-				scope.fieldAttributes     = attrs.fieldAttributes || "";
-				scope.label			      = attrs.label || "true";
-				scope.optionValues        = [];
-				scope.formCtrl = formCtrl;
-				scope.propertyDisplay = {
-					type: scope.type,
-					name: scope.name,
-					class: scope.class,
-					valueObject: scope.valueObject,
-					object: scope.object,
-					label: scope.label,
-					optionValues: scope.optionValues,
-					edit: scope.editting,
-					title: scope.title,
-					value: scope.value
-				};
-				
-				if (attrs.options && angular.isString(attrs.options)){
-					var optionsArray = [];
-					optionsArray = attrs.options.toString().split(",");
-					angular.forEach(optionsArray, function(o){
-						var newOption = {};
-						newOption.name = o;
-						newOption.value= o;
-						scope.optionValues.push(newOption);
-					}, scope);
-				}
-			    
-				/** handle turning the options into an array of objects */
-                scope.submit = function(){
-                	scope.formCtrl.submit(); //<--call the base submit
-                }
-                
-				/** handle setting the default value for the yes / no element  */
-				if (attrs.type=="yesno" && (attrs.value && angular.isString(attrs.value))){
-					scope.selected == attrs.value;
-				}
-			}
+		};
+		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
+			scope.frmController = formController; 
 		}
-	}
-]);
+		/**
+         * Handles injecting the partials path into this class
+         */
+        public static $inject   = [ '$log', '$templateCache', '$window', '$compile', 'partialsPath'];
+		constructor ( public $log, public $templateCache, public $window, public $compile, public partialsPath ) {
+			this.templateUrl = partialsPath + 'swfpropertydisplaypartial.html';
+		}
+	
+	}    
+	
+/**
+ * Handles registering the swForm directive with its module as well as injecting dependancies in a minification safe way.
+ */
+angular.module('slatwalladmin').directive('swfPropertyDisplay', ['$log', '$templateCache', '$window', '$compile', 'partialsPath', ($log, $templateChache, $window, $compile, partialsPath) => new SWFPropertyDisplay($log, $templateChache, $window, $compile, partialsPath)]);
+
+}
 	

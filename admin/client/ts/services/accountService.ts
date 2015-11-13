@@ -7,15 +7,15 @@ module slatwalladmin {
     }
     export class AccountFactory implements IPostFactory {
         
-        constructor(public $http:ng.IHttpService) {
-            
-        }
+        public formType:Object = {'Content-Type':"application/x-www-form-urlencoded"};
+        
+        constructor(public $http:ng.IHttpService) { }
         
         /**
          * DataFactory contains all endpoints available to the Account Object.
          */
         dataFactory = {
-            formType: {'Content-Type': 'application/x-www-form-urlencoded'},
+            
             
             $getAccount:():ng.IHttpPromise<Object> =>  {
             let urlBase = '/index.cfm/api/scope/getAccount/?ajaxRequest=1';
@@ -39,12 +39,12 @@ module slatwalladmin {
         
             $loginGuestAccount:(data):ng.IHttpPromise<Object> => {
                 let urlBase = '/index.cfm/api/scope/loginGuestAccount/?ajaxRequest=1';
-                return this.$http.post(urlBase,data.params, {headers: data.formType});
+                return this.$http.post(urlBase, data.params, {headers: data.formType});
             },
             
             $logout:($http):ng.IHttpPromise<Object> =>  {
                 let urlBase = '/index.cfm/api/scope/logout/?ajaxRequest=1';
-                return $http.get(urlBase);
+                return  this.$http.post(urlBase, {}, {headers: this.formType});
             },
             
             $guestAccountCreatePassword:(data):ng.IHttpPromise<Object> => {
