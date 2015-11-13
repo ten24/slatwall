@@ -4,49 +4,6 @@
 
 module slatwalladmin {
 
-    interface IHibachiEvent<T> {
-        add(handler: { (data?: T): void });
-        remove(handler: { (data?: T): void });
-        announce (data?: T): void;
-        getEventsIterator ():Iterator<any>;
-    }
-
-    class HibachiEvent<T> implements IHibachiEvent<T> {
-        private handlers: { (data?: T): void; }[] = [];
-
-        public add(handler: { (data?: T): void }) {
-            this.handlers.push(handler);
-        }
-
-        public remove(handler: { (data?: T): void }) {
-            this.handlers = this.handlers.filter(h => h !== handler);
-        }
-
-        public announce(data?: T) {
-            this.handlers.slice(0).forEach(h => h(data));
-        }
-
-        public getEventsIterator = ():Iterator<any> => {
-            return new Iterator(this.handlers);
-        }
-    }
-
-    class ResourceEvents {
-
-        private onGet     = new HibachiEvent<void>();
-        private onSave    = new HibachiEvent<void>();
-        private onSuccess = new HibachiEvent<void>();
-        private onError   = new HibachiEvent<void>();
-        private onLog     = new HibachiEvent<void>();
-
-        public Get():       IHibachiEvent<void> { return this.onGet;    }
-        public Save():      IHibachiEvent<void> { return this.onSave;   }
-        public Success():   IHibachiEvent<void> { return this.onSuccess;}
-        public Error():     IHibachiEvent<void> { return this.onError;  }
-        public Log():       IHibachiEvent<void> { return this.onLog;    }
-
-    }
-
     interface IActionHandler {
         getAction(): string;
         getParams(): Object;
@@ -86,8 +43,6 @@ module slatwalladmin {
     }
 
     export class ResourceHandler implements IResourceHandler {
-
-        events = new ResourceEvents();
 
         contentType = { 'Content-Type': <string> null };//<--usually application/x-www-form-urlencoded or application/json ...
         baseUrl = <string> "/index.cfm/api/scope/";     //<--default base public endpoint if using Slatwall public but could be /api/ for collections etc.
