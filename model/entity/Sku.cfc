@@ -181,10 +181,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.giftCardExpirationTermIDOptions;
 	}
-	
-	public any function getSkusFilteredBy(column, direction) {
-        return ormGetSession().createFilter(getSkus(), "order by #column# #direction#").list();
-    }
     
 	public array function getRedemptionAmountTypeOptions(){
 		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){

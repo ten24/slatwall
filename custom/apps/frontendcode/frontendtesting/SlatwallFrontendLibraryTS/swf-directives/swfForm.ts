@@ -1,5 +1,5 @@
 /**
- * This directive will create a form logging in a user.
+ * This directive will create a form smart enough to submit data based on self inspection of formfields.
  * 
  */
 angular.module('slatwall').directive('swfForm', [

@@ -204,11 +204,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		}
 	}
-    
-    public any function getSkusFilteredBy(column, direction) {
-        return ormGetSession().createFilter(getSkus(), "order by #column# #direction#").list();
-    }
-    
+
 	public any function getTemplateOptions() {
 		if(!isDefined("variables.templateOptions")){
 			variables.templateOptions = getService("ProductService").getProductTemplates();

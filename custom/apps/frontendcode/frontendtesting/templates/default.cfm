@@ -1,14 +1,8 @@
 <cfoutput>
 <cfinclude template="header.cfm" >
 <div>
-	<cfscript>
-		p = $.slatwall.getService("productService").getProductByProductCode("mag-01");
-		t = p.getSkusFilteredBy("price", "ASC");
-		for (n in t){
-			writeDump(var="#n.getSkuCode()# - $#n.getPrice()#", top=2);
-		}
-	</cfscript>
-  <div ng-controller="swfController as slatwall">
+
+  <div>
     <section>
         <div>           
             <div class="container" >
@@ -273,8 +267,14 @@
         </swf-validation>
         
     </swf-forms-validation>--->
-                            
-  
+   <h1>Example using a getSkusFilteredBy(column, direction)</h1>                      
+   <cfscript>
+        p = $.slatwall.getService("productService").getProductByProductCode("mag-01");
+        t = p.getSkusFilteredBy("createdDateTime", "ASC");
+        for (n in t){
+            writeOutput( "#n.getSkuCode()# - $#n.getPrice()#<br>" );
+        }
+    </cfscript>
   
   
 </div>

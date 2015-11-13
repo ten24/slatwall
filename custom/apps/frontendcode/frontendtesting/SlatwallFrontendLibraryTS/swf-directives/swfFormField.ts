@@ -55,7 +55,7 @@ angular.module('slatwall')
 				formTemplate: "@?"
 			},
 			transclude: true,
-			templateUrl: PARTIALS_PATH + 'custom/apps/frontendcode/frontendtesting/swfApp/swf-directive-partials/swfFormFieldPartial.html',
+			templateUrl: partialsPath + 'custom/apps/frontendcode/frontendtesting/swfApp/swf-directive-partials/swfFormFieldPartial.html',
 			link: function(scope, element, attrs, formCtrl){
 				scope.processObject = {};
 				scope.valueObjectProperty = attrs.valueObjectProperty;
