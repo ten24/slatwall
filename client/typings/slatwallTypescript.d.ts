@@ -152,7 +152,6 @@
 /// <reference path="../../admin/client/ts/directives/common/validation/swvalidationunique.ts" />
 /// <reference path="../../admin/client/ts/directives/common/validation/swvalidationuniqueornull.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/frontend/iterator.ts" />
-/// <reference path="../../admin/client/ts/directives/common/form/frontend/refactoringresourceandevents.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/frontend/swformfield.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/frontend/swprocessform.ts" />
 //}
