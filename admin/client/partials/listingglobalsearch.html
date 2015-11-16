@@ -1,4 +1,5 @@
 <div class="col-xs-6 s-no-padding-left">
+	
 		<ul class="list-inline list-unstyled">
 			<!-- to implement searching-->
 			<li>
@@ -9,11 +10,11 @@
 								<input  type="text"
 									class="form-control input-sm"
 									placeholder=""
-									ng-model="swListingSearch.searchText"
-									ng-change="swListingSearch.search()"
+									ng-model="swListingGlobalSearch.searchText"
+									ng-change="swListingGlobalSearch.search()"
 									/>
-								<i ng-show="swListingSearch.searching" class="fa fa-refresh fa-spin"></i>
-								<i ng-hide="swListingSearch.searching" class="fa fa-search"></i>
+								<i ng-show="swListingGlobalSearch.searching" class="fa fa-refresh fa-spin"></i>
+								<i ng-hide="swListingGlobalSearch.searching" class="fa fa-search"></i>
 							</div>
 						</div>
 					</div>

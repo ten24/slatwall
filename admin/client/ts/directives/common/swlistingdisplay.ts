@@ -87,6 +87,11 @@ module slatwalladmin {
         }
         
         private intialSetup = () => {
+            //default search is available
+            if(angular.isUndefined(this.hasSearch)){
+                this.hasSearch = true;
+            }
+            
              this.paginator = this.paginationService.createPagination();
             
             this.hasCollectionPromise = false;
@@ -151,7 +156,7 @@ module slatwalladmin {
             }
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-            this.collectionConfig.setKeywords(this.paginator.keywords);
+            //this.collectionConfig.setKeywords(this.paginator.keywords);
         }
 
         private setupDefaultGetCollection = () =>{
@@ -613,7 +618,8 @@ module slatwalladmin {
              createQueryString:"@",
              exportAction:"@",
              
-             getChildCount:"="
+             getChildCount:"=",
+             hasSearch:"="
         };
         public controller=SWListingDisplayController;
         public controllerAs="swListingDisplay";

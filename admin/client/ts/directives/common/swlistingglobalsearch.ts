@@ -6,8 +6,6 @@ module slatwalladmin {
     'use strict';
     
     export class SWListingGlobalSearchController{
-        private collectionConfig; 
-        private collectionPromise; 
         private searching; 
         private searchText; 
         private savedSearchText; 
@@ -26,40 +24,34 @@ module slatwalladmin {
         }
         
         public search = () =>{
-            
-            if(this.searchText.length > 2){
+            if(this.searchText.length >= 2){
                 this.searching = true; 
-                this.savedSearchText = this.searchText; 
+                
                 if(this._timeoutPromise){
 					this.$timeout.cancel(this._timeoutPromise); 
 				}
                 
                 this._timeoutPromise = this.$timeout(()=>{
-                   
-					this.collectionConfig.setKeywords(this.savedSearchText);
-                    this.collectionPromise = this.collectionConfig.getEntity();
-                    
+                   this.getCollection();
 				}, 500);
-            } else { 
-                this.savedSearchText="";
-                this.searching=false; 
-                this.collectionConfig.setKeywords(this.savedSearchText);
-                this.collectionPromise = this.collectionConfig.getEntity();
+            }else if(this.searchText.length === 0){
+                this.$timeout(()=>{
+                    this.getCollection();
+                }
             }
         }
     }
         
 	export class SWListingGlobalSearch implements ng.IDirective{
 	   public restrict:string = 'EA';
-       public scope=true; 
+       public scope={}; 
 	   public bindToController={
-           collectionConfig:"=",
-           collectionPromise:"=",
            searching:"=",
-           searchText:"="
+           searchText:"=",
+           getCollection:"="
        };
         public controller=SWListingGlobalSearchController;
-        public controllerAs="swListingSearch";
+        public controllerAs="swListingGlobalSearch";
         public templateUrl;
         public static $inject = ['utilityService'];
 		constructor(private utilityService, private partialsPath){

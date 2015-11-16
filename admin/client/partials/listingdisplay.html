@@ -9,11 +9,11 @@
 	</div>
 	<!-- search begin -->
 	<sw-listing-global-search 
-		data-collection-config="swListingDisplay.collectionConfig"
-		data-collection-promise="swListingDisplay.collectionPromise"
-		data-search-text="swListingDisplay.searchText"
+		ng-if="swListingDislay.hasSearch && swListingDislay.hasSearch === true"
+		data-get-collection="swListingDisplay.getCollection"
+		data-search-text="swListingDisplay.collectionConfig.keywords"
 		data-searching="swListingDisplay.searching">
-	</sw-listing-global-search>
+	</sw-listing-global-search> 
 </div><!--- reyjay's class --->
 
 

@@ -32,7 +32,7 @@ var slatwalladmin;
                 if (angular.isUndefined(this.getChildCount)) {
                     this.getChildCount = false;
                 }
-                if (this.collection && !angular.isString(this.collection)) {
+                if (!this.collection || !angular.isString(this.collection)) {
                     this.hasCollectionPromise = true;
                 }
                 else {
@@ -46,6 +46,7 @@ var slatwalladmin;
                 }
                 //if a collectionConfig was not passed in then we can run run swListingColumns
                 //this is performed early to populate columns with swlistingcolumn info
+                this.$transclude = $transclude;
                 this.$transclude(this.$scope, () => { });
                 this.setupColumns();
                 this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
