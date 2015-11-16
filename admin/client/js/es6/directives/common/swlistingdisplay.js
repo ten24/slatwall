@@ -27,6 +27,10 @@ var slatwalladmin;
             this.selectable = false;
             this.sortable = false;
             this.intialSetup = () => {
+                //default search is available
+                if (angular.isUndefined(this.hasSearch)) {
+                    this.hasSearch = true;
+                }
                 this.paginator = this.paginationService.createPagination();
                 this.hasCollectionPromise = false;
                 if (angular.isUndefined(this.getChildCount)) {
@@ -80,7 +84,7 @@ var slatwalladmin;
                 }
                 this.collectionConfig.setPageShow(this.paginator.getPageShow());
                 this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-                this.collectionConfig.setKeywords(this.paginator.keywords);
+                //this.collectionConfig.setKeywords(this.paginator.keywords);
             };
             this.setupDefaultGetCollection = () => {
                 this.collectionPromise = this.collectionConfig.getEntity();
@@ -445,7 +449,8 @@ var slatwalladmin;
                 createAction: "@",
                 createQueryString: "@",
                 exportAction: "@",
-                getChildCount: "="
+                getChildCount: "=",
+                hasSearch: "="
             };
             this.controller = SWListingDisplayController;
             this.controllerAs = "swListingDisplay";

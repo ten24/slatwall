@@ -10,16 +10,19 @@ var slatwalladmin;
                 this.searching = false;
             };
             this.search = () => {
-                console.log(this);
                 if (this.searchText.length >= 2) {
                     this.searching = true;
-                    this.savedSearchText = this.searchText;
                     if (this._timeoutPromise) {
                         this.$timeout.cancel(this._timeoutPromise);
                     }
                     this._timeoutPromise = this.$timeout(() => {
                         this.getCollection();
                     }, 500);
+                }
+                else if (this.searchText.length === 0) {
+                    this.$timeout(() => {
+                        this.getCollection();
+                    });
                 }
             };
             this.init();
@@ -36,7 +39,7 @@ var slatwalladmin;
             this.bindToController = {
                 searching: "=",
                 searchText: "=",
-                getCollection: "&?"
+                getCollection: "="
             };
             this.controller = SWListingGlobalSearchController;
             this.controllerAs = "swListingGlobalSearch";

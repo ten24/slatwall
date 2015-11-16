@@ -37,7 +37,7 @@ module slatwalladmin {
             }else if(this.searchText.length === 0){
                 this.$timeout(()=>{
                     this.getCollection();
-                }
+                });
             }
         }
     }
