@@ -91,7 +91,7 @@ module slatwalladmin {
 		 * Handles the logic for the frontend version of the property display.
 		 */
 		public static $inject = ['$scope'];
-		constructor ( public $scope:ng.IScope) {
+		constructor ( public $scope:ng.IScope ) {
 			
 			let vm:IPropertyDisplayControllerViewModel = this;
 			vm.processObject = {};
@@ -192,13 +192,11 @@ module slatwalladmin {
 		/**
          * Handles injecting the partials path into this class
          */
-        public static $inject   = [ '$log', '$templateCache', '$window', '$compile', 'partialsPath'];
+        public static $inject   = [ '$log', '$templateCache', '$window', '$compile', 'partialsPath' ];
 		constructor ( public $log, public $templateCache, public $window, public $compile, public partialsPath ) {
 			this.templateUrl = partialsPath + 'swfpropertydisplaypartial.html';
 		}
-	
-	}    
-	
+	}
 /**
  * Handles registering the swForm directive with its module as well as injecting dependancies in a minification safe way.
  */

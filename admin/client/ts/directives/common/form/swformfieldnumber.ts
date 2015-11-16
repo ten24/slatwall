@@ -2,36 +2,30 @@
 /// <reference path='../../../../../../client/typings/tsd.d.ts' />
 
 module slatwalladmin {
-export class swFormFieldNumberController implements ng.IDirective {
-	public propertyDisplay = {
-		form: {},
-		property: any,
-		isDirty: false
-	};
+export class SWFormFieldNumberController implements ng.IDirective {
 	constructor () {
-		this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
+		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
 	}
 }	
 	
-export class swFormFieldNumber implements ng.IDirective {
-        restrict = 'E';
-        require = "^form";
-        scope = {};
-        transclude = true;
-        bindToController = {
+export class SWFormFieldNumber implements ng.IDirective {
+        public restrict = 'E';
+        public require = "^form";
+        public scope = {};
+        public bindToController = {
             propertyDisplay: "=?"
         };
-        templateUrl = "";
-		controller: swFormFieldNumberController;
-		formController: ng.IFormController;
-        $inject = ['partialsPath'];
-        link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) => {}
+        public templateUrl = "";
+		public controller = SWFormFieldNumberController;
+        public controllerAs = "numberCtrl";
+		public formController: ng.IFormController;
+        public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) => {}
         
+        public static $inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
 		constructor(public $log, $slatwall, formService, public partialsPath) {
-            this.templateUrl = this.partialsPath + "swformfieldnumber.html";
+            this.templateUrl = this.partialsPath + "formfields/number.html";
         }
-
     }
-    angular.module('slatwalladmin').directive('swFormFieldNumberController', ['$log','$slatwall','formService','partialsPath', ($log, $slatwall, formService, partialsPath) => new swFormFieldNumber($log, $slatwall, formService, partialsPath)]);
+    angular.module('slatwalladmin').directive('swFormFieldNumber', ['$log','$slatwall','formService','partialsPath', ($log, $slatwall, formService, partialsPath) => new SWFormFieldNumber($log, $slatwall, formService, partialsPath)]);
 }
 	

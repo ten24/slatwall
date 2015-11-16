@@ -1,11 +1,11 @@
 <!-- generic login form -->
- <!---Object - 
-        propertyIdentifier - ng-name in the template { Allow object as well and override. 
-        _Account as Object }---><!-- data-property-identifier -->
-    <!--- email address with label --->
+<!---Object - 
+     propertyIdentifier - ng-name in the template { Allow object as well and override. 
+        _Account as Object }--->
+    <!-- data-property-identifier -->
     <!--- data-object --->
 
-<!--- Example Login Form --->
+<!-- Example Login Form -->
 <sw-form
     data-is-process-form="true"
     data-form-class="cssform"
@@ -20,6 +20,7 @@
         data-label-text="Email Address:"
         data-class="formControl"
         data-editing="true">
+        
     </swf-property-display>
     
     <swf-property-display
@@ -31,8 +32,7 @@
         data-editing="true">
     </swf-property-display>
     
-    <!--- submit button calls the correct action based on whats configured on the form 
-          action caller - process caller (link button dropdown) --->
+    <!-- Can we use a Action caller / Process caller for this or because not all actions are process objects we need to use a service?  -->
     <swf-property-display
         data-name="Login" 
         data-type="submit" 
@@ -41,7 +41,7 @@
     
 </sw-form>
 
-<!--- Example Logout Form --->
+<!--- Example Logout Form: Not working because logout is not a process object it is just a service call --->
 <sw-form
     data-is-process-form="true"
     data-form-class="cssform"
@@ -49,8 +49,6 @@
     data-process-object="Account_logout"
     data-action="$logout"> 
     
-    <!--- submit button calls the correct action based on whats configured on the form 
-          action caller - process caller (link button dropdown) --->
     <swf-property-display
         data-name="logout" 
         data-type="submit" 

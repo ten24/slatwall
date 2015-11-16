@@ -195,7 +195,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
         }
         return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions);
     }
-
+    
 	public any function getSkuByID(required string skuID) {
 		var skus = getSkus();
 		for(var i = 1; i <= arrayLen(skus); i++) {
@@ -204,7 +204,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		}
 	}
-
+    
 	public any function getTemplateOptions() {
 		if(!isDefined("variables.templateOptions")){
 			variables.templateOptions = getService("ProductService").getProductTemplates();

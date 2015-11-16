@@ -1,19 +1,14 @@
-/// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../../client/typings/tsd.d.ts' />
-module slatwalladmin {//this is hibachi.directive / frontEnd
-
-    export class swPropertyDisplay implements ng.IDirective {
-		public static $inject = ['$log', 'partialsPath', '$filter'];
-        
-		constructor(public $log, public partialsPath, public $filter){
-			this.$log = $log;
-			this.partialsPath = partialsPath;
-			this.$filter = $filter;
-            return this.GetInstance();
-        }
-
-        public GetInstance(): any {
-            return {
+angular.module('slatwalladmin')
+.directive('swPropertyDisplay', [
+'$log',
+'partialsPath',
+'$filter',
+	function(
+	$log,
+	partialsPath,
+	$filter
+	){
+		return {
 			require:'^form',
 			restrict: 'AE',
 			scope:{
@@ -32,13 +27,12 @@ module slatwalladmin {//this is hibachi.directive / frontEnd
 				noValidate:"="
 					
 			},
-			templateUrl: this.partialsPath+"propertydisplay.html",
-			link : (scope, elem: JQuery, attrs: ng.IAttributes, formController) =>{
-				
+			templateUrl:partialsPath+"propertydisplay.html",
+			link: function(scope, element,attrs,formController){
 				//if the item is new, then all fields at the object level are dirty
-				this.$log.debug('editingproper');
-				this.$log.debug(scope.property);
-				this.$log.debug(scope.title);
+				$log.debug('editingproper');
+				$log.debug(scope.property);
+				$log.debug(scope.title);
 
                 if(!angular.isDefined(scope.object)){
                     scope.object = formController.$$swFormInfo.object;
@@ -79,19 +73,23 @@ module slatwalladmin {//this is hibachi.directive / frontEnd
 
 				scope.applyFilter = function(model, filter) {
 					try{
-                       return this.$filter(filter)(model)
+                       return $filter(filter)(model)
                     }catch (e){
                         return model;
                     }
 				};
+
 				scope.$id = 'propertyDisplay:'+scope.property;
+				
 				/* register form that the propertyDisplay belongs to*/
 				scope.propertyDisplay.form = formController;
 				
+				$log.debug(scope.propertyDisplay);
+							
+				
+				$log.debug('propertyDisplay');
+				$log.debug(scope.propertyDisplay);
 			}
 		};
-        }
-    }
-	angular.module('slatwalladmin').directive('swPropertyDisplay',['$log', 'partialsPath', '$filter',($log, partialsPath, $filter) => new swPropertyDisplay($log, partialsPath, $filter)]);
-}
-	
+	}
+]);

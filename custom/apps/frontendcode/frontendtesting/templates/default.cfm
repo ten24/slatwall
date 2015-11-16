@@ -1,7 +1,6 @@
 <cfoutput>
 <cfinclude template="header.cfm" >
 <div>
-
   <div>
     <section>
         <div>           
@@ -269,13 +268,8 @@
     </swf-forms-validation>--->
    <h1>Example using a getSkusFilteredBy(column, direction)</h1>                      
    <cfscript>
-        p = $.slatwall.getService("productService").getProductByProductCode("mag-01");
-        t = p.getSkusFilteredBy("createdDateTime", "ASC");
-        for (n in t){
-            writeOutput( "#n.getSkuCode()# - $#n.getPrice()#<br>" );
-        }
+        
     </cfscript>
-  
   
 </div>
 </cfoutput>

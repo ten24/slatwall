@@ -7,6 +7,7 @@ var slatwalladmin;
      */
     var SWFormController = (function () {
         function SWFormController($scope, $element, $slatwall, AccountFactory, CartFactory, ProcessObject, $http, $timeout) {
+            /** only use if the developer has specified these features with isProcessForm */
             this.$scope = $scope;
             this.$element = $element;
             this.$slatwall = $slatwall;
@@ -15,10 +16,9 @@ var slatwalladmin;
             this.ProcessObject = ProcessObject;
             this.$http = $http;
             this.$timeout = $timeout;
-            /** only use if the developer has specified these features with isProcessForm */
-            console.log(this);
+            this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
-                console.log("Test: ", this.processObject);
+                console.log("Handling a process form");
                 this.handleSelfInspection(this);
             }
         }
@@ -216,7 +216,11 @@ var slatwalladmin;
             this.replace = true;
             this.controller = SWFormController;
             this.controllerAs = "swFormController";
-            this.scope = {};
+            this.scope = {
+                object: "=",
+                context: "@",
+                name: "@"
+            };
             /**
              * Binds all of our variables to the controller so we can access using this
              */

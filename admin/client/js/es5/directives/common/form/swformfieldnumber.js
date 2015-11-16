@@ -2,38 +2,34 @@
 /// <reference path='../../../../../../client/typings/tsd.d.ts' />
 var slatwalladmin;
 (function (slatwalladmin) {
-    var swFormFieldNumberController = (function () {
-        function swFormFieldNumberController() {
-            this.propertyDisplay = {
-                form: {},
-                property: any,
-                isDirty: false
-            };
-            this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
+    var SWFormFieldNumberController = (function () {
+        function SWFormFieldNumberController() {
+            this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
         }
-        return swFormFieldNumberController;
+        return SWFormFieldNumberController;
     })();
-    slatwalladmin.swFormFieldNumberController = swFormFieldNumberController;
-    var swFormFieldNumber = (function () {
-        function swFormFieldNumber($log, $slatwall, formService, partialsPath) {
+    slatwalladmin.SWFormFieldNumberController = SWFormFieldNumberController;
+    var SWFormFieldNumber = (function () {
+        function SWFormFieldNumber($log, $slatwall, formService, partialsPath) {
             this.$log = $log;
             this.partialsPath = partialsPath;
             this.restrict = 'E';
             this.require = "^form";
             this.scope = {};
-            this.transclude = true;
             this.bindToController = {
                 propertyDisplay: "=?"
             };
             this.templateUrl = "";
-            this.$inject = ['partialsPath'];
+            this.controller = SWFormFieldNumberController;
+            this.controllerAs = "numberCtrl";
             this.link = function (scope, element, attrs, formController) { };
-            this.templateUrl = this.partialsPath + "swformfieldnumber.html";
+            this.templateUrl = this.partialsPath + "formfields/number.html";
         }
-        return swFormFieldNumber;
+        SWFormFieldNumber.$inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
+        return SWFormFieldNumber;
     })();
-    slatwalladmin.swFormFieldNumber = swFormFieldNumber;
-    angular.module('slatwalladmin').directive('swFormFieldNumberController', ['$log', '$slatwall', 'formService', 'partialsPath', function ($log, $slatwall, formService, partialsPath) { return new swFormFieldNumber($log, $slatwall, formService, partialsPath); }]);
+    slatwalladmin.SWFormFieldNumber = SWFormFieldNumber;
+    angular.module('slatwalladmin').directive('swFormFieldNumber', ['$log', '$slatwall', 'formService', 'partialsPath', function ($log, $slatwall, formService, partialsPath) { return new SWFormFieldNumber($log, $slatwall, formService, partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../../directives/common/form/swformfieldnumber.js.map

@@ -7,6 +7,7 @@ var slatwalladmin;
      */
     class SWFormController {
         constructor($scope, $element, $slatwall, AccountFactory, CartFactory, ProcessObject, $http, $timeout) {
+            /** only use if the developer has specified these features with isProcessForm */
             this.$scope = $scope;
             this.$element = $element;
             this.$slatwall = $slatwall;
@@ -15,10 +16,9 @@ var slatwalladmin;
             this.ProcessObject = ProcessObject;
             this.$http = $http;
             this.$timeout = $timeout;
-            /** only use if the developer has specified these features with isProcessForm */
-            console.log(this);
+            this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
-                console.log("Test: ", this.processObject);
+                console.log("Handling a process form");
                 this.handleSelfInspection(this);
             }
         }
@@ -29,6 +29,7 @@ var slatwalladmin;
          * this class will attach any errors to the correspnding form element.
          */
         handleSelfInspection(context) {
+            /** local variables */
             let vm = context;
             vm.hiddenFields = this.hiddenFields || [];
             vm.entityName = this.entityName || "Account";
@@ -36,10 +37,18 @@ var slatwalladmin;
             vm.action = this.action || "$login";
             vm.actions = this.actions || [];
             vm.$timeout = this.$timeout;
-            vm.processEntity = this.$slatwall.newEntity('Account_Login');
             /** parse the name */
             let entityName = this.processObject.split("_")[0];
             let processObject = this.processObject.split("_")[1];
+            /** try to grab the meta data from the process entity in slatwall in a process exists
+             *  otherwise, just use the service method to access it.
+             */
+            /*try {
+                vm.processObjectMeta = $slatwall.newEntity( this.processObject );
+            }catch( e ){
+                vm.processObjectMeta = {"methodType" : "methodOnly"};
+            }*/
+            //console.log(vm.processObjectMeta);
             /** Cart is an alias for an Order */
             if (entityName == "Order") {
                 entityName = "Cart";
@@ -60,7 +69,6 @@ var slatwalladmin;
             processObj = processObj.$get({ processObject: this.processObject, entityName: this.entityName }).success(
             /** parse */
             function (response) {
-                console.log("Process Object is Called", response);
                 vm.parseProcessObjectResponse(response);
             }).error(function () {
                 throw ("Endpoint does not exist exception");
