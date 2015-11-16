@@ -211,11 +211,11 @@ module slatwalladmin{
             return s && s[0].toUpperCase() + s.slice(1);
         };
         
-        private addColumn=(column:Column)=>{
-            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
-                this.addColumn(column.propertyIdentifier,column.title,column);
-            }
-        }
+//        private addColumn=(column:Column)=>{
+//            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+//                this.addColumn(column.propertyIdentifier,column.title,column);
+//            }
+//        }
 
         private addColumn= (column: string, title: string = '', options:Object = {}) =>{
             if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
@@ -225,12 +225,9 @@ module slatwalladmin{
                     isExportable = true,
                     persistent ,
                     ormtype = 'string',
-                    lastProperty=column.split('.').pop(),
+                    lastProperty=column.split('.').pop()
                     ;
-                lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.baseEntity,column)
-                
-                console.log(this.basEntityName);
-                console.log(lastEntity);
+                var lastEntity = this.$slatwall.getEntityExample(this.$slatwall.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
                 if(angular.isUndefined(this.columns)){
                     this.columns = [];
                 }
@@ -251,8 +248,8 @@ module slatwalladmin{
                 }
                 if(!angular.isUndefined(options['ormtype'])){
                     ormtype = options['ormtype'];
-                }else if(lastEntity.metaData[lastProperty] && lastEntity[lastProperty].ormtype){
-                    ormtype = lastEntity[lastProperty].ormtype;
+                }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
+                    ormtype = lastEntity.metaData[lastProperty].ormtype;
                 }
     
                 if(angular.isDefined(lastEntity[lastProperty])){
