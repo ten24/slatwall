@@ -23,7 +23,7 @@
 						<ul class="dropdown-menu pull-right" role="menu">
 							<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 						</ul>
-						<!--- Listing: Button Groups 
+						<!--- Listing: Button Groups
 						<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
 							<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
 								<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
@@ -38,7 +38,7 @@
 							</cfloop>
 						</cfif>
 
-						<!--- Listing: Create 
+						<!--- Listing: Create
 						<cfif len(attributes.createAction)>
 							<div class="btn-group">
 								<cfif attributes.createModal>
@@ -58,22 +58,22 @@
 
 
 <div class="table-responsive s-listing-display-table-wrapper" >
-	<!--<table 
-	id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" 
-	ng-class="swListingDisplay.tableclass" 
-	data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" 
-	data-savedstateid="#attributes.smartList.getSavedStateID()#" 
-	data-entityname="swListingDisplay.collection.data.collectionObject#" 
-	data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" 
-	data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
+	<!--<table
+	id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#"
+	ng-class="swListingDisplay.tableclass"
+	data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#"
+	data-savedstateid="#attributes.smartList.getSavedStateID()#"
+	data-entityname="swListingDisplay.collection.data.collectionObject#"
+	data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#"
+	data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}"
 	data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" {{this.tableattributes}}>
 -->
-	<table  ng-class="swListingDisplay.tableclass" 
+	<table  ng-class="swListingDisplay.tableclass"
 			ng-attr-id="{{swListingDisplay.tableID}}"
-			data-norecordstext="{{swListingDisplay.norecordstext}}" 
-			data-entityname="{{swListingDisplay.collectionObject}}" 
-			data-idproperty="{{swListingDisplay.exampleEntity.$$getIDName()}}" 
-			data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
+			data-norecordstext="{{swListingDisplay.norecordstext}}"
+			data-entityname="{{swListingDisplay.collectionObject}}"
+			data-idproperty="{{swListingDisplay.exampleEntity.$$getIDName()}}"
+			data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}"
 			data-propertyidentifiers="{{swListingDisplay.exampleEntity.$$getIDName()}},{{swListingDisplay.allpropertyidentifiers}}"
 			{{swListingDisplay.tableattributes}}>
 		<thead>
@@ -99,12 +99,12 @@
 				<!--- Sortable -->
 				<th class="sort" ng-if="swListingDisplay.sortable">&nbsp;</th>
 				<!-- Columns -->
-				<th ng-repeat="column in swListingDisplay.collectionConfig.columns" 
-					class="data {{column.tdClass}}" 
+				<th ng-repeat="column in swListingDisplay.collectionConfig.columns"
+					class="data {{column.tdClass}}"
 					ng-if="column.isVisible"
 					ng-cloak
 				>
-					<span 
+					<span
 						ng-if="(!column.sort || swListingDisplay.expandable) && (!column.search || swListingDisplay.expandable) && (!column.filter || swListingDisplay.expandable) && (!column.range || swListingDisplay.expandable)"
 						ng-bind="column.title"
 					></span>
@@ -118,11 +118,11 @@
 								<li><a href="##" class="listing-sort" data-sortdirection="ASC"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
 								<li><a href="##" class="listing-sort" data-sortdirection="DESC"><i class="icon-arrow-up"></i> Sort Descending</a></li>
 								<li ng-if-end class="divider"></li>
-								
+
 								<li ng-if-start="column.search && !swListingDisplay.expandable" class="dropdown-header">#attributes.hibachiScope.rbKey('define.search')#</li>
 								<li class="search-filter"><input type="text" class="listing-search form-control" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
 								<li ng-if-end class="divider"></li>
-								
+
 								<!--<cfif column.range and not thistag.expandable>
 									<cfsilent>
 										<cfset local.rangeClass = "text" />
@@ -161,7 +161,7 @@
 					</a>
 				</td>
 				<!-- Multiselectable-->
-				<td ng-if="swListingDisplay.multiselectable" 
+				<td ng-if="swListingDisplay.multiselectable"
 					class="s-table-checkbox">
 					<sw-selection
 						data-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
@@ -171,21 +171,21 @@
 	            		data-name="{{swListingDisplay.multiselectFieldName}}"
 	            		data-disabled="swListingDisplay.edit === false"
 					></sw-selection>
-					
+
 					<!--<a href="##" class="table-action-multiselect {{swListingDisplay.edit ? '' : 'disabled'}}" ng-data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
 						<i class="hibachi-ui-checkbox"></i>
 					</a>-->
 				</td>
 				<!--- Sortable -->
-				<!--<td ng-if="swListingDisplay.sortable" 
+				<!--<td ng-if="swListingDisplay.sortable"
 					class="s-table-sort">
 					<a href="##" class="table-action-sort" ng-data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]" data-sortPropertyValue="{{record.getValueByPropertyIdentifier( attributes.sortProperty )}}">
 						<i class="fa fa-arrows"></i>
 					</a>
 				</td>-->
 				<!--Expandable Check-->
-				<td 
-					ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns" 
+				<td
+					ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns"
 					class="column.tdclass"
 					ng-cloak
 					ng-if="column.isVisible"
@@ -208,75 +208,73 @@
 					</span>
 					<span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
 				</td>
-				
+
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
 					<!--- Detail -->
-					<sw-action-caller 
+					<sw-action-caller
 						ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
-						data-action="{{swListingDisplay.recordDetailAction}}" 
-						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}" 
-						data-class="btn btn-default btn-xs" 
-						data-icon="eye-open" 
-						data-iconOnly="true" 
-						data-modal="swListingDisplay.recordDetailModal" 
+						data-action="{{swListingDisplay.recordDetailAction}}"
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+						data-class="btn btn-default btn-xs"
+						data-icon="eye-open"
+						data-iconOnly="true"
+						data-modal="swListingDisplay.recordDetailModal"
 					></sw-action-caller>
-					
+
 					<!--Edit-->
-					<sw-action-caller 
+					<sw-action-caller
 						ng-if="swListingDisplay.recordEditAction && swListingDisplay.recordEditAction.length"
-						data-action="{{swListingDisplay.recordEditAction}}" 
-						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}" 
-						data-class="btn btn-default btn-xs" 
-						data-icon="pencil" 
-						data-iconOnly="true" 
-						
-						data-modal="swListingDisplay.recordEditModal" 
+						data-action="{{swListingDisplay.recordEditAction}}"
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+						data-class="btn btn-default btn-xs"
+						data-icon="pencil"
+						data-iconOnly="true"
+
+						data-modal="swListingDisplay.recordEditModal"
 					></sw-action-caller>
 
 					<!--- Delete -->
-					<sw-action-caller 
+					<sw-action-caller
 						ng-if="swListingDisplay.recordDeleteAction && swListingDisplay.recordDeleteAction.length"
-						data-action="{{swListingDisplay.recordDeleteAction}}" 
-						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}" 
-						data-class="btn btn-default btn-xs" 
-						data-icon="trash" 
-						data-iconOnly="true" 
-						data-confirm="true" 
+						data-action="{{swListingDisplay.recordDeleteAction}}"
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}"
+						data-class="btn btn-default btn-xs"
+						data-icon="trash"
+						data-iconOnly="true"
+						data-confirm="true"
 					></sw-action-caller>
-					
+
 					<!-- Add -->
-					<sw-action-caller 
+					<sw-action-caller
 						ng-if="swListingDisplay.recordAddAction && swListingDisplay.recordAddAction.length"
-						data-action="{{swListingDisplay.recordAddAction}}" 
-						data-query-string="{{'&'+swListingDisplay.parentPropertyName+'ID='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordAddQueryString}}" 
-						data-class="btn btn-default btn-xs" 
-						data-icon="plus" 
-						data-iconOnly="true" 
-						data-confirm="true" 
+						data-action="{{swListingDisplay.recordAddAction}}"
+						data-query-string="{{'&'+swListingDisplay.parentPropertyName+'ID='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordAddQueryString}}"
+						data-class="btn btn-default btn-xs"
+						data-icon="plus"
+						data-iconOnly="true"
+						data-confirm="true"
 					></sw-action-caller>
-					
+
 					<!--- Process -->
-					<!--<sw-process-caller 
+					<!--<sw-process-caller
 						ng-if="swListingDisplay.recordProcessAction && swListingDisplay.recordProcessAction.length"
-						data-action="{{swListingDisplay.recordProcessAction}}" 
-						data-entity="swListingDisplay.recordProcessEntity" 
-						data-process-context="{{swListingDisplay.recordProcessContext}}" 
-						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordProcessQueryString}}" 
-						class="btn btn-default hibachi-ajax-submit" 
-						ng-attr-id="{{swListingDisplay.exampleEntity.$$getIDName()}}" 
+						data-action="{{swListingDisplay.recordProcessAction}}"
+						data-entity="swListingDisplay.recordProcessEntity"
+						data-process-context="{{swListingDisplay.recordProcessContext}}"
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordProcessQueryString}}"
+						class="btn btn-default hibachi-ajax-submit"
+						ng-attr-id="{{swListingDisplay.exampleEntity.$$getIDName()}}"
 					></sw-process-caller>-->
 				</td>
 			</tr>
-			
-			<tr ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
-				<td colspan="#thistag.columnCount#" style="text-align:center;">
-					no records
+
+			<!--- Show message if no records are found --->
+			<tr class="no-records-found" ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
+				<td colspan="100" sw-rbkey="'admin.define.norecordsfound'">
+					<!--- JS creates message with rb keys --->
 				</td>
 			</tr>
-			<!--<cfif !arrayLen(attributes.smartList.getPageRecords())>
-				<tr><td colspan="#thistag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#</em></td></tr>
-			</cfif>
-			--->
+
 		</tbody>
 	</table>
 
@@ -287,5 +285,3 @@
 		data-paginator="swListingDisplay.paginator"
 		>
 	</sw-pagination-bar>
-
-
