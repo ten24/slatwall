@@ -82,8 +82,12 @@ module slatwalladmin {
             this.paginationService = paginationService;
             this.selectionService = selectionService;
             this.observerService = observerService;       
-            this.paginator = paginationService.createPagination();
+            this.intialSetup();
+            
+        }
         
+        private intialSetup = () => {
+             this.paginator = this.paginationService.createPagination();
             
             this.hasCollectionPromise = false;
             if(angular.isUndefined(this.getChildCount)){
