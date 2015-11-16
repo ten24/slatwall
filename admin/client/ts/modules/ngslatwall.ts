@@ -103,8 +103,6 @@ module ngSlatwall {
             if(propertyIdentifier.charAt(0) === '_'){
                 propertyIdentifier = this.utilityService.listRest(propertyIdentifier,'.');
             }
-            console.log(entityName);
-            console.log(propertyIdentifier);
             if(propertyIdentifier.split('.').length > 1){
                 var propertiesStruct = this.getEntityMetaData(entityName);
                 if(
