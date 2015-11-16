@@ -95,6 +95,14 @@ module ngSlatwall {
         }
         
         getLastEntityNameInPropertyIdentifier = (entityName,propertyIdentifier)=>{
+            
+            if(!entityName){
+                throw('no entity name supplied');    
+            }
+            //strip alias if it exists
+            if(propertyIdentifier.charAt(0) === '_'){
+                propertyIdentifier = this.utilityService.listRest(propertyIdentifier,'.');
+            }
             if(propertyIdentifier.split('.').length > 1){
                 var propertiesStruct = this.getEntityMetaData(entityName);
                 if(
@@ -490,7 +498,7 @@ module ngSlatwall {
             
             return keyValue;
         }
-        getRBKey= (key,locale,checkedKeys,originalKey) => {
+        getRBKey= (key,locale?,checkedKeys?,originalKey?) => {
             ////$log.debug('getRBKey');
             ////$log.debug('loading:'+this._loadingResourceBundle);
             ////$log.debug('loaded'+this._loadedResourceBundle);
