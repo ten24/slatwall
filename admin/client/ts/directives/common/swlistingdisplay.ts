@@ -82,12 +82,8 @@ module slatwalladmin {
             this.paginationService = paginationService;
             this.selectionService = selectionService;
             this.observerService = observerService;       
-            this.intialSetup();
-            
-        }
+            this.paginator = paginationService.createPagination();
         
-        private intialSetup = () => {
-             this.paginator = this.paginationService.createPagination();
             
             this.hasCollectionPromise = false;
             if(angular.isUndefined(this.getChildCount)){
@@ -95,11 +91,11 @@ module slatwalladmin {
             }
             
             
-            if(this.collection && !angular.isString(this.collection)){
+            if(!this.collection || !angular.isString(this.collection)){
                 this.hasCollectionPromise = true;
             } else {
                 this.collectionObject = this.collection;
-                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);     
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject); 
             }
             
             this.setupDefaultCollectionInfo();
@@ -112,7 +108,7 @@ module slatwalladmin {
             
             //if a collectionConfig was not passed in then we can run run swListingColumns
             //this is performed early to populate columns with swlistingcolumn info
-            
+            this.$transclude = $transclude;
             this.$transclude(this.$scope,()=>{});
             
             this.setupColumns();
@@ -366,6 +362,7 @@ module slatwalladmin {
                         !column.searchable || !!column.searchable.length || !column.sort || !column.sort.length
                      ){
                         //Get the entity object to get property metaData
+                        
                         var thisEntityName = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.exampleEntity.metaData.className, column.propertyIdentifier);
                         var thisPropertyName = this.utilityService.listLast(column.propertyIdentifier,'.');
                         var thisPropertyMeta = this.$slatwall.getPropertyByEntityNameAndPropertyName(thisEntityName,thisPropertyName);
@@ -451,7 +448,9 @@ module slatwalladmin {
         public setupColumns = ()=>{
             //assumes no alias formatting
             angular.forEach(this.columns.reverse(), (column)=>{
+                
                 var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
+                
                 var title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                 if(angular.isUndefined(column.isVisible)){
                     column.isVisible = true;
@@ -462,6 +461,7 @@ module slatwalladmin {
             if(this.hasCollectionPromise){
                 //assumes alias formatting from collectionConfig
                 angular.forEach(this.collectionConfig.columns, (column)=>{
+                    
                   var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
                   column.title = column.title || this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                   if(angular.isUndefined(column.isVisible)){

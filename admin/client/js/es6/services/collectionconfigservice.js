@@ -190,9 +190,7 @@ var slatwalladmin;
             };
             this.addColumn = (column, title = '', options = {}) => {
                 if (!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns, 'propertyIdentifier', column) === -1) {
-                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', 
-                    //get properties array
-                    properties = column.split('.'), lastProperty = properties.pop();
+                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop(), lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.baseEntity, column);
                     if (angular.isUndefined(this.columns)) {
                         this.columns = [];
                     }
@@ -214,45 +212,11 @@ var slatwalladmin;
                     if (!angular.isUndefined(options['ormtype'])) {
                         ormtype = options['ormtype'];
                     }
-                    else if (properties.length === 2 && this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype) {
-                        ormtype = this.collection.metaData[lastProperty].ormtype;
+                    else if (lastEntity.metaData[lastProperty] && lastEntity[lastProperty].ormtype) {
+                        ormtype = lastEntity[lastProperty].ormtype;
                     }
-                    else if (properties.length > 2) {
-                        var currentEntityName = this.collection.metaData[properties[1]].cfc;
-                        for (var i = 2; i < properties.length; i++) {
-                            var property = properties[i];
-                            var currentEntityMetaData = this.$slatwall.getEntityMetaData(currentEntityName);
-                            if (angular.isDefined(currentEntityMetaData[property])) {
-                                if (angular.isDefined(currentEntityMetaData[property].cfc)) {
-                                    currentEntityName = currentEntityMetaData[property].cfc;
-                                }
-                                else if (angular.isDefined(currentEntityMetaData[property].ormtype)) {
-                                    ormtype = currentEntityMetaData[property].ormtype;
-                                }
-                            }
-                        }
-                    }
-                    if (properties.length === 2 && angular.isDefined(this.collection.metaData[lastProperty])) {
-                        persistent = this.collection.metaData[lastProperty].persistent || true;
-                    }
-                    else if (properties.length > 2) {
-                        var currentEntityName = this.collection.metaData[properties[1]].cfc;
-                        for (var i = 2; i < properties.length; i++) {
-                            var property = properties[i];
-                            var currentEntityMetaData = this.$slatwall.getEntityMetaData(currentEntityName);
-                            if (angular.isDefined(currentEntityMetaData[property])) {
-                                if (angular.isDefined(currentEntityMetaData[property].cfc)) {
-                                    currentEntityName = currentEntityMetaData[property].cfc;
-                                }
-                                else if (angular.isDefined(currentEntityMetaData[property].persistent)) {
-                                    persistent = currentEntityMetaData[property].persistent;
-                                }
-                                else {
-                                    //default to true (persistent properties are not listed as such in the metadata)
-                                    persistent = true;
-                                }
-                            }
-                        }
+                    if (angular.isDefined(lastEntity[lastProperty])) {
+                        persistent = lastEntity[lastProperty].persistent;
                     }
                     var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
                     if (options.aggregate) {

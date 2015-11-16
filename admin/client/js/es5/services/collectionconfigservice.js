@@ -206,7 +206,10 @@ var slatwalladmin;
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
                 if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
-                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop(), lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.baseEntity, column);
+                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+                    lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.baseEntity, column);
+                    console.log(_this.basEntityName);
+                    console.log(lastEntity);
                     if (angular.isUndefined(_this.columns)) {
                         _this.columns = [];
                     }

@@ -226,8 +226,11 @@ module slatwalladmin{
                     persistent ,
                     ormtype = 'string',
                     lastProperty=column.split('.').pop(),
-                    lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.baseEntity,column);
+                    ;
+                lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.baseEntity,column)
                 
+                console.log(this.basEntityName);
+                console.log(lastEntity);
                 if(angular.isUndefined(this.columns)){
                     this.columns = [];
                 }
