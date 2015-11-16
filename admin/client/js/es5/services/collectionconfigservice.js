@@ -206,7 +206,7 @@ var slatwalladmin;
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
                 if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
-                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+                    var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop(), lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.baseEntity, column);
                     if (angular.isUndefined(_this.columns)) {
                         _this.columns = [];
                     }
@@ -228,8 +228,8 @@ var slatwalladmin;
                     if (!angular.isUndefined(options['ormtype'])) {
                         ormtype = options['ormtype'];
                     }
-                    else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
-                        ormtype = _this.collection.metaData[lastProperty].ormtype;
+                    else if (lastEntity.metaData[lastProperty] && lastEntity[lastProperty].ormtype) {
+                        ormtype = lastEntity[lastProperty].ormtype;
                     }
                     if (angular.isDefined(_this.collection.metaData[lastProperty])) {
                         persistent = _this.collection.metaData[lastProperty].persistent;
