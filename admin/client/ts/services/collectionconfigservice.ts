@@ -252,8 +252,8 @@ module slatwalladmin{
                     ormtype = lastEntity[lastProperty].ormtype;
                 }
     
-                if(angular.isDefined(this.collection.metaData[lastProperty])){
-                    persistent = this.collection.metaData[lastProperty].persistent;
+                if(angular.isDefined(lastEntity[lastProperty])){
+                    persistent = lastEntity[lastProperty].persistent;
                 }
                 
                 var columnObject = new Column(

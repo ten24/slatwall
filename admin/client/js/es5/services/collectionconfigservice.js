@@ -231,8 +231,8 @@ var slatwalladmin;
                     else if (lastEntity.metaData[lastProperty] && lastEntity[lastProperty].ormtype) {
                         ormtype = lastEntity[lastProperty].ormtype;
                     }
-                    if (angular.isDefined(_this.collection.metaData[lastProperty])) {
-                        persistent = _this.collection.metaData[lastProperty].persistent;
+                    if (angular.isDefined(lastEntity[lastProperty])) {
+                        persistent = lastEntity[lastProperty].persistent;
                     }
                     var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
                     if (options.aggregate) {
