@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(31);
+	var logger_module_1 = __webpack_require__(40);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,18 +648,28 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(28);
-	var ngslatwall_module_1 = __webpack_require__(29);
+	var slatwallinterceptor_1 = __webpack_require__(37);
+	var ngslatwall_module_1 = __webpack_require__(38);
+	//filters
+	var entityrbkey_1 = __webpack_require__(41);
+	var swcurrency_1 = __webpack_require__(42);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
-	    hibachi_module_1.hibachimodule.name,
-	    ngslatwall_module_1.ngslatwallmodule.name,
-	    //'ngSlatwallModel',
-	    'ui.bootstrap',
+	    //Angular Modules
 	    'ngAnimate',
 	    'ngRoute',
-	    'ngSanitize'
-	]).config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
-	    function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
+	    'ngSanitize',
+	    //custom modules
+	    hibachi_module_1.hibachimodule.name,
+	    ngslatwall_module_1.ngslatwallmodule.name,
+	    //3rdParty modules
+	    'ui.bootstrap'
+	])
+	    .constant("baseURL", $.slatwall.getConfig().baseURL)
+	    .config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig', 'pathBuilderConfig',
+	    function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig, pathBuilderConfig) {
+	        //configure partials path properties
+	        pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
+	        pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/hibachi/');
 	        datepickerConfig.showWeeks = false;
 	        datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
 	        datepickerPopupConfig.toggleWeeksText = null;
@@ -667,15 +677,15 @@
 	            $locationProvider.html5Mode(false).hashPrefix('!');
 	        }
 	        //
-	        $provide.constant("baseURL", $.slatwall.getConfig().baseURL);
-	        var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
-	        $provide.constant("partialsPath", _partialsPath);
-	        $provide.constant("productBundlePartialsPath", _partialsPath + 'productbundle/');
-	        angular.forEach(slatwallAngular.constantPaths, function (constantPath, key) {
-	            var constantKey = constantPath.charAt(0).toLowerCase() + constantPath.slice(1) + 'PartialsPath';
-	            var constantPartialsPath = _partialsPath + constantPath.toLowerCase() + '/';
-	            $provide.constant(constantKey, constantPartialsPath);
-	        });
+	        //$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
+	        //  var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
+	        //   $provide.constant("partialsPath", _partialsPath);
+	        //  $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
+	        //  angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
+	        //      var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
+	        //      var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
+	        //      $provide.constant(constantKey, constantPartialsPath);
+	        //  });
 	        $logProvider.debugEnabled($.slatwall.getConfig().debugFlag);
 	        $filterProvider.register('likeFilter', function () {
 	            return function (text) {
@@ -738,9 +748,10 @@
 	            templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html'
 	        });
 	    }])
-	    .service('slatwallInterceptor', slatwallinterceptor_1.SlatwallInterceptor);
+	    .service('slatwallInterceptor', slatwallinterceptor_1.SlatwallInterceptor)
+	    .filter('entityRBKey', entityrbkey_1.EntityRBKey.Factory())
+	    .filter('swcurrency', swcurrency_1.SWCurrency.Factory());
 	exports.slatwalladminmodule = slatwalladminmodule;
-	;
 	// ((): void => {
 	//     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
 	//     app.config(
@@ -837,47 +848,7 @@
 	//                 rbListener();
 	//             }
 	//         });
-	//     }]).filter('entityRBKey',['$slatwall', function($slatwall) {
-	//         return function(text){
-	//             if(angular.isDefined(text) && angular.isString(text)){
-	//                 text = text.replace('_', '').toLowerCase();
-	//                 text = $slatwall.getRBKey('entity.'+text);
-	//                 return text;
-	//             }
-	//         }; 
-	//     }]).filter('swcurrency',['$slatwall','$sce' ,'$log',($slatwall,$sce, $log)=>{
-	//             var data = null, serviceInvoked = false;
-	//             function realFilter(value,decimalPlace) {
-	//                 // REAL FILTER LOGIC, DISREGARDING PROMISES
-	//                 if(!angular.isDefined(data)){
-	//                     $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-	//                     data="$";
-	//                 }
-	//                 if(angular.isDefined(value)){
-	//                     if(angular.isDefined(decimalPlace)){
-	//                         value = parseFloat(value.toString()).toFixed(decimalPlace) 
-	//                     } else { 
-	//                         value = parseFloat(value.toString()).toFixed(2)
-	//                     }
-	//                 }
-	//                 return data + value;
-	//             }
-	//             filterStub.$stateful = true;
-	//             function filterStub(value,currencyCode,decimalPlace) {
-	//                 if( data === null ) {
-	//                     if( !serviceInvoked ) {
-	//                         serviceInvoked = true;
-	//                          $slatwall.getCurrencies().then((currencies)=>{
-	//                             var result = currencies.data;
-	//                             data = result[currencyCode];
-	//                         });
-	//                     }
-	//                     return "-";
-	//                 }
-	//                 else return realFilter(value,decimalPlace);
-	//             }
-	//             return filterStub;        
-	//     }]);
+	//     }])
 	// })();
 
 
@@ -890,17 +861,18 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var core_module_1 = __webpack_require__(14);
-	var pagination_module_1 = __webpack_require__(20);
-	var dialog_module_1 = __webpack_require__(23);
-	var collection_module_1 = __webpack_require__(25);
+	var pagination_module_1 = __webpack_require__(22);
+	var dialog_module_1 = __webpack_require__(25);
+	var collection_module_1 = __webpack_require__(27);
+	var workflow_module_1 = __webpack_require__(35);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
 	    pagination_module_1.paginationmodule.name,
 	    dialog_module_1.dialogmodule.name,
-	    collection_module_1.collectionmodule.name
-	]).config(function () {
-	});
+	    collection_module_1.collectionmodule.name,
+	    workflow_module_1.workflowmodule.name
+	]);
 	exports.hibachimodule = hibachimodule;
 	//.controller('appcontroller',controller.ProductCreateController); 
 
@@ -1018,12 +990,32 @@
 	var utilityservice_1 = __webpack_require__(15);
 	var selectionservice_1 = __webpack_require__(17);
 	var observerservice_1 = __webpack_require__(18);
-	var formservice_1 = __webpack_require__(34);
-	var metadataservice_1 = __webpack_require__(35);
+	var formservice_1 = __webpack_require__(19);
+	var metadataservice_1 = __webpack_require__(20);
 	//filters
-	var percentage_1 = __webpack_require__(19);
+	var percentage_1 = __webpack_require__(21);
+	var PathBuilderConfig = (function () {
+	    function PathBuilderConfig() {
+	        var _this = this;
+	        this.setBaseURL = function (baseURL) {
+	            _this.baseURL = baseURL;
+	        };
+	        this.setBasePartialsPath = function (basePartialsPath) {
+	            _this.basePartialsPath = basePartialsPath;
+	        };
+	        this.buildPartialsPath = function (componentsPath) {
+	            if (angular.isDefined(_this.baseURL) && angular.isDefined(_this.basePartialsPath)) {
+	                return _this.baseURL + _this.basePartialsPath + componentsPath;
+	            }
+	            else {
+	                throw ('need to define baseURL and basePartialsPath in pathBuilderConfig. Inject pathBuilderConfig into module and configure it there');
+	            }
+	        };
+	    }
+	    return PathBuilderConfig;
+	})();
 	var coremodule = angular.module('hibachi.core', []).config(function () {
-	})
+	}).constant('pathBuilderConfig', new PathBuilderConfig())
 	    .service('utilityService', utilityservice_1.UtilityService)
 	    .service('selectionService', selectionservice_1.SelectionService)
 	    .service('observerService', observerservice_1.ObserverService)
@@ -1481,6 +1473,188 @@
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
+	var Form = (function () {
+	    function Form(name, object, editing) {
+	        this.$addControl = function (control) { };
+	        this.$removeControl = function (control) { };
+	        this.$setValidity = function (validationErrorKey, isValid, control) { };
+	        this.$setDirty = function () { };
+	        this.$setPristine = function () { };
+	        this.$commitViewValue = function () { };
+	        this.$rollbackViewValue = function () { };
+	        this.$setSubmitted = function () { };
+	        this.$setUntouched = function () { };
+	        this.name = name;
+	        this.object = object;
+	        this.editing = editing;
+	    }
+	    return Form;
+	})();
+	var FormService = (function () {
+	    function FormService($log) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.setPristinePropertyValue = function (property, value) {
+	            _this._pristinePropertyValue[property] = value;
+	        };
+	        this.getPristinePropertyValue = function (property) {
+	            return _this._pristinePropertyValue[property];
+	        };
+	        this.setForm = function (form) {
+	            _this._forms[form.name] = form;
+	        };
+	        this.getForm = function (formName) {
+	            return _this._forms[formName];
+	        };
+	        this.getForms = function () {
+	            return _this._forms;
+	        };
+	        this.getFormsByObjectName = function (objectName) {
+	            var forms = [];
+	            for (var f in _this._forms) {
+	                if (angular.isDefined(_this._forms[f].$$swFormInfo.object) && _this._forms[f].$$swFormInfo.object.metaData.className === objectName) {
+	                    forms.push(_this._forms[f]);
+	                }
+	            }
+	            return forms;
+	        };
+	        this.createForm = function (name, object, editing) {
+	            var _form = new Form(name, object, editing);
+	            _this.setForm(_form);
+	            return _form;
+	        };
+	        this.resetForm = function (form) {
+	            _this.$log.debug('resetting form');
+	            _this.$log.debug(form);
+	            for (var key in form) {
+	                if (angular.isDefined(form[key])
+	                    && typeof form[key].$setViewValue == 'function'
+	                    && angular.isDefined(form[key].$viewValue)) {
+	                    _this.$log.debug(form[key]);
+	                    if (angular.isDefined(_this.getPristinePropertyValue(key))) {
+	                        form[key].$setViewValue(_this.getPristinePropertyValue(key));
+	                    }
+	                    else {
+	                        form[key].$setViewValue('');
+	                    }
+	                    form[key].$setUntouched(true);
+	                    form[key].$render();
+	                    _this.$log.debug(form[key]);
+	                }
+	            }
+	            form.$submitted = false;
+	            form.$setPristine();
+	            form.$setUntouched();
+	        };
+	        this.$log = $log;
+	        this._forms = {};
+	        this._pristinePropertyValue = {};
+	    }
+	    FormService.$inject = ['$log'];
+	    return FormService;
+	})();
+	exports.FormService = FormService;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	var MetaDataService = (function () {
+	    function MetaDataService($filter, $log) {
+	        var _this = this;
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this.getPropertiesList = function () {
+	            return _this._propertiesList;
+	        };
+	        this.getPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
+	            return _this._propertiesList[baseEntityAlias];
+	        };
+	        this.setPropertiesList = function (value, key) {
+	            _this._propertiesList[key] = value;
+	        };
+	        this.formatPropertiesList = function (propertiesList, propertyIdentifier) {
+	            var simpleGroup = {
+	                $$group: 'simple'
+	            };
+	            propertiesList.data.push(simpleGroup);
+	            var drillDownGroup = {
+	                $$group: 'drilldown'
+	            };
+	            propertiesList.data.push(drillDownGroup);
+	            var compareCollections = {
+	                $$group: 'compareCollections'
+	            };
+	            propertiesList.data.push(compareCollections);
+	            var attributeCollections = {
+	                $$group: 'attribute'
+	            };
+	            propertiesList.data.push(attributeCollections);
+	            for (var i in propertiesList.data) {
+	                if (angular.isDefined(propertiesList.data[i].ormtype)) {
+	                    if (angular.isDefined(propertiesList.data[i].attributeID)) {
+	                        propertiesList.data[i].$$group = 'attribute';
+	                    }
+	                    else {
+	                        propertiesList.data[i].$$group = 'simple';
+	                    }
+	                }
+	                if (angular.isDefined(propertiesList.data[i].fieldtype)) {
+	                    if (propertiesList.data[i].fieldtype === 'id') {
+	                        propertiesList.data[i].$$group = 'simple';
+	                    }
+	                    if (propertiesList.data[i].fieldtype === 'many-to-one') {
+	                        propertiesList.data[i].$$group = 'drilldown';
+	                    }
+	                    if (propertiesList.data[i].fieldtype === 'many-to-many' || propertiesList.data[i].fieldtype === 'one-to-many') {
+	                        propertiesList.data[i].$$group = 'compareCollections';
+	                    }
+	                }
+	                propertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' + propertiesList.data[i].name;
+	            }
+	            //propertiesList.data = _orderBy(propertiesList.data,['displayPropertyIdentifier'],false);
+	            //--------------------------------Removes empty lines from dropdown.
+	            var temp = [];
+	            for (var i = 0; i <= propertiesList.data.length - 1; i++) {
+	                if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1) {
+	                    _this.$log.debug("removing: " + propertiesList.data[i].displayPropertyIdentifier);
+	                    propertiesList.data[i].displayPropertyIdentifier = "hide";
+	                }
+	                else {
+	                    temp.push(propertiesList.data[i]);
+	                    _this.$log.debug(propertiesList.data[i]);
+	                }
+	            }
+	            temp.sort;
+	            propertiesList.data = temp;
+	            _this.$log.debug("----------------------PropertyList\n\n\n\n\n");
+	            propertiesList.data = _this._orderBy(propertiesList.data, ['propertyIdentifier'], false);
+	            //--------------------------------End remove empty lines.
+	        };
+	        this.orderBy = function (propertiesList, predicate, reverse) {
+	            return _this._orderBy(propertiesList, predicate, reverse);
+	        };
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this._propertiesList = {};
+	        this._orderBy = $filter('orderBy');
+	    }
+	    MetaDataService.$inject = [
+	        '$filter',
+	        '$log'
+	    ];
+	    return MetaDataService;
+	})();
+	exports.MetaDataService = MetaDataService;
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
 	var PercentageFilter = (function () {
 	    function PercentageFilter() {
 	    }
@@ -1500,25 +1674,26 @@
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(21);
-	var swpaginationbar_1 = __webpack_require__(22);
-	var paginationmodule = angular.module('hibachi.pagination', [])
+	var paginationservice_1 = __webpack_require__(23);
+	var swpaginationbar_1 = __webpack_require__(24);
+	var core_module_1 = __webpack_require__(14);
+	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
 	    .service('paginationService', paginationservice_1.PaginationService)
-	    .directive('swPaginationBar', swpaginationbar_1.SWPaginationBar.factory());
+	    .directive('swPaginationBar', swpaginationbar_1.SWPaginationBar.Factory())
+	    .constant('partialsPath', 'pagination/components/');
 	exports.paginationmodule = paginationmodule;
-	;
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -1697,7 +1872,7 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -1718,7 +1893,7 @@
 	exports.SWPaginationBarController = SWPaginationBarController;
 	var SWPaginationBar = (function () {
 	    //@ngInject
-	    function SWPaginationBar(partialsPath) {
+	    function SWPaginationBar(pathBuilderConfig, partialsPath) {
 	        this.restrict = 'E';
 	        this.scope = {};
 	        this.bindToController = {
@@ -1728,12 +1903,12 @@
 	        this.controllerAs = "swPaginationBar";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = partialsPath + 'paginationbar.html';
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(partialsPath) + 'paginationbar.html';
 	    }
-	    SWPaginationBar.$inject = ["partialsPath"];
-	    SWPaginationBar.factory = function () {
-	        var directive = function (partialsPath) { return new SWPaginationBar(partialsPath); };
-	        directive.$inject = [];
+	    SWPaginationBar.$inject = ["pathBuilderConfig", "partialsPath"];
+	    SWPaginationBar.Factory = function () {
+	        var directive = function (pathBuilderConfig, partialsPath) { return new SWPaginationBar(pathBuilderConfig, partialsPath); };
+	        directive.$inject = ['pathBuilderConfig', 'partialsPath'];
 	        return directive;
 	    };
 	    return SWPaginationBar;
@@ -1758,21 +1933,22 @@
 
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(24);
+	var dialogservice_1 = __webpack_require__(26);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
-	    .service('dialogService', dialogservice_1.DialogService);
+	    .service('dialogService', dialogservice_1.DialogService)
+	    .constant('dialogPartials', 'dialog/components/');
 	exports.dialogmodule = dialogmodule;
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -1812,25 +1988,37 @@
 
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+	//modules
+	var core_module_1 = __webpack_require__(14);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(26);
-	var collectionservice_1 = __webpack_require__(27);
-	var collections_1 = __webpack_require__(33);
-	var collectionmodule = angular.module('hibachi.collection', []).config(function () {
-	})
+	var collectionconfigservice_1 = __webpack_require__(28);
+	var collectionservice_1 = __webpack_require__(29);
+	var collections_1 = __webpack_require__(30);
+	//directives
+	var swcollection_1 = __webpack_require__(31);
+	var swaddfilterbuttons_1 = __webpack_require__(32);
+	var swdisplayoptions_1 = __webpack_require__(33);
+	var swdisplayitem_1 = __webpack_require__(34);
+	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name]).config([function () {
+	    }])
 	    .controller('collections', collections_1.CollectionController)
 	    .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new collectionconfigservice_1.CollectionConfig($slatwall, utilityService); }])
-	    .service('collectionService', collectionservice_1.CollectionService);
+	    .service('collectionService', collectionservice_1.CollectionService)
+	    .directive('swCollection', swcollection_1.SWCollection.Factory())
+	    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
+	    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
+	    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+	    .constant('collectionPartialsPath', 'collection/components/');
 	exports.collectionmodule = collectionmodule;
 
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -2269,7 +2457,7 @@
 
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -2470,7 +2658,669 @@
 
 
 /***/ },
-/* 28 */
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var collectionconfigservice_1 = __webpack_require__(28);
+	var CollectionController = (function () {
+	    //@ngInject
+	    function CollectionController($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
+	        //init values 
+	        //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
+	        $scope.$id = "collectionsController";
+	        /*used til we convert to use route params*/
+	        var QueryString = function () {
+	            // This function is anonymous, is executed immediately and 
+	            // the return value is assigned to QueryString!
+	            var query_string = {};
+	            var query = window.location.search.substring(1);
+	            var vars = query.split("&");
+	            for (var i = 0; i < vars.length; i++) {
+	                var pair = vars[i].split("=");
+	                // If first entry with this name
+	                if (typeof query_string[pair[0]] === "undefined") {
+	                    query_string[pair[0]] = pair[1];
+	                }
+	                else if (typeof query_string[pair[0]] === "string") {
+	                    var arr = [query_string[pair[0]], pair[1]];
+	                    query_string[pair[0]] = arr;
+	                }
+	                else {
+	                    query_string[pair[0]].push(pair[1]);
+	                }
+	            }
+	            return query_string;
+	        }();
+	        //get url param to retrieve collection listing
+	        $scope.collectionID = QueryString.collectionID;
+	        $scope.paginator = paginationService.createPagination();
+	        $scope.appendToCollection = function () {
+	            if ($scope.paginator.getPageShow() === 'Auto') {
+	                $log.debug('AppendToCollection');
+	                if ($scope.autoScrollPage < $scope.collection.totalPages) {
+	                    $scope.autoScrollDisabled = true;
+	                    $scope.autoScrollPage++;
+	                    var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.autoScrollPage, pageShow: 50 });
+	                    collectionListingPromise.then(function (value) {
+	                        $scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
+	                        $scope.autoScrollDisabled = false;
+	                    }, function (reason) {
+	                    });
+	                }
+	            }
+	        };
+	        $scope.keywords = "";
+	        $scope.loadingCollection = false;
+	        var searchPromise;
+	        $scope.searchCollection = function () {
+	            if (searchPromise) {
+	                $timeout.cancel(searchPromise);
+	            }
+	            searchPromise = $timeout(function () {
+	                $log.debug('search with keywords');
+	                $log.debug($scope.keywords);
+	                //Set current page here so that the pagination does not break when getting collection
+	                $scope.paginator.setCurrentPage(1);
+	                $scope.loadingCollection = true;
+	                $scope.getCollection();
+	            }, 500);
+	        };
+	        $scope.getCollection = function () {
+	            var pageShow = 50;
+	            if ($scope.paginator.getPageShow() !== 'Auto') {
+	                pageShow = $scope.paginator.getPageShow();
+	            }
+	            //			$scope.currentPage = $scope.pagination.getCurrentPage();
+	            var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.getCurrentPage(), pageShow: pageShow, keywords: $scope.keywords });
+	            collectionListingPromise.then(function (value) {
+	                $scope.collection = value;
+	                $scope.paginator.setPageRecordsInfo($scope.collection);
+	                $scope.collectionInitial = angular.copy($scope.collection);
+	                if (angular.isUndefined($scope.collectionConfig)) {
+	                    var test = new collectionconfigservice_1.CollectionConfig($slatwall);
+	                    test.loadJson(value.collectionConfig);
+	                    $scope.collectionConfig = test.getCollectionConfig();
+	                }
+	                //check if we have any filter Groups
+	                if (angular.isUndefined($scope.collectionConfig.filterGroups)) {
+	                    $scope.collectionConfig.filterGroups = [
+	                        {
+	                            filterGroup: []
+	                        }
+	                    ];
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	                $scope.loadingCollection = false;
+	            }, function (reason) {
+	            });
+	            return collectionListingPromise;
+	        };
+	        $scope.paginator.getCollection = $scope.getCollection;
+	        $scope.getCollection();
+	        var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
+	            if (newValue !== oldValue) {
+	                if (angular.isUndefined($scope.filterPropertiesList)) {
+	                    $scope.filterPropertiesList = {};
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+	                    filterPropertiesPromise.then(function (value) {
+	                        metadataService.setPropertiesList(value, $scope.collectionConfig.baseEntityAlias);
+	                        $scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+	                        metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias], $scope.collectionConfig.baseEntityAlias);
+	                    });
+	                }
+	                unbindCollectionObserver();
+	            }
+	        });
+	        $scope.setCollectionForm = function (form) {
+	            $scope.collectionForm = form;
+	        };
+	        $scope.collectionDetails = {
+	            isOpen: false,
+	            openCollectionDetails: function () {
+	                $scope.collectionDetails.isOpen = true;
+	            }
+	        };
+	        $scope.errorMessage = {};
+	        var filterItemCounter = function (filterGroupArray) {
+	            var filterItemCount = 0;
+	            if (!angular.isDefined(filterGroupArray)) {
+	                filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
+	            }
+	            //Start out loop
+	            for (var index in filterGroupArray) {
+	                //If filter isn't new then increment the count
+	                if (!filterGroupArray[index].$$isNew
+	                    && !angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    filterItemCount++;
+	                }
+	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    //Call function recursively
+	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+	                }
+	                else {
+	                    break;
+	                }
+	            }
+	            return filterItemCount;
+	        };
+	        $scope.saveCollection = function () {
+	            $timeout(function () {
+	                $log.debug('saving Collection');
+	                var entityName = 'collection';
+	                var collection = $scope.collection;
+	                $log.debug($scope.collectionConfig);
+	                if (isFormValid($scope.collectionForm)) {
+	                    var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
+	                    $log.debug(collectionConfigString);
+	                    var data = angular.copy(collection);
+	                    data.collectionConfig = collectionConfigString;
+	                    //has to be removed in order to save transient correctly
+	                    delete data.pageRecords;
+	                    var saveCollectionPromise = $slatwall.saveEntity(entityName, collection.collectionID, data, 'save');
+	                    saveCollectionPromise.then(function (value) {
+	                        $scope.errorMessage = {};
+	                        //Set current page here so that the pagination does not break when getting collection
+	                        $scope.paginator.setCurrentPage(1);
+	                        $scope.getCollection();
+	                        $scope.collectionDetails.isOpen = false;
+	                    }, function (reason) {
+	                        //revert to original
+	                        angular.forEach(reason.errors, function (value, key) {
+	                            $scope.collectionForm[key].$invalid = true;
+	                            $scope.errorMessage[key] = value[0];
+	                        });
+	                        //$scope.collection = angular.copy($scope.collectionInitial);
+	                    });
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	            });
+	        };
+	        var isFormValid = function (angularForm) {
+	            $log.debug('validateForm');
+	            var formValid = true;
+	            for (var field in angularForm) {
+	                // look at each form input with a name attribute set
+	                // checking if it is pristine and not a '$' special field
+	                if (field[0] != '$') {
+	                    // need to use formValid variable instead of formController.$valid because checkbox dropdown is not an input
+	                    // and somehow formController didn't invalid if checkbox dropdown is invalid
+	                    if (angularForm[field].$invalid) {
+	                        formValid = false;
+	                        for (var error in angularForm[field].$error) {
+	                            if (error == 'required') {
+	                                $scope.errorMessage[field] = 'This field is required';
+	                            }
+	                        }
+	                    }
+	                    if (angularForm[field].$pristine) {
+	                        if (angular.isUndefined(angularForm[field].$viewValue)) {
+	                            angularForm[field].$setViewValue("");
+	                        }
+	                        else {
+	                            angularForm[field].$setViewValue(angularForm[field].$viewValue);
+	                        }
+	                    }
+	                }
+	            }
+	            return formValid;
+	        };
+	        $scope.copyExistingCollection = function () {
+	            $scope.collection.collectionConfig = $scope.selectedExistingCollection;
+	        };
+	        $scope.setSelectedExistingCollection = function (selectedExistingCollection) {
+	            $scope.selectedExistingCollection = selectedExistingCollection;
+	        };
+	        $scope.setSelectedFilterProperty = function (selectedFilterProperty) {
+	            $scope.selectedFilterProperty = selectedFilterProperty;
+	        };
+	        $scope.filterCount = collectionService.getFilterCount;
+	        //export action
+	        $scope.exportCollection = function () {
+	            var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
+	            var data = { "ids": selectionService.getSelections('collectionSelection') };
+	            var target = "downloadCollection";
+	            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
+	            $.each(data, function (n, v) {
+	                $('#postToIframe').append('<input type="hidden" name="' + n + '" value="' + v + '" />');
+	            });
+	            $('#postToIframe').submit().remove();
+	        };
+	    }
+	    CollectionController.$inject = ["$scope", "$location", "$log", "$timeout", "$slatwall", "collectionService", "metadataService", "selectionService", "paginationService"];
+	    return CollectionController;
+	})();
+	exports.CollectionController = CollectionController;
+	// 'use strict';
+	// angular.module('slatwalladmin')
+	// //using $location to get url params, this will probably change to using routes eventually
+	// .controller('collections', [ 
+	// 	'$scope',
+	// '$location',
+	// '$log',
+	// '$timeout',
+	// '$slatwall',
+	// 'collectionService', 
+	// 'metadataService',
+	// 'selectionService',
+	// 'paginationService',
+	// 	function(
+	// 		$scope,
+	// $location,
+	// $log,
+	// $timeout,
+	// $slatwall,
+	// collectionService,
+	// metadataService,
+	// selectionService,
+	// paginationService
+	// 	){
+	// 		
+	// 	}
+	// ]);
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	var SWCollection = (function () {
+	    //@ngInject
+	    function SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
+	        return {
+	            restrict: 'A',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "collection.html",
+	            link: function (scope, $element, $attrs) {
+	                scope.tabsUniqueID = Math.floor(Math.random() * 999);
+	                scope.toggleCogOpen = $attrs.toggleoption;
+	                //Toggles open/close of filters and display options
+	                scope.toggleFiltersAndOptions = function () {
+	                    if (scope.toggleCogOpen === false) {
+	                        scope.toggleCogOpen = true;
+	                    }
+	                    else {
+	                        scope.toggleCogOpen = false;
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWCollection.$inject = ["$http", "$compile", "$log", "pathBuilderConfig", "collectionPartialsPath", "collectionService"];
+	    SWCollection.Factory = function () {
+	        var directive = function ($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
+	            return new SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$log',
+	            'pathBuilderConfig',
+	            'collectionPartialsPath',
+	            'collectionService',
+	        ];
+	        return directive;
+	    };
+	    return SWCollection;
+	})();
+	exports.SWCollection = SWCollection;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWAddFilterButtons = (function () {
+	    //@ngInject
+	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath) {
+	        return {
+	            require: '^swFilterGroups',
+	            restrict: 'E',
+	            templateUrl: collectionPartialsPath + "addfilterbuttons.html",
+	            scope: {
+	                itemInUse: "="
+	            },
+	            link: function (scope, element, attrs, filterGroupsController) {
+	                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+	                scope.addFilterItem = function () {
+	                    collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(), filterGroupsController.setItemInUse);
+	                };
+	                scope.addFilterGroupItem = function () {
+	                    collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(), filterGroupsController.setItemInUse, true);
+	                };
+	            }
+	        };
+	    }
+	    SWAddFilterButtons.$inject = ["$http", "$compile", "$templateCache", "collectionService", "collectionPartialsPath"];
+	    SWAddFilterButtons.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath) {
+	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            'collectionService',
+	            'collectionPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWAddFilterButtons;
+	})();
+	exports.SWAddFilterButtons = SWAddFilterButtons;
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	var SWDisplayOptions = (function () {
+	    //@ngInject
+	    function SWDisplayOptions($http, $compile, $templateCache, $log, $slatwall, collectionService, pathBuilderConfig, collectionPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            transclude: true,
+	            scope: {
+	                orderBy: "=",
+	                columns: '=',
+	                propertiesList: "=",
+	                saveCollection: "&",
+	                baseEntityAlias: "=",
+	                baseEntityName: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "displayoptions.html",
+	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+	                    $log.debug('display options initialize');
+	                    this.removeColumn = function (columnIndex) {
+	                        $log.debug('parent remove column');
+	                        $log.debug($scope.columns);
+	                        if ($scope.columns.length) {
+	                            $scope.columns.splice(columnIndex, 1);
+	                        }
+	                    };
+	                    this.getPropertiesList = function () {
+	                        return $scope.propertiesList;
+	                    };
+	                    $scope.addDisplayDialog = {
+	                        isOpen: false,
+	                        toggleDisplayDialog: function () {
+	                            $scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen;
+	                        }
+	                    };
+	                    var getTitleFromPropertyIdentifier = function (propertyIdentifier) {
+	                        var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall', '').charAt(0).toLowerCase() + $scope.baseEntityName.replace('Slatwall', '').slice(1);
+	                        var title = '';
+	                        var propertyIdentifierArray = propertyIdentifier.split('.');
+	                        var currentEntity;
+	                        var currentEntityInstance;
+	                        var prefix = 'entity.';
+	                        angular.forEach(propertyIdentifierArray, function (propertyIdentifierItem, key) {
+	                            //pass over the initial item
+	                            if (key !== 0) {
+	                                if (key === 1) {
+	                                    currentEntityInstance = $slatwall['new' + $scope.baseEntityName.replace('Slatwall', '')]();
+	                                    currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
+	                                    title += $slatwall.getRBKey(prefix + baseEntityCfcName + '.' + propertyIdentifierItem);
+	                                }
+	                                else {
+	                                    var currentEntityInstance = $slatwall['new' + currentEntity.cfc.charAt(0).toUpperCase() + currentEntity.cfc.slice(1)]();
+	                                    currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
+	                                    title += $slatwall.getRBKey(prefix + currentEntityInstance.metaData.className + '.' + currentEntity.name);
+	                                }
+	                                if (key < propertyIdentifierArray.length - 1) {
+	                                    title += ' | ';
+	                                }
+	                            }
+	                        });
+	                        return title;
+	                    };
+	                    $scope.addColumn = function (selectedProperty, closeDialog) {
+	                        $log.debug('add Column');
+	                        $log.debug(selectedProperty);
+	                        if (selectedProperty.$$group === 'simple' || 'attribute') {
+	                            $log.debug($scope.columns);
+	                            if (angular.isDefined(selectedProperty)) {
+	                                var column = {
+	                                    title: getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier),
+	                                    propertyIdentifier: selectedProperty.propertyIdentifier,
+	                                    isVisible: true,
+	                                    isDeletable: true,
+	                                    isSearchable: true,
+	                                    isExportable: true
+	                                };
+	                                //only add attributeid if the selectedProperty is attributeid
+	                                if (angular.isDefined(selectedProperty.attributeID)) {
+	                                    column['attributeID'] = selectedProperty.attributeID;
+	                                    column['attributeSetObject'] = selectedProperty.attributeSetObject;
+	                                }
+	                                if (angular.isDefined(selectedProperty.ormtype)) {
+	                                    column['ormtype'] = selectedProperty.ormtype;
+	                                }
+	                                $scope.columns.push(column);
+	                                $scope.saveCollection();
+	                                if (angular.isDefined(closeDialog) && closeDialog === true) {
+	                                    $scope.addDisplayDialog.toggleDisplayDialog();
+	                                }
+	                            }
+	                        }
+	                    };
+	                    $scope.selectBreadCrumb = function (breadCrumbIndex) {
+	                        //splice out array items above index
+	                        var removeCount = $scope.breadCrumbs.length - 1 - breadCrumbIndex;
+	                        $scope.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
+	                        $scope.selectedPropertyChanged(null);
+	                    };
+	                    var unbindBaseEntityAlias = $scope.$watch('baseEntityAlias', function (newValue, oldValue) {
+	                        if (newValue !== oldValue) {
+	                            $scope.breadCrumbs = [{
+	                                    entityAlias: $scope.baseEntityAlias,
+	                                    cfc: $scope.baseEntityAlias,
+	                                    propertyIdentifier: $scope.baseEntityAlias
+	                                }];
+	                            unbindBaseEntityAlias();
+	                        }
+	                    });
+	                    $scope.selectedPropertyChanged = function (selectedProperty) {
+	                        // drill down or select field?
+	                        $log.debug('selectedPropertyChanged');
+	                        $log.debug(selectedProperty);
+	                        $scope.selectedProperty = selectedProperty;
+	                    };
+	                    jQuery(function ($) {
+	                        var panelList = angular.element($element).children('ul');
+	                        panelList.sortable({
+	                            // Only make the .panel-heading child elements support dragging.
+	                            // Omit this to make then entire <li>...</li> draggable.
+	                            handle: '.s-pannel-name',
+	                            update: function (event, ui) {
+	                                var tempColumnsArray = [];
+	                                $('.s-pannel-name', panelList).each(function (index, elem) {
+	                                    var newIndex = $(elem).attr('j-column-index');
+	                                    var columnItem = $scope.columns[newIndex];
+	                                    tempColumnsArray.push(columnItem);
+	                                });
+	                                $scope.$apply(function () {
+	                                    $scope.columns = tempColumnsArray;
+	                                });
+	                                $scope.saveCollection();
+	                            }
+	                        });
+	                    });
+	                    /*var unbindBaseEntityAlaisWatchListener = scope.$watch('baseEntityAlias',function(){
+	                         $("select").selectBoxIt();
+	                         unbindBaseEntityAlaisWatchListener();
+	                    });*/
+	                }]
+	        };
+	    }
+	    SWDisplayOptions.$inject = ["$http", "$compile", "$templateCache", "$log", "$slatwall", "collectionService", "pathBuilderConfig", "collectionPartialsPath"];
+	    SWDisplayOptions.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $slatwall, collectionService, pathBuilderConfig, collectionPartialsPath) {
+	            return new SWDisplayOptions($http, $compile, $templateCache, $log, $slatwall, collectionService, pathBuilderConfig, collectionPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$slatwall',
+	            'collectionService',
+	            'pathBuilderConfig',
+	            'collectionPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWDisplayOptions;
+	})();
+	exports.SWDisplayOptions = SWDisplayOptions;
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	var SWDisplayItem = (function () {
+	    //@ngInject
+	    function SWDisplayItem($http, $compile, $templateCache, $log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            require: '^swDisplayOptions',
+	            restrict: 'A',
+	            scope: {
+	                selectedProperty: "=",
+	                propertiesList: "=",
+	                breadCrumbs: "=",
+	                selectedPropertyChanged: "&"
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "displayitem.html",
+	            link: function (scope, element, attrs, displayOptionsController) {
+	                scope.showDisplayItem = false;
+	                scope.selectedDisplayOptionChanged = function (selectedDisplayOption) {
+	                    var breadCrumb = {
+	                        entityAlias: scope.selectedProperty.name,
+	                        cfc: scope.selectedProperty.cfc,
+	                        propertyIdentifier: scope.selectedProperty.propertyIdentifier
+	                    };
+	                    scope.breadCrumbs.push(breadCrumb);
+	                    scope.selectedPropertyChanged({ selectedProperty: selectedDisplayOption });
+	                };
+	                scope.$watch('selectedProperty', function (selectedProperty) {
+	                    if (angular.isDefined(selectedProperty)) {
+	                        if (selectedProperty === null) {
+	                            scope.showDisplayItem = false;
+	                            return;
+	                        }
+	                        if (selectedProperty.$$group !== 'drilldown') {
+	                            scope.showDisplayItem = false;
+	                            return;
+	                        }
+	                        if (selectedProperty.$$group === 'drilldown') {
+	                            if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
+	                                var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
+	                                filterPropertiesPromise.then(function (value) {
+	                                    metadataService.setPropertiesList(value, selectedProperty.propertyIdentifier);
+	                                    scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
+	                                    metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier], selectedProperty.propertyIdentifier);
+	                                }, function (reason) {
+	                                });
+	                            }
+	                        }
+	                        scope.showDisplayItem = true;
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWDisplayItem.$inject = ["$http", "$compile", "$templateCache", "$log", "$slatwall", "$filter", "collectionPartialsPath", "collectionService", "metadataService", "pathBuilderConfig"];
+	    SWDisplayItem.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWDisplayItem($http, $compile, $templateCache, $log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWDisplayItem;
+	})();
+	exports.SWDisplayItem = SWDisplayItem;
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	//services
+	var workflowconditionservice_1 = __webpack_require__(36);
+	//filters
+	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
+	})
+	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService);
+	exports.workflowmodule = workflowmodule;
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	var workflowCondition = (function () {
+	    function workflowCondition() {
+	        this.propertyIdentifer = "";
+	        this.comparisonOperator = "";
+	        this.value = "";
+	        this.displayPropertyIdentifier = "";
+	        this.$$disabled = false;
+	        this.$$isClosed = true;
+	        this.$$isNew = true;
+	    }
+	    return workflowCondition;
+	})();
+	var workflowConditionGroupItem = (function () {
+	    function workflowConditionGroupItem() {
+	        this.workflowConditionGroup = [];
+	    }
+	    return workflowConditionGroupItem;
+	})();
+	var WorkflowConditionService = (function () {
+	    function WorkflowConditionService($log, $slatwall, alertService) {
+	        this.$log = $log;
+	        this.newWorkflowCondition = function () {
+	            return new workflowCondition;
+	        };
+	        this.addWorkflowCondition = function (groupItem, condition) {
+	            $log.debug('addWorkflowCondition');
+	            $log.debug(groupItem);
+	            $log.debug(condition);
+	            if (groupItem.length >= 1) {
+	                condition.logicalOperator = 'AND';
+	            }
+	            groupItem.push(condition);
+	        };
+	        this.newWorkflowConditionGroupItem = function () {
+	            return new workflowConditionGroupItem;
+	        };
+	        this.addWorkflowConditionGroupItem = function (group, groupItem) {
+	            group.push(groupItem);
+	        };
+	    }
+	    WorkflowConditionService.$inject = ["$log", "$slatwall", "alertService"];
+	    return WorkflowConditionService;
+	})();
+	exports.WorkflowConditionService = WorkflowConditionService;
+
+
+/***/ },
+/* 37 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2596,20 +3446,20 @@
 
 
 /***/ },
-/* 29 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(30);
+	var slatwallservice_1 = __webpack_require__(39);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 30 */
+/* 39 */
 /***/ function(module, exports) {
 
 	var SlatwallService = (function () {
@@ -3189,518 +4039,103 @@
 
 
 /***/ },
-/* 31 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	var alert_module_1 = __webpack_require__(11);
-	var exceptionhandler_1 = __webpack_require__(32);
 	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
 	    .run([function () {
-	    }])
-	    .factory('$exceptionHandler', ['$injector', function ($injector) { return new exceptionhandler_1.ExceptionHandler($injector); }]);
+	    }]);
 	exports.loggermodule = loggermodule;
-	;
+	//.factory('$exceptionHandler', ['$injector', ($injector) => new ExceptionHandler($injector)]);;
 
 
 /***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	/*<------------------------------------------------------------------------
-	    This is out main class where we actually handle the exception by
-	    instantiating the http config and passing it along with the
-	    exception and cause. Classes are more the Typescript methodology versus
-	    function notation - but this compiles down to the function we want.
-	    <------------------------------------------------------------------------*/
-	var ExceptionHandler = (function () {
-	    /** returning the ExceptionHandler bind here removes the circular dependancy
-	        that you would get from having exceptionHandler require $http <-- exceptionHandler --> $http
-	        */
-	    function ExceptionHandler(injector) {
-	        //grab the injector we passed in 
-	        ExceptionHandler.injector = injector;
-	        //return the bound static function.
-	        return ExceptionHandler.handle.bind(ExceptionHandler);
-	    }
-	    ExceptionHandler.handle = function (exception, cause) {
-	        var alertService;
-	        if (exception) {
-	            exception = exception.toString();
-	        }
-	        if (cause) {
-	            cause = cause.toString();
-	        }
-	        console.error(exception);
-	        /** get $http and alertService from the injector */
-	        var http = this.injector.get('$http');
-	        alertService = this.injector.get('alertService');
-	        /**  use the angular serializer rather than jQuery $.param */
-	        var serializer = this.injector.get('$httpParamSerializerJQLike');
-	        /* we use the IRequestConfig type here to get type protection on the object literal.
-	            alternativly, we could just cast to the correct type and drop the extra interface by
-	            using url: <string> "?slatAction=api:main.log" notation which does the same thing. */
-	        var requestConfig = {
-	            url: "?slatAction=api:main.log",
-	            method: "POST",
-	            data: serializer({ exception: exception, cause: cause, apiRequest: true }),
-	            headers: { 'Content-Type': "application/x-www-form-urlencoded" }
-	        };
-	        /** notice I use the fat arrow for the anon function which preserves lexical scope. */
-	        http(requestConfig).error(function (data) {
-	            alertService.addAlert({ msg: exception, type: 'error' });
-	        });
-	    }; //<--end handle method
-	    return ExceptionHandler;
-	})();
-	exports.ExceptionHandler = ExceptionHandler; //<--end class
-	//let angular know about our class. notive we pass in the $injector and instantiate the class in one go
-	//again using the fat arrow for scope.
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var collectionconfigservice_1 = __webpack_require__(26);
-	var CollectionController = (function () {
-	    //@ngInject
-	    function CollectionController($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
-	        //init values 
-	        //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
-	        $scope.$id = "collectionsController";
-	        /*used til we convert to use route params*/
-	        var QueryString = function () {
-	            // This function is anonymous, is executed immediately and 
-	            // the return value is assigned to QueryString!
-	            var query_string = {};
-	            var query = window.location.search.substring(1);
-	            var vars = query.split("&");
-	            for (var i = 0; i < vars.length; i++) {
-	                var pair = vars[i].split("=");
-	                // If first entry with this name
-	                if (typeof query_string[pair[0]] === "undefined") {
-	                    query_string[pair[0]] = pair[1];
-	                }
-	                else if (typeof query_string[pair[0]] === "string") {
-	                    var arr = [query_string[pair[0]], pair[1]];
-	                    query_string[pair[0]] = arr;
-	                }
-	                else {
-	                    query_string[pair[0]].push(pair[1]);
-	                }
-	            }
-	            return query_string;
-	        }();
-	        //get url param to retrieve collection listing
-	        $scope.collectionID = QueryString.collectionID;
-	        $scope.paginator = paginationService.createPagination();
-	        $scope.appendToCollection = function () {
-	            if ($scope.paginator.getPageShow() === 'Auto') {
-	                $log.debug('AppendToCollection');
-	                if ($scope.autoScrollPage < $scope.collection.totalPages) {
-	                    $scope.autoScrollDisabled = true;
-	                    $scope.autoScrollPage++;
-	                    var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.autoScrollPage, pageShow: 50 });
-	                    collectionListingPromise.then(function (value) {
-	                        $scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
-	                        $scope.autoScrollDisabled = false;
-	                    }, function (reason) {
-	                    });
-	                }
-	            }
-	        };
-	        $scope.keywords = "";
-	        $scope.loadingCollection = false;
-	        var searchPromise;
-	        $scope.searchCollection = function () {
-	            if (searchPromise) {
-	                $timeout.cancel(searchPromise);
-	            }
-	            searchPromise = $timeout(function () {
-	                $log.debug('search with keywords');
-	                $log.debug($scope.keywords);
-	                //Set current page here so that the pagination does not break when getting collection
-	                $scope.paginator.setCurrentPage(1);
-	                $scope.loadingCollection = true;
-	                $scope.getCollection();
-	            }, 500);
-	        };
-	        $scope.getCollection = function () {
-	            var pageShow = 50;
-	            if ($scope.paginator.getPageShow() !== 'Auto') {
-	                pageShow = $scope.paginator.getPageShow();
-	            }
-	            //			$scope.currentPage = $scope.pagination.getCurrentPage();
-	            var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.getCurrentPage(), pageShow: pageShow, keywords: $scope.keywords });
-	            collectionListingPromise.then(function (value) {
-	                $scope.collection = value;
-	                $scope.paginator.setPageRecordsInfo($scope.collection);
-	                $scope.collectionInitial = angular.copy($scope.collection);
-	                if (angular.isUndefined($scope.collectionConfig)) {
-	                    var test = new collectionconfigservice_1.CollectionConfig($slatwall);
-	                    test.loadJson(value.collectionConfig);
-	                    $scope.collectionConfig = test.getCollectionConfig();
-	                }
-	                //check if we have any filter Groups
-	                if (angular.isUndefined($scope.collectionConfig.filterGroups)) {
-	                    $scope.collectionConfig.filterGroups = [
-	                        {
-	                            filterGroup: []
-	                        }
-	                    ];
-	                }
-	                collectionService.setFilterCount(filterItemCounter());
-	                $scope.loadingCollection = false;
-	            }, function (reason) {
-	            });
-	            return collectionListingPromise;
-	        };
-	        $scope.paginator.getCollection = $scope.getCollection;
-	        $scope.getCollection();
-	        var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
-	            if (newValue !== oldValue) {
-	                if (angular.isUndefined($scope.filterPropertiesList)) {
-	                    $scope.filterPropertiesList = {};
-	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
-	                    filterPropertiesPromise.then(function (value) {
-	                        metadataService.setPropertiesList(value, $scope.collectionConfig.baseEntityAlias);
-	                        $scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
-	                        metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias], $scope.collectionConfig.baseEntityAlias);
-	                    });
-	                }
-	                unbindCollectionObserver();
-	            }
-	        });
-	        $scope.setCollectionForm = function (form) {
-	            $scope.collectionForm = form;
-	        };
-	        $scope.collectionDetails = {
-	            isOpen: false,
-	            openCollectionDetails: function () {
-	                $scope.collectionDetails.isOpen = true;
-	            }
-	        };
-	        $scope.errorMessage = {};
-	        var filterItemCounter = function (filterGroupArray) {
-	            var filterItemCount = 0;
-	            if (!angular.isDefined(filterGroupArray)) {
-	                filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
-	            }
-	            //Start out loop
-	            for (var index in filterGroupArray) {
-	                //If filter isn't new then increment the count
-	                if (!filterGroupArray[index].$$isNew
-	                    && !angular.isDefined(filterGroupArray[index].filterGroup)) {
-	                    filterItemCount++;
-	                }
-	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
-	                    //Call function recursively
-	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
-	                }
-	                else {
-	                    break;
-	                }
-	            }
-	            return filterItemCount;
-	        };
-	        $scope.saveCollection = function () {
-	            $timeout(function () {
-	                $log.debug('saving Collection');
-	                var entityName = 'collection';
-	                var collection = $scope.collection;
-	                $log.debug($scope.collectionConfig);
-	                if (isFormValid($scope.collectionForm)) {
-	                    var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
-	                    $log.debug(collectionConfigString);
-	                    var data = angular.copy(collection);
-	                    data.collectionConfig = collectionConfigString;
-	                    //has to be removed in order to save transient correctly
-	                    delete data.pageRecords;
-	                    var saveCollectionPromise = $slatwall.saveEntity(entityName, collection.collectionID, data, 'save');
-	                    saveCollectionPromise.then(function (value) {
-	                        $scope.errorMessage = {};
-	                        //Set current page here so that the pagination does not break when getting collection
-	                        $scope.paginator.setCurrentPage(1);
-	                        $scope.getCollection();
-	                        $scope.collectionDetails.isOpen = false;
-	                    }, function (reason) {
-	                        //revert to original
-	                        angular.forEach(reason.errors, function (value, key) {
-	                            $scope.collectionForm[key].$invalid = true;
-	                            $scope.errorMessage[key] = value[0];
-	                        });
-	                        //$scope.collection = angular.copy($scope.collectionInitial);
-	                    });
-	                }
-	                collectionService.setFilterCount(filterItemCounter());
-	            });
-	        };
-	        var isFormValid = function (angularForm) {
-	            $log.debug('validateForm');
-	            var formValid = true;
-	            for (var field in angularForm) {
-	                // look at each form input with a name attribute set
-	                // checking if it is pristine and not a '$' special field
-	                if (field[0] != '$') {
-	                    // need to use formValid variable instead of formController.$valid because checkbox dropdown is not an input
-	                    // and somehow formController didn't invalid if checkbox dropdown is invalid
-	                    if (angularForm[field].$invalid) {
-	                        formValid = false;
-	                        for (var error in angularForm[field].$error) {
-	                            if (error == 'required') {
-	                                $scope.errorMessage[field] = 'This field is required';
-	                            }
-	                        }
-	                    }
-	                    if (angularForm[field].$pristine) {
-	                        if (angular.isUndefined(angularForm[field].$viewValue)) {
-	                            angularForm[field].$setViewValue("");
-	                        }
-	                        else {
-	                            angularForm[field].$setViewValue(angularForm[field].$viewValue);
-	                        }
-	                    }
-	                }
-	            }
-	            return formValid;
-	        };
-	        $scope.copyExistingCollection = function () {
-	            $scope.collection.collectionConfig = $scope.selectedExistingCollection;
-	        };
-	        $scope.setSelectedExistingCollection = function (selectedExistingCollection) {
-	            $scope.selectedExistingCollection = selectedExistingCollection;
-	        };
-	        $scope.setSelectedFilterProperty = function (selectedFilterProperty) {
-	            $scope.selectedFilterProperty = selectedFilterProperty;
-	        };
-	        $scope.filterCount = collectionService.getFilterCount;
-	        //export action
-	        $scope.exportCollection = function () {
-	            var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
-	            var data = { "ids": selectionService.getSelections('collectionSelection') };
-	            var target = "downloadCollection";
-	            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
-	            $.each(data, function (n, v) {
-	                $('#postToIframe').append('<input type="hidden" name="' + n + '" value="' + v + '" />');
-	            });
-	            $('#postToIframe').submit().remove();
-	        };
-	    }
-	    CollectionController.$inject = ["$scope", "$location", "$log", "$timeout", "$slatwall", "collectionService", "metadataService", "selectionService", "paginationService"];
-	    return CollectionController;
-	})();
-	exports.CollectionController = CollectionController;
-	// 'use strict';
-	// angular.module('slatwalladmin')
-	// //using $location to get url params, this will probably change to using routes eventually
-	// .controller('collections', [ 
-	// 	'$scope',
-	// '$location',
-	// '$log',
-	// '$timeout',
-	// '$slatwall',
-	// 'collectionService', 
-	// 'metadataService',
-	// 'selectionService',
-	// 'paginationService',
-	// 	function(
-	// 		$scope,
-	// $location,
-	// $log,
-	// $timeout,
-	// $slatwall,
-	// collectionService,
-	// metadataService,
-	// selectionService,
-	// paginationService
-	// 	){
-	// 		
-	// 	}
-	// ]);
-
-
-/***/ },
-/* 34 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	var Form = (function () {
-	    function Form(name, object, editing) {
-	        this.$addControl = function (control) { };
-	        this.$removeControl = function (control) { };
-	        this.$setValidity = function (validationErrorKey, isValid, control) { };
-	        this.$setDirty = function () { };
-	        this.$setPristine = function () { };
-	        this.$commitViewValue = function () { };
-	        this.$rollbackViewValue = function () { };
-	        this.$setSubmitted = function () { };
-	        this.$setUntouched = function () { };
-	        this.name = name;
-	        this.object = object;
-	        this.editing = editing;
-	    }
-	    return Form;
-	})();
-	var FormService = (function () {
-	    function FormService($log) {
+	var EntityRBKey = (function () {
+	    //@ngInject
+	    function EntityRBKey($slatwall) {
 	        var _this = this;
-	        this.$log = $log;
-	        this.setPristinePropertyValue = function (property, value) {
-	            _this._pristinePropertyValue[property] = value;
-	        };
-	        this.getPristinePropertyValue = function (property) {
-	            return _this._pristinePropertyValue[property];
-	        };
-	        this.setForm = function (form) {
-	            _this._forms[form.name] = form;
-	        };
-	        this.getForm = function (formName) {
-	            return _this._forms[formName];
-	        };
-	        this.getForms = function () {
-	            return _this._forms;
-	        };
-	        this.getFormsByObjectName = function (objectName) {
-	            var forms = [];
-	            for (var f in _this._forms) {
-	                if (angular.isDefined(_this._forms[f].$$swFormInfo.object) && _this._forms[f].$$swFormInfo.object.metaData.className === objectName) {
-	                    forms.push(_this._forms[f]);
-	                }
+	        this.$slatwall = $slatwall;
+	        return function (text) {
+	            if (angular.isDefined(text) && angular.isString(text)) {
+	                text = text.replace('_', '').toLowerCase();
+	                text = _this.$slatwall.getRBKey('entity.' + text);
+	                return text;
 	            }
-	            return forms;
 	        };
-	        this.createForm = function (name, object, editing) {
-	            var _form = new Form(name, object, editing);
-	            _this.setForm(_form);
-	            return _form;
-	        };
-	        this.resetForm = function (form) {
-	            _this.$log.debug('resetting form');
-	            _this.$log.debug(form);
-	            for (var key in form) {
-	                if (angular.isDefined(form[key])
-	                    && typeof form[key].$setViewValue == 'function'
-	                    && angular.isDefined(form[key].$viewValue)) {
-	                    _this.$log.debug(form[key]);
-	                    if (angular.isDefined(_this.getPristinePropertyValue(key))) {
-	                        form[key].$setViewValue(_this.getPristinePropertyValue(key));
-	                    }
-	                    else {
-	                        form[key].$setViewValue('');
-	                    }
-	                    form[key].$setUntouched(true);
-	                    form[key].$render();
-	                    _this.$log.debug(form[key]);
-	                }
-	            }
-	            form.$submitted = false;
-	            form.$setPristine();
-	            form.$setUntouched();
-	        };
-	        this.$log = $log;
-	        this._forms = {};
-	        this._pristinePropertyValue = {};
 	    }
-	    FormService.$inject = ['$log'];
-	    return FormService;
+	    EntityRBKey.$inject = ["$slatwall"];
+	    EntityRBKey.Factory = function () {
+	        var filter = function ($slatwall) { return new EntityRBKey($slatwall); };
+	        filter.$inject = ['$slatwall'];
+	        return filter;
+	    };
+	    return EntityRBKey;
 	})();
-	exports.FormService = FormService;
+	exports.EntityRBKey = EntityRBKey;
 
 
 /***/ },
-/* 35 */
+/* 42 */
 /***/ function(module, exports) {
 
-	var MetaDataService = (function () {
-	    function MetaDataService($filter, $log) {
-	        var _this = this;
-	        this.$filter = $filter;
-	        this.$log = $log;
-	        this.getPropertiesList = function () {
-	            return _this._propertiesList;
-	        };
-	        this.getPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
-	            return _this._propertiesList[baseEntityAlias];
-	        };
-	        this.setPropertiesList = function (value, key) {
-	            _this._propertiesList[key] = value;
-	        };
-	        this.formatPropertiesList = function (propertiesList, propertyIdentifier) {
-	            var simpleGroup = {
-	                $$group: 'simple'
-	            };
-	            propertiesList.data.push(simpleGroup);
-	            var drillDownGroup = {
-	                $$group: 'drilldown'
-	            };
-	            propertiesList.data.push(drillDownGroup);
-	            var compareCollections = {
-	                $$group: 'compareCollections'
-	            };
-	            propertiesList.data.push(compareCollections);
-	            var attributeCollections = {
-	                $$group: 'attribute'
-	            };
-	            propertiesList.data.push(attributeCollections);
-	            for (var i in propertiesList.data) {
-	                if (angular.isDefined(propertiesList.data[i].ormtype)) {
-	                    if (angular.isDefined(propertiesList.data[i].attributeID)) {
-	                        propertiesList.data[i].$$group = 'attribute';
-	                    }
-	                    else {
-	                        propertiesList.data[i].$$group = 'simple';
-	                    }
-	                }
-	                if (angular.isDefined(propertiesList.data[i].fieldtype)) {
-	                    if (propertiesList.data[i].fieldtype === 'id') {
-	                        propertiesList.data[i].$$group = 'simple';
-	                    }
-	                    if (propertiesList.data[i].fieldtype === 'many-to-one') {
-	                        propertiesList.data[i].$$group = 'drilldown';
-	                    }
-	                    if (propertiesList.data[i].fieldtype === 'many-to-many' || propertiesList.data[i].fieldtype === 'one-to-many') {
-	                        propertiesList.data[i].$$group = 'compareCollections';
-	                    }
-	                }
-	                propertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' + propertiesList.data[i].name;
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCurrency = (function () {
+	    //@ngInject
+	    function SWCurrency($sce, $log, $slatwall) {
+	        this.$slatwall = $slatwall;
+	        var data = null, serviceInvoked = false;
+	        realFilter = function (value, decimalPlace) {
+	            // REAL FILTER LOGIC, DISREGARDING PROMISES
+	            if (!angular.isDefined(data)) {
+	                $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+	                data = "$";
 	            }
-	            //propertiesList.data = _orderBy(propertiesList.data,['displayPropertyIdentifier'],false);
-	            //--------------------------------Removes empty lines from dropdown.
-	            var temp = [];
-	            for (var i = 0; i <= propertiesList.data.length - 1; i++) {
-	                if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1) {
-	                    _this.$log.debug("removing: " + propertiesList.data[i].displayPropertyIdentifier);
-	                    propertiesList.data[i].displayPropertyIdentifier = "hide";
+	            if (angular.isDefined(value)) {
+	                if (angular.isDefined(decimalPlace)) {
+	                    value = parseFloat(value.toString()).toFixed(decimalPlace);
 	                }
 	                else {
-	                    temp.push(propertiesList.data[i]);
-	                    _this.$log.debug(propertiesList.data[i]);
+	                    value = parseFloat(value.toString()).toFixed(2);
 	                }
 	            }
-	            temp.sort;
-	            propertiesList.data = temp;
-	            _this.$log.debug("----------------------PropertyList\n\n\n\n\n");
-	            propertiesList.data = _this._orderBy(propertiesList.data, ['propertyIdentifier'], false);
-	            //--------------------------------End remove empty lines.
+	            return data + value;
 	        };
-	        this.orderBy = function (propertiesList, predicate, reverse) {
-	            return _this._orderBy(propertiesList, predicate, reverse);
-	        };
-	        this.$filter = $filter;
-	        this.$log = $log;
-	        this._propertiesList = {};
-	        this._orderBy = $filter('orderBy');
+	        filterStub.$stateful = true;
+	        filterStub(value, currencyCode, decimalPlace);
+	        {
+	            if (data === null) {
+	                if (!serviceInvoked) {
+	                    serviceInvoked = true;
+	                    $slatwall.getCurrencies().then(function (currencies) {
+	                        var result = currencies.data;
+	                        data = result[currencyCode];
+	                    });
+	                }
+	                return "-";
+	            }
+	            else
+	                return realFilter(value, decimalPlace);
+	        }
+	        return filterStub;
 	    }
-	    MetaDataService.$inject = [
-	        '$filter',
-	        '$log'
-	    ];
-	    return MetaDataService;
+	    SWCurrency.$inject = ["$sce", "$log", "$slatwall"];
+	    SWCurrency.Factory = function () {
+	        var filter = function ($sce, $log, $slatwall) { return new SWCurrency($sce, $log, $slatwall); };
+	        filter.$inject = ['$sce', '$log', '$slatwall'];
+	        return filter;
+	    };
+	    return SWCurrency;
 	})();
-	exports.MetaDataService = MetaDataService;
+	exports.SWCurrency = SWCurrency;
 
 
 /***/ }

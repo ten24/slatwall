@@ -8,6 +8,8 @@ var dialogmodule = angular.module('hibachi.dialog',[]).config(()=>{
 //services
 .service('dialogService', DialogService)
 //filters 
+//constants
+.constant('dialogPartials','dialog/components/')
 ;  
 export{
 	dialogmodule

@@ -65,8 +65,8 @@ Notes:
 		data-multiselect-id-paths="#selectedListingPageIDPaths#"
 		data-edit="#rc.edit#"
 	>
-		<sw-listing-column data-property-identifier="site.siteName" />
 		<sw-listing-column data-property-identifier="title" tdclass="primary" />
+		<sw-listing-column data-property-identifier="site.siteName" />
 	</sw-listing-display>
 </cfoutput>
 <!--- deprecating previous listing display --->

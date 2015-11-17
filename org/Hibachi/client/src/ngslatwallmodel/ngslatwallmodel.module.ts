@@ -3,6 +3,7 @@
 			/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 			import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 			import {hibachimodule} from "../hibachi/hibachi.module";
+			import {slatwallAngular} from "../ngslatwallmodel/ngslatwallmodel.module";
 			var ngslatwallmodelmodule = angular.module('ngSlatwallModel',[hibachimodule.name,ngslatwallmodule.name]).config(['$provide',function ($provide
 			 ) {
 	    	
@@ -72,7 +73,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1447345278854',
+									auditDateTime:'1447707471929',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -132,7 +133,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'f2881e05c4a9a1dec1c9f5a500ac9867',
+									verificationCode:'18076370ed1d76f56f8a145a71f002dd',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2029,7 +2030,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"c664f6241c26343e6bdea0350968e99e",
+									accountPasswordResetID:"044372842579876dfaeaefdbe1473650",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										

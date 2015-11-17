@@ -22,19 +22,22 @@ class SWPaginationBarController{
     public bindToController={
         paginator:"="    
     };
-    public controller=SWPaginationBarController
+    public controller=SWPaginationBarController;
     public controllerAs="swPaginationBar";
     public templateUrl;
-    //@ngInject
-    
-    constructor(partialsPath){
-        this.templateUrl = partialsPath+'paginationbar.html';
-    }
-    public static factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (partialsPath) => new SWPaginationBar(partialsPath);
-        directive.$inject = [];
+    public static Factory():ng.IDirectiveFactory{
+        var directive:ng.IDirectiveFactory = (pathBuilderConfig,partialsPath) => new SWPaginationBar(pathBuilderConfig,partialsPath);
+        directive.$inject = ['pathBuilderConfig','partialsPath'];
         return directive;    
     }
+    
+    //@ngInject
+    constructor(pathBuilderConfig,partialsPath){
+        
+        
+        this.templateUrl = pathBuilderConfig.buildPartialsPath(partialsPath)+'paginationbar.html';
+    }
+    
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
         

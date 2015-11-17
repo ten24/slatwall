@@ -11,7 +11,8 @@ class CollectionController{
 		collectionService,
 		metadataService,
 		selectionService,
-		paginationService
+		paginationService,
+		
 	){
 		//init values 
 		//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];

@@ -6,15 +6,18 @@ import {coremodule} from "./core/core.module";
 import {paginationmodule} from "./pagination/pagination.module";
 import {dialogmodule} from "./dialog/dialog.module";
 import {collectionmodule} from "./collection/collection.module";
+import {workflowmodule} from "./workflow/workflow.module";
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
     coremodule.name,
     paginationmodule.name,
     dialogmodule.name,
-    collectionmodule.name
-]).config(()=>{
-})
+    collectionmodule.name,
+    workflowmodule.name
+])
+
+;
 
 export{
     hibachimodule  

@@ -3,22 +3,34 @@
 import {hibachimodule} from "../hibachi/hibachi.module";
 import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
 import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
+//filters
+import {EntityRBKey} from "./filters/entityrbkey";
+import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
 declare var slatwallAngular:any;
 declare var $:SlatwallJQueryStatic;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
-  hibachimodule.name,
-  ngslatwallmodule.name,
-  //'ngSlatwallModel',
-  'ui.bootstrap',
+  //Angular Modules
   'ngAnimate',
   'ngRoute',
   'ngSanitize'
-]).config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
-     ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig) =>
+  //custom modules
+  hibachimodule.name,
+  ngslatwallmodule.name,
+  //3rdParty modules
+  'ui.bootstrap'
+  
+])
+.constant("baseURL", $.slatwall.getConfig().baseURL)
+.config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','pathBuilderConfig',
+     ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,pathBuilderConfig) =>
   {
+      //configure partials path properties
+     pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
+     pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/hibachi/');
+     
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
      datepickerPopupConfig.toggleWeeksText = null;
@@ -26,19 +38,20 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
          $locationProvider.html5Mode( false ).hashPrefix('!');
      }
      //
-     $provide.constant("baseURL", $.slatwall.getConfig().baseURL);
+     //$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
+     
     
-     var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
+    //  var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
     
-     $provide.constant("partialsPath", _partialsPath);
-     $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
+    //   $provide.constant("partialsPath", _partialsPath);
+    //  $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
     
 
-     angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
-         var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
-         var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
-         $provide.constant(constantKey, constantPartialsPath);
-     });
+    //  angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
+    //      var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
+    //      var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
+    //      $provide.constant(constantKey, constantPartialsPath);
+    //  });
     
      $logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
      $filterProvider.register('likeFilter',function(){
@@ -102,7 +115,11 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      });  
 
  }])
-.service('slatwallInterceptor', SlatwallInterceptor);
+ //services
+.service('slatwallInterceptor', SlatwallInterceptor)
+//filters
+.filter('entityRBKey',EntityRBKey.Factory())
+.filter('swcurrency',SWCurrency.Factory())
 ;
 export{
     slatwalladminmodule,
@@ -220,49 +237,5 @@ export{
 //             }
 //         });
     
-//     }]).filter('entityRBKey',['$slatwall', function($slatwall) {
-        
-//         return function(text){
-//             if(angular.isDefined(text) && angular.isString(text)){
-//                 text = text.replace('_', '').toLowerCase();
-//                 text = $slatwall.getRBKey('entity.'+text);
-//                 return text;
-//             }
-            
-//         }; 
-//     }]).filter('swcurrency',['$slatwall','$sce' ,'$log',($slatwall,$sce, $log)=>{
-//             var data = null, serviceInvoked = false;
-//             function realFilter(value,decimalPlace) {
-//                 // REAL FILTER LOGIC, DISREGARDING PROMISES
-//                 if(!angular.isDefined(data)){
-//                     $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-//                     data="$";
-//                 }
-//                 if(angular.isDefined(value)){
-//                     if(angular.isDefined(decimalPlace)){
-//                         value = parseFloat(value.toString()).toFixed(decimalPlace) 
-//                     } else { 
-//                         value = parseFloat(value.toString()).toFixed(2)
-//                     }
-//                 }
-//                 return data + value;
-//             }
-            
-//             filterStub.$stateful = true;
-//             function filterStub(value,currencyCode,decimalPlace) {
-//                 if( data === null ) {
-//                     if( !serviceInvoked ) {
-//                         serviceInvoked = true;
-//                          $slatwall.getCurrencies().then((currencies)=>{
-//                             var result = currencies.data;
-//                             data = result[currencyCode];
-//                         });
-//                     }
-//                     return "-";
-//                 }
-//                 else return realFilter(value,decimalPlace);
-//             }
-            
-//             return filterStub;        
-//     }]);
+//     }])
 // })();
