@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     var SWFormFieldJsonController = (function () {
         function SWFormFieldJsonController(formService) {
-            this.$inject = [''];
+            this.$inject = ['formService'];
             this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
         }
         return SWFormFieldJsonController;

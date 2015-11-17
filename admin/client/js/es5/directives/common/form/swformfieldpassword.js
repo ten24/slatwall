@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     var swFormFieldPasswordController = (function () {
         function swFormFieldPasswordController() {
-            this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
+            this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
         }
         return swFormFieldPasswordController;
     })();

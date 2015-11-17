@@ -3,7 +3,7 @@
 module slatwalladmin {
 export class swFormFieldPasswordController implements ng.IDirective {
 	public constructor () {
-		this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
+		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
 	}
 }	
 	

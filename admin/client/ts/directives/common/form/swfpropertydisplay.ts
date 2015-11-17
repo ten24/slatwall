@@ -101,9 +101,13 @@ module slatwalladmin {
 			vm.valueObject		  	= this.valueObject;
 			vm.fieldAttributes     	= this.fieldAttributes || "";
 			vm.label			    = this.label || "true";
+			vm.labelText			= this.labelText || "";
+			vm.labelClass			= this.labelClass || "";
 			vm.name			    	= this.name || "unnamed";
 			vm.options				= this.options;
-			vm.optionValues        	= [];
+			vm.optionValues        	= this.optionValues;
+			vm.errorClass			= this.errorClass;
+			vm.errorText			= this.errorText;
 			vm.formCtrl 			= {};
 			
 			/** in order to attach the correct controller to local vm, we need a watch to bind */
@@ -112,21 +116,7 @@ module slatwalladmin {
 					vm.formCtrl = newValue;
 				}
 			});
-				
-			
-			vm.propertyDisplay = {
-				type: 	vm.type,
-				name: 	vm.name,
-				class: 	vm.class,
-				valueObject: vm.valueObject,
-				object: vm.object,
-				label: 	vm.label,
-				optionValues: vm.optionValues,
-				edit: 	vm.editting,
-				title: 	vm.title,
-				value: 	vm.value 
-			};
-			
+
 			/** handle options */	
 			if (vm.options && angular.isString(vm.options)){
 				let optionsArray = [];
@@ -153,6 +143,25 @@ module slatwalladmin {
 				vm.selected == this.value;
 			}
 			
+			this.propertyDisplay = {
+				type: 	vm.type,
+				name: 	vm.name,
+				class: 	vm.class,
+				loader: vm.loader,
+				errorClass: vm.errorClass,
+				option: vm.options,
+				valueObject: vm.valueObject,
+				object: vm.object,
+				label: 	vm.label,
+				labelText: vm.labelText,
+				labelClass: vm.labelClass,
+				optionValues: vm.optionValues,
+				edit: 	vm.editting,
+				title: 	vm.title,
+				value: 	vm.value,
+				errorClass: vm.errorClass,
+				errorText: vm.errorText,
+			};
 		}
 	}
 	
