@@ -4,6 +4,8 @@ var slatwalladmin;
 (function (slatwalladmin) {
     class SWFormFieldNumberController {
         constructor() {
+            if (this.propertyDisplay.isDirty == undefined)
+                this.propertyDisplay.isDirty = false;
             this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
         }
     }
@@ -14,13 +16,13 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.restrict = 'E';
             this.require = "^form";
-            this.scope = {};
+            this.scope = true;
             this.bindToController = {
                 propertyDisplay: "=?"
             };
             this.templateUrl = "";
             this.controller = SWFormFieldNumberController;
-            this.controllerAs = "numberCtrl";
+            this.controllerAs = "ctrl";
             this.link = (scope, element, attrs, formController) => { };
             this.templateUrl = this.partialsPath + "formfields/number.html";
         }

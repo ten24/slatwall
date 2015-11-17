@@ -32,13 +32,13 @@
         </div>
         
         <div ng-switch-when="yesno" name="{{swfFormField.propertyDisplay.name}}">
-        	    <label ng-bind="swfFormField.propertyDisplay.name"></label>
-                <label class="radio-inline"><input type="radio" name="{{swfFormField.propertyDisplay.name}}" value="1" text="Yes"/>Yes</label>
-                <label class="radio-inline"><input type="radio" name="{{swfFormField.propertyDisplay.name}}" value="0" text="No" checked="true"/>No</label>
+    	    <label ng-bind="swfFormField.propertyDisplay.name"></label>
+            <label class="radio-inline"><input type="radio" name="{{swfFormField.propertyDisplay.name}}" value="1" text="Yes"/>Yes</label>
+            <label class="radio-inline"><input type="radio" name="{{swfFormField.propertyDisplay.name}}" value="0" text="No" checked="true"/>No</label>
         </div>
         <!--- needs to be replaced with an action caller --->
         <div ng-switch-when="submit" name="submit">
-                <input type="submit" class="btn" name="submit" text="{{swfFormField.propertyDisplay.name}}" value="{{swfFormField.propertyDisplay.name}}" ng-click="swfPropertyDisplayController.submit();"></input>
+            <input type="submit" class="btn" name="submit" text="{{swfFormField.propertyDisplay.name}}" value="{{swfFormField.propertyDisplay.name}}" ng-click="swfPropertyDisplayController.submit();"></input>
         </div>
     </ng-switch>
     

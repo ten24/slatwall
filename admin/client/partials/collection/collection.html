@@ -1,66 +1,11 @@
-<!-- generic login form -->
-<!---Object - 
-     propertyIdentifier - ng-name in the template { Allow object as well and override. 
-        _Account as Object }--->
-    <!-- data-property-identifier -->
-    <!--- data-object --->
-
-<!-- Example Login Form -->
-<sw-form
-    data-is-process-form="true"
-    data-form-class="cssform"
-    data-error-class="error"
-    data-process-object="Account_login"
-    data-action="$login"> 
-    
-    <swf-property-display 
-        data-name="emailAddress"
-        data-type="email"
-        data-object="Account_login.emailAddress" 
-        data-label-text="Email Address:"
-        data-class="formControl"
-        data-editing="true">
-        
-    </swf-property-display>
-    
-    <swf-property-display
-        data-name="password"
-        data-type="password"
-        data-object="Account_login.password"
-        data-label-text="Password:"
-        data-class="formControl"
-        data-editing="true">
-    </swf-property-display>
-    
-    <!-- Can we use a Action caller / Process caller for this or because not all actions are process objects we need to use a service?  -->
-    <swf-property-display
-        data-name="Login" 
-        data-type="submit" 
-        data-class="formControl">Login
-    </swf-property-display>
-    
-</sw-form>
-
-<!--- Example Logout Form: Not working because logout is not a process object it is just a service call --->
-<sw-form
-    data-is-process-form="true"
-    data-form-class="cssform"
-    data-error-class="error"
-    data-process-object="Account_logout"
-    data-action="$logout"> 
-    
-    <swf-property-display
-        data-name="logout" 
-        data-type="submit" 
-        data-label-text="Logout User"
-        data-class="formControl">
-    </swf-property-display>
-    
-</sw-form>
-
 <div>
+	<div>
+	   <sw-login-test></sw-login-test>
+    </div>
+    <div>
+    	<sw-create-account-test></sw-create-account-test>
+    </div>
 	<div class="col-xs-12 s-filter-content s-filter-content-table-view">
-
 		<!-- Filters and Display Options -->
 		<div ng-model="toggleCogOpen" ng-show="toggleCogOpen">
 			<!-- Tab panes for menu options start-->

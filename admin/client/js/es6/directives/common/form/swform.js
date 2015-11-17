@@ -209,7 +209,11 @@ var slatwalladmin;
             this.replace = true;
             this.controller = SWFormController;
             this.controllerAs = "swFormController";
-            this.scope = {};
+            this.scope = {
+                object: "=",
+                context: "@",
+                name: "@"
+            };
             /**
              * Binds all of our variables to the controller so we can access using this
              */
