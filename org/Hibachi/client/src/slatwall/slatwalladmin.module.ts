@@ -11,11 +11,13 @@ import {SWCurrency} from "./filters/swcurrency";
 declare var slatwallAngular:any;
 declare var $:SlatwallJQueryStatic;
 
+
+
 var slatwalladminmodule = angular.module('slatwalladmin',[
   //Angular Modules
   'ngAnimate',
   'ngRoute',
-  'ngSanitize'
+  'ngSanitize',
   //custom modules
   hibachimodule.name,
   ngslatwallmodule.name,
@@ -118,8 +120,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
  //services
 .service('slatwallInterceptor', SlatwallInterceptor)
 //filters
-.filter('entityRBKey',EntityRBKey.Factory())
-.filter('swcurrency',SWCurrency.Factory())
+.filter('entityRBKey',['$slatwall',EntityRBKey.Factory])
+.filter('swcurrency',['$sce','$log','$slatwall',SWCurrency.Factory])
 ;
 export{
     slatwalladminmodule,

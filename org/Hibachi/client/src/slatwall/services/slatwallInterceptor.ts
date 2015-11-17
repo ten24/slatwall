@@ -21,10 +21,16 @@ interface IInterceptor {
 }
 
 interface IParams{
-	serializedJsonData:any,
-	context:string,
+	serializedJsonData?:any,
+	context?:string,
 	
 }
+
+interface ISlatwallInterceptorPromise<T> extends ng.IPromise<any>{
+	data:any;
+}
+
+
 
 class SlatwallInterceptor implements IInterceptor{
 	public static $inject = ['$location','$window','$q','$log','$injector','alertService','baseURL','dialogService','utilityService'];
@@ -36,7 +42,7 @@ class SlatwallInterceptor implements IInterceptor{
 		$log:ng.ILogService,
 		$injector:ng.auto.IInjectorService,
 		alertService,
-		baseURL,
+		baseURL:string,
 		dialogService,
         utilityService
 	) {
@@ -54,7 +60,7 @@ class SlatwallInterceptor implements IInterceptor{
 		public $log:ng.ILogService,
 		public $injector:ng.auto.IInjectorService, 
 		public alertService,
-		public baseURL,
+		public baseURL:string,
 		public dialogService, 
         public utilityService
 	) {
@@ -141,7 +147,7 @@ class SlatwallInterceptor implements IInterceptor{
 					//open dialog
 					this.dialogService.addPageDialog('preprocesslogin',{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
-                    return $http.get(baseURL+'/index.cfm/api/auth/login').then((loginResponse)=>{
+                    return $http.get(this.baseURL+'/index.cfm/api/auth/login').then((loginResponse:ISlatwallInterceptorPromise<any>)=>{
                         this.$window.localStorage.setItem('token',loginResponse.data.token);
                         rejection.config.headers = rejection.config.headers || {};
                         rejection.config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');

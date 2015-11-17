@@ -1,4 +1,5 @@
-import {CollectionConfig} from "../services/collectionconfigservice";
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
 
 class CollectionController{
 	//@ngInject
@@ -12,13 +13,13 @@ class CollectionController{
 		metadataService,
 		selectionService,
 		paginationService,
-		
+		collectionConfigService
 	){
 		//init values 
 		//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 		$scope.$id="collectionsController";
 		/*used til we convert to use route params*/
-		var QueryString = function () {
+		var QueryString:any = function () {
 		  // This function is anonymous, is executed immediately and 
 		  // the return value is assigned to QueryString!
 		  var query_string = {};
@@ -92,7 +93,8 @@ class CollectionController{
 				$scope.paginator.setPageRecordsInfo($scope.collection);
 				$scope.collectionInitial = angular.copy($scope.collection);
 				if(angular.isUndefined($scope.collectionConfig)){
-                    var test = new CollectionConfig($slatwall);
+					
+                    var test = collectionConfigService.newCollectionConfig();
 					test.loadJson(value.collectionConfig);
                     $scope.collectionConfig = test.getCollectionConfig();
 				}

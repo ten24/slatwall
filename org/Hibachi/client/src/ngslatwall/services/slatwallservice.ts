@@ -1,4 +1,15 @@
-import {SlatwallAngular} from "../../slatwall/slatwalladmin.module";
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+declare var slatwallAngular:any;
+declare var $:SlatwallJQueryStatic;
+declare var escape;
+import {SlatwallJQueryStatic} from "../../slatwall/services/slatwallinterceptor";
+
+
+interface ISlatwallRootScopeService extends ng.IRootScopeService{
+    loadedResourceBundle:boolean;
+	loadingResourceBundle:boolean;
+}
 
 class SlatwallService{
 	public _resourceBundle = {};
@@ -6,7 +17,7 @@ class SlatwallService{
 	public _loadingResourceBundle = false;
 	public _loadedResourceBundle = false;
 	public _deferred = {};
-	public _jsEntities;
+	
 	public static $inject = ['$window','$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
 	
 	constructor(
@@ -15,14 +26,14 @@ class SlatwallService{
 		private $http:ng.IHttpService,
 		private $timeout:ng.ITimeoutService,
 		private $log:ng.ILogService,
-		private $rootScope:ng.IRootScopeService,
+		private $rootScope:ISlatwallRootScopeService,
 		private $location:ng.ILocationService,
 		private $anchorScroll:ng.IAnchorScrollService,
 		private utilityService,
 		private formService,
 		private _config:any,
-		private _jsEntities:any,
-		private _jsEntityInstances:any
+		public _jsEntities:any,
+		public _jsEntityInstances?:any
 		){
 		this.$window = $window;
 		this.$q = $q;
@@ -38,6 +49,7 @@ class SlatwallService{
 		this._jsEntities = _jsEntities;
 		this._jsEntityInstances = _jsEntityInstances;
 	}
+	
 	
 	public buildUrl = (action:string,queryString:string):string =>{
 		//actionName example: slatAction. defined in FW1 and populated to config
@@ -173,7 +185,7 @@ class SlatwallService{
 		return new this._jsEntities[entityName];
 	}
 	/*basic entity getter where id is optional, returns a promise*/
-	getEntity= (entityName, options) => {
+	getEntity= (entityName:string, options:any) => {
 		/*
 			*
 			* getEntity('Product', '12345-12345-12345-12345');
@@ -188,7 +200,7 @@ class SlatwallService{
 			this.cancelPromise(options.deferKey);
 		}
 		
-		var params = {};
+		var params:any= {};
 		if(typeof options === 'string') {
 			var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
 		} else {
@@ -241,7 +253,7 @@ class SlatwallService{
 			};
 		}
 		
-		$http.get(urlString,
+		this.$http.get(urlString,
 			{
 				params:params,
 				timeout:deferred.promise,
@@ -263,7 +275,7 @@ class SlatwallService{
 	}
 	getResizedImageByProfileName = (profileName, skuIDs) => {
 		var deferred = this.$q.defer();
-		return $http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -274,7 +286,7 @@ class SlatwallService{
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
 		
-		$http.get(urlString)
+		this.$http.get(urlString)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -284,25 +296,25 @@ class SlatwallService{
 		return deferred.promise;
 	}
 	checkUniqueOrNullValue = (object, property, value) => {
-		return $http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
+		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
 		'&value=' + escape(value)).then(
-	function (results) {
+	 (results:any):ng.IPromise<any> =>{
 		return results.data.uniqueStatus;
 		})
 	}
 	checkUniqueValue = (object, property, value) => {
-		return $http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
+		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
 			'&value=' + escape(value)).then(
-			function (results) {
+			 (results:any):ng.IPromise<any> =>{
 				return results.data.uniqueStatus;
 		});
 	}
 	getPropertyDisplayData = (entityName,options) => {
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
-		var params = {};
+		var params:any = {};
 		params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-		$http.get(urlString,{params:params})
+		this.$http.get(urlString,{params:params})
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -314,13 +326,13 @@ class SlatwallService{
 	getPropertyDisplayOptions = (entityName,options) => {
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
-		var params = {};
+		var params:any = {};
 		params.property = options.property || '';
 		if(angular.isDefined(options.argument1))  {
 			params.argument1 = options.argument1;
 		}
 		
-		$http.get(urlString,{params:params})
+		this.$http.get(urlString,{params:params})
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -347,7 +359,7 @@ class SlatwallService{
 			params.context = context;
 		}
 		
-		$http({
+		this.$http({
 			url:urlString,
 			method:'POST',
 			data: $.param(params),
@@ -365,7 +377,7 @@ class SlatwallService{
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
 		
-		$http.get(urlString)
+		this.$http.get(urlString)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -378,7 +390,7 @@ class SlatwallService{
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
 		
-		$http.get(urlString)
+		this.$http.get(urlString)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -428,11 +440,11 @@ class SlatwallService{
 	login = (emailAddress,password) => {
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/api/auth/login';
-		var params = {
+		var params:any= {
 			emailAddress:emailAddress,
 			password:password
 		};
-		return $http.get(urlString,{params:params}).success((response) => {
+		return this.$http.get(urlString,{params:params}).success((response) => {
 			deferred.resolve(response);
 		}).error((response) => {
 			deferred.reject(response);
@@ -449,15 +461,15 @@ class SlatwallService{
 		
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.getConfig().instantiationKey+'&locale='+locale;
 		
-		$http(
+		this.$http(
 			{
 				url:urlString,
 				method:"GET"
 			}
-		).success((response,status,headersGetter) => {
+		).success((response:any,status,headersGetter) => {
 			this._resourceBundle[locale] = response.data;
 			deferred.resolve(response);
-		}).error((response) => {
+		}).error((response:any) => {
 			this._resourceBundle[locale] = {};
 			deferred.reject(response);
 		});
@@ -468,7 +480,7 @@ class SlatwallService{
 		var deferred = this.$q.defer();
 		
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey='+this.getConfig().instantiationKey;
-		$http.get(urlString).success((response) => {
+		this.$http.get(urlString).success((response) => {
 			deferred.resolve(response);
 		}).error((response) => {
 			deferred.reject(response);
@@ -486,7 +498,7 @@ class SlatwallService{
 		
 		return keyValue;
 	}
-	getRBKey= (key,locale,checkedKeys,originalKey) => {
+	getRBKey= (key:string,locale:string,checkedKeys?:string,originalKey?:string) => {
 		////$log.debug('getRBKey');
 		////$log.debug('loading:'+this._loadingResourceBundle);
 		////$log.debug('loaded'+this._loadedResourceBundle);
@@ -503,12 +515,11 @@ class SlatwallService{
 			////$log.debug('keylistAray');
 			////$log.debug(keyListArray);
 			if(keyListArray.length > 1) {
-				var keyValue = "";
+				var keyValue:string = "";
 				
 				for(var i=0; i<keyListArray.length; i++) {
-					
-					
-					var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
+				
+					keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
 					//$log.debug('keyvalue:'+keyValue);
 					
 					if(keyValue.slice(-8) != "_missing") {
@@ -594,7 +605,8 @@ class $Slatwall implements ng.IServiceProvider{
 	
 	public _config = {};
 	private angular:ng.IAngularStatic = angular;
-
+	public _jsEntities;
+	public _jsEntityInstances;
 	public setJsEntities = (jsEntities):void =>{
 		this._jsEntities = jsEntities;    
 	}
@@ -635,25 +647,26 @@ class $Slatwall implements ng.IServiceProvider{
 		$http:ng.IHttpService,
 		$timeout:ng.ITimeoutService,
 		$log:ng.ILogService,
-		$rootScope:ng.IRootScopeService,
+		$rootScope:ISlatwallRootScopeService,
 		$location:ng.ILocationService,
 		$anchorScroll:ng.IAnchorScrollService,
 		utilityService,
-		formService:
+		formService
 	) {
 		return new SlatwallService(
-		$window,
-		$q,
-		$http,
-		$timeout,
-		$log,
-		$rootScope,
-		$location,
-		$anchorScroll,
-		utilityService,
-		formService,
-		this.getConfig(),
-		this._jsEntities
+			$window,
+			$q,
+			$http,
+			$timeout,
+			$log,
+			$rootScope,
+			$location,
+			$anchorScroll,
+			utilityService,
+			formService,
+			this.getConfig(),
+			this._jsEntities,
+			this._jsEntityInstances
 		);
 		
 	}

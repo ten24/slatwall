@@ -108,7 +108,7 @@ import {IFilter} from "./collectionconfigservice";
         if(angular.isUndefined(prepareForFilterGroup)){
             prepareForFilterGroup = false;
         }
-        var filterItem = {
+        var filterItem:any = {
                 displayPropertyIdentifier:"",
                 propertyIdentifier:"",
                 comparisonOperator:"",
@@ -136,25 +136,25 @@ import {IFilter} from "./collectionconfigservice";
     }
     
     newFilterGroupItem = (filterItemGroup:any,setItemInUse:any):void =>{
-        var filterGroupItem = {
+        var filterGroupItem:any = {
             filterGroup:[],
             $$disabled:"false",
             $$isClosed:"true",
             $$siblingItems:filterItemGroup,
             $$isNew:"true",
             setItemInUse:setItemInUse   
-        }:IFilter;
+        };
         if(filterItemGroup.length !== 0){
             filterGroupItem.logicalOperator = "AND";
         }
         filterItemGroup.push(filterGroupItem);
         this.selectFilterGroupItem(filterGroupItem);
         
-        this.newFilterItem(filterGroupItem.filterGroup,setItemInUse);
+        this.newFilterItem(filterGroupItem.filterGroup,setItemInUse,undefined);
     } 
     
     transplantFilterItemIntoFilterGroup = (filterGroup:any,filterItem:any):void =>{
-        var filterGroupItem = {
+        var filterGroupItem:any = {
             filterGroup:[],
             $$disabled:"false",
             $$isClosed:"true",

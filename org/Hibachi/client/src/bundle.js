@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(40);
+	var logger_module_1 = __webpack_require__(46);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,11 +648,11 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(37);
-	var ngslatwall_module_1 = __webpack_require__(38);
+	var slatwallinterceptor_1 = __webpack_require__(41);
+	var ngslatwall_module_1 = __webpack_require__(42);
 	//filters
-	var entityrbkey_1 = __webpack_require__(41);
-	var swcurrency_1 = __webpack_require__(42);
+	var entityrbkey_1 = __webpack_require__(44);
+	var swcurrency_1 = __webpack_require__(45);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -749,8 +749,8 @@
 	        });
 	    }])
 	    .service('slatwallInterceptor', slatwallinterceptor_1.SlatwallInterceptor)
-	    .filter('entityRBKey', entityrbkey_1.EntityRBKey.Factory())
-	    .filter('swcurrency', swcurrency_1.SWCurrency.Factory());
+	    .filter('entityRBKey', ['$slatwall', entityrbkey_1.EntityRBKey.Factory])
+	    .filter('swcurrency', ['$sce', '$log', '$slatwall', swcurrency_1.SWCurrency.Factory]);
 	exports.slatwalladminmodule = slatwalladminmodule;
 	// ((): void => {
 	//     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
@@ -861,10 +861,10 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var core_module_1 = __webpack_require__(14);
-	var pagination_module_1 = __webpack_require__(22);
-	var dialog_module_1 = __webpack_require__(25);
-	var collection_module_1 = __webpack_require__(27);
-	var workflow_module_1 = __webpack_require__(35);
+	var pagination_module_1 = __webpack_require__(23);
+	var dialog_module_1 = __webpack_require__(26);
+	var collection_module_1 = __webpack_require__(28);
+	var workflow_module_1 = __webpack_require__(39);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -994,6 +994,8 @@
 	var metadataservice_1 = __webpack_require__(20);
 	//filters
 	var percentage_1 = __webpack_require__(21);
+	//directives
+	var swtypeaheadsearch_1 = __webpack_require__(22);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1021,7 +1023,8 @@
 	    .service('observerService', observerservice_1.ObserverService)
 	    .service('formService', formservice_1.FormService)
 	    .service('metadataService', metadataservice_1.MetaDataService)
-	    .filter('percentage', [percentage_1.PercentageFilter.Factory]);
+	    .filter('percentage', [percentage_1.PercentageFilter.Factory])
+	    .directive('swTypeahedSearch', swtypeaheadsearch_1.SWTypeaheadSearch.Factory());
 	exports.coremodule = coremodule;
 
 
@@ -1675,13 +1678,161 @@
 
 /***/ },
 /* 22 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWTypeaheadSearchController = (function () {
+	    function SWTypeaheadSearchController($slatwall, $timeout, collectionConfigService) {
+	        var _this = this;
+	        this.$slatwall = $slatwall;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.search = function (search) {
+	            if (angular.isDefined(_this.modelBind)) {
+	                _this.modelBind = search;
+	            }
+	            if (search.length > 2) {
+	                if (_this._timeoutPromise) {
+	                    _this.$timeout.cancel(_this._timeoutPromise);
+	                }
+	                _this._timeoutPromise = _this.$timeout(function () {
+	                    if (_this.hideSearch) {
+	                        _this.hideSearch = false;
+	                    }
+	                    _this.results = new Array();
+	                    _this.typeaheadCollectionConfig.setKeywords(search);
+	                    if (angular.isDefined(_this.filterGroupsConfig)) {
+	                        //allows for filtering on search text
+	                        var filterConfig = _this.filterGroupsConfig.replace("replaceWithSearchString", search);
+	                        filterConfig = filterConfig.trim();
+	                        _this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
+	                    }
+	                    var promise = _this.typeaheadCollectionConfig.getEntity();
+	                    promise.then(function (response) {
+	                        if (angular.isDefined(_this.allRecords) && _this.allRecords == false) {
+	                            _this.results = response.pageRecords;
+	                        }
+	                        else {
+	                            _this.results = response.records;
+	                        }
+	                        //Custom method for gravatar on accounts (non-persistant-property)
+	                        if (angular.isDefined(_this.results) && _this.entity == "Account") {
+	                            angular.forEach(_this.results, function (account) {
+	                                account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+	                            });
+	                        }
+	                    });
+	                }, 500);
+	            }
+	            else {
+	                _this.results = [];
+	                _this.hideSearch = true;
+	            }
+	        };
+	        this.addItem = function (item) {
+	            if (!_this.hideSearch) {
+	                _this.hideSearch = true;
+	            }
+	            if (angular.isDefined(_this.displayList)) {
+	                _this.searchText = item[_this.displayList[0]];
+	            }
+	            if (angular.isDefined(_this.addFunction)) {
+	                _this.addFunction({ item: item });
+	            }
+	        };
+	        this.addButtonItem = function () {
+	            if (!_this.hideSearch) {
+	                _this.hideSearch = true;
+	            }
+	            if (angular.isDefined(_this.modelBind)) {
+	                _this.searchText = _this.modelBind;
+	            }
+	            else {
+	                _this.searchText = "";
+	            }
+	            if (angular.isDefined(_this.addButtonFunction)) {
+	                _this.addButtonFunction({ searchString: _this.searchText });
+	            }
+	        };
+	        this.closeThis = function (clickOutsideArgs) {
+	            _this.hideSearch = true;
+	            if (angular.isDefined(clickOutsideArgs)) {
+	                for (var callBackAction in clickOutsideArgs.callBackActions) {
+	                    clickOutsideArgs.callBackActions[callBackAction]();
+	                }
+	            }
+	        };
+	        this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+	        this.typeaheadCollectionConfig.setDisplayProperties(this.properties);
+	        if (angular.isDefined(this.propertiesToDisplay)) {
+	            this.displayList = this.propertiesToDisplay.split(",");
+	        }
+	        if (angular.isDefined(this.allRecords)) {
+	            this.typeaheadCollectionConfig.setAllRecords(this.allRecords);
+	        }
+	        else {
+	            this.typeaheadCollectionConfig.setAllRecords(true);
+	        }
+	    }
+	    SWTypeaheadSearchController.$inject = ["$slatwall", "$timeout", "collectionConfigService"];
+	    return SWTypeaheadSearchController;
+	})();
+	exports.SWTypeaheadSearchController = SWTypeaheadSearchController;
+	var SWTypeaheadSearch = (function () {
+	    function SWTypeaheadSearch($slatwall, $timeout, collectionConfigService, partialsPath) {
+	        this.$slatwall = $slatwall;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.partialsPath = partialsPath;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            entity: "@",
+	            properties: "@",
+	            propertiesToDisplay: "@?",
+	            filterGroupsConfig: "@?",
+	            placeholderText: "@?",
+	            searchText: "=?",
+	            results: "=?",
+	            addFunction: "&?",
+	            addButtonFunction: "&?",
+	            hideSearch: "=",
+	            modelBind: "=?",
+	            clickOutsideArgs: "@"
+	        };
+	        this.controller = SWTypeaheadSearchController;
+	        this.controllerAs = "swTypeaheadSearch";
+	        this.link = function ($scope, element, attrs) {
+	        };
+	        this.templateUrl = partialsPath + "typeaheadsearch.html";
+	    }
+	    SWTypeaheadSearch.Factory = function () {
+	        var directive = function ($slatwall, $timeout, collectionConfigService, partialsPath) {
+	            return new SWTypeaheadSearch($slatwall, $timeout, collectionConfigService, partialsPath);
+	        };
+	        directive.$inject = ["$slatwall", "$timeout", "collectionConfigService", "partialsPath"];
+	        return directive;
+	    };
+	    SWTypeaheadSearch.$inject = ["$slatwall", "$timeout", "collectionConfigService", "partialsPath"];
+	    return SWTypeaheadSearch;
+	})();
+	exports.SWTypeaheadSearch = SWTypeaheadSearch;
+	// angular.module('slatwalladmin').directive('swTypeaheadSearch',
+	// 	["$slatwall", "$timeout", "collectionConfigService", "partialsPath", 
+	// 		($slatwall, $timeout, collectionConfigService, partialsPath) => 
+	// 			new SWTypeaheadSearch($slatwall, $timeout, collectionConfigService, partialsPath)]); 
+
+
+/***/ },
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(23);
-	var swpaginationbar_1 = __webpack_require__(24);
+	var paginationservice_1 = __webpack_require__(24);
+	var swpaginationbar_1 = __webpack_require__(25);
 	var core_module_1 = __webpack_require__(14);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -1693,7 +1844,7 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -1872,7 +2023,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -1933,13 +2084,13 @@
 
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(26);
+	var dialogservice_1 = __webpack_require__(27);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -1948,7 +2099,7 @@
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -1988,7 +2139,7 @@
 
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -1996,14 +2147,17 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(28);
-	var collectionservice_1 = __webpack_require__(29);
-	var collections_1 = __webpack_require__(30);
+	var collectionconfigservice_1 = __webpack_require__(29);
+	var collectionservice_1 = __webpack_require__(30);
+	var collections_1 = __webpack_require__(31);
 	//directives
-	var swcollection_1 = __webpack_require__(31);
-	var swaddfilterbuttons_1 = __webpack_require__(32);
-	var swdisplayoptions_1 = __webpack_require__(33);
-	var swdisplayitem_1 = __webpack_require__(34);
+	var swcollection_1 = __webpack_require__(32);
+	var swaddfilterbuttons_1 = __webpack_require__(33);
+	var swdisplayoptions_1 = __webpack_require__(34);
+	var swdisplayitem_1 = __webpack_require__(35);
+	var swcollectiontable_1 = __webpack_require__(36);
+	var swcolumnitem_1 = __webpack_require__(37);
+	var swconditioncriteria_1 = __webpack_require__(38);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name]).config([function () {
 	    }])
 	    .controller('collections', collections_1.CollectionController)
@@ -2013,12 +2167,15 @@
 	    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
 	    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
 	    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+	    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
+	    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
+	    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
 	    .constant('collectionPartialsPath', 'collection/components/');
 	exports.collectionmodule = collectionmodule;
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -2224,11 +2381,11 @@
 	        this.capitalize = function (s) {
 	            return s && s[0].toUpperCase() + s.slice(1);
 	        };
-	        this.addColumn = function (column) {
-	            if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
-	                _this.addColumn(column.propertyIdentifier, column.title, column);
+	        /*private addColumn=(column:Column)=>{
+	            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+	                this.addColumn(column.propertyIdentifier,column.title,column);
 	            }
-	        };
+	        }*/
 	        this.addColumn = function (column, title, options) {
 	            if (title === void 0) { title = ''; }
 	            if (options === void 0) { options = {}; }
@@ -2457,7 +2614,7 @@
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -2563,13 +2720,13 @@
 	                $$siblingItems: filterItemGroup,
 	                $$isNew: "true",
 	                setItemInUse: setItemInUse
-	            }, IFilter;
+	            };
 	            if (filterItemGroup.length !== 0) {
 	                filterGroupItem.logicalOperator = "AND";
 	            }
 	            filterItemGroup.push(filterGroupItem);
 	            _this.selectFilterGroupItem(filterGroupItem);
-	            _this.newFilterItem(filterGroupItem.filterGroup, setItemInUse);
+	            _this.newFilterItem(filterGroupItem.filterGroup, setItemInUse, undefined);
 	        };
 	        this.transplantFilterItemIntoFilterGroup = function (filterGroup, filterItem) {
 	            var filterGroupItem = {
@@ -2658,13 +2815,14 @@
 
 
 /***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
+/* 31 */
+/***/ function(module, exports) {
 
-	var collectionconfigservice_1 = __webpack_require__(28);
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
 	var CollectionController = (function () {
 	    //@ngInject
-	    function CollectionController($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
+	    function CollectionController($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService, collectionConfigService) {
 	        //init values 
 	        //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 	        $scope.$id = "collectionsController";
@@ -2737,7 +2895,7 @@
 	                $scope.paginator.setPageRecordsInfo($scope.collection);
 	                $scope.collectionInitial = angular.copy($scope.collection);
 	                if (angular.isUndefined($scope.collectionConfig)) {
-	                    var test = new collectionconfigservice_1.CollectionConfig($slatwall);
+	                    var test = collectionConfigService.newCollectionConfig();
 	                    test.loadJson(value.collectionConfig);
 	                    $scope.collectionConfig = test.getCollectionConfig();
 	                }
@@ -2886,7 +3044,7 @@
 	            $('#postToIframe').submit().remove();
 	        };
 	    }
-	    CollectionController.$inject = ["$scope", "$location", "$log", "$timeout", "$slatwall", "collectionService", "metadataService", "selectionService", "paginationService"];
+	    CollectionController.$inject = ["$scope", "$location", "$log", "$timeout", "$slatwall", "collectionService", "metadataService", "selectionService", "paginationService", "collectionConfigService"];
 	    return CollectionController;
 	})();
 	exports.CollectionController = CollectionController;
@@ -2920,9 +3078,11 @@
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWCollection = (function () {
 	    //@ngInject
 	    function SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
@@ -2965,7 +3125,7 @@
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3011,9 +3171,11 @@
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWDisplayOptions = (function () {
 	    //@ngInject
 	    function SWDisplayOptions($http, $compile, $templateCache, $log, $slatwall, collectionService, pathBuilderConfig, collectionPartialsPath) {
@@ -3176,9 +3338,11 @@
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWDisplayItem = (function () {
 	    //@ngInject
 	    function SWDisplayItem($http, $compile, $templateCache, $log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
@@ -3255,13 +3419,2048 @@
 
 
 /***/ },
-/* 35 */
+/* 36 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCollectionTable = (function () {
+	    //ngInject
+	    function SWCollectionTable($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $slatwall) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "collectiontable.html",
+	            scope: {
+	                collection: "=",
+	                collectionConfig: "=",
+	                isRadio: "=",
+	                //angularLink:true || false
+	                angularLinks: "="
+	            },
+	            link: function (scope, element, attrs) {
+	                if (angular.isUndefined(scope.angularLinks)) {
+	                    scope.angularLinks = false;
+	                }
+	                scope.collectionObject = $slatwall['new' + scope.collection.collectionObject]();
+	                var escapeRegExp = function (str) {
+	                    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	                };
+	                scope.replaceAll = function (str, find, replace) {
+	                    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+	                };
+	                /*
+	                 * Handles setting the key on the data.
+	                 * */
+	                angular.forEach(scope.collectionConfig.columns, function (column) {
+	                    $log.debug("Config Key : " + column);
+	                    column.key = column.propertyIdentifier.replace(/\./g, '_').replace(scope.collectionConfig.baseEntityAlias + '_', '');
+	                });
+	                scope.addSelection = function (selectionid, selection) {
+	                    selectionService.addSelection(selectionid, selection);
+	                };
+	            }
+	        };
+	    }
+	    SWCollectionTable.Factory = function () {
+	        var directive = function ($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $slatwall) {
+	            return new SWCollectionTable($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $slatwall);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$log',
+	            'pathBuilderConfig',
+	            'collectionPartialsPath',
+	            'paginationService',
+	            'selectionService',
+	            '$slatwall',
+	        ];
+	        return directive;
+	    };
+	    return SWCollectionTable;
+	})();
+	exports.SWCollectionTable = SWCollectionTable;
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWColumnItem = (function () {
+	    function SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath) {
+	        return {
+	            restrict: 'A',
+	            require: "^swDisplayOptions",
+	            scope: {
+	                column: "=",
+	                columns: "=",
+	                columnIndex: "=",
+	                saveCollection: "&",
+	                propertiesList: "=",
+	                orderBy: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
+	            link: function (scope, element, attrs, displayOptionsController) {
+	                scope.editingDisplayTitle = false;
+	                scope.editDisplayTitle = function () {
+	                    if (angular.isUndefined(scope.column.displayTitle)) {
+	                        scope.column.displayTitle = scope.column.title;
+	                    }
+	                    if (!scope.column.displayTitle.length) {
+	                        scope.column.displayTitle = scope.column.title;
+	                    }
+	                    scope.previousDisplayTitle = scope.column.displayTitle;
+	                    scope.editingDisplayTitle = true;
+	                };
+	                scope.saveDisplayTitle = function () {
+	                    var savePromise = scope.saveCollection();
+	                    scope.editingDisplayTitle = false;
+	                };
+	                scope.cancelDisplayTitle = function () {
+	                    scope.column.displayTitle = scope.previousDisplayTitle;
+	                    scope.editingDisplayTitle = false;
+	                };
+	                $log.debug('displayOptionsController');
+	                if (angular.isUndefined(scope.column.sorting)) {
+	                    scope.column.sorting = {
+	                        active: false,
+	                        sortOrder: 'asc',
+	                        priority: 0
+	                    };
+	                }
+	                scope.toggleVisible = function (column) {
+	                    $log.debug('toggle visible');
+	                    if (angular.isUndefined(column.isVisible)) {
+	                        column.isVisible = false;
+	                    }
+	                    column.isVisible = !column.isVisible;
+	                    scope.saveCollection();
+	                };
+	                scope.toggleSearchable = function (column) {
+	                    $log.debug('toggle searchable');
+	                    if (angular.isUndefined(column.isSearchable)) {
+	                        column.isSearchable = false;
+	                    }
+	                    column.isSearchable = !column.isSearchable;
+	                    scope.saveCollection();
+	                };
+	                scope.toggleExportable = function (column) {
+	                    $log.debug('toggle exporable');
+	                    if (angular.isUndefined(column.isExportable)) {
+	                        column.isExportable = false;
+	                    }
+	                    column.isExportable = !column.isExportable;
+	                    scope.saveCollection();
+	                };
+	                var compareByPriority = function (a, b) {
+	                    if (angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)) {
+	                        if (a.sorting.priority < b.sorting.priority) {
+	                            return -1;
+	                        }
+	                        if (a.sorting.priority > b.sorting.priority) {
+	                            return 1;
+	                        }
+	                    }
+	                    return 0;
+	                };
+	                var updateOrderBy = function () {
+	                    if (angular.isDefined(scope.columns)) {
+	                        var columnsCopy = angular.copy(scope.columns);
+	                        columnsCopy.sort(compareByPriority);
+	                        scope.orderBy = [];
+	                        angular.forEach(columnsCopy, function (column) {
+	                            if (angular.isDefined(column.sorting) && column.sorting.active === true) {
+	                                var orderBy = {
+	                                    propertyIdentifier: column.propertyIdentifier,
+	                                    direction: column.sorting.sortOrder
+	                                };
+	                                scope.orderBy.push(orderBy);
+	                            }
+	                        });
+	                    }
+	                };
+	                scope.toggleSortable = function (column) {
+	                    $log.debug('toggle sortable');
+	                    if (angular.isUndefined(column.sorting)) {
+	                        column.sorting = {
+	                            active: true,
+	                            sortOrder: 'asc',
+	                            priority: 0
+	                        };
+	                    }
+	                    if (column.sorting.active === true) {
+	                        if (column.sorting.sortOrder === 'asc') {
+	                            column.sorting.sortOrder = 'desc';
+	                        }
+	                        else {
+	                            removeSorting(column);
+	                            column.sorting.active = false;
+	                        }
+	                    }
+	                    else {
+	                        column.sorting.active = true;
+	                        column.sorting.sortOrder = 'asc';
+	                        column.sorting.priority = getActivelySorting().length;
+	                    }
+	                    updateOrderBy();
+	                    scope.saveCollection();
+	                };
+	                var removeSorting = function (column, saving) {
+	                    if (column.sorting.active === true) {
+	                        for (var i in scope.columns) {
+	                            if (scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority) {
+	                                scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+	                            }
+	                        }
+	                        column.sorting.priority = 0;
+	                    }
+	                    if (!saving) {
+	                        updateOrderBy();
+	                        scope.saveCollection();
+	                    }
+	                };
+	                scope.prioritize = function (column) {
+	                    if (column.sorting.priority === 1) {
+	                        var activelySorting = getActivelySorting();
+	                        for (var i in scope.columns) {
+	                            if (scope.columns[i].sorting.active === true) {
+	                                scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+	                            }
+	                        }
+	                        column.sorting.priority = activelySorting.length;
+	                    }
+	                    else {
+	                        for (var i in scope.columns) {
+	                            if (scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority === column.sorting.priority - 1) {
+	                                scope.columns[i].sorting.priority = scope.columns[i].sorting.priority + 1;
+	                            }
+	                        }
+	                        column.sorting.priority -= 1;
+	                    }
+	                    updateOrderBy();
+	                    scope.saveCollection();
+	                };
+	                var getActivelySorting = function () {
+	                    var activelySorting = [];
+	                    for (var i in scope.columns) {
+	                        if (scope.columns[i].sorting.active === true) {
+	                            activelySorting.push(scope.columns[i]);
+	                        }
+	                    }
+	                    return activelySorting;
+	                };
+	                scope.removeColumn = function (columnIndex) {
+	                    $log.debug('remove column');
+	                    $log.debug(columnIndex);
+	                    removeSorting(scope.columns[columnIndex], true);
+	                    displayOptionsController.removeColumn(columnIndex);
+	                    updateOrderBy();
+	                    scope.saveCollection();
+	                };
+	            }
+	        };
+	    }
+	    SWColumnItem.Factory = function () {
+	        var directive = function ($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath) {
+	            return new SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$timeout',
+	            'pathBuilderConfig',
+	            'collectionService',
+	            'collectionPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWColumnItem;
+	})();
+	exports.SWColumnItem = SWColumnItem;
+
+
+/***/ },
+/* 38 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWConditionCriteria = (function () {
+	    function SWConditionCriteria($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService) {
+	        /* Template info begin*/
+	        var getTemplate = function (selectedFilterProperty) {
+	            var template = '';
+	            var templatePath = '';
+	            if (angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)) {
+	                templatePath = collectionPartialsPath + "criteria.html";
+	            }
+	            else {
+	                var criteriaormtype = selectedFilterProperty.ormtype;
+	                var criteriafieldtype = selectedFilterProperty.fieldtype;
+	                /*TODO: convert all switches to object literals*/
+	                switch (criteriaormtype) {
+	                    case 'boolean':
+	                        templatePath = collectionPartialsPath + "criteriaboolean.html";
+	                        break;
+	                    case 'string':
+	                        templatePath = collectionPartialsPath + "criteriastring.html";
+	                        break;
+	                    case 'timestamp':
+	                        templatePath = collectionPartialsPath + "criteriadate.html";
+	                        break;
+	                    case 'big_decimal':
+	                    case 'integer':
+	                    case 'float':
+	                        templatePath = collectionPartialsPath + "criterianumber.html";
+	                        break;
+	                }
+	                switch (criteriafieldtype) {
+	                    case "many-to-one":
+	                        templatePath = collectionPartialsPath + "criteriamanytoone.html";
+	                        break;
+	                    case "many-to-many":
+	                        templatePath = collectionPartialsPath + "criteriamanytomany.html";
+	                        break;
+	                    case "one-to-many":
+	                        templatePath = collectionPartialsPath + "criteriaonetomany.html";
+	                        break;
+	                }
+	            }
+	            var templateLoader = $http.get(templatePath, { cache: $templateCache });
+	            return templateLoader;
+	        };
+	        /* Template info end*/
+	        /* Options info begin */
+	        var getStringOptions = function (type) {
+	            var stringOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                stringOptions = [
+	                    {
+	                        display: "Equals",
+	                        comparisonOperator: "="
+	                    },
+	                    {
+	                        display: "Doesn't Equal",
+	                        comparisonOperator: "<>"
+	                    },
+	                    {
+	                        display: "Contains",
+	                        comparisonOperator: "like",
+	                        pattern: "%w%"
+	                    },
+	                    {
+	                        display: "Doesn't Contain",
+	                        comparisonOperator: "not like",
+	                        pattern: "%w%"
+	                    },
+	                    {
+	                        display: "Starts With",
+	                        comparisonOperator: "like",
+	                        pattern: "w%"
+	                    },
+	                    {
+	                        display: "Doesn't Start With",
+	                        comparisonOperator: "not like",
+	                        pattern: "w%"
+	                    },
+	                    {
+	                        display: "Ends With",
+	                        comparisonOperator: "like",
+	                        pattern: "%w"
+	                    },
+	                    {
+	                        display: "Doesn't End With",
+	                        comparisonOperator: "not like",
+	                        pattern: "%w"
+	                    },
+	                    {
+	                        display: "In List",
+	                        comparisonOperator: "in"
+	                    },
+	                    {
+	                        display: "Not In List",
+	                        comparisonOperator: "not in"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	                if (type === 'condition') {
+	                    stringOptions = [
+	                        {
+	                            display: "Equals",
+	                            comparisonOperator: "="
+	                        },
+	                        {
+	                            display: "In List",
+	                            comparisonOperator: "in"
+	                        },
+	                        {
+	                            display: "Defined",
+	                            comparisonOperator: "is not",
+	                            value: "null"
+	                        },
+	                        {
+	                            display: "Not Defined",
+	                            comparisonOperator: "is",
+	                            value: "null"
+	                        }
+	                    ];
+	                }
+	            }
+	            return stringOptions;
+	        };
+	        var getBooleanOptions = function (type) {
+	            var booleanOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type === 'filter' || type === 'condition') {
+	                booleanOptions = [
+	                    {
+	                        display: "True",
+	                        comparisonOperator: "=",
+	                        value: "True"
+	                    },
+	                    {
+	                        display: "False",
+	                        comparisonOperator: "=",
+	                        value: "False"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return booleanOptions;
+	        };
+	        var getDateOptions = function (type) {
+	            var dateOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type === 'filter') {
+	                dateOptions = [
+	                    {
+	                        display: "Date",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'exactDate'
+	                        }
+	                    },
+	                    {
+	                        display: "In Range",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'range'
+	                        }
+	                    },
+	                    {
+	                        display: "Not In Range",
+	                        comparisonOperator: "not between",
+	                        dateInfo: {
+	                            type: 'range'
+	                        }
+	                    },
+	                    {
+	                        display: "Today",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'd',
+	                            measureCount: 0,
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "Yesterday",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'd',
+	                            measureCount: -1,
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Week",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'w',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Month",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'm',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Quarter",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'q',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Year",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'y',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Hour(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'h',
+	                            measureTypeDisplay: 'Hours'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Day(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'd',
+	                            measureTypeDisplay: 'Days'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Week(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'w',
+	                            measureTypeDisplay: 'Weeks'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Month(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'm',
+	                            measureTypeDisplay: 'Months'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Quarter(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'q',
+	                            measureTypeDisplay: 'Quarters'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Year(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'y',
+	                            measureTypeDisplay: 'Years'
+	                        }
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                dateOptions = [
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return dateOptions;
+	        };
+	        var getNumberOptions = function (type) {
+	            var numberOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                numberOptions = [
+	                    {
+	                        display: "Equals",
+	                        comparisonOperator: "="
+	                    },
+	                    {
+	                        display: "Doesn't Equal",
+	                        comparisonOperator: "<>"
+	                    },
+	                    {
+	                        display: "In Range",
+	                        comparisonOperator: "between",
+	                        type: "range"
+	                    },
+	                    {
+	                        display: "Not In Range",
+	                        comparisonOperator: "not between",
+	                        type: "range"
+	                    },
+	                    {
+	                        display: "Greater Than",
+	                        comparisonOperator: ">"
+	                    },
+	                    {
+	                        display: "Greater Than Or Equal",
+	                        comparisonOperator: ">="
+	                    },
+	                    {
+	                        display: "Less Than",
+	                        comparisonOperator: "<"
+	                    },
+	                    {
+	                        display: "Less Than Or Equal",
+	                        comparisonOperator: "<="
+	                    },
+	                    {
+	                        display: "In List",
+	                        comparisonOperator: "in"
+	                    },
+	                    {
+	                        display: "Not In List",
+	                        comparisonOperator: "not in"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                numberOptions = [
+	                    {
+	                        display: "Equals",
+	                        comparisonOperator: "="
+	                    },
+	                    {
+	                        display: "Doesn't Equal",
+	                        comparisonOperator: "<>"
+	                    },
+	                    {
+	                        display: "Greater Than",
+	                        comparisonOperator: ">"
+	                    },
+	                    {
+	                        display: "Greater Than Or Equal",
+	                        comparisonOperator: ">="
+	                    },
+	                    {
+	                        display: "Less Than",
+	                        comparisonOperator: "<"
+	                    },
+	                    {
+	                        display: "Less Than Or Equal",
+	                        comparisonOperator: "<="
+	                    },
+	                    {
+	                        display: "In List",
+	                        comparisonOperator: "in"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return numberOptions;
+	        };
+	        var getOneToManyOptions = function (type) {
+	            var oneToManyOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                oneToManyOptions = [
+	                    {
+	                        display: "All Exist In Collection",
+	                        comparisonOperator: "All"
+	                    },
+	                    {
+	                        display: "None Exist In Collection",
+	                        comparisonOperator: "None"
+	                    },
+	                    {
+	                        display: "Some Exist In Collection",
+	                        comparisonOperator: "One"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                oneToManyOptions = [];
+	            }
+	            return oneToManyOptions;
+	        };
+	        var getManyToManyOptions = function (type) {
+	            var manyToManyOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                manyToManyOptions = [
+	                    {
+	                        display: "All Exist In Collection",
+	                        comparisonOperator: "All"
+	                    },
+	                    {
+	                        display: "None Exist In Collection",
+	                        comparisonOperator: "None"
+	                    },
+	                    {
+	                        display: "Some Exist In Collection",
+	                        comparisonOperator: "One"
+	                    },
+	                    {
+	                        display: "Empty",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Empty",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                manyToManyOptions = [
+	                    {
+	                        display: "Empty",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Empty",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return manyToManyOptions;
+	        };
+	        var getManyToOneOptions = function (type) {
+	            var manyToOneOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                manyToOneOptions = {
+	                    drillEntity: {},
+	                    hasEntity: {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    notHasEntity: {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                };
+	            }
+	            return manyToOneOptions;
+	        };
+	        /* Options info end */
+	        var linker = function (scope, element, attrs) {
+	            /*show the user the value without % symbols as these are reserved*/
+	            scope.$watch('selectedFilterProperty.criteriaValue', function (criteriaValue) {
+	                if (angular.isDefined(criteriaValue)) {
+	                    scope.selectedFilterProperty.criteriaValue = $filter('likeFilter')(criteriaValue);
+	                }
+	            });
+	            scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+	                if (angular.isDefined(selectedFilterProperty)) {
+	                    $log.debug('watchSelectedFilterProperty');
+	                    $log.debug(scope.selectedFilterProperty);
+	                    /*prepopulate if we have a comparison operator and value*/
+	                    if (selectedFilterProperty === null) {
+	                        return;
+	                    }
+	                    if (angular.isDefined(selectedFilterProperty.ormtype)) {
+	                        switch (scope.selectedFilterProperty.ormtype) {
+	                            case "boolean":
+	                                scope.conditionOptions = getBooleanOptions();
+	                                break;
+	                            case "string":
+	                                scope.conditionOptions = getStringOptions();
+	                                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                                    //scope.selectedFilterProperty.criteriaValue = '';
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                        selectedFilterProperty.showCriteriaValue = false;
+	                                    }
+	                                    else {
+	                                        selectedFilterProperty.showCriteriaValue = true;
+	                                    }
+	                                };
+	                                break;
+	                            case "timestamp":
+	                                scope.conditionOptions = getDateOptions();
+	                                scope.today = function () {
+	                                    if (angular.isDefined(scope.selectedFilterProperty)) {
+	                                        scope.selectedFilterProperty.criteriaRangeStart = new Date();
+	                                        scope.selectedFilterProperty.criteriaRangeEnd = new Date();
+	                                    }
+	                                };
+	                                scope.clear = function () {
+	                                    scope.selectedFilterProperty.criteriaRangeStart = null;
+	                                    scope.selectedFilterProperty.criteriaRangeEnd = null;
+	                                };
+	                                scope.openCalendarStart = function ($event) {
+	                                    $event.preventDefault();
+	                                    $event.stopPropagation();
+	                                    scope.openedCalendarStart = true;
+	                                };
+	                                scope.openCalendarEnd = function ($event) {
+	                                    $event.preventDefault();
+	                                    $event.stopPropagation();
+	                                    scope.openedCalendarEnd = true;
+	                                };
+	                                scope.formats = [
+	                                    'dd-MMMM-yyyy',
+	                                    'yyyy/MM/dd',
+	                                    'dd.MM.yyyy',
+	                                    'shortDate'];
+	                                scope.format = scope.formats[1];
+	                                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                                    $log.debug('selectedConditionChanged Begin');
+	                                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                                    //check whether condition is checking for null values in date
+	                                    if (angular.isDefined(selectedCondition.dateInfo)) {
+	                                        //is condition a calculation
+	                                        if (selectedCondition.dateInfo.type === 'calculation') {
+	                                            selectedCondition.showCriteriaStart = true;
+	                                            selectedCondition.showCriteriaEnd = true;
+	                                            selectedCondition.disableCriteriaStart = true;
+	                                            selectedCondition.disableCriteriaEnd = true;
+	                                            //if item is a calculation of an N number of measure display the measure and number input
+	                                            if (angular.isUndefined(selectedCondition.dateInfo.behavior)) {
+	                                                $log.debug('Not toDate');
+	                                                selectedCondition.showNumberOf = true;
+	                                                selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+	                                            }
+	                                            else {
+	                                                $log.debug('toDate');
+	                                                var today = Date.parse('today');
+	                                                var todayEOD = today.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = todayEOD;
+	                                                //get this Measure to date
+	                                                switch (selectedCondition.dateInfo.measureType) {
+	                                                    case 'd':
+	                                                        var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
+	                                                        dateBOD.setHours(0, 0, 0, 0);
+	                                                        selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
+	                                                        break;
+	                                                    case 'w':
+	                                                        var firstDayOfWeek = Date.today().last().monday();
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
+	                                                        break;
+	                                                    case 'm':
+	                                                        var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
+	                                                        break;
+	                                                    case 'q':
+	                                                        var month = Date.parse('today').toString('MM');
+	                                                        var year = Date.parse('today').toString('yyyy');
+	                                                        var quarterMonth = (Math.floor(month / 3) * 3);
+	                                                        var firstDayOfQuarter = new Date(year, quarterMonth, 1);
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
+	                                                        break;
+	                                                    case 'y':
+	                                                        var year = Date.parse('today').toString('yyyy');
+	                                                        var firstDayOfYear = new Date(year, 0, 1);
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
+	                                                        break;
+	                                                }
+	                                            }
+	                                        }
+	                                        if (selectedCondition.dateInfo.type === 'range') {
+	                                            selectedCondition.showCriteriaStart = true;
+	                                            selectedCondition.showCriteriaEnd = true;
+	                                            selectedCondition.disableCriteriaStart = false;
+	                                            selectedCondition.disableCriteriaEnd = false;
+	                                            selectedCondition.showNumberOf = false;
+	                                        }
+	                                        if (selectedCondition.dateInfo.type === 'exactDate') {
+	                                            selectedCondition.showCriteriaStart = true;
+	                                            selectedCondition.showCriteriaEnd = false;
+	                                            selectedCondition.disableCriteriaStart = false;
+	                                            selectedCondition.disableCriteriaEnd = true;
+	                                            selectedCondition.showNumberOf = false;
+	                                            selectedCondition.conditionDisplay = '';
+	                                            selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+	                                            selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+	                                        }
+	                                    }
+	                                    else {
+	                                        selectedCondition.showCriteriaStart = false;
+	                                        selectedCondition.showCriteriaEnd = false;
+	                                        selectedCondition.showNumberOf = false;
+	                                        selectedCondition.conditionDisplay = '';
+	                                    }
+	                                    $log.debug('selectedConditionChanged End');
+	                                    $log.debug('selectedConditionChanged Result');
+	                                    $log.debug(selectedCondition);
+	                                    $log.debug(selectedFilterProperty);
+	                                };
+	                                scope.criteriaRangeChanged = function (selectedFilterProperty) {
+	                                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                                    if (selectedCondition.dateInfo.type === 'calculation') {
+	                                        var measureCount = selectedFilterProperty.criteriaNumberOf;
+	                                        switch (selectedCondition.dateInfo.measureType) {
+	                                            case 'h':
+	                                                var today = Date.parse('today');
+	                                                selectedFilterProperty.criteriaRangeEnd = today.getTime();
+	                                                var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
+	                                                selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
+	                                                break;
+	                                            case 'd':
+	                                                var lastFullDay = Date.parse('today').add(-1).days();
+	                                                lastFullDay.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
+	                                                var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
+	                                                break;
+	                                            case 'w':
+	                                                var lastFullWeekEnd = Date.today().last().sunday();
+	                                                lastFullWeekEnd.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
+	                                                var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
+	                                                break;
+	                                            case 'm':
+	                                                var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
+	                                                lastFullMonthEnd.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
+	                                                var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
+	                                                break;
+	                                            case 'q':
+	                                                var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+	                                                var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+	                                                var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
+	                                                lastDayOfPreviousQuarter.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
+	                                                var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+	                                                lastXQuartersAgo.add(-(measureCount * 3)).months();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
+	                                                break;
+	                                            case 'y':
+	                                                var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
+	                                                lastFullYearEnd.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
+	                                                var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount) - 1).years();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
+	                                                break;
+	                                        }
+	                                    }
+	                                    if (selectedCondition.dateInfo.type === 'exactDate') {
+	                                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
+	                                        selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+	                                    }
+	                                    if (selectedCondition.dateInfo.type === 'range') {
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+	                                            selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+	                                        }
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd)) {
+	                                            selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23, 59, 59, 999);
+	                                        }
+	                                    }
+	                                    $log.debug('criteriaRangeChanged');
+	                                    $log.debug(selectedCondition);
+	                                    $log.debug(selectedFilterProperty);
+	                                };
+	                                break;
+	                            case "big_decimal":
+	                            case "integer":
+	                            case "float":
+	                                scope.conditionOptions = getNumberOptions();
+	                                scope.criteriaRangeChanged = function (selectedFilterProperty) {
+	                                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                                };
+	                                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                                    selectedFilterProperty.showCriteriaValue = true;
+	                                    //check whether the type is a range
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)) {
+	                                        selectedFilterProperty.showCriteriaValue = false;
+	                                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+	                                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+	                                    }
+	                                    //is null or is not null
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                        selectedFilterProperty.showCriteriaValue = false;
+	                                    }
+	                                };
+	                                break;
+	                        }
+	                    }
+	                    if (angular.isDefined(scope.selectedFilterProperty.fieldtype)) {
+	                        switch (scope.selectedFilterProperty.fieldtype) {
+	                            case "many-to-one":
+	                                scope.conditionOptions = getManyToOneOptions(scope.comparisonType);
+	                                $log.debug('many-to-one');
+	                                $log.debug(scope.selectedFilterProperty);
+	                                $log.debug(scope.filterPropertiesList);
+	                                if (angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])) {
+	                                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+	                                    filterPropertiesPromise.then(function (value) {
+	                                        scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+	                                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier], scope.selectedFilterProperty.propertyIdentifier);
+	                                    }, function (reason) {
+	                                    });
+	                                }
+	                                break;
+	                            case "many-to-many":
+	                            case "one-to-many":
+	                                scope.manyToManyOptions = getManyToManyOptions();
+	                                scope.oneToManyOptions = getOneToManyOptions();
+	                                var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+	                                existingCollectionsPromise.then(function (value) {
+	                                    scope.collectionOptions = value.data;
+	                                    if (angular.isDefined(scope.workflowCondition.collectionID)) {
+	                                        for (var i in scope.collectionOptions) {
+	                                            if (scope.collectionOptions[i].collectionID === scope.workflowCondition.collectionID) {
+	                                                scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+	                                            }
+	                                        }
+	                                        for (var i in scope.oneToManyOptions) {
+	                                            if (scope.oneToManyOptions[i].comparisonOperator === scope.workflowCondition.criteria) {
+	                                                scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
+	                                            }
+	                                        }
+	                                    }
+	                                });
+	                                break;
+	                        }
+	                    }
+	                    $log.debug('workflowCondition');
+	                    $log.debug(scope.workflowCondition);
+	                    angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                        if (conditionOption.display == scope.workflowCondition.conditionDisplay) {
+	                            scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                            scope.selectedFilterProperty.criteriaValue = scope.workflowCondition.value;
+	                            if (angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
+	                                && angular.isDefined(scope.workflowCondition.value)
+	                                && scope.workflowCondition.value.length) {
+	                                var dateRangeArray = scope.workflowCondition.value.split("-");
+	                                scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
+	                                scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
+	                            }
+	                            if (angular.isDefined(scope.workflowCondition.criteriaNumberOf)) {
+	                                scope.selectedFilterProperty.criteriaNumberOf = scope.workflowCondition.criteriaNumberOf;
+	                            }
+	                            if (angular.isDefined(scope.selectedConditionChanged)) {
+	                                scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                            }
+	                        }
+	                    });
+	                    $log.debug('templateLoader');
+	                    $log.debug(selectedFilterProperty);
+	                    var templateLoader = getTemplate(selectedFilterProperty);
+	                    var promise = templateLoader.success(function (html) {
+	                        element.html(html);
+	                        $compile(element.contents())(scope);
+	                    });
+	                }
+	            });
+	            scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                $log.debug(selectedCriteria);
+	                //update breadcrumbs as array of filterpropertylist keys
+	                $log.debug(scope.selectedFilterProperty);
+	                var breadCrumb = {
+	                    entityAlias: scope.selectedFilterProperty.name,
+	                    cfc: scope.selectedFilterProperty.cfc,
+	                    propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier
+	                };
+	                scope.workflowCondition.breadCrumbs.push(breadCrumb);
+	                //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                //update criteria to display the condition of the new critera we have selected
+	            };
+	        };
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflowCondition: "=",
+	                selectedFilterProperty: "=",
+	                filterPropertiesList: "=",
+	                selectedFilterPropertyChanged: "&"
+	            },
+	            link: linker
+	        };
+	    }
+	    SWConditionCriteria.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService) {
+	            return new SWConditionCriteria($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'workflowPartialsPath',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService'
+	        ];
+	        return directive;
+	    };
+	    return SWConditionCriteria;
+	})();
+	exports.SWConditionCriteria = SWConditionCriteria;
+	// 'use strict';
+	// angular.module('slatwalladmin')
+	// .directive('swConditionCriteria', [
+	// 	'$http',
+	// 	'$compile',
+	// 	'$templateCache',
+	// 	'$log',
+	// 	'$slatwall',
+	// 	'$filter',
+	// 	'workflowPartialsPath',
+	// 	'collectionPartialsPath',
+	// 	'collectionService',
+	// 	'metadataService',
+	// 	function(
+	// 		$http,
+	// 		$compile,
+	// 		$templateCache,
+	// 		$log,
+	// 		$slatwall,
+	// 		$filter,
+	// 		workflowPartialsPath,
+	// 		collectionPartialsPath,
+	// 		collectionService,
+	// 		metadataService
+	// 	){
+	// 	/* Template info begin*/
+	// 		var getTemplate = function(selectedFilterProperty){
+	// 	        var template = '';
+	// 			var templatePath = '';
+	// 			if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
+	// 				templatePath = collectionPartialsPath+"criteria.html";
+	// 			}else{
+	// 				var criteriaormtype = selectedFilterProperty.ormtype;
+	// 				var criteriafieldtype = selectedFilterProperty.fieldtype;
+	// 				/*TODO: convert all switches to object literals*/
+	// 		        switch(criteriaormtype){
+	// 		            case 'boolean':
+	// 		               templatePath = collectionPartialsPath+"criteriaboolean.html";
+	// 		                break;
+	// 		            case 'string':
+	// 		                templatePath = collectionPartialsPath+"criteriastring.html";
+	// 		                break;
+	// 		            case 'timestamp':
+	// 		                templatePath = collectionPartialsPath+"criteriadate.html";
+	// 		                break;
+	// 		            case 'big_decimal':
+	// 		            case 'integer':
+	// 		            case 'float':
+	// 		            	templatePath = collectionPartialsPath+"criterianumber.html";
+	// 		            	break;
+	// 		        }
+	// 		        switch(criteriafieldtype){
+	// 			        case "many-to-one":
+	// 			        	templatePath = collectionPartialsPath+"criteriamanytoone.html";
+	// 						break;
+	// 					case "many-to-many":
+	// 						templatePath = collectionPartialsPath+"criteriamanytomany.html";
+	// 						break;
+	// 					case "one-to-many":
+	// 						templatePath = collectionPartialsPath+"criteriaonetomany.html";
+	// 						break;
+	// 			    }
+	// 			}
+	// 	        var templateLoader = $http.get(templatePath,{cache:$templateCache});
+	// 	        return templateLoader;
+	// 	    }; 
+	// 	/* Template info end*/
+	// 	/* Options info begin */
+	// 	    var getStringOptions = function(type){
+	// 	    	var stringOptions = [];
+	// 	    	if(angular.isUndefined(type)){
+	// 	    		type = 'filter';
+	// 	    	}
+	// 	    	if(type == 'filter'){
+	// 	    		stringOptions = [
+	// 					{
+	// 						display:"Equals",
+	// 						comparisonOperator:"="
+	// 					},
+	// 					{
+	// 						display:"Doesn't Equal",
+	// 						comparisonOperator:"<>"
+	// 					},
+	// 					{
+	// 						display:"Contains",
+	// 						comparisonOperator:"like",
+	// 						pattern:"%w%"
+	// 					},
+	// 					{
+	// 						display:"Doesn't Contain",
+	// 						comparisonOperator:"not like",
+	// 						pattern:"%w%"
+	// 					},
+	// 					{
+	// 						display:"Starts With",
+	// 						comparisonOperator:"like",
+	// 						pattern:"w%"
+	// 					},
+	// 					{
+	// 						display:"Doesn't Start With",
+	// 						comparisonOperator:"not like",
+	// 						pattern:"w%"
+	// 					},
+	// 					{
+	// 						display:"Ends With",
+	// 						comparisonOperator:"like",
+	// 						pattern:"%w"
+	// 					},
+	// 					{
+	// 						display:"Doesn't End With",
+	// 						comparisonOperator:"not like",
+	// 						pattern:"%w"
+	// 					},
+	// 					{
+	// 						display:"In List",
+	// 						comparisonOperator:"in"
+	// 					},
+	// 					{
+	// 						display:"Not In List",
+	// 						comparisonOperator:"not in"
+	// 					},
+	// 					{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 				];
+	// 				if(type === 'condition'){
+	// 					stringOptions = [
+	// 					{
+	// 						display:"Equals",
+	// 						comparisonOperator:"="
+	// 					},
+	// 					{
+	// 						display:"In List",
+	// 						comparisonOperator:"in"
+	// 					},
+	// 					{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 				];
+	// 				}
+	// 	    	}
+	// 			return stringOptions;
+	// 	    };
+	// 	    var getBooleanOptions = function(type){
+	// 	    	var booleanOptions = [];
+	// 	    	if(angular.isUndefined(type)){
+	// 	    		type = 'filter';
+	// 	    	}
+	// 	    	if(type === 'filter' || type === 'condition'){
+	// 		    	booleanOptions = [
+	// 		    		{
+	// 		    			display:"True",
+	// 		    			comparisonOperator:"=",
+	// 		    			value:"True"
+	// 		    		},
+	// 		    		{
+	// 		    			display:"False",
+	// 		    			comparisonOperator:"=",
+	// 		    			value:"False"
+	// 		    		},
+	// 					{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 		    	];
+	// 		    }
+	// 	    	return booleanOptions;
+	// 	    };
+	// 	    var getDateOptions = function(type){
+	// 	    	var dateOptions = [];
+	// 	    	if(angular.isUndefined(type)){
+	// 	    		type = 'filter';
+	// 	    	}
+	// 	    	if(type === 'filter'){
+	// 		    	dateOptions = [
+	// 		    		{
+	// 		    			display:"Date",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'exactDate',
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"In Range",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'range'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Not In Range",
+	// 		    			comparisonOperator:	"not between",
+	// 		    			dateInfo:{
+	// 		    				type:'range'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Today",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'d',
+	// 		    				measureCount:0,
+	// 		    				behavior:'toDate'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Yesterday",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'d',
+	// 		    				measureCount:-1,
+	// 		    				behavior:'toDate'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"This Week",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'w',
+	// 		    				behavior:'toDate'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"This Month",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'m',
+	// 		    				behavior:'toDate'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"This Quarter",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'q',
+	// 		    				behavior:'toDate'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"This Year",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'y',
+	// 		    				behavior:'toDate'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Last N Hour(s)",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'h',
+	// 		    				measureTypeDisplay:'Hours'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Last N Day(s)",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'d',
+	// 		    				measureTypeDisplay:'Days'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Last N Week(s)",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'w',
+	// 		    				measureTypeDisplay:'Weeks'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Last N Month(s)",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'m',
+	// 		    				measureTypeDisplay:'Months'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Last N Quarter(s)",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'q',
+	// 		    				measureTypeDisplay:'Quarters'
+	// 		    			}
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Last N Year(s)",
+	// 		    			comparisonOperator:	"between",
+	// 		    			dateInfo:{
+	// 		    				type:'calculation',
+	// 		    				measureType:'y',
+	// 		    				measureTypeDisplay:'Years'
+	// 		    			}
+	// 		    		},
+	// 					{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 		    	];
+	// 		    }
+	// 		    if(type === 'condition'){
+	// 		    	dateOptions = [
+	// 					{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 		    	];
+	// 		    }
+	// 	    	return dateOptions;
+	// 	    };
+	// 	    var getNumberOptions = function(type){
+	// 	    	var numberOptions = [];
+	// 	    	if(angular.isUndefined(type)){
+	// 	    		type = 'filter';
+	// 	    	}
+	// 	    	if(type == 'filter'){
+	// 		    	numberOptions = [
+	// 		    		{
+	// 						display:"Equals",
+	// 						comparisonOperator:"="
+	// 					},
+	// 					{
+	// 						display:"Doesn't Equal",
+	// 						comparisonOperator:"<>"
+	// 					},
+	// 					{
+	// 		    			display:"In Range",
+	// 		    			comparisonOperator:	"between",
+	// 		    			type:"range"
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Not In Range",
+	// 		    			comparisonOperator:	"not between",
+	// 		    			type:"range"
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Greater Than",
+	// 		    			comparisonOperator:">"
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Greater Than Or Equal",
+	// 		    			comparisonOperator:">="
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Less Than",
+	// 		    			comparisonOperator:"<"
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Less Than Or Equal",
+	// 		    			comparisonOperator:"<="
+	// 		    		},
+	// 					{
+	// 						display:"In List",
+	// 						comparisonOperator:"in"
+	// 					},
+	// 					{
+	// 						display:"Not In List",
+	// 						comparisonOperator:"not in"
+	// 					},
+	// 					{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 		    	];
+	// 		    }
+	// 		    if(type === 'condition'){
+	// 		    	numberOptions = [
+	// 		    		{
+	// 						display:"Equals",
+	// 						comparisonOperator:"="
+	// 					},
+	// 					{
+	// 						display:"Doesn't Equal",
+	// 						comparisonOperator:"<>"
+	// 					},
+	// 		    		{
+	// 		    			display:"Greater Than",
+	// 		    			comparisonOperator:">"
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Greater Than Or Equal",
+	// 		    			comparisonOperator:">="
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Less Than",
+	// 		    			comparisonOperator:"<"
+	// 		    		},
+	// 		    		{
+	// 		    			display:"Less Than Or Equal",
+	// 		    			comparisonOperator:"<="
+	// 		    		},
+	// 					{
+	// 						display:"In List",
+	// 						comparisonOperator:"in"
+	// 					},
+	// 					{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 		    	];
+	// 		    }
+	// 	    	return numberOptions;
+	// 	    };
+	// 	    var getOneToManyOptions = function(type){
+	// 	    	var oneToManyOptions = [];
+	// 	    	if(angular.isUndefined(type)){
+	// 	    		type = 'filter';
+	// 	    	}
+	// 	    	if(type == 'filter'){
+	// 		    	oneToManyOptions = [
+	// 		        	{
+	// 		        		display:"All Exist In Collection",
+	// 		        		comparisonOperator:"All"
+	// 		        	},
+	// 		        	{
+	// 		        		display:"None Exist In Collection",
+	// 		        		comparisonOperator:"None"
+	// 		        	},
+	// 		        	{
+	// 		        		display:"Some Exist In Collection",
+	// 		        		comparisonOperator:"One"
+	// 		        	}
+	// 		        ];
+	// 		    }
+	// 		    if(type === 'condition'){
+	// 		    	oneToManyOptions = [];
+	// 		    }
+	// 	    	return oneToManyOptions;
+	// 	    };
+	// 	    var getManyToManyOptions = function(type){
+	// 	    	var manyToManyOptions = [];
+	// 	    	if(angular.isUndefined(type)){
+	// 	    		type = 'filter';
+	// 	    	}
+	// 	    	if(type == 'filter'){
+	// 		    	manyToManyOptions = [
+	// 		         	{
+	// 		        		display:"All Exist In Collection",
+	// 		        		comparisonOperator:"All"
+	// 		        	},
+	// 		        	{
+	// 		        		display:"None Exist In Collection",
+	// 		        		comparisonOperator:"None"
+	// 		        	},
+	// 		        	{
+	// 		        		display:"Some Exist In Collection",
+	// 		        		comparisonOperator:"One"
+	// 		        	},
+	// 		        	{
+	// 		        		display:"Empty",
+	// 		        		comparisonOperator:"is",
+	// 		        		value:"null"
+	// 		        	},
+	// 		        	{
+	// 		        		display:"Not Empty",
+	// 		        		comparisonOperator:"is not",
+	// 		        		value:"null"
+	// 		        	}
+	// 		        ];
+	// 		    }
+	// 		    if(type === 'condition'){ 
+	// 		    	manyToManyOptions = [
+	// 			    	{
+	// 		        		display:"Empty",
+	// 		        		comparisonOperator:"is",
+	// 		        		value:"null"
+	// 		        	},
+	// 		        	{
+	// 		        		display:"Not Empty",
+	// 		        		comparisonOperator:"is not",
+	// 		        		value:"null"
+	// 		        	}
+	// 	        	];
+	// 		    }
+	// 	    	return manyToManyOptions;
+	// 	    };
+	// 	    var getManyToOneOptions = function(type){
+	// 	    	var manyToOneOptions = [];
+	// 	    	if(angular.isUndefined(type)){
+	// 	    		type = 'filter';
+	// 	    	}
+	// 	    	if(type == 'filter'){
+	// 		    	manyToOneOptions = {
+	// 		            drillEntity:{},
+	// 					hasEntity:{
+	// 						display:"Defined",
+	// 						comparisonOperator:"is not",
+	// 						value:"null"
+	// 					},
+	// 					notHasEntity:{
+	// 						display:"Not Defined",
+	// 						comparisonOperator:"is",
+	// 						value:"null"
+	// 					}
+	// 		    	};
+	// 		    }
+	// 	    	return manyToOneOptions;
+	// 	    };
+	// 	/* Options info end */
+	// 	    var linker = function(scope, element, attrs){
+	// 	    	/*show the user the value without % symbols as these are reserved*/
+	// 	    	scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
+	// 	    		if(angular.isDefined(criteriaValue)){
+	// 	    			scope.selectedFilterProperty.criteriaValue = $filter('likeFilter')(criteriaValue);
+	// 	    		}
+	// 	    	});
+	// 			scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
+	// 				if(angular.isDefined(selectedFilterProperty)){
+	// 					$log.debug('watchSelectedFilterProperty');
+	// 					$log.debug(scope.selectedFilterProperty);
+	// 					/*prepopulate if we have a comparison operator and value*/
+	// 					if(selectedFilterProperty === null){
+	// 						return;
+	// 					}
+	// 					if(angular.isDefined(selectedFilterProperty.ormtype)){
+	// 						switch(scope.selectedFilterProperty.ormtype){
+	// 							case "boolean":
+	// 				    			scope.conditionOptions = getBooleanOptions();
+	// 				    			break;
+	// 				    		case "string":
+	// 				    			scope.conditionOptions = getStringOptions();
+	// 				    			scope.selectedConditionChanged = function(selectedFilterProperty){
+	// 				    				//scope.selectedFilterProperty.criteriaValue = '';
+	// 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+	// 				    					selectedFilterProperty.showCriteriaValue = false;
+	// 				    				}else{
+	// 				    					selectedFilterProperty.showCriteriaValue = true;
+	// 				    				}
+	// 				    			};
+	// 				    			break;
+	// 				    		case "timestamp":
+	// 				    			scope.conditionOptions = getDateOptions();
+	// 								scope.today = function() {
+	// 									if (angular.isDefined(scope.selectedFilterProperty)) {
+	// 										scope.selectedFilterProperty.criteriaRangeStart = new Date();
+	// 										scope.selectedFilterProperty.criteriaRangeEnd = new Date();
+	// 									}
+	// 								};
+	// 								scope.clear = function() {
+	// 									scope.selectedFilterProperty.criteriaRangeStart = null;
+	// 									scope.selectedFilterProperty.criteriaRangeEnd = null;
+	// 								};
+	// 								scope.openCalendarStart = function($event) {
+	// 									$event.preventDefault();
+	// 									$event.stopPropagation();
+	// 									scope.openedCalendarStart = true;
+	// 								};
+	// 								scope.openCalendarEnd = function($event) {
+	// 									$event.preventDefault();
+	// 									$event.stopPropagation();
+	// 									scope.openedCalendarEnd = true;
+	// 								};
+	// 								scope.formats = [
+	// 										'dd-MMMM-yyyy',
+	// 										'yyyy/MM/dd',
+	// 										'dd.MM.yyyy',
+	// 										'shortDate' ];
+	// 								scope.format = scope.formats[1];
+	// 								scope.selectedConditionChanged = function(selectedFilterProperty){
+	// 									$log.debug('selectedConditionChanged Begin');
+	// 								  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	// 								  	//check whether condition is checking for null values in date
+	// 								  	if(angular.isDefined(selectedCondition.dateInfo)){
+	// 								  		//is condition a calculation
+	// 								  		if(selectedCondition.dateInfo.type === 'calculation'){
+	// 								  			selectedCondition.showCriteriaStart = true;
+	// 								  			selectedCondition.showCriteriaEnd = true;
+	// 								  			selectedCondition.disableCriteriaStart = true;
+	// 								  			selectedCondition.disableCriteriaEnd = true;
+	// 								  			//if item is a calculation of an N number of measure display the measure and number input
+	// 						  					if(angular.isUndefined(selectedCondition.dateInfo.behavior)){
+	// 								  				$log.debug('Not toDate');
+	// 								  				selectedCondition.showNumberOf = true; 
+	// 								  				selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
+	// 						  					}else{
+	// 						  						$log.debug('toDate');
+	// 						  						var today = Date.parse('today');
+	// 							  					var todayEOD = today.setHours(23,59,59,999);
+	// 							  					selectedFilterProperty.criteriaRangeEnd = todayEOD;
+	// 						  						//get this Measure to date
+	// 						  						switch(selectedCondition.dateInfo.measureType){
+	// 						  							case 'd':
+	// 						  								var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
+	// 						  								dateBOD.setHours(0,0,0,0);
+	// 						  								selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
+	// 						  								break;
+	// 						  							case 'w':
+	// 						  								var firstDayOfWeek = Date.today().last().monday();
+	// 						  								selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
+	// 						  								break;
+	// 						  							case 'm':
+	// 						  								var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
+	// 									  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
+	// 						  								break;
+	// 						  							case 'q':
+	// 						  								var month = Date.parse('today').toString('MM');
+	// 						  								var year = Date.parse('today').toString('yyyy');
+	// 						  								var quarterMonth = (Math.floor(month/3)*3);
+	// 						  								var firstDayOfQuarter = new Date(year,quarterMonth,1);
+	// 						  								selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
+	// 						  								break;
+	// 						  							case 'y':
+	// 						  								var year = Date.parse('today').toString('yyyy');
+	// 						  								var firstDayOfYear = new Date(year,0,1);
+	// 						  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
+	// 						  								break;
+	// 						  						}
+	// 						  					}
+	// 								  		}
+	// 								  		if(selectedCondition.dateInfo.type === 'range'){
+	// 								  			selectedCondition.showCriteriaStart = true;
+	// 								  			selectedCondition.showCriteriaEnd = true;
+	// 								  			selectedCondition.disableCriteriaStart = false;
+	// 								  			selectedCondition.disableCriteriaEnd = false;
+	// 								  			selectedCondition.showNumberOf = false;
+	// 								  		}
+	// 								  		if(selectedCondition.dateInfo.type === 'exactDate'){
+	// 								  			selectedCondition.showCriteriaStart = true;
+	// 								  			selectedCondition.showCriteriaEnd = false;
+	// 								  			selectedCondition.disableCriteriaStart = false;
+	// 								  			selectedCondition.disableCriteriaEnd = true;
+	// 								  			selectedCondition.showNumberOf = false; 
+	// 								  			selectedCondition.conditionDisplay = '';
+	// 								  			selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
+	// 					  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+	// 								  		}
+	// 								  	}else{
+	// 								  		selectedCondition.showCriteriaStart = false;
+	// 								  		selectedCondition.showCriteriaEnd = false;
+	// 								  		selectedCondition.showNumberOf = false;
+	// 								  		selectedCondition.conditionDisplay = '';
+	// 								  	}
+	// 							  		$log.debug('selectedConditionChanged End');
+	// 							  		$log.debug('selectedConditionChanged Result');
+	// 							  		$log.debug(selectedCondition); 
+	// 							  		$log.debug(selectedFilterProperty);
+	// 								  };
+	// 								  scope.criteriaRangeChanged = function(selectedFilterProperty){
+	// 								  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	// 								  	if(selectedCondition.dateInfo.type === 'calculation'){
+	// 									  	var measureCount = selectedFilterProperty.criteriaNumberOf;
+	// 						  				switch(selectedCondition.dateInfo.measureType){
+	// 						  					case 'h':
+	// 						  						var today = Date.parse('today');
+	// 							  					selectedFilterProperty.criteriaRangeEnd = today.getTime();
+	// 							  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
+	// 							  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
+	// 						  						break;
+	// 						  					case 'd':
+	// 						  						var lastFullDay = Date.parse('today').add(-1).days();
+	// 						  						lastFullDay.setHours(23,59,59,999);
+	// 						  						selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
+	// 						  						var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
+	// 												selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
+	// 												break;
+	// 											case 'w':
+	// 												var lastFullWeekEnd = Date.today().last().sunday();
+	// 												lastFullWeekEnd.setHours(23,59,59,999);
+	// 												selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
+	// 												var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
+	// 												selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
+	// 												break;
+	// 											case 'm':
+	// 												var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
+	// 												lastFullMonthEnd.setHours(23,59,59,999);
+	// 							  					selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
+	// 							  					var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
+	// 							  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
+	// 												break;
+	// 											case 'q':
+	// 												 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));	
+	// 												 var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+	// 												 var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
+	// 												 lastDayOfPreviousQuarter.setHours(23,59,59,999);
+	// 												 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
+	// 												 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+	// 											 	lastXQuartersAgo.add(-(measureCount * 3)).months();
+	// 											 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
+	// 												break;
+	// 											case 'y':
+	// 												var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
+	// 												lastFullYearEnd.setHours(23,59,59,999);
+	// 							  					selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
+	// 							  					var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount)-1).years();
+	// 							  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
+	// 												break;
+	// 						  				}
+	// 					  				}
+	// 					  				if(selectedCondition.dateInfo.type === 'exactDate'){
+	// 					  					selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
+	// 					  					selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
+	// 					  				}
+	// 					  				if(selectedCondition.dateInfo.type === 'range'){
+	// 					  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart)){
+	// 					  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
+	// 					  					}
+	// 					  					if(angular.isDefined(selectedFilterProperty.criteriaRangeEnd)){
+	// 					  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23,59,59,999);
+	// 					  					}
+	// 					  				}
+	// 								  	$log.debug('criteriaRangeChanged');
+	// 							  		$log.debug(selectedCondition); 
+	// 							  		$log.debug(selectedFilterProperty);
+	// 								  };
+	// 				    			break;
+	// 				    		case "big_decimal":
+	// 				    		case "integer":
+	// 				    		case "float":
+	// 				    			scope.conditionOptions = getNumberOptions();
+	// 				    			scope.criteriaRangeChanged = function(selectedFilterProperty){
+	// 								  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	// 				    			};
+	// 				    			scope.selectedConditionChanged = function(selectedFilterProperty){
+	// 				    				selectedFilterProperty.showCriteriaValue = true;
+	// 				    				//check whether the type is a range
+	// 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)){
+	// 				    					selectedFilterProperty.showCriteriaValue = false;
+	// 				    					selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+	// 				    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+	// 				    				}
+	// 				    				//is null or is not null
+	// 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
+	// 				    					selectedFilterProperty.showCriteriaValue = false;
+	// 				    				}
+	// 				    			};
+	// 				    			break;
+	// 				    	}
+	// 					}
+	// 					if(angular.isDefined(scope.selectedFilterProperty.fieldtype)){
+	// 						switch(scope.selectedFilterProperty.fieldtype){
+	// 							case "many-to-one":
+	// 								scope.conditionOptions = getManyToOneOptions(scope.comparisonType);
+	// 								$log.debug('many-to-one');
+	// 								$log.debug(scope.selectedFilterProperty);
+	// 								$log.debug(scope.filterPropertiesList);
+	// 								if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
+	// 									var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+	// 									filterPropertiesPromise.then(function(value){
+	// 										scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+	// 										metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+	// 									}, function(reason){
+	// 									});
+	// 								}
+	// 								break;
+	// 							case "many-to-many":
+	// 							case "one-to-many":
+	// 								scope.manyToManyOptions = getManyToManyOptions();
+	// 								scope.oneToManyOptions = getOneToManyOptions();
+	// 								var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+	// 								existingCollectionsPromise.then(function(value){
+	// 									scope.collectionOptions = value.data;
+	// 									if(angular.isDefined(scope.workflowCondition.collectionID)){
+	// 										for(var i in scope.collectionOptions){
+	// 											if(scope.collectionOptions[i].collectionID === scope.workflowCondition.collectionID){
+	// 												scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+	// 											}
+	// 										}
+	// 										for(var i in scope.oneToManyOptions){
+	// 											if(scope.oneToManyOptions[i].comparisonOperator === scope.workflowCondition.criteria){
+	// 												scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
+	// 											}
+	// 										}
+	// 									}
+	// 								});
+	// 								break;
+	// 						}
+	// 					}
+	// 					$log.debug('workflowCondition');
+	// 					$log.debug(scope.workflowCondition);
+	// 					angular.forEach(scope.conditionOptions, function(conditionOption){
+	// 						if(conditionOption.display == scope.workflowCondition.conditionDisplay ){
+	// 							scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	// 							scope.selectedFilterProperty.criteriaValue = scope.workflowCondition.value;
+	// 							if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
+	// 							&& angular.isDefined(scope.workflowCondition.value)
+	// 							&& scope.workflowCondition.value.length
+	// 							){
+	// 								var dateRangeArray = scope.workflowCondition.value.split("-");
+	// 								scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
+	// 								scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
+	// 							}
+	// 							if(angular.isDefined(scope.workflowCondition.criteriaNumberOf)){
+	// 								scope.selectedFilterProperty.criteriaNumberOf = scope.workflowCondition.criteriaNumberOf;
+	// 							}
+	// 							if(angular.isDefined(scope.selectedConditionChanged)){
+	// 								scope.selectedConditionChanged(scope.selectedFilterProperty);
+	// 							}
+	// 						}
+	// 					});
+	// 					$log.debug('templateLoader');
+	// 					$log.debug(selectedFilterProperty);
+	// 					var templateLoader = getTemplate(selectedFilterProperty);
+	// 			    	var promise = templateLoader.success(function(html){
+	// 						element.html(html);
+	// 						$compile(element.contents())(scope);
+	// 					});
+	// 				}
+	// 	    	}); 
+	// 			scope.selectedCriteriaChanged = function(selectedCriteria){
+	// 				$log.debug(selectedCriteria);
+	// 				//update breadcrumbs as array of filterpropertylist keys
+	// 				$log.debug(scope.selectedFilterProperty);
+	// 				var breadCrumb = {
+	// 						entityAlias:scope.selectedFilterProperty.name,
+	// 						cfc:scope.selectedFilterProperty.cfc,
+	// 						propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier
+	// 				};
+	// 				scope.workflowCondition.breadCrumbs.push(breadCrumb);
+	// 				//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	// 				scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+	// 				//update criteria to display the condition of the new critera we have selected
+	// 			};
+	// 	    };
+	// 		return {
+	// 			restrict: 'A',
+	// 			scope:{
+	// 				workflowCondition:"=",
+	// 		        selectedFilterProperty:"=",
+	// 		        filterPropertiesList:"=",
+	// 		        selectedFilterPropertyChanged:"&"
+	// 			},
+	// 			link: linker
+	// 		};
+	// 	}
+	// ]);
+
+
+/***/ },
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(36);
+	var workflowconditionservice_1 = __webpack_require__(40);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
@@ -3270,11 +5469,13 @@
 
 
 /***/ },
-/* 36 */
+/* 40 */
 /***/ function(module, exports) {
 
-	var workflowCondition = (function () {
-	    function workflowCondition() {
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var WorkflowCondition = (function () {
+	    function WorkflowCondition() {
 	        this.propertyIdentifer = "";
 	        this.comparisonOperator = "";
 	        this.value = "";
@@ -3283,31 +5484,34 @@
 	        this.$$isClosed = true;
 	        this.$$isNew = true;
 	    }
-	    return workflowCondition;
+	    return WorkflowCondition;
 	})();
-	var workflowConditionGroupItem = (function () {
-	    function workflowConditionGroupItem() {
+	exports.WorkflowCondition = WorkflowCondition;
+	var WorkflowConditionGroupItem = (function () {
+	    function WorkflowConditionGroupItem() {
 	        this.workflowConditionGroup = [];
 	    }
-	    return workflowConditionGroupItem;
+	    return WorkflowConditionGroupItem;
 	})();
+	exports.WorkflowConditionGroupItem = WorkflowConditionGroupItem;
 	var WorkflowConditionService = (function () {
 	    function WorkflowConditionService($log, $slatwall, alertService) {
+	        var _this = this;
 	        this.$log = $log;
 	        this.newWorkflowCondition = function () {
-	            return new workflowCondition;
+	            return new WorkflowCondition;
 	        };
 	        this.addWorkflowCondition = function (groupItem, condition) {
-	            $log.debug('addWorkflowCondition');
-	            $log.debug(groupItem);
-	            $log.debug(condition);
+	            _this.$log.debug('addWorkflowCondition');
+	            _this.$log.debug(groupItem);
+	            _this.$log.debug(condition);
 	            if (groupItem.length >= 1) {
 	                condition.logicalOperator = 'AND';
 	            }
 	            groupItem.push(condition);
 	        };
 	        this.newWorkflowConditionGroupItem = function () {
-	            return new workflowConditionGroupItem;
+	            return new WorkflowConditionGroupItem;
 	        };
 	        this.addWorkflowConditionGroupItem = function (group, groupItem) {
 	            group.push(groupItem);
@@ -3320,7 +5524,7 @@
 
 
 /***/ },
-/* 37 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3411,7 +5615,7 @@
 	                        _this.dialogService.addPageDialog('preprocesslogin', {});
 	                    }
 	                    else if (rejection.data.messages[0].message === 'invalid_token') {
-	                        return $http.get(baseURL + '/index.cfm/api/auth/login').then(function (loginResponse) {
+	                        return $http.get(_this.baseURL + '/index.cfm/api/auth/login').then(function (loginResponse) {
 	                            _this.$window.localStorage.setItem('token', loginResponse.data.token);
 	                            rejection.config.headers = rejection.config.headers || {};
 	                            rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
@@ -3446,22 +5650,24 @@
 
 
 /***/ },
-/* 38 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(39);
+	var slatwallservice_1 = __webpack_require__(43);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 39 */
+/* 43 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SlatwallService = (function () {
 	    function SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities, _jsEntityInstances) {
 	        var _this = this;
@@ -3672,7 +5878,7 @@
 	                    return data;
 	                };
 	            }
-	            $http.get(urlString, {
+	            _this.$http.get(urlString, {
 	                params: params,
 	                timeout: deferred.promise,
 	                //transformRequest:transformRequest,
@@ -3690,7 +5896,7 @@
 	        };
 	        this.getResizedImageByProfileName = function (profileName, skuIDs) {
 	            var deferred = _this.$q.defer();
-	            return $http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+	            return _this.$http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3700,7 +5906,7 @@
 	        this.getEventOptions = function (entityName) {
 	            var deferred = _this.$q.defer();
 	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName=' + entityName;
-	            $http.get(urlString)
+	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3709,13 +5915,13 @@
 	            return deferred.promise;
 	        };
 	        this.checkUniqueOrNullValue = function (object, property, value) {
-	            return $http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	            return _this.$http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 	                '&value=' + escape(value)).then(function (results) {
 	                return results.data.uniqueStatus;
 	            });
 	        };
 	        this.checkUniqueValue = function (object, property, value) {
-	            return $http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	            return _this.$http.get(_this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 	                '&value=' + escape(value)).then(function (results) {
 	                return results.data.uniqueStatus;
 	            });
@@ -3725,7 +5931,7 @@
 	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName=' + entityName;
 	            var params = {};
 	            params.propertyIdentifiersList = options.propertyIdentifiersList || '';
-	            $http.get(urlString, { params: params })
+	            _this.$http.get(urlString, { params: params })
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3741,7 +5947,7 @@
 	            if (angular.isDefined(options.argument1)) {
 	                params.argument1 = options.argument1;
 	            }
-	            $http.get(urlString, { params: params })
+	            _this.$http.get(urlString, { params: params })
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3762,7 +5968,7 @@
 	            if (angular.isDefined(context)) {
 	                params.context = context;
 	            }
-	            $http({
+	            _this.$http({
 	                url: urlString,
 	                method: 'POST',
 	                data: $.param(params),
@@ -3778,7 +5984,7 @@
 	        this.getExistingCollectionsByBaseEntity = function (entityName) {
 	            var deferred = _this.$q.defer();
 	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
-	            $http.get(urlString)
+	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3789,7 +5995,7 @@
 	        this.getFilterPropertiesByBaseEntityName = function (entityName) {
 	            var deferred = _this.$q.defer();
 	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
-	            $http.get(urlString)
+	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3840,7 +6046,7 @@
 	                emailAddress: emailAddress,
 	                password: password
 	            };
-	            return $http.get(urlString, { params: params }).success(function (response) {
+	            return _this.$http.get(urlString, { params: params }).success(function (response) {
 	                deferred.resolve(response);
 	            }).error(function (response) {
 	                deferred.reject(response);
@@ -3853,7 +6059,7 @@
 	                return _this._resourceBundle[locale];
 	            }
 	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.getConfig().instantiationKey + '&locale=' + locale;
-	            $http({
+	            _this.$http({
 	                url: urlString,
 	                method: "GET"
 	            }).success(function (response, status, headersGetter) {
@@ -3868,7 +6074,7 @@
 	        this.getCurrencies = function () {
 	            var deferred = _this.$q.defer();
 	            var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + _this.getConfig().instantiationKey;
-	            $http.get(urlString).success(function (response) {
+	            _this.$http.get(urlString).success(function (response) {
 	                deferred.resolve(response);
 	            }).error(function (response) {
 	                deferred.reject(response);
@@ -3899,7 +6105,7 @@
 	                if (keyListArray.length > 1) {
 	                    var keyValue = "";
 	                    for (var i = 0; i < keyListArray.length; i++) {
-	                        var keyValue = _this.getRBKey(keyListArray[i], locale, keyValue);
+	                        keyValue = _this.getRBKey(keyListArray[i], locale, keyValue);
 	                        //$log.debug('keyvalue:'+keyValue);
 	                        if (keyValue.slice(-8) != "_missing") {
 	                            break;
@@ -4031,7 +6237,7 @@
 	        ];
 	    }
 	    $Slatwall.prototype.$get = function ($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService) {
-	        return new SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities);
+	        return new SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities, this._jsEntityInstances);
 	    };
 	    return $Slatwall;
 	})();
@@ -4039,7 +6245,119 @@
 
 
 /***/ },
-/* 40 */
+/* 44 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var EntityRBKey = (function () {
+	    function EntityRBKey() {
+	    }
+	    //@ngInject
+	    EntityRBKey.Factory = function ($slatwall) {
+	        return function (text) {
+	            if (angular.isDefined(text) && angular.isString(text)) {
+	                text = text.replace('_', '').toLowerCase();
+	                text = $slatwall.getRBKey('entity.' + text);
+	            }
+	            return text;
+	        };
+	    };
+	    EntityRBKey.Factory.$inject = ["$slatwall"];
+	    return EntityRBKey;
+	})();
+	exports.EntityRBKey = EntityRBKey;
+
+
+/***/ },
+/* 45 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCurrency = (function () {
+	    function SWCurrency() {
+	    }
+	    // public $slatwall;
+	    // public realFilter = (value,decimalPlace):string=> {
+	    //     // REAL FILTER LOGIC, DISREGARDING PROMISES
+	    //     if(!angular.isDefined(data)){
+	    //         $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+	    //         data="$";
+	    //     }
+	    //     if(angular.isDefined(value)){
+	    //         if(angular.isDefined(decimalPlace)){
+	    //             value = parseFloat(value.toString()).toFixed(decimalPlace) 
+	    //         } else { 
+	    //             value = parseFloat(value.toString()).toFixed(2)
+	    //         }
+	    //     }
+	    //     return data + value;
+	    // }
+	    // public filterStub = (value:string, currencyCode:string, decimalPlace:number)=> {
+	    //     if( data === null ) {
+	    //         if( !serviceInvoked ) {
+	    //             serviceInvoked = true;
+	    //                 $slatwall.getCurrencies().then((currencies)=>{
+	    //                 var result = currencies.data;
+	    //                 data = result[currencyCode];
+	    //             });
+	    //         }
+	    //         return "-";
+	    //     }
+	    //     else 
+	    //     return realFilter(value,decimalPlace);
+	    // }
+	    //@ngInject
+	    SWCurrency.Factory = function ($sce, $log, $slatwall) {
+	        // var data = null, serviceInvoked = false;
+	        // var filterStub = this.filterStub;
+	        // filterStub.$stateful = true;
+	        // return filterStub;  
+	        return function (value, currencyCode, decimalPlace) {
+	            var data = null, serviceInvoked = false;
+	            function realFilter(value, decimalPlace) {
+	                // REAL FILTER LOGIC, DISREGARDING PROMISES
+	                if (!angular.isDefined(data)) {
+	                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+	                    data = "$";
+	                }
+	                if (angular.isDefined(value)) {
+	                    if (angular.isDefined(decimalPlace)) {
+	                        value = parseFloat(value.toString()).toFixed(decimalPlace);
+	                    }
+	                    else {
+	                        value = parseFloat(value.toString()).toFixed(2);
+	                    }
+	                }
+	                return data + value;
+	            }
+	            function filterStub(value, currencyCode, decimalPlace) {
+	                this.$stateful = true;
+	                if (data === null) {
+	                    if (!serviceInvoked) {
+	                        serviceInvoked = true;
+	                        $slatwall.getCurrencies().then(function (currencies) {
+	                            var result = currencies.data;
+	                            data = result[currencyCode];
+	                        });
+	                    }
+	                    return "-";
+	                }
+	                else
+	                    return realFilter(value, decimalPlace);
+	            }
+	            return filterStub;
+	        };
+	    };
+	    SWCurrency.Factory.$inject = ["$sce", "$log", "$slatwall"];
+	    return SWCurrency;
+	})();
+	exports.SWCurrency = SWCurrency;
+
+
+/***/ },
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
@@ -4050,92 +6368,6 @@
 	    }]);
 	exports.loggermodule = loggermodule;
 	//.factory('$exceptionHandler', ['$injector', ($injector) => new ExceptionHandler($injector)]);;
-
-
-/***/ },
-/* 41 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var EntityRBKey = (function () {
-	    //@ngInject
-	    function EntityRBKey($slatwall) {
-	        var _this = this;
-	        this.$slatwall = $slatwall;
-	        return function (text) {
-	            if (angular.isDefined(text) && angular.isString(text)) {
-	                text = text.replace('_', '').toLowerCase();
-	                text = _this.$slatwall.getRBKey('entity.' + text);
-	                return text;
-	            }
-	        };
-	    }
-	    EntityRBKey.$inject = ["$slatwall"];
-	    EntityRBKey.Factory = function () {
-	        var filter = function ($slatwall) { return new EntityRBKey($slatwall); };
-	        filter.$inject = ['$slatwall'];
-	        return filter;
-	    };
-	    return EntityRBKey;
-	})();
-	exports.EntityRBKey = EntityRBKey;
-
-
-/***/ },
-/* 42 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWCurrency = (function () {
-	    //@ngInject
-	    function SWCurrency($sce, $log, $slatwall) {
-	        this.$slatwall = $slatwall;
-	        var data = null, serviceInvoked = false;
-	        realFilter = function (value, decimalPlace) {
-	            // REAL FILTER LOGIC, DISREGARDING PROMISES
-	            if (!angular.isDefined(data)) {
-	                $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-	                data = "$";
-	            }
-	            if (angular.isDefined(value)) {
-	                if (angular.isDefined(decimalPlace)) {
-	                    value = parseFloat(value.toString()).toFixed(decimalPlace);
-	                }
-	                else {
-	                    value = parseFloat(value.toString()).toFixed(2);
-	                }
-	            }
-	            return data + value;
-	        };
-	        filterStub.$stateful = true;
-	        filterStub(value, currencyCode, decimalPlace);
-	        {
-	            if (data === null) {
-	                if (!serviceInvoked) {
-	                    serviceInvoked = true;
-	                    $slatwall.getCurrencies().then(function (currencies) {
-	                        var result = currencies.data;
-	                        data = result[currencyCode];
-	                    });
-	                }
-	                return "-";
-	            }
-	            else
-	                return realFilter(value, decimalPlace);
-	        }
-	        return filterStub;
-	    }
-	    SWCurrency.$inject = ["$sce", "$log", "$slatwall"];
-	    SWCurrency.Factory = function () {
-	        var filter = function ($sce, $log, $slatwall) { return new SWCurrency($sce, $log, $slatwall); };
-	        filter.$inject = ['$sce', '$log', '$slatwall'];
-	        return filter;
-	    };
-	    return SWCurrency;
-	})();
-	exports.SWCurrency = SWCurrency;
 
 
 /***/ }

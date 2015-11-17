@@ -1,26 +1,21 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swCollectionTable', [
-	'$http',
-	'$compile',
-	'$log',
-	'collectionPartialsPath',
-	'paginationService',
-    'selectionService',
-    '$slatwall',
-	function(
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWCollectionTable{
+	//ngInject
+	constructor(
 		$http,
 		$compile,
 		$log,
+		pathBuilderConfig,
 		collectionPartialsPath,
 		paginationService,
-        selectionService,
-        $slatwall
+		selectionService,
+		$slatwall
 	){
 		return {
 			restrict: 'E',
-			templateUrl:collectionPartialsPath+"collectiontable.html",
-			scope:{
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"collectiontable.html",
+			scope:{ 
 				collection:"=",
 				collectionConfig:"=",
 				isRadio:"=",
@@ -28,6 +23,7 @@ angular.module('slatwalladmin')
                 angularLinks:"="
 			},
 			link: function(scope,element,attrs){
+				
                 if(angular.isUndefined(scope.angularLinks)){
                     scope.angularLinks = false;    
                 }
@@ -57,5 +53,41 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
+	public static Factory(){
+		var directive:ng.IDirectiveFactory = (
+			$http,
+			$compile,
+			$log,
+			pathBuilderConfig,
+			collectionPartialsPath,
+			paginationService,
+			selectionService,
+			$slatwall
+		) => new SWCollectionTable(
+			$http,
+			$compile,
+			$log,
+			pathBuilderConfig,
+			collectionPartialsPath,
+			paginationService,
+			selectionService,
+			$slatwall
+		);
+		directive.$inject = [
+			'$http',
+			'$compile',
+			'$log',
+			'pathBuilderConfig',
+			'collectionPartialsPath',
+			'paginationService',
+			'selectionService',
+			'$slatwall',
+		];
+		return directive;
+	}
+	
+}
+export{
+	SWCollectionTable
+}
 	

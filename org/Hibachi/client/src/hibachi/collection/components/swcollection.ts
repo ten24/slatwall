@@ -1,3 +1,5 @@
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
 class SWCollection{
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (

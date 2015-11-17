@@ -16,6 +16,19 @@ class Column{
     ){}
 }
 
+interface IColumn{
+    propertyIdentifier:string;
+    title:string;
+    isVisible:boolean;
+    isDeletable:boolean;
+    isSearchable:boolean;
+    isExportable:boolean;
+    persistent?:boolean;
+    ormtype?:string;
+    attributeID?:string;
+    attributeSetObject?:string;
+}
+
 interface IFilter{
     propertyIdentifier:string;
     value:string;
@@ -61,8 +74,8 @@ interface IOrderBy{
 
 class OrderBy{
     constructor(
-        private propertyIdentifier:string,
-        private direction:string
+        public propertyIdentifier:string,
+        public direction:string
     ){}
 }
 
@@ -76,7 +89,7 @@ class CollectionConfig {
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
         private columns?:Column[],
-        private filterGroups:Array=[{filterGroup: []}],
+        private filterGroups:Array<any>=[{filterGroup: []}],
         private joins?:Join[],
         private orderBy?:OrderBy[],
         private groupBys?:string,
@@ -99,7 +112,7 @@ class CollectionConfig {
         this.filterGroups = [{filterGroup: []}];    
     };
 
-    newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
+    public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
         return new CollectionConfig(this.$slatwall, this.utilityService, baseEntityName, baseEntityAlias);
     };
 
@@ -123,7 +136,7 @@ class CollectionConfig {
         this.allRecords = jsonCollection.allRecords;
     };
     
-    loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]) =>{
+    loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]) =>{
         this.filterGroups = filterGroupsConfig;
     }
     
@@ -227,13 +240,13 @@ class CollectionConfig {
         return s && s[0].toUpperCase() + s.slice(1);
     };
     
-    private addColumn=(column:Column)=>{
+    /*private addColumn=(column:Column)=>{
         if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
             this.addColumn(column.propertyIdentifier,column.title,column);
         }
-    }
+    }*/
 
-    private addColumn= (column: string, title: string = '', options:Object = {}) =>{
+    private addColumn= (column: string, title: string = '', options:any = {}):void =>{
         
         if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
@@ -271,7 +284,7 @@ class CollectionConfig {
             if(angular.isDefined(this.collection.metaData[lastProperty])){
                 persistent = this.collection.metaData[lastProperty].persistent;
             }
-            var columnObject = new Column(
+            var columnObject:any = new Column(
                 column,
                 title,
                 isVisible,
@@ -474,7 +487,7 @@ class CollectionConfig {
         var propertyIdentifier = this.utilityService.listFirst(orderByString,'|');
         var direction = this.utilityService.listLast(orderByString,'|');
         
-        var orderBy = {
+        var orderBy:IOrderBy = {
             propertyIdentifier:this.formatCollectionName(propertyIdentifier),
             direction:direction
         };

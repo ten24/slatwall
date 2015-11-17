@@ -1,5 +1,8 @@
 
-class workflowCondition{
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+
+class WorkflowCondition{
 	public propertyIdentifer:string = "";
 	public comparisonOperator:string = "";
 	public value:string = "";
@@ -9,22 +12,23 @@ class workflowCondition{
 	public $$isNew=true;
 }
 
- class workflowConditionGroupItem{
+ class WorkflowConditionGroupItem{
 	public workflowConditionGroup = [];
 	
 }
 
  class WorkflowConditionService{
 	public static $inject = ["$log","$slatwall","alertService"];
-	public constructor(private $log:ng.ILogService,$slatwall,alertService:slatwalladmin.IAlertService){
+	public constructor(public $log:ng.ILogService,$slatwall,alertService){
+	
 	}
 	public newWorkflowCondition = () =>{
-		return new workflowCondition;
+		return new WorkflowCondition;
 	}
 	public addWorkflowCondition = (groupItem,condition) =>{
-		$log.debug('addWorkflowCondition');
-		$log.debug(groupItem);
-		$log.debug(condition);
+		this.$log.debug('addWorkflowCondition');
+		this.$log.debug(groupItem);
+		this.$log.debug(condition);
 		if(groupItem.length >= 1){
 			condition.logicalOperator = 'AND';
 		}
@@ -32,7 +36,7 @@ class workflowCondition{
 		groupItem.push(condition);
 	}
 	public newWorkflowConditionGroupItem = () =>{
-		return new workflowConditionGroupItem;
+		return new WorkflowConditionGroupItem;
 	}
 	public addWorkflowConditionGroupItem = (group,groupItem) =>{
 		group.push(groupItem);
@@ -40,6 +44,7 @@ class workflowCondition{
 }
 export{
 	WorkflowCondition,
-	WorkflowConditionService
+	WorkflowConditionService,
+	WorkflowConditionGroupItem
 };
 

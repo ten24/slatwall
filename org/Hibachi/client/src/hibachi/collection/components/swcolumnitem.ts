@@ -1,18 +1,12 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swColumnItem', [
-	'$http',
-	'$compile',
-	'$templateCache',
-	'$log',
-	'$timeout',
-	'collectionService',
-	'collectionPartialsPath',
-	function($http,
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWColumnItem{
+	constructor(
 		$compile,
 		$templateCache,
 		$log,
 		$timeout,
+		pathBuilderConfig, 
 		collectionService,
 		collectionPartialsPath
 	){
@@ -27,7 +21,7 @@ angular.module('slatwalladmin')
 				propertiesList:"=",
 				orderBy:"="
 			},
-			templateUrl:collectionPartialsPath+"columnitem.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
                 scope.editingDisplayTitle=false;
                 
@@ -144,7 +138,7 @@ angular.module('slatwalladmin')
 					
 				};
 				
-				var removeSorting = function(column,saving){
+				var removeSorting = (column,saving?)=>{
 					if(column.sorting.active === true){
 						for(var i in scope.columns){
 							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
@@ -207,5 +201,37 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+	public static Factory(){
+		var directive:ng.IDirectiveFactory = (
+			$compile,
+			$templateCache,
+			$log,
+			$timeout,
+			pathBuilderConfig,
+			collectionService,
+			collectionPartialsPath
+		) => new SWColumnItem(
+			$compile,
+			$templateCache,
+			$log,
+			$timeout,
+			pathBuilderConfig,
+			collectionService,
+			collectionPartialsPath
+		);
+		directive.$inject = [
+			'$http',
+			'$compile',
+			'$templateCache',
+			'$log',
+			'$timeout',
+			'pathBuilderConfig',
+			'collectionService',
+			'collectionPartialsPath'
+		];
+		return directive;
+	}
+}
+export{
+	SWColumnItem
+}

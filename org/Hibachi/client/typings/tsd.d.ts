@@ -6,3 +6,7 @@
 /// <reference path="angularjs/angular-route.d.ts" />
 /// <reference path="angularjs/angular-sanitize.d.ts" />
 /// <reference path="jquery/jquery.d.ts" />
+/// <reference path="requirejs/require.d.ts" />
+/// <reference path="js-md5/md5.d.ts" />
+/// <reference path="datejs/datejs.d.ts" />
+

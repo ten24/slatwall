@@ -8,6 +8,8 @@ import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
 //filters
 import {PercentageFilter} from "./filters/percentage";
+//directives
+import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 
 class PathBuilderConfig{
     public baseURL:string;
@@ -44,6 +46,8 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .service('metadataService',MetaDataService)
 //filters 
 .filter('percentage',[PercentageFilter.Factory])
+//directives
+.directive('swTypeahedSearch',SWTypeaheadSearch.Factory())
 ;  
 export{
 	coremodule

@@ -149,7 +149,9 @@ gulp.task('compile-ts-to5', function () {
 gulp.task('gen-ts-refs', function () {
 	setTimeout(function () {
 	    var target = gulp.src(config.appTypeScriptReferences);
-	    var sources = gulp.src([config.allTypeScript], {read: false});
+	    var sources = gulp.src([
+        config.allTypeScript
+      ], {read: false});
 	     return target.pipe(inject(sources, {
 	        starttag: '//{',
 	        endtag: '//}',

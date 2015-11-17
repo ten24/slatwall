@@ -1,3 +1,5 @@
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
 class SWDisplayOptions{
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
@@ -171,7 +173,7 @@ class SWDisplayOptions{
 				
 				jQuery(function($) {
 					
-				      var panelList = angular.element($element).children('ul');
+				      var panelList:any = angular.element($element).children('ul');
 				      panelList.sortable({
 				          // Only make the .panel-heading child elements support dragging.
 				          // Omit this to make then entire <li>...</li> draggable.
