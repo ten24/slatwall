@@ -4,6 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     var SWFormFieldJsonController = (function () {
         function SWFormFieldJsonController(formService) {
+            this.$inject = [''];
             this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
         }
         return SWFormFieldJsonController;
@@ -15,15 +16,15 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.restrict = 'E';
             this.require = "^form";
-            this.scope = {};
+            this.scope = true;
             this.controller = SWFormFieldJsonController;
             this.bindToController = {
                 propertyDisplay: "=?"
             };
-            this.controllerAs = "jsonCtrl";
+            this.controllerAs = "ctrl";
             this.templateUrl = "";
-            this.$inject = ['partialsPath'];
             this.link = function (scope, element, attrs, formController) { };
+            this.$inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
             this.templateUrl = this.partialsPath + "formfields/json.html";
         }
         return SWFormFieldJson;
