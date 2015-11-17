@@ -62,7 +62,14 @@ module slatwalladmin {
 		title:string,
 		value:any,
 		options:string,
-		submit:Function
+		submit:Function,
+		labelText:string,
+		labelClass:string,
+		errorClass:string,
+		errorText:string,
+		propertyIdentifier:string,
+		loader:boolean,
+		noValidate:boolean
 	}
 	/**
      * Property Display Controller handles the logic for this directive.
@@ -86,7 +93,13 @@ module slatwalladmin {
 		public title;
 		public value;
 		public submit;
-		
+		public labelText;
+		public labelClass;
+		public errorText;
+		public errorClass;
+		public propertyIdentifier;
+		public loader;
+		public noValidate;
 		/**
 		 * Handles the logic for the frontend version of the property display.
 		 */
@@ -109,6 +122,10 @@ module slatwalladmin {
 			vm.errorClass			= this.errorClass;
 			vm.errorText			= this.errorText;
 			vm.formCtrl 			= {};
+			vm.object				= this.object; //this is the process object
+			vm.propertyIdentifier   = this.propertyIdentifier; //this is the property
+			vm.loader				= this.loader;
+			vm.noValidate			= this.noValidate;
 			
 			/** in order to attach the correct controller to local vm, we need a watch to bind */
 			this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
@@ -159,7 +176,6 @@ module slatwalladmin {
 				edit: 	vm.editting,
 				title: 	vm.title,
 				value: 	vm.value,
-				errorClass: vm.errorClass,
 				errorText: vm.errorText,
 			};
 		}
