@@ -27,7 +27,6 @@ var slatwalladmin;
             this.link = function (scope, element, attrs, formController) { };
             this.templateUrl = this.partialsPath + "formfields/number.html";
         }
-        SWFormFieldNumber.$inject = ['scope', 'element', 'attrs', 'formController'];
         SWFormFieldNumber.$inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
         return SWFormFieldNumber;
     })();

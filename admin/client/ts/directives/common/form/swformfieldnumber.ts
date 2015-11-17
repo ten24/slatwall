@@ -20,7 +20,6 @@ export class SWFormFieldNumber implements ng.IDirective {
 		public controller = SWFormFieldNumberController;
         public controllerAs = "ctrl";
         
-        public static $inject = ['scope', 'element', 'attrs', 'formController'];
         public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) => {}
         
         public static $inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
