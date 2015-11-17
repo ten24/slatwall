@@ -4,6 +4,8 @@ var slatwalladmin;
 (function (slatwalladmin) {
     var SWFormFieldNumberController = (function () {
         function SWFormFieldNumberController() {
+            if (this.propertyDisplay.isDirty == undefined)
+                this.propertyDisplay.isDirty = false;
             this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
         }
         return SWFormFieldNumberController;
@@ -15,16 +17,17 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.restrict = 'E';
             this.require = "^form";
-            this.scope = {};
+            this.scope = true;
             this.bindToController = {
                 propertyDisplay: "=?"
             };
             this.templateUrl = "";
             this.controller = SWFormFieldNumberController;
-            this.controllerAs = "numberCtrl";
+            this.controllerAs = "ctrl";
             this.link = function (scope, element, attrs, formController) { };
             this.templateUrl = this.partialsPath + "formfields/number.html";
         }
+        SWFormFieldNumber.$inject = ['scope', 'element', 'attrs', 'formController'];
         SWFormFieldNumber.$inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
         return SWFormFieldNumber;
     })();

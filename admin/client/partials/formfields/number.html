@@ -1,13 +1,13 @@
 <input type="number" class="form-control" 
-		    		 ng-model="numberCtrl.propertyDisplay.object.data[numberCtrl.propertyDisplay.property]"
-		    		 ng-disabled="!numberCtrl.propertyDisplay.editable"
-		    		 ng-show="numberCtrl.propertyDisplay.editing"
-		    		 ng-change="numberCtrl.propertyDisplay.onChange"
-		    		 name="{{numberCtrl.propertyDisplay.property}}"
+		    		 ng-model="ctrl.propertyDisplay.object.data[ctrl.propertyDisplay.property]"
+		    		 ng-disabled="!ctrl.propertyDisplay.editable"
+		    		 ng-show="ctrl.propertyDisplay.editing"
+		    		 ng-change="ctrl.propertyDisplay.onChange"
+		    		 name="{{ctrl.propertyDisplay.property}}"
 />
 <!-- Error Messages --> 
 <span style="color:red"
-	ng-repeat="(key,value) in numberCtrl.propertyDisplay.errors"
-	ng-show="(numberCtrl.propertyDisplay.form.$submitted && numberCtrl.propertyDisplay.form[numberCtrl.propertyDisplay.property].$invalid) || (numberCtrl.propertyDisplay.form[numberCtrl.propertyDisplay.property].$invalid && numberCtrl.propertyDisplay.form[numberCtrl.propertyDisplay.property].$dirty)">
-  <span  ng-show="key === 'required'">{{numberCtrl.propertyDisplay.title}} is a required field<br></span>
+	ng-repeat="(key,value) in ctrl.propertyDisplay.errors"
+	ng-show="(ctrl.propertyDisplay.form.$submitted && ctrl.propertyDisplay.form[ctrl.propertyDisplay.property].$invalid) || (ctrl.propertyDisplay.form[ctrl.propertyDisplay.property].$invalid && ctrl.propertyDisplay.form[ctrl.propertyDisplay.property].$dirty)">
+  <span  ng-show="key === 'required'">{{ctrl.propertyDisplay.title}} is a required field<br></span>
 </span>

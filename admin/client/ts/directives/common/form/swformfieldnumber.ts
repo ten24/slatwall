@@ -4,6 +4,7 @@
 module slatwalladmin {
 export class SWFormFieldNumberController implements ng.IDirective {
 	constructor () {
+        if (this.propertyDisplay.isDirty == undefined) this.propertyDisplay.isDirty = false;
 		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
 	}
 }	
@@ -11,14 +12,15 @@ export class SWFormFieldNumberController implements ng.IDirective {
 export class SWFormFieldNumber implements ng.IDirective {
         public restrict = 'E';
         public require = "^form";
-        public scope = {};
+        public scope = true;
         public bindToController = {
             propertyDisplay: "=?"
         };
         public templateUrl = "";
 		public controller = SWFormFieldNumberController;
-        public controllerAs = "numberCtrl";
-		public formController: ng.IFormController;
+        public controllerAs = "ctrl";
+        
+        public static $inject = ['scope', 'element', 'attrs', 'formController'];
         public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) => {}
         
         public static $inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
