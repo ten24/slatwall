@@ -9,7 +9,18 @@ import {MetaDataService} from "./services/metadataservice";
 //filters
 import {PercentageFilter} from "./filters/percentage";
 //directives
+import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
+import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
+import {SWColumnSorter} from "./components/swcolumnsorter";
+import {SWConfirm} from "./components/swconfirm";
+import {SWEntityActionBar} from "./components/swentityactionbar";
+import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
+import {SWExpandableRecord} from "./components/swexpandablerecord";
+import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingColumn} from "./components/swlistingcolumn";
+import {SWLogin} from "./components/swlogin";
+import {SWNumbersOnly} from "./components/swnumbersonly";
 
 class PathBuilderConfig{
     public baseURL:string;
@@ -48,6 +59,17 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .filter('percentage',[PercentageFilter.Factory])
 //directives
 .directive('swTypeahedSearch',SWTypeaheadSearch.Factory())
+.directive('swActionCaller',SWActionCaller.Factory())
+.directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
+.directive('swColumnSorter',SWColumnSorter.Factory())
+.directive('swConfirm',SWConfirm.Factory())
+.directive('swEntityActionBar',SWEntityActionBar.Factory())
+.directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
+.directive('swExpandableRecord',SWExpandableRecord.Factory())
+.directive('swListingDisplay',SWListingDisplay.Factory())
+.directive('swListingColumn',SWListingColumn.Factory())
+.directive('swLogin',SWLogin.Factory())
+.directive('swNumbersOnly',SWNumbersOnly.Factory())
 ;  
 export{
 	coremodule

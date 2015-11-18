@@ -6,6 +6,9 @@ module slatwalladmin {
     'use strict';
     
     export class SWProcessCallerController{
+		public utilityService;
+		public type:string;
+		public queryString:string;
 		public static $inject = ['$templateRequest','$compile','partialsPath','$scope','$element','$transclude','utilityService'];
         constructor(public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public partialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService){
 			this.$templateRequest = $templateRequest;
@@ -38,7 +41,7 @@ module slatwalladmin {
 			queryString:"@",
 			text:"@",
 			title:"@",
-			class:"@",
+			'class':"@",
 			icon:"=",
 			iconOnly:"=",
 			submit:"=",

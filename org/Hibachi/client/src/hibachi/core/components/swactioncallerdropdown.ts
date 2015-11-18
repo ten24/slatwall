@@ -1,48 +1,57 @@
-/// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../../client/typings/tsd.d.ts' />
-
-
-module slatwalladmin {
-    'use strict';
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
     
-    export class SWActionCallerDropdownController{
-        
-        constructor(){
-            this.title = this.title || '';
-            this.icon = this.icon || 'plus';
-            this.type = this.type || 'button';
-            this.dropdownClass = this.dropdownClass || '';
-            this.dropdownId = this.dropdownId || '';
-            this.buttonClass = this.buttonClass || 'btn-primary';
-        }
+class SWActionCallerDropdownController{
+    public title:string;
+    public type:string;
+    public icon:string;
+    public dropdownClass:string;
+    public dropdownId:string;
+    public buttonClass:string;
+    constructor(){
+        this.title = this.title || '';
+        this.icon = this.icon || 'plus';
+        this.type = this.type || 'button';
+        this.dropdownClass = this.dropdownClass || '';
+        this.dropdownId = this.dropdownId || '';
+        this.buttonClass = this.buttonClass || 'btn-primary';
     }
-	
-	export class SWActionCallerDropdown implements ng.IDirective{
-		
-		public restrict:string = 'E';
-		public scope = {};
-        public transclude=true;
-        public bindToController={
-            title:"@",
-            icon:"@",
-            type:"=",
-            dropdownClass:"@",
-            dropdownId:"@",
-            buttonClass:"@"
-        };
-        public controller=SWActionCallerDropdownController
-        public controllerAs="swActionCallerDropdown";
-		public templateUrl;
-		
-		constructor(private partialsPath:slatwalladmin.partialsPath){
-			this.templateUrl = partialsPath+'actioncallerdropdown.html';
-		}
-		
-		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-			
-		}
-	}
-    
-	angular.module('slatwalladmin').directive('swActionCallerDropdown',['partialsPath',(partialsPath) => new SWActionCallerDropdown(partialsPath)]);
 }
+
+class SWActionCallerDropdown implements ng.IDirective{
+    
+    public restrict:string = 'E';
+    public scope = {};
+    public transclude=true;
+    public bindToController={
+        title:"@",
+        icon:"@",
+        type:"=",
+        dropdownClass:"@",
+        dropdownId:"@",
+        buttonClass:"@"
+    };
+    public controller=SWActionCallerDropdownController
+    public controllerAs="swActionCallerDropdown";
+    public templateUrl;
+    
+    public static Factory(){
+        var directive = (partialsPath) => new SWActionCallerDropdown(partialsPath);
+        directive.$inject = ['partialsPath'];
+        return directive;
+    }
+    
+    constructor(private partialsPath){
+        this.templateUrl = partialsPath+'actioncallerdropdown.html';
+    }
+    
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+        
+    }
+}
+export{
+    SWActionCallerDropdownController,
+    SWActionCallerDropdown
+}  
+
 

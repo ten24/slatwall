@@ -71,7 +71,7 @@ gulp.task('watch', function() {
     [
     	//'compile-ts-to5',
     	//'compile-ts',
-		//'gen-ts-refs'
+		'gen-ts-refs'
 		
 		//,'compress'
 	]);
@@ -332,14 +332,14 @@ gulp.task('compilets', function(){
 
 gulp.task('default', function(){
 	runSequence(
-		'flattenNgSlatwallModel'
+		'flattenNgSlatwallModel',
 		/*
 		,'compile-ts-to5'
 		,'compile-ts'*/
 		//,'gen-ts-refs'
 		/*,'compress'
 		*/
-		//'gen-ts-refs' 
+		'gen-ts-refs'
     ,'watch'
 		
 		//'compilets'

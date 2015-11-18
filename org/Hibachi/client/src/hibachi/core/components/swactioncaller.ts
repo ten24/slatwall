@@ -4,7 +4,27 @@
     
 class SWActionCallerController{
     public static $inject = ['$scope','$element','$templateRequest','$compile','partialsPath','utilityService','$slatwall'];
-    constructor(private $scope,private $element,private $templateRequest:ng.ITemplateRequestService, private $compile:ng.ICompileService,private partialsPath, private utilityService:slatwalladmin.UtilityService, private $slatwall:ngSlatwall.SlatwallService){
+    public type:string;
+    public confirm:any;
+    public action:string;
+    public actionItem:string;
+    public title:string;
+    public class:string;
+    public confirmtext:string;
+    public disabledtext:string;
+    public text:string;
+    public disabled:boolean;
+    public actionItemEntityName:string;
+    //@ngInject
+    constructor(
+        private $scope,
+        private $element,
+        private $templateRequest:ng.ITemplateRequestService, 
+        private $compile:ng.ICompileService,
+        private partialsPath, 
+        private utilityService, 
+        private $slatwall
+    ){
         this.$scope = $scope;
         this.$element = $element;
         this.$templateRequest = $templateRequest;
@@ -158,7 +178,7 @@ class SWActionCallerController{
             //and no disabled text specified
             if(angular.isUndefined(this.disabledtext) || !this.disabledtext.length ){
                 var disabledrbkey = this.utilityService.replaceAll(this.action,':','.')+'_disabled';
-                this.disabledtext = $slatwall.getRBKey(disabledrbkey);
+                this.disabledtext = this.$slatwall.getRBKey(disabledrbkey);
             }
             //add disabled class
             this.class += " s-btn-disabled";
@@ -181,7 +201,7 @@ class SWActionCallerController{
         if(this.getConfirm() ){
             if(angular.isUndefined(this.confirmtext) && this.confirmtext.length){
                 var confirmrbkey = this.utilityService.replaceAll(this.action,':','.')+'_confirm';
-                this.confirmtext = $slatwall.getRBKey(confirmrbkey);
+                this.confirmtext = this.$slatwall.getRBKey(confirmrbkey);
                 /*<cfif right(attributes.confirmtext, "8") eq "_missing">
                     <cfset attributes.confirmtext = replace(attributes.hibachiScope.rbKey("admin.define.delete_confirm"),'${itemEntityName}', attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
                 </cfif>*/
@@ -195,14 +215,14 @@ class SWActionCallerController{
     
 class SWActionCaller implements ng.IDirective{
     public restrict:string = 'EA';
-    public scope={}; 
-    public bindToController={
+    public scope:any={}; 
+    public bindToController:any={
         action:"@",
         text:"@",
         type:"@",
         queryString:"@",
         title:"@",
-        class:"@",
+        'class':"@",
         icon:"@",
         iconOnly:"=",
         name:"@",
@@ -217,13 +237,29 @@ class SWActionCaller implements ng.IDirective{
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
     public templateUrl;
-    public static factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (private partialsPath:slatwalladmin.partialsPath,private utiltiyService:slatwalladmin.UtilityService,private $slatwall:ngSlatwall.SlatwallService) => new SWActionCallerController(private partialsPath:slatwalladmin.partialsPath,private utiltiyService:slatwalladmin.UtilityService,private $slatwall:ngSlatwall.SlatwallService);
-        directive.$inject = [];
+    public static Factory():ng.IDirectiveFactory{
+        var directive:ng.IDirectiveFactory = (
+            partialsPath,
+            utiltiyService,
+            $slatwall
+        ) => new SWActionCaller(
+            partialsPath,
+            utiltiyService,
+            $slatwall 
+        );
+        directive.$inject = [
+            'partialsPath',
+            'utilityService',
+            '$slatwall'
+        ];
         return directive;    
     }
     
-    constructor(private partialsPath:slatwalladmin.partialsPath,private utiltiyService:slatwalladmin.UtilityService,private $slatwall:ngSlatwall.SlatwallService){
+    constructor(
+        public partialsPath,
+        public utiltiyService,
+        public $slatwall
+        ){
     }
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

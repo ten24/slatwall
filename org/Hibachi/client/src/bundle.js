@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(46);
+	var logger_module_1 = __webpack_require__(57);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,11 +648,11 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(41);
-	var ngslatwall_module_1 = __webpack_require__(42);
+	var slatwallinterceptor_1 = __webpack_require__(52);
+	var ngslatwall_module_1 = __webpack_require__(53);
 	//filters
-	var entityrbkey_1 = __webpack_require__(44);
-	var swcurrency_1 = __webpack_require__(45);
+	var entityrbkey_1 = __webpack_require__(55);
+	var swcurrency_1 = __webpack_require__(56);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -861,10 +861,10 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var core_module_1 = __webpack_require__(14);
-	var pagination_module_1 = __webpack_require__(23);
-	var dialog_module_1 = __webpack_require__(26);
-	var collection_module_1 = __webpack_require__(28);
-	var workflow_module_1 = __webpack_require__(39);
+	var pagination_module_1 = __webpack_require__(34);
+	var dialog_module_1 = __webpack_require__(37);
+	var collection_module_1 = __webpack_require__(39);
+	var workflow_module_1 = __webpack_require__(50);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -995,7 +995,18 @@
 	//filters
 	var percentage_1 = __webpack_require__(21);
 	//directives
-	var swtypeaheadsearch_1 = __webpack_require__(22);
+	var swactioncaller_1 = __webpack_require__(22);
+	var swtypeaheadsearch_1 = __webpack_require__(23);
+	var swactioncallerdropdown_1 = __webpack_require__(24);
+	var swcolumnsorter_1 = __webpack_require__(25);
+	var swconfirm_1 = __webpack_require__(26);
+	var swentityactionbar_1 = __webpack_require__(27);
+	var swentityactionbarbuttongroup_1 = __webpack_require__(28);
+	var swexpandablerecord_1 = __webpack_require__(29);
+	var swlistingdisplay_1 = __webpack_require__(30);
+	var swlistingcolumn_1 = __webpack_require__(31);
+	var swlogin_1 = __webpack_require__(32);
+	var swnumbersonly_1 = __webpack_require__(33);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1024,7 +1035,18 @@
 	    .service('formService', formservice_1.FormService)
 	    .service('metadataService', metadataservice_1.MetaDataService)
 	    .filter('percentage', [percentage_1.PercentageFilter.Factory])
-	    .directive('swTypeahedSearch', swtypeaheadsearch_1.SWTypeaheadSearch.Factory());
+	    .directive('swTypeahedSearch', swtypeaheadsearch_1.SWTypeaheadSearch.Factory())
+	    .directive('swActionCaller', swactioncaller_1.SWActionCaller.Factory())
+	    .directive('swActionCallerDropdown', swactioncallerdropdown_1.SWActionCallerDropdown.Factory())
+	    .directive('swColumnSorter', swcolumnsorter_1.SWColumnSorter.Factory())
+	    .directive('swConfirm', swconfirm_1.SWConfirm.Factory())
+	    .directive('swEntityActionBar', swentityactionbar_1.SWEntityActionBar.Factory())
+	    .directive('swEntityActionBarButtonGroup', swentityactionbarbuttongroup_1.SWEntityActionBarButtonGroup.Factory())
+	    .directive('swExpandableRecord', swexpandablerecord_1.SWExpandableRecord.Factory())
+	    .directive('swListingDisplay', swlistingdisplay_1.SWListingDisplay.Factory())
+	    .directive('swListingColumn', swlistingcolumn_1.SWListingColumn.Factory())
+	    .directive('swLogin', swlogin_1.SWLogin.Factory())
+	    .directive('swNumbersOnly', swnumbersonly_1.SWNumbersOnly.Factory());
 	exports.coremodule = coremodule;
 
 
@@ -1682,6 +1704,249 @@
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWActionCallerController = (function () {
+	    //@ngInject
+	    function SWActionCallerController($scope, $element, $templateRequest, $compile, partialsPath, utilityService, $slatwall) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$templateRequest = $templateRequest;
+	        this.$compile = $compile;
+	        this.partialsPath = partialsPath;
+	        this.utilityService = utilityService;
+	        this.$slatwall = $slatwall;
+	        this.init = function () {
+	            //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+	            _this.type = _this.type || 'link';
+	            //			this.actionItem = this.getActionItem();
+	            //			this.actionItemEntityName = this.getActionItemEntityName();
+	            //			this.text = this.getText();
+	            //			if(this.getDisabled()){
+	            //				this.getDisabledText();
+	            //			}else if(this.getConfirm()){
+	            //				this.getConfirmText();
+	            //			}
+	            //			
+	            //			if(this.modalFullWidth && !this.getDisabled()){
+	            //				this.class = this.class + " modalload-fullwidth";
+	            //			}
+	            //			
+	            //			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
+	            //				this.class = this.class + " modalload";
+	            //			}
+	            /*need authentication lookup by api to disable
+	            <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
+	                <cfset attributes.class &= " disabled" />
+	            </cfif>
+	            */
+	        };
+	        this.getAction = function () {
+	            return _this.action || '';
+	        };
+	        this.getActionItem = function () {
+	            return _this.utilityService.listLast(_this.getAction(), '.');
+	        };
+	        this.getActionItemEntityName = function () {
+	            var firstFourLetters = _this.utilityService.left(_this.actionItem, 4);
+	            var firstSixLetters = _this.utilityService.left(_this.actionItem, 6);
+	            var minus4letters = _this.utilityService.right(_this.actionItem, 4);
+	            var minus6letters = _this.utilityService.right(_this.actionItem, 6);
+	            var actionItemEntityName = "";
+	            if (firstFourLetters === 'list' && _this.actionItem.length > 4) {
+	                actionItemEntityName = minus4letters;
+	            }
+	            else if (firstFourLetters === 'edit' && _this.actionItem.length > 4) {
+	                actionItemEntityName = minus4letters;
+	            }
+	            else if (firstFourLetters === 'save' && _this.actionItem.length > 4) {
+	                actionItemEntityName = minus4letters;
+	            }
+	            else if (firstSixLetters === 'create' && _this.actionItem.length > 6) {
+	                actionItemEntityName = minus6letters;
+	            }
+	            else if (firstSixLetters === 'detail' && _this.actionItem.length > 6) {
+	                actionItemEntityName = minus6letters;
+	            }
+	            else if (firstSixLetters === 'delete' && _this.actionItem.length > 6) {
+	                actionItemEntityName = minus6letters;
+	            }
+	            return actionItemEntityName;
+	        };
+	        this.getTitle = function () {
+	            //if title is undefined then use text
+	            if (angular.isUndefined(_this.title) || !_this.title.length) {
+	                _this.title = _this.getText();
+	            }
+	            return _this.title;
+	        };
+	        this.getTextByRBKeyByAction = function (actionItemType, plural) {
+	            if (plural === void 0) { plural = false; }
+	            var navRBKey = _this.$slatwall.getRBKey('admin.define.' + actionItemType + '_nav');
+	            var entityRBKey = '';
+	            var replaceKey = '';
+	            if (plural) {
+	                entityRBKey = _this.$slatwall.getRBKey('entity.' + _this.actionItemEntityName + '_plural');
+	                replaceKey = '${itemEntityNamePlural}';
+	            }
+	            else {
+	                entityRBKey = _this.$slatwall.getRBKey('entity.' + _this.actionItemEntityName);
+	                replaceKey = '${itemEntityName}';
+	            }
+	            return _this.utilityService.replaceAll(navRBKey, replaceKey, entityRBKey);
+	        };
+	        this.getText = function () {
+	            //if we don't have text then make it up based on rbkeys
+	            if (angular.isUndefined(_this.text) || (angular.isDefined(_this.text) && !_this.text.length)) {
+	                _this.text = _this.$slatwall.getRBKey(_this.utilityService.replaceAll(_this.getAction(), ":", ".") + '_nav');
+	                var minus8letters = _this.utilityService.right(_this.text, 8);
+	                //if rbkey is still missing. then can we infer it
+	                if (minus8letters === '_missing') {
+	                    var firstFourLetters = _this.utilityService.left(_this.actionItem, 4);
+	                    var firstSixLetters = _this.utilityService.left(_this.actionItem, 6);
+	                    var minus4letters = _this.utilityService.right(_this.actionItem, 4);
+	                    var minus6letters = _this.utilityService.right(_this.actionItem, 6);
+	                    if (firstFourLetters === 'list' && _this.actionItem.length > 4) {
+	                        _this.text = _this.getTextByRBKeyByAction('list', true);
+	                    }
+	                    else if (firstFourLetters === 'edit' && _this.actionItem.length > 4) {
+	                        _this.text = _this.getTextByRBKeyByAction('edit', false);
+	                    }
+	                    else if (firstFourLetters === 'save' && _this.actionItem.length > 4) {
+	                        _this.text = _this.getTextByRBKeyByAction('save', false);
+	                    }
+	                    else if (firstSixLetters === 'create' && _this.actionItem.length > 6) {
+	                        _this.text = _this.getTextByRBKeyByAction('create', false);
+	                    }
+	                    else if (firstSixLetters === 'detail' && _this.actionItem.length > 6) {
+	                        _this.text = _this.getTextByRBKeyByAction('detail', false);
+	                    }
+	                    else if (firstSixLetters === 'delete' && _this.actionItem.length > 6) {
+	                        _this.text = _this.getTextByRBKeyByAction('delete', false);
+	                    }
+	                }
+	                if (_this.utilityService.right(_this.text, 8)) {
+	                    _this.text = _this.$slatwall.getRBKey(_this.utilityService.replaceAll(_this.getAction(), ":", "."));
+	                }
+	            }
+	            if (!_this.title || (_this.title && !_this.title.length)) {
+	                _this.title = _this.text;
+	            }
+	            return _this.text;
+	        };
+	        this.getDisabled = function () {
+	            //if item is disabled
+	            if (angular.isDefined(_this.disabled) && _this.disabled) {
+	                return true;
+	            }
+	            else {
+	                return false;
+	            }
+	        };
+	        this.getDisabledText = function () {
+	            if (_this.getDisabled()) {
+	                //and no disabled text specified
+	                if (angular.isUndefined(_this.disabledtext) || !_this.disabledtext.length) {
+	                    var disabledrbkey = _this.utilityService.replaceAll(_this.action, ':', '.') + '_disabled';
+	                    _this.disabledtext = _this.$slatwall.getRBKey(disabledrbkey);
+	                }
+	                //add disabled class
+	                _this.class += " s-btn-disabled";
+	                _this.confirm = false;
+	                return _this.disabledtext;
+	            }
+	            return "";
+	        };
+	        this.getConfirm = function () {
+	            if (angular.isDefined(_this.confirm) && _this.confirm) {
+	                return true;
+	            }
+	            else {
+	                return false;
+	            }
+	        };
+	        this.getConfirmText = function () {
+	            if (_this.getConfirm()) {
+	                if (angular.isUndefined(_this.confirmtext) && _this.confirmtext.length) {
+	                    var confirmrbkey = _this.utilityService.replaceAll(_this.action, ':', '.') + '_confirm';
+	                    _this.confirmtext = _this.$slatwall.getRBKey(confirmrbkey);
+	                }
+	                _this.class += " alert-confirm";
+	                return _this.confirm;
+	            }
+	            return "";
+	        };
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$templateRequest = $templateRequest;
+	        this.$compile = $compile;
+	        this.partialsPath = partialsPath;
+	        this.$slatwall = $slatwall;
+	        this.utilityService = utilityService;
+	        this.$templateRequest(this.partialsPath + "actioncaller.html").then(function (html) {
+	            var template = angular.element(html);
+	            _this.$element.parent().append(template);
+	            $compile(template)($scope);
+	            //need to perform init after promise completes
+	            _this.init();
+	        });
+	    }
+	    SWActionCallerController.$inject = ['$scope', '$element', '$templateRequest', '$compile', 'partialsPath', 'utilityService', '$slatwall'];
+	    return SWActionCallerController;
+	})();
+	exports.SWActionCallerController = SWActionCallerController;
+	var SWActionCaller = (function () {
+	    function SWActionCaller(partialsPath, utiltiyService, $slatwall) {
+	        this.partialsPath = partialsPath;
+	        this.utiltiyService = utiltiyService;
+	        this.$slatwall = $slatwall;
+	        this.restrict = 'EA';
+	        this.scope = {};
+	        this.bindToController = {
+	            action: "@",
+	            text: "@",
+	            type: "@",
+	            queryString: "@",
+	            title: "@",
+	            'class': "@",
+	            icon: "@",
+	            iconOnly: "=",
+	            name: "@",
+	            confirm: "=",
+	            confirmtext: "@",
+	            disabled: "=",
+	            disabledtext: "@",
+	            modal: "=",
+	            modalFullWidth: "=",
+	            id: "@"
+	        };
+	        this.controller = SWActionCallerController;
+	        this.controllerAs = "swActionCaller";
+	        this.link = function (scope, element, attrs) {
+	        };
+	    }
+	    SWActionCaller.Factory = function () {
+	        var directive = function (partialsPath, utiltiyService, $slatwall) {
+	            return new SWActionCaller(partialsPath, utiltiyService, $slatwall);
+	        };
+	        directive.$inject = [
+	            'partialsPath',
+	            'utilityService',
+	            '$slatwall'
+	        ];
+	        return directive;
+	    };
+	    return SWActionCaller;
+	})();
+	exports.SWActionCaller = SWActionCaller;
+	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWTypeaheadSearchController = (function () {
 	    function SWTypeaheadSearchController($slatwall, $timeout, collectionConfigService) {
 	        var _this = this;
@@ -1825,14 +2090,1198 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWActionCallerDropdownController = (function () {
+	    function SWActionCallerDropdownController() {
+	        this.title = this.title || '';
+	        this.icon = this.icon || 'plus';
+	        this.type = this.type || 'button';
+	        this.dropdownClass = this.dropdownClass || '';
+	        this.dropdownId = this.dropdownId || '';
+	        this.buttonClass = this.buttonClass || 'btn-primary';
+	    }
+	    return SWActionCallerDropdownController;
+	})();
+	exports.SWActionCallerDropdownController = SWActionCallerDropdownController;
+	var SWActionCallerDropdown = (function () {
+	    function SWActionCallerDropdown(partialsPath) {
+	        this.partialsPath = partialsPath;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.transclude = true;
+	        this.bindToController = {
+	            title: "@",
+	            icon: "@",
+	            type: "=",
+	            dropdownClass: "@",
+	            dropdownId: "@",
+	            buttonClass: "@"
+	        };
+	        this.controller = SWActionCallerDropdownController;
+	        this.controllerAs = "swActionCallerDropdown";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = partialsPath + 'actioncallerdropdown.html';
+	    }
+	    SWActionCallerDropdown.Factory = function () {
+	        var directive = function (partialsPath) { return new SWActionCallerDropdown(partialsPath); };
+	        directive.$inject = ['partialsPath'];
+	        return directive;
+	    };
+	    return SWActionCallerDropdown;
+	})();
+	exports.SWActionCallerDropdown = SWActionCallerDropdown;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWColumnSorter = (function () {
+	    function SWColumnSorter($log, observerService, partialsPath) {
+	        return {
+	            restrict: 'AE',
+	            scope: {
+	                column: "="
+	            },
+	            templateUrl: partialsPath + "columnsorter.html",
+	            link: function (scope, element, attrs) {
+	                var orderBy = {
+	                    "propertyIdentifier": scope.column.propertyIdentifier
+	                };
+	                scope.sortAsc = function () {
+	                    orderBy.direction = 'Asc';
+	                    this.observerService.notify('sortByColumn', orderBy);
+	                };
+	                scope.sortDesc = function () {
+	                    orderBy.direction = 'Desc';
+	                    observerService.notify('sortByColumn', orderBy);
+	                };
+	            }
+	        };
+	    }
+	    SWColumnSorter.Factory = function () {
+	        var directive = function ($log, observerService, partialsPath) {
+	            return new SWColumnSorter($log, observerService, partialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'observerService',
+	            'partialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWColumnSorter;
+	})();
+	exports.SWColumnSorter = SWColumnSorter;
+	// angular.module('slatwalladmin')
+	// .directive('swColumnSorter', [
+	// '$log',
+	// 'observerService',
+	// 'partialsPath',
+	// 	function(
+	// 	$log,
+	//     observerService,
+	// 	partialsPath
+	// 	){
+	// 		return {
+	// 			restrict: 'AE',
+	// 			scope:{
+	// 				column:"=",
+	// 			},
+	// 			templateUrl:partialsPath+"columnsorter.html",
+	// 			link: function(scope, element,attrs){
+	//                 var orderBy = {
+	//                     "propertyIdentifier":scope.column.propertyIdentifier,
+	//                 }
+	//                 scope.sortAsc = function(){
+	//                     orderBy.direction = 'Asc';
+	//                     observerService.notify('sortByColumn',orderBy);
+	//                 }
+	//                 scope.sortDesc = function(){
+	//                     orderBy.direction = 'Desc';
+	//                     observerService.notify('sortByColumn',orderBy);
+	//                 }
+	// 			}
+	// 		};
+	// 	}
+	// ]);
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	/**
+	 * <------------------------------------------------------------------------------------------------------------------------------------>
+	 *   This directive can be used to prompt the user with a confirmation dialog.
+	 *
+	 *   Example Usage 1:
+	 *   <a swconfirm
+	 *   						use-rb-key=true
+	 * 							yes-text="define.yes"
+	 * 							no-text="define.no"
+	 * 							confirm-text="define.confirm"
+	 * 							message-text="define.delete.message"
+	 * 							callback="someFunction()">
+	 *   </a>
+	 *   Alternate Version (No Rbkeys):
+	 *   <a swconfirm
+	 *   						use-rb-key=false
+	 * 							yes-text="Sure"
+	 * 							no-text="Not Sure!"
+	 * 							confirm-text="Sure"
+	 * 							message-text="Are you sure?"
+	 * 							callback="sure()">
+	 *   </a>
+	 *
+	 *   Note: Because the template is dynamic, the following keywords can not be used anywhere in the text for this modal.
+	 *
+	 *   [yes] [no] [confirm] [message] [callback]
+	 *
+	 *   The above words in upper-case can be used - just not those words inside square brackets.
+	 *   Note: Your callback function on-confirm should return true;
+	 *<------------------------------------------------------------------------------------------------------------------------------------->
+	 */
+	var SWConfirm = (function () {
+	    function SWConfirm($slatwall, $log, $compile, $modal, partialsPath) {
+	        var buildConfirmationModal = function (simple, useRbKey, confirmText, messageText, noText, yesText, callback) {
+	            /* Keys */
+	            var confirmKey = "[confirm]";
+	            var messageKey = "[message]";
+	            var noKey = "[no]";
+	            var yesKey = "[yes]";
+	            var callbackKey = "[callback]";
+	            var swRbKey = "sw-rbkey=";
+	            /* Values */
+	            var confirmVal = "<confirm>";
+	            var messageVal = "<message>";
+	            var noVal = "<no>";
+	            var yesVal = "<yes>";
+	            var callbackVal = "<callback>";
+	            /* Parse Tags */
+	            var startTag = "\"'";
+	            var endTag = "'\"";
+	            var startParen = "'";
+	            var endParen = "'";
+	            var empty = "";
+	            /* Modal String */
+	            var parsedKeyString = "";
+	            var finishedString = "";
+	            //Figure out which version of this tag we are using
+	            var templateString = "<div>" +
+	                "<div class='modal-header'><a class='close' data-dismiss='modal' ng-click='cancel()'>×</a><h3 [confirm]><confirm></h3></div>" +
+	                "<div class='modal-body' [message]>" + "<message>" + "</div>" +
+	                "<div class='modal-footer'>" +
+	                "<button class='btn btn-sm btn-default btn-inverse' ng-click='cancel()' [no]><no></button>" +
+	                "<button class='btn btn-sm btn-default btn-primary' ng-click='[callback]' [yes]><yes></button></div></div></div>";
+	            /* Use RbKeys or Not? */
+	            if (useRbKey === "true") {
+	                $log.debug("Using RbKey? " + useRbKey);
+	                /* Then decorate the template with the keys. */
+	                confirmText = swRbKey + startTag + confirmText + endTag;
+	                messageText = swRbKey + startTag + messageText + endTag;
+	                yesText = swRbKey + startTag + yesText + endTag;
+	                noText = swRbKey + startTag + noText + endTag;
+	                parsedKeyString = templateString.replace(confirmKey, confirmText)
+	                    .replace(messageText, messageText)
+	                    .replace(noKey, noText)
+	                    .replace(yesKey, yesText)
+	                    .replace(callback, callback);
+	                $log.debug(finishedString);
+	                finishedString = parsedKeyString.replace(confirmKey, empty)
+	                    .replace(messageVal, empty)
+	                    .replace(noVal, empty)
+	                    .replace(yesVal, empty);
+	                $log.debug(finishedString);
+	                return finishedString;
+	            }
+	            else {
+	                /* Then decorate the template without the keys. */
+	                $log.debug("Using RbKey? " + useRbKey);
+	                parsedKeyString = templateString.replace(confirmVal, confirmText)
+	                    .replace(messageVal, messageText)
+	                    .replace(noVal, noText)
+	                    .replace(yesVal, yesText);
+	                finishedString = parsedKeyString.replace(confirmKey, empty)
+	                    .replace(messageKey, empty)
+	                    .replace(noKey, empty)
+	                    .replace(yesKey, empty)
+	                    .replace(callbackKey, callback);
+	                $log.debug(finishedString);
+	                return finishedString;
+	            }
+	        };
+	        return {
+	            restrict: 'EA',
+	            scope: {
+	                callback: "&",
+	                entity: "="
+	            },
+	            link: function (scope, element, attr) {
+	                /* Grab the template and build the modal on click */
+	                $log.debug("Modal is: ");
+	                $log.debug($modal);
+	                element.bind('click', function () {
+	                    /* Default Values */
+	                    var useRbKey = attr.useRbKey || "false";
+	                    var simple = attr.simple || false;
+	                    var yesText = attr.yesText || "define.yes";
+	                    var noText = attr.noText || "define.no";
+	                    var confirmText = attr.confirmText || "define.delete";
+	                    var messageText = attr.messageText || "define.delete_message";
+	                    var callback = attr.callback || "onSuccess()";
+	                    var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText, callback);
+	                    var modalInstance = $modal.open({
+	                        template: templateString,
+	                        controller: 'confirmationController'
+	                    });
+	                    /**
+	                        * Handles the result - callback or dismissed
+	                        */
+	                    modalInstance.result.then(function (result) {
+	                        $log.debug("Result:" + result);
+	                        scope.callback();
+	                        return true;
+	                    }, function () {
+	                        //There was an error
+	                    });
+	                }); //<--end bind 	
+	            }
+	        };
+	    }
+	    SWConfirm.Factory = function () {
+	        var directive = function ($slatwall, $log, $compile, $modal, partialsPath) {
+	            return new SWConfirm($slatwall, $log, $compile, $modal, partialsPath);
+	        };
+	        directive.$inject = ['$slatwall', '$log', '$compile', '$modal', 'partialsPath'];
+	        return directive;
+	    };
+	    return SWConfirm;
+	})();
+	exports.SWConfirm = SWConfirm;
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWEntityActionBarController = (function () {
+	    function SWEntityActionBarController() {
+	        this.init = function () {
+	        };
+	        this.init();
+	    }
+	    return SWEntityActionBarController;
+	})();
+	var SWEntityActionBar = (function () {
+	    function SWEntityActionBar(partialsPath) {
+	        this.partialsPath = partialsPath;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.transclude = true;
+	        this.bindToController = {
+	            /*Core settings*/
+	            type: "@",
+	            object: "=",
+	            pageTitle: "@",
+	            edit: "=",
+	            /*Action Callers (top buttons)*/
+	            showcancel: "=",
+	            showcreate: "=",
+	            showedit: "=",
+	            showdelete: "=",
+	            /*Basic Action Caller Overrides*/
+	            createModal: "=",
+	            createAction: "=",
+	            createQueryString: "=",
+	            backAction: "=",
+	            backQueryString: "=",
+	            cancelAction: "=",
+	            cancelQueryString: "=",
+	            deleteAction: "=",
+	            deleteQueryString: "=",
+	            /*Process Specific Values*/
+	            processAction: "=",
+	            processContext: "="
+	        };
+	        this.controller = SWEntityActionBarController;
+	        this.controllerAs = "swEntityActionBar";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = partialsPath + 'entityactionbar.html';
+	    }
+	    SWEntityActionBar.Factory = function () {
+	        var directive = function (partialsPath) {
+	            return new SWEntityActionBar(partialsPath);
+	        };
+	        directive.$inject = ['partialsPath'];
+	        return directive;
+	    };
+	    return SWEntityActionBar;
+	})();
+	exports.SWEntityActionBar = SWEntityActionBar;
+	//	angular.module('slatwalladmin').directive('swEntityActionBar',['partialsPath',(partialsPath) => new SWEntityActionBar(partialsPath)]);
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../..//typings/tsd.d.ts' />
+	var SWEntityActionBarButtonGroupController = (function () {
+	    function SWEntityActionBarButtonGroupController() {
+	    }
+	    return SWEntityActionBarButtonGroupController;
+	})();
+	var SWEntityActionBarButtonGroup = (function () {
+	    function SWEntityActionBarButtonGroup(partialsPath) {
+	        this.partialsPath = partialsPath;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.transclude = true;
+	        this.bindToController = {};
+	        this.controller = SWEntityActionBarButtonGroupController;
+	        this.controllerAs = "swEntityActionBarButtonGroup";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = partialsPath + 'entityactionbarbuttongroup.html';
+	    }
+	    SWEntityActionBarButtonGroup.Factory = function () {
+	        var directive = function (partialsPath) {
+	            return new SWEntityActionBarButtonGroup(partialsPath);
+	        };
+	        directive.$inject = ['partialsPath'];
+	        return directive;
+	    };
+	    return SWEntityActionBarButtonGroup;
+	})();
+	exports.SWEntityActionBarButtonGroup = SWEntityActionBarButtonGroup;
+	//angular.module('slatwalladmin').directive('swEntityActionBarButtonGroup',['partialsPath',(partialsPath) => new SWEntityActionBarButtonGroup(partialsPath)]);
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWExpandableRecordController = (function () {
+	    function SWExpandableRecordController($timeout, utilityService, $slatwall, collectionConfigService) {
+	        var _this = this;
+	        this.$timeout = $timeout;
+	        this.utilityService = utilityService;
+	        this.$slatwall = $slatwall;
+	        this.collectionConfigService = collectionConfigService;
+	        this.childrenLoaded = false;
+	        this.childrenOpen = false;
+	        this.children = [];
+	        this.toggleChild = function () {
+	            _this.$timeout(function () {
+	                _this.childrenOpen = !_this.childrenOpen;
+	                if (!_this.childrenLoaded) {
+	                    var childCollectionConfig = _this.collectionConfigService.newCollectionConfig(_this.entity.metaData.className);
+	                    //set up parent
+	                    var parentName = _this.entity.metaData.hb_parentPropertyName;
+	                    var parentCFC = _this.entity.metaData[parentName].cfc;
+	                    var parentIDName = _this.$slatwall.getEntityExample(parentCFC).$$getIDName();
+	                    //set up child
+	                    var childName = _this.entity.metaData.hb_childPropertyName;
+	                    var childCFC = _this.entity.metaData[childName].cfc;
+	                    var childIDName = _this.$slatwall.getEntityExample(childCFC).$$getIDName();
+	                    childCollectionConfig.clearFilterGroups();
+	                    childCollectionConfig.collection = _this.entity;
+	                    childCollectionConfig.addFilter(parentName + '.' + parentIDName, _this.parentId);
+	                    childCollectionConfig.setAllRecords(true);
+	                    angular.forEach(_this.collectionConfig.columns, function (column) {
+	                        childCollectionConfig.addColumn(column.propertyIdentifier, column.tilte, column);
+	                    });
+	                    angular.forEach(_this.collectionConfig.joins, function (join) {
+	                        childCollectionConfig.addJoin(join);
+	                    });
+	                    childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
+	                    _this.collectionPromise = childCollectionConfig.getEntity();
+	                    _this.collectionPromise.then(function (data) {
+	                        _this.collectionData = data;
+	                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+	                        if (_this.collectionData.pageRecords.length) {
+	                            angular.forEach(_this.collectionData.pageRecords, function (pageRecord) {
+	                                pageRecord.dataparentID = _this.recordID;
+	                                pageRecord.depth = _this.recordDepth || 0;
+	                                pageRecord.depth++;
+	                                _this.children.push(pageRecord);
+	                                _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
+	                            });
+	                        }
+	                        _this.childrenLoaded = true;
+	                    });
+	                }
+	                angular.forEach(_this.children, function (child) {
+	                    child.dataIsVisible = _this.childrenOpen;
+	                });
+	            });
+	        };
+	        this.$timeout = $timeout;
+	        this.$slatwall = $slatwall;
+	        this.utilityService = utilityService;
+	        this.collectionConfigService = collectionConfigService;
+	    }
+	    SWExpandableRecordController.$inject = ['$timeout', 'utilityService', '$slatwall', 'collectionConfigService'];
+	    return SWExpandableRecordController;
+	})();
+	var SWExpandableRecord = (function () {
+	    function SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath, utilityService) {
+	        var _this = this;
+	        this.$compile = $compile;
+	        this.$templateRequest = $templateRequest;
+	        this.$timeout = $timeout;
+	        this.partialsPath = partialsPath;
+	        this.utilityService = utilityService;
+	        this.restrict = 'EA';
+	        this.scope = {};
+	        this.bindToController = {
+	            recordValue: "=",
+	            link: "@",
+	            expandable: "=",
+	            parentId: "=",
+	            entity: "=",
+	            collectionConfig: "=",
+	            records: "=",
+	            recordIndex: "=",
+	            recordDepth: "=",
+	            childCount: "=",
+	            autoOpen: "=",
+	            multiselectIdPaths: "="
+	        };
+	        this.controller = SWExpandableRecordController;
+	        this.controllerAs = "swExpandableRecord";
+	        this.link = function (scope, element, attrs) {
+	            if (scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount) {
+	                if (scope.swExpandableRecord.recordValue) {
+	                    var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
+	                    if (scope.swExpandableRecord.multiselectIdPaths && scope.swExpandableRecord.multiselectIdPaths.length) {
+	                        var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
+	                        angular.forEach(multiselectIdPathsArray, function (multiselectIdPath) {
+	                            var position = _this.utilityService.listFind(multiselectIdPath, id, '/');
+	                            var multiselectPathLength = multiselectIdPath.split('/').length;
+	                            if (position !== -1 && position < multiselectPathLength - 1) {
+	                                scope.swExpandableRecord.toggleChild();
+	                            }
+	                        });
+	                    }
+	                }
+	                _this.$templateRequest(_this.partialsPath + "expandablerecord.html").then(function (html) {
+	                    var template = angular.element(html);
+	                    //get autoopen reference to ensure only the root is autoopenable
+	                    var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
+	                    scope.swExpandableRecord.autoOpen = false;
+	                    template = _this.$compile(template)(scope);
+	                    element.html(template);
+	                    element.on('click', scope.swExpandableRecord.toggleChild);
+	                    if (autoOpen) {
+	                        scope.swExpandableRecord.toggleChild();
+	                    }
+	                });
+	            }
+	        };
+	        this.$compile = $compile;
+	        this.$templateRequest = $templateRequest;
+	        this.partialsPath = partialsPath;
+	        this.$timeout = $timeout;
+	        this.utilityService = utilityService;
+	    }
+	    SWExpandableRecord.Factory = function () {
+	        var directive = function ($compile, $templateRequest, $timeout, partialsPath, utilityService) {
+	            return new SWExpandableRecord($compile, $templateRequest, $timeout, partialsPath, utilityService);
+	        };
+	        directive.$inject = [
+	            '$compile',
+	            '$templateRequest',
+	            '$timeout',
+	            'partialsPath',
+	            'utilityService'
+	        ];
+	        return directive;
+	    };
+	    SWExpandableRecord.$inject = ['$compile', '$templateRequest', '$timeout', 'partialsPath', 'utilityService'];
+	    return SWExpandableRecord;
+	})();
+	exports.SWExpandableRecord = SWExpandableRecord;
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWListingDisplayController = (function () {
+	    function SWListingDisplayController($scope, $element, $transclude, $timeout, $q, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService, selectionService, observerService) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$transclude = $transclude;
+	        this.$timeout = $timeout;
+	        this.$q = $q;
+	        this.$slatwall = $slatwall;
+	        this.partialsPath = partialsPath;
+	        this.utilityService = utilityService;
+	        this.collectionConfigService = collectionConfigService;
+	        this.paginationService = paginationService;
+	        this.selectionService = selectionService;
+	        this.observerService = observerService;
+	        /* local state variables */
+	        this.columns = [];
+	        this.allpropertyidentifiers = "";
+	        this.allprocessobjectproperties = "false";
+	        this.selectable = false;
+	        this.multiselectable = false;
+	        this.sortable = false;
+	        this.exampleEntity = "";
+	        this.buttonGroup = [];
+	        this.setupDefaultCollectionInfo = function () {
+	            if (_this.hasCollectionPromise) {
+	                _this.collectionObject = _this.collection.collectionObject;
+	                _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
+	                _this.collectionConfig.loadJson(_this.collection.collectionConfig);
+	            }
+	            _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+	            _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
+	            _this.collectionConfig.setKeywords(_this.paginator.keywords);
+	        };
+	        this.setupDefaultGetCollection = function () {
+	            _this.collectionPromise = _this.collectionConfig.getEntity();
+	            return function () {
+	                _this.collectionPromise.then(function (data) {
+	                });
+	            };
+	        };
+	        this.initData = function () {
+	            _this.collectionConfig.setPageShow(_this.paginator.pageShow);
+	            _this.collectionConfig.setCurrentPage(_this.paginator.currentPage);
+	            //setup export action
+	            if (angular.isDefined(_this.exportAction)) {
+	                _this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
+	            }
+	            //Setup Select
+	            if (_this.selectFieldName && _this.selectFieldName.length) {
+	                _this.selectable = true;
+	                _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-select', ' ');
+	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-selectfield="' + _this.selectFieldName + '"', ' ');
+	            }
+	            //Setup MultiSelect
+	            if (_this.multiselectFieldName && _this.multiselectFieldName.length) {
+	                _this.multiselectable = true;
+	                _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-multiselect', ' ');
+	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-multiselectpropertyidentifier="' + _this.multiselectPropertyIdentifier + '"', ' ');
+	                //attach observer so we know when a selection occurs
+	                _this.observerService.attach(_this.updateMultiselectValues, 'swSelectionToggleSelection', _this.collectionObject);
+	            }
+	            if (_this.multiselectable && !_this.columns.length) {
+	                //check if it has an active flag and if so then add the active flag
+	                if (_this.exampleEntity.metaData.activeProperty && !_this.hasCollectionPromise) {
+	                    _this.collectionConfig.addFilter('activeFlag', 1);
+	                }
+	            }
+	            //Look for Hierarchy in example entity
+	            if (!_this.parentPropertyName || (_this.parentPropertyName && !_this.parentPropertyName.length)) {
+	                if (_this.exampleEntity.metaData.hb_parentPropertyName) {
+	                    _this.parentPropertyName = _this.exampleEntity.metaData.hb_parentPropertyName;
+	                }
+	            }
+	            if (!_this.childPropertyName || (_this.childPropertyName && !_this.childPropertyName.length)) {
+	                if (_this.exampleEntity.metaData.hb_childPropertyName) {
+	                    _this.childPropertyName = _this.exampleEntity.metaData.hb_childPropertyName;
+	                }
+	            }
+	            //Setup Hierachy Expandable
+	            if (_this.parentPropertyName && _this.parentPropertyName.length) {
+	                if (angular.isUndefined(_this.expandable)) {
+	                    _this.expandable = true;
+	                }
+	                _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-expandable', ' ');
+	                //add parent property root filter
+	                if (!_this.hasCollectionPromise) {
+	                    _this.collectionConfig.addFilter(_this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), 'NULL', 'IS');
+	                }
+	                //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
+	                //add children column
+	                if (_this.childPropertyName && _this.childPropertyName.length) {
+	                    if (_this.getChildCount || !_this.hasCollectionPromise) {
+	                        _this.collectionConfig.addDisplayAggregate(_this.childPropertyName, 'COUNT', _this.childPropertyName + 'Count');
+	                    }
+	                }
+	                _this.allpropertyidentifiers = _this.utilityService.listAppend(_this.allpropertyidentifiers, _this.exampleEntity.$$getIDName() + 'Path');
+	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-parentidproperty=' + _this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), ' ');
+	                _this.collectionConfig.setAllRecords(true);
+	            }
+	            //            if(
+	            //                !this.edit 
+	            //                && this.multiselectable 
+	            //                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+	            //                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
+	            //            ){
+	            //                if(this.multiselectValues && this.multiselectValues.length){
+	            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');   
+	            //                }else{
+	            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
+	            //                }
+	            //            }
+	            if (_this.multiselectIdPaths && _this.multiselectIdPaths.length) {
+	                angular.forEach(_this.multiselectIdPaths.split(','), function (value) {
+	                    var id = _this.utilityService.listLast(value, '/');
+	                    _this.selectionService.addSelection('ListingDisplay', id);
+	                });
+	            }
+	            if (_this.multiselectValues && _this.multiselectValues.length) {
+	                //select all owned ids
+	                angular.forEach(_this.multiselectValues.split(','), function (value) {
+	                    _this.selectionService.addSelection('ListingDisplay', value);
+	                });
+	            }
+	            //set defaults if value is not specified
+	            //this.edit = this.edit || $location.edit
+	            _this.processObjectProperties = _this.processObjectProperties || '';
+	            _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
+	            //this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
+	            _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
+	            //Setup Sortability
+	            if (_this.sortProperty && _this.sortProperty.length) {
+	            }
+	            //Setup the admin meta info
+	            _this.administrativeCount = 0;
+	            //Detail
+	            if (_this.recordDetailAction && _this.recordDetailAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('detail');
+	            }
+	            //Edit
+	            if (_this.recordEditAction && _this.recordEditAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('edit');
+	            }
+	            //Delete
+	            if (_this.recordDeleteAction && _this.recordDeleteAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('delete');
+	            }
+	            //Add
+	            if (_this.recordAddAction && _this.recordAddAction.length) {
+	                _this.administrativeCount++;
+	                _this.adminattributes = _this.getAdminAttributesByType('add');
+	            }
+	            //Process
+	            // if(this.recordProcessAction && this.recordProcessAction.length && this.recordProcessButtonDisplayFlag){
+	            //     this.administrativeCount++;
+	            //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+	            //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentity="'+this.recordProcessEntity.metaData.className+'"', " ");
+	            //     this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-processentityid="'+this.recordProcessEntity.$$getID+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processaction="'+this.recordProcessAction+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processcontext="'+this.recordProcessContext+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processquerystring="'+this.recordProcessQueryString+'"', " ");
+	            //     this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-processupdatetableid="'+this.recordProcessUpdateTableID+'"', " ");
+	            // }
+	            //Setup the primary representation column if no columns were passed in
+	            /*
+	            <cfif not arrayLen(thistag.columns)>
+	                <cfset arrayAppend(thistag.columns, {
+	                    propertyIdentifier = thistag.exampleentity.getSimpleRepresentationPropertyName(),
+	                    title = "",
+	                    tdclass="primary",
+	                    search = true,
+	                    sort = true,
+	                    filter = false,
+	                    range = false,
+	                    editable = false,
+	                    buttonGroup = true
+	                }) />
+	            </cfif>
+	            */
+	            //Setup the list of all property identifiers to be used later
+	            angular.forEach(_this.columns, function (column) {
+	                //If this is a standard propertyIdentifier
+	                if (column.propertyIdentifier) {
+	                    //Add to the all property identifiers
+	                    _this.allpropertyidentifiers = _this.utilityService.listAppend(_this.allpropertyidentifiers, column.propertyIdentifier);
+	                    //Check to see if we need to setup the dynamic filters, etc
+	                    //<cfif not len(column.search) || not len(column.sort) || not len(column.filter) || not len(column.range)>
+	                    if (!column.searchable || !!column.searchable.length || !column.sort || !column.sort.length) {
+	                        //Get the entity object to get property metaData
+	                        var thisEntityName = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.exampleEntity.metaData.className, column.propertyIdentifier);
+	                        var thisPropertyName = _this.utilityService.listLast(column.propertyIdentifier, '.');
+	                        var thisPropertyMeta = _this.$slatwall.getPropertyByEntityNameAndPropertyName(thisEntityName, thisPropertyName);
+	                    }
+	                }
+	                else if (column.processObjectProperty) {
+	                    column.searchable = false;
+	                    column.sort = false;
+	                    /*
+	                    <cfset column.filter = false />
+	                    <cfset column.range = false />
+	                    */
+	                    _this.allprocessobjectproperties = _this.utilityService.listAppend(_this.allprocessobjectproperties, column.processObjectProperty);
+	                }
+	                if (column.tdclass) {
+	                    var tdclassArray = column.tdclass.split(' ');
+	                    if (tdclassArray.indexOf("primary") >= 0 && _this.expandable) {
+	                        _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-expandsortproperty=' + column.propertyIdentifier, " ");
+	                        column.sort = false;
+	                    }
+	                }
+	            });
+	            //Setup a variable for the number of columns so that the none can have a proper colspan
+	            _this.columnCount = _this.columns.length;
+	            if (_this.selectable) {
+	                _this.columnCount++;
+	            }
+	            if (_this.multiselectable) {
+	                _this.columnCount++;
+	            }
+	            if (_this.sortable) {
+	                _this.columnCount++;
+	            }
+	            if (_this.administrativeCount) {
+	                _this.administrativeCount++;
+	            }
+	            //Setup table class
+	            _this.tableclass = _this.tableclass || '';
+	            _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
+	        };
+	        this.setupColumns = function () {
+	            //assumes no alias formatting
+	            angular.forEach(_this.columns, function (column) {
+	                var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collectionObject, column.propertyIdentifier);
+	                var title = _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+	                if (angular.isUndefined(column.isVisible)) {
+	                    column.isVisible = true;
+	                }
+	                _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
+	            });
+	            //if the passed in collection has columns perform some formatting
+	            if (_this.hasCollectionPromise) {
+	                //assumes alias formatting from collectionConfig
+	                angular.forEach(_this.collectionConfig.columns, function (column) {
+	                    var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collectionObject, _this.utilityService.listRest(column.propertyIdentifier, '.'));
+	                    column.title = column.title || _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+	                    if (angular.isUndefined(column.isVisible)) {
+	                        column.isVisible = true;
+	                    }
+	                });
+	            }
+	        };
+	        this.updateMultiselectValues = function () {
+	            _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
+	        };
+	        this.escapeRegExp = function (str) {
+	            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	        };
+	        this.replaceAll = function (str, find, replace) {
+	            return str.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
+	        };
+	        this.getPageRecordKey = function (propertyIdentifier) {
+	            if (propertyIdentifier) {
+	                var propertyIdentifierWithoutAlias = '';
+	                if (propertyIdentifier.indexOf('_') === 0) {
+	                    propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.') + 1, propertyIdentifier.length);
+	                }
+	                else {
+	                    propertyIdentifierWithoutAlias = propertyIdentifier;
+	                }
+	                return _this.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+	            }
+	            return '';
+	        };
+	        this.getAdminAttributesByType = function (type) {
+	            var recordActionName = 'record' + type.toUpperCase() + 'Action';
+	            var recordActionPropertyName = recordActionName + 'Property';
+	            var recordActionQueryStringName = recordActionName + 'QueryString';
+	            var recordActionModalName = recordActionName + 'Modal';
+	            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'action="' + _this[recordActionName] + '"', " ");
+	            if (_this[recordActionPropertyName] && _this[recordActionPropertyName].length) {
+	                _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'actionproperty="' + _this[recordActionPropertyName] + '"', " ");
+	            }
+	            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'querystring="' + _this[recordActionQueryStringName] + '"', " ");
+	            _this.adminattributes = _this.utilityService.listAppend(_this.adminattributes, 'data-' + type + 'modal="' + _this[recordActionModalName] + '"', " ");
+	            return _this.adminattributes;
+	        };
+	        this.getExportAction = function () {
+	            return _this.exportAction + _this.collectionID;
+	        };
+	        this.$q = $q;
+	        this.$timeout = $timeout;
+	        this.$slatwall = $slatwall;
+	        this.partialsPath = partialsPath;
+	        this.utilityService = utilityService;
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.collectionConfigService = collectionConfigService;
+	        this.paginationService = paginationService;
+	        this.selectionService = selectionService;
+	        this.observerService = observerService;
+	        this.paginator = paginationService.createPagination();
+	        this.hasCollectionPromise = false;
+	        if (angular.isUndefined(this.getChildCount)) {
+	            this.getChildCount = false;
+	        }
+	        if (!this.collection || !angular.isString(this.collection)) {
+	            this.hasCollectionPromise = true;
+	        }
+	        else {
+	            this.collectionObject = this.collection;
+	            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+	        }
+	        this.setupDefaultCollectionInfo();
+	        //if columns doesn't exist then make it
+	        if (!this.collectionConfig.columns) {
+	            this.collectionConfig.columns = [];
+	        }
+	        //if a collectionConfig was not passed in then we can run run swListingColumns
+	        //this is performed early to populate columns with swlistingcolumn info
+	        this.$transclude = $transclude;
+	        this.$transclude(this.$scope, function () { });
+	        this.setupColumns();
+	        this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
+	        this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
+	        this.initData();
+	        if (this.hasCollectionPromise) {
+	            this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
+	                if (newValue) {
+	                    _this.$q.when(_this.collectionPromise).then(function (data) {
+	                        _this.collectionData = data;
+	                        _this.setupDefaultCollectionInfo();
+	                        _this.setupColumns();
+	                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+	                        _this.paginator.setPageRecordsInfo(_this.collectionData);
+	                    });
+	                }
+	            });
+	        }
+	        else {
+	            this.collectionPromise.then(function (data) {
+	                _this.collectionData = data;
+	                _this.setupDefaultCollectionInfo();
+	                _this.setupColumns();
+	                _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+	                _this.paginator.setPageRecordsInfo(_this.collectionData);
+	            });
+	        }
+	        this.tableID = 'LD' + this.utilityService.createID();
+	        //if getCollection doesn't exist then create it
+	        if (angular.isUndefined(this.getCollection)) {
+	            this.getCollection = this.setupDefaultGetCollection();
+	        }
+	        this.paginator.getCollection = this.getCollection;
+	        //this.getCollection();
+	    }
+	    SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$timeout', '$q', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService', 'selectionService', 'observerService'];
+	    return SWListingDisplayController;
+	})();
+	var SWListingDisplay = (function () {
+	    function SWListingDisplay(partialsPath, observerService) {
+	        var _this = this;
+	        this.partialsPath = partialsPath;
+	        this.observerService = observerService;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.transclude = true;
+	        this.bindToController = {
+	            isRadio: "=",
+	            //angularLink:true || false
+	            angularLinks: "=",
+	            /*required*/
+	            collection: "=",
+	            collectionConfig: "=",
+	            getCollection: "&?",
+	            collectionPromise: "=",
+	            edit: "=",
+	            /*Optional*/
+	            title: "@",
+	            /*Admin Actions*/
+	            recordEditAction: "@",
+	            recordEditActionProperty: "@",
+	            recordEditQueryString: "@",
+	            recordEditModal: "=",
+	            recordEditDisabled: "=",
+	            recordDetailAction: "@",
+	            recordDetailActionProperty: "@",
+	            recordDetailQueryString: "@",
+	            recordDetailModal: "=",
+	            recordDeleteAction: "@",
+	            recordDeleteActionProperty: "@",
+	            recordDeleteQueryString: "@",
+	            recordAddAction: "@",
+	            recordAddActionProperty: "@",
+	            recordAddQueryString: "@",
+	            recordAddModal: "=",
+	            recordAddDisabled: "=",
+	            recordProcessesConfig: "=",
+	            /* record processes config is an array of actions. Example:
+	            [
+	            {
+	                recordProcessAction:"@",
+	                recordProcessActionProperty:"@",
+	                recordProcessQueryString:"@",
+	                recordProcessContext:"@",
+	                recordProcessEntity:"=",
+	                recordProcessEntityData:"=",
+	                recordProcessUpdateTableID:"=",
+	                recordProcessButtonDisplayFlag:"=",
+	            }
+	            ]
+	            */
+	            /*Hierachy Expandable*/
+	            parentPropertyName: "@",
+	            //booleans
+	            expandable: "=",
+	            expandableOpenRoot: "=",
+	            /*Sorting*/
+	            sortProperty: "@",
+	            sortContextIDColumn: "@",
+	            sortContextIDValue: "@",
+	            /*Single Select*/
+	            selectFiledName: "@",
+	            selectValue: "@",
+	            selectTitle: "@",
+	            /*Multiselect*/
+	            multiselectFieldName: "@",
+	            multiselectPropertyIdentifier: "@",
+	            multiselectIdPaths: "@",
+	            multiselectValues: "@",
+	            /*Helper / Additional / Custom*/
+	            tableattributes: "@",
+	            tableclass: "@",
+	            adminattributes: "@",
+	            /* Settings */
+	            showheader: "=",
+	            /* Basic Action Caller Overrides*/
+	            createModal: "=",
+	            createAction: "@",
+	            createQueryString: "@",
+	            exportAction: "@",
+	            getChildCount: "="
+	        };
+	        this.controller = SWListingDisplayController;
+	        this.controllerAs = "swListingDisplay";
+	        this.link = function (scope, element, attrs, controller, transclude) {
+	            scope.$on('$destroy', function () {
+	                _this.observerService.detachByID(scope.collection);
+	            });
+	        };
+	        this.partialsPath = partialsPath;
+	        this.observerService = observerService;
+	        this.templateUrl = this.partialsPath + 'listingdisplay.html';
+	    }
+	    SWListingDisplay.Factory = function () {
+	        var directive = function (partialsPath, observerService) {
+	            return new SWListingDisplay(partialsPath, observerService);
+	        };
+	        directive.$inject = [
+	            'partialsPath',
+	            'observerService'
+	        ];
+	        return directive;
+	    };
+	    SWListingDisplay.$inject = ['partialsPath'];
+	    return SWListingDisplay;
+	})();
+	exports.SWListingDisplay = SWListingDisplay;
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWListingColumnController = (function () {
+	    function SWListingColumnController() {
+	        var _this = this;
+	        this.init = function () {
+	            _this.editable = _this.editable || false;
+	        };
+	        this.init();
+	    }
+	    return SWListingColumnController;
+	})();
+	var SWListingColumn = (function () {
+	    function SWListingColumn(utilityService) {
+	        var _this = this;
+	        this.utilityService = utilityService;
+	        this.restrict = 'EA';
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyIdentifier: "@",
+	            processObjectProperty: "@",
+	            title: "@",
+	            tdclass: "@",
+	            search: "=",
+	            sort: "=",
+	            filter: "=",
+	            range: "=",
+	            editable: "=",
+	            buttonGroup: "="
+	        };
+	        this.controller = SWListingColumnController;
+	        this.controllerAs = "swListingColumn";
+	        this.link = function (scope, element, attrs) {
+	            var column = {
+	                propertyIdentifier: scope.swListingColumn.propertyIdentifier,
+	                processObjectProperty: scope.swListingColumn.processObjectProperty,
+	                title: scope.swListingColumn.title,
+	                tdclass: scope.swListingColumn.tdclass,
+	                search: scope.swListingColumn.search,
+	                sort: scope.swListingColumn.sort,
+	                filter: scope.swListingColumn.filter,
+	                range: scope.swListingColumn.range,
+	                editable: scope.swListingColumn.editable,
+	                buttonGroup: scope.swListingColumn.buttonGroup
+	            };
+	            if (_this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
+	                scope.$parent.swListingDisplay.columns.push(column);
+	            }
+	        };
+	    }
+	    SWListingColumn.Factory = function () {
+	        var directive = function (utilityService) {
+	            return new SWListingColumn(utilityService);
+	        };
+	        directive.$inject = [
+	            'partialsPath'
+	        ];
+	        return directive;
+	    };
+	    SWListingColumn.$inject = ['utilityService'];
+	    return SWListingColumn;
+	})();
+	exports.SWListingColumn = SWListingColumn;
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWLoginController = (function () {
+	    function SWLoginController($route, $log, $window, partialsPath, $slatwall, dialogService) {
+	        var _this = this;
+	        this.$route = $route;
+	        this.$log = $log;
+	        this.$window = $window;
+	        this.partialsPath = partialsPath;
+	        this.$slatwall = $slatwall;
+	        this.dialogService = dialogService;
+	        this.login = function () {
+	            var loginPromise = _this.$slatwall.login(_this.account_login.data.emailAddress, _this.account_login.data.password);
+	            loginPromise.then(function (loginResponse) {
+	                if (loginResponse && loginResponse.data && loginResponse.data.token) {
+	                    _this.$window.localStorage.setItem('token', loginResponse.data.token);
+	                    _this.$route.reload();
+	                    _this.dialogService.removeCurrentDialog();
+	                }
+	            });
+	        };
+	        this.$slatwall = $slatwall;
+	        this.$window = $window;
+	        this.$route = $route;
+	        this.account_login = $slatwall.newEntity('Account_Login');
+	    }
+	    return SWLoginController;
+	})();
+	var SWLogin = (function () {
+	    function SWLogin($route, $log, $window, partialsPath, $slatwall, dialogService) {
+	        this.$route = $route;
+	        this.$log = $log;
+	        this.$window = $window;
+	        this.partialsPath = partialsPath;
+	        this.$slatwall = $slatwall;
+	        this.dialogService = dialogService;
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.bindToController = {};
+	        this.controller = SWLoginController;
+	        this.controllerAs = "SwLogin";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = this.partialsPath + '/login.html';
+	    }
+	    SWLogin.Factory = function () {
+	        var directive = function ($route, $log, $window, partialsPath, $slatwall, dialogService) {
+	            return new SWLogin($route, $log, $window, partialsPath, $slatwall, dialogService);
+	        };
+	        directive.$inject = [
+	            '$route',
+	            '$log',
+	            '$window',
+	            'partialsPath',
+	            '$slatwall',
+	            'dialogService'
+	        ];
+	        return directive;
+	    };
+	    return SWLogin;
+	})();
+	exports.SWLogin = SWLogin;
+	// angular.module('slatwalladmin').directive('swLogin',['$route','$log','$window','partialsPath','$slatwall',($route,$log,$window,partialsPath,$slatwall,dialogService) => new SWLogin($route,$log,$window,partialsPath,$slatwall,dialogService)]);
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	var SWNumbersOnly = (function () {
+	    function SWNumbersOnly() {
+	        this.restrict = "A";
+	        this.require = "ngModel";
+	        this.scope = {
+	            ngModel: '=',
+	            minNumber: '=?'
+	        };
+	        this.link = function ($scope, element, attrs, modelCtrl) {
+	            modelCtrl.$parsers.push(function (inputValue) {
+	                var modelValue = modelCtrl.$modelValue;
+	                if (inputValue != "" && !isNaN(Number(inputValue))) {
+	                    if ((angular.isDefined($scope.minNumber) && Number(inputValue) > $scope.minNumber) || !angular.isDefined($scope.minNumber)) {
+	                        modelValue = Number(inputValue);
+	                    }
+	                    else if (angular.isDefined($scope.minNumber)) {
+	                        modelValue = $scope.minNumber;
+	                    }
+	                }
+	                return modelValue;
+	            });
+	        };
+	    }
+	    SWNumbersOnly.Factory = function () {
+	        var directive = function () { return new SWNumbersOnly(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWNumbersOnly;
+	})();
+	exports.SWNumbersOnly = SWNumbersOnly;
+
+
+/***/ },
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(24);
-	var swpaginationbar_1 = __webpack_require__(25);
+	var paginationservice_1 = __webpack_require__(35);
+	var swpaginationbar_1 = __webpack_require__(36);
 	var core_module_1 = __webpack_require__(14);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -1844,7 +3293,7 @@
 
 
 /***/ },
-/* 24 */
+/* 35 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -2023,7 +3472,7 @@
 
 
 /***/ },
-/* 25 */
+/* 36 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -2084,13 +3533,13 @@
 
 
 /***/ },
-/* 26 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(27);
+	var dialogservice_1 = __webpack_require__(38);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -2099,7 +3548,7 @@
 
 
 /***/ },
-/* 27 */
+/* 38 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -2139,7 +3588,7 @@
 
 
 /***/ },
-/* 28 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2147,17 +3596,17 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(29);
-	var collectionservice_1 = __webpack_require__(30);
-	var collections_1 = __webpack_require__(31);
+	var collectionconfigservice_1 = __webpack_require__(40);
+	var collectionservice_1 = __webpack_require__(41);
+	var collections_1 = __webpack_require__(42);
 	//directives
-	var swcollection_1 = __webpack_require__(32);
-	var swaddfilterbuttons_1 = __webpack_require__(33);
-	var swdisplayoptions_1 = __webpack_require__(34);
-	var swdisplayitem_1 = __webpack_require__(35);
-	var swcollectiontable_1 = __webpack_require__(36);
-	var swcolumnitem_1 = __webpack_require__(37);
-	var swconditioncriteria_1 = __webpack_require__(38);
+	var swcollection_1 = __webpack_require__(43);
+	var swaddfilterbuttons_1 = __webpack_require__(44);
+	var swdisplayoptions_1 = __webpack_require__(45);
+	var swdisplayitem_1 = __webpack_require__(46);
+	var swcollectiontable_1 = __webpack_require__(47);
+	var swcolumnitem_1 = __webpack_require__(48);
+	var swconditioncriteria_1 = __webpack_require__(49);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name]).config([function () {
 	    }])
 	    .controller('collections', collections_1.CollectionController)
@@ -2175,7 +3624,7 @@
 
 
 /***/ },
-/* 29 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -2614,7 +4063,7 @@
 
 
 /***/ },
-/* 30 */
+/* 41 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -2815,7 +4264,7 @@
 
 
 /***/ },
-/* 31 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3078,7 +4527,7 @@
 
 
 /***/ },
-/* 32 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3125,7 +4574,7 @@
 
 
 /***/ },
-/* 33 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3171,7 +4620,7 @@
 
 
 /***/ },
-/* 34 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3338,7 +4787,7 @@
 
 
 /***/ },
-/* 35 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3419,7 +4868,7 @@
 
 
 /***/ },
-/* 36 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3483,7 +4932,7 @@
 
 
 /***/ },
-/* 37 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3684,7 +5133,7 @@
 
 
 /***/ },
-/* 38 */
+/* 49 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4570,897 +6019,16 @@
 	    return SWConditionCriteria;
 	})();
 	exports.SWConditionCriteria = SWConditionCriteria;
-	// 'use strict';
-	// angular.module('slatwalladmin')
-	// .directive('swConditionCriteria', [
-	// 	'$http',
-	// 	'$compile',
-	// 	'$templateCache',
-	// 	'$log',
-	// 	'$slatwall',
-	// 	'$filter',
-	// 	'workflowPartialsPath',
-	// 	'collectionPartialsPath',
-	// 	'collectionService',
-	// 	'metadataService',
-	// 	function(
-	// 		$http,
-	// 		$compile,
-	// 		$templateCache,
-	// 		$log,
-	// 		$slatwall,
-	// 		$filter,
-	// 		workflowPartialsPath,
-	// 		collectionPartialsPath,
-	// 		collectionService,
-	// 		metadataService
-	// 	){
-	// 	/* Template info begin*/
-	// 		var getTemplate = function(selectedFilterProperty){
-	// 	        var template = '';
-	// 			var templatePath = '';
-	// 			if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
-	// 				templatePath = collectionPartialsPath+"criteria.html";
-	// 			}else{
-	// 				var criteriaormtype = selectedFilterProperty.ormtype;
-	// 				var criteriafieldtype = selectedFilterProperty.fieldtype;
-	// 				/*TODO: convert all switches to object literals*/
-	// 		        switch(criteriaormtype){
-	// 		            case 'boolean':
-	// 		               templatePath = collectionPartialsPath+"criteriaboolean.html";
-	// 		                break;
-	// 		            case 'string':
-	// 		                templatePath = collectionPartialsPath+"criteriastring.html";
-	// 		                break;
-	// 		            case 'timestamp':
-	// 		                templatePath = collectionPartialsPath+"criteriadate.html";
-	// 		                break;
-	// 		            case 'big_decimal':
-	// 		            case 'integer':
-	// 		            case 'float':
-	// 		            	templatePath = collectionPartialsPath+"criterianumber.html";
-	// 		            	break;
-	// 		        }
-	// 		        switch(criteriafieldtype){
-	// 			        case "many-to-one":
-	// 			        	templatePath = collectionPartialsPath+"criteriamanytoone.html";
-	// 						break;
-	// 					case "many-to-many":
-	// 						templatePath = collectionPartialsPath+"criteriamanytomany.html";
-	// 						break;
-	// 					case "one-to-many":
-	// 						templatePath = collectionPartialsPath+"criteriaonetomany.html";
-	// 						break;
-	// 			    }
-	// 			}
-	// 	        var templateLoader = $http.get(templatePath,{cache:$templateCache});
-	// 	        return templateLoader;
-	// 	    }; 
-	// 	/* Template info end*/
-	// 	/* Options info begin */
-	// 	    var getStringOptions = function(type){
-	// 	    	var stringOptions = [];
-	// 	    	if(angular.isUndefined(type)){
-	// 	    		type = 'filter';
-	// 	    	}
-	// 	    	if(type == 'filter'){
-	// 	    		stringOptions = [
-	// 					{
-	// 						display:"Equals",
-	// 						comparisonOperator:"="
-	// 					},
-	// 					{
-	// 						display:"Doesn't Equal",
-	// 						comparisonOperator:"<>"
-	// 					},
-	// 					{
-	// 						display:"Contains",
-	// 						comparisonOperator:"like",
-	// 						pattern:"%w%"
-	// 					},
-	// 					{
-	// 						display:"Doesn't Contain",
-	// 						comparisonOperator:"not like",
-	// 						pattern:"%w%"
-	// 					},
-	// 					{
-	// 						display:"Starts With",
-	// 						comparisonOperator:"like",
-	// 						pattern:"w%"
-	// 					},
-	// 					{
-	// 						display:"Doesn't Start With",
-	// 						comparisonOperator:"not like",
-	// 						pattern:"w%"
-	// 					},
-	// 					{
-	// 						display:"Ends With",
-	// 						comparisonOperator:"like",
-	// 						pattern:"%w"
-	// 					},
-	// 					{
-	// 						display:"Doesn't End With",
-	// 						comparisonOperator:"not like",
-	// 						pattern:"%w"
-	// 					},
-	// 					{
-	// 						display:"In List",
-	// 						comparisonOperator:"in"
-	// 					},
-	// 					{
-	// 						display:"Not In List",
-	// 						comparisonOperator:"not in"
-	// 					},
-	// 					{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 				];
-	// 				if(type === 'condition'){
-	// 					stringOptions = [
-	// 					{
-	// 						display:"Equals",
-	// 						comparisonOperator:"="
-	// 					},
-	// 					{
-	// 						display:"In List",
-	// 						comparisonOperator:"in"
-	// 					},
-	// 					{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 				];
-	// 				}
-	// 	    	}
-	// 			return stringOptions;
-	// 	    };
-	// 	    var getBooleanOptions = function(type){
-	// 	    	var booleanOptions = [];
-	// 	    	if(angular.isUndefined(type)){
-	// 	    		type = 'filter';
-	// 	    	}
-	// 	    	if(type === 'filter' || type === 'condition'){
-	// 		    	booleanOptions = [
-	// 		    		{
-	// 		    			display:"True",
-	// 		    			comparisonOperator:"=",
-	// 		    			value:"True"
-	// 		    		},
-	// 		    		{
-	// 		    			display:"False",
-	// 		    			comparisonOperator:"=",
-	// 		    			value:"False"
-	// 		    		},
-	// 					{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 		    	];
-	// 		    }
-	// 	    	return booleanOptions;
-	// 	    };
-	// 	    var getDateOptions = function(type){
-	// 	    	var dateOptions = [];
-	// 	    	if(angular.isUndefined(type)){
-	// 	    		type = 'filter';
-	// 	    	}
-	// 	    	if(type === 'filter'){
-	// 		    	dateOptions = [
-	// 		    		{
-	// 		    			display:"Date",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'exactDate',
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"In Range",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'range'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Not In Range",
-	// 		    			comparisonOperator:	"not between",
-	// 		    			dateInfo:{
-	// 		    				type:'range'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Today",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'d',
-	// 		    				measureCount:0,
-	// 		    				behavior:'toDate'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Yesterday",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'d',
-	// 		    				measureCount:-1,
-	// 		    				behavior:'toDate'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"This Week",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'w',
-	// 		    				behavior:'toDate'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"This Month",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'m',
-	// 		    				behavior:'toDate'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"This Quarter",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'q',
-	// 		    				behavior:'toDate'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"This Year",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'y',
-	// 		    				behavior:'toDate'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Last N Hour(s)",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'h',
-	// 		    				measureTypeDisplay:'Hours'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Last N Day(s)",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'d',
-	// 		    				measureTypeDisplay:'Days'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Last N Week(s)",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'w',
-	// 		    				measureTypeDisplay:'Weeks'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Last N Month(s)",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'m',
-	// 		    				measureTypeDisplay:'Months'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Last N Quarter(s)",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'q',
-	// 		    				measureTypeDisplay:'Quarters'
-	// 		    			}
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Last N Year(s)",
-	// 		    			comparisonOperator:	"between",
-	// 		    			dateInfo:{
-	// 		    				type:'calculation',
-	// 		    				measureType:'y',
-	// 		    				measureTypeDisplay:'Years'
-	// 		    			}
-	// 		    		},
-	// 					{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 		    	];
-	// 		    }
-	// 		    if(type === 'condition'){
-	// 		    	dateOptions = [
-	// 					{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 		    	];
-	// 		    }
-	// 	    	return dateOptions;
-	// 	    };
-	// 	    var getNumberOptions = function(type){
-	// 	    	var numberOptions = [];
-	// 	    	if(angular.isUndefined(type)){
-	// 	    		type = 'filter';
-	// 	    	}
-	// 	    	if(type == 'filter'){
-	// 		    	numberOptions = [
-	// 		    		{
-	// 						display:"Equals",
-	// 						comparisonOperator:"="
-	// 					},
-	// 					{
-	// 						display:"Doesn't Equal",
-	// 						comparisonOperator:"<>"
-	// 					},
-	// 					{
-	// 		    			display:"In Range",
-	// 		    			comparisonOperator:	"between",
-	// 		    			type:"range"
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Not In Range",
-	// 		    			comparisonOperator:	"not between",
-	// 		    			type:"range"
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Greater Than",
-	// 		    			comparisonOperator:">"
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Greater Than Or Equal",
-	// 		    			comparisonOperator:">="
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Less Than",
-	// 		    			comparisonOperator:"<"
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Less Than Or Equal",
-	// 		    			comparisonOperator:"<="
-	// 		    		},
-	// 					{
-	// 						display:"In List",
-	// 						comparisonOperator:"in"
-	// 					},
-	// 					{
-	// 						display:"Not In List",
-	// 						comparisonOperator:"not in"
-	// 					},
-	// 					{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 		    	];
-	// 		    }
-	// 		    if(type === 'condition'){
-	// 		    	numberOptions = [
-	// 		    		{
-	// 						display:"Equals",
-	// 						comparisonOperator:"="
-	// 					},
-	// 					{
-	// 						display:"Doesn't Equal",
-	// 						comparisonOperator:"<>"
-	// 					},
-	// 		    		{
-	// 		    			display:"Greater Than",
-	// 		    			comparisonOperator:">"
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Greater Than Or Equal",
-	// 		    			comparisonOperator:">="
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Less Than",
-	// 		    			comparisonOperator:"<"
-	// 		    		},
-	// 		    		{
-	// 		    			display:"Less Than Or Equal",
-	// 		    			comparisonOperator:"<="
-	// 		    		},
-	// 					{
-	// 						display:"In List",
-	// 						comparisonOperator:"in"
-	// 					},
-	// 					{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 		    	];
-	// 		    }
-	// 	    	return numberOptions;
-	// 	    };
-	// 	    var getOneToManyOptions = function(type){
-	// 	    	var oneToManyOptions = [];
-	// 	    	if(angular.isUndefined(type)){
-	// 	    		type = 'filter';
-	// 	    	}
-	// 	    	if(type == 'filter'){
-	// 		    	oneToManyOptions = [
-	// 		        	{
-	// 		        		display:"All Exist In Collection",
-	// 		        		comparisonOperator:"All"
-	// 		        	},
-	// 		        	{
-	// 		        		display:"None Exist In Collection",
-	// 		        		comparisonOperator:"None"
-	// 		        	},
-	// 		        	{
-	// 		        		display:"Some Exist In Collection",
-	// 		        		comparisonOperator:"One"
-	// 		        	}
-	// 		        ];
-	// 		    }
-	// 		    if(type === 'condition'){
-	// 		    	oneToManyOptions = [];
-	// 		    }
-	// 	    	return oneToManyOptions;
-	// 	    };
-	// 	    var getManyToManyOptions = function(type){
-	// 	    	var manyToManyOptions = [];
-	// 	    	if(angular.isUndefined(type)){
-	// 	    		type = 'filter';
-	// 	    	}
-	// 	    	if(type == 'filter'){
-	// 		    	manyToManyOptions = [
-	// 		         	{
-	// 		        		display:"All Exist In Collection",
-	// 		        		comparisonOperator:"All"
-	// 		        	},
-	// 		        	{
-	// 		        		display:"None Exist In Collection",
-	// 		        		comparisonOperator:"None"
-	// 		        	},
-	// 		        	{
-	// 		        		display:"Some Exist In Collection",
-	// 		        		comparisonOperator:"One"
-	// 		        	},
-	// 		        	{
-	// 		        		display:"Empty",
-	// 		        		comparisonOperator:"is",
-	// 		        		value:"null"
-	// 		        	},
-	// 		        	{
-	// 		        		display:"Not Empty",
-	// 		        		comparisonOperator:"is not",
-	// 		        		value:"null"
-	// 		        	}
-	// 		        ];
-	// 		    }
-	// 		    if(type === 'condition'){ 
-	// 		    	manyToManyOptions = [
-	// 			    	{
-	// 		        		display:"Empty",
-	// 		        		comparisonOperator:"is",
-	// 		        		value:"null"
-	// 		        	},
-	// 		        	{
-	// 		        		display:"Not Empty",
-	// 		        		comparisonOperator:"is not",
-	// 		        		value:"null"
-	// 		        	}
-	// 	        	];
-	// 		    }
-	// 	    	return manyToManyOptions;
-	// 	    };
-	// 	    var getManyToOneOptions = function(type){
-	// 	    	var manyToOneOptions = [];
-	// 	    	if(angular.isUndefined(type)){
-	// 	    		type = 'filter';
-	// 	    	}
-	// 	    	if(type == 'filter'){
-	// 		    	manyToOneOptions = {
-	// 		            drillEntity:{},
-	// 					hasEntity:{
-	// 						display:"Defined",
-	// 						comparisonOperator:"is not",
-	// 						value:"null"
-	// 					},
-	// 					notHasEntity:{
-	// 						display:"Not Defined",
-	// 						comparisonOperator:"is",
-	// 						value:"null"
-	// 					}
-	// 		    	};
-	// 		    }
-	// 	    	return manyToOneOptions;
-	// 	    };
-	// 	/* Options info end */
-	// 	    var linker = function(scope, element, attrs){
-	// 	    	/*show the user the value without % symbols as these are reserved*/
-	// 	    	scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
-	// 	    		if(angular.isDefined(criteriaValue)){
-	// 	    			scope.selectedFilterProperty.criteriaValue = $filter('likeFilter')(criteriaValue);
-	// 	    		}
-	// 	    	});
-	// 			scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
-	// 				if(angular.isDefined(selectedFilterProperty)){
-	// 					$log.debug('watchSelectedFilterProperty');
-	// 					$log.debug(scope.selectedFilterProperty);
-	// 					/*prepopulate if we have a comparison operator and value*/
-	// 					if(selectedFilterProperty === null){
-	// 						return;
-	// 					}
-	// 					if(angular.isDefined(selectedFilterProperty.ormtype)){
-	// 						switch(scope.selectedFilterProperty.ormtype){
-	// 							case "boolean":
-	// 				    			scope.conditionOptions = getBooleanOptions();
-	// 				    			break;
-	// 				    		case "string":
-	// 				    			scope.conditionOptions = getStringOptions();
-	// 				    			scope.selectedConditionChanged = function(selectedFilterProperty){
-	// 				    				//scope.selectedFilterProperty.criteriaValue = '';
-	// 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-	// 				    					selectedFilterProperty.showCriteriaValue = false;
-	// 				    				}else{
-	// 				    					selectedFilterProperty.showCriteriaValue = true;
-	// 				    				}
-	// 				    			};
-	// 				    			break;
-	// 				    		case "timestamp":
-	// 				    			scope.conditionOptions = getDateOptions();
-	// 								scope.today = function() {
-	// 									if (angular.isDefined(scope.selectedFilterProperty)) {
-	// 										scope.selectedFilterProperty.criteriaRangeStart = new Date();
-	// 										scope.selectedFilterProperty.criteriaRangeEnd = new Date();
-	// 									}
-	// 								};
-	// 								scope.clear = function() {
-	// 									scope.selectedFilterProperty.criteriaRangeStart = null;
-	// 									scope.selectedFilterProperty.criteriaRangeEnd = null;
-	// 								};
-	// 								scope.openCalendarStart = function($event) {
-	// 									$event.preventDefault();
-	// 									$event.stopPropagation();
-	// 									scope.openedCalendarStart = true;
-	// 								};
-	// 								scope.openCalendarEnd = function($event) {
-	// 									$event.preventDefault();
-	// 									$event.stopPropagation();
-	// 									scope.openedCalendarEnd = true;
-	// 								};
-	// 								scope.formats = [
-	// 										'dd-MMMM-yyyy',
-	// 										'yyyy/MM/dd',
-	// 										'dd.MM.yyyy',
-	// 										'shortDate' ];
-	// 								scope.format = scope.formats[1];
-	// 								scope.selectedConditionChanged = function(selectedFilterProperty){
-	// 									$log.debug('selectedConditionChanged Begin');
-	// 								  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-	// 								  	//check whether condition is checking for null values in date
-	// 								  	if(angular.isDefined(selectedCondition.dateInfo)){
-	// 								  		//is condition a calculation
-	// 								  		if(selectedCondition.dateInfo.type === 'calculation'){
-	// 								  			selectedCondition.showCriteriaStart = true;
-	// 								  			selectedCondition.showCriteriaEnd = true;
-	// 								  			selectedCondition.disableCriteriaStart = true;
-	// 								  			selectedCondition.disableCriteriaEnd = true;
-	// 								  			//if item is a calculation of an N number of measure display the measure and number input
-	// 						  					if(angular.isUndefined(selectedCondition.dateInfo.behavior)){
-	// 								  				$log.debug('Not toDate');
-	// 								  				selectedCondition.showNumberOf = true; 
-	// 								  				selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
-	// 						  					}else{
-	// 						  						$log.debug('toDate');
-	// 						  						var today = Date.parse('today');
-	// 							  					var todayEOD = today.setHours(23,59,59,999);
-	// 							  					selectedFilterProperty.criteriaRangeEnd = todayEOD;
-	// 						  						//get this Measure to date
-	// 						  						switch(selectedCondition.dateInfo.measureType){
-	// 						  							case 'd':
-	// 						  								var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
-	// 						  								dateBOD.setHours(0,0,0,0);
-	// 						  								selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
-	// 						  								break;
-	// 						  							case 'w':
-	// 						  								var firstDayOfWeek = Date.today().last().monday();
-	// 						  								selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
-	// 						  								break;
-	// 						  							case 'm':
-	// 						  								var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
-	// 									  					selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
-	// 						  								break;
-	// 						  							case 'q':
-	// 						  								var month = Date.parse('today').toString('MM');
-	// 						  								var year = Date.parse('today').toString('yyyy');
-	// 						  								var quarterMonth = (Math.floor(month/3)*3);
-	// 						  								var firstDayOfQuarter = new Date(year,quarterMonth,1);
-	// 						  								selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
-	// 						  								break;
-	// 						  							case 'y':
-	// 						  								var year = Date.parse('today').toString('yyyy');
-	// 						  								var firstDayOfYear = new Date(year,0,1);
-	// 						  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
-	// 						  								break;
-	// 						  						}
-	// 						  					}
-	// 								  		}
-	// 								  		if(selectedCondition.dateInfo.type === 'range'){
-	// 								  			selectedCondition.showCriteriaStart = true;
-	// 								  			selectedCondition.showCriteriaEnd = true;
-	// 								  			selectedCondition.disableCriteriaStart = false;
-	// 								  			selectedCondition.disableCriteriaEnd = false;
-	// 								  			selectedCondition.showNumberOf = false;
-	// 								  		}
-	// 								  		if(selectedCondition.dateInfo.type === 'exactDate'){
-	// 								  			selectedCondition.showCriteriaStart = true;
-	// 								  			selectedCondition.showCriteriaEnd = false;
-	// 								  			selectedCondition.disableCriteriaStart = false;
-	// 								  			selectedCondition.disableCriteriaEnd = true;
-	// 								  			selectedCondition.showNumberOf = false; 
-	// 								  			selectedCondition.conditionDisplay = '';
-	// 								  			selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
-	// 					  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
-	// 								  		}
-	// 								  	}else{
-	// 								  		selectedCondition.showCriteriaStart = false;
-	// 								  		selectedCondition.showCriteriaEnd = false;
-	// 								  		selectedCondition.showNumberOf = false;
-	// 								  		selectedCondition.conditionDisplay = '';
-	// 								  	}
-	// 							  		$log.debug('selectedConditionChanged End');
-	// 							  		$log.debug('selectedConditionChanged Result');
-	// 							  		$log.debug(selectedCondition); 
-	// 							  		$log.debug(selectedFilterProperty);
-	// 								  };
-	// 								  scope.criteriaRangeChanged = function(selectedFilterProperty){
-	// 								  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-	// 								  	if(selectedCondition.dateInfo.type === 'calculation'){
-	// 									  	var measureCount = selectedFilterProperty.criteriaNumberOf;
-	// 						  				switch(selectedCondition.dateInfo.measureType){
-	// 						  					case 'h':
-	// 						  						var today = Date.parse('today');
-	// 							  					selectedFilterProperty.criteriaRangeEnd = today.getTime();
-	// 							  					var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
-	// 							  					selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
-	// 						  						break;
-	// 						  					case 'd':
-	// 						  						var lastFullDay = Date.parse('today').add(-1).days();
-	// 						  						lastFullDay.setHours(23,59,59,999);
-	// 						  						selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
-	// 						  						var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
-	// 												selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
-	// 												break;
-	// 											case 'w':
-	// 												var lastFullWeekEnd = Date.today().last().sunday();
-	// 												lastFullWeekEnd.setHours(23,59,59,999);
-	// 												selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
-	// 												var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
-	// 												selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
-	// 												break;
-	// 											case 'm':
-	// 												var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
-	// 												lastFullMonthEnd.setHours(23,59,59,999);
-	// 							  					selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
-	// 							  					var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
-	// 							  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
-	// 												break;
-	// 											case 'q':
-	// 												 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));	
-	// 												 var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-	// 												 var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
-	// 												 lastDayOfPreviousQuarter.setHours(23,59,59,999);
-	// 												 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
-	// 												 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
-	// 											 	lastXQuartersAgo.add(-(measureCount * 3)).months();
-	// 											 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-	// 												break;
-	// 											case 'y':
-	// 												var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
-	// 												lastFullYearEnd.setHours(23,59,59,999);
-	// 							  					selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
-	// 							  					var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount)-1).years();
-	// 							  					selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
-	// 												break;
-	// 						  				}
-	// 					  				}
-	// 					  				if(selectedCondition.dateInfo.type === 'exactDate'){
-	// 					  					selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
-	// 					  					selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
-	// 					  				}
-	// 					  				if(selectedCondition.dateInfo.type === 'range'){
-	// 					  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart)){
-	// 					  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
-	// 					  					}
-	// 					  					if(angular.isDefined(selectedFilterProperty.criteriaRangeEnd)){
-	// 					  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23,59,59,999);
-	// 					  					}
-	// 					  				}
-	// 								  	$log.debug('criteriaRangeChanged');
-	// 							  		$log.debug(selectedCondition); 
-	// 							  		$log.debug(selectedFilterProperty);
-	// 								  };
-	// 				    			break;
-	// 				    		case "big_decimal":
-	// 				    		case "integer":
-	// 				    		case "float":
-	// 				    			scope.conditionOptions = getNumberOptions();
-	// 				    			scope.criteriaRangeChanged = function(selectedFilterProperty){
-	// 								  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-	// 				    			};
-	// 				    			scope.selectedConditionChanged = function(selectedFilterProperty){
-	// 				    				selectedFilterProperty.showCriteriaValue = true;
-	// 				    				//check whether the type is a range
-	// 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)){
-	// 				    					selectedFilterProperty.showCriteriaValue = false;
-	// 				    					selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
-	// 				    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
-	// 				    				}
-	// 				    				//is null or is not null
-	// 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-	// 				    					selectedFilterProperty.showCriteriaValue = false;
-	// 				    				}
-	// 				    			};
-	// 				    			break;
-	// 				    	}
-	// 					}
-	// 					if(angular.isDefined(scope.selectedFilterProperty.fieldtype)){
-	// 						switch(scope.selectedFilterProperty.fieldtype){
-	// 							case "many-to-one":
-	// 								scope.conditionOptions = getManyToOneOptions(scope.comparisonType);
-	// 								$log.debug('many-to-one');
-	// 								$log.debug(scope.selectedFilterProperty);
-	// 								$log.debug(scope.filterPropertiesList);
-	// 								if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
-	// 									var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
-	// 									filterPropertiesPromise.then(function(value){
-	// 										scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
-	// 										metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
-	// 									}, function(reason){
-	// 									});
-	// 								}
-	// 								break;
-	// 							case "many-to-many":
-	// 							case "one-to-many":
-	// 								scope.manyToManyOptions = getManyToManyOptions();
-	// 								scope.oneToManyOptions = getOneToManyOptions();
-	// 								var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
-	// 								existingCollectionsPromise.then(function(value){
-	// 									scope.collectionOptions = value.data;
-	// 									if(angular.isDefined(scope.workflowCondition.collectionID)){
-	// 										for(var i in scope.collectionOptions){
-	// 											if(scope.collectionOptions[i].collectionID === scope.workflowCondition.collectionID){
-	// 												scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
-	// 											}
-	// 										}
-	// 										for(var i in scope.oneToManyOptions){
-	// 											if(scope.oneToManyOptions[i].comparisonOperator === scope.workflowCondition.criteria){
-	// 												scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
-	// 											}
-	// 										}
-	// 									}
-	// 								});
-	// 								break;
-	// 						}
-	// 					}
-	// 					$log.debug('workflowCondition');
-	// 					$log.debug(scope.workflowCondition);
-	// 					angular.forEach(scope.conditionOptions, function(conditionOption){
-	// 						if(conditionOption.display == scope.workflowCondition.conditionDisplay ){
-	// 							scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-	// 							scope.selectedFilterProperty.criteriaValue = scope.workflowCondition.value;
-	// 							if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
-	// 							&& angular.isDefined(scope.workflowCondition.value)
-	// 							&& scope.workflowCondition.value.length
-	// 							){
-	// 								var dateRangeArray = scope.workflowCondition.value.split("-");
-	// 								scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
-	// 								scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
-	// 							}
-	// 							if(angular.isDefined(scope.workflowCondition.criteriaNumberOf)){
-	// 								scope.selectedFilterProperty.criteriaNumberOf = scope.workflowCondition.criteriaNumberOf;
-	// 							}
-	// 							if(angular.isDefined(scope.selectedConditionChanged)){
-	// 								scope.selectedConditionChanged(scope.selectedFilterProperty);
-	// 							}
-	// 						}
-	// 					});
-	// 					$log.debug('templateLoader');
-	// 					$log.debug(selectedFilterProperty);
-	// 					var templateLoader = getTemplate(selectedFilterProperty);
-	// 			    	var promise = templateLoader.success(function(html){
-	// 						element.html(html);
-	// 						$compile(element.contents())(scope);
-	// 					});
-	// 				}
-	// 	    	}); 
-	// 			scope.selectedCriteriaChanged = function(selectedCriteria){
-	// 				$log.debug(selectedCriteria);
-	// 				//update breadcrumbs as array of filterpropertylist keys
-	// 				$log.debug(scope.selectedFilterProperty);
-	// 				var breadCrumb = {
-	// 						entityAlias:scope.selectedFilterProperty.name,
-	// 						cfc:scope.selectedFilterProperty.cfc,
-	// 						propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier
-	// 				};
-	// 				scope.workflowCondition.breadCrumbs.push(breadCrumb);
-	// 				//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
-	// 				scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
-	// 				//update criteria to display the condition of the new critera we have selected
-	// 			};
-	// 	    };
-	// 		return {
-	// 			restrict: 'A',
-	// 			scope:{
-	// 				workflowCondition:"=",
-	// 		        selectedFilterProperty:"=",
-	// 		        filterPropertiesList:"=",
-	// 		        selectedFilterPropertyChanged:"&"
-	// 			},
-	// 			link: linker
-	// 		};
-	// 	}
-	// ]);
 
 
 /***/ },
-/* 39 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(40);
+	var workflowconditionservice_1 = __webpack_require__(51);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
@@ -5469,7 +6037,7 @@
 
 
 /***/ },
-/* 40 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5524,7 +6092,7 @@
 
 
 /***/ },
-/* 41 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5650,20 +6218,20 @@
 
 
 /***/ },
-/* 42 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(43);
+	var slatwallservice_1 = __webpack_require__(54);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 43 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6245,7 +6813,7 @@
 
 
 /***/ },
-/* 44 */
+/* 55 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6270,7 +6838,7 @@
 
 
 /***/ },
-/* 45 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6357,7 +6925,7 @@
 
 
 /***/ },
-/* 46 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
