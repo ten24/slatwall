@@ -4,25 +4,35 @@
 /**
  * Returns true if the user value is greater than the minimum value.
  */
-angular.module('slatwalladmin').directive("swvalidationminlength", [function() {
-    return {
-        restrict: "A",
-        require: "^ngModel",
-        link: function(scope, element, attributes, ngModel) {
-        		ngModel.$validators.swvalidationminlength = 
-            	function(modelValue, viewValue) {
-
-        				var constraintValue = attributes.swvalidationminlength;
-        				var userValue = viewValue || 0;
-        				if (parseInt(viewValue.length) >= parseInt(constraintValue))
-        				{
-        					
-        					return true;
-        				}
-        				$log.debug('invalid min length');
-        			return false;
-        			
-        		};
-        }
-    };
-}]);
+class SWValidationMinLength{
+    public static Factory(){
+        var directive = ($log)=> new SWValidationMinLength($log);
+        directive.$inject = ['$log'];
+        return directive;
+    }
+    constructor($log){
+        return {
+            restrict: "A",
+            require: "^ngModel",
+            link: (scope, element, attributes, ngModel) =>{
+                    ngModel.$validators.swvalidationminlength = 
+                    (modelValue, viewValue)=> {
+    
+                            var constraintValue = attributes.swvalidationminlength;
+                            var userValue = viewValue || 0;
+                            if (parseInt(viewValue.length) >= parseInt(constraintValue))
+                            {
+                                
+                                return true;
+                            }
+                            $log.debug('invalid min length');
+                        return false;
+                        
+                    };
+            }
+        };
+    }
+}
+export{
+    SWValidationMinLength
+}

@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(57);
+	var logger_module_1 = __webpack_require__(59);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,11 +648,11 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(52);
-	var ngslatwall_module_1 = __webpack_require__(53);
+	var slatwallinterceptor_1 = __webpack_require__(54);
+	var ngslatwall_module_1 = __webpack_require__(55);
 	//filters
-	var entityrbkey_1 = __webpack_require__(55);
-	var swcurrency_1 = __webpack_require__(56);
+	var entityrbkey_1 = __webpack_require__(57);
+	var swcurrency_1 = __webpack_require__(58);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -861,10 +861,10 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var core_module_1 = __webpack_require__(14);
-	var pagination_module_1 = __webpack_require__(34);
-	var dialog_module_1 = __webpack_require__(37);
-	var collection_module_1 = __webpack_require__(39);
-	var workflow_module_1 = __webpack_require__(50);
+	var pagination_module_1 = __webpack_require__(36);
+	var dialog_module_1 = __webpack_require__(39);
+	var collection_module_1 = __webpack_require__(41);
+	var workflow_module_1 = __webpack_require__(52);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -1007,6 +1007,8 @@
 	var swlistingcolumn_1 = __webpack_require__(31);
 	var swlogin_1 = __webpack_require__(32);
 	var swnumbersonly_1 = __webpack_require__(33);
+	var swvalidate_1 = __webpack_require__(34);
+	var swvalidationminlength_1 = __webpack_require__(35);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1046,7 +1048,9 @@
 	    .directive('swListingDisplay', swlistingdisplay_1.SWListingDisplay.Factory())
 	    .directive('swListingColumn', swlistingcolumn_1.SWListingColumn.Factory())
 	    .directive('swLogin', swlogin_1.SWLogin.Factory())
-	    .directive('swNumbersOnly', swnumbersonly_1.SWNumbersOnly.Factory());
+	    .directive('swNumbersOnly', swnumbersonly_1.SWNumbersOnly.Factory())
+	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
+	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory());
 	exports.coremodule = coremodule;
 
 
@@ -3275,13 +3279,438 @@
 
 /***/ },
 /* 34 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	/**
+	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
+	 * validate based on that context as defined in the validation properties object.
+	 */
+	// 'use strict';
+	// angular.module('slatwalladmin').directive('swValidate',
+	// [ '$log','$slatwall', function($log, $slatwall) {
+	var SWValidate = (function () {
+	    function SWValidate($log, $slatwall) {
+	        return {
+	            restrict: "A",
+	            require: '^ngModel',
+	            link: function (scope, elem, attr, ngModel) {
+	                //Define our contexts and validation property enums.
+	                var ContextsEnum = {
+	                    SAVE: { name: "save", value: 0 },
+	                    DELETE: { name: "delete", value: 1 },
+	                    EDIT: { name: "edit", value: 2 }
+	                };
+	                var ValidationPropertiesEnum = {
+	                    REGEX: { name: "regex", value: 0 },
+	                    MIN_VALUE: { name: "minValue", value: 1 },
+	                    MAX_VALUE: { name: "maxValue", value: 2 },
+	                    EQ: { name: "eq", value: 3 },
+	                    NEQ: { name: "neq", value: 4 },
+	                    UNIQUE: { name: "unique", value: 5 },
+	                    LTE: { name: "lte", value: 6 },
+	                    GTE: { name: "gte", value: 7 },
+	                    MIN_LENGTH: { name: "minLength", value: 8 },
+	                    MAX_LENGTH: { name: "maxLength", value: 9 },
+	                    DATA_TYPE: { name: "dataType", value: 10 },
+	                    REQUIRED: { name: "required", value: 11 }
+	                };
+	                scope.validationPropertiesEnum = ValidationPropertiesEnum;
+	                scope.contextsEnum = ContextsEnum;
+	                var myCurrentContext = scope.contextsEnum.SAVE; //We are only checking the save context right now.
+	                var contextNamesArray = getNamesFromObject(ContextsEnum); //Convert for higher order functions.
+	                var validationPropertiesArray = getNamesFromObject(ValidationPropertiesEnum); //Convert for higher order functions.
+	                var validationObject = scope.propertyDisplay.object.validations.properties; //Get the scope validation object.
+	                var errors = scope.propertyDisplay.errors;
+	                var errorMessages = [];
+	                var failFlag = 0;
+	                /**
+	                * Iterates over the validation object looking for the current elements validations, maps that to a validation function list
+	                * and calls those validate functions. When a validation fails, an error is set, the elements border turns red.
+	                */
+	                function validate(name, context, elementValue) {
+	                    var validationResults = {};
+	                    validationResults = { "name": "name", "context": "context", "required": "required", "error": "none", "errorkey": "none" };
+	                    for (var key in validationObject) {
+	                        // Look for the current attribute in the
+	                        // validation parameters.
+	                        if (key === name || key === name + "Flag") {
+	                            // Now that we have found the current
+	                            // validation parameters, iterate
+	                            // through them looking for
+	                            // the required parameters that match
+	                            // the current page context (save,
+	                            // delete, etc.)
+	                            for (var inner in validationObject[key]) {
+	                                var required = validationObject[key][inner].required || "false"; // Get
+	                                // the
+	                                // required
+	                                // value
+	                                var context = validationObject[key][inner].contexts || "none"; // Get
+	                                // the
+	                                // element
+	                                // context
+	                                //Setup the validation results object to pass back to caller.
+	                                validationResults = { "name": key, "context": context, "required": required, "error": "none", "errorkey": "none" };
+	                                var elementValidationArr = map(checkHasValidationType, validationPropertiesArray, validationObject[key][inner]);
+	                                //Iterate over the array and call the validate function if it has that property.
+	                                for (var i = 0; i < elementValidationArr.length; i++) {
+	                                    if (elementValidationArr[i] == true) {
+	                                        if (validationPropertiesArray[i] === "regex" && elementValue !== "") {
+	                                            //Get the regex string to match and send to validation function.
+	                                            var re = validationObject[key][inner].regex;
+	                                            var result = validate_RegExp(elementValue, re); //true if pattern match, fail otherwise.
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Invalid input");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                errorMessages
+	                                                    .push("Valid input");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "minValue") {
+	                                            var validationMinValue = validationObject[key][inner].minValue;
+	                                            $log.debug(validationMinValue);
+	                                            var result = validate_MinValue(elementValue, validationMinValue);
+	                                            $log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Minimum value is: "
+	                                                    + validationMinValue);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "maxValue") {
+	                                            var validationMaxValue = validationObject[key][inner].maxValue;
+	                                            var result = validate_MaxValue(elementValue, validationMaxValue);
+	                                            $log.debug("Max Value result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Maximum value is: "
+	                                                    + validationMaxValue);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_VALUE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "minLength") {
+	                                            var validationMinLength = validationObject[key][inner].minLength;
+	                                            var result = validate_MinLength(elementValue, validationMinLength);
+	                                            $log.debug("Min Length result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Minimum length must be: "
+	                                                    + validationMinLength);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_LENGTH"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "maxLength") {
+	                                            var validationMaxLength = validationObject[key][inner].maxLength;
+	                                            var result = validate_MaxLength(elementValue, validationMaxLength);
+	                                            $log.debug("Max Length result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Maximum length is: "
+	                                                    + validationMaxLength);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_LENGTH"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "eq") {
+	                                            var validationEq = validationObject[key][inner].eq;
+	                                            var result = validate_Eq(elementValue, validationEq);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must equal "
+	                                                    + validationEq);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["EQ"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "neq") {
+	                                            var validationNeq = validationObject[key][inner].neq;
+	                                            var result = validate_Neq(elementValue, validationNeq);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must not equal: "
+	                                                    + validationNeq);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["NEQ"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "lte") {
+	                                            var validationLte = validationObject[key][inner].lte;
+	                                            var result = validate_Lte(elementValue, validationLte);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must be less than "
+	                                                    + validationLte);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["LTE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "gte") {
+	                                            var validationGte = validationObject[key][inner].gte;
+	                                            var result = validate_Gte(elementValue, validationGte);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must be greater than: "
+	                                                    + validationGte);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["GTE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "required") {
+	                                            var validationRequire = validationObject[key][inner].require;
+	                                            var result = validate_Required(elementValue, validationRequire);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Required");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                errorMessages
+	                                                    .push("Required");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    } //<---end validate.			
+	                }
+	                /**
+	                * Function to map if we need a validation on this element.
+	                */
+	                function checkHasValidationType(validationProp, validationType) {
+	                    if (validationProp[validationType] != undefined) {
+	                        return true;
+	                    }
+	                    else {
+	                        return false;
+	                    }
+	                }
+	                /**
+	                * Iterates over the properties object finding which types of validation are needed.
+	                */
+	                function map(func, array, obj) {
+	                    var result = [];
+	                    forEach(array, function (element) {
+	                        result.push(func(obj, element));
+	                    });
+	                    return result;
+	                }
+	                /**
+	                * Array iteration helper.
+	                */
+	                function forEach(array, action) {
+	                    for (var i = 0; i < array.length; i++)
+	                        action(array[i]);
+	                }
+	                /**
+	                * Helper function to read all the names in our enums into an array that the higher order functions can use.
+	                */
+	                function getNamesFromObject(obj) {
+	                    var result = [];
+	                    for (var i in obj) {
+	                        var name = obj[i].name || "stub";
+	                        result.push(name);
+	                    }
+	                    return result;
+	                }
+	                /**
+	                * Tests the value for a RegExp match given by the pattern string.
+	                * Validates true if pattern match, false otherwise.
+	                */
+	                function validate_RegExp(value, pattern) {
+	                    var regex = new RegExp(pattern);
+	                    if (regex.test(value)) {
+	                        return true;
+	                    }
+	                    return false;
+	                }
+	                /**
+	                * Validates true if userValue >= minValue (inclusive)
+	                */
+	                function validate_MinValue(userValue, minValue) {
+	                    return (userValue >= minValue);
+	                }
+	                /**
+	                * Validates true if userValue <= maxValue (inclusive)
+	                */
+	                function validate_MaxValue(userValue, maxValue) {
+	                    return (userValue <= maxValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if length of the userValue >= minLength (inclusive)
+	                */
+	                function validate_MinLength(userValue, minLength) {
+	                    return (userValue.length >= minLength) ? true : false;
+	                }
+	                /**
+	                * Validates true if length of the userValue <= maxLength (inclusive)
+	                */
+	                function validate_MaxLength(userValue, maxLength) {
+	                    return (userValue.length <= maxLength) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue == eqValue
+	                */
+	                function validate_Eq(userValue, eqValue) {
+	                    return (userValue == eqValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue != neqValue
+	                */
+	                function validate_Neq(userValue, neqValue) {
+	                    return (userValue != neqValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue < decisionValue (exclusive)
+	                */
+	                function validate_Lte(userValue, decisionValue) {
+	                    return (userValue < decisionValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue > decisionValue (exclusive)
+	                */
+	                function validate_Gte(userValue, decisionValue) {
+	                    return (userValue > decisionValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue === property
+	                */
+	                function validate_EqProperty(userValue, property) {
+	                    return (userValue === property) ? true : false;
+	                }
+	                /**
+	                * Validates true if the given value is !NaN (Negate, Not a Number).
+	                */
+	                function validate_IsNumeric(value) {
+	                    return !isNaN(value) ? true : false;
+	                }
+	                /**
+	                * Validates true if the given userValue is empty and the field is required.
+	                */
+	                function validate_Required(property, userValue) {
+	                    return (userValue == "" && property == true) ? true : false;
+	                }
+	                /**
+	                * Handles the 'eager' validation on every key press.
+	                */
+	                ngModel.$parsers.unshift(function (value) {
+	                    var name = elem.context.name; //Get the element name for the validate function.
+	                    var currentValue = elem.val(); //Get the current element value to check validations against.
+	                    var val = validate(name, myCurrentContext, currentValue) || {};
+	                    //Check if field is required.				
+	                    $log.debug(scope);
+	                    $log.debug(val);
+	                    ngModel.$setValidity(val.errorkey, !val.fail);
+	                    return true;
+	                }); //<---end $parsers
+	                /**
+	                * This handles 'lazy' validation on blur.
+	                */
+	                elem.bind('blur', function (e) {
+	                });
+	            }
+	        };
+	    }
+	    SWValidate.Factory = function () {
+	        var directive = function ($log, $slatwall) { return new SWValidate($log, $slatwall); };
+	        directive.$inject = ['$log', '$slatwall'];
+	        return directive;
+	    };
+	    return SWValidate;
+	})();
+	exports.SWValidate = SWValidate;
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	/**
+	 * Returns true if the user value is greater than the min length.
+	 */
+	/**
+	 * Returns true if the user value is greater than the minimum value.
+	 */
+	var SWValidationMinLength = (function () {
+	    function SWValidationMinLength($log) {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationminlength =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationminlength;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        $log.debug('invalid min length');
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMinLength.Factory = function () {
+	        var directive = function ($log) { return new SWValidationMinLength($log); };
+	        directive.$inject = ['$log'];
+	        return directive;
+	    };
+	    return SWValidationMinLength;
+	})();
+	exports.SWValidationMinLength = SWValidationMinLength;
+
+
+/***/ },
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(35);
-	var swpaginationbar_1 = __webpack_require__(36);
+	var paginationservice_1 = __webpack_require__(37);
+	var swpaginationbar_1 = __webpack_require__(38);
 	var core_module_1 = __webpack_require__(14);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -3293,7 +3722,7 @@
 
 
 /***/ },
-/* 35 */
+/* 37 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -3472,7 +3901,7 @@
 
 
 /***/ },
-/* 36 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3533,13 +3962,13 @@
 
 
 /***/ },
-/* 37 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(38);
+	var dialogservice_1 = __webpack_require__(40);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -3548,7 +3977,7 @@
 
 
 /***/ },
-/* 38 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -3588,7 +4017,7 @@
 
 
 /***/ },
-/* 39 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3596,17 +4025,17 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(40);
-	var collectionservice_1 = __webpack_require__(41);
-	var collections_1 = __webpack_require__(42);
+	var collectionconfigservice_1 = __webpack_require__(42);
+	var collectionservice_1 = __webpack_require__(43);
+	var collections_1 = __webpack_require__(44);
 	//directives
-	var swcollection_1 = __webpack_require__(43);
-	var swaddfilterbuttons_1 = __webpack_require__(44);
-	var swdisplayoptions_1 = __webpack_require__(45);
-	var swdisplayitem_1 = __webpack_require__(46);
-	var swcollectiontable_1 = __webpack_require__(47);
-	var swcolumnitem_1 = __webpack_require__(48);
-	var swconditioncriteria_1 = __webpack_require__(49);
+	var swcollection_1 = __webpack_require__(45);
+	var swaddfilterbuttons_1 = __webpack_require__(46);
+	var swdisplayoptions_1 = __webpack_require__(47);
+	var swdisplayitem_1 = __webpack_require__(48);
+	var swcollectiontable_1 = __webpack_require__(49);
+	var swcolumnitem_1 = __webpack_require__(50);
+	var swconditioncriteria_1 = __webpack_require__(51);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name]).config([function () {
 	    }])
 	    .controller('collections', collections_1.CollectionController)
@@ -3624,7 +4053,7 @@
 
 
 /***/ },
-/* 40 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4063,7 +4492,7 @@
 
 
 /***/ },
-/* 41 */
+/* 43 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -4264,7 +4693,7 @@
 
 
 /***/ },
-/* 42 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4527,7 +4956,7 @@
 
 
 /***/ },
-/* 43 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4574,7 +5003,7 @@
 
 
 /***/ },
-/* 44 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4620,7 +5049,7 @@
 
 
 /***/ },
-/* 45 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4787,7 +5216,7 @@
 
 
 /***/ },
-/* 46 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4868,7 +5297,7 @@
 
 
 /***/ },
-/* 47 */
+/* 49 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4932,7 +5361,7 @@
 
 
 /***/ },
-/* 48 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5133,7 +5562,7 @@
 
 
 /***/ },
-/* 49 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6022,13 +6451,13 @@
 
 
 /***/ },
-/* 50 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(51);
+	var workflowconditionservice_1 = __webpack_require__(53);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
@@ -6037,7 +6466,7 @@
 
 
 /***/ },
-/* 51 */
+/* 53 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6092,7 +6521,7 @@
 
 
 /***/ },
-/* 52 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6218,20 +6647,20 @@
 
 
 /***/ },
-/* 53 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(54);
+	var slatwallservice_1 = __webpack_require__(56);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 54 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6813,7 +7242,7 @@
 
 
 /***/ },
-/* 55 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6838,7 +7267,7 @@
 
 
 /***/ },
-/* 56 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6925,7 +7354,7 @@
 
 
 /***/ },
-/* 57 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />

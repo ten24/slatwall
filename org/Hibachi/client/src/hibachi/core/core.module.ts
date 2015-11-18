@@ -21,6 +21,8 @@ import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingColumn} from "./components/swlistingcolumn";
 import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
+import {SWValidate} from "./validation/swvalidate";
+import {SWValidationMinLength} from "./validation/swvalidationminlength";
 
 class PathBuilderConfig{
     public baseURL:string;
@@ -70,6 +72,8 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swListingColumn',SWListingColumn.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
+.directive('swValidate',SWValidate.Factory())
+.directive('swvalidationminlength',SWValidationMinLength.Factory())
 ;  
 export{
 	coremodule
