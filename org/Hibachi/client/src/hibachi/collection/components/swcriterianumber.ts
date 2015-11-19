@@ -1,23 +1,47 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swCriteriaNumber', [
-	'$log',
-	'$slatwall',
-	'$filter',
-	'collectionPartialsPath',
-	'collectionService',
-	'metadataService',
-	function(
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWCriteriaNumber{
+	public static Factory(){
+		var directive = (
+			$log,
+			$slatwall,
+			$filter,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		)=>new SWCriteriaNumber(
+			$log,
+			$slatwall,
+			$filter,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$log',
+			'$slatwall',
+			'$filter',
+			'collectionPartialsPath',
+			'collectionService',
+			'metadataService',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
+	constructor(
 		$log,
 		$slatwall,
 		$filter,
 		collectionPartialsPath,
 		collectionService,
-		metadataService
+		metadataService,
+		pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
-			templateUrl:collectionPartialsPath+'criterianumber.html',
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criterianumber.html',
 			link: function(scope, element, attrs){
 				var getNumberOptions = function(type){
 					if(angular.isUndefined(type)){
@@ -160,5 +184,7 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWCriteriaNumber
+}

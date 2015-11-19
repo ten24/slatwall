@@ -23,6 +23,7 @@ import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWValidate} from "./validation/swvalidate";
 import {SWValidationMinLength} from "./validation/swvalidationminlength";
+import {SWLoading} from "./components/swloading";
 
 class PathBuilderConfig{
     public baseURL:string;
@@ -51,6 +52,7 @@ class PathBuilderConfig{
 var coremodule = angular.module('hibachi.core',[]).config(()=>{
     
 }).constant('pathBuilderConfig',new PathBuilderConfig())
+.constant('partialsPath','core/components/')
 //services
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
@@ -74,6 +76,7 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
 .directive('swValidate',SWValidate.Factory())
 .directive('swvalidationminlength',SWValidationMinLength.Factory())
+.directive('swLoading',SWLoading.Factory())
 ;  
 export{
 	coremodule

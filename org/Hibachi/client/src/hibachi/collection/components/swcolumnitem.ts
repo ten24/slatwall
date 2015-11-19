@@ -1,6 +1,35 @@
 /// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 class SWColumnItem{
+	public static Factory(){
+		var directive:ng.IDirectiveFactory = (
+			$compile,
+			$templateCache,
+			$log,
+			$timeout,
+			pathBuilderConfig,
+			collectionService,
+			collectionPartialsPath
+		) => new SWColumnItem(
+			$compile,
+			$templateCache,
+			$log,
+			$timeout,
+			pathBuilderConfig,
+			collectionService,
+			collectionPartialsPath
+		);
+		directive.$inject = [
+			'$compile',
+			'$templateCache',
+			'$log',
+			'$timeout',
+			'pathBuilderConfig',
+			'collectionService',
+			'collectionPartialsPath'
+		];
+		return directive;
+	}
 	constructor(
 		$compile,
 		$templateCache,
@@ -10,6 +39,7 @@ class SWColumnItem{
 		collectionService,
 		collectionPartialsPath
 	){
+		
 		return {
 			restrict: 'A',
 			require:"^swDisplayOptions",
@@ -201,36 +231,7 @@ class SWColumnItem{
 			}
 		};
 	}
-	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
-			$compile,
-			$templateCache,
-			$log,
-			$timeout,
-			pathBuilderConfig,
-			collectionService,
-			collectionPartialsPath
-		) => new SWColumnItem(
-			$compile,
-			$templateCache,
-			$log,
-			$timeout,
-			pathBuilderConfig,
-			collectionService,
-			collectionPartialsPath
-		);
-		directive.$inject = [
-			'$http',
-			'$compile',
-			'$templateCache',
-			'$log',
-			'$timeout',
-			'pathBuilderConfig',
-			'collectionService',
-			'collectionPartialsPath'
-		];
-		return directive;
-	}
+	
 }
 export{
 	SWColumnItem

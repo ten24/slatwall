@@ -1,24 +1,47 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swCriteriaBoolean', [
-	'$log',
-	'$slatwall',
-	'$filter',
-	'collectionPartialsPath',
-	'collectionService',
-	'metadataService',
-	function(
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWCriteriaBoolean{
+	public static Factory(){
+		var directive = (
+			$log,
+			$slatwall,
+			$filter,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		)=> new SWCriteriaBoolean(
+			$log,
+			$slatwall,
+			$filter,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$log',
+			'$slatwall',
+			'$filter',
+			'collectionPartialsPath',
+			'collectionService',
+			'metadataService',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
+	constructor(
 		$log,
 		$slatwall,
 		$filter,
 		collectionPartialsPath,
 		collectionService,
-		metadataService
+		metadataService,
+		pathBuilderConfig
 	){
-	    
 		return {
 			restrict: 'E',
-			templateUrl:collectionPartialsPath+'criteriaboolean.html',
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriaboolean.html',
 			link: function(scope, element, attrs){
 				 var getBooleanOptions = function(type){
 				 	if(angular.isUndefined(type)){
@@ -92,5 +115,7 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWCriteriaBoolean
+}

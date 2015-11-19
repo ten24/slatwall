@@ -1,19 +1,43 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swFilterGroupItem', [
-	'$http',
-	'$compile',
-	'$templateCache',
-	'$log',
-	'collectionService',
-	'collectionPartialsPath',
-	function(
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWFilterGroupItem{
+	public static Factory(){
+		var directive = (
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			collectionService,
+			collectionPartialsPath,
+			pathBuilderConfig
+		)=> new SWFilterGroupItem(
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			collectionService,
+			collectionPartialsPath,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$http',
+			'$compile',
+			'$templateCache',
+			'$log',
+			'collectionService',
+			'collectionPartialsPath',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
+	constructor(
 		$http,
 		$compile,
 		$templateCache,
 		$log,
 		collectionService,
-		collectionPartialsPath
+		collectionPartialsPath,
+		pathBuilderConfig
 	){
 		return {
 			restrict: 'A',
@@ -28,7 +52,7 @@ angular.module('slatwalladmin')
 				comparisonType:"="
 			},
 			link: function(scope, element,attrs,filterGroupsController){
-				var Partial = collectionPartialsPath+"filtergroupitem.html";
+				var Partial = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"filtergroupitem.html";
 				var templateLoader = $http.get(Partial,{cache:$templateCache});
 				var promise = templateLoader.success(function(html){
 					element.html(html);
@@ -65,6 +89,7 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
-	
+}
+export{
+	SWFilterGroupItem
+}

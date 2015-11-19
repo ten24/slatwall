@@ -1,6 +1,39 @@
 /// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 class SWCollectionTable{
+	
+	public static Factory(){
+		var directive:ng.IDirectiveFactory = (
+			$http,
+			$compile,
+			$log,
+			pathBuilderConfig,
+			collectionPartialsPath,
+			paginationService,
+			selectionService,
+			$slatwall
+		) => new SWCollectionTable(
+			$http,
+			$compile,
+			$log,
+			pathBuilderConfig,
+			collectionPartialsPath,
+			paginationService,
+			selectionService,
+			$slatwall
+		);
+		directive.$inject = [
+			'$http',
+			'$compile',
+			'$log',
+			'pathBuilderConfig',
+			'collectionPartialsPath',
+			'paginationService',
+			'selectionService',
+			'$slatwall',
+		];
+		return directive;
+	}
 	//ngInject
 	constructor(
 		$http,
@@ -52,38 +85,6 @@ class SWCollectionTable{
 				
 			}
 		};
-	}
-	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
-			$http,
-			$compile,
-			$log,
-			pathBuilderConfig,
-			collectionPartialsPath,
-			paginationService,
-			selectionService,
-			$slatwall
-		) => new SWCollectionTable(
-			$http,
-			$compile,
-			$log,
-			pathBuilderConfig,
-			collectionPartialsPath,
-			paginationService,
-			selectionService,
-			$slatwall
-		);
-		directive.$inject = [
-			'$http',
-			'$compile',
-			'$log',
-			'pathBuilderConfig',
-			'collectionPartialsPath',
-			'paginationService',
-			'selectionService',
-			'$slatwall',
-		];
-		return directive;
 	}
 	
 }

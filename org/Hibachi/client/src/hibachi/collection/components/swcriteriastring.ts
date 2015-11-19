@@ -1,24 +1,47 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swCriteriaString', [
-	'$log',
-	'$slatwall',
-	'$filter',
-	'collectionPartialsPath',
-	'collectionService',
-	'metadataService',
-	function(
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWCriteriaString{
+	public static Factory(){
+		var directive = (
+			$log,
+			$slatwall,
+			$filter,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		)=> new SWCriteriaString(
+			$log,
+			$slatwall,
+			$filter,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$log',
+			'$slatwall',
+			'$filter',
+			'collectionPartialsPath',
+			'collectionService',
+			'metadataService',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
+	constructor(
 		$log,
 		$slatwall,
 		$filter,
 		collectionPartialsPath,
 		collectionService,
-		metadataService
+		metadataService,
+		pathBuilderConfig
 	){
-	    
 		return {
 			restrict: 'E',
-			templateUrl:collectionPartialsPath+'criteriastring.html',
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriastring.html',
 			link: function(scope, element, attrs){
 				var getStringOptions = function(type){
 					if(angular.isUndefined(type)){
@@ -184,5 +207,8 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWCriteriaString
+}
+

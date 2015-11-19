@@ -1,18 +1,40 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swFilterGroups', [
-	'$http',
-'$compile',
-'$templateCache',
-'$log',
-'collectionPartialsPath',
-	function(
-	$http,
-	$compile,
-	$templateCache,
-	$log,
-	collectionPartialsPath
-		){
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWFilterGroups{
+	public static Factory(){
+		var directive = (
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			collectionPartialsPath,
+			pathBuilderConfig
+		)=> new SWFilterGroups(
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			collectionPartialsPath,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$http',
+			'$compile',
+			'$templateCache',
+			'$log',
+			'collectionPartialsPath',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
+	constructor(
+		$http,
+		$compile,
+		$templateCache,
+		$log,
+		collectionPartialsPath,
+		pathBuilderConfig
+	){
 		return {
 			restrict: 'EA',
 			scope:{
@@ -23,7 +45,7 @@ angular.module('slatwalladmin')
 				filterGroup:"=",
 				comparisonType:"@"
 			},
-			templateUrl:collectionPartialsPath+"filtergroups.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
 				//if the filter group comparisontype is not specified, then assume we are doing filters
 				if(!angular.isDefined($scope.comparisonType)){
@@ -97,7 +119,10 @@ angular.module('slatwalladmin')
 				
 				
 			}]
-		};
+		};		
 	}
-]);
+}
+export{
+	SWFilterGroups
+}
 	

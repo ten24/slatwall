@@ -8,17 +8,23 @@ class SWAddFilterButtons{
             $compile,
             $templateCache,
             collectionService,
-            collectionPartialsPath) => new SWAddFilterButtons($http,
+            collectionPartialsPath,
+            pathBuilderConfig
+        ) => new SWAddFilterButtons(
+            $http,
             $compile,
             $templateCache,
             collectionService,
-            collectionPartialsPath);
-            directive.$inject = [
+            collectionPartialsPath,
+            pathBuilderConfig
+        );
+        directive.$inject = [
             '$http',
             '$compile',
             '$templateCache',
             'collectionService',
-            'collectionPartialsPath'
+            'collectionPartialsPath',
+            'pathBuilderConfig'
         ];
         return directive;    
     }
@@ -28,13 +34,14 @@ class SWAddFilterButtons{
         $compile,
         $templateCache,
         collectionService,
-        collectionPartialsPath
+        collectionPartialsPath,
+        pathBuilderConfig
     ){
         return {
           
           require:'^swFilterGroups',
           restrict: 'E',
-          templateUrl:collectionPartialsPath+"addfilterbuttons.html",
+          templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"addfilterbuttons.html",
           scope:{
               itemInUse:"=" 
           },   

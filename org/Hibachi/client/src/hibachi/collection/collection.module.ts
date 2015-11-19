@@ -15,11 +15,25 @@ import {SWDisplayItem} from "./components/swdisplayitem";
 import {SWCollectionTable} from "./components/swcollectiontable";
 import {SWColumnItem} from "./components/swcolumnitem";
 import {SWConditionCriteria} from "./components/swconditioncriteria";
+import {SWCriteria} from "./components/swcriteria";
+import {SWCriteriaBoolean} from "./components/swcriteriaboolean";
+import {SWCriteriaManyToMany} from "./components/swcriteriamanytomany";
+import {SWCriteriaManyToOne} from "./components/swcriteriamanytoone";
+import {SWCriteriaNumber} from "./components/swcriterianumber";
+import {SWCriteriaOneToMany} from "./components/swcriteriaonetomany"; 
+import {SWCriteriaString} from "./components/swcriteriastring";
+import {SWEditFilterItem} from "./components/sweditfilteritem";
+import {SWFilterGroups} from "./components/swfiltergroups";
+import {SWFilterItem} from "./components/swfilteritem";
 
-
-var collectionmodule = angular.module('hibachi.collection',[coremodule.name]).config([()=>{
+var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
+.config([()=>{
+	
+}]).run([()=>{
 	
 }])
+//constants
+.constant('collectionPartialsPath','collection/components/')
 //controllers
 .controller('collections',CollectionController)
 //services
@@ -33,9 +47,19 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name]).co
 .directive('swCollectionTable',SWCollectionTable.Factory())
 .directive('swColumnItem',SWColumnItem.Factory())
 .directive('swConditionCriteria',SWConditionCriteria.Factory())
+.directive('swCriteria',SWCriteria.Factory())
+.directive('swCriteriaBoolean',SWCriteriaBoolean.Factory())
+.directive('swCriteriaManyToMany',SWCriteriaManyToMany.Factory())
+.directive('swCriteriaManyToOne',SWCriteriaManyToOne.Factory())
+.directive('swCriteriaNumber',SWCriteriaNumber.Factory())
+.directive('swCriteriaOneToMany',SWCriteriaOneToMany.Factory())
+.directive('swCriteriaString',SWCriteriaString.Factory())
+.directive('swEditFilterItem',SWEditFilterItem.Factory())
+.directive('swFilterGroups',SWFilterGroups.Factory())
+.directive('swFilterItem',SWFilterItem.Factory())
+
 //filters  
-//constants
-.constant('collectionPartialsPath','collection/components/')
+
 ;  
 export{
 	collectionmodule

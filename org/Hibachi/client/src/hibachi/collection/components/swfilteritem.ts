@@ -1,13 +1,31 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swFilterItem', [
-	'$log',
-	'collectionService',
-	'collectionPartialsPath',
-	function(
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWFilterItem{
+	public static Factory(){
+		var directive = (
+			$log,
+			collectionService,
+			collectionPartialsPath,
+			pathBuilderConfig
+		)=>new SWFilterItem(
+			$log,
+			collectionService,
+			collectionPartialsPath,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$log',
+			'collectionService',
+			'collectionPartialsPath',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
+	constructor(
 		$log,
 		collectionService,
-		collectionPartialsPath
+		collectionPartialsPath,
+		pathBuilderConfig
 	){
 		return {
 			restrict: 'A',
@@ -21,7 +39,7 @@ angular.module('slatwalladmin')
 				saveCollection:"&",
 				comparisonType:"="
 			},
-			templateUrl:collectionPartialsPath+"filteritem.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"filteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
 				scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
 				
@@ -56,5 +74,8 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWFilterItem
+}
+

@@ -2,6 +2,47 @@
 /// <reference path='../../../../typings/tsd.d.ts' />
 declare var Date:any;
 class SWConditionCriteria{
+	public static Factory(){
+		var directive:ng.IDirectiveFactory = (
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			$slatwall,
+			$filter,
+			workflowPartialsPath,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		)=>new SWConditionCriteria(
+			$http,
+			$compile,
+			$templateCache,
+			$log,
+			$slatwall,
+			$filter,
+			workflowPartialsPath,
+			collectionPartialsPath,
+			collectionService,
+			metadataService,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$http',
+			'$compile',
+			'$templateCache',
+			'$log',
+			'$slatwall',
+			'$filter',
+			'workflowPartialsPath',
+			'collectionPartialsPath',
+			'collectionService',
+			'metadataService',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
 	constructor(
 		$http,
 		$compile,
@@ -12,7 +53,8 @@ class SWConditionCriteria{
 		workflowPartialsPath,
 		collectionPartialsPath,
 		collectionService,
-		metadataService
+		metadataService,
+		pathBuilderConfig
 	){
 		/* Template info begin*/
 		var getTemplate = function(selectedFilterProperty){
@@ -20,25 +62,25 @@ class SWConditionCriteria{
 			var templatePath = '';
 			
 			if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
-				templatePath = collectionPartialsPath+"criteria.html";
+				templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteria.html";
 			}else{
 				var criteriaormtype = selectedFilterProperty.ormtype;
 				var criteriafieldtype = selectedFilterProperty.fieldtype;
 				/*TODO: convert all switches to object literals*/
 				switch(criteriaormtype){
 					case 'boolean':
-					templatePath = collectionPartialsPath+"criteriaboolean.html";
+					templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriaboolean.html";
 						break;
 					case 'string':
-						templatePath = collectionPartialsPath+"criteriastring.html";
+						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriastring.html";
 						break;
 					case 'timestamp':
-						templatePath = collectionPartialsPath+"criteriadate.html";
+						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriadate.html";
 						break;
 					case 'big_decimal':
 					case 'integer':
 					case 'float':
-						templatePath = collectionPartialsPath+"criterianumber.html";
+						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criterianumber.html";
 						break;
 					
 						
@@ -46,13 +88,13 @@ class SWConditionCriteria{
 				
 				switch(criteriafieldtype){
 					case "many-to-one":
-						templatePath = collectionPartialsPath+"criteriamanytoone.html";
+						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriamanytoone.html";
 						break;
 					case "many-to-many":
-						templatePath = collectionPartialsPath+"criteriamanytomany.html";
+						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriamanytomany.html";
 						break;
 					case "one-to-many":
-						templatePath = collectionPartialsPath+"criteriaonetomany.html";
+						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriaonetomany.html";
 						break;
 				}
 			}
@@ -942,44 +984,7 @@ class SWConditionCriteria{
 		};
 		
 	}
-	public static Factory(){
-		var directive:ng.IDirectiveFactory = (
-			$http,
-			$compile,
-			$templateCache,
-			$log,
-			$slatwall,
-			$filter,
-			workflowPartialsPath,
-			collectionPartialsPath,
-			collectionService,
-			metadataService
-		)=>new SWConditionCriteria(
-			$http,
-			$compile,
-			$templateCache,
-			$log,
-			$slatwall,
-			$filter,
-			workflowPartialsPath,
-			collectionPartialsPath,
-			collectionService,
-			metadataService
-		);
-		directive.$inject = [
-			'$http',
-			'$compile',
-			'$templateCache',
-			'$log',
-			'$slatwall',
-			'$filter',
-			'workflowPartialsPath',
-			'collectionPartialsPath',
-			'collectionService',
-			'metadataService'
-		];
-		return directive;
-	}
+	
 }
 export{
 	SWConditionCriteria

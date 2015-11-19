@@ -25,7 +25,7 @@ class SWCollection{
 			'$log',
 			'pathBuilderConfig',
 			'collectionPartialsPath',
-			'collectionService',
+			'collectionService'
         ];
         return directive;    
     }

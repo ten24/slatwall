@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(59);
+	var logger_module_1 = __webpack_require__(70);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,11 +648,11 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(54);
-	var ngslatwall_module_1 = __webpack_require__(55);
+	var slatwallinterceptor_1 = __webpack_require__(65);
+	var ngslatwall_module_1 = __webpack_require__(66);
 	//filters
-	var entityrbkey_1 = __webpack_require__(57);
-	var swcurrency_1 = __webpack_require__(58);
+	var entityrbkey_1 = __webpack_require__(68);
+	var swcurrency_1 = __webpack_require__(69);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -861,10 +861,10 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var core_module_1 = __webpack_require__(14);
-	var pagination_module_1 = __webpack_require__(36);
-	var dialog_module_1 = __webpack_require__(39);
-	var collection_module_1 = __webpack_require__(41);
-	var workflow_module_1 = __webpack_require__(52);
+	var pagination_module_1 = __webpack_require__(37);
+	var dialog_module_1 = __webpack_require__(40);
+	var collection_module_1 = __webpack_require__(42);
+	var workflow_module_1 = __webpack_require__(63);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -1009,6 +1009,7 @@
 	var swnumbersonly_1 = __webpack_require__(33);
 	var swvalidate_1 = __webpack_require__(34);
 	var swvalidationminlength_1 = __webpack_require__(35);
+	var swloading_1 = __webpack_require__(36);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1031,6 +1032,7 @@
 	})();
 	var coremodule = angular.module('hibachi.core', []).config(function () {
 	}).constant('pathBuilderConfig', new PathBuilderConfig())
+	    .constant('partialsPath', 'core/components/')
 	    .service('utilityService', utilityservice_1.UtilityService)
 	    .service('selectionService', selectionservice_1.SelectionService)
 	    .service('observerService', observerservice_1.ObserverService)
@@ -1050,7 +1052,8 @@
 	    .directive('swLogin', swlogin_1.SWLogin.Factory())
 	    .directive('swNumbersOnly', swnumbersonly_1.SWNumbersOnly.Factory())
 	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
-	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory());
+	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory())
+	    .directive('swLoading', swloading_1.SWLoading.Factory());
 	exports.coremodule = coremodule;
 
 
@@ -3704,13 +3707,45 @@
 
 /***/ },
 /* 36 */
+/***/ function(module, exports) {
+
+	var SWLoading = (function () {
+	    function SWLoading($log, partialsPath) {
+	        return {
+	            restrict: 'A',
+	            transclude: true,
+	            templateUrl: partialsPath + 'loading.html',
+	            scope: {
+	                swLoading: '='
+	            },
+	            link: function (scope, attrs, element) {
+	            }
+	        };
+	    }
+	    SWLoading.Factory = function () {
+	        var directive = function ($log, partialsPath) {
+	            return new SWLoading($log, partialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'partialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWLoading;
+	})();
+	exports.SWLoading = SWLoading;
+
+
+/***/ },
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(37);
-	var swpaginationbar_1 = __webpack_require__(38);
+	var paginationservice_1 = __webpack_require__(38);
+	var swpaginationbar_1 = __webpack_require__(39);
 	var core_module_1 = __webpack_require__(14);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -3722,7 +3757,7 @@
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -3901,7 +3936,7 @@
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -3962,13 +3997,13 @@
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(40);
+	var dialogservice_1 = __webpack_require__(41);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -3977,7 +4012,7 @@
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -4017,7 +4052,7 @@
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4025,19 +4060,32 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(42);
-	var collectionservice_1 = __webpack_require__(43);
-	var collections_1 = __webpack_require__(44);
+	var collectionconfigservice_1 = __webpack_require__(43);
+	var collectionservice_1 = __webpack_require__(44);
+	var collections_1 = __webpack_require__(45);
 	//directives
-	var swcollection_1 = __webpack_require__(45);
-	var swaddfilterbuttons_1 = __webpack_require__(46);
-	var swdisplayoptions_1 = __webpack_require__(47);
-	var swdisplayitem_1 = __webpack_require__(48);
-	var swcollectiontable_1 = __webpack_require__(49);
-	var swcolumnitem_1 = __webpack_require__(50);
-	var swconditioncriteria_1 = __webpack_require__(51);
-	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name]).config([function () {
+	var swcollection_1 = __webpack_require__(46);
+	var swaddfilterbuttons_1 = __webpack_require__(47);
+	var swdisplayoptions_1 = __webpack_require__(48);
+	var swdisplayitem_1 = __webpack_require__(49);
+	var swcollectiontable_1 = __webpack_require__(50);
+	var swcolumnitem_1 = __webpack_require__(51);
+	var swconditioncriteria_1 = __webpack_require__(52);
+	var swcriteria_1 = __webpack_require__(53);
+	var swcriteriaboolean_1 = __webpack_require__(54);
+	var swcriteriamanytomany_1 = __webpack_require__(55);
+	var swcriteriamanytoone_1 = __webpack_require__(56);
+	var swcriterianumber_1 = __webpack_require__(57);
+	var swcriteriaonetomany_1 = __webpack_require__(58);
+	var swcriteriastring_1 = __webpack_require__(59);
+	var sweditfilteritem_1 = __webpack_require__(60);
+	var swfiltergroups_1 = __webpack_require__(61);
+	var swfilteritem_1 = __webpack_require__(62);
+	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
+	    .config([function () {
+	    }]).run([function () {
 	    }])
+	    .constant('collectionPartialsPath', 'collection/components/')
 	    .controller('collections', collections_1.CollectionController)
 	    .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new collectionconfigservice_1.CollectionConfig($slatwall, utilityService); }])
 	    .service('collectionService', collectionservice_1.CollectionService)
@@ -4048,12 +4096,21 @@
 	    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
 	    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
 	    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
-	    .constant('collectionPartialsPath', 'collection/components/');
+	    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
+	    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
+	    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
+	    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
+	    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
+	    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
+	    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
+	    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
+	    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
+	    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory());
 	exports.collectionmodule = collectionmodule;
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4492,7 +4549,7 @@
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -4693,7 +4750,7 @@
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4956,7 +5013,7 @@
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4993,7 +5050,7 @@
 	            '$log',
 	            'pathBuilderConfig',
 	            'collectionPartialsPath',
-	            'collectionService',
+	            'collectionService'
 	        ];
 	        return directive;
 	    };
@@ -5003,18 +5060,18 @@
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWAddFilterButtons = (function () {
 	    //@ngInject
-	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath) {
+	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
 	        return {
 	            require: '^swFilterGroups',
 	            restrict: 'E',
-	            templateUrl: collectionPartialsPath + "addfilterbuttons.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "addfilterbuttons.html",
 	            scope: {
 	                itemInUse: "="
 	            },
@@ -5029,17 +5086,18 @@
 	            }
 	        };
 	    }
-	    SWAddFilterButtons.$inject = ["$http", "$compile", "$templateCache", "collectionService", "collectionPartialsPath"];
+	    SWAddFilterButtons.$inject = ["$http", "$compile", "$templateCache", "collectionService", "collectionPartialsPath", "pathBuilderConfig"];
 	    SWAddFilterButtons.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath) {
-	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath);
+	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
 	            '$templateCache',
 	            'collectionService',
-	            'collectionPartialsPath'
+	            'collectionPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -5049,7 +5107,7 @@
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5216,7 +5274,7 @@
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5297,7 +5355,7 @@
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5361,7 +5419,7 @@
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5545,7 +5603,6 @@
 	            return new SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath);
 	        };
 	        directive.$inject = [
-	            '$http',
 	            '$compile',
 	            '$templateCache',
 	            '$log',
@@ -5562,19 +5619,19 @@
 
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWConditionCriteria = (function () {
-	    function SWConditionCriteria($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService) {
+	    function SWConditionCriteria($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        /* Template info begin*/
 	        var getTemplate = function (selectedFilterProperty) {
 	            var template = '';
 	            var templatePath = '';
 	            if (angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)) {
-	                templatePath = collectionPartialsPath + "criteria.html";
+	                templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteria.html";
 	            }
 	            else {
 	                var criteriaormtype = selectedFilterProperty.ormtype;
@@ -5582,29 +5639,29 @@
 	                /*TODO: convert all switches to object literals*/
 	                switch (criteriaormtype) {
 	                    case 'boolean':
-	                        templatePath = collectionPartialsPath + "criteriaboolean.html";
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriaboolean.html";
 	                        break;
 	                    case 'string':
-	                        templatePath = collectionPartialsPath + "criteriastring.html";
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriastring.html";
 	                        break;
 	                    case 'timestamp':
-	                        templatePath = collectionPartialsPath + "criteriadate.html";
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriadate.html";
 	                        break;
 	                    case 'big_decimal':
 	                    case 'integer':
 	                    case 'float':
-	                        templatePath = collectionPartialsPath + "criterianumber.html";
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criterianumber.html";
 	                        break;
 	                }
 	                switch (criteriafieldtype) {
 	                    case "many-to-one":
-	                        templatePath = collectionPartialsPath + "criteriamanytoone.html";
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriamanytoone.html";
 	                        break;
 	                    case "many-to-many":
-	                        templatePath = collectionPartialsPath + "criteriamanytomany.html";
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriamanytomany.html";
 	                        break;
 	                    case "one-to-many":
-	                        templatePath = collectionPartialsPath + "criteriaonetomany.html";
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriaonetomany.html";
 	                        break;
 	                }
 	            }
@@ -6428,8 +6485,8 @@
 	        };
 	    }
 	    SWConditionCriteria.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService) {
-	            return new SWConditionCriteria($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService);
+	        var directive = function ($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWConditionCriteria($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -6441,7 +6498,8 @@
 	            'workflowPartialsPath',
 	            'collectionPartialsPath',
 	            'collectionService',
-	            'metadataService'
+	            'metadataService',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -6451,13 +6509,1411 @@
 
 
 /***/ },
-/* 52 */
+/* 53 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCriteria = (function () {
+	    function SWCriteria($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                filterItem: "=",
+	                selectedFilterProperty: "=",
+	                filterPropertiesList: "=",
+	                selectedFilterPropertyChanged: "&",
+	                comparisonType: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteria.html',
+	            link: function (scope, element, attrs) {
+	            }
+	        };
+	    }
+	    SWCriteria.Factory = function () {
+	        var directive = function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteria($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteria;
+	})();
+	exports.SWCriteria = SWCriteria;
+
+
+/***/ },
+/* 54 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCriteriaBoolean = (function () {
+	    function SWCriteriaBoolean($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriaboolean.html',
+	            link: function (scope, element, attrs) {
+	                var getBooleanOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var booleanOptions = [];
+	                    if (type === 'filter') {
+	                        booleanOptions = [
+	                            {
+	                                display: "True",
+	                                comparisonOperator: "=",
+	                                value: "True"
+	                            },
+	                            {
+	                                display: "False",
+	                                comparisonOperator: "=",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        booleanOptions = [
+	                            {
+	                                display: "True",
+	                                comparisonOperator: "eq",
+	                                value: "True"
+	                            },
+	                            {
+	                                display: "False",
+	                                comparisonOperator: "eq",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "null",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "null",
+	                                value: "True"
+	                            }
+	                        ];
+	                    }
+	                    return booleanOptions;
+	                };
+	                scope.conditionOptions = getBooleanOptions(scope.comparisonType);
+	                angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                    if (conditionOption.display == scope.filterItem.conditionDisplay) {
+	                        scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                        scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+	                        if (angular.isDefined(scope.selectedConditionChanged)) {
+	                            scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                        }
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaBoolean.Factory = function () {
+	        var directive = function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteriaBoolean($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaBoolean;
+	})();
+	exports.SWCriteriaBoolean = SWCriteriaBoolean;
+
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCriteriaManyToMany = (function () {
+	    function SWCriteriaManyToMany($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriamanytomany.html',
+	            link: function (scope, element, attrs) {
+	                scope.data = {};
+	                scope.collectionOptionsOpen = false;
+	                scope.toggleCollectionOptions = function (flag) {
+	                    scope.collectionOptionsOpen = (!angular.isUndefined(flag)) ? flag : !scope.collectionOptionsOpen;
+	                };
+	                scope.selectCollection = function (collection) {
+	                    scope.toggleCollectionOptions();
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                };
+	                scope.cleanSelection = function () {
+	                    scope.toggleCollectionOptions(false);
+	                    scope.data.collectionName = "";
+	                    scope.selectedFilterProperty.selectedCollection = null;
+	                };
+	                var getManyToManyOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    $log.debug('type', type);
+	                    var manyToManyOptions = [];
+	                    if (type == 'filter') {
+	                        manyToManyOptions = [
+	                            {
+	                                display: "All Exist In Collection",
+	                                comparisonOperator: "All"
+	                            },
+	                            {
+	                                display: "None Exist In Collection",
+	                                comparisonOperator: "None"
+	                            },
+	                            {
+	                                display: "Some Exist In Collection",
+	                                comparisonOperator: "One"
+	                            },
+	                            {
+	                                display: "Empty",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Empty",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        manyToManyOptions = [];
+	                    }
+	                    return manyToManyOptions;
+	                };
+	                scope.manyToManyOptions = getManyToManyOptions(scope.comparisonType);
+	                var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
+	                existingCollectionsPromise.then(function (value) {
+	                    scope.collectionOptions = value.data;
+	                    if (angular.isDefined(scope.filterItem.collectionID)) {
+	                        for (var i in scope.collectionOptions) {
+	                            if (scope.collectionOptions[i].collectionID === scope.filterItem.collectionID) {
+	                                scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+	                            }
+	                        }
+	                        for (var i in scope.manyToManyOptions) {
+	                            if (scope.manyToManyOptions[i].comparisonOperator === scope.filterItem.criteria) {
+	                                scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[i];
+	                            }
+	                        }
+	                    }
+	                });
+	                function populateUI(collection) {
+	                    scope.collectionOptions.push(collection);
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[2];
+	                }
+	                observerService.attach(populateUI, 'addCollection', 'addCollection');
+	                scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                    $log.debug(selectedCriteria);
+	                    //update breadcrumbs as array of filterpropertylist keys
+	                    $log.debug(scope.selectedFilterProperty);
+	                    var breadCrumb = {
+	                        entityAlias: scope.selectedFilterProperty.name,
+	                        cfc: scope.selectedFilterProperty.cfc,
+	                        propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier,
+	                        rbKey: $slatwall.getRBKey('entity.' + scope.selectedFilterProperty.cfc.replace('_', ''))
+	                    };
+	                    scope.filterItem.breadCrumbs.push(breadCrumb);
+	                    //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                    scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                    //update criteria to display the condition of the new critera we have selected
+	                };
+	                scope.addNewCollection = function () {
+	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                        entityName: scope.selectedFilterProperty.cfc,
+	                        collectionName: scope.data.collectionName
+	                    });
+	                    scope.cleanSelection();
+	                };
+	                scope.viewSelectedCollection = function () {
+	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                        entityName: 'collection',
+	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWCriteriaManyToMany.Factory = function () {
+	        var directive = function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig) {
+	            return new SWCriteriaManyToMany($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'dialogService',
+	            'observerService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaManyToMany;
+	})();
+	exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
+
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCriteriaManyToOne = (function () {
+	    function SWCriteriaManyToOne($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriamanytoone.html',
+	            link: function (scope, element, attrs) {
+	                var getManyToOneOptions = function () {
+	                    var manyToOneOptions = {
+	                        drillEntity: {},
+	                        hasEntity: {
+	                            display: "Defined",
+	                            comparisonOperator: "is not",
+	                            value: "null"
+	                        },
+	                        notHasEntity: {
+	                            display: "Not Defined",
+	                            comparisonOperator: "is",
+	                            value: "null"
+	                        }
+	                    };
+	                    return manyToOneOptions;
+	                };
+	                scope.manyToOneOptions = getManyToOneOptions();
+	                scope.conditionOptions = getManyToOneOptions();
+	                $log.debug('many-to-one');
+	                $log.debug(scope.selectedFilterProperty);
+	                $log.debug(scope.filterPropertiesList);
+	                scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+	                    if (angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])) {
+	                        var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
+	                        filterPropertiesPromise.then(function (value) {
+	                            scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+	                            metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier], scope.selectedFilterProperty.propertyIdentifier);
+	                        }, function (reason) {
+	                        });
+	                    }
+	                    scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                        $log.debug(selectedCriteria);
+	                        $log.debug('changed');
+	                        //update breadcrumbs as array of filterpropertylist keys
+	                        $log.debug(scope.selectedFilterProperty);
+	                        var breadCrumb = {
+	                            entityAlias: scope.selectedFilterProperty.name,
+	                            cfc: scope.selectedFilterProperty.cfc,
+	                            propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier,
+	                            rbKey: $slatwall.getRBKey('entity.' + scope.selectedFilterProperty.cfc.replace('_', ''))
+	                        };
+	                        $log.debug('breadcrumb');
+	                        $log.debug(breadCrumb);
+	                        $log.debug(scope.filterItem.breadCrumbs);
+	                        scope.filterItem.breadCrumbs.push(breadCrumb);
+	                        //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                        scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                        //update criteria to display the condition of the new critera we have selected
+	                        $log.debug(scope.selectedFilterProperty);
+	                    };
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaManyToOne.Factory = function () {
+	        var directive = function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteriaManyToOne($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaManyToOne;
+	})();
+	exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
+	// 'use strict';
+	// angular.module('slatwalladmin')
+	// .directive('swCriteriaManyToOne', [
+	// 	'$log',
+	// 	'$slatwall',
+	// 	'$filter',
+	// 	'collectionPartialsPath',
+	// 	'collectionService',
+	// 	'metadataService',
+	// 	function(
+	// 		$log,
+	// 		$slatwall,
+	// 		$filter,
+	// 		collectionPartialsPath,
+	// 		collectionService,
+	// 		metadataService
+	// 	){
+	// 		return {
+	// 			restrict: 'E',
+	// 			templateUrl:collectionPartialsPath+'criteriamanytoone.html',
+	// 			link: function(scope, element, attrs){
+	// 				var getManyToOneOptions = function(){
+	// 			    	var manyToOneOptions = {
+	// 			            drillEntity:{},
+	// 						hasEntity:{
+	// 							display:"Defined",
+	// 							comparisonOperator:"is not",
+	// 							value:"null"
+	// 						},
+	// 						notHasEntity:{
+	// 							display:"Not Defined",
+	// 							comparisonOperator:"is",
+	// 							value:"null"
+	// 						}
+	// 			    	};
+	// 			    	return manyToOneOptions;
+	// 			    };
+	// 			    scope.manyToOneOptions = getManyToOneOptions();
+	// 			    scope.conditionOptions = getManyToOneOptions();
+	// 				$log.debug('many-to-one');
+	// 				$log.debug(scope.selectedFilterProperty);
+	// 				$log.debug(scope.filterPropertiesList);
+	// 				scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
+	// 					if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
+	// 						var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
+	// 						filterPropertiesPromise.then(function(value){
+	// 							scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+	// 							metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+	// 						}, function(reason){
+	// 						});
+	// 					}
+	// 					scope.selectedCriteriaChanged = function(selectedCriteria){
+	// 						$log.debug(selectedCriteria);
+	// 						$log.debug('changed');
+	// 						//update breadcrumbs as array of filterpropertylist keys
+	// 						$log.debug(scope.selectedFilterProperty);
+	// 						var breadCrumb = {
+	// 								entityAlias:scope.selectedFilterProperty.name,
+	// 								cfc:scope.selectedFilterProperty.cfc,
+	// 								propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
+	// 								rbKey:$slatwall.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
+	// 						};
+	// 						$log.debug('breadcrumb');
+	// 						$log.debug(breadCrumb);
+	// 						$log.debug(scope.filterItem.breadCrumbs);
+	// 						scope.filterItem.breadCrumbs.push(breadCrumb);
+	// 						//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	// 						scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+	// 						//update criteria to display the condition of the new critera we have selected
+	// 						$log.debug(scope.selectedFilterProperty);
+	// 					};
+	// 				});
+	// 			}
+	// 		};
+	// 	}
+	// ]);
+
+
+/***/ },
+/* 57 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCriteriaNumber = (function () {
+	    function SWCriteriaNumber($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criterianumber.html',
+	            link: function (scope, element, attrs) {
+	                var getNumberOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var numberOptions = [];
+	                    if (type === 'filter') {
+	                        numberOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "="
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "<>"
+	                            },
+	                            {
+	                                display: "In Range",
+	                                comparisonOperator: "between",
+	                                type: "range"
+	                            },
+	                            {
+	                                display: "Not In Range",
+	                                comparisonOperator: "not between",
+	                                type: "range"
+	                            },
+	                            {
+	                                display: "Greater Than",
+	                                comparisonOperator: ">"
+	                            },
+	                            {
+	                                display: "Greater Than Or Equal",
+	                                comparisonOperator: ">="
+	                            },
+	                            {
+	                                display: "Less Than",
+	                                comparisonOperator: "<"
+	                            },
+	                            {
+	                                display: "Less Than Or Equal",
+	                                comparisonOperator: "<="
+	                            },
+	                            {
+	                                display: "In List",
+	                                comparisonOperator: "in"
+	                            },
+	                            {
+	                                display: "Not In List",
+	                                comparisonOperator: "not in"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        numberOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "eq"
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "neq"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "null",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "null",
+	                                value: "True"
+	                            }
+	                        ];
+	                    }
+	                    return numberOptions;
+	                };
+	                scope.$watch('selectedFilterProperty.criteriaValue', function (criteriaValue) {
+	                    if (angular.isDefined(criteriaValue)) {
+	                        scope.selectedFilterProperty.criteriaValue = criteriaValue;
+	                        $log.debug(scope.selectedFilterProperty);
+	                    }
+	                });
+	                scope.conditionOptions = getNumberOptions(scope.comparisonType);
+	                scope.criteriaRangeChanged = function (selectedFilterProperty) {
+	                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                };
+	                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                    selectedFilterProperty.showCriteriaValue = true;
+	                    //check whether the type is a range
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)) {
+	                        selectedFilterProperty.showCriteriaValue = false;
+	                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+	                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+	                    }
+	                    //is null or is not null
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                        selectedFilterProperty.showCriteriaValue = false;
+	                    }
+	                };
+	                angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                    $log.debug('populate');
+	                    if (conditionOption.display == scope.filterItem.conditionDisplay) {
+	                        scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                        $log.debug(scope.filterItem);
+	                        if (scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between') {
+	                            var criteriaRangeArray = scope.filterItem.value.split('-');
+	                            $log.debug(criteriaRangeArray);
+	                            scope.selectedFilterProperty.criteriaRangeStart = parseInt(criteriaRangeArray[0]);
+	                            scope.selectedFilterProperty.criteriaRangeEnd = parseInt(criteriaRangeArray[1]);
+	                        }
+	                        else {
+	                            scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+	                        }
+	                        if (angular.isDefined(scope.filterItem.criteriaNumberOf)) {
+	                            scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
+	                        }
+	                        if (angular.isDefined(scope.selectedConditionChanged)) {
+	                            scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                        }
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaNumber.Factory = function () {
+	        var directive = function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteriaNumber($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaNumber;
+	})();
+	exports.SWCriteriaNumber = SWCriteriaNumber;
+
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCriteriaOneToMany = (function () {
+	    function SWCriteriaOneToMany($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriaonetomany.html',
+	            link: function (scope, element, attrs) {
+	                scope.data = {};
+	                scope.collectionOptionsOpen = false;
+	                scope.toggleCollectionOptions = function (flag) {
+	                    scope.collectionOptionsOpen = (!angular.isUndefined(flag)) ? flag : !scope.collectionOptionsOpen;
+	                };
+	                scope.selectCollection = function (collection) {
+	                    scope.toggleCollectionOptions();
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                };
+	                scope.cleanSelection = function () {
+	                    scope.toggleCollectionOptions(false);
+	                    scope.data.collectionName = "";
+	                    scope.selectedFilterProperty.selectedCollection = null;
+	                };
+	                var getOneToManyOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var oneToManyOptions = [];
+	                    if (type == 'filter') {
+	                        oneToManyOptions = [
+	                            {
+	                                display: "All Exist In Collection",
+	                                comparisonOperator: "All"
+	                            },
+	                            {
+	                                display: "None Exist In Collection",
+	                                comparisonOperator: "None"
+	                            },
+	                            {
+	                                display: "Some Exist In Collection",
+	                                comparisonOperator: "One"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        oneToManyOptions = [];
+	                    }
+	                    return oneToManyOptions;
+	                };
+	                $log.debug('onetomany');
+	                $log.debug(scope.selectedFilterProperty);
+	                scope.oneToManyOptions = getOneToManyOptions(scope.comparisonType);
+	                var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
+	                existingCollectionsPromise.then(function (value) {
+	                    scope.collectionOptions = value.data;
+	                    if (angular.isDefined(scope.filterItem.collectionID)) {
+	                        for (var i in scope.collectionOptions) {
+	                            if (scope.collectionOptions[i].collectionID === scope.filterItem.collectionID) {
+	                                scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+	                            }
+	                        }
+	                        for (var i in scope.oneToManyOptions) {
+	                            if (scope.oneToManyOptions[i].comparisonOperator === scope.filterItem.criteria) {
+	                                scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
+	                            }
+	                        }
+	                    }
+	                });
+	                function populateUI(collection) {
+	                    scope.collectionOptions.push(collection);
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[2];
+	                }
+	                observerService.attach(populateUI, 'addCollection', 'addCollection');
+	                scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                    $log.debug(selectedCriteria);
+	                    //update breadcrumbs as array of filterpropertylist keys
+	                    $log.debug(scope.selectedFilterProperty);
+	                    var breadCrumb = {
+	                        entityAlias: scope.selectedFilterProperty.name,
+	                        cfc: scope.selectedFilterProperty.cfc,
+	                        propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier,
+	                        rbKey: $slatwall.getRBKey('entity.' + scope.selectedFilterProperty.cfc.replace('_', '')),
+	                        filterProperty: scope.selectedFilterProperty
+	                    };
+	                    scope.filterItem.breadCrumbs.push(breadCrumb);
+	                    $log.debug('criteriaChanged');
+	                    //$log.debug(selectedFilterPropertyChanged);
+	                    $log.debug(scope.selectedFilterProperty);
+	                    //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                    scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                    //update criteria to display the condition of the new critera we have selected
+	                };
+	                scope.addNewCollection = function () {
+	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                        entityName: scope.selectedFilterProperty.cfc,
+	                        collectionName: scope.data.collectionName
+	                    });
+	                    scope.cleanSelection();
+	                };
+	                scope.viewSelectedCollection = function () {
+	                    scope.toggleCollectionOptions();
+	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                        entityName: 'collection',
+	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWCriteriaOneToMany.Factory = function () {
+	        var directive = function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig) {
+	            return new SWCriteriaOneToMany($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'dialogService',
+	            'observerService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaOneToMany;
+	})();
+	exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
+
+
+/***/ },
+/* 59 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWCriteriaString = (function () {
+	    function SWCriteriaString($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriastring.html',
+	            link: function (scope, element, attrs) {
+	                var getStringOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var stringOptions = [];
+	                    if (type === 'filter') {
+	                        stringOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "="
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "<>"
+	                            },
+	                            {
+	                                display: "Contains",
+	                                comparisonOperator: "like",
+	                                pattern: "%w%"
+	                            },
+	                            {
+	                                display: "Doesn't Contain",
+	                                comparisonOperator: "not like",
+	                                pattern: "%w%"
+	                            },
+	                            {
+	                                display: "Starts With",
+	                                comparisonOperator: "like",
+	                                pattern: "w%"
+	                            },
+	                            {
+	                                display: "Doesn't Start With",
+	                                comparisonOperator: "not like",
+	                                pattern: "w%"
+	                            },
+	                            {
+	                                display: "Ends With",
+	                                comparisonOperator: "like",
+	                                pattern: "%w"
+	                            },
+	                            {
+	                                display: "Doesn't End With",
+	                                comparisonOperator: "not like",
+	                                pattern: "%w"
+	                            },
+	                            {
+	                                display: "In List",
+	                                comparisonOperator: "in"
+	                            },
+	                            {
+	                                display: "Not In List",
+	                                comparisonOperator: "not in"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        stringOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "eq"
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "neq"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "null",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "null",
+	                                value: "True"
+	                            }
+	                        ];
+	                    }
+	                    return stringOptions;
+	                };
+	                //initialize values
+	                scope.conditionOptions = getStringOptions(scope.comparisonType);
+	                scope.inListArray = [];
+	                if (angular.isDefined(scope.filterItem.value)) {
+	                    scope.inListArray = scope.filterItem.value.split(',');
+	                }
+	                scope.newListItem = '';
+	                //declare functions
+	                scope.addToValueInListFormat = function (inListItem) {
+	                    // Adds item into array
+	                    scope.inListArray.push(inListItem);
+	                    //set value field to the user generated list
+	                    scope.filterItem.value = scope.inListArray.toString();
+	                    scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+	                    scope.newListItem = '';
+	                };
+	                scope.removelistItem = function (argListIndex) {
+	                    scope.inListArray.splice(argListIndex, 1);
+	                    scope.filterItem.value = scope.inListArray.toString();
+	                    scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+	                };
+	                scope.clearField = function () {
+	                    scope.newListItem = '';
+	                };
+	                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                    //scope.selectedFilterProperty.criteriaValue = '';
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                        selectedFilterProperty.showCriteriaValue = false;
+	                    }
+	                    else {
+	                        if (selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in') {
+	                            selectedFilterProperty.showCriteriaValue = false;
+	                            scope.comparisonOperatorInAndNotInFlag = true;
+	                        }
+	                        else {
+	                            selectedFilterProperty.showCriteriaValue = true;
+	                        }
+	                    }
+	                };
+	                scope.$watch('filterItem.value', function (criteriaValue) {
+	                    //remove percents for like values
+	                    if (angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)) {
+	                        scope.filterItem.value = scope.filterItem.value.replace('%', '');
+	                    }
+	                });
+	                scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+	                    if (angular.isDefined(selectedFilterProperty)) {
+	                        angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                            if (conditionOption.display == scope.filterItem.conditionDisplay) {
+	                                scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                                scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+	                                if (angular.isDefined(scope.selectedConditionChanged)) {
+	                                    scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                                }
+	                            }
+	                        });
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaString.Factory = function () {
+	        var directive = function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteriaString($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaString;
+	})();
+	exports.SWCriteriaString = SWCriteriaString;
+
+
+/***/ },
+/* 60 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWEditFilterItem = (function () {
+	    function SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $slatwall, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            require: '^swFilterGroups',
+	            restrict: 'E',
+	            scope: {
+	                collectionConfig: "=",
+	                filterItem: "=",
+	                filterPropertiesList: "=",
+	                saveCollection: "&",
+	                removeFilterItem: "&",
+	                filterItemIndex: "=",
+	                comparisonType: "="
+	            },
+	            templateUrl: pathBuilderConfig.builPartialsPath(collectionPartialsPath) + "editfilteritem.html",
+	            link: function (scope, element, attrs, filterGroupsController) {
+	                function daysBetween(first, second) {
+	                    // Copy date parts of the timestamps, discarding the time parts.
+	                    var one = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+	                    var two = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+	                    // Do the math.
+	                    var millisecondsPerDay = 1000 * 60 * 60 * 24;
+	                    var millisBetween = two.getTime() - one.getTime();
+	                    var days = millisBetween / millisecondsPerDay;
+	                    // Round down.
+	                    return Math.floor(days);
+	                }
+	                if (angular.isUndefined(scope.filterItem.breadCrumbs)) {
+	                    scope.filterItem.breadCrumbs = [];
+	                    if (scope.filterItem.propertyIdentifier === "") {
+	                        scope.filterItem.breadCrumbs = [
+	                            {
+	                                rbKey: $slatwall.getRBKey('entity.' + scope.collectionConfig.baseEntityAlias.replace('_', '')),
+	                                entityAlias: scope.collectionConfig.baseEntityAlias,
+	                                cfc: scope.collectionConfig.baseEntityAlias,
+	                                propertyIdentifier: scope.collectionConfig.baseEntityAlias
+	                            }
+	                        ];
+	                    }
+	                    else {
+	                        var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+	                        entityAliasArrayFromString.pop();
+	                        for (var i in entityAliasArrayFromString) {
+	                            var breadCrumb = {
+	                                rbKey: $slatwall.getRBKey('entity.' + scope.collectionConfig.baseEntityAlias.replace('_', '')),
+	                                entityAlias: entityAliasArrayFromString[i],
+	                                cfc: entityAliasArrayFromString[i],
+	                                propertyIdentifier: entityAliasArrayFromString[i]
+	                            };
+	                            scope.filterItem.breadCrumbs.push(breadCrumb);
+	                        }
+	                    }
+	                }
+	                else {
+	                    angular.forEach(scope.filterItem.breadCrumbs, function (breadCrumb, key) {
+	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
+	                            var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+	                            filterPropertiesPromise.then(function (value) {
+	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
+	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+	                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier], breadCrumb.propertyIdentifier);
+	                                var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+	                                entityAliasArrayFromString.pop();
+	                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                                if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                    for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                        if (filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier) {
+	                                            //selectItem from drop down
+	                                            scope.selectedFilterProperty = filterProperty;
+	                                            //decorate with value and comparison Operator so we can use it in the Condition section
+	                                            scope.selectedFilterProperty.value = scope.filterItem.value;
+	                                            scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+	                                        }
+	                                    }
+	                                }
+	                            });
+	                        }
+	                        else {
+	                            var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+	                            entityAliasArrayFromString.pop();
+	                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                            if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                    if (filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier) {
+	                                        //selectItem from drop down
+	                                        scope.selectedFilterProperty = filterProperty;
+	                                        //decorate with value and comparison Operator so we can use it in the Condition section
+	                                        scope.selectedFilterProperty.value = scope.filterItem.value;
+	                                        scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    });
+	                }
+	                if (angular.isUndefined(scope.filterItem.$$isClosed)) {
+	                    scope.filterItem.$$isClosed = true;
+	                }
+	                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+	                scope.togglePrepareForFilterGroup = function () {
+	                    scope.filterItem.$$prepareForFilterGroup = !scope.filterItem.$$prepareForFilterGroup;
+	                };
+	                //public functions
+	                scope.selectBreadCrumb = function (breadCrumbIndex) {
+	                    //splice out array items above index
+	                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+	                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
+	                    $log.debug('selectBreadCrumb');
+	                    $log.debug(scope.selectedFilterProperty);
+	                    //scope.selectedFilterPropertyChanged(scope.filterItem.breadCrumbs[scope.filterItem.breadCrumbs.length -1].filterProperty);
+	                    scope.selectedFilterPropertyChanged(null);
+	                };
+	                scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
+	                    $log.debug('selectedFilterProperty');
+	                    $log.debug(selectedFilterProperty);
+	                    if (angular.isDefined(scope.selectedFilterProperty) && scope.selectedFilterProperty === null) {
+	                        scope.selectedFilterProperty = {};
+	                    }
+	                    if (angular.isDefined(scope.selectedFilterProperty) && angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType)) {
+	                        delete scope.selectedFilterProperty.selectedCriteriaType;
+	                    }
+	                    if (angular.isDefined(scope.filterItem.value)) {
+	                        delete scope.filterItem.value;
+	                    }
+	                    scope.selectedFilterProperty.showCriteriaValue = false;
+	                    scope.selectedFilterProperty = selectedFilterProperty;
+	                };
+	                scope.addFilterItem = function () {
+	                    collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(), filterGroupsController.setItemInUse);
+	                };
+	                scope.cancelFilterItem = function () {
+	                    $log.debug('cancelFilterItem');
+	                    $log.debug(scope.filterItemIndex);
+	                    //scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
+	                    scope.filterItem.setItemInUse(false);
+	                    scope.filterItem.$$isClosed = true;
+	                    for (var siblingIndex in scope.filterItem.$$siblingItems) {
+	                        scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+	                    }
+	                    if (scope.filterItem.$$isNew === true) {
+	                        scope.removeFilterItem({ filterItemIndex: scope.filterItemIndex });
+	                    }
+	                };
+	                scope.saveFilter = function (selectedFilterProperty, filterItem, callback) {
+	                    $log.debug('saveFilter begin');
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)) {
+	                        return;
+	                    }
+	                    if (angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)) {
+	                        //populate filterItem with selectedFilterProperty values
+	                        filterItem.$$isNew = false;
+	                        filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
+	                        filterItem.displayPropertyIdentifier = selectedFilterProperty.displayPropertyIdentifier;
+	                        switch (selectedFilterProperty.ormtype) {
+	                            case 'boolean':
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                filterItem.displayValue = filterItem.value;
+	                                break;
+	                            case 'string':
+	                                if (angular.isDefined(selectedFilterProperty.attributeID)) {
+	                                    filterItem.attributeID = selectedFilterProperty.attributeID;
+	                                    filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
+	                                }
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                    filterItem.displayValue = filterItem.value;
+	                                }
+	                                else {
+	                                    //if has a pattern then we need to evaluate where to add % for like statement
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)) {
+	                                        filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
+	                                        filterItem.displayValue = filterItem.value;
+	                                    }
+	                                    else {
+	                                        filterItem.value = filterItem.value;
+	                                        if (angular.isUndefined(filterItem.displayValue)) {
+	                                            filterItem.displayValue = filterItem.value;
+	                                        }
+	                                    }
+	                                }
+	                                break;
+	                            //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
+	                            case 'timestamp':
+	                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //is it null or a range
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                    filterItem.displayValue = filterItem.value;
+	                                }
+	                                else {
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation') {
+	                                        var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart), new Date(selectedFilterProperty.criteriaRangeEnd));
+	                                        filterItem.value = _daysBetween;
+	                                        filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+	                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+	                                        }
+	                                    }
+	                                    else {
+	                                        var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+	                                        filterItem.value = dateValueString;
+	                                        var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
+	                                        filterItem.displayValue = formattedDateValueString;
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+	                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+	                                        }
+	                                    }
+	                                }
+	                                break;
+	                            case 'big_decimal':
+	                            case 'integer':
+	                            case 'float':
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //is null, is not null
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                }
+	                                else {
+	                                    if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)) {
+	                                        filterItem.value = selectedFilterProperty.criteriaValue;
+	                                    }
+	                                    else {
+	                                        var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+	                                        filterItem.value = decimalValueString;
+	                                    }
+	                                }
+	                                filterItem.displayValue = filterItem.value;
+	                                break;
+	                        }
+	                        switch (selectedFilterProperty.fieldtype) {
+	                            case 'many-to-one':
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //is null, is not null
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                }
+	                                filterItem.displayValue = filterItem.value;
+	                                break;
+	                            case 'one-to-many':
+	                            case 'many-to-many':
+	                                filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
+	                                filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+	                                filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                break;
+	                        }
+	                        if (angular.isUndefined(filterItem.displayValue)) {
+	                            filterItem.displayValue = filterItem.value;
+	                        }
+	                        if (angular.isDefined(selectedFilterProperty.ormtype)) {
+	                            filterItem.ormtype = selectedFilterProperty.ormtype;
+	                        }
+	                        if (angular.isDefined(selectedFilterProperty.fieldtype)) {
+	                            filterItem.fieldtype = selectedFilterProperty.fieldtype;
+	                        }
+	                        for (var siblingIndex in filterItem.$$siblingItems) {
+	                            filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+	                        }
+	                        filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
+	                        //if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
+	                        if (filterItem.$$prepareForFilterGroup === true) {
+	                            collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.getFilterGroupItem(), filterItem);
+	                        }
+	                        //persist Config and 
+	                        scope.saveCollection();
+	                        $log.debug(selectedFilterProperty);
+	                        $log.debug(filterItem);
+	                        callback();
+	                        $log.debug('saveFilter end');
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWEditFilterItem.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $filter, $slatwall, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $slatwall, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$filter',
+	            '$slatwall',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWEditFilterItem;
+	})();
+	exports.SWEditFilterItem = SWEditFilterItem;
+
+
+/***/ },
+/* 61 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFilterGroups = (function () {
+	    function SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'EA',
+	            scope: {
+	                collectionConfig: "=",
+	                filterGroupItem: "=",
+	                filterPropertiesList: "=",
+	                saveCollection: "&",
+	                filterGroup: "=",
+	                comparisonType: "@"
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
+	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+	                    //if the filter group comparisontype is not specified, then assume we are doing filters
+	                    if (!angular.isDefined($scope.comparisonType)) {
+	                        $scope.comparisonType = 'filter';
+	                    }
+	                    $scope.itemInUse = false;
+	                    $log.debug('collectionConfig');
+	                    $log.debug($scope.collectionConfig);
+	                    this.getFilterGroup = function () {
+	                        return $scope.filterGroup;
+	                    };
+	                    this.getFilterGroupItem = function () {
+	                        return $scope.filterGroupItem;
+	                    };
+	                    this.setItemInUse = function (booleanValue) {
+	                        $scope.itemInUse = booleanValue;
+	                    };
+	                    this.getItemInUse = function () {
+	                        return $scope.itemInUse;
+	                    };
+	                    this.saveCollection = function () {
+	                        $scope.saveCollection();
+	                    };
+	                    $scope.deselectItems = function (filterItem) {
+	                        for (var i in filterItem.$$siblingItems) {
+	                            filterItem.$$siblingItems[i].$$disabled = false;
+	                        }
+	                    };
+	                    this.removeFilterItem = function (filterItemIndex) {
+	                        if (angular.isDefined(filterItemIndex)) {
+	                            $scope.deselectItems($scope.filterGroupItem[filterItemIndex]);
+	                            $scope.filterGroupItem[filterItemIndex].setItemInUse(false);
+	                            //remove item
+	                            $log.debug('removeFilterItem');
+	                            $log.debug(filterItemIndex);
+	                            $scope.filterGroupItem.splice(filterItemIndex, 1);
+	                            //make sure first item has no logical operator if it exists
+	                            if ($scope.filterGroupItem.length) {
+	                                delete $scope.filterGroupItem[0].logicalOperator;
+	                            }
+	                            $log.debug('removeFilterItem');
+	                            $log.debug(filterItemIndex);
+	                            $scope.saveCollection();
+	                        }
+	                    };
+	                    this.removeFilterGroupItem = function (filterGroupItemIndex) {
+	                        //remove Item
+	                        $scope.deselectItems($scope.filterGroupItem[filterGroupItemIndex]);
+	                        $scope.filterGroupItem[filterGroupItemIndex].setItemInUse(false);
+	                        $scope.filterGroupItem.splice(filterGroupItemIndex, 1);
+	                        //make sure first item has no logical operator if it exists
+	                        if ($scope.filterGroupItem.length) {
+	                            delete $scope.filterGroupItem[0].logicalOperator;
+	                        }
+	                        $log.debug('removeFilterGroupItem');
+	                        $log.debug(filterGroupItemIndex);
+	                        $scope.saveCollection();
+	                    };
+	                }]
+	        };
+	    }
+	    SWFilterGroups.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig) {
+	            return new SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            'collectionPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFilterGroups;
+	})();
+	exports.SWFilterGroups = SWFilterGroups;
+
+
+/***/ },
+/* 62 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFilterItem = (function () {
+	    function SWFilterItem($log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            require: '^swFilterGroups',
+	            scope: {
+	                collectionConfig: "=",
+	                filterItem: "=",
+	                siblingItems: "=",
+	                filterPropertiesList: "=",
+	                filterItemIndex: "=",
+	                saveCollection: "&",
+	                comparisonType: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filteritem.html",
+	            link: function (scope, element, attrs, filterGroupsController) {
+	                scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
+	                if (angular.isUndefined(scope.filterItem.$$isClosed)) {
+	                    scope.filterItem.$$isClosed = true;
+	                }
+	                if (angular.isUndefined(scope.filterItem.$$disabled)) {
+	                    scope.filterItem.$$disabled = false;
+	                }
+	                if (angular.isUndefined(scope.filterItem.siblingItems)) {
+	                    scope.filterItem.$$siblingItems = scope.siblingItems;
+	                }
+	                scope.filterItem.setItemInUse = filterGroupsController.setItemInUse;
+	                scope.selectFilterItem = function (filterItem) {
+	                    collectionService.selectFilterItem(filterItem);
+	                };
+	                scope.removeFilterItem = function () {
+	                    filterGroupsController.removeFilterItem(scope.filterItemIndex, filterGroupsController.getFilterGroupItem());
+	                };
+	                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+	                scope.logicalOperatorChanged = function (logicalOperatorValue) {
+	                    $log.debug('logicalOperatorChanged');
+	                    $log.debug(logicalOperatorValue);
+	                    scope.filterItem.logicalOperator = logicalOperatorValue;
+	                    filterGroupsController.saveCollection();
+	                };
+	            }
+	        };
+	    }
+	    SWFilterItem.Factory = function () {
+	        var directive = function ($log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	            return new SWFilterItem($log, collectionService, collectionPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'collectionService',
+	            'collectionPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFilterItem;
+	})();
+	exports.SWFilterItem = SWFilterItem;
+
+
+/***/ },
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(53);
+	var workflowconditionservice_1 = __webpack_require__(64);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
@@ -6466,7 +7922,7 @@
 
 
 /***/ },
-/* 53 */
+/* 64 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6521,7 +7977,7 @@
 
 
 /***/ },
-/* 54 */
+/* 65 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6647,20 +8103,20 @@
 
 
 /***/ },
-/* 55 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(56);
+	var slatwallservice_1 = __webpack_require__(67);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 56 */
+/* 67 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7242,7 +8698,7 @@
 
 
 /***/ },
-/* 57 */
+/* 68 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7267,7 +8723,7 @@
 
 
 /***/ },
-/* 58 */
+/* 69 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7354,7 +8810,7 @@
 
 
 /***/ },
-/* 59 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
