@@ -1,0 +1,47 @@
+<ul class="col-xs-12 list-unstyled">
+	
+	<span ng-repeat="workflowConditionGroup in workflowConditionGroupItem">
+		<span ng-switch on="workflowConditionGroup.hasOwnProperty('workflowConditionGroup')" >
+			<sw-workflow-condition 	
+					ng-switch-when="false" 
+					data-workflow-condition="workflowConditionGroup" 
+					data-workflow-condition-index="$index"
+					data-workflow="workflow"
+					data-filter-properties-list="filterPropertiesList"
+					>
+			</sw-workflow-condition>
+			<sw-workflow-condition-group-item  	
+					ng-switch-when="true" 
+					data-workflow-condition-group-item="workflowConditionGroup",
+					data-sibling-items="workflowConditionGroupItem"
+					data-workflow-condition-group-item-index="$index"
+					data-workflow="workflow"
+					>
+			</sw-workflow-condition-group-item >
+		</span>
+	</span>
+
+	<li class="s-new-filter">
+		<div class="s-filter-item">
+			<button type="button" 
+					class="btn btn-xs btn-default" 
+					data-toggle="collapse" 
+					data-target="#j-add-2"
+					ng-click="addWorkflowCondition()"
+			>
+				<i class="fa fa-plus"></i> 
+				Add
+			</button>
+			<button type="button" 
+					class="btn btn-xs btn-default" 
+					data-toggle="collapse" 
+					data-target="#j-add-another-2"
+					ng-click="addWorkflowConditionGroupItem()"
+			>
+				<i class="fa fa-plus"></i>
+				 Add a New Group
+			</button>
+		</div>
+	</li>
+
+</ul>

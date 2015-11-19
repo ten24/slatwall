@@ -1,12 +1,25 @@
-angular.module('slatwalladmin')
-.directive('swWorkflowConditionGroups', [
-'$log',
-'workflowConditionService',
-'workflowPartialsPath',
-	function(
-	$log,
-	workflowConditionService,
-	workflowPartialsPath
+class SWWorkflowConditionGroups{
+	public static Factory(){
+		var directive = (
+			$log,
+			workflowConditionService,
+			workflowPartialsPath
+		)=> new SWWorkflowConditionGroups(
+			$log,
+			workflowConditionService,
+			workflowPartialsPath
+		);
+		directive.$inject = [
+			'$log',
+			'workflowConditionService',
+			'workflowPartialsPath'
+		];
+		return directive;
+	}
+	constructor(
+		$log,
+		workflowConditionService,
+		workflowPartialsPath
 	){
 		return {
 			restrict: 'E',
@@ -35,5 +48,8 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
+}
+export{
+	SWWorkflowConditionGroups
+}
 	

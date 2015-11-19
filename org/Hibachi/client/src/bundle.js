@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(71);
+	var logger_module_1 = __webpack_require__(78);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,12 +648,12 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(66);
-	var ngslatwall_module_1 = __webpack_require__(67);
-	var ngslatwallmodel_module_1 = __webpack_require__(72);
+	var slatwallinterceptor_1 = __webpack_require__(72);
+	var ngslatwall_module_1 = __webpack_require__(73);
+	var ngslatwallmodel_module_1 = __webpack_require__(75);
 	//filters
-	var entityrbkey_1 = __webpack_require__(69);
-	var swcurrency_1 = __webpack_require__(70);
+	var entityrbkey_1 = __webpack_require__(76);
+	var swcurrency_1 = __webpack_require__(77);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -8011,10 +8011,31 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
 	var workflowconditionservice_1 = __webpack_require__(65);
+	//directives
+	var swadmincreatesuperuser_1 = __webpack_require__(66);
+	var swworkflowbasic_1 = __webpack_require__(82);
+	var swworkflowcondition_1 = __webpack_require__(79);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(80);
+	var swworkflowconditiongroups_1 = __webpack_require__(81);
+	var swworkflowtask_1 = __webpack_require__(67);
+	var swworkflowtaskactions_1 = __webpack_require__(68);
+	var swworkflowtasks_1 = __webpack_require__(69);
+	var swworkflowtrigger_1 = __webpack_require__(70);
+	var swworkflowtriggers_1 = __webpack_require__(71);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
-	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService);
+	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)
+	    .directive('swAdminCreateSuperUser', swadmincreatesuperuser_1.SWAdminCreateSuperUser.Factory())
+	    .directive('swWorkflowBasic', swworkflowbasic_1.SWWorkflowBasic.Factory())
+	    .directive('swWorkflowCondition', swworkflowcondition_1.SWWorkflowCondition.Factory())
+	    .directive('swWorkflowCondition', swworkflowconditiongroupitem_1.SWWorkflowConditionGroupItem.Factory())
+	    .directive('swWorkflowCondition', swworkflowconditiongroups_1.SWWorkflowConditionGroups.Factory())
+	    .directive('swWorkflowCondition', swworkflowtask_1.SWWorkflowTask.Factory())
+	    .directive('swWorkflowCondition', swworkflowtaskactions_1.SWWorkflowTaskActions.Factory())
+	    .directive('swWorkflowCondition', swworkflowtasks_1.SWWorkflowTasks.Factory())
+	    .directive('swWorkflowCondition', swworkflowtrigger_1.SWWorkflowTrigger.Factory())
+	    .directive('swWorkflowCondition', swworkflowtriggers_1.SWWorkflowTriggers.Factory());
 	exports.workflowmodule = workflowmodule;
 
 
@@ -8075,6 +8096,722 @@
 
 /***/ },
 /* 66 */
+/***/ function(module, exports) {
+
+	var SWAdminCreateSuperUser = (function () {
+	    function SWAdminCreateSuperUser($log, $slatwall, partialsPath) {
+	        return {
+	            restrict: 'E',
+	            scope: {},
+	            templateUrl: partialsPath + "admincreatesuperuser.html",
+	            link: function (scope, element, attrs) {
+	                scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
+	            }
+	        };
+	    }
+	    SWAdminCreateSuperUser.Factory = function () {
+	        var directive = function ($log, $slatwall, partialsPath) {
+	            return new SWAdminCreateSuperUser($log, $slatwall, partialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'partialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWAdminCreateSuperUser;
+	})();
+	exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
+
+
+/***/ },
+/* 67 */
+/***/ function(module, exports) {
+
+	var SWWorkflowTask = (function () {
+	    function SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowTask: "=",
+	                workflowTasks: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowtask.html",
+	            link: function (scope, element, attrs) {
+	                scope.removeWorkflowTask = function (workflowTask) {
+	                    var deletePromise = workflowTask.$$delete();
+	                    deletePromise.then(function () {
+	                        if (workflowTask === scope.workflowTasks.selectedTask) {
+	                            delete scope.workflowTasks.selectedTask;
+	                        }
+	                        scope.workflowTasks.splice(workflowTask.$$index, 1);
+	                        for (var i in scope.workflowTasks) {
+	                            scope.workflowTasks[i].$$index = i;
+	                        }
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTask.Factory = function () {
+	        var directive = function ($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	            return new SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$timeout',
+	            '$slatwall',
+	            'metadataService',
+	            'collectionService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTask;
+	})();
+	exports.SWWorkflowTask = SWWorkflowTask;
+
+
+/***/ },
+/* 68 */
+/***/ function(module, exports) {
+
+	var SWWorkflowTaskActions = (function () {
+	    function SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	        return {
+	            restrict: 'AE',
+	            scope: {
+	                workflowTask: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowtaskactions.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('Workflow Task Actions Init');
+	                $log.debug(scope.workflowTask);
+	                scope.openActions = false;
+	                /**
+	                    * Returns the correct object based on the selected object type.
+	                    */
+	                var getObjectByActionType = function (workflowTaskAction) {
+	                    if (workflowTaskAction.data.actionType === 'email') {
+	                        workflowTaskAction.$$getEmailTemplate();
+	                    }
+	                    else if (workflowTaskAction.data.actionType === 'print') {
+	                        workflowTaskAction.$$getPrintTemplate();
+	                    }
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Returns workflow task action, and saves them to the scope variable workflowtaskactions
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.getWorkflowTaskActions = function () {
+	                    /***
+	                    Note:
+	                    This conditional is checking whether or not we need to be retrieving to
+	                    items all over again. If we already have them, we won't make another
+	                    trip to the database.
+	                    
+	                ***/
+	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
+	                        var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
+	                        workflowTaskPromise.then(function () {
+	                            scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+	                            angular.forEach(scope.workflowTaskActions, function (workflowTaskAction) {
+	                                getObjectByActionType(workflowTaskAction);
+	                            });
+	                            $log.debug(scope.workflowTaskActions);
+	                        });
+	                    }
+	                    else {
+	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+	                    }
+	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
+	                        scope.workflowTask.data.workflowTaskActions = [];
+	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+	                    }
+	                };
+	                scope.getWorkflowTaskActions(); //Call get
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Saves the workflow task actions by calling the objects $$save method.
+	                    * @param taskAction
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.saveWorkflowTaskAction = function (taskAction, context) {
+	                    $log.debug("Context: " + context);
+	                    $log.debug("saving task action and parent task");
+	                    $log.debug(taskAction);
+	                    var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
+	                    savePromise.then(function () {
+	                        var taSavePromise = taskAction.$$save;
+	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+	                        if (context == 'add') {
+	                            $log.debug("Save and New");
+	                            scope.addWorkflowTaskAction(taskAction);
+	                            scope.finished = false;
+	                        }
+	                        else if (context == "finish") {
+	                            scope.finished = true;
+	                        }
+	                    });
+	                }; //<--end save
+	                /**
+	                    * Sets the editing state to show/hide the edit screen.
+	                    */
+	                scope.setHidden = function (task) {
+	                    if (!angular.isObject(task)) {
+	                        task = {};
+	                    }
+	                    if (angular.isUndefined(task.hidden)) {
+	                        task.hidden = false;
+	                    }
+	                    else {
+	                        $log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
+	                        task.hidden = !task.hidden;
+	                    }
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
+	                    * and sets the result to scope.
+	                    * @param taskAction
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.addWorkflowTaskAction = function (taskAction) {
+	                    var workflowTaskAction = scope.workflowTask.$$addWorkflowTaskAction();
+	                    scope.selectWorkflowTaskAction(workflowTaskAction);
+	                    $log.debug(scope.workflow);
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Selects a new task action and populates the task action properties.
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.selectWorkflowTaskAction = function (workflowTaskAction) {
+	                    $log.debug("Selecting new task action for editing: ");
+	                    $log.debug(workflowTaskAction);
+	                    scope.finished = false;
+	                    scope.workflowTaskActions.selectedTaskAction = undefined;
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTask.data.workflow.data.workflowObject);
+	                    filterPropertiesPromise.then(function (value) {
+	                        scope.filterPropertiesList = {
+	                            baseEntityName: scope.workflowTask.data.workflow.data.workflowObject,
+	                            baseEntityAlias: "_" + scope.workflowTask.data.workflow.data.workflowObject
+	                        };
+	                        metadataService.setPropertiesList(value, scope.workflowTask.data.workflow.data.workflowObject);
+	                        scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTask.data.workflow.data.workflowObject);
+	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject], scope.workflowTask.data.workflow.data.workflowObject);
+	                        scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
+	                    });
+	                };
+	                /**
+	                    * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
+	                    */
+	                scope.deleteEntity = function (entity) {
+	                    scope.removeWorkflowTaskAction(entity);
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Removes a workflow task action by calling the selected tasks $$delete method
+	                    * and reindexes the list.
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.removeWorkflowTaskAction = function (workflowTaskAction) {
+	                    var deletePromise = workflowTaskAction.$$delete();
+	                    deletePromise.then(function () {
+	                        if (workflowTaskAction === scope.workflowTaskActions.selectedTaskAction) {
+	                            delete scope.workflowTaskActions.selectedTaskAction;
+	                        }
+	                        $log.debug("removeWorkflowTaskAction");
+	                        $log.debug(workflowTaskAction);
+	                        scope.workflowTaskActions.splice(workflowTaskAction.$$actionIndex, 1);
+	                        for (var i in scope.workflowTaskActions) {
+	                            scope.workflowTaskActions[i].$$actionIndex = i;
+	                        }
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTaskActions.Factory = function () {
+	        var directive = function ($log, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	            return new SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath);
+	        };
+	        return directive;
+	    };
+	    return SWWorkflowTaskActions;
+	})();
+	exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
+
+
+/***/ },
+/* 69 */
+/***/ function(module, exports) {
+
+	/**
+	 * Handles adding, editing, and deleting Workflows Tasks.
+	 */
+	var SWWorkflowTasks = (function () {
+	    function SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowtasks.html",
+	            link: function (scope, element, attrs) {
+	                scope.workflowPartialsPath = workflowPartialsPath;
+	                scope.propertiesList = {};
+	                function logger(context, message) {
+	                    $log.debug("SwWorkflowTasks :" + context + " : " + message);
+	                }
+	                /**
+	                 * Sets workflowTasks on the scope by populating with $$getWorkflowTasks()
+	                 */
+	                scope.getWorkflowTasks = function () {
+	                    logger("getWorkflowTasks", "Retrieving items");
+	                    logger("getWorkflowTasks", "Workflow Tasks");
+	                    $log.debug(scope.workflowTasks);
+	                    /***
+	                       Note:
+	                       This conditional is checking whether or not we need to be retrieving to
+	                       items all over again. If we already have them, we won't make another
+	                       trip to the database.
+	                       
+	                     ***/
+	                    if (angular.isUndefined(scope.workflow.data.workflowTasks)) {
+	                        var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
+	                        workflowTasksPromise.then(function () {
+	                            scope.workflowTasks = scope.workflow.data.workflowTasks;
+	                        });
+	                    }
+	                    else {
+	                        logger("getWorkflowTasks", "Retrieving cached Items");
+	                        scope.workflowTasks = scope.workflow.data.workflowTasks;
+	                    }
+	                    if (angular.isUndefined(scope.workflow.data.workflowTasks)) {
+	                        //Reset the workflowTasks.
+	                        logger("getWorkflowTasks", "workflowTasks is undefined.");
+	                        scope.workflow.data.workflowTasks = [];
+	                        scope.workflowTasks = scope.workflow.data.workflowTasks;
+	                    }
+	                };
+	                scope.getWorkflowTasks(); //call tasks
+	                /**
+	                 * Sets the editing state to show/hide the edit screen.
+	                 */
+	                scope.setHidden = function (task) {
+	                    if (!angular.isObject(task) || angular.isUndefined(task.hidden)) {
+	                        task.hidden = false;
+	                    }
+	                    else {
+	                        logger("setHidden()", "Setting Hide Value To " + !task.hidden);
+	                        task.hidden = !task.hidden;
+	                    }
+	                };
+	                /**
+	                 * Add a workflow task and logs the result.
+	                 */
+	                scope.addWorkflowTask = function () {
+	                    var newWorkflowTask = scope.workflow.$$addWorkflowTask();
+	                    logger("var newWorkflowTask", newWorkflowTask);
+	                    scope.selectWorkflowTask(newWorkflowTask);
+	                };
+	                /**
+	                  * Watches the select for changes.
+	                  */
+	                scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject', function (newValue, oldValue) {
+	                    logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue);
+	                    if ((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask))) {
+	                        logger("scope.$watch", "Change to " + newValue);
+	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
+	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
+	                    }
+	                });
+	                /**
+	                   * --------------------------------------------------------------------------------------------------------
+	                   * Saves the workflow task by calling the objects $$save method.
+	                   * @param task
+	                   * --------------------------------------------------------------------------------------------------------
+	                   */
+	                scope.saveWorkflowTask = function (task, context) {
+	                    scope.done = true;
+	                    $log.debug("Context: " + context);
+	                    $log.debug("saving task");
+	                    $log.debug(scope.workflowTasks.selectedTask);
+	                    var savePromise = scope.workflowTasks.selectedTask.$$save();
+	                    savePromise.then(function () {
+	                        if (context === 'add') {
+	                            logger("SaveWorkflowTask", "Save and New");
+	                            scope.addWorkflowTask();
+	                            //scope.setHidden(scope.workflowTasks.selectedTask);
+	                            scope.finished = true;
+	                        }
+	                        else if (context == "finish") {
+	                            scope.finished = false;
+	                        }
+	                    });
+	                    scope.setHidden(scope.workflowTasks.selectedTask);
+	                }; //<--end save*/
+	                /**
+	                 * Select a workflow task.
+	                 */
+	                scope.selectWorkflowTask = function (workflowTask) {
+	                    scope.done = false;
+	                    logger("selectWorkflowTask", "selecting a workflow task");
+	                    $log.debug(workflowTask);
+	                    scope.finished = false;
+	                    scope.workflowTasks.selectedTask = undefined;
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+	                    filterPropertiesPromise.then(function (value) {
+	                        scope.filterPropertiesList = {
+	                            baseEntityName: scope.workflow.data.workflowObject,
+	                            baseEntityAlias: "_" + scope.workflow.data.workflowObject
+	                        };
+	                        metadataService.setPropertiesList(value, scope.workflow.data.workflowObject);
+	                        scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
+	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject], scope.workflow.data.workflowObject);
+	                        scope.workflowTasks.selectedTask = workflowTask;
+	                    });
+	                };
+	                /* Does a delete of the property using delete */
+	                scope.softRemoveTask = function (workflowTask) {
+	                    logger("SoftRemoveTask", "calling delete");
+	                    if (workflowTask === scope.workflowTasks.selectedTask) {
+	                        delete scope.workflowTasks.selectedTask;
+	                    }
+	                    scope.removeIndexFromTasks(workflowTask.$$index);
+	                    scope.reindexTaskList();
+	                };
+	                /* Does an API call delete using $$delete */
+	                scope.hardRemoveTask = function (workflowTask) {
+	                    logger("HardRemoveTask", "$$delete");
+	                    var deletePromise = workflowTask.$$delete();
+	                    deletePromise.then(function () {
+	                        if (workflowTask === scope.workflowTasks.selectedTask) {
+	                            delete scope.workflowTasks.selectedTask;
+	                        }
+	                        scope.removeIndexFromTasks(workflowTask.$$index);
+	                        scope.reindexTaskList();
+	                    });
+	                };
+	                /*Override the delete entity in the confirmation controller*/
+	                scope.deleteEntity = function (entity) {
+	                    scope.hardRemoveTask(entity);
+	                };
+	                /* Re-indexes the task list */
+	                scope.reindexTaskList = function () {
+	                    for (var i in scope.workflowTasks) {
+	                        logger("ReIndexing the list", i);
+	                        scope.workflowTasks[i].$$index = i;
+	                    }
+	                };
+	                /* Removes the tasks index from the tasks array */
+	                scope.removeIndexFromTasks = function (index) {
+	                    logger("RemoveIndexFromTasks", index);
+	                    scope.workflowTasks.splice(index, 1);
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTasks.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	            return new SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'metadataService',
+	            'collectionService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTasks;
+	})();
+	exports.SWWorkflowTasks = SWWorkflowTasks;
+
+
+/***/ },
+/* 70 */
+/***/ function(module, exports) {
+
+	var SWWorkflowTrigger = (function () {
+	    function SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath) {
+	        return {
+	            restrict: 'A',
+	            replace: true,
+	            scope: {
+	                workflowTrigger: "=",
+	                workflowTriggers: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowtrigger.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflow trigger init');
+	                /**
+	                 * Selects the current workflow trigger.
+	                 */
+	                scope.selectWorkflowTrigger = function (workflowTrigger) {
+	                    $log.debug('SelectWorkflowTriggers');
+	                    scope.done = false;
+	                    $log.debug(workflowTrigger);
+	                    scope.finished = false;
+	                    scope.workflowTriggers.selectedTrigger = undefined;
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
+	                    filterPropertiesPromise.then(function (value) {
+	                        scope.filterPropertiesList = {
+	                            baseEntityName: scope.workflowTrigger.data.workflow.data.workflowObject,
+	                            baseEntityAlias: "_" + scope.workflowTrigger.data.workflow.data.workflowObject
+	                        };
+	                        metadataService.setPropertiesList(value, scope.workflowTrigger.data.workflow.data.workflowObject);
+	                        scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTrigger.data.workflow.data.workflowObject);
+	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject], scope.workflowTrigger.data.workflow.data.workflowObject);
+	                        scope.workflowTriggers.selectedTrigger = workflowTrigger;
+	                    });
+	                };
+	                /**
+	                 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
+	                 */
+	                scope.deleteEntity = function (entity) {
+	                    $log.debug("Delete Called");
+	                    $log.debug(entity);
+	                    scope.deleteTrigger(entity);
+	                };
+	                /**
+	                 * Hard deletes a workflow trigger
+	                 */
+	                scope.deleteTrigger = function (workflowTrigger) {
+	                    var deleteTriggerPromise = $slatwall.saveEntity('WorkflowTrigger', workflowTrigger.data.workflowTriggerID, {}, 'Delete');
+	                    deleteTriggerPromise.then(function (value) {
+	                        $log.debug('deleteTrigger');
+	                        scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
+	                    });
+	                };
+	                /**
+	                 * Sets the editing state to show/hide the edit screen.
+	                 */
+	                scope.setHidden = function (trigger) {
+	                    if (!angular.isObject(trigger) || angular.isUndefined(trigger.hidden)) {
+	                        trigger.hidden = false;
+	                    }
+	                    else {
+	                        $log.debug("setHidden()", "Setting Hide Value To " + !trigger.hidden);
+	                        trigger.hidden = !trigger.hidden;
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTrigger.Factory = function () {
+	        var directive = function ($log, $slatwall, metadataService, workflowPartialsPath) {
+	            return new SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'metadataService',
+	            'workflowPartialsPath',
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTrigger;
+	})();
+	exports.SWWorkflowTrigger = SWWorkflowTrigger;
+
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+	var SWWorkflowTriggers = (function () {
+	    function SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowtriggers.html",
+	            link: function (scope, element, attrs, formController) {
+	                $log.debug('Workflow triggers init');
+	                scope.$id = 'swWorkflowTriggers';
+	                /**
+	                 * Retrieves the workflow triggers.
+	                 */
+	                scope.getWorkflowTriggers = function () {
+	                    /***
+	                       Note:
+	                       This conditional is checking whether or not we need to be retrieving to
+	                       items all over again. If we already have them, we won't make another
+	                       trip to the database.
+	                       
+	                    ***/
+	                    if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
+	                        var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
+	                        workflowTriggersPromise.then(function () {
+	                            scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+	                            $log.debug('workflowtriggers');
+	                            $log.debug(scope.workflowTriggers);
+	                            /* resets the workflow trigger */
+	                            if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
+	                                scope.workflow.data.workflowTriggers = [];
+	                                scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+	                            }
+	                            angular.forEach(scope.workflowTriggers, function (workflowTrigger, key) {
+	                                $log.debug('trigger');
+	                                $log.debug(workflowTrigger);
+	                                if (workflowTrigger.data.triggerType === 'Schedule') {
+	                                    workflowTrigger.$$getSchedule();
+	                                    workflowTrigger.$$getScheduleCollection();
+	                                } //<---end if
+	                            }); //<---end forEach
+	                        }); //<---end workflow triggers promise
+	                    }
+	                    else {
+	                        //Use the cached versions.
+	                        scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+	                    } //<---end else
+	                };
+	                scope.getWorkflowTriggers(); //call triggers
+	                scope.showCollections = false;
+	                scope.collections = [];
+	                scope.getCollectionByWorkflowObject = function () {
+	                    var filterGroupsConfig = '[' +
+	                        '{' +
+	                        '"filterGroup":[' +
+	                        '{' +
+	                        '"propertyIdentifier":"_collection.collectionObject",' +
+	                        '"comparisonOperator":"=",' +
+	                        '"value":"' + scope.workflow.data.workflowObject + '"' +
+	                        '}' +
+	                        ']' +
+	                        '}' +
+	                        ']';
+	                    var collectionsPromise = $slatwall.getEntity('Collection', { filterGroupsConfig: filterGroupsConfig });
+	                    collectionsPromise.then(function (value) {
+	                        $log.debug('getcollections');
+	                        scope.collections = value.pageRecords;
+	                        $log.debug(scope.collections);
+	                    });
+	                };
+	                scope.searchEvent = {
+	                    name: ''
+	                };
+	                /**
+	                 * Watches for changes in the event
+	                 */
+	                scope.showEventOptions = false;
+	                scope.eventOptions = [];
+	                scope.$watch('searchEvent.name', function (newValue, oldValue) {
+	                    if (newValue !== oldValue) {
+	                        scope.getEventOptions(scope.workflow.data.workflowObject);
+	                    }
+	                });
+	                /**
+	                 * Retrieves the event options for a workflow trigger item.
+	                 */
+	                scope.getEventOptions = function (objectName) {
+	                    if (!scope.eventOptions.length) {
+	                        var eventOptionsPromise = $slatwall.getEventOptions(objectName);
+	                        eventOptionsPromise.then(function (value) {
+	                            $log.debug('getEventOptions');
+	                            scope.eventOptions = value.data;
+	                            $log.debug(scope.eventOptions.name);
+	                        });
+	                    }
+	                    scope.showEventOptions = !scope.showEventOptions;
+	                };
+	                /**
+	                 * Saves the workflow triggers.
+	                 */
+	                scope.saveWorkflowTrigger = function (context) {
+	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
+	                    saveWorkflowTriggerPromise.then(function () {
+	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+	                        if (context == 'add') {
+	                            $log.debug("Save and New");
+	                            scope.addWorkflowTrigger();
+	                            scope.finished = false;
+	                        }
+	                        else if (context == "finish") {
+	                            scope.finished = true;
+	                        }
+	                    });
+	                };
+	                /**
+	                 * Changes the selected trigger value.
+	                 */
+	                scope.selectEvent = function (eventOption) {
+	                    $log.debug("SelectEvent");
+	                    $log.debug(eventOption);
+	                    //Needs to clear old and set new.
+	                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
+	                    if (eventOption.entityName == scope.workflow.data.workflowObject) {
+	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
+	                    }
+	                    else {
+	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+	                    }
+	                    scope.searchEvent.name = eventOption.name;
+	                    $log.debug(eventOption);
+	                    $log.debug(scope.workflowTriggers);
+	                };
+	                /**
+	                 * Selects a new collection.
+	                 */
+	                scope.selectCollection = function (collection) {
+	                    $log.debug('selectCollection');
+	                    scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
+	                    scope.showCollections = false;
+	                };
+	                /**
+	                 * Removes a workflow trigger
+	                 */
+	                scope.removeWorkflowTrigger = function (workflowTrigger) {
+	                    if (workflowTrigger === scope.workflowTriggers.selectedTrigger) {
+	                        delete scope.workflowTriggers.selectedTrigger;
+	                    }
+	                    scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
+	                };
+	                scope.setAsEvent = function (workflowTrigger) {
+	                    //add event,  clear schedule
+	                };
+	                scope.setAsSchedule = function (workflowTrigger) {
+	                };
+	                /**
+	                 * Adds a workflow trigger.
+	                 */
+	                scope.addWorkflowTrigger = function () {
+	                    $log.debug('addWorkflowTrigger');
+	                    var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
+	                    scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
+	                    $log.debug(scope.workflowTriggers);
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTriggers.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, workflowPartialsPath, formService) {
+	            return new SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'workflowPartialsPath',
+	            'formService',
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTriggers;
+	})();
+	exports.SWWorkflowTriggers = SWWorkflowTriggers;
+
+
+/***/ },
+/* 72 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8200,20 +8937,20 @@
 
 
 /***/ },
-/* 67 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(68);
+	var slatwallservice_1 = __webpack_require__(74);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 68 */
+/* 74 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8795,138 +9532,12 @@
 
 
 /***/ },
-/* 69 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	var EntityRBKey = (function () {
-	    function EntityRBKey() {
-	    }
-	    //@ngInject
-	    EntityRBKey.Factory = function ($slatwall) {
-	        return function (text) {
-	            if (angular.isDefined(text) && angular.isString(text)) {
-	                text = text.replace('_', '').toLowerCase();
-	                text = $slatwall.getRBKey('entity.' + text);
-	            }
-	            return text;
-	        };
-	    };
-	    EntityRBKey.Factory.$inject = ["$slatwall"];
-	    return EntityRBKey;
-	})();
-	exports.EntityRBKey = EntityRBKey;
-
-
-/***/ },
-/* 70 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWCurrency = (function () {
-	    function SWCurrency() {
-	    }
-	    // public $slatwall;
-	    // public realFilter = (value,decimalPlace):string=> {
-	    //     // REAL FILTER LOGIC, DISREGARDING PROMISES
-	    //     if(!angular.isDefined(data)){
-	    //         $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-	    //         data="$";
-	    //     }
-	    //     if(angular.isDefined(value)){
-	    //         if(angular.isDefined(decimalPlace)){
-	    //             value = parseFloat(value.toString()).toFixed(decimalPlace) 
-	    //         } else { 
-	    //             value = parseFloat(value.toString()).toFixed(2)
-	    //         }
-	    //     }
-	    //     return data + value;
-	    // }
-	    // public filterStub = (value:string, currencyCode:string, decimalPlace:number)=> {
-	    //     if( data === null ) {
-	    //         if( !serviceInvoked ) {
-	    //             serviceInvoked = true;
-	    //                 $slatwall.getCurrencies().then((currencies)=>{
-	    //                 var result = currencies.data;
-	    //                 data = result[currencyCode];
-	    //             });
-	    //         }
-	    //         return "-";
-	    //     }
-	    //     else 
-	    //     return realFilter(value,decimalPlace);
-	    // }
-	    //@ngInject
-	    SWCurrency.Factory = function ($sce, $log, $slatwall) {
-	        // var data = null, serviceInvoked = false;
-	        // var filterStub = this.filterStub;
-	        // filterStub.$stateful = true;
-	        // return filterStub;  
-	        return function (value, currencyCode, decimalPlace) {
-	            var data = null, serviceInvoked = false;
-	            function realFilter(value, decimalPlace) {
-	                // REAL FILTER LOGIC, DISREGARDING PROMISES
-	                if (!angular.isDefined(data)) {
-	                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-	                    data = "$";
-	                }
-	                if (angular.isDefined(value)) {
-	                    if (angular.isDefined(decimalPlace)) {
-	                        value = parseFloat(value.toString()).toFixed(decimalPlace);
-	                    }
-	                    else {
-	                        value = parseFloat(value.toString()).toFixed(2);
-	                    }
-	                }
-	                return data + value;
-	            }
-	            function filterStub(value, currencyCode, decimalPlace) {
-	                this.$stateful = true;
-	                if (data === null) {
-	                    if (!serviceInvoked) {
-	                        serviceInvoked = true;
-	                        $slatwall.getCurrencies().then(function (currencies) {
-	                            var result = currencies.data;
-	                            data = result[currencyCode];
-	                        });
-	                    }
-	                    return "-";
-	                }
-	                else
-	                    return realFilter(value, decimalPlace);
-	            }
-	            return filterStub;
-	        };
-	    };
-	    SWCurrency.Factory.$inject = ["$sce", "$log", "$slatwall"];
-	    return SWCurrency;
-	})();
-	exports.SWCurrency = SWCurrency;
-
-
-/***/ },
-/* 71 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path="../../../typings/tsd.d.ts" />
-	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
-	var alert_module_1 = __webpack_require__(11);
-	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
-	    .run([function () {
-	    }]);
-	exports.loggermodule = loggermodule;
-	//.factory('$exceptionHandler', ['$injector', ($injector) => new ExceptionHandler($injector)]);;
-
-
-/***/ },
-/* 72 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var ngslatwall_module_1 = __webpack_require__(67);
+	var ngslatwall_module_1 = __webpack_require__(73);
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngslatwallmodelmodule = angular.module('ngSlatwallModel', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name]).config(['$provide', function ($provide) {
 	        $provide.decorator('$slatwall', [
@@ -12848,6 +13459,367 @@
 	            }]);
 	    }]);
 	exports.ngslatwallmodelmodule = ngslatwallmodelmodule;
+
+
+/***/ },
+/* 76 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var EntityRBKey = (function () {
+	    function EntityRBKey() {
+	    }
+	    //@ngInject
+	    EntityRBKey.Factory = function ($slatwall) {
+	        return function (text) {
+	            if (angular.isDefined(text) && angular.isString(text)) {
+	                text = text.replace('_', '').toLowerCase();
+	                text = $slatwall.getRBKey('entity.' + text);
+	            }
+	            return text;
+	        };
+	    };
+	    EntityRBKey.Factory.$inject = ["$slatwall"];
+	    return EntityRBKey;
+	})();
+	exports.EntityRBKey = EntityRBKey;
+
+
+/***/ },
+/* 77 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCurrency = (function () {
+	    function SWCurrency() {
+	    }
+	    // public $slatwall;
+	    // public realFilter = (value,decimalPlace):string=> {
+	    //     // REAL FILTER LOGIC, DISREGARDING PROMISES
+	    //     if(!angular.isDefined(data)){
+	    //         $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+	    //         data="$";
+	    //     }
+	    //     if(angular.isDefined(value)){
+	    //         if(angular.isDefined(decimalPlace)){
+	    //             value = parseFloat(value.toString()).toFixed(decimalPlace) 
+	    //         } else { 
+	    //             value = parseFloat(value.toString()).toFixed(2)
+	    //         }
+	    //     }
+	    //     return data + value;
+	    // }
+	    // public filterStub = (value:string, currencyCode:string, decimalPlace:number)=> {
+	    //     if( data === null ) {
+	    //         if( !serviceInvoked ) {
+	    //             serviceInvoked = true;
+	    //                 $slatwall.getCurrencies().then((currencies)=>{
+	    //                 var result = currencies.data;
+	    //                 data = result[currencyCode];
+	    //             });
+	    //         }
+	    //         return "-";
+	    //     }
+	    //     else 
+	    //     return realFilter(value,decimalPlace);
+	    // }
+	    //@ngInject
+	    SWCurrency.Factory = function ($sce, $log, $slatwall) {
+	        // var data = null, serviceInvoked = false;
+	        // var filterStub = this.filterStub;
+	        // filterStub.$stateful = true;
+	        // return filterStub;  
+	        return function (value, currencyCode, decimalPlace) {
+	            var data = null, serviceInvoked = false;
+	            function realFilter(value, decimalPlace) {
+	                // REAL FILTER LOGIC, DISREGARDING PROMISES
+	                if (!angular.isDefined(data)) {
+	                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+	                    data = "$";
+	                }
+	                if (angular.isDefined(value)) {
+	                    if (angular.isDefined(decimalPlace)) {
+	                        value = parseFloat(value.toString()).toFixed(decimalPlace);
+	                    }
+	                    else {
+	                        value = parseFloat(value.toString()).toFixed(2);
+	                    }
+	                }
+	                return data + value;
+	            }
+	            function filterStub(value, currencyCode, decimalPlace) {
+	                this.$stateful = true;
+	                if (data === null) {
+	                    if (!serviceInvoked) {
+	                        serviceInvoked = true;
+	                        $slatwall.getCurrencies().then(function (currencies) {
+	                            var result = currencies.data;
+	                            data = result[currencyCode];
+	                        });
+	                    }
+	                    return "-";
+	                }
+	                else
+	                    return realFilter(value, decimalPlace);
+	            }
+	            return filterStub;
+	        };
+	    };
+	    SWCurrency.Factory.$inject = ["$sce", "$log", "$slatwall"];
+	    return SWCurrency;
+	})();
+	exports.SWCurrency = SWCurrency;
+
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../../typings/tsd.d.ts" />
+	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
+	var alert_module_1 = __webpack_require__(11);
+	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
+	    .run([function () {
+	    }]);
+	exports.loggermodule = loggermodule;
+	//.factory('$exceptionHandler', ['$injector', ($injector) => new ExceptionHandler($injector)]);;
+
+
+/***/ },
+/* 79 */
+/***/ function(module, exports) {
+
+	var SWWorkflowCondition = (function () {
+	    function SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowCondition: "=",
+	                workflowConditionIndex: "=",
+	                workflow: "=",
+	                filterPropertiesList: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowcondition.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflowCondition init');
+	                $log.debug(scope);
+	                scope.selectBreadCrumb = function (breadCrumbIndex) {
+	                    //splice out array items above index
+	                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+	                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
+	                    scope.selectedFilterPropertyChanged(null);
+	                };
+	                scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
+	                    $log.debug('selectedFilterProperty');
+	                    $log.debug(selectedFilterProperty);
+	                    scope.selectedFilterProperty = selectedFilterProperty;
+	                };
+	                if (angular.isUndefined(scope.workflowCondition.breadCrumbs)) {
+	                    scope.workflowCondition.breadCrumbs = [];
+	                    if (scope.workflowCondition.propertyIdentifier === "") {
+	                        scope.workflowCondition.breadCrumbs = [
+	                            {
+	                                entityAlias: scope.workflow.data.workflowObject,
+	                                cfc: scope.workflow.data.workflowObject,
+	                                propertyIdentifier: scope.workflow.data.workflowObject
+	                            }
+	                        ];
+	                    }
+	                    else {
+	                        var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                        entityAliasArrayFromString.pop();
+	                        for (var i in entityAliasArrayFromString) {
+	                            var breadCrumb = {
+	                                entityAlias: entityAliasArrayFromString[i],
+	                                cfc: entityAliasArrayFromString[i],
+	                                propertyIdentifier: entityAliasArrayFromString[i]
+	                            };
+	                            scope.workflowCondition.breadCrumbs.push(breadCrumb);
+	                        }
+	                    }
+	                }
+	                else {
+	                    angular.forEach(scope.workflowCondition.breadCrumbs, function (breadCrumb, key) {
+	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
+	                            var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+	                            filterPropertiesPromise.then(function (value) {
+	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
+	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+	                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier], breadCrumb.propertyIdentifier);
+	                                var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                                entityAliasArrayFromString.pop();
+	                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                                if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                    for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                        if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
+	                                            //selectItem from drop down
+	                                            scope.selectedFilterProperty = filterProperty;
+	                                            //decorate with value and comparison Operator so we can use it in the Condition section
+	                                            scope.selectedFilterProperty.value = scope.workflowCondition.value;
+	                                            scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
+	                                        }
+	                                    }
+	                                }
+	                            });
+	                        }
+	                        else {
+	                            var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                            entityAliasArrayFromString.pop();
+	                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                            if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                    if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
+	                                        //selectItem from drop down
+	                                        scope.selectedFilterProperty = filterProperty;
+	                                        //decorate with value and comparison Operator so we can use it in the Condition section
+	                                        scope.selectedFilterProperty.value = scope.workflowCondition.value;
+	                                        scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    });
+	                }
+	            }
+	        };
+	    }
+	    SWWorkflowCondition.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
+	            return new SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'metadataService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowCondition;
+	})();
+	exports.SWWorkflowCondition = SWWorkflowCondition;
+
+
+/***/ },
+/* 80 */
+/***/ function(module, exports) {
+
+	var SWWorkflowConditionGroupItem = (function () {
+	    function SWWorkflowConditionGroupItem($log, $location, $slatwall, formService, workflowPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: workflowPartialsPath + "workflowconditiongroupitem.html",
+	            link: function (scope, element, attrs) {
+	            }
+	        };
+	    }
+	    SWWorkflowConditionGroupItem.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
+	            return new ($log,
+	                $location,
+	                $slatwall,
+	                formService,
+	                workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowConditionGroupItem;
+	})();
+	exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
+
+
+/***/ },
+/* 81 */
+/***/ function(module, exports) {
+
+	var SWWorkflowConditionGroups = (function () {
+	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowConditionGroupItem: "=",
+	                workflowConditionGroup: "=",
+	                workflow: "=",
+	                filterPropertiesList: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowconditiongroups.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflowconditiongroups init');
+	                scope.addWorkflowCondition = function () {
+	                    $log.debug('addWorkflowCondition');
+	                    var workflowCondition = workflowConditionService.newWorkflowCondition();
+	                    workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem, workflowCondition);
+	                };
+	                scope.addWorkflowGroupItem = function () {
+	                    $log.debug('addWorkflowGrouptItem');
+	                    var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
+	                    workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem, workflowConditionGroupItem);
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowConditionGroups.Factory = function () {
+	        var directive = function ($log, workflowConditionService, workflowPartialsPath) {
+	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'workflowConditionService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowConditionGroups;
+	})();
+	exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
+
+
+/***/ },
+/* 82 */
+/***/ function(module, exports) {
+
+	var SWWorkflowBasic = (function () {
+	    function SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: workflowPartialsPath
+	                + "workflowbasic.html",
+	            link: function (scope, element, attrs) {
+	            }
+	        };
+	    }
+	    SWWorkflowBasic.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
+	            return new SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'workflowPartialsPath',
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowBasic;
+	})();
+	exports.SWWorkflowBasic = SWWorkflowBasic;
 
 
 /***/ }

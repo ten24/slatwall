@@ -1,20 +1,41 @@
-angular.module('slatwalladmin')
-.directive('swWorkflowTask', [
-'$log',
-'$location',
-'$timeout',
-'$slatwall',
-'metadataService',
-'collectionService',
-'workflowPartialsPath',
-	function(
-	$log,
-	$location,
-	$timeout,
-	$slatwall,
-	metadataService,
-	collectionService,
-	workflowPartialsPath
+class SWWorkflowTask{
+	public static Factory(){
+		var directive = (
+			$log,
+			$location,
+			$timeout,
+			$slatwall,
+			metadataService,
+			collectionService,
+			workflowPartialsPath
+		)=> new SWWorkflowTask(
+			$log,
+			$location,
+			$timeout,
+			$slatwall,
+			metadataService,
+			collectionService,
+			workflowPartialsPath
+		);
+		directive.$inject = [
+			'$log',
+			'$location',
+			'$timeout',
+			'$slatwall',
+			'metadataService',
+			'collectionService',
+			'workflowPartialsPath'
+		];
+		return directive;
+	}
+	constructor(
+		$log,
+		$location,
+		$timeout,
+		$slatwall,
+		metadataService,
+		collectionService,
+		workflowPartialsPath
 	){
 		return {
 			restrict: 'E',
@@ -41,5 +62,7 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWWorkflowTask
+}

@@ -1,21 +1,41 @@
 /**
  * Handles adding, editing, and deleting Workflows Tasks.
  */
-angular.module('slatwalladmin')
-.directive('swWorkflowTasks', [
-'$log',
-'$location',
-'$slatwall',
-'metadataService',
-'collectionService',
-'workflowPartialsPath',
-	function(
-	$log,
-	$location,
-	$slatwall,
-	metadataService,
-	collectionService,
-	workflowPartialsPath){
+class SWWorkflowTasks{
+	public static Factory(){
+		var directive = (
+			$log,
+			$location,
+			$slatwall,
+			metadataService,
+			collectionService,
+			workflowPartialsPath
+		)=>new SWWorkflowTasks(
+			$log,
+			$location,
+			$slatwall,
+			metadataService,
+			collectionService,
+			workflowPartialsPath
+		);
+		directive.$inject = [
+			'$log',
+			'$location',
+			'$slatwall',
+			'metadataService',
+			'collectionService',
+			'workflowPartialsPath'
+		];
+		return directive;
+	}
+	constructor(
+		$log,
+		$location,
+		$slatwall,
+		metadataService,
+		collectionService,
+		workflowPartialsPath
+	){
 		return {
 			restrict: 'A',
 			scope:{
@@ -190,5 +210,9 @@ angular.module('slatwalladmin')
 			}
 		}; 
 	}
-]);
+}
+export{
+	SWWorkflowTasks
+}
+
 	

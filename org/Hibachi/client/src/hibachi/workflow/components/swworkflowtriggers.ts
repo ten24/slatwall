@@ -1,16 +1,33 @@
-angular.module('slatwalladmin')
-.directive('swWorkflowTriggers', [
-'$log',
-'$location',
-'$slatwall',
-'workflowPartialsPath',
-'formService',
-	function(
-	$log,
-	$location,
-	$slatwall,
-	workflowPartialsPath,
-	formService
+class SWWorkflowTriggers{
+	public static Factory(){
+		var directive = (
+			$log,
+			$location,
+			$slatwall,
+			workflowPartialsPath,
+			formService
+		)=> new SWWorkflowTriggers(
+			$log,
+			$location,
+			$slatwall,
+			workflowPartialsPath,
+			formService
+		);
+		directive.$inject = [
+			'$log',
+			'$location',
+			'$slatwall',
+			'workflowPartialsPath',
+			'formService',
+		];
+		return directive;
+	}
+	constructor(
+		$log,
+		$location,
+		$slatwall,
+		workflowPartialsPath,
+		formService
 	){
 		return {
 			restrict: 'E',
@@ -190,5 +207,7 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWWorkflowTriggers
+}
