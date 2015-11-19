@@ -121,6 +121,30 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      });  
 
  }])
+ .run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService) => {
+        $anchorScroll.yOffset = 100;
+    
+        $rootScope.openPageDialog = function( partial ) {
+            dialogService.addPageDialog( partial );
+        };
+        
+        $rootScope.closePageDialog = function( index ) {
+            dialogService.removePageDialog( index );
+        };
+        
+        $rootScope.loadedResourceBundle = false;
+        $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
+        $rootScope.buildUrl = $slatwall.buildUrl;
+        $rootScope.createID = utilityService.createID;
+        
+        var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
+            if(newValue !== oldValue){
+                $rootScope.$broadcast('hasResourceBundle');
+                rbListener();
+            }
+        });
+    
+    }])
  //services
 .service('slatwallInterceptor', SlatwallInterceptor)
 //filters

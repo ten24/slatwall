@@ -1,0 +1,82 @@
+
+
+<div class="col-md-6 s-header-left" >
+	<div class="s-header-detail">
+		<dl class="dl-horizontal" ng-if="content">
+			<span  	sw-property-display
+					data-object="content"
+					data-property="title"
+					data-editing="true"
+					data-editable="true"
+			> 
+			</span>
+			
+			<span  	sw-property-display
+					data-object="content"
+					data-property="urlTitle"
+					data-editing="true"
+					data-editable="true"
+			>
+			</span>
+			<div class="form-group">
+				<label class="control-label col-md-3" ng-if="propertyDisplay.fieldType !== 'hidden'">
+    				<span>Full URL Path:</span>
+			    </label>
+			    <div class="col-md-9 s-form-input">
+					<p  class="form-control-static"
+			            ng-bind="content.data.urlTitlePath"
+			        </p>
+				</div>
+			</div>
+			
+			<span  	sw-property-display
+					data-object="content"
+					data-property="activeFlag"
+					data-editing="true"
+					data-editable="true"
+			>
+			</span>
+			<span  	sw-property-display
+					data-object="content"
+					data-property="productListingPageFlag"
+					data-editing="true"
+					data-editable="true"
+			>
+			</span>
+			<span  	sw-property-display
+					data-object="content"
+					data-property="allowPurchaseFlag"
+					data-editing="true"
+					data-editable="true"
+			>
+			</span>
+			<span  	sw-property-display
+					data-object="content"
+					data-options-arguments="{property:'contentTemplateType'}"
+					data-eager-load-options="true"
+					data-property="contentTemplateType"
+					data-editing="true"
+			></span>
+			
+			<span  	sw-property-display
+					ng-if="content.data.site"
+					data-object="content"
+					data-options-arguments="{property:'site'}"
+					data-eager-load-options="true"
+					data-property="site"
+					data-editing="true"
+					data-editable="false"
+			></span>
+			<span  	sw-property-display
+			
+					ng-if="content.data.parentContent.data.contentID && content.data.site.data.siteID"
+					data-object="content"
+					data-options-arguments="{property:'parentContent',argument1:content.data.site.data.siteID}"
+					data-eager-load-options="true"
+					data-property="parentContent"
+					data-editing="true"
+					data-editable="true"
+			></span>
+		</dl>
+	</div>
+</div>

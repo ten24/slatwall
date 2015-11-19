@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(78);
+	var logger_module_1 = __webpack_require__(85);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -648,12 +648,12 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(72);
-	var ngslatwall_module_1 = __webpack_require__(73);
-	var ngslatwallmodel_module_1 = __webpack_require__(75);
+	var slatwallinterceptor_1 = __webpack_require__(79);
+	var ngslatwall_module_1 = __webpack_require__(80);
+	var ngslatwallmodel_module_1 = __webpack_require__(82);
 	//filters
-	var entityrbkey_1 = __webpack_require__(76);
-	var swcurrency_1 = __webpack_require__(77);
+	var entityrbkey_1 = __webpack_require__(83);
+	var swcurrency_1 = __webpack_require__(84);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -748,6 +748,25 @@
 	        }).otherwise({
 	            //controller:'otherwiseController'        
 	            templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html'
+	        });
+	    }])
+	    .run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', 'observerService', 'utilityService', function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService, observerService, utilityService) {
+	        $anchorScroll.yOffset = 100;
+	        $rootScope.openPageDialog = function (partial) {
+	            dialogService.addPageDialog(partial);
+	        };
+	        $rootScope.closePageDialog = function (index) {
+	            dialogService.removePageDialog(index);
+	        };
+	        $rootScope.loadedResourceBundle = false;
+	        $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
+	        $rootScope.buildUrl = $slatwall.buildUrl;
+	        $rootScope.createID = utilityService.createID;
+	        var rbListener = $rootScope.$watch('loadedResourceBundle', function (newValue, oldValue) {
+	            if (newValue !== oldValue) {
+	                $rootScope.$broadcast('hasResourceBundle');
+	                rbListener();
+	            }
 	        });
 	    }])
 	    .service('slatwallInterceptor', slatwallinterceptor_1.SlatwallInterceptor)
@@ -863,10 +882,10 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var core_module_1 = __webpack_require__(14);
-	var pagination_module_1 = __webpack_require__(38);
-	var dialog_module_1 = __webpack_require__(41);
-	var collection_module_1 = __webpack_require__(43);
-	var workflow_module_1 = __webpack_require__(64);
+	var pagination_module_1 = __webpack_require__(40);
+	var dialog_module_1 = __webpack_require__(43);
+	var collection_module_1 = __webpack_require__(45);
+	var workflow_module_1 = __webpack_require__(67);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -885,8 +904,12 @@
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+	//controllers
+	var alertcontroller_1 = __webpack_require__(86);
+	//services
 	var alertService_1 = __webpack_require__(12);
 	var alertmodule = angular.module('hibachi.alert', [])
+	    .controller('alertController', alertcontroller_1.AlertController)
 	    .service('alertService', alertService_1.AlertService);
 	exports.alertmodule = alertmodule;
 
@@ -1013,6 +1036,8 @@
 	var swvalidationminlength_1 = __webpack_require__(35);
 	var swloading_1 = __webpack_require__(36);
 	var swscrolltrigger_1 = __webpack_require__(37);
+	var swrbkey_1 = __webpack_require__(38);
+	var swoptions_1 = __webpack_require__(39);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1057,7 +1082,9 @@
 	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
 	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory())
 	    .directive('swLoading', swloading_1.SWLoading.Factory())
-	    .directive('swScrollTrigger', swscrolltrigger_1.SWScrollTrigger.Factory());
+	    .directive('swScrollTrigger', swscrolltrigger_1.SWScrollTrigger.Factory())
+	    .directive('swRbkey', swrbkey_1.SWRbKey.Factory())
+	    .directive('swOptions', swoptions_1.SWOptions.Factory());
 	exports.coremodule = coremodule;
 
 
@@ -3251,6 +3278,8 @@
 /* 33 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWNumbersOnly = (function () {
 	    function SWNumbersOnly() {
 	        this.restrict = "A";
@@ -3833,13 +3862,124 @@
 
 /***/ },
 /* 38 */
+/***/ function(module, exports) {
+
+	var SWRbKey = (function () {
+	    function SWRbKey($slatwall, observerService, utilityService, $rootScope, $log) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                swRbkey: "="
+	            },
+	            link: function (scope, element, attrs) {
+	                var rbKeyValue = scope.swRbkey;
+	                var bindRBKey = function () {
+	                    if (angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)) {
+	                        element.text($slatwall.getRBKey(rbKeyValue));
+	                    }
+	                };
+	                if (!$slatwall.getRBLoaded()) {
+	                    observerService.attach(bindRBKey, 'hasResourceBundle');
+	                }
+	                else {
+	                    bindRBKey();
+	                }
+	            }
+	        };
+	    }
+	    SWRbKey.Factory = function () {
+	        var directive = function ($slatwall, observerService, utilityService, $rootScope, $log) {
+	            return new SWRbKey($slatwall, observerService, utilityService, $rootScope, $log);
+	        };
+	        directive.$inject = [
+	            '$slatwall',
+	            'observerService',
+	            'utilityService',
+	            '$rootScope',
+	            '$log',
+	        ];
+	        return directive;
+	    };
+	    return SWRbKey;
+	})();
+	exports.SWRbKey = SWRbKey;
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWOptions = (function () {
+	    function SWOptions($log, $slatwall, observerService, corePartialsPath, pathBuiderConfig) {
+	        return {
+	            restrict: 'AE',
+	            scope: {
+	                objectName: '@'
+	            },
+	            templateUrl: pathBuiderConfig.buildPartialsPath(corePartialsPath) + "options.html",
+	            link: function (scope, element, attrs) {
+	                scope.swOptions = {};
+	                scope.swOptions.objectName = scope.objectName;
+	                //sets up drop down options via collections
+	                scope.getOptions = function () {
+	                    scope.swOptions.object = $slatwall['new' + scope.swOptions.objectName]();
+	                    var columnsConfig = [
+	                        {
+	                            "propertyIdentifier": scope.swOptions.objectName.charAt(0).toLowerCase() + scope.swOptions.objectName.slice(1) + 'Name'
+	                        },
+	                        {
+	                            "propertyIdentifier": scope.swOptions.object.$$getIDName()
+	                        }
+	                    ];
+	                    $slatwall.getEntity(scope.swOptions.objectName, { allRecords: true, columnsConfig: angular.toJson(columnsConfig) })
+	                        .then(function (value) {
+	                        scope.swOptions.options = value.records;
+	                        observerService.notify('optionsLoaded');
+	                    });
+	                };
+	                scope.getOptions();
+	                var selectFirstOption = function () {
+	                    scope.swOptions.selectOption(scope.swOptions.options[0]);
+	                };
+	                observerService.attach(selectFirstOption, 'selectFirstOption', 'selectFirstOption');
+	                //use by ng-change to record changes
+	                scope.swOptions.selectOption = function (selectedOption) {
+	                    scope.swOptions.selectedOption = selectedOption;
+	                    observerService.notify('optionsChanged', selectedOption);
+	                };
+	            }
+	        };
+	    }
+	    SWOptions.Factory = function () {
+	        var directive = function ($log, $slatwall, observerService, corePartialsPath, pathBuiderConfig) {
+	            return new SWOptions($log, $slatwall, observerService, corePartialsPath, pathBuiderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'observerService',
+	            'partialsPath',
+	            'corePartialsPath',
+	            'pathBuiderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOptions;
+	})();
+	exports.SWOptions = SWOptions;
+
+
+/***/ },
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(39);
-	var swpaginationbar_1 = __webpack_require__(40);
+	var paginationservice_1 = __webpack_require__(41);
+	var swpaginationbar_1 = __webpack_require__(42);
 	var core_module_1 = __webpack_require__(14);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -3851,7 +3991,7 @@
 
 
 /***/ },
-/* 39 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -4030,7 +4170,7 @@
 
 
 /***/ },
-/* 40 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4091,22 +4231,25 @@
 
 
 /***/ },
-/* 41 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(42);
+	var dialogservice_1 = __webpack_require__(44);
+	//controllers
+	var pagedialog_1 = __webpack_require__(88);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
+	    .controller('pageDialog', pagedialog_1.PageDialogController)
 	    .constant('dialogPartials', 'dialog/components/');
 	exports.dialogmodule = dialogmodule;
 
 
 /***/ },
-/* 42 */
+/* 44 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -4146,7 +4289,7 @@
 
 
 /***/ },
-/* 43 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4154,33 +4297,38 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(44);
-	var collectionservice_1 = __webpack_require__(45);
-	var collections_1 = __webpack_require__(46);
+	var collectionconfigservice_1 = __webpack_require__(46);
+	var collectionservice_1 = __webpack_require__(47);
+	//controllers
+	var collections_1 = __webpack_require__(48);
+	var createcollection_1 = __webpack_require__(87);
+	var confirmationcontroller_1 = __webpack_require__(49);
 	//directives
-	var swcollection_1 = __webpack_require__(47);
-	var swaddfilterbuttons_1 = __webpack_require__(48);
-	var swdisplayoptions_1 = __webpack_require__(49);
-	var swdisplayitem_1 = __webpack_require__(50);
-	var swcollectiontable_1 = __webpack_require__(51);
-	var swcolumnitem_1 = __webpack_require__(52);
-	var swconditioncriteria_1 = __webpack_require__(53);
-	var swcriteria_1 = __webpack_require__(54);
-	var swcriteriaboolean_1 = __webpack_require__(55);
-	var swcriteriamanytomany_1 = __webpack_require__(56);
-	var swcriteriamanytoone_1 = __webpack_require__(57);
-	var swcriterianumber_1 = __webpack_require__(58);
-	var swcriteriaonetomany_1 = __webpack_require__(59);
-	var swcriteriastring_1 = __webpack_require__(60);
-	var sweditfilteritem_1 = __webpack_require__(61);
-	var swfiltergroups_1 = __webpack_require__(62);
-	var swfilteritem_1 = __webpack_require__(63);
+	var swcollection_1 = __webpack_require__(50);
+	var swaddfilterbuttons_1 = __webpack_require__(51);
+	var swdisplayoptions_1 = __webpack_require__(52);
+	var swdisplayitem_1 = __webpack_require__(53);
+	var swcollectiontable_1 = __webpack_require__(54);
+	var swcolumnitem_1 = __webpack_require__(55);
+	var swconditioncriteria_1 = __webpack_require__(56);
+	var swcriteria_1 = __webpack_require__(57);
+	var swcriteriaboolean_1 = __webpack_require__(58);
+	var swcriteriamanytomany_1 = __webpack_require__(59);
+	var swcriteriamanytoone_1 = __webpack_require__(60);
+	var swcriterianumber_1 = __webpack_require__(61);
+	var swcriteriaonetomany_1 = __webpack_require__(62);
+	var swcriteriastring_1 = __webpack_require__(63);
+	var sweditfilteritem_1 = __webpack_require__(64);
+	var swfiltergroups_1 = __webpack_require__(65);
+	var swfilteritem_1 = __webpack_require__(66);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
 	    }])
 	    .constant('collectionPartialsPath', 'collection/components/')
 	    .controller('collections', collections_1.CollectionController)
+	    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
+	    .controller('createCollection', createcollection_1.CreateCollection)
 	    .factory('collectionConfigService', ['$slatwall', 'utilityService', function ($slatwall, utilityService) { return new collectionconfigservice_1.CollectionConfig($slatwall, utilityService); }])
 	    .service('collectionService', collectionservice_1.CollectionService)
 	    .directive('swCollection', swcollection_1.SWCollection.Factory())
@@ -4204,7 +4352,7 @@
 
 
 /***/ },
-/* 44 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4643,7 +4791,7 @@
 
 
 /***/ },
-/* 45 */
+/* 47 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -4844,7 +4992,7 @@
 
 
 /***/ },
-/* 46 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5107,7 +5255,40 @@
 
 
 /***/ },
-/* 47 */
+/* 49 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var ConfirmationController = (function () {
+	    //@ngInject
+	    function ConfirmationController($scope, $log, $modalInstance) {
+	        $scope.deleteEntity = function (entity) {
+	            $log.debug("Deleting an entity.");
+	            $log.debug($scope.entity);
+	            this.close();
+	        };
+	        /**
+	        * Closes the modal window
+	        */
+	        $scope.close = function () {
+	            $modalInstance.close();
+	        };
+	        /**
+	        * Cancels the modal window
+	        */
+	        $scope.cancel = function () {
+	            $modalInstance.dismiss("cancel");
+	        };
+	    }
+	    ConfirmationController.$inject = ["$scope", "$log", "$modalInstance"];
+	    return ConfirmationController;
+	})();
+	exports.ConfirmationController = ConfirmationController;
+
+
+/***/ },
+/* 50 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5154,7 +5335,7 @@
 
 
 /***/ },
-/* 48 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5201,7 +5382,7 @@
 
 
 /***/ },
-/* 49 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5368,7 +5549,7 @@
 
 
 /***/ },
-/* 50 */
+/* 53 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5449,7 +5630,7 @@
 
 
 /***/ },
-/* 51 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5516,7 +5697,7 @@
 
 
 /***/ },
-/* 52 */
+/* 55 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5716,7 +5897,7 @@
 
 
 /***/ },
-/* 53 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6606,7 +6787,7 @@
 
 
 /***/ },
-/* 54 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6648,7 +6829,7 @@
 
 
 /***/ },
-/* 55 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6748,7 +6929,7 @@
 
 
 /***/ },
-/* 56 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6887,7 +7068,7 @@
 
 
 /***/ },
-/* 57 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7049,7 +7230,7 @@
 
 
 /***/ },
-/* 58 */
+/* 61 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7214,7 +7395,7 @@
 
 
 /***/ },
-/* 59 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7349,7 +7530,7 @@
 
 
 /***/ },
-/* 60 */
+/* 63 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7531,7 +7712,7 @@
 
 
 /***/ },
-/* 61 */
+/* 64 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7839,7 +8020,7 @@
 
 
 /***/ },
-/* 62 */
+/* 65 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7938,7 +8119,7 @@
 
 
 /***/ },
-/* 63 */
+/* 66 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8004,24 +8185,24 @@
 
 
 /***/ },
-/* 64 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(65);
+	var workflowconditionservice_1 = __webpack_require__(68);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(66);
-	var swworkflowbasic_1 = __webpack_require__(82);
-	var swworkflowcondition_1 = __webpack_require__(79);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(80);
-	var swworkflowconditiongroups_1 = __webpack_require__(81);
-	var swworkflowtask_1 = __webpack_require__(67);
-	var swworkflowtaskactions_1 = __webpack_require__(68);
-	var swworkflowtasks_1 = __webpack_require__(69);
-	var swworkflowtrigger_1 = __webpack_require__(70);
-	var swworkflowtriggers_1 = __webpack_require__(71);
+	var swadmincreatesuperuser_1 = __webpack_require__(69);
+	var swworkflowbasic_1 = __webpack_require__(70);
+	var swworkflowcondition_1 = __webpack_require__(71);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(72);
+	var swworkflowconditiongroups_1 = __webpack_require__(73);
+	var swworkflowtask_1 = __webpack_require__(74);
+	var swworkflowtaskactions_1 = __webpack_require__(75);
+	var swworkflowtasks_1 = __webpack_require__(76);
+	var swworkflowtrigger_1 = __webpack_require__(77);
+	var swworkflowtriggers_1 = __webpack_require__(78);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
@@ -8040,7 +8221,7 @@
 
 
 /***/ },
-/* 65 */
+/* 68 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8095,7 +8276,7 @@
 
 
 /***/ },
-/* 66 */
+/* 69 */
 /***/ function(module, exports) {
 
 	var SWAdminCreateSuperUser = (function () {
@@ -8126,7 +8307,242 @@
 
 
 /***/ },
-/* 67 */
+/* 70 */
+/***/ function(module, exports) {
+
+	var SWWorkflowBasic = (function () {
+	    function SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: workflowPartialsPath
+	                + "workflowbasic.html",
+	            link: function (scope, element, attrs) {
+	            }
+	        };
+	    }
+	    SWWorkflowBasic.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
+	            return new SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'workflowPartialsPath',
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowBasic;
+	})();
+	exports.SWWorkflowBasic = SWWorkflowBasic;
+
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+	var SWWorkflowCondition = (function () {
+	    function SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowCondition: "=",
+	                workflowConditionIndex: "=",
+	                workflow: "=",
+	                filterPropertiesList: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowcondition.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflowCondition init');
+	                $log.debug(scope);
+	                scope.selectBreadCrumb = function (breadCrumbIndex) {
+	                    //splice out array items above index
+	                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+	                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
+	                    scope.selectedFilterPropertyChanged(null);
+	                };
+	                scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
+	                    $log.debug('selectedFilterProperty');
+	                    $log.debug(selectedFilterProperty);
+	                    scope.selectedFilterProperty = selectedFilterProperty;
+	                };
+	                if (angular.isUndefined(scope.workflowCondition.breadCrumbs)) {
+	                    scope.workflowCondition.breadCrumbs = [];
+	                    if (scope.workflowCondition.propertyIdentifier === "") {
+	                        scope.workflowCondition.breadCrumbs = [
+	                            {
+	                                entityAlias: scope.workflow.data.workflowObject,
+	                                cfc: scope.workflow.data.workflowObject,
+	                                propertyIdentifier: scope.workflow.data.workflowObject
+	                            }
+	                        ];
+	                    }
+	                    else {
+	                        var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                        entityAliasArrayFromString.pop();
+	                        for (var i in entityAliasArrayFromString) {
+	                            var breadCrumb = {
+	                                entityAlias: entityAliasArrayFromString[i],
+	                                cfc: entityAliasArrayFromString[i],
+	                                propertyIdentifier: entityAliasArrayFromString[i]
+	                            };
+	                            scope.workflowCondition.breadCrumbs.push(breadCrumb);
+	                        }
+	                    }
+	                }
+	                else {
+	                    angular.forEach(scope.workflowCondition.breadCrumbs, function (breadCrumb, key) {
+	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
+	                            var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+	                            filterPropertiesPromise.then(function (value) {
+	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
+	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+	                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier], breadCrumb.propertyIdentifier);
+	                                var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                                entityAliasArrayFromString.pop();
+	                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                                if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                    for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                        if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
+	                                            //selectItem from drop down
+	                                            scope.selectedFilterProperty = filterProperty;
+	                                            //decorate with value and comparison Operator so we can use it in the Condition section
+	                                            scope.selectedFilterProperty.value = scope.workflowCondition.value;
+	                                            scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
+	                                        }
+	                                    }
+	                                }
+	                            });
+	                        }
+	                        else {
+	                            var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                            entityAliasArrayFromString.pop();
+	                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                            if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                    if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
+	                                        //selectItem from drop down
+	                                        scope.selectedFilterProperty = filterProperty;
+	                                        //decorate with value and comparison Operator so we can use it in the Condition section
+	                                        scope.selectedFilterProperty.value = scope.workflowCondition.value;
+	                                        scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    });
+	                }
+	            }
+	        };
+	    }
+	    SWWorkflowCondition.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
+	            return new SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'metadataService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowCondition;
+	})();
+	exports.SWWorkflowCondition = SWWorkflowCondition;
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports) {
+
+	var SWWorkflowConditionGroupItem = (function () {
+	    function SWWorkflowConditionGroupItem($log, $location, $slatwall, formService, workflowPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: workflowPartialsPath + "workflowconditiongroupitem.html",
+	            link: function (scope, element, attrs) {
+	            }
+	        };
+	    }
+	    SWWorkflowConditionGroupItem.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
+	            return new ($log,
+	                $location,
+	                $slatwall,
+	                formService,
+	                workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowConditionGroupItem;
+	})();
+	exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
+
+
+/***/ },
+/* 73 */
+/***/ function(module, exports) {
+
+	var SWWorkflowConditionGroups = (function () {
+	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowConditionGroupItem: "=",
+	                workflowConditionGroup: "=",
+	                workflow: "=",
+	                filterPropertiesList: "="
+	            },
+	            templateUrl: workflowPartialsPath + "workflowconditiongroups.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflowconditiongroups init');
+	                scope.addWorkflowCondition = function () {
+	                    $log.debug('addWorkflowCondition');
+	                    var workflowCondition = workflowConditionService.newWorkflowCondition();
+	                    workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem, workflowCondition);
+	                };
+	                scope.addWorkflowGroupItem = function () {
+	                    $log.debug('addWorkflowGrouptItem');
+	                    var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
+	                    workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem, workflowConditionGroupItem);
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowConditionGroups.Factory = function () {
+	        var directive = function ($log, workflowConditionService, workflowPartialsPath) {
+	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'workflowConditionService',
+	            'workflowPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowConditionGroups;
+	})();
+	exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
+
+
+/***/ },
+/* 74 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTask = (function () {
@@ -8175,7 +8591,7 @@
 
 
 /***/ },
-/* 68 */
+/* 75 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTaskActions = (function () {
@@ -8347,7 +8763,7 @@
 
 
 /***/ },
-/* 69 */
+/* 76 */
 /***/ function(module, exports) {
 
 	/**
@@ -8536,7 +8952,7 @@
 
 
 /***/ },
-/* 70 */
+/* 77 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTrigger = (function () {
@@ -8623,7 +9039,7 @@
 
 
 /***/ },
-/* 71 */
+/* 78 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTriggers = (function () {
@@ -8811,7 +9227,7 @@
 
 
 /***/ },
-/* 72 */
+/* 79 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8937,20 +9353,20 @@
 
 
 /***/ },
-/* 73 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(74);
+	var slatwallservice_1 = __webpack_require__(81);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 74 */
+/* 81 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9532,12 +9948,12 @@
 
 
 /***/ },
-/* 75 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var ngslatwall_module_1 = __webpack_require__(73);
+	var ngslatwall_module_1 = __webpack_require__(80);
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngslatwallmodelmodule = angular.module('ngSlatwallModel', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name]).config(['$provide', function ($provide) {
 	        $provide.decorator('$slatwall', [
@@ -13462,7 +13878,7 @@
 
 
 /***/ },
-/* 76 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13487,7 +13903,7 @@
 
 
 /***/ },
-/* 77 */
+/* 84 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13574,7 +13990,7 @@
 
 
 /***/ },
-/* 78 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
@@ -13588,238 +14004,226 @@
 
 
 /***/ },
-/* 79 */
+/* 86 */
 /***/ function(module, exports) {
 
-	var SWWorkflowCondition = (function () {
-	    function SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                workflowCondition: "=",
-	                workflowConditionIndex: "=",
-	                workflow: "=",
-	                filterPropertiesList: "="
-	            },
-	            templateUrl: workflowPartialsPath + "workflowcondition.html",
-	            link: function (scope, element, attrs) {
-	                $log.debug('workflowCondition init');
-	                $log.debug(scope);
-	                scope.selectBreadCrumb = function (breadCrumbIndex) {
-	                    //splice out array items above index
-	                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
-	                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
-	                    scope.selectedFilterPropertyChanged(null);
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var AlertController = (function () {
+	    //@ngInject
+	    function AlertController($scope, alertService) {
+	        $scope.$id = "alertController";
+	        $scope.alerts = alertService.getAlerts();
+	    }
+	    AlertController.$inject = ["$scope", "alertService"];
+	    return AlertController;
+	})();
+	exports.AlertController = AlertController;
+
+
+/***/ },
+/* 87 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var CreateCollection = (function () {
+	    //@ngInject
+	    function CreateCollection($scope, $log, $timeout, $slatwall, collectionService, formService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService) {
+	        $scope.params = dialogService.getCurrentDialog().params;
+	        $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
+	        $scope.keywords = '';
+	        $scope.paginator = paginationService.createPagination();
+	        //$scope.isRadio = true;
+	        //$scope.closeSaving = true;
+	        $scope.newCollection = $slatwall.newCollection();
+	        $scope.newCollection.data.collectionCode = $scope.params.entityName + "-" + new Date().valueOf();
+	        $scope.newCollection.data.collectionObject = $scope.params.entityName;
+	        if (angular.isDefined($scope.params.entityID)) {
+	            $scope.newCollection.data.collectionID = $scope.params.entityID;
+	            $timeout(function () {
+	                $scope.newCollection.forms['form.createCollection'].$setDirty();
+	            });
+	        }
+	        if (angular.isDefined($scope.params.collectionName)) {
+	            $scope.newCollection.data.collectionName = $scope.params.collectionName;
+	            $timeout(function () {
+	                $scope.newCollection.forms['form.createCollection'].$setDirty();
+	            });
+	        }
+	        $scope.saveCollection = function () {
+	            $scope.myCollection.loadJson($scope.collectionConfig);
+	            $scope.getCollection();
+	        };
+	        $scope.getCollection = function () {
+	            $scope.closeSaving = true;
+	            $scope.myCollection.setPageShow($scope.paginator.getPageShow());
+	            $scope.myCollection.setCurrentPage($scope.paginator.getCurrentPage());
+	            $scope.myCollection.setKeywords($scope.keywords);
+	            var collectionOptions;
+	            if (angular.isDefined($scope.params.entityID)) {
+	                collectionOptions = {
+	                    id: $scope.params.entityID,
+	                    currentPage: $scope.paginator.getCurrentPage(),
+	                    pageShow: $scope.paginator.getPageShow(),
+	                    keywords: $scope.keywords
 	                };
-	                scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
-	                    $log.debug('selectedFilterProperty');
-	                    $log.debug(selectedFilterProperty);
-	                    scope.selectedFilterProperty = selectedFilterProperty;
-	                };
-	                if (angular.isUndefined(scope.workflowCondition.breadCrumbs)) {
-	                    scope.workflowCondition.breadCrumbs = [];
-	                    if (scope.workflowCondition.propertyIdentifier === "") {
-	                        scope.workflowCondition.breadCrumbs = [
-	                            {
-	                                entityAlias: scope.workflow.data.workflowObject,
-	                                cfc: scope.workflow.data.workflowObject,
-	                                propertyIdentifier: scope.workflow.data.workflowObject
-	                            }
-	                        ];
-	                    }
-	                    else {
-	                        var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
-	                        entityAliasArrayFromString.pop();
-	                        for (var i in entityAliasArrayFromString) {
-	                            var breadCrumb = {
-	                                entityAlias: entityAliasArrayFromString[i],
-	                                cfc: entityAliasArrayFromString[i],
-	                                propertyIdentifier: entityAliasArrayFromString[i]
-	                            };
-	                            scope.workflowCondition.breadCrumbs.push(breadCrumb);
-	                        }
-	                    }
+	            }
+	            else {
+	                collectionOptions = $scope.myCollection.getOptions();
+	            }
+	            $log.debug($scope.myCollection.getOptions());
+	            var collectionListingPromise = $slatwall.getEntity($scope.myCollection.getEntityName(), collectionOptions);
+	            collectionListingPromise.then(function (value) {
+	                $scope.collection = value;
+	                $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
+	                $scope.collectionInitial = angular.copy($scope.collection);
+	                $scope.paginator.setRecordsCount($scope.collection.recordsCount);
+	                $scope.paginator.setPageRecordsInfo($scope.collection);
+	                if (angular.isUndefined($scope.myCollection.columns)) {
+	                    var colConfig = angular.fromJson(value.collectionConfig);
+	                    colConfig.baseEntityName = colConfig.baseEntityName.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
+	                    $scope.myCollection.loadJson(colConfig);
 	                }
-	                else {
-	                    angular.forEach(scope.workflowCondition.breadCrumbs, function (breadCrumb, key) {
-	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
-	                            var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
-	                            filterPropertiesPromise.then(function (value) {
-	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
-	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
-	                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier], breadCrumb.propertyIdentifier);
-	                                var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
-	                                entityAliasArrayFromString.pop();
-	                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
-	                                if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
-	                                    for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
-	                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
-	                                        if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
-	                                            //selectItem from drop down
-	                                            scope.selectedFilterProperty = filterProperty;
-	                                            //decorate with value and comparison Operator so we can use it in the Condition section
-	                                            scope.selectedFilterProperty.value = scope.workflowCondition.value;
-	                                            scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
-	                                        }
-	                                    }
-	                                }
-	                            });
+	                if (angular.isUndefined($scope.collectionConfig)) {
+	                    $scope.collectionConfig = $scope.myCollection.getCollectionConfig();
+	                }
+	                if (angular.isUndefined($scope.collectionConfig.filterGroups) || !$scope.collectionConfig.filterGroups.length) {
+	                    $scope.collectionConfig.filterGroups = [
+	                        {
+	                            filterGroup: []
 	                        }
-	                        else {
-	                            var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
-	                            entityAliasArrayFromString.pop();
-	                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
-	                            if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
-	                                for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
-	                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
-	                                    if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
-	                                        //selectItem from drop down
-	                                        scope.selectedFilterProperty = filterProperty;
-	                                        //decorate with value and comparison Operator so we can use it in the Condition section
-	                                        scope.selectedFilterProperty.value = scope.workflowCondition.value;
-	                                        scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
-	                                    }
-	                                }
-	                            }
-	                        }
+	                    ];
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	                $scope.loadingCollection = false;
+	                $scope.closeSaving = false;
+	            }, function (reason) {
+	            });
+	            return collectionListingPromise;
+	        };
+	        $scope.paginator.collection = $scope.newCollection;
+	        $scope.paginator.getCollection = $scope.getCollection;
+	        var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
+	            if (newValue !== oldValue) {
+	                if (angular.isUndefined($scope.filterPropertiesList)) {
+	                    $scope.filterPropertiesList = {};
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+	                    filterPropertiesPromise.then(function (value) {
+	                        metadataService.setPropertiesList(value, $scope.collectionConfig.baseEntityAlias);
+	                        $scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+	                        metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias], $scope.collectionConfig.baseEntityAlias);
 	                    });
 	                }
+	                unbindCollectionObserver();
 	            }
+	        });
+	        var filterItemCounter = function (filterGroupArray) {
+	            var filterItemCount = 0;
+	            if (!angular.isDefined(filterGroupArray)) {
+	                filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
+	            }
+	            //Start out loop
+	            for (var index in filterGroupArray) {
+	                //If filter isn't new then increment the count
+	                if (!filterGroupArray[index].$$isNew && !angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    filterItemCount++;
+	                }
+	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    //Call function recursively
+	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+	                }
+	                else {
+	                    break;
+	                }
+	            }
+	            return filterItemCount;
+	        };
+	        $scope.getCollection();
+	        $scope.copyExistingCollection = function () {
+	            $scope.collection.collectionConfig = $scope.selectedExistingCollection;
+	        };
+	        $scope.setSelectedExistingCollection = function (selectedExistingCollection) {
+	            $scope.selectedExistingCollection = selectedExistingCollection;
+	        };
+	        $scope.setSelectedFilterProperty = function (selectedFilterProperty) {
+	            $scope.selectedFilterProperty = selectedFilterProperty;
+	        };
+	        $scope.loadingCollection = false;
+	        var searchPromise;
+	        $scope.searchCollection = function () {
+	            if (searchPromise) {
+	                $timeout.cancel(searchPromise);
+	            }
+	            searchPromise = $timeout(function () {
+	                //$log.debug('search with keywords');
+	                //$log.debug($scope.keywords);
+	                //Set current page here so that the pagination does not break when getting collection
+	                $scope.paginator.setCurrentPage(1);
+	                $scope.loadingCollection = true;
+	                $scope.getCollection();
+	            }, 500);
+	        };
+	        $scope.filterCount = collectionService.getFilterCount;
+	        //
+	        $scope.hideExport = true;
+	        $scope.saveNewCollection = function ($index) {
+	            if ($scope.closeSaving)
+	                return;
+	            $scope.closeSaving = true;
+	            if (!angular.isUndefined(selectionService.getSelections('collectionSelection'))
+	                && (selectionService.getSelections('collectionSelection').length > 0)) {
+	                $scope.collectionConfig.filterGroups[0].filterGroup = [
+	                    {
+	                        "displayPropertyIdentifier": $slatwall.getRBKey("entity." + $scope.myCollection.baseEntityName.toLowerCase() + "." + $scope.myCollection.collection.$$getIDName().toLowerCase()),
+	                        "propertyIdentifier": $scope.myCollection.baseEntityAlias + "." + $scope.myCollection.collection.$$getIDName(),
+	                        "comparisonOperator": "in",
+	                        "value": selectionService.getSelections('collectionSelection').join(),
+	                        "displayValue": selectionService.getSelections('collectionSelection').join(),
+	                        "ormtype": "string",
+	                        "fieldtype": "id",
+	                        "conditionDisplay": "In List"
+	                    }
+	                ];
+	            }
+	            $scope.newCollection.data.collectionConfig = $scope.collectionConfig;
+	            if (!$scope.newCollection.data.collectionConfig.baseEntityName.startsWith(hibachiConfig.applicationKey))
+	                $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
+	            $scope.newCollection.$$save().then(function () {
+	                observerService.notify('addCollection', $scope.newCollection.data);
+	                dialogService.removePageDialog($index);
+	                $scope.closeSaving = false;
+	            }, function () {
+	                $scope.closeSaving = false;
+	            });
 	        };
 	    }
-	    SWWorkflowCondition.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
-	            return new SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'metadataService',
-	            'workflowPartialsPath'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowCondition;
+	    CreateCollection.$inject = ["$scope", "$log", "$timeout", "$slatwall", "collectionService", "formService", "metadataService", "paginationService", "dialogService", "observerService", "selectionService", "collectionConfigService"];
+	    return CreateCollection;
 	})();
-	exports.SWWorkflowCondition = SWWorkflowCondition;
+	exports.CreateCollection = CreateCollection;
 
 
 /***/ },
-/* 80 */
+/* 88 */
 /***/ function(module, exports) {
 
-	var SWWorkflowConditionGroupItem = (function () {
-	    function SWWorkflowConditionGroupItem($log, $location, $slatwall, formService, workflowPartialsPath) {
-	        return {
-	            restrict: 'E',
-	            templateUrl: workflowPartialsPath + "workflowconditiongroupitem.html",
-	            link: function (scope, element, attrs) {
-	            }
+	var PageDialogController = (function () {
+	    //@ngInject
+	    function PageDialogController($scope, $location, $log, $anchorScroll, $slatwall, dialogService) {
+	        $scope.$id = 'pageDialogController';
+	        //get url param to retrieve collection listing
+	        $scope.pageDialogs = dialogService.getPageDialogs();
+	        $scope.scrollToTopOfDialog = function () {
+	            $location.hash('/#topOfPageDialog');
+	            $anchorScroll();
 	        };
+	        $scope.pageDialogStyle = { "z-index": 3000 };
 	    }
-	    SWWorkflowConditionGroupItem.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
-	            return new ($log,
-	                $location,
-	                $slatwall,
-	                formService,
-	                workflowPartialsPath);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'workflowPartialsPath'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowConditionGroupItem;
+	    PageDialogController.$inject = ["$scope", "$location", "$log", "$anchorScroll", "$slatwall", "dialogService"];
+	    return PageDialogController;
 	})();
-	exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
-
-
-/***/ },
-/* 81 */
-/***/ function(module, exports) {
-
-	var SWWorkflowConditionGroups = (function () {
-	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                workflowConditionGroupItem: "=",
-	                workflowConditionGroup: "=",
-	                workflow: "=",
-	                filterPropertiesList: "="
-	            },
-	            templateUrl: workflowPartialsPath + "workflowconditiongroups.html",
-	            link: function (scope, element, attrs) {
-	                $log.debug('workflowconditiongroups init');
-	                scope.addWorkflowCondition = function () {
-	                    $log.debug('addWorkflowCondition');
-	                    var workflowCondition = workflowConditionService.newWorkflowCondition();
-	                    workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem, workflowCondition);
-	                };
-	                scope.addWorkflowGroupItem = function () {
-	                    $log.debug('addWorkflowGrouptItem');
-	                    var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
-	                    workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem, workflowConditionGroupItem);
-	                };
-	            }
-	        };
-	    }
-	    SWWorkflowConditionGroups.Factory = function () {
-	        var directive = function ($log, workflowConditionService, workflowPartialsPath) {
-	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            'workflowConditionService',
-	            'workflowPartialsPath'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowConditionGroups;
-	})();
-	exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
-
-
-/***/ },
-/* 82 */
-/***/ function(module, exports) {
-
-	var SWWorkflowBasic = (function () {
-	    function SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath) {
-	        return {
-	            restrict: 'A',
-	            scope: {
-	                workflow: "="
-	            },
-	            templateUrl: workflowPartialsPath
-	                + "workflowbasic.html",
-	            link: function (scope, element, attrs) {
-	            }
-	        };
-	    }
-	    SWWorkflowBasic.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
-	            return new SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'workflowPartialsPath',
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowBasic;
-	})();
-	exports.SWWorkflowBasic = SWWorkflowBasic;
+	exports.PageDialogController = PageDialogController;
 
 
 /***/ }
