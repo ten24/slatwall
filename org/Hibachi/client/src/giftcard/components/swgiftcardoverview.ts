@@ -1,49 +1,52 @@
-module slatwalladmin { 
-	'use strict'; 
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 	
-	export class swGiftCardOverviewController { 
-		
-		public giftCard
-		
-		constructor(){ 
-			
-		}		
-	}
+class swGiftCardOverviewController { 
 	
-	export class GiftCardOverview implements ng.IDirective { 
-		
-		public static $inject = ["partialsPath"];
-		
-		public restrict:string; 
-		public templateUrl:string;
-		public scope = {}; 
-		public bindToController = {
-			giftCard:"=?"
-		}; 
-		public controller = swGiftCardOverviewController; 
-		public controllerAs = "swGiftCardOverview"
-			
-		constructor(private partialsPath){ 
-			this.templateUrl = partialsPath + "/entity/giftcard/overview.html";
-			this.restrict = "EA";	
-		}
-		
-	}
+	public giftCard
 	
-	angular.module('slatwalladmin')
-	.directive('swGiftCardOverview',["partialsPath", 
-		(partialsPath) => 
-			new GiftCardOverview(partialsPath)
-	])
-	.controller('MyController', ['$scope', function ($scope) {
-        $scope.textToCopy = 'I can copy by clicking!';
- 
-        $scope.success = function () {
-            console.log('Copied!');
-        };
- 
-        $scope.fail = function (err) {
-            console.error('Error!', err);
-        };
-    }]);
+	constructor(){ 
+		
+	}		
 }
+
+class GiftCardOverview implements ng.IDirective { 
+	
+	public static $inject = ["partialsPath"];
+	
+	public restrict:string; 
+	public templateUrl:string;
+	public scope = {}; 
+	public bindToController = {
+		giftCard:"=?"
+	}; 
+	public controller = swGiftCardOverviewController; 
+	public controllerAs = "swGiftCardOverview"
+	
+	public static Factory():ng.IDirectiveFactory{
+		var directive:ng.IDirectiveFactory = (
+			collectionConfigService,
+			partialsPath
+		) => new GiftCardOverview(
+			collectionConfigService,
+			partialsPath
+		);
+		directive.$inject = [
+			'$slatwall',
+			'partialsPath'
+		];
+		return directive;    
+	}
+		
+	constructor(private partialsPath){ 
+		this.templateUrl = partialsPath + "/entity/giftcard/overview.html";
+		this.restrict = "EA";	
+	}
+	
+}
+
+export {
+	swGiftCardOverviewController,
+	GiftCardOverview
+}
+

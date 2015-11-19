@@ -1,41 +1,52 @@
-/// <reference path="../../../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-module slatwalladmin { 
-	'use strict'; 
+/// <reference path="../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../client/typings/slatwallTypeScript.d.ts" />
+
+class swGiftCardRecipientInfoController { 
 	
-	export class swGiftCardRecipientInfoController { 
-		
-		public giftCard; 
-		
-		constructor(){ 
-			
-		}
+	public giftCard; 
+	
+	constructor(){ 
 		
 	}
 	
-	export class GiftCardRecipientInfo implements ng.IDirective { 
-		
-		public static $inject = ["partialsPath"];
-		public restrict:string; 
-		public templateUrl:string;
-		public scope = {}; 
-		public bindToController = {
-			giftCard:"=?"
-		}; 
-		public controller = swGiftCardRecipientInfoController; 
-		public controllerAs = "swGiftCardRecipientInfo";
-			
-		constructor(private partialsPath){ 
-			this.templateUrl = partialsPath + "/entity/giftcard/recipientinfo.html";
-			this.restrict = "EA";
-		}
-		
-	}
-	
-	angular.module('slatwalladmin')
-	.directive('swGiftCardRecipientInfo',
-		["partialsPath", 
-			(partialsPath) => 
-				new GiftCardRecipientInfo(partialsPath)
-			]);
 }
+
+class GiftCardRecipientInfo implements ng.IDirective { 
+	
+	public static $inject = ["partialsPath"];
+	public restrict:string; 
+	public templateUrl:string;
+	public scope = {}; 
+	public bindToController = {
+		giftCard:"=?"
+	}; 
+	public controller = swGiftCardRecipientInfoController; 
+	public controllerAs = "swGiftCardRecipientInfo";
+	
+	public static Factory():ng.IDirectiveFactory{
+		var directive:ng.IDirectiveFactory = (
+			collectionConfigService,
+			partialsPath
+		) => new GiftCardRecipientInfo(
+			collectionConfigService,
+			partialsPath
+		);
+		directive.$inject = [
+			'$slatwall',
+			'partialsPath'
+		];
+		return directive;    
+	}
+		
+	constructor(private partialsPath){ 
+		this.templateUrl = partialsPath + "/entity/giftcard/recipientinfo.html";
+		this.restrict = "EA";
+	}
+	
+}
+
+export{
+	swGiftCardRecipientInfoController,
+	GiftCardRecipientInfo
+}
+	

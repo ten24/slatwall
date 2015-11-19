@@ -1,5 +1,5 @@
-/// <reference path="../../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
+/// <reference path="../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../client/typings/slatwallTypeScript.d.ts" />
 	
 class SWGiftCardBalanceController{
 	public transactions; 
@@ -45,7 +45,7 @@ class SWGiftCardBalanceController{
 	}
 }
 
-class GiftCardBalance implements ng.IDirective { 
+class SWGiftCardBalance implements ng.IDirective { 
 
 	public static $inject = ["collectionConfigService", "partialsPath"];
 	public restrict:string; 
@@ -61,6 +61,21 @@ class GiftCardBalance implements ng.IDirective {
 	public controller=SWGiftCardBalanceController;
 	public controllerAs="swGiftCardBalance";
 		
+	public static Factory():ng.IDirectiveFactory{
+        var directive:ng.IDirectiveFactory = (
+            collectionConfigService,
+		    partialsPath
+        ) => new GiftCardBalance(
+            collectionConfigService,
+			partialsPath
+        );
+        directive.$inject = [
+            '$slatwall',
+			'partialsPath'
+        ];
+        return directive;    
+    }
+		
 	constructor(private collectionConfigService, private partialsPath){ 
 		this.templateUrl = partialsPath + "/entity/giftcard/balance.html";
 		this.restrict = "EA";	
@@ -74,6 +89,6 @@ class GiftCardBalance implements ng.IDirective {
 
 export {
 	SWGiftCardBalanceController,
-	GiftCardBalance
+	SWGiftCardBalance
 };
 

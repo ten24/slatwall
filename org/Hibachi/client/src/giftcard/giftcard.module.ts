@@ -2,6 +2,9 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 import {hibachimodule} from "../hibachi/hibachi.module";
+import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
+import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
+import {ngslatwallmodelmodule} from "../ngslatwallmodel/ngslatwallmodel.module";
 //controllers
 import {OrderItemGiftRecipientControl} from "./controllers/preprocessorderitem_addorderitemgiftrecipient"; 
 //directives
