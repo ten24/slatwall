@@ -1,0 +1,13 @@
+<div class="dropdown">
+	<a href="##" ng-if="column.ormtype !== 'boolean' && column.persistent != false" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><span sw-rbkey="column.propertyIdentifier.replace('_','entity.')"></span> <i class="fa fa-sort"></i></a>
+	<span ng-if="column.ormtype === 'boolean' || column.persistent === false" sw-rbkey="column.propertyIdentifier.replace('_','entity.')"></span>
+	<ul class="dropdown-menu nav scrollable" ng-if="column.ormtype !== 'boolean' && column.persistent != false">
+		<li class="dropdown-header">Sort</li>
+		<li><a  ng-click="sortAsc()"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
+		<li><a  ng-click="sortDesc()"><i class="icon-arrow-up"></i> Sort Descending</a></li>
+		<!--<li class="divider"></li>
+		
+		<li class="dropdown-header">Search</li>
+		<li class="search-filter"><input type="text" class="listing-search form-control" name="FK:productType.productTypeName" value=""> <i class="icon-search"></i></li>-->
+	</ul>
+</div> 

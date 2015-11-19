@@ -60,7 +60,9 @@ class SWCollectionTable{
                 if(angular.isUndefined(scope.angularLinks)){
                     scope.angularLinks = false;    
                 }
-                
+				console.log('here');
+                console.log(scope.collection);
+				console.log($slatwall);
                 scope.collectionObject = $slatwall['new'+scope.collection.collectionObject]();
 				
                 var escapeRegExp = function(str) {

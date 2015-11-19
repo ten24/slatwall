@@ -1,0 +1,12 @@
+<span class="s-select-wrapper">
+	<select class="form-control" ng-if="objectName && swOptions.object"
+		 ng-model="swOptions.selectedOption"
+		 ng-change="swOptions.selectOption(swOptions.selectedOption)"
+		 ng-options="option[objectName.toLowerCase()+'Name']
+						 for option in swOptions.options
+						 track by option[swOptions.object.$$getIDName()]
+						"
+	>
+		<option ng-bind="'Select ' + objectName"></option>
+	</select>
+</span>

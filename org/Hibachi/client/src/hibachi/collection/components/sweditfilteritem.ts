@@ -63,7 +63,7 @@ class SWEditFilterItem{
 				filterItemIndex:"=",
 				comparisonType:"="
 			},
-			templateUrl:pathBuilderConfig.builPartialsPath(collectionPartialsPath)+"editfilteritem.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
 				function daysBetween(first, second) {
 	

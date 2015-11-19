@@ -2,25 +2,29 @@ class SWLoading{
     public static Factory(){
         var directive = (
             $log,
-            partialsPath
+            corePartialsPath,
+            pathBuilderConfig
         )=> new SWLoading(
             $log,
-            partialsPath
+            corePartialsPath,
+            pathBuilderConfig
         );
         directive.$inject = [
             '$log',
-            'partialsPath'
+            'corePartialsPath',
+            'pathBuilderConfig'
         ];
         return directive;
     }
     constructor(
         $log,
-        partialsPath
+        corePartialsPath,
+        pathBuilderConfig
     ){
         return {
             restrict: 'A',
             transclude:true,
-            templateUrl:partialsPath+'loading.html',
+            templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+'loading.html',
             scope:{
                 swLoading:'='
             },

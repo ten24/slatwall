@@ -3,6 +3,8 @@
 import {hibachimodule} from "../hibachi/hibachi.module";
 import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
 import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
+import {ngslatwallmodelmodule} from "../ngslatwallmodel/ngslatwallmodel.module";
+
 //filters
 import {EntityRBKey} from "./filters/entityrbkey";
 import {SWCurrency} from "./filters/swcurrency";
@@ -21,6 +23,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   //custom modules
   hibachimodule.name,
   ngslatwallmodule.name,
+  ngslatwallmodelmodule.name,
+  
   //3rdParty modules
   'ui.bootstrap'
   

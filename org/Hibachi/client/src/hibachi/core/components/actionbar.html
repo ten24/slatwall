@@ -1,0 +1,93 @@
+<div class="col-xs-6" style="text-align:right;">
+	  <ul class="list-inline list-unstyled">
+          <li>
+			  <form class="form-horizontal">
+			      <label class="control-label">View</label>
+			      <select 	size="1" 
+			      			name="pageShowOptions" 
+			      			aria-controls="" 
+			      			class="form-control j-custom-select"
+			      			ng-model="pageShowOptions.selectedPageShowOption" 
+			        		ng-options="pageShowOption as pageShowOption.display 
+			        					for pageShowOption in pageShowOptions 
+			        					
+			        					" 
+			        		ng-change="pageShowOptionChanged(pageShowOptions.selectedPageShowOption)"	
+			        		>
+			      </select>
+			  </form>
+		  </li>
+		  <li>
+			  <ul 	class="pagination pagination-sm"
+			  		ng-show="pageShowOptions.selectedPageShowOption.value !== 'Auto'"
+			  >
+			    <li
+			    	ng-click="previousPage()"
+			    	ng-class="{disabled:hasPrevious()}"
+			    >
+			    	<a 	href="#" 
+			    		
+			    	>
+			    		&laquo;
+			    	</a>
+			    </li>
+			    <li ng-show="showPreviousJump()">
+			    	<a 	href="#" 
+			    		ng-click="setCurrentPage(1)"
+			    	>
+			    		1
+			    	</a>
+			    </li>
+			    <li ng-show="showPreviousJump()"
+			    	ng-click="previousJump()"
+			    >
+			    	<a 	href="#" 
+			    		
+			    	>
+			    		...
+			    	</a>
+			    </li>
+			    <li ng-repeat="i in totalPagesArray"
+			    	ng-class="{active:currentPage === i}"
+			    	ng-click="setCurrentPage(i)"
+			    	ng-show="showPageNumber(i)"
+			    >
+			    	<a href="#" ng-bind="i"></a>
+			    </li>
+			    <li ng-show="showNextJump()"
+			    	ng-click="nextJump()"
+			    >
+			    	<a 	href="#" 
+			    		>
+			    		...
+			    	</a>
+			    </li>
+			    <li ng-show="showNextJump()">
+			    	<a 	href="#" 
+			    		ng-click="setCurrentPage(totalPages())"
+			    		ng-bind="totalPages()"
+			    	>
+			    		
+			    	</a>
+			    </li>
+			    <li 
+			    	ng-class="{disabled:hasNext()}"
+			    	ng-click="nextPage()"
+			    	>
+			    	<a href="#">
+			    		&raquo;
+			    	</a>
+			    </li>
+			    
+			  </ul>
+		  </li>
+		  
+		  <!-- TODO: decide whether to implement this button or not at a later date
+		  <li>
+			<div class="btn-group" class="navbar-left">
+			  <button type="button" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></button>
+			</div>
+		  </li> 
+		  -->
+  	</ul>
+</div>
