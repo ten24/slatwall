@@ -1,6 +1,21 @@
 /// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 class SWContentListController{
+    public getCollection:Function;
+    public openRoot:boolean;
+    public pageShowOptions:any;
+    public pageShow:any;
+    public loadingCollection:boolean;
+    public selectedSite:any;
+    public orderBy:any;
+    public collectionConfig:any;
+    public collectionListingPromise:any;
+    public collection:any;
+    public firstLoad:boolean;
+    public isSearching:boolean;
+    public keywords:string;
+    public searchCollection:any;
+    
     public static $inject = [
         '$scope',
         '$log',
@@ -14,10 +29,10 @@ class SWContentListController{
         private $scope:ng.IScope,
         private $log:ng.ILogService,
         private $timeout:ng.ITimeoutService,
-        private $slatwall:ngSlatwall.$Slatwall,
-        private paginationService:slatwalladmin.PaginationService,
-        private observerService:slatwalladmin.ObserverService,
-        private collectionConfigService:slatwalladmin.CollectionService
+        private $slatwall,
+        private paginationService,
+        private observerService,
+        private collectionConfigService
     ){
             this.openRoot = true;
             this.$log.debug('slatwallcontentList init');
@@ -80,15 +95,15 @@ class SWContentListController{
                 
                 
                 
-                var options = {
+                var options:any = {
                     currentPage:'1', 
                     pageShow:'1', 
                     keywords:this.keywords
                 };
-                var column = {};
+                var column:any = {};
                 if(!isSearching || this.keywords === ''){
                     this.isSearching = false;
-                    var filterGroupsConfig =[
+                    var filterGroupsConfig:any[] =[
                         {
                             "filterGroup": [
                             {
@@ -109,7 +124,7 @@ class SWContentListController{
                     columnsConfig.unshift(column);
                 }else{
                     this.isSearching = true;
-                    var filterGroupsConfig =[
+                    var filterGroupsConfig:any[] =[
                         {
                             "filterGroup": [
                             {
@@ -153,7 +168,7 @@ class SWContentListController{
                     options.orderByConfig = angular.toJson(orderByConfig);
                 }
                 
-                angular.forEach(columnsConfig,(column)=>{
+                angular.forEach(columnsConfig,(column:any)=>{
                     this.collectionConfig.addColumn(column.propertyIdentifier,column.title,column);
                 });
                 this.collectionConfig.addDisplayAggregate('childContents','COUNT','childContentsCount',{isVisible:false,isSearchable:false,title:'test'});
@@ -175,10 +190,12 @@ class SWContentListController{
                     }
                 );
                 
-                angular.forEach(filterGroupsConfig[0].filterGroup,(filter)=>{
+                angular.forEach(filterGroupsConfig[0].filterGroup,(filter:any)=>{
                     
                     this.collectionConfig.addFilter(filter.propertyIdentifier,filter.value,filter.comparisonOperator,filter.logicalOperator);
                 });
+                
+                
                 
                 this.collectionListingPromise = this.collectionConfig.getEntity();
                 this.collectionListingPromise.then((value)=>{
@@ -279,13 +296,3 @@ class SWContentList implements ng.IDirective{
 export{
     SWContentList
 }
-
-module slatwalladmin {
-    'use strict';
-    
-    
-    
-    angular.module('slatwalladmin').directive('swContentList',['partialsPath','observerService',(partialsPath,observerService) => new SWContentList(partialsPath,observerService)]);   
-    
-}
-

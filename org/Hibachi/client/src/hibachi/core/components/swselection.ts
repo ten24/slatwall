@@ -1,19 +1,37 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swSelection', [
-	'$log',
-    'selectionService',
-    'observerService',
-    'partialsPath', 
-	function(
-		$log,
+class SWSelection{
+    public static Factory(){
+        var directive = (
+            $log,
+            selectionService,
+            observerService,
+            corePartialsPath,
+            pathBuilderConfig
+        )=>new SWSelection(
+            $log,
+            selectionService,
+            observerService,
+            corePartialsPath,
+            pathBuilderConfig
+        );
+        directive.$inject = [
+            '$log',
+            'selectionService',
+            'observerService',
+            'corePartialsPath',
+            'pathBuilderConfig'
+        ];
+        return directive;
+    }
+    constructor(
+        $log,
         selectionService,
         observerService,
-        partialsPath
-	){
-		return {
+        corePartialsPath,
+        pathBuilderConfig
+    ){
+        return {
 			restrict: 'E',
-			templateUrl:partialsPath+"selection.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+"selection.html",
             scope:{
                 selection:"=",
                 selectionid:"@",
@@ -44,6 +62,8 @@ angular.module('slatwalladmin')
                 }
 			}
 		};
-	}
-]);
-	
+    }
+}
+export{
+    SWSelection
+}

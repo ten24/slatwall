@@ -1,11 +1,6 @@
-'use strict';
-angular.module('slatwalladmin').controller('globalSearch', [
-	'$scope',
-	'$log',
-	'$window',
-	'$timeout',
-	'$slatwall',
-	function(
+class GlobalSearchController{
+	//@ngInject
+	constructor(
 		$scope,
 		$log,
 		$window,
@@ -162,6 +157,8 @@ angular.module('slatwalladmin').controller('globalSearch', [
 				$scope.searchResults[ entityName ].results = [];
 			}
 		};
-
 	}
-]);
+}
+export{
+	GlobalSearchController
+}
