@@ -1,21 +1,43 @@
-angular.module('slatwalladmin')
-.directive('swOptions', [
-'$log',
-'$slatwall',
-'observerService',
-'partialsPath',
-	function(
-	$log,
-    $slatwall,
-    observerService,
-	partialsPath
-	){
-		return {
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWOptions{
+    public static Factory(){
+        var directive:ng.IDirectiveFactory = (
+            $log,
+            $slatwall,
+            observerService,
+            corePartialsPath,
+            pathBuiderConfig
+        )=> new SWOptions(
+            $log,
+            $slatwall,
+            observerService,
+            corePartialsPath,
+            pathBuiderConfig
+        );
+        directive.$inject = [
+            '$log',
+            '$slatwall',
+            'observerService',
+            'partialsPath',
+            'corePartialsPath',
+            'pathBuiderConfig'
+        ];
+        return directive;
+    }
+    constructor(
+        $log,
+        $slatwall,
+        observerService,
+        corePartialsPath,
+        pathBuiderConfig
+    ){
+        return {
 			restrict: 'AE',
 			scope:{
 				objectName:'@'
 			},
-			templateUrl:partialsPath+"options.html",
+			templateUrl:pathBuiderConfig.buildPartialsPath(corePartialsPath)+"options.html",
 			link: function(scope, element,attrs){
                 scope.swOptions = {};
                 scope.swOptions.objectName=scope.objectName;
@@ -52,6 +74,9 @@ angular.module('slatwalladmin')
                 }
 			}
 		};
-	}
-]);
-	
+    }
+}
+export{
+    SWOptions
+}
+

@@ -25,6 +25,8 @@ import {SWValidate} from "./validation/swvalidate";
 import {SWValidationMinLength} from "./validation/swvalidationminlength";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
+import {SWRbKey} from "./components/swrbkey";
+import {SWOptions} from "./components/swoptions";
 
 class PathBuilderConfig{
     public baseURL:string;
@@ -79,6 +81,8 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swvalidationminlength',SWValidationMinLength.Factory())
 .directive('swLoading',SWLoading.Factory())
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
+.directive('swRbkey',SWRbKey.Factory())
+.directive('swOptions',SWOptions.Factory())
 ;  
 export{
 	coremodule

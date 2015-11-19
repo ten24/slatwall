@@ -6,7 +6,10 @@ import {coremodule} from '../core/core.module';
 
 import {CollectionConfig} from "./services/collectionconfigservice";
 import {CollectionService} from "./services/collectionservice";
+//controllers
 import {CollectionController} from "./controllers/collections";
+import {CreateCollection} from "./controllers/createcollection";
+import {ConfirmationController} from "./controllers/confirmationcontroller";
 //directives
 import {SWCollection} from "./components/swcollection";
 import {SWAddFilterButtons} from "./components/swaddfilterbuttons";
@@ -36,6 +39,8 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .constant('collectionPartialsPath','collection/components/')
 //controllers
 .controller('collections',CollectionController)
+.controller('confirmationController',ConfirmationController)
+.controller('createCollection',CreateCollection)
 //services
 .factory('collectionConfigService', ['$slatwall','utilityService', ($slatwall: any,utilityService) => new CollectionConfig($slatwall,utilityService)])
 .service('collectionService', CollectionService)
