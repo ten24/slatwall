@@ -1,4 +1,5 @@
-
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
 
 class ProductCreateController{
         
@@ -49,3 +50,4 @@ class ProductCreateController{
         
         }
 }	
+export{ProductCreateController}

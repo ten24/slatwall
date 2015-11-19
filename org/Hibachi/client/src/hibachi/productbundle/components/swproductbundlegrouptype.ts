@@ -1,24 +1,42 @@
-/**
- * Handles user selections of Product Group Types.
- */
-'use strict';
-angular.module('slatwalladmin')
-.directive('swProductBundleGroupType', [
-	'$http',
-	'$log',
-	'$slatwall',
-	'formService',
-	'productBundlePartialsPath',
-	'productBundleService',
-	function(
-		$http,
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+
+class SWProductBundleGroupType{
+	public static Factory(){
+        var directive = (
+            $http,
+			$log,
+			$slatwall,
+			formService,
+			productBundlePartialsPath,
+			productBundleService
+        )=> new SWProductBundleGroupType(
+            $http,
+			$log,
+			$slatwall,
+			formService,
+			productBundlePartialsPath,
+			productBundleService
+        );
+        directive.$inject = [
+            '$http',
+			'$log',
+			'$slatwall',
+			'formService',
+			'productBundlePartialsPath',
+			'productBundleService'
+        ];
+        return directive;
+    }
+    constructor(
+        $http,
 		$log,
 		$slatwall,
 		formService,
 		productBundlePartialsPath,
 		productBundleService
-	){
-		return {
+    ){
+        return {
 			restrict: 'A',
 			templateUrl:productBundlePartialsPath+"productbundlegrouptype.html",
 			scope:{
@@ -163,6 +181,8 @@ angular.module('slatwalladmin')
 				};
 			}]
 		};
-	}
-]);
-	
+    }
+}
+export{
+	SWProductBundleGroupType
+}

@@ -1,21 +1,41 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swProductBundleGroups', [
-	'$http',
-	'$log',
-	'$slatwall',
-	'metadataService',
-	'productBundlePartialsPath',
-	'productBundleService',
-	function(
-		$http,
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+class SWProductBundleGroups{
+    public static Factory(){
+        var directive = (
+            $http,
+			$log,
+			$slatwall,
+			metadataService,
+			productBundlePartialsPath,
+			productBundleService
+        )=> new SWProductBundleGroups(
+            $http,
+			$log,
+			$slatwall,
+			metadataService,
+			productBundlePartialsPath,
+			productBundleService
+        );
+        directive.$inject = [
+            '$http',
+			'$log',
+			'$slatwall',
+			'metadataService',
+			'productBundlePartialsPath',
+			'productBundleService'
+        ];
+        return directive;
+    }
+    constructor(
+        $http,
 		$log,
 		$slatwall,
 		metadataService,
 		productBundlePartialsPath,
 		productBundleService
-	){
-		return {
+    ){
+        return {
 			restrict: 'EA',
 			
 			templateUrl:productBundlePartialsPath+"productbundlegroups.html",
@@ -51,6 +71,8 @@ angular.module('slatwalladmin')
 				};		
 			}]
 		};
-	}
-]);
-	
+    }
+}
+export{
+    SWProductBundleGroups
+}
