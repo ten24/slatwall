@@ -3,8 +3,9 @@
     data-is-process-form="true"
     data-form-class="cssform"
     data-error-class="error"
-    data-process-object="Account_login" <!--- object not process object --->
-    data-action="$login"> 
+    data-process-object="Account_login"
+    data-pobject="{{swLoginTest.pObject}}"
+    data-action="$login">
     
     <swf-property-display 
         data-name="emailAddress"
@@ -25,8 +26,7 @@
         data-class="formControl"
         data-editing="true">
     </swf-property-display>
-    
-    <!-- Can we use a Action caller / Process caller for this -->
+
     <swf-property-display
         data-name="Login" 
         data-type="submit" 

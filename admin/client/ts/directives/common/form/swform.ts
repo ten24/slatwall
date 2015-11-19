@@ -6,13 +6,16 @@ module slatwalladmin {
     export interface ViewModel {
         
         //************************** Fields
-        hiddenFields: Array<string>,
+        hiddenFields: any,
         entityName:string,
         processObject:string,
         action:string,
-        actions:Array<string>,
+        actionFn:Function,
+        actions:any,
         $timeout:any,
         $scope:ng.IScope,
+        pobject:string,
+        postOnly:boolean,
         //************************** Functions
         getFormData:Function,
         parseErrors:Function,
@@ -37,17 +40,25 @@ module slatwalladmin {
      * Form Controller handles the logic for this directive.
      */
     export class SWFormController {
+        //************************** Fields
+        isProcessForm:boolean|string;
+        hiddenFields:string;
+        entityName:string;
+        action:string;
+        actions:string;
+        processObject:string;
+        postOnly:boolean;
+        pobject:string;
         
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
-        public static $inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', 'ProcessObject', '$http', '$timeout'];
-        constructor(public $scope, public $element, public $slatwall, public AccountFactory, public CartFactory, public ProcessObject, public $http, public $timeout){
+        public static $inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout'];
+        constructor(public $scope, public $element, public $slatwall, public AccountFactory, public CartFactory, public $http, public $timeout){
             /** only use if the developer has specified these features with isProcessForm */
             
             this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
-                console.log("Handling a process form");
                 this.handleSelfInspection( this );    
             }
         }
@@ -60,13 +71,15 @@ module slatwalladmin {
          */
         handleSelfInspection ( context ) {
             /** local variables */
-            let vm: ViewModel   = context;
-            vm.hiddenFields     = this.hiddenFields || [];
+        let vm: ViewModel       = context;
+            vm.hiddenFields     = this.hiddenFields;
             vm.entityName       = this.entityName || "Account";
             vm.processObject    = this.processObject;
-            vm.action           = this.action || "$login";
-            vm.actions          = this.actions || [];
+            vm.pobject          = this.pobject;
+            vm.action           = this.action;
+            vm.actions          = this.actions;
             vm.$timeout         = this.$timeout;
+            vm.postOnly         = false;
             
             /** parse the name */
             let entityName      = this.processObject.split("_")[0];
@@ -75,14 +88,7 @@ module slatwalladmin {
             /** try to grab the meta data from the process entity in slatwall in a process exists
              *  otherwise, just use the service method to access it.
              */
-            /*try {
-                vm.processObjectMeta = $slatwall.newEntity( this.processObject );
-            }catch( e ){
-                vm.processObjectMeta = {"methodType" : "methodOnly"};  
-            }*/
-            
-            //console.log(vm.processObjectMeta);
-            
+             
             /** Cart is an alias for an Order */
             if (entityName == "Order") { 
                 entityName = "Cart" 
@@ -98,52 +104,27 @@ module slatwalladmin {
                     
                 });
             
-            /** make sure we have our data */
+            /** make sure we have our data using new logic and $slatwall*/
             if (this.processObject == undefined || this.entityName == undefined) {
-                throw ("ProcessObject Exception");
+                throw ("Process-Object Exception");
             }
             
-            let processObj = this.ProcessObject.GetInstance();
+            try {
+                vm.actionFn = this.$slatwall.newEntity(this.pobject);
+            }catch (e){
+                vm.postOnly = true;
+            }
+           
+            if (angular.isDefined(vm.action)){
+                console.log("New Response: ", vm.actionFn);
+            }else{
+                throw("Could not get access to action fn");
+            }
             
-            /** parse the response */
-            processObj = processObj.$get({ processObject: this.processObject, entityName: this.entityName }).success(
-                
-                /** parse */
-                function(response) {
-                    vm.parseProcessObjectResponse(response);
-                }
-                
-            ).error(function() {
-                throw ("Endpoint does not exist exception");
-            });
-
-            /** handles the process object structure */
-            vm.parseProcessObjectResponse = (response) => 
-                {
-                    processObj = response;
-                    if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
-                        processObj.processObject["meta"] = [];
-                        for (var p of processObj.processObject["PROPERTIES"]) {
-    
-                            angular.forEach(processObj.processObject["entityMeta"], (n) => {
-                                if (n["NAME"] == p["NAME"]) {
-                                    processObj.processObject["meta"].push(n);
-                                }
-                            });
-                        }
-    
-                        let processObjName = processObj.processObject["NAME"].split(".");
-                        processObjName = processObjName[processObjName.length - 1];
-    
-                        processObj.processObject["NAME"] = processObjName;
-                        return processObj.processObject;
-                    }
-                }
-
             /** We use these for our models */
             vm.formData = {};
             
-            /** returns all the data from the form by iterating the form elements */
+            /** returns all the data from the form by iterating the form elements (this needs to use the pobject */
             vm.getFormData = function() 
                 {
                     angular.forEach(vm["formCtrl"][vm.processObject], (val, key) => {
@@ -285,6 +266,7 @@ module slatwalladmin {
                 name: "@?", 
                 entityName: "@?", 
                 processObject: "@?",
+                pobject:"@?",
                 hiddenFields: "=?", 
                 action: "@?", 
                 actions: "@?", 

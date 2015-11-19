@@ -48,11 +48,12 @@ var slatwalladmin;
             }catch( e ){
                 vm.processObjectMeta = {"methodType" : "methodOnly"};
             }*/
-            //console.log(vm.processObjectMeta);
-            /** Cart is an alias for an Order */
-            if (entityName == "Order") {
-                entityName = "Cart";
-            }
+            if (angular.isDefined())
+                //console.log(vm.processObjectMeta);
+                /** Cart is an alias for an Order */
+                if (entityName == "Order") {
+                    entityName = "Cart";
+                }
             ;
             /** find the form scope */
             this.$scope.$on('anchor', (event, data) => {

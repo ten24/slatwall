@@ -3,31 +3,30 @@
 module slatwalladmin {
     'use strict';
     
-    export class SWLoginTestController{
+    export class SWLogoutTestController{
         constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private partialsPath:slatwalladmin.partialsPath, private $slatwall:ngSlatwall.SlatwallService, private dialogService:slatwalladmin.IDialogService){
             this.$slatwall = $slatwall; 
-            this.pObject   = "Account_Login";
         }
     }
     
-    export class SWLoginTest implements ng.IDirective{
+    export class SWLogoutTest implements ng.IDirective{
         
         public restrict:string = 'E';
         public scope = {};
         public bindToController={
         };
-        public controller=SWLoginTestController
-        public controllerAs="swLoginTest";
+        public controller=SWLogoutTestController
+        public controllerAs="SwLogoutTest";
         public templateUrl;
         
         constructor(private partialsPath ){
-            this.templateUrl = this.partialsPath+'/frontend/logintestdirectivepartial.html';
+            this.templateUrl = this.partialsPath+'/frontend/Logouttestdirectivepartial.html';
         }
         
         public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
             
         }
     }
-    angular.module('slatwalladmin').directive('swLoginTest',['partialsPath',(partialsPath) => new SWLoginTest(partialsPath)]);
+    angular.module('slatwalladmin').directive('swLogoutTest',['partialsPath',(partialsPath) => new SWLogoutTest(partialsPath)]);
 }
 

@@ -6,19 +6,17 @@ var slatwalladmin;
      * Form Controller handles the logic for this directive.
      */
     var SWFormController = (function () {
-        function SWFormController($scope, $element, $slatwall, AccountFactory, CartFactory, ProcessObject, $http, $timeout) {
+        function SWFormController($scope, $element, $slatwall, AccountFactory, CartFactory, $http, $timeout) {
             /** only use if the developer has specified these features with isProcessForm */
             this.$scope = $scope;
             this.$element = $element;
             this.$slatwall = $slatwall;
             this.AccountFactory = AccountFactory;
             this.CartFactory = CartFactory;
-            this.ProcessObject = ProcessObject;
             this.$http = $http;
             this.$timeout = $timeout;
             this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
-                console.log("Handling a process form");
                 this.handleSelfInspection(this);
             }
         }
@@ -32,24 +30,20 @@ var slatwalladmin;
             var _this = this;
             /** local variables */
             var vm = context;
-            vm.hiddenFields = this.hiddenFields || [];
+            vm.hiddenFields = this.hiddenFields;
             vm.entityName = this.entityName || "Account";
             vm.processObject = this.processObject;
-            vm.action = this.action || "$login";
-            vm.actions = this.actions || [];
+            vm.pobject = this.pobject;
+            vm.action = this.action;
+            vm.actions = this.actions;
             vm.$timeout = this.$timeout;
+            vm.postOnly = false;
             /** parse the name */
             var entityName = this.processObject.split("_")[0];
             var processObject = this.processObject.split("_")[1];
             /** try to grab the meta data from the process entity in slatwall in a process exists
              *  otherwise, just use the service method to access it.
              */
-            /*try {
-                vm.processObjectMeta = $slatwall.newEntity( this.processObject );
-            }catch( e ){
-                vm.processObjectMeta = {"methodType" : "methodOnly"};
-            }*/
-            //console.log(vm.processObjectMeta);
             /** Cart is an alias for an Order */
             if (entityName == "Order") {
                 entityName = "Cart";
@@ -61,41 +55,25 @@ var slatwalladmin;
                     vm["formCtrl"] = data.scope;
                 }
             });
-            /** make sure we have our data */
+            /** make sure we have our data using new logic and $slatwall*/
             if (this.processObject == undefined || this.entityName == undefined) {
-                throw ("ProcessObject Exception");
+                throw ("Process-Object Exception");
             }
-            var processObj = this.ProcessObject.GetInstance();
-            /** parse the response */
-            processObj = processObj.$get({ processObject: this.processObject, entityName: this.entityName }).success(
-            /** parse */
-            function (response) {
-                vm.parseProcessObjectResponse(response);
-            }).error(function () {
-                throw ("Endpoint does not exist exception");
-            });
-            /** handles the process object structure */
-            vm.parseProcessObjectResponse = function (response) {
-                processObj = response;
-                if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
-                    processObj.processObject["meta"] = [];
-                    for (var _i = 0, _a = processObj.processObject["PROPERTIES"]; _i < _a.length; _i++) {
-                        var p = _a[_i];
-                        angular.forEach(processObj.processObject["entityMeta"], function (n) {
-                            if (n["NAME"] == p["NAME"]) {
-                                processObj.processObject["meta"].push(n);
-                            }
-                        });
-                    }
-                    var processObjName = processObj.processObject["NAME"].split(".");
-                    processObjName = processObjName[processObjName.length - 1];
-                    processObj.processObject["NAME"] = processObjName;
-                    return processObj.processObject;
-                }
-            };
+            try {
+                vm.actionFn = this.$slatwall.newEntity(this.pobject);
+            }
+            catch (e) {
+                vm.postOnly = true;
+            }
+            if (angular.isDefined(vm.action)) {
+                console.log("New Response: ", vm.actionFn);
+            }
+            else {
+                throw ("Could not get access to action fn");
+            }
             /** We use these for our models */
             vm.formData = {};
-            /** returns all the data from the form by iterating the form elements */
+            /** returns all the data from the form by iterating the form elements (this needs to use the pobject */
             vm.getFormData = function () {
                 var _this = this;
                 angular.forEach(vm["formCtrl"][vm.processObject], function (val, key) {
@@ -203,7 +181,7 @@ var slatwalladmin;
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
-        SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', 'ProcessObject', '$http', '$timeout'];
+        SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout'];
         return SWFormController;
     })();
     slatwalladmin.SWFormController = SWFormController;
@@ -230,6 +208,7 @@ var slatwalladmin;
                 name: "@?",
                 entityName: "@?",
                 processObject: "@?",
+                pobject: "@?",
                 hiddenFields: "=?",
                 action: "@?",
                 actions: "@?",

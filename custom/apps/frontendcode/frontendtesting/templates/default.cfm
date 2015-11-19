@@ -6,76 +6,19 @@
         <div>           
             <div class="container" >
                 <div class="s-ds-header">
-                    <h2>Form Field Display:</h2>
-                    <h3>This directive is used to build all the other frontend tags.</h3>
+                    <h2>Examples:</h2>
+                    <h3>These are examples of using frontend directives</h3>
                 </div>
                 <p class="directives">
                     
                     <dl>
-                        <h4>Type Attribute Values</h4>
+                        <h4>This will demo all the frontend tags</h4>
                         <hr>
-                        <dt> checkbox</dt>            <dd>   As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1 
-                                                            <br><swf:form-field type="checkbox" name="checkbox label:" class="formControl" value="1"></swf:form-field>
-                                                     </dd>
-                        <dt> checkboxgroup</dt>       <dd>   Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-                                                            <br><swf:form-field type="checkboxgroup" name="checkbox group label:" class="formControl" options="option1,option2,option3"></swf:form-field>
-                                                     </dd>
-                        <dt> File</dt>                <dd>   No value can be passed in
-                                                            <br><swf:form-field type="file" name="File label:" class="formControl"></swf:form-field></dd>
-                        
-                        <dt> Multiselect</dt>         <dd>   Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-                                                            <br><swf:form-field type="multiselect" options="option1,option2,option3" name="Multiselect label:" class="formControl"></swf:form-field>
-                                                     </dd>
-                        
-                        <dt> Password</dt>            <dd>   No Value can be passed in
-                                                            <br><swf:form-field type="password" name="Password label:" class="formControl"></swf:form-field>
-                                                     </dd>
-                        
-                        <dt> Radiogroup</dt>          <dd>   Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-                                                            <br><swf:form-field type="radiogroup" name="Radio Group label:" class="formControl" options="option1,option2,option3"></swf:form-field>
-                                                     </dd>
-                        
-                        <dt> Select</dt>              <dd>   Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-                                                            <br><swf:form-field type="select" name="Select label:" options="option1,option2,option3" class="formControl"></swf:form-field>   
-                                                     </dd>
-                        
-                        <dt> Text</dt>                <dd>   Simple Text Field
-                                                            <br><swf:form-field name="Text label:" type="text" class="formControl" value="someValue" value-object-property="test"></swf:form-field>
-                                                     </dd>you have entered a 
-                        
-                        <dt> Textarea</dt>            <dd>   Simple Textarea
-                                                            <br><swf:form-field type="textarea" name="textArea label:" class="formControl"></swf:form-field>
-                                                     </dd>
-                        
-                        <dt> Yesno</dt>               <dd>   This is used by booleans and flags to create a radio group of Yes and No
-                                                            <br><swf:form-field type="yesno" name="yesno" class="formControl"></swf:form-field>
-                                                     </dd>
-                         <dt>Submit</dt>               <dd>  Used by a form (added to the end of all forms when using processDisplay)
-                                                            <br><swf:form-field type="submit" name="submit" class="formControl" doprocess="Account_login"></swf:form-field>
-                                                     </dd>                            
-                         <hr>                            
-                         
-                         <div>
-                            <small>
-                            <p>The swf-form-field has a number of attributes used to configure the field. Generally - just use a property display setting these two
-                               options rather than manually setting all the fields.
-                            </p>
-                            <p>Property Display (see below) - Use the valueObject and ValueObjectProperty to auto pull the other attributes.</p>
-                            <ul>
-                                <li>valueObject</li>
-                                <li>valueObjectProperty"</li>
-                            </ul>
-                            If you need to configure it manually - Use the below options.
-                            <ul>
-                                <li>type {string}</li>
-                                <li>name {string}</li> 
-                                <li>class {string}</li>
-                                <li>value type="any"</li>
-                                <li>valueOptions {listItem1,listItem2,listItem3} This is used with select, checkbox group, multiselect</li>
-                                <li>fieldAttributes {string}</li> 
-                            </ul>
-                            </small>
-                        </div>                            
+                        <dt> login (swf-login)</dt>            
+                        <dd>  Accepts a emailaddress and password and logs in the user.
+                               <br><swf-login></swf-login>
+                        </dd>
+                                                
                     </dl>
                     <hr>
                 </p>
@@ -91,94 +34,8 @@
                     <h4>There are a couple restrictions on valid form naming characters. A field can't start with a '$'</h4>
                 </div>
                <section>
-            <!---	
-               <section>
-                    <div>           
-                        <div class="container" > 
-                            <dl>
-                                <h4>Example Forms</h4>
-                                <hr>
-                                <dt>Login Using Decorated Form</dt>            
-                                <dd>
-                                   <!-- start decorated bootstrap form -->
-                                   <swf-form process-object="Account_login" action="$login" on-success="Account_logout">
-                                        <div class="form-group">
-                                            <label for="email">Email</label>
-                                            <input type="email" class="form-control" id="email" placeholder="Email" ng-model="Account_login.emailAddress">
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label for="password">Password</label>
-                                            <input type="password" class="form-control" id="password" placeholder="Password" ng-model="Account_login.password">
-                                        </div>
-                                        
-                                        <swf-form-field name="Login" type="submit" class="btn btn-primary"></swf-form-field>
-                                   </swf-form>
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-               </section>
-               --->
-               <section>
-                    <div>           
-                        <div class="container" > 
-                        <dl>
-                            <h4>Example Forms</h4>
-                            <hr>
-                            <dt>Login/Logout</dt>            
-                            <dd>
-                                <!-- start login /logout forms -->
-                                <swf-login></swf-login>
-                                <swf-logout></swf-logout>
-                            </dd>
-                         </dl>
-                        </div>
-                    </div>
-                </section>
-                
-                <section>
-                    <div>           
-                        <div class="container" > 
-                            <dl>
-                                <h4>Example Forms</h4>
-                                <hr>
-                            <dt>Promo Codes</dt>            
-                            <dd>
-                                <!-- add promo code -->
-                                <swf-form process-object="Order_addPromotionCode" action="$addPromotionCode">
-                                   <swf-form-field name="promotionCode" label-text="Promo Code:" type="text" class="formControl" sw-model="Order_addPromotionCode.promotionCode"></swf-form-field>
-                                   <swf-form-field name="Add Promo Code" type="submit" class="formControl"></swf-form-field>
-                                </swf-form>
-                            </dd>
-                        </div>
-                    </div>
-                </section>
-                <section>
-                    <div>           
-                        <div class="container" > 
-                            <dl>
-                                <h4>Example Forms</h4>
-                                <hr>
-                            <dt>create a new account and then login</dt>            
-                            <dd>
-                                <!---------Create an Account----------->
-                                <swf-form process-object="Account_create" action="$createAccount">
-                                   <swf-form-field name="firstName" label-text="First Name:" type="text" class="formControl" sw-model="Account_create.firstName"></swf-form-field>
-                                   <swf-form-field name="lastName" label-text="Last Name:" type="text" class="formControl" sw-model="Account_create.lastName"></swf-form-field>
-                                   <swf-form-field name="phone" label-text="Phone:" type="text" placeholder="xxx-xxx-xxxx" class="formControl" sw-model="Account_create.phone"></swf-form-field>
-                                   <swf-form-field name="company" label-text="Company:" type="text" class="formControl" sw-model="Account_create.company"></swf-form-field>
-                                   <swf-form-field name="emailAddress" label-text="Email:" type="text" class="formControl" sw-model="Account_create.emailAddress"></swf-form-field>
-                                   <swf-form-field name="emailAddressConfirm" label-text="Confirm Email:" type="text" class="formControl" sw-model="Account_create.emailAddressConfirm"></swf-form-field>
-                                   <swf-form-field name="password" label-text="Password:" type="password" class="formControl" sw-model="Account_create.password"></swf-form-field>
-                                   <swf-form-field name="passwordConfirm" label-text="Confirm Password:" type="password" class="formControl" sw-model="Account_create.passwordConfirm"></swf-form-field>
-                                   <swf-form-field name="Create Account" type="submit" class="formControl"></swf-form-field>
-                                </swf-form>
-                                <!----End create account and login------>
-                            </dd>
-                        </div>
-                    </div>
-                </section>
+            
+               
                 <section>
                     <div>           
                         <div class="container" > 
