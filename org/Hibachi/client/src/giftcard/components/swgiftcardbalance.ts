@@ -1,5 +1,5 @@
-/// <reference path="../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../client/typings/slatwallTypeScript.d.ts" />
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 	
 class SWGiftCardBalanceController{
 	public transactions; 
@@ -65,12 +65,12 @@ class SWGiftCardBalance implements ng.IDirective {
         var directive:ng.IDirectiveFactory = (
             collectionConfigService,
 		    partialsPath
-        ) => new GiftCardBalance(
+        ) => new SWGiftCardBalance(
             collectionConfigService,
 			partialsPath
         );
         directive.$inject = [
-            '$slatwall',
+            'collectionConfigService',
 			'partialsPath'
         ];
         return directive;    

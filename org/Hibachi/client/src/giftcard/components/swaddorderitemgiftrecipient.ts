@@ -1,5 +1,7 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
+
+import {GiftRecipient} from "../models/giftrecipient";
 
 class SWAddOrderItemRecipientController {
 
@@ -16,11 +18,11 @@ class SWAddOrderItemRecipientController {
 		this.adding = false; 
 		this.searchText = ""; 
 		var count = 1;
-		this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+		this.currentGiftRecipient = new GiftRecipient();
 		this.orderItemGiftRecipients = [];
 	}
 	
-	addGiftRecipientFromAccountList = (account:any):void =>{
+	public addGiftRecipientFromAccountList = (account:any):void =>{
 		var giftRecipient = new GiftRecipient();
 		giftRecipient.firstName = account.firstName; 
 		giftRecipient.lastName = account.lastName; 
@@ -30,7 +32,7 @@ class SWAddOrderItemRecipientController {
 		this.searchText = "";   
 	}
 	
-	getUnassignedCountArray = ():number[] =>{
+	public getUnassignedCountArray = ():number[] =>{
 		var unassignedCountArray = new Array();
 
 		for(var i = 1; i <= this.getUnassignedCount(); i++ ){			
@@ -40,7 +42,7 @@ class SWAddOrderItemRecipientController {
 		return unassignedCountArray; 
 	}
 	
-	getAssignedCount = ():number =>{
+	public getAssignedCount = ():number =>{
 	
 		var assignedCount = 0; 
 		
@@ -52,7 +54,7 @@ class SWAddOrderItemRecipientController {
 
 	}
 
-	getUnassignedCount = ():number =>{
+	public getUnassignedCount = ():number =>{
 		var unassignedCount = this.quantity; 
 
 		angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
@@ -62,16 +64,16 @@ class SWAddOrderItemRecipientController {
 		return unassignedCount;
 	}
 
-	addGiftRecipient = ():void =>{
+	public addGiftRecipient = ():void =>{
 		this.adding = false; 
 		var giftRecipient = new GiftRecipient();
 		angular.extend(giftRecipient,this.currentGiftRecipient);
 		this.orderItemGiftRecipients.push(giftRecipient);
-		this.currentGiftRecipient = new slatwalladmin.GiftRecipient(); 
+		this.currentGiftRecipient = new GiftRecipient(); 
 		this.searchText = ""; 
 	}
 
-	startFormWithName = (searchString = this.searchText):void =>{
+	public startFormWithName = (searchString = this.searchText):void =>{
 		this.adding = true; 
 		
 		if(searchString == ""){
@@ -82,7 +84,7 @@ class SWAddOrderItemRecipientController {
 		}
 	}
 
-	getTotalQuantity = ():number =>{
+	public getTotalQuantity = ():number =>{
 		var totalQuantity = 0;
 		angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
 				totalQuantity += orderItemGiftRecipient.quantity;
@@ -90,7 +92,7 @@ class SWAddOrderItemRecipientController {
 		return totalQuantity;
 	}
 
-	getMessageCharactersLeft = ():number =>{				
+	public getMessageCharactersLeft = ():number =>{				
 		if(angular.isDefined(this.currentGiftRecipient.giftMessage)){ 
 			return 250 - this.currentGiftRecipient.giftMessage.length;
 		} else { 

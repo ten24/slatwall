@@ -1,7 +1,10 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 
 class SWOrderItemGiftRecipientRowController {
+	public recipients; 
+	public recipient;
+	public quantity; 
 	
 	constructor(){
 		
@@ -21,7 +24,7 @@ class SWOrderItemGiftRecipientRowController {
 		this.recipients.splice(this.recipients.indexOf(recipient), 1);
 	}	
 	
-	this.saveGiftRecipient = (recipient:any) =>{
+	public saveGiftRecipient = (recipient:any) =>{
 			recipient.editing = false; 
 	}
 	
@@ -68,7 +71,7 @@ class SWOrderItemGiftRecipientRow implements ng.IDirective {
 			
 			public static $inject = ["partialsPath"];
 			public restrict:string = 'AE';
-			public templateUrl:string = partialsPath + "orderitemgiftrecipientrow.html";
+			public templateUrl:string;
 			
 			public scope={
 				recipient:"=",
@@ -86,21 +89,23 @@ class SWOrderItemGiftRecipientRow implements ng.IDirective {
 			
 			public static Factory():ng.IDirectiveFactory{
 				var directive:ng.IDirectiveFactory = (
-					collectionConfigService,
 					partialsPath
 				) => new SWOrderItemGiftRecipientRow(
-					collectionConfigService,
 					partialsPath
 				);
 				directive.$inject = [
-					'$slatwall',
 					'partialsPath'
 				];
 				return directive;    
 			}
 			
-			constructor(partialsPath){
-			}				
+			constructor(private partialsPath){
+				this.init()
+			}		
+			
+			public init = () => {
+				this.templateUrl = this.partialsPath + "orderitemgiftrecipientrow.html"								
+			}	
 }
 
 export {

@@ -1,5 +1,5 @@
-/// <reference path="../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../client/typings/slatwallTypeScript.d.ts" />
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 
 class SWGiftCardHistoryController{
 	public transactions;
@@ -10,7 +10,7 @@ class SWGiftCardHistoryController{
 	public static $inject = ["collectionConfigService"];
 	
 	
-	constructor(private collectionConfigService:CollectionConfig){
+	constructor(private collectionConfigService){
 		this.init();
 	} 
 	
@@ -101,7 +101,7 @@ class SWGiftCardHistoryController{
 	}
 }
 
-class GiftCardHistory implements ng.IDirective { 
+class SWGiftCardHistory implements ng.IDirective { 
 	
 	public static $inject = ["collectionConfigService", "partialsPath"];
 	
@@ -121,18 +121,18 @@ class GiftCardHistory implements ng.IDirective {
 		var directive:ng.IDirectiveFactory = (
 			collectionConfigService,
 			partialsPath
-		) => new GiftCardHistory(
+		) => new SWGiftCardHistory(
 			collectionConfigService,
 			partialsPath
 		);
 		directive.$inject = [
-			'$slatwall',
+			'collectionConfigService',
 			'partialsPath'
 		];
 		return directive;    
 	}
 		
-	constructor(private collectionConfigService:CollectionConfig, private partialsPath){ 
+	constructor(private collectionConfigService, private partialsPath){ 
 		this.templateUrl = partialsPath + "/entity/giftcard/history.html";
 		this.restrict = "EA";
 	}
@@ -145,5 +145,5 @@ class GiftCardHistory implements ng.IDirective {
 	
 export {
 	SWGiftCardHistoryController,
-	GiftCardHistory
+	SWGiftCardHistory
 }

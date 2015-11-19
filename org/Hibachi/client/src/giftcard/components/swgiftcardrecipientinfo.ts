@@ -1,7 +1,7 @@
-/// <reference path="../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../client/typings/slatwallTypeScript.d.ts" />
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 
-class swGiftCardRecipientInfoController { 
+class SWGiftCardRecipientInfoController { 
 	
 	public giftCard; 
 	
@@ -11,7 +11,7 @@ class swGiftCardRecipientInfoController {
 	
 }
 
-class GiftCardRecipientInfo implements ng.IDirective { 
+class SWGiftCardRecipientInfo implements ng.IDirective { 
 	
 	public static $inject = ["partialsPath"];
 	public restrict:string; 
@@ -20,19 +20,16 @@ class GiftCardRecipientInfo implements ng.IDirective {
 	public bindToController = {
 		giftCard:"=?"
 	}; 
-	public controller = swGiftCardRecipientInfoController; 
+	public controller = SWGiftCardRecipientInfoController; 
 	public controllerAs = "swGiftCardRecipientInfo";
 	
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
-			collectionConfigService,
 			partialsPath
-		) => new GiftCardRecipientInfo(
-			collectionConfigService,
+		) => new SWGiftCardRecipientInfo(
 			partialsPath
 		);
 		directive.$inject = [
-			'$slatwall',
 			'partialsPath'
 		];
 		return directive;    
@@ -46,7 +43,7 @@ class GiftCardRecipientInfo implements ng.IDirective {
 }
 
 export{
-	swGiftCardRecipientInfoController,
-	GiftCardRecipientInfo
+	SWGiftCardRecipientInfoController,
+	SWGiftCardRecipientInfo
 }
 	

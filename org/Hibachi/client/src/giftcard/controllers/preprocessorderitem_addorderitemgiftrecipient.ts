@@ -1,5 +1,6 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+import {GiftRecipient} from "../models/giftrecipient";
 	
 interface IOrderItemGiftRecipientScope extends ng.IScope {
         orderItemGiftRecipients: GiftRecipient[];
@@ -12,15 +13,15 @@ interface IOrderItemGiftRecipientScope extends ng.IScope {
 class OrderItemGiftRecipientControl{
         //@ngInject
         constructor(
-                $scope,
-                $slatwall
+               private $scope,
+               private $slatwall
         ){
                 this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                 $scope.collection = {};
                 this.adding = false; 
                 this.searchText = ""; 
                 var count = 1;
-                this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+                this.currentGiftRecipient = new GiftRecipient();
                 
         }
         
@@ -30,7 +31,7 @@ class OrderItemGiftRecipientControl{
         public orderItemGiftRecipients; 
         public quantity:number;
         public searchText:string; 
-        public currentGiftRecipient:slatwalladmin.GiftRecipient;
+        public currentGiftRecipient:GiftRecipient;
 
         
 
@@ -86,7 +87,7 @@ class OrderItemGiftRecipientControl{
                         ])
                 };
 
-                var accountPromise = $slatwall.getEntity('account', options);
+                var accountPromise = this.$slatwall.getEntity('account', options);
 
                 accountPromise.then((response:any):void =>{
                         this.$scope.collection = response;
@@ -138,7 +139,7 @@ class OrderItemGiftRecipientControl{
                 var giftRecipient = new GiftRecipient();
                 angular.extend(giftRecipient,this.currentGiftRecipient);
                 this.orderItemGiftRecipients.push(giftRecipient);
-                this.currentGiftRecipient = new slatwalladmin.GiftRecipient(); 
+                this.currentGiftRecipient = new GiftRecipient(); 
                 this.searchText = ""; 
         }
 

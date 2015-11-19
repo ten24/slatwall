@@ -2,7 +2,7 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 import {hibachimodule} from "../hibachi/hibachi.module";
-import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
+import {slatwalladminmodule} from "../slatwall/slatwalladmin.module";
 import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 import {ngslatwallmodelmodule} from "../ngslatwallmodel/ngslatwallmodel.module";
 //controllers
@@ -12,12 +12,13 @@ import {SWAddOrderItemGiftRecipient} from "./components/swaddorderitemgiftrecipi
 import {SWGiftCardBalance} from "./components/swgiftcardbalance"; 
 import {SWGiftCardDetail} from "./components/swgiftcarddetail"; 
 import {SWGiftCardHistory} from "./components/swgiftcardhistory"; 
-import {SWGiftCardOrderInfo} from "./components/swgiftcardoverview"; 
+import {SWGiftCardOverview} from "./components/swgiftcardoverview";
+import {SWGiftCardOrderInfo} from "./components/swgiftcardorderinfo"; 
 import {SWGiftCardRecipientInfo} from "./components/swgiftcardrecipientinfo"; 
 import {SWOrderItemGiftRecipientRow} from "./components/sworderitemgiftrecipientrow";
 //models
-import {GiftCard} from "./models/giftCard";
-import {GiftRecipient} from "./models/giftRecipient";
+import {GiftCard} from "./models/giftcard";
+import {GiftRecipient} from "./models/giftrecipient";
 
 var giftcardmodule = angular.module('giftcard',[hibachimodule.name])
 .config([()=>{
