@@ -1038,9 +1038,12 @@
 	var metadataservice_1 = __webpack_require__(21);
 	//controllers
 	var globalsearch_1 = __webpack_require__(22);
+	var otherwisecontroller_1 = __webpack_require__(103);
+	var routecontroller_1 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./controllers/routecontroller\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	//filters
 	var percentage_1 = __webpack_require__(23);
 	//directives
+	//  components
 	var swactioncaller_1 = __webpack_require__(24);
 	var swtypeaheadsearch_1 = __webpack_require__(25);
 	var swactioncallerdropdown_1 = __webpack_require__(26);
@@ -1053,8 +1056,6 @@
 	var swlistingcolumn_1 = __webpack_require__(33);
 	var swlogin_1 = __webpack_require__(34);
 	var swnumbersonly_1 = __webpack_require__(35);
-	var swvalidate_1 = __webpack_require__(36);
-	var swvalidationminlength_1 = __webpack_require__(37);
 	var swloading_1 = __webpack_require__(38);
 	var swscrolltrigger_1 = __webpack_require__(39);
 	var swrbkey_1 = __webpack_require__(40);
@@ -1067,6 +1068,14 @@
 	var swprocesscaller_1 = __webpack_require__(47);
 	var swresizedimage_1 = __webpack_require__(48);
 	var swsortable_1 = __webpack_require__(49);
+	//  entity
+	var swdetail_1 = __webpack_require__(104);
+	var swlist_1 = __webpack_require__(105);
+	//  validation
+	var swvalidate_1 = __webpack_require__(36);
+	var swvalidationminlength_1 = __webpack_require__(37);
+	var swvalidationdatatype_1 = __webpack_require__(106);
+	var swvalidationeq_1 = __webpack_require__(107);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1096,6 +1105,8 @@
 	    .service('formService', formservice_1.FormService)
 	    .service('metadataService', metadataservice_1.MetaDataService)
 	    .controller('globalSearch', globalsearch_1.GlobalSearchController)
+	    .controller('otherwiseController', otherwisecontroller_1.OtherwiseController)
+	    .controller('routecontroller', routecontroller_1.RouteController)
 	    .filter('percentage', [percentage_1.PercentageFilter.Factory])
 	    .directive('swTypeahedSearch', swtypeaheadsearch_1.SWTypeaheadSearch.Factory())
 	    .directive('swActionCaller', swactioncaller_1.SWActionCaller.Factory())
@@ -1122,7 +1133,11 @@
 	    .directive('swHref', swhref_1.SWHref.Factory())
 	    .directive('swProcessCaller', swprocesscaller_1.SWProcessCaller.Factory())
 	    .directive('swresizedimage', swresizedimage_1.SWResizedImage.Factory())
-	    .directive('sw:sortable', swsortable_1.SWSortable.Factory());
+	    .directive('sw:sortable', swsortable_1.SWSortable.Factory())
+	    .directive('swDetail', swdetail_1.SWDetail.Factory())
+	    .directive('swList', swlist_1.SWList.Factory())
+	    .directive('swvalidationdatatype', swvalidationdatatype_1.SWValidationDataType.Factory())
+	    .directive('swvalidationeq', swvalidationeq_1.SWValidationEq.Factory());
 	exports.coremodule = coremodule;
 
 
@@ -11331,7 +11346,7 @@
 	                defaultValues['Audit'] = {
 	                    auditID: '',
 	                    auditType: null,
-	                    auditDateTime: '1447967095033',
+	                    auditDateTime: '1447970864554',
 	                    auditArchiveStartDateTime: null,
 	                    auditArchiveEndDateTime: null,
 	                    auditArchiveCreatedDateTime: null,
@@ -11382,7 +11397,7 @@
 	                    accountEmailAddressID: '',
 	                    emailAddress: null,
 	                    verifiedFlag: 0,
-	                    verificationCode: '4e5634d9cf552a70fef3d7f0b4f525a9',
+	                    verificationCode: '50952efca0985352261f7f1705b475e5',
 	                    remoteID: null,
 	                    createdDateTime: '',
 	                    createdByAccountID: null,
@@ -12973,7 +12988,7 @@
 	                    swprid: '',
 	                    password: '',
 	                    passwordConfirm: '',
-	                    accountPasswordResetID: "046b980cd952d794da549b8363bd331d",
+	                    accountPasswordResetID: "0b095ca49d5d042769477a53af80a021",
 	                    preProcessDisplayedFlag: 0,
 	                    populatedFlag: 0,
 	                    z: ''
@@ -15329,6 +15344,230 @@
 	    }]);
 	exports.loggermodule = loggermodule;
 	//.factory('$exceptionHandler', ['$injector', ($injector) => new ExceptionHandler($injector)]);;
+
+
+/***/ },
+/* 103 */
+/***/ function(module, exports) {
+
+	var OtherWiseController = (function () {
+	    //@ngInject
+	    function OtherWiseController($scope) {
+	        $scope.$id = "otherwiseController";
+	    }
+	    OtherWiseController.$inject = ["$scope"];
+	    return OtherWiseController;
+	})();
+	exports.OtherWiseController = OtherWiseController;
+
+
+/***/ },
+/* 104 */
+/***/ function(module, exports) {
+
+	var SWDetail = (function () {
+	    function SWDetail($location, $log, $slatwall, partialsPath) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: partialsPath + 'entity/detail.html',
+	            link: function (scope, element, attr) {
+	                scope.$id = "slatwallDetailController";
+	                $log.debug('slatwallDetailController');
+	                /*Sets the view dirty on save*/
+	                scope.setDirty = function (entity) {
+	                    angular.forEach(entity.forms, function (form) {
+	                        form.$setSubmitted();
+	                    });
+	                };
+	                var setupMetaData = function () {
+	                    scope[scope.entityName.toLowerCase()] = scope.entity;
+	                    scope.entity.metaData.$$getDetailTabs().then(function (value) {
+	                        scope.detailTabs = value.data;
+	                        $log.debug('detailtabs');
+	                        $log.debug(scope.detailTabs);
+	                    });
+	                };
+	                var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
+	                scope.tabPartialPath = partialsPath + 'entity/';
+	                scope.getEntity = function () {
+	                    if (scope.entityID === 'null') {
+	                        scope.entity = $slatwall['new' + propertyCasedEntityName]();
+	                        setupMetaData();
+	                    }
+	                    else {
+	                        var entityPromise = $slatwall['get' + propertyCasedEntityName]({ id: scope.entityID });
+	                        entityPromise.promise.then(function () {
+	                            scope.entity = entityPromise.value;
+	                            setupMetaData();
+	                        });
+	                    }
+	                };
+	                scope.getEntity();
+	                scope.deleteEntity = function () {
+	                    var deletePromise = scope.entity.$$delete();
+	                    deletePromise.then(function () {
+	                        $location.path('/entity/' + propertyCasedEntityName + '/');
+	                    });
+	                };
+	                scope.allTabsOpen = false;
+	            }
+	        };
+	    }
+	    SWDetail.Factory = function () {
+	        var directive = function ($location, $log, $slatwall, partialsPath) {
+	            return new SWDetail($location, $log, $slatwall, partialsPath);
+	        };
+	        directive.$inject = [
+	            '$location',
+	            '$log',
+	            '$slatwall',
+	            'partialsPath',
+	        ];
+	        return directive;
+	    };
+	    return SWDetail;
+	})();
+	exports.SWDetail = SWDetail;
+
+
+/***/ },
+/* 105 */
+/***/ function(module, exports) {
+
+	var SWList = (function () {
+	    function SWList($log, $slatwall, partialsPath) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: partialsPath + 'entity/list.html',
+	            link: function (scope, element, attr) {
+	                $log.debug('slatwallList init');
+	                scope.getCollection = function () {
+	                    var pageShow = 50;
+	                    if (scope.pageShow !== 'Auto') {
+	                        pageShow = scope.pageShow;
+	                    }
+	                    scope.entityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
+	                    var collectionListingPromise = $slatwall.getEntity(scope.entityName, { currentPage: scope.currentPage, pageShow: pageShow, keywords: scope.keywords });
+	                    collectionListingPromise.then(function (value) {
+	                        scope.collection = value;
+	                        scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
+	                    });
+	                };
+	                scope.getCollection();
+	            }
+	        };
+	    }
+	    SWList.Factory = function () {
+	        var directive = function ($log, $slatwall, partialsPath) {
+	            return new SWList($log, $slatwall, partialsPath);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'partialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWList;
+	})();
+	exports.SWList = SWList;
+
+
+/***/ },
+/* 106 */
+/***/ function(module, exports) {
+
+	/**
+	 * True if the data type matches the given data type.
+	 */
+	/**
+	 * Validates true if the model value is a numeric value.
+	 */
+	var SWValidationDataType = (function () {
+	    function SWValidationDataType() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                var MY_EMAIL_REGEXP = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
+	                ngModel.$validators.swvalidationdatatype =
+	                    function (modelValue) {
+	                        if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string") {
+	                            return true;
+	                        }
+	                        if (angular.isNumber(parseInt(modelValue)) && attributes.swvalidationdatatype === "numeric") {
+	                            return true;
+	                        }
+	                        if (angular.isArray(modelValue) && attributes.swvalidationdatatype === "array") {
+	                            return true;
+	                        }
+	                        if (angular.isDate(modelValue) && attributes.swvalidationdatatype === "date") {
+	                            return true;
+	                        }
+	                        if (angular.isObject(modelValue) && attributes.swvalidationdatatype === "object") {
+	                            return true;
+	                        }
+	                        if (attributes.swvalidationdatatype === 'email') {
+	                            return MY_EMAIL_REGEXP.test(modelValue);
+	                        }
+	                        if (angular.isUndefined(modelValue && attributes.swvalidationdatatype === "undefined")) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationDataType.Factory = function () {
+	        var directive = function () {
+	            return new SWValidationDataType();
+	        };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationDataType;
+	})();
+	exports.SWValidationDataType = SWValidationDataType;
+
+
+/***/ },
+/* 107 */
+/***/ function(module, exports) {
+
+	/**
+	 * SwValidationEQ: Validates true if the user value == the constraint value.
+	 * @usage <input type='text' swvalidationgte='5' /> will validate false if the user enters
+	 * value other than 5.
+	 */
+	var SWValidationEq = (function () {
+	    function SWValidationEq() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationeq =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationeq;
+	                        if (modelValue === constraintValue) {
+	                            return true;
+	                        }
+	                        else {
+	                            return false;
+	                        }
+	                    }; //<--end function
+	            } //<--end link
+	        };
+	    }
+	    SWValidationEq.Factory = function () {
+	        var directive = function () {
+	            return new SWValidationEq();
+	        };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationEq;
+	})();
+	exports.SWValidationEq = SWValidationEq;
 
 
 /***/ }

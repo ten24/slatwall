@@ -8,9 +8,12 @@ import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
+import {OtherwiseController} from "./controllers/otherwisecontroller";
+import {RouteController} from "./controllers/routecontroller";
 //filters
 import {PercentageFilter} from "./filters/percentage";
 //directives
+//  components
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
@@ -23,8 +26,6 @@ import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingColumn} from "./components/swlistingcolumn";
 import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
-import {SWValidate} from "./validation/swvalidate";
-import {SWValidationMinLength} from "./validation/swvalidationminlength";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
 import {SWRbKey} from "./components/swrbkey";
@@ -37,6 +38,17 @@ import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWResizedImage} from "./components/swresizedimage";
 import {SWSortable} from "./components/swsortable";
+//  entity
+import {SWDetail} from "./entity/swdetail";
+import {SWList} from "./entity/swlist";
+//  validation
+import {SWValidate} from "./validation/swvalidate";
+import {SWValidationMinLength} from "./validation/swvalidationminlength";
+import {SWValidationDataType} from "./validation/swvalidationdatatype";
+import {SWValidationEq} from "./validation/swvalidationeq";
+
+
+
 
 class PathBuilderConfig{
     public baseURL:string;
@@ -74,6 +86,8 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .service('metadataService',MetaDataService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
+.controller('otherwiseController',OtherwiseController)
+.controller('routecontroller',RouteController)
 //filters 
 .filter('percentage',[PercentageFilter.Factory])
 //directives
@@ -103,6 +117,10 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('swresizedimage',SWResizedImage.Factory())
 .directive('sw:sortable',SWSortable.Factory())
+.directive('swDetail',SWDetail.Factory())
+.directive('swList',SWList.Factory())
+.directive('swvalidationdatatype',SWValidationDataType.Factory())
+.directive('swvalidationeq',SWValidationEq.Factory())
 ;  
 export{
 	coremodule

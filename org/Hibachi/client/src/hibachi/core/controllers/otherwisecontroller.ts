@@ -1,9 +1,10 @@
-'use strict';
-angular.module('slatwalladmin').controller('otherwiseController', [
-	'$scope',
-	function(
+class OtherWiseController{
+	//@ngInject
+	constructor(
 		$scope
 	){
 		$scope.$id="otherwiseController";
 	}
-]);
+}
+export{OtherWiseController} 
+

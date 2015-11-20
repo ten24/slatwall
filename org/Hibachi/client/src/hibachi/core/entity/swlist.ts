@@ -1,16 +1,27 @@
-'use strict';
-//Thanks to AdamMettro
-angular.module('slatwalladmin')
-.directive('swList', [
-	'$log',
-	'$slatwall',
-	'partialsPath',
-	function (
+class SWList{
+	public static Factory(){
+		var directive = (
 			$log,
 			$slatwall,
 			partialsPath
-	) {
-	    return {
+		)=> new SWList(
+			$log,
+			$slatwall,
+			partialsPath
+		);
+		directive.$inject = [
+			'$log',
+			'$slatwall',
+			'partialsPath'
+		];
+		return directive;
+	}
+	constructor(
+		$log,
+		$slatwall,
+		partialsPath
+	){
+		return {
 	        restrict: 'E',
 	        templateUrl:partialsPath+'entity/list.html',
 	        link: function (scope, element, attr) {
@@ -33,4 +44,7 @@ angular.module('slatwalladmin')
 	        }
 	    };
 	}
-]);
+}
+export{
+	SWList
+}
