@@ -3,6 +3,7 @@
 
 require('./vendor.ts')();
 import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
+import {giftcardmodule} from "./giftcard/giftcard.module";
 import {loggermodule} from "./hibachi/logger/logger.module"; 
 
 //custom bootstrapper
