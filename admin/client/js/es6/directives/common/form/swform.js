@@ -6,19 +6,17 @@ var slatwalladmin;
      * Form Controller handles the logic for this directive.
      */
     class SWFormController {
-        constructor($scope, $element, $slatwall, AccountFactory, CartFactory, ProcessObject, $http, $timeout) {
+        constructor($scope, $element, $slatwall, AccountFactory, CartFactory, $http, $timeout) {
             /** only use if the developer has specified these features with isProcessForm */
             this.$scope = $scope;
             this.$element = $element;
             this.$slatwall = $slatwall;
             this.AccountFactory = AccountFactory;
             this.CartFactory = CartFactory;
-            this.ProcessObject = ProcessObject;
             this.$http = $http;
             this.$timeout = $timeout;
             this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
-                console.log("Handling a process form");
                 this.handleSelfInspection(this);
             }
         }
@@ -31,29 +29,23 @@ var slatwalladmin;
         handleSelfInspection(context) {
             /** local variables */
             let vm = context;
-            vm.hiddenFields = this.hiddenFields || [];
+            vm.hiddenFields = this.hiddenFields;
             vm.entityName = this.entityName || "Account";
             vm.processObject = this.processObject;
-            vm.action = this.action || "$login";
-            vm.actions = this.actions || [];
+            vm.action = this.action;
+            vm.actions = this.actions;
             vm.$timeout = this.$timeout;
+            vm.postOnly = false;
             /** parse the name */
             let entityName = this.processObject.split("_")[0];
             let processObject = this.processObject.split("_")[1];
             /** try to grab the meta data from the process entity in slatwall in a process exists
              *  otherwise, just use the service method to access it.
              */
-            /*try {
-                vm.processObjectMeta = $slatwall.newEntity( this.processObject );
-            }catch( e ){
-                vm.processObjectMeta = {"methodType" : "methodOnly"};
-            }*/
-            if (angular.isDefined())
-                //console.log(vm.processObjectMeta);
-                /** Cart is an alias for an Order */
-                if (entityName == "Order") {
-                    entityName = "Cart";
-                }
+            /** Cart is an alias for an Order */
+            if (entityName == "Order") {
+                entityName = "Cart";
+            }
             ;
             /** find the form scope */
             this.$scope.$on('anchor', (event, data) => {
@@ -61,40 +53,22 @@ var slatwalladmin;
                     vm["formCtrl"] = data.scope;
                 }
             });
-            /** make sure we have our data */
+            /** make sure we have our data using new logic and $slatwall*/
             if (this.processObject == undefined || this.entityName == undefined) {
-                throw ("ProcessObject Exception");
+                throw ("ProcessObject Undefined Exception");
             }
-            let processObj = this.ProcessObject.GetInstance();
-            /** parse the response */
-            processObj = processObj.$get({ processObject: this.processObject, entityName: this.entityName }).success(
-            /** parse */
-            function (response) {
-                vm.parseProcessObjectResponse(response);
-            }).error(function () {
-                throw ("Endpoint does not exist exception");
-            });
-            /** handles the process object structure */
-            vm.parseProcessObjectResponse = (response) => {
-                processObj = response;
-                if (angular.isDefined(processObj.processObject) && processObj.processObject["PROPERTIES"]) {
-                    processObj.processObject["meta"] = [];
-                    for (var p of processObj.processObject["PROPERTIES"]) {
-                        angular.forEach(processObj.processObject["entityMeta"], (n) => {
-                            if (n["NAME"] == p["NAME"]) {
-                                processObj.processObject["meta"].push(n);
-                            }
-                        });
-                    }
-                    let processObjName = processObj.processObject["NAME"].split(".");
-                    processObjName = processObjName[processObjName.length - 1];
-                    processObj.processObject["NAME"] = processObjName;
-                    return processObj.processObject;
-                }
-            };
+            try {
+                vm.actionFn = this.$slatwall.newEntity(vm.processObject);
+            }
+            catch (e) {
+                vm.postOnly = true;
+            }
+            if (angular.isDefined(vm.actionFn)) {
+                console.log("New Response: ", vm.actionFn);
+            }
             /** We use these for our models */
             vm.formData = {};
-            /** returns all the data from the form by iterating the form elements */
+            /** returns all the data from the form by iterating the form elements (this needs to use the processobject */
             vm.getFormData = function () {
                 angular.forEach(vm["formCtrl"][vm.processObject], (val, key) => {
                     /** Check for form elements that have a name that doesn't start with $ */
@@ -156,17 +130,18 @@ var slatwalladmin;
                 let factoryIterator = vm.factoryIterator;
                 if (factoryIterator != undefined) {
                     let submitFn = factoryIterator[submitFunction];
+                    vm.formData = vm.formData || {};
                     submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
-                        if (result.data.failureActions.length != 0) {
+                        if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
                             vm.parseErrors(result.data);
                         }
                         else {
-                            console.log("Successfully Posted Form");
+                            console.log("Successfully Posted Form"); //run event on success
                         }
                     }, angular.noop);
                 }
                 else {
-                    throw ("Action does not exist in Account or Cart: " + vm.action);
+                    throw ("Action does not exist in Account or Cart Exception  *" + vm.action);
                 }
             };
             /** does either a single or multiple actions */
@@ -199,7 +174,7 @@ var slatwalladmin;
     /**
      * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
      */
-    SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', 'ProcessObject', '$http', '$timeout'];
+    SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout'];
     slatwalladmin.SWFormController = SWFormController;
     class SWForm {
         constructor(partialsPath, $http, $timeout) {
@@ -219,11 +194,10 @@ var slatwalladmin;
              * Binds all of our variables to the controller so we can access using this
              */
             this.bindToController = {
-                object: "=?",
+                processObject: "=?",
                 context: "@?",
                 name: "@?",
                 entityName: "@?",
-                processObject: "@?",
                 hiddenFields: "=?",
                 action: "@?",
                 actions: "@?",

@@ -1,10 +1,10 @@
 <!-- Example Login Form - need to use object and property instead of a grouping called object -->
 <sw-form
     data-is-process-form="true"
+    data-process-object="Account_Login"
     data-form-class="cssform"
     data-error-class="error"
-    data-process-object="Account_login"
-    data-pobject="{{swLoginTest.pObject}}"
+    data-on-success="hide:Account_Login,show:Account_Logout"
     data-action="$login">
     
     <swf-property-display 

@@ -6,8 +6,7 @@ var slatwalladmin;
      * Form Controller handles the logic for this directive.
      */
     var SWFormController = (function () {
-        function SWFormController($scope, $element, $slatwall, AccountFactory, CartFactory, $http, $timeout) {
-            /** only use if the developer has specified these features with isProcessForm */
+        function SWFormController($scope, $element, $slatwall, AccountFactory, CartFactory, $http, $timeout, observerService) {
             this.$scope = $scope;
             this.$element = $element;
             this.$slatwall = $slatwall;
@@ -15,6 +14,8 @@ var slatwalladmin;
             this.CartFactory = CartFactory;
             this.$http = $http;
             this.$timeout = $timeout;
+            this.observerService = observerService;
+            /** only use if the developer has specified these features with isProcessForm */
             this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
                 this.handleSelfInspection(this);
@@ -33,14 +34,15 @@ var slatwalladmin;
             vm.hiddenFields = this.hiddenFields;
             vm.entityName = this.entityName || "Account";
             vm.processObject = this.processObject;
-            vm.pobject = this.pobject;
             vm.action = this.action;
             vm.actions = this.actions;
             vm.$timeout = this.$timeout;
             vm.postOnly = false;
+            var observerService = this.observerService;
             /** parse the name */
             var entityName = this.processObject.split("_")[0];
             var processObject = this.processObject.split("_")[1];
+            console.log("Service: ", observerService);
             /** try to grab the meta data from the process entity in slatwall in a process exists
              *  otherwise, just use the service method to access it.
              */
@@ -57,23 +59,20 @@ var slatwalladmin;
             });
             /** make sure we have our data using new logic and $slatwall*/
             if (this.processObject == undefined || this.entityName == undefined) {
-                throw ("Process-Object Exception");
+                throw ("ProcessObject Undefined Exception");
             }
             try {
-                vm.actionFn = this.$slatwall.newEntity(this.pobject);
+                vm.actionFn = this.$slatwall.newEntity(vm.processObject);
             }
             catch (e) {
                 vm.postOnly = true;
             }
-            if (angular.isDefined(vm.action)) {
+            if (angular.isDefined(vm.actionFn)) {
                 console.log("New Response: ", vm.actionFn);
-            }
-            else {
-                throw ("Could not get access to action fn");
             }
             /** We use these for our models */
             vm.formData = {};
-            /** returns all the data from the form by iterating the form elements (this needs to use the pobject */
+            /** returns all the data from the form by iterating the form elements */
             vm.getFormData = function () {
                 var _this = this;
                 angular.forEach(vm["formCtrl"][vm.processObject], function (val, key) {
@@ -100,6 +99,71 @@ var slatwalladmin;
                             vm["formCtrl"][vm.processObject][key].$setValidity(key, false); //set field invalid
                         }
                     }, this);
+                }
+            };
+            vm.eventsObj = [];
+            /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
+            vm.parseEventString = function (evntStr, evntType) {
+                vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+            };
+            vm.hide = function (params) {
+                console.log("hiding", params);
+                if (params.caller == this.processObject) {
+                }
+            };
+            vm.show = function (params) {
+                console.log("show: ");
+                if (params.event == this.processObject) {
+                }
+            };
+            vm.refresh = function (params) {
+                console.log("refreshing: ");
+                if (params.event == this.processObject) {
+                }
+            };
+            vm.update = function (params) {
+                console.log("updating");
+                if (params.event == this.processObject) {
+                }
+            };
+            vm.broadcast = function (params) {
+                console.log("Broadcasting so something else handles something.");
+                observerService.notify(params.eventType, { "caller": params.name });
+            };
+            vm.parseEvents = function (str, evntType) {
+                if (str == undefined)
+                    return;
+                var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
+                var eventsObj = {
+                    "events": []
+                }; //will hold events
+                for (var token in strTokens) {
+                    var t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
+                    var u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+                    if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
+                        if (u == "this") {
+                            u == this.processObject.toLowerCase();
+                            console.log("changing");
+                        } //<--replaces the alias this with the name of this form.
+                        var event_1 = { "name": t, "value": u };
+                        eventsObj.events.push(event_1);
+                    }
+                }
+                for (var e in eventsObj.events) {
+                    console.log("Setting the attach on the event: ", eventsObj.events[e]);
+                    if (eventsObj.events[e].name == 'show' && eventsObj.events[e].value == this.processObject.toLowerCase()) {
+                        observerService.attach(vm.show, "onSuccess", { "event": "onSuccess", "form": this.processObject });
+                        console.log("Attaching: show");
+                    } //{"type" : evntType, "event": vm.eventsObj[e]}
+                    if (eventsObj.events[e].name == 'hide' && eventsObj.events[e].value == this.processObject.toLowerCase()) {
+                        observerService.attach(vm.hide, "onSuccess", { "event": "onSuccess", "form": this.processObject });
+                        console.log("Attaching: hide");
+                    }
+                    //handle when we are not handling the case.
+                    if (eventsObj.events[e].value !== this.processObject.toLowerCase()) {
+                        observerService.attach(vm.broadcast, "broadcast", { "event": "onSuccess", "form": eventsObj.events[e].value });
+                        console.log("Attaching: broadcast", eventsObj.events[e].value, this.processObject.toLowerCase());
+                    }
                 }
             };
             /** find and clear all errors on form */
@@ -138,17 +202,20 @@ var slatwalladmin;
                 var factoryIterator = vm.factoryIterator;
                 if (factoryIterator != undefined) {
                     var submitFn = factoryIterator[submitFunction];
+                    vm.formData = vm.formData || {};
                     submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
-                        if (result.data.failureActions.length != 0) {
+                        if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
                             vm.parseErrors(result.data);
+                            observerService.notify("onError", { "caller": _this.processObject });
                         }
                         else {
                             console.log("Successfully Posted Form");
+                            observerService.notify("onSuccess", { "caller": _this.processObject });
                         }
                     }, angular.noop);
                 }
                 else {
-                    throw ("Action does not exist in Account or Cart: " + vm.action);
+                    throw ("Action does not exist in Account or Cart Exception  *" + vm.action);
                 }
             };
             /** does either a single or multiple actions */
@@ -173,20 +240,29 @@ var slatwalladmin;
                 vm.formData = vm.getFormData() || "";
                 vm.doAction(action);
             };
-            /** give children access to the process */
+            /* give children access to the process
+            */
             vm.getProcessObject = function () {
                 return vm.processEntity;
             };
+            /* handle events
+            */
+            if (this.onSuccess != undefined) {
+                vm.parseEventString(this.onSuccess, "onSuccess");
+            }
+            else if (this.onError != undefined) {
+                vm.parseEventString(this.onError, "onError");
+            }
         };
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
-        SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout'];
+        SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout', 'observerService'];
         return SWFormController;
     })();
     slatwalladmin.SWFormController = SWFormController;
     var SWForm = (function () {
-        function SWForm(partialsPath, $http, $timeout) {
+        function SWForm(partialsPath, $http, $timeout, observerService) {
             this.partialsPath = partialsPath;
             this.templateUrl = "";
             this.transclude = true;
@@ -208,13 +284,13 @@ var slatwalladmin;
                 name: "@?",
                 entityName: "@?",
                 processObject: "@?",
-                pobject: "@?",
                 hiddenFields: "=?",
                 action: "@?",
                 actions: "@?",
                 formClass: "@?",
                 formData: "=?",
                 onSuccess: "@?",
+                onError: "@?",
                 hideUntil: "@?",
                 isProcessForm: "@"
             };
@@ -229,14 +305,14 @@ var slatwalladmin;
         /**
          * Handles injecting the partials path into this class
          */
-        SWForm.$inject = ['partialsPath', '$http', '$timeout'];
+        SWForm.$inject = ['partialsPath', '$http', '$timeout', 'observerService'];
         return SWForm;
     })();
     slatwalladmin.SWForm = SWForm;
     /**
      * Handles registering the swForm directive with its module as well as injecting dependancies in a minification safe way.
      */
-    angular.module('slatwalladmin').directive('swForm', ['partialsPath', '$http', function (partialsPath, $http, $timeout) { return new SWForm(partialsPath, $http, $timeout); }]);
+    angular.module('slatwalladmin').directive('swForm', ['partialsPath', '$http', 'observerService', function (partialsPath, $http, $timeout, observerService) { return new SWForm(partialsPath, $http, $timeout, observerService); }]);
 })(slatwalladmin || (slatwalladmin = {})); //<--end module
 
 //# sourceMappingURL=../../../directives/common/form/swform.js.map
