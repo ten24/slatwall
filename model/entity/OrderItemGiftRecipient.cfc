@@ -96,6 +96,12 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
     	return true;
    	}
 
+	public any function getGiftCardSmartList(){
+		var smartList = getService("GiftCardService").getGiftCardSmartList();
+		smartList.addFilter("orderItemGiftRecipient.orderItemGiftRecipientID", this.getOrderItemGiftRecipientID());
+		return smartList;
+	}
+
     public numeric function getNumberOfUnassignedGiftCards(){
         return this.getQuantity() - arrayLen(this.getGiftCards());
     }

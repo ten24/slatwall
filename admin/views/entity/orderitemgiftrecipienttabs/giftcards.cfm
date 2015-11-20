@@ -46,32 +46,16 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.orderItemGiftRecipient" type="any" />
-<cfparam name="rc.orderItem" type="any" default="#rc.orderItemGiftRecipient.getOrderItem()#" />
-<cfparam name="rc.order" type="any" default="#rc.orderItem.getOrder()#" />
-
-<cfparam name="rc.edit" default="false" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderItem#" edit="#rc.edit#" >
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderItemGiftRecipient#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.order.getOrderID()#"
-								   deleteQueryString="redirectAction=admin:entity.detailorder&orderID=#rc.order.getOrderID()#">
-		</hb:HibachiEntityActionBar>
-
-        <cfif rc.edit>
-            <input type="hidden" name="orderItemGiftRecipientID" value="#rc.orderItemGiftRecipient.getOrderItemGiftRecipientID()#" />
-		</cfif>
-
-
-		<hb:HibachiEntityDetailGroup object="#rc.orderItemGiftRecipient#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderitemgiftrecipienttabs/basic" open="true">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderitemgiftrecipienttabs/giftcards" open="true">
-		</hb:HibachiEntityDetailGroup>
-
-    </hb:HibachiEntityDetailForm>
+    <hb:HibachiListingDisplay smartList="#rc.orderItemGiftRecipient.getGiftCardSmartList()#">
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 </cfoutput>
