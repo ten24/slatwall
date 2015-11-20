@@ -47,7 +47,7 @@
 								<td>Recipient notification sent </td>
 								<td ng-bind="transaction.sentAt"></td>
 								<td>Recipient: 
-									<span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_firstName"></span> <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_lastName"></span> ( <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_emailAddress"></span> )
+									<span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_firstName"></span> ( <span ng-bind="transaction.emailTo"></span> )
 								</td>
 								<td>--</td>
 								<td ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>

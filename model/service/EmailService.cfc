@@ -156,18 +156,17 @@ Notes:
 		<cfreturn fileOptions />
 	</cffunction>
 
-	<cffunction name="getEmailTemplateOptions" access="public" returntype="array">
-		<cfargument name="emailTemplateObject" type="string" required="true">
-
-		<cfset var sl = this.getEmailTemplateSmartList() />
-		<cfset sl.addFilter('emailTemplateObject', arguments.emailTemplateObject) />
-		<cfset sl.addSelect('emailTemplateName', 'name') />
-		<cfset sl.addSelect('emailTemplateID', 'value') />
-
-		<cfreturn sl.getRecords() />
-	</cffunction>
-
 	<cfscript>
+
+	public any function getEmailTemplateOptions(required emailTemplateObject){
+		var sl = this.getEmailTemplateSmartList();
+
+		sl.addFilter('emailTemplateObject', arguments.emailTemplateObject);
+		sl.addSelect('emailTemplateName', 'name');
+		sl.addSelect('emailTemplateID', 'value');
+
+		return sl.getRecords();
+	}
 
 	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate ) {
 		var email = this.newEmail();
@@ -230,6 +229,7 @@ Notes:
 				arguments.email.setEmailBodyHTML( templateObject.stringReplace( emailTemplate.getEmailBodyHTML() ) );
 				arguments.email.setEmailBodyText( templateObject.stringReplace( emailTemplate.getEmailBodyText() ) );
 
+
 				var templateFileResponse = "";
 				var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="email", objectName=emailTemplate.getEmailTemplateObject(), fileName=emailTemplate.getEmailTemplateFile());
 
@@ -259,6 +259,8 @@ Notes:
 				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData) );
 				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData) );
 				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData) );
+
+				arguments.email.setLogEmailFlag( emailTemplate.getLogEmailFlag() );
 			}
 
 		}

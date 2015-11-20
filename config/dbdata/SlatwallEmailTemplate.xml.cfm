@@ -7,7 +7,7 @@
 		<column name="emailTemplateFile" update="false" />
 		<column name="emailBodyHTML" update="false" />
 		<column name="emailBodyText" update="false" />
-		<column name="logEmailFlag" update="false" />
+		<column name="logEmailFlag" datatype="bit" update="false" />
 	</Columns>
 	<Records>
 		<Record emailTemplateID="dbb327e506090fde08cc4855fa14448d" emailTemplateName="Order Confirmation" emailTemplateObject="Order" emailTemplateFile="confirmation.cfm" />
