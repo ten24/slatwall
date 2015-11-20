@@ -6,6 +6,8 @@ import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
 import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
+//controllers
+import {GlobalSearchController} from "./controllers/globalsearch";
 //filters
 import {PercentageFilter} from "./filters/percentage";
 //directives
@@ -27,6 +29,14 @@ import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
 import {SWRbKey} from "./components/swrbkey";
 import {SWOptions} from "./components/swoptions";
+import {SWSelection} from "./components/swselection";
+import {SWClickOutside} from "./components/swclickoutside";
+import {SWDirective} from "./components/swdirective";
+import {SWExportAction} from "./components/swexportaction";
+import {SWHref} from "./components/swhref";
+import {SWProcessCaller} from "./components/swprocesscaller";
+import {SWResizedImage} from "./components/swresizedimage";
+import {SWSortable} from "./components/swsortable";
 
 class PathBuilderConfig{
     public baseURL:string;
@@ -62,6 +72,8 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .service('observerService',ObserverService)  
 .service('formService',FormService)
 .service('metadataService',MetaDataService)
+//controllers
+.controller('globalSearch',GlobalSearchController)
 //filters 
 .filter('percentage',[PercentageFilter.Factory])
 //directives
@@ -83,6 +95,14 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
 .directive('swRbkey',SWRbKey.Factory())
 .directive('swOptions',SWOptions.Factory())
+.directive('swSelection',SWSelection.Factory())
+.directive('swClickOutside',SWClickOutside.Factory())
+.directive('swDirective',SWDirective.Factory())
+.directive('swExportAction',SWExportAction.Factory())
+.directive('swHref',SWHref.Factory())
+.directive('swProcessCaller',SWProcessCaller.Factory())
+.directive('swresizedimage',SWResizedImage.Factory())
+.directive('sw:sortable',SWSortable.Factory())
 ;  
 export{
 	coremodule

@@ -8,6 +8,8 @@ import {dialogmodule} from "./dialog/dialog.module";
 import {giftcardmodule} from "./giftcard/giftcard.module";
 import {collectionmodule} from "./collection/collection.module";
 import {workflowmodule} from "./workflow/workflow.module";
+import {productbundlemodule} from "./productbundle/productbundle.module";
+import {productmodule} from "./product/product.module";
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
@@ -16,7 +18,8 @@ var hibachimodule = angular.module('hibachi',[
     paginationmodule.name,
     dialogmodule.name,
     collectionmodule.name,
-    workflowmodule.name
+    workflowmodule.name,
+    productbundlemodule.name
 ])
 
 ;
@@ -24,4 +27,3 @@ var hibachimodule = angular.module('hibachi',[
 export{
     hibachimodule  
 };
-//.controller('appcontroller',controller.ProductCreateController);

@@ -1,8 +1,19 @@
-angular.module('slatwalladmin')
-.directive('swExportAction', [
-	'$log',
-	'partialsPath', 
-	function(
+class SWExportAction{
+	public static Factory(){
+		var directive = (
+			$log,
+			partialsPath
+		)=>new SWExportAction(
+			$log,
+			partialsPath
+		);
+		directive.$inject=[
+			'$log',
+			'partialsPath'
+		];
+		return directive;
+	}
+	constructor(
 		$log,
 		partialsPath
 	){
@@ -15,5 +26,7 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWExportAction
+}

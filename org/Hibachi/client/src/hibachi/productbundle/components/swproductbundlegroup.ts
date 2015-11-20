@@ -49,7 +49,7 @@ class SWProductBundleGroupController {
 	
 
 	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
-				private collectionConfigService:slatwalladmin.CollectionConfig, 
+				private collectionConfigService, 
 				private productBundleService,  private metadataservice, private utilityservice, 
 				private $slatwall, private partialsPath){
 					
@@ -310,7 +310,7 @@ class SWProductBundleGroup implements ng.IDirective{
 	
 	
 	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
-				private collectionConfigService:slatwalladmin.CollectionConfig, 
+				private collectionConfigService,
 				private productBundleService,  private metadataservice, private utilityservice,
 				private $slatwall, private partialsPath){
 		this.templateUrl = partialsPath + "productbundle/productbundlegroup.html";	

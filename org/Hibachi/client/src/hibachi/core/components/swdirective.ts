@@ -1,8 +1,16 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swDirective', [
-	'$compile',
-	function(
+class SWDirective{
+	public static Factory(){
+		var directive = (
+			$compile
+		)=>new SWDirective(
+			$compile
+		);
+		directive.$inject = [
+			'$compile'
+		];
+		return directive;
+	}
+	constructor(
 		$compile
 	){
 		return {
@@ -29,6 +37,7 @@ angular.module('slatwalladmin')
 		    }
 		};
 	}
-]);
-	
-	
+}
+export{
+	SWDirective
+}

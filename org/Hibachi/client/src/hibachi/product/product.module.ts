@@ -1,5 +1,7 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+//modules
+import {coremodule} from "../core/core.module";
 //services
 
 //controllers
@@ -10,7 +12,7 @@ import {ProductCreateController} from "./controllers/preprocessproduct_create";
 
 
 
-var productmodule = angular.module('hibachi.product',[]).config(()=>{
+var productmodule = angular.module('hibachi.product',[coremodule.name]).config(()=>{
     
 })
 .constant('productPartialsPath','product/components/')

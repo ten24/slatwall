@@ -1,20 +1,33 @@
-'use strict';
-angular.module('slatwalladmin')
-.directive('swHref', 
-[
+class SWHref{
+	public static Factory(){
+		var directive = (
+			
+		)=>new SWHref(
+			
+		);
+		directive.$inject = [
+			
+		];
+		return directive;
+	}
+	constructor(
+		
+	){
+		return {
+			restrict: 'A',
+			scope:{
+				swHref:"@"
+			},
+			link: function(scope, element,attrs){
+				/*convert link to use hashbang*/
+				var hrefValue = attrs.swHref;
+				hrefValue = '?ng#!'+hrefValue;
+				element.attr('href',hrefValue);
+			}
+		};
+	}
+}
+export{
+	SWHref
+}
 
-function(){
-	return {
-		restrict: 'A',
-		scope:{
-			swHref:"@"
-		},
-		link: function(scope, element,attrs){
-			/*convert link to use hashbang*/
-			var hrefValue = attrs.swHref;
-			hrefValue = '?ng#!'+hrefValue;
-			element.attr('href',hrefValue);
-		}
-	};
-}]);
-	

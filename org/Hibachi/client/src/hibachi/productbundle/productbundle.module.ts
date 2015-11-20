@@ -1,7 +1,10 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-//services
 
+//modules
+import {coremodule} from "../core/core.module";
+//services
+import {ProductBundleService} from "./services/productbundleservice";
 
 //directives
 import {SWProductBundleGroupType} from "./components/swproductbundlegrouptype";
@@ -10,10 +13,10 @@ import {SWProductBundleGroup} from "./components/swproductbundlegroup";
 //filters
 
 
-var productbundlemodule = angular.module('hibachi.productbundle',[]).config(()=>{
+var productbundlemodule = angular.module('hibachi.productbundle',[coremodule.name]).config(()=>{
 })
 //services
-
+.service('productBundleService',ProductBundleService)
 //directives
 .directive('swProductBundleGroupType',SWProductBundleGroupType.Factory())
 .directive('swProductBundleGrups',SWProductBundleGroups.Factory())
