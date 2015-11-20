@@ -258,6 +258,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			skuEmailFulfillmentTemplate = {fieldType="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
+			skuGiftCardEmailFulfillmentTemplate = {fieldtype="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
             skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
@@ -408,6 +409,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getCurrencyService().getCurrencyOptions();
 			case "skuEmailFulfillmentTemplate" :
 				return getEmailService().getEmailTemplateOptions("sku");
+			case "skuGiftCardEmailFulfillmentTemplate":
+				return getEmailService().getEmailTemplateOptions("giftCard");
 			case "skuTaxCategory":
 				var optionSL = getTaxService().getTaxCategorySmartList();
 				optionSL.addFilter('activeFlag', 1);
