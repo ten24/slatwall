@@ -7,6 +7,7 @@ module slatwalladmin {
 		public transactions;
 		public bouncedEmails; 
 		public giftCard; 
+		public emails; 
 		public order; 
 		
 		public static $inject = ["collectionConfigService"];
