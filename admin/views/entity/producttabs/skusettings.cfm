@@ -58,10 +58,10 @@ Notes:
 	<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.product#" />
-	<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "gift-card">
-		<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.sku#" />
+	<cfif rc.product.getProductType().getBaseProductType() eq "gift-card">
+		<swa:SlatwallSetting settingName="skuGiftCardEmailFulfillmentTemplate" settingObject="#rc.product#" />
 	<cfelse>
-		<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuEmailFulfillmentTemplate" settingObject="#rc.product#" />
 	</cfif>
 	<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.product#" />
 	<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.product#" />
