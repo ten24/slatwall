@@ -89,8 +89,6 @@ module slatwalladmin {
 								}
 								if(angular.isDefined(this.emails)){
 									angular.forEach(this.emails, (email)=>{
-										console.log("EMAIL")
-										console.log(email);
 										email.emailSent = true; 
 										email.debit = false;
 										email.sentAt = email.createdDateTime;
