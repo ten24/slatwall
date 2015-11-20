@@ -86,6 +86,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="order" persistent="false";
 	property name="initialSku" persistent="false";
 	property name="currentStatus" persistent="false";
 	property name="currentStatusCode" persistent="false";
@@ -163,6 +164,13 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			return getCurrentStatus().getSubscriptionStatusType().getTypeName();
 		}
 		return "";
+	}
+
+	public any function getOrder(){
+		if(ArrayLen(this.getSubscriptionOrderItems())){
+			return this.getSubscriptionOrderItems()[1].getOrderItem().getOrder();
+		}
+		return;
 	}
 
 	public any function getSubscriptionOrderItemName() {
