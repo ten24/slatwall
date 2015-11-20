@@ -28,7 +28,7 @@
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
 			<cfif rc.product.getBaseProductType() eq "subscription" && !isNull(rc.product.getRenewalSku()) && !rc.edit>
 				<hb:HibachiPropertyDisplay object="#rc.product.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.product.getRenewalSku().getSkuID()#')#"/>
-			<cfelseif rc.edit>
+			<cfelseif rc.product.getBaseProductType() eq "subscription" && !isNull(rc.product.getRenewalSku()) && rc.edit>
 				<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
 				<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#"
 										  selectValue="#rc.product.getRenewalSku().getSkuID()#"
