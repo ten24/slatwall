@@ -1,10 +1,17 @@
 {
-
+	"conditions":{
+		"renewalSku":{
+			"renewalSku":{"null":false}
+		},
+		"customRenewal":{
+			"renewalSku":{"null":true}
+		}
+	},
 	"properties":{
 		"price":						[{"dataType":"numeric","required":true}],
 		"listPrice":					[{"dataType":"numeric"}],
-		"renewalPrice":					[{"dataType":"numeric","required":true}],
+		"renewalPrice":					[{"conditions":"customRenewal","dataType":"numeric","required":true}],
 		"subscriptionBenefits":			[{"required":true}],
-		"renewalSubscriptionBenefits":	[{"required":true}]
+		"renewalSubscriptionBenefits":	[{"conditions":"customRenewal","required":true}]
 	}
 }
