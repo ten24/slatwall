@@ -4,18 +4,21 @@ class SWDetail{
 			$location,
 			$log,
 			$slatwall,
-			partialsPath
+			coreEntityPartialsPath,
+			pathBuilderConfig
 		)=> new SWDetail(
 			$location,
 			$log,
 			$slatwall,
-			partialsPath
+			coreEntityPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$location',
 			'$log',
 			'$slatwall',
-			'partialsPath',
+			'coreEntityPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
@@ -23,11 +26,12 @@ class SWDetail{
 		$location,
 		$log,
 		$slatwall,
-		partialsPath
+		coreEntityPartialsPath,
+			pathBuilderConfig
 	){
 		return {
 	        restrict: 'E',
-	        templateUrl:partialsPath+'entity/detail.html',
+	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'entity/detail.html',
 	        link: function (scope, element, attr) {
 	        	scope.$id="slatwallDetailController";
 	        	$log.debug('slatwallDetailController');
@@ -50,7 +54,7 @@ class SWDetail{
 	        	
 	        	var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
 	        		
-	        	scope.tabPartialPath = partialsPath+'entity/';
+	        	scope.tabPartialPath = coreEntityPartialsPath+'entity/';
 	        	
 	        	scope.getEntity = function(){
 	        		if(scope.entityID === 'null'){

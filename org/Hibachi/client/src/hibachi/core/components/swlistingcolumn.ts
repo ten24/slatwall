@@ -41,7 +41,7 @@ class SWListingColumn implements ng.IDirective{
             utilityService
         );
         directive.$inject = [
-            'partialsPath'
+            'utilityService'
         ];
         return directive;
     }

@@ -117,9 +117,11 @@ class SlatwallInterceptor implements IInterceptor{
     }
     public response = (response): ng.IPromise<any> => {
         this.$log.debug('response');
+		console.log(response);
 		if(response.data.messages){
             var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
             this.alertService.addAlerts(alerts);
+			
         }
 		return response;
     }

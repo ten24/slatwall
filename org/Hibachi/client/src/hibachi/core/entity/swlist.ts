@@ -3,27 +3,31 @@ class SWList{
 		var directive = (
 			$log,
 			$slatwall,
-			partialsPath
+			coreEntityPartialsPath,
+			pathBuilderConfig
 		)=> new SWList(
 			$log,
 			$slatwall,
-			partialsPath
+			coreEntityPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'$slatwall',
-			'partialsPath'
+			'coreEntityPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
 		$slatwall,
-		partialsPath
+		coreEntityPartialsPath,
+			pathBuilderConfig
 	){
 		return {
 	        restrict: 'E',
-	        templateUrl:partialsPath+'entity/list.html',
+	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'entity/list.html',
 	        link: function (scope, element, attr) {
 	        	$log.debug('slatwallList init');
 	        	

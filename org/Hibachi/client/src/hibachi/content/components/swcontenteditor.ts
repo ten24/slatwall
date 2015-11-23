@@ -9,14 +9,16 @@ class SWContentEditor{
 			$http,
 			$slatwall,
 			formService,
-			contentPartialsPath
+			contentPartialsPath,
+            pathBuilderConfig
         )=> new SWContentEditor(
             $log,
 			$location,
 			$http,
 			$slatwall,
 			formService,
-			contentPartialsPath
+			contentPartialsPath,
+            pathBuilderConfig
         );
         directive.$inject = [
             '$log',
@@ -24,7 +26,8 @@ class SWContentEditor{
 			'$http',
 			'$slatwall',
 			'formService',
-			'contentPartialsPath'
+			'contentPartialsPath',
+            'pathBuilderConfig'
         ];
         return directive;
     }
@@ -34,14 +37,15 @@ class SWContentEditor{
 		$http,
 		$slatwall,
 		formService,
-		contentPartialsPath
+		contentPartialsPath,
+            pathBuilderConfig
     ){
         return {
 			restrict: 'EA',
 			scope:{
 				content:"="
 			},
-			templateUrl:contentPartialsPath+"contenteditor.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(contentPartialsPath)+"contenteditor.html",
 			link: function(scope, element,attrs){
                 scope.editorOptions = CKEDITOR.editorConfig;
                 

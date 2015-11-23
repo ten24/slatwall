@@ -95,34 +95,40 @@ class SWExpandableRecord implements ng.IDirective{
             $compile:ng.ICompileService, 
             $templateRequest:ng.ITemplateRequestService, 
             $timeout:ng.ITimeoutService, 
-            partialsPath,
-            utilityService
+            corePartialsPath,
+            utilityService,
+			pathBuilderConfig
         ) => new SWExpandableRecord(
             $compile, 
             $templateRequest, 
             $timeout, 
-            partialsPath,
-            utilityService
+            corePartialsPath,
+            utilityService,
+			pathBuilderConfig
         );
         directive.$inject = [
             '$compile', 
             '$templateRequest', 
             '$timeout', 
-            'partialsPath',
-            'utilityService'
+            'corePartialsPath',
+            'utilityService',
+			'pathBuilderConfig'
         ];
         return directive;
     }
     
     public controller=SWExpandableRecordController;
     public controllerAs="swExpandableRecord";
-    public static $inject = ['$compile','$templateRequest','$timeout','partialsPath','utilityService'];
-    constructor(private $compile:ng.ICompileService, private $templateRequest:ng.ITemplateRequestService, private $timeout:ng.ITimeoutService, private partialsPath,private utilityService){
+    public static $inject = ['$compile','$templateRequest','$timeout','corePartialsPath','utilityService',
+			'pathBuilderConfig'];
+    constructor(private $compile:ng.ICompileService, private $templateRequest:ng.ITemplateRequestService, private $timeout:ng.ITimeoutService, private corePartialsPath,private utilityService,
+			private pathBuilderConfig){
         this.$compile = $compile;
         this.$templateRequest = $templateRequest;
-        this.partialsPath = partialsPath;
+        this.corePartialsPath = corePartialsPath;
         this.$timeout = $timeout;
         this.utilityService = utilityService;
+        this.pathBuilderConfig = pathBuilderConfig;
     }
     
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
@@ -141,7 +147,7 @@ class SWExpandableRecord implements ng.IDirective{
                 }
             }
                 
-            this.$templateRequest(this.partialsPath+"expandablerecord.html").then((html)=>{
+            this.$templateRequest(this.pathBuilderConfig(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
                 var template = angular.element(html);
                 
                 //get autoopen reference to ensure only the root is autoopenable

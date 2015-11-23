@@ -20,16 +20,20 @@ class SWEntityActionBarButtonGroup implements ng.IDirective{
 	
 	public static Factory(){
 		var directive:ng.IDirectiveFactory=(
-			partialsPath
+			corePartialsPath,
+			pathBuilderConfig
 		) => new SWEntityActionBarButtonGroup(
-			partialsPath
+			corePartialsPath,
+			pathBuilderConfig
 		);
-		directive.$inject = ['partialsPath'];
+		directive.$inject = ['corePartialsPath',
+			'pathBuilderConfig'];
 		return directive;
 	}
 	
-	constructor(private partialsPath){
-		this.templateUrl = partialsPath+'entityactionbarbuttongroup.html';
+	constructor(private corePartialsPath,
+			pathBuilderConfig){
+		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'entityactionbarbuttongroup.html';
 	}
 	
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -39,6 +43,6 @@ class SWEntityActionBarButtonGroup implements ng.IDirective{
 export{
 	SWEntityActionBarButtonGroup
 }    
-	//angular.module('slatwalladmin').directive('swEntityActionBarButtonGroup',['partialsPath',(partialsPath) => new SWEntityActionBarButtonGroup(partialsPath)]);
+	
 
 

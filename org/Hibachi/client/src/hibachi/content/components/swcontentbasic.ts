@@ -8,20 +8,23 @@ class SWContentBasic{
             $routeParams,
             $slatwall,
             formService,
-            contentPartialsPath
+            contentPartialsPath,
+            pathBuilderConfig
         )=> new SWContentBasic(
             $log,
             $routeParams,
             $slatwall,
             formService,
-            contentPartialsPath
+            contentPartialsPath,
+            pathBuilderConfig
         );
         directive.$inject = [
             '$log',
             '$routeParams',
             '$slatwall',
             'formService',
-            'contentPartialsPath'
+            'contentPartialsPath',
+            'pathBuilderConfig'
         ];
         return directive;
     }
@@ -30,11 +33,12 @@ class SWContentBasic{
         $routeParams,
         $slatwall,
         formService,
-        contentPartialsPath
+        contentPartialsPath,
+        pathBuilderConfig
     ){
         return {
 			restrict: 'EA',
-			templateUrl:contentPartialsPath+"contentbasic.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(contentPartialsPath)+"contentbasic.html",
 			link: function(scope, element,attrs){
                 if(!scope.content.$$isPersisted()){
                     if(angular.isDefined($routeParams.siteID)){

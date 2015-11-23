@@ -5,7 +5,8 @@
 import {coremodule} from "../core/core.module";
 //services
 import {ProductBundleService} from "./services/productbundleservice";
-
+//controllers
+import {CreateBundleController} from "./controllers/create-bundle-controller";
 //directives
 import {SWProductBundleGroupType} from "./components/swproductbundlegrouptype";
 import {SWProductBundleGroups} from "./components/swproductbundlegroups";
@@ -15,8 +16,12 @@ import {SWProductBundleGroup} from "./components/swproductbundlegroup";
 
 var productbundlemodule = angular.module('hibachi.productbundle',[coremodule.name]).config(()=>{
 })
+//constants
+.constant('productBundlePartialsPath','productbundle/components')
 //services
 .service('productBundleService',ProductBundleService)
+//controllers
+.controller('create-bundle-controller',CreateBundleController)
 //directives
 .directive('swProductBundleGroupType',SWProductBundleGroupType.Factory())
 .directive('swProductBundleGrups',SWProductBundleGroups.Factory())

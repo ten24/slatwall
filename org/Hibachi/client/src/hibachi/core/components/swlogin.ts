@@ -4,7 +4,7 @@
     
 class SWLoginController{
     public account_login;
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private partialsPath, private $slatwall, private dialogService){
+    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private corePartialsPath, private $slatwall, private dialogService){
         this.$slatwall = $slatwall;
         this.$window = $window;
         this.$route = $route;
@@ -37,30 +37,34 @@ class SWLogin implements ng.IDirective{
             $route,
             $log:ng.ILogService,  
             $window:ng.IWindowService, 
-            partialsPath, 
+            corePartialsPath, 
             $slatwall,
-            dialogService
+            dialogService,
+			pathBuilderConfig
         )=>new SWLogin(
             $route,
             $log,  
             $window, 
-            partialsPath, 
+            corePartialsPath, 
             $slatwall,
-            dialogService
+            dialogService,
+			pathBuilderConfig
         );
         directive.$inject = [
             '$route',
             '$log',  
             '$window', 
-            'partialsPath', 
+            'corePartialsPath', 
             '$slatwall',
-            'dialogService'
+            'dialogService',
+			'pathBuilderConfig'
         ]
         return directive;
     }
     
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private partialsPath, private $slatwall, private dialogService ){
-        this.templateUrl = this.partialsPath+'/login.html';
+    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private corePartialsPath, private $slatwall, private dialogService,
+			pathBuilderConfig ){
+        this.templateUrl = pathBuilderConfig.buildPartialsPath(this).corePartialsPath+'/login.html';
     }
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -71,5 +75,4 @@ export{
     SWLogin
 }
     
-    // angular.module('slatwalladmin').directive('swLogin',['$route','$log','$window','partialsPath','$slatwall',($route,$log,$window,partialsPath,$slatwall,dialogService) => new SWLogin($route,$log,$window,partialsPath,$slatwall,dialogService)]);
-
+  

@@ -8,13 +8,14 @@ interface IDialogService {
 
 class DialogService{
     public static $inject = [
-        'partialsPath'
+        'pathBuilderConfig'
     ];    
     private _pageDialogs;
     constructor(
-         private partialsPath
+         private pathBuilderConfig
     ){
         this._pageDialogs = [];
+        this.pathBuilderConfig = pathBuilderConfig;
     }
     
     get = (): PageDialog[] =>{
@@ -22,9 +23,8 @@ class DialogService{
     };
     
     addPageDialog = ( name:PageDialog, params?:any ):void =>{
-        console.log('addpagedialog');
         var newDialog = {
-            'path' : this.partialsPath + name + '.html',
+            'path' : name + '.html',
             'params' : params
         };
         this._pageDialogs.push( newDialog );

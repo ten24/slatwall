@@ -21,19 +21,20 @@ class SWActionCallerController{
         private $element,
         private $templateRequest:ng.ITemplateRequestService, 
         private $compile:ng.ICompileService,
-        private partialsPath, 
+        private corePartialsPath, 
         private utilityService, 
-        private $slatwall
+        private $slatwall,
+        pathBuilderConfig
     ){
         this.$scope = $scope;
         this.$element = $element;
         this.$templateRequest = $templateRequest;
         this.$compile = $compile;
-        this.partialsPath = partialsPath;  
+       
         this.$slatwall = $slatwall;
         this.utilityService = utilityService;
         
-        this.$templateRequest(this.partialsPath+"actioncaller.html").then((html)=>{
+        this.$templateRequest(pathBuilderConfig.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
             this.$element.parent().append(template);
             $compile(template)($scope);

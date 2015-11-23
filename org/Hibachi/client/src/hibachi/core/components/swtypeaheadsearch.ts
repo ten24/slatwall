@@ -142,7 +142,8 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 	
-	public static $inject=["$slatwall", "$timeout", "collectionConfigService", "partialsPath"];
+	public static $inject=["$slatwall", "$timeout", "collectionConfigService", "corePartialsPath",
+			'pathBuilderConfig'];
 	public templateUrl; 
 	public restrict = "EA"; 
 	public scope = {}	
@@ -165,8 +166,8 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public controllerAs="swTypeaheadSearch";
 	
 	
-	constructor(private $slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService, private partialsPath){
-		this.templateUrl = partialsPath + "typeaheadsearch.html";	
+	constructor(private $slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
+		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";	
 	}
 
 	public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -178,15 +179,18 @@ class SWTypeaheadSearch implements ng.IDirective{
 			$slatwall
 			,$timeout
 			,collectionConfigService
-			,partialsPath
+			,corePartialsPath,
+			pathBuilderConfig
 			
 		)=> new SWTypeaheadSearch(
 			$slatwall
 			,$timeout
 			,collectionConfigService
-			,partialsPath
+			,corePartialsPath,
+			pathBuilderConfig
 		);
-		directive.$inject = ["$slatwall", "$timeout", "collectionConfigService", "partialsPath"];
+		directive.$inject = ["$slatwall", "$timeout", "collectionConfigService", "corePartialsPath",
+			'pathBuilderConfig'];
 		return directive;
 	}
 }
@@ -194,9 +198,3 @@ export{
 	SWTypeaheadSearch,
 	SWTypeaheadSearchController
 }
-    
-    // angular.module('slatwalladmin').directive('swTypeaheadSearch',
-	// 	["$slatwall", "$timeout", "collectionConfigService", "partialsPath", 
-	// 		($slatwall, $timeout, collectionConfigService, partialsPath) => 
-	// 			new SWTypeaheadSearch($slatwall, $timeout, collectionConfigService, partialsPath)]); 
-

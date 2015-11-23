@@ -19,7 +19,8 @@ var hibachimodule = angular.module('hibachi',[
     dialogmodule.name,
     collectionmodule.name,
     workflowmodule.name,
-    productbundlemodule.name
+    productbundlemodule.name,
+    productmodule.name
 ])
 
 ;

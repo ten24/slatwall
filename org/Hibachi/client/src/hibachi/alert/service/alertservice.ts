@@ -36,6 +36,7 @@ class AlertService implements IAlertService{
     }
     
     addAlert = (alert:Alert):void =>{
+        
         this.alerts.push(alert);
         this.$timeout((alert)=> {
             this.removeAlert(alert);
@@ -43,6 +44,7 @@ class AlertService implements IAlertService{
     }
     
     addAlerts = (alerts:Alert[]):void =>{
+        console.log('addalert');
         alerts.forEach(alert => {
             this.addAlert(alert);
         });

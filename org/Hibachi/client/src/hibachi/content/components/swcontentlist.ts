@@ -264,26 +264,30 @@ class SWContentList implements ng.IDirective{
     
     public static Factory(){
         var directive = (
-            partialsPath,
-            observerService
+            contentPartialsPath,
+            observerService,
+            pathBuilderConfig
         )=> new SWContentList(
-            partialsPath,
-            observerService
+            contentPartialsPath,
+            observerService,
+            pathBuilderConfig
         );
         directive.$inject = [
-            'partialsPath',
-            'observerService'
+            'contentPartialsPath',
+            'observerService',
+            'pathBuilderConfig'
         ];
         return directive;
     }
     
     constructor(
-            partialsPath,
-            observerService
+            contentPartialsPath,
+            observerService,
+            pathBuilderConfig
     ){
-        this.partialsPath = partialsPath;
+        
         this.observerService = observerService;
-        this.templateUrl = this.partialsPath+'content/contentlist.html';
+        this.templateUrl = pathBuilderConfig.buildPartialsPath(contentPartialsPath)+'content/contentlist.html';
     } 
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{

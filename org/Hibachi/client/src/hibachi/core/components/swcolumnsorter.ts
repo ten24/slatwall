@@ -5,30 +5,34 @@ class SWColumnSorter{
 		var directive = (
 			$log,
 			observerService,
-			partialsPath
+			corePartialsPath,
+			pathBuilderConfig
 		)=> new SWColumnSorter(
 			$log,
 			observerService,
-			partialsPath
+			corePartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'observerService',
-			'partialsPath'
+			'corePartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	public constructor(
 		$log,
 		observerService,
-		partialsPath
+		corePartialsPath,
+		pathBuilderConfig
 	){
 		return {
 			restrict: 'AE',
 			scope:{
 				column:"=",
 			},
-			templateUrl:partialsPath+"columnsorter.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+"columnsorter.html",
 			link: function(scope, element,attrs){
                 var orderBy:any = {
                     "propertyIdentifier":scope.column.propertyIdentifier,

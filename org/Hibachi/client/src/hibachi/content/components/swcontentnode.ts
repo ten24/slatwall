@@ -7,18 +7,21 @@ class SWContentNode{
             $log,
             $compile,
             $slatwall,
-            partialsPath
+            contentPartialsPath,
+            pathBuilderConfig
         )=> new SWContentNode(
             $log,
             $compile,
             $slatwall,
-            partialsPath
+            contentPartialsPath,
+            pathBuilderConfig
         );
         directive.$inject = [
             '$log',
             '$compile',
             '$slatwall',
-            'partialsPath'
+            'contentPartialsPath',
+            'pathBuilderConfig'
         ];
         return directive;
     }
@@ -26,7 +29,8 @@ class SWContentNode{
         $log,
         $compile,
         $slatwall,
-        partialsPath
+        contentPartialsPath,
+        pathBuilderConfig
     ){
         return {
             restrict: 'A',
@@ -34,7 +38,7 @@ class SWContentNode{
                 contentData:'=',
                 loadChildren:"="
             },
-            templateUrl: partialsPath + 'content/contentnode.html',
+            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'content/contentnode.html',
             link: function(scope, element, attr) {
                 if(angular.isUndefined(scope.depth)){
                     scope.depth = 0;

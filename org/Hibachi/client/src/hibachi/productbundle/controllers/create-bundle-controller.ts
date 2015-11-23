@@ -1,17 +1,6 @@
-'use strict';
-angular.module('slatwalladmin').controller('create-bundle-controller', [
-	'$scope',
-	'$location',
-	'$log',
-	'$rootScope',
-	'$window',
-	'$slatwall',
-	'dialogService',
-	'alertService',
-	'productBundleService',
-	'formService',
-	'partialsPath',
-	function(
+class CreateBundleController{
+	//@ngInject
+	constructor(
 		$scope,
 		$location,
 		$log,
@@ -22,9 +11,9 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		alertService,
 		productBundleService,
 		formService,
-		partialsPath
+		productBundlePartialsPath
 	){
-		$scope.partialsPath = partialsPath;
+		$scope.productBundlePartialsPath = productBundlePartialsPath;
 		
 		var getParameterByName = (name) =>{
 		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -113,6 +102,8 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 				}
 			});	
 		};
-		
 	}
-]);
+}
+export{
+	CreateBundleController
+}

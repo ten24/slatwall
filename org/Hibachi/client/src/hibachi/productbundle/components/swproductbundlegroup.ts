@@ -18,7 +18,7 @@ class CollectionFilterItem{
 
 class SWProductBundleGroupController {
 	
-	public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "partialsPath"];
+	public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
 	public $id;
 	public showAdvanced; 
 	public productBundleGroup; 
@@ -51,7 +51,7 @@ class SWProductBundleGroupController {
 	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
 				private collectionConfigService, 
 				private productBundleService,  private metadataservice, private utilityservice, 
-				private $slatwall, private partialsPath){
+				private $slatwall, private productBundlePartialsPath){
 					
 		this.$id = 'productBundleGroup';
 		this.maxRecords = 10;
@@ -110,7 +110,7 @@ class SWProductBundleGroupController {
 			}
 		};
 		
-		this.filterTemplatePath = this.partialsPath +"productBundle/productbundlefilter.html";
+		this.filterTemplatePath = this.productBundlePartialsPath +"productBundle/productbundlefilter.html";
 		this.productBundleGroupFilters = {};
 		this.productBundleGroupFilters.value = [];
 		
@@ -293,7 +293,7 @@ class SWProductBundleGroupController {
 
 class SWProductBundleGroup implements ng.IDirective{
 	
-	public static $inject=["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "partialsPath"];
+	public static $inject=["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
 	public templateUrl; 
 	public restrict = "EA"; 
 	public scope = {}	
@@ -312,8 +312,9 @@ class SWProductBundleGroup implements ng.IDirective{
 	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService, 
 				private collectionConfigService,
 				private productBundleService,  private metadataservice, private utilityservice,
-				private $slatwall, private partialsPath){
-		this.templateUrl = partialsPath + "productbundle/productbundlegroup.html";	
+				private $slatwall, private productBundlePartialsPath,
+			pathBuilderConfig){
+		this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundle/productbundlegroup.html";	
 	}
 
 	public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -322,12 +323,15 @@ class SWProductBundleGroup implements ng.IDirective{
 	
 	public static Factory(){
 		var directive = (
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, partialsPath
+            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath,
+			pathBuilderConfig
         )=> new SWProductBundleGroup(
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, partialsPath
+            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath,
+			pathBuilderConfig
         );
         directive.$inject = [
-            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "partialsPath"
+            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath",
+			"pathBuilderConfig"
         ];
         return directive;
 	}

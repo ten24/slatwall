@@ -52,16 +52,16 @@ class SWEntityActionBar implements ng.IDirective{
     
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            partialsPath
-        ) => new SWEntityActionBar(partialsPath);
-        directive.$inject = ['partialsPath'];
+            corePartialsPath,pathBuilderConfig
+        ) => new SWEntityActionBar(corePartialsPath,pathBuilderConfig);
+        directive.$inject = ['corePartialsPath','pathBuilderConfig'];
         return directive;
         
     }
     
     
-    constructor(private partialsPath){
-        this.templateUrl = partialsPath+'entityactionbar.html';
+    constructor(private corePartialsPath,pathBuilderConfig){
+        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'entityactionbar.html';
     }
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -72,6 +72,6 @@ export{
     SWEntityActionBar
 }
     
-//	angular.module('slatwalladmin').directive('swEntityActionBar',['partialsPath',(partialsPath) => new SWEntityActionBar(partialsPath)]);
+//	angular.module('slatwalladmin').directive('swEntityActionBar',['corePartialsPath',(corePartialsPath) => new SWEntityActionBar(corePartialsPath)]);
 
 

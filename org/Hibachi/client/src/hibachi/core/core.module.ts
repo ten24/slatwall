@@ -78,6 +78,9 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
     
 }).constant('pathBuilderConfig',new PathBuilderConfig())
 .constant('corePartialsPath','core/components/')
+.constant('coreEntityPartialsPath','core/entity')
+.constant('coreFormPartialsPath','core/form')
+.constant('coreValidationPartialsPath','core/validation')
 //services
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)

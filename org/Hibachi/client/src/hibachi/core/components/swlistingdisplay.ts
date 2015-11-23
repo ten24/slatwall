@@ -46,7 +46,7 @@ class SWListingDisplayController{
     public collectionData:any;
     
     
-    public static $inject = ['$scope','$element','$transclude','$timeout','$q','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
+    public static $inject = ['$scope','$element','$transclude','$timeout','$q','$slatwall','corePartialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
     constructor(
         public $scope,
         public $element,
@@ -54,7 +54,7 @@ class SWListingDisplayController{
         public $timeout,
         public $q,
         public $slatwall, 
-        public partialsPath, 
+        public corePartialsPath, 
         public utilityService,
         public collectionConfigService,
         public paginationService,
@@ -64,7 +64,7 @@ class SWListingDisplayController{
         this.$q = $q;
         this.$timeout = $timeout;
         this.$slatwall = $slatwall;
-        this.partialsPath = partialsPath;
+        this.corePartialsPath = corePartialsPath;
         this.utilityService = utilityService;
         this.$scope = $scope;
         this.$element = $element;
@@ -605,29 +605,35 @@ class SWListingDisplay implements ng.IDirective{
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";
     public templateUrl;
-    public static $inject = ['partialsPath'];
+    public static $inject = ['corePartialsPath',
+            'observerService',
+			'pathBuilderConfig'];
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            partialsPath,
-            observerService
+            corePartialsPath,
+            observerService,
+			pathBuilderConfig
         ) => new SWListingDisplay(
-            partialsPath,
-            observerService
+            corePartialsPath,
+            observerService,
+			pathBuilderConfig
         );
         directive.$inject =[
-            'partialsPath',
-            'observerService'
+            'corePartialsPath',
+            'observerService',
+			'pathBuilderConfig'
         ];
         return directive;
     }
     
     constructor(
-        public partialsPath,
-        public observerService
+        public corePartialsPath,
+        public observerService,
+			pathBuilderConfig
     ){
-        this.partialsPath = partialsPath;
+        this.corePartialsPath = corePartialsPath;
         this.observerService = observerService;
-        this.templateUrl = this.partialsPath+'listingdisplay.html';
+        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.corePartialsPath)+'listingdisplay.html';
     } 
     
     public link:ng.IDirectiveLinkFn = (scope:any, element: any, attrs:any,controller, transclude) =>{

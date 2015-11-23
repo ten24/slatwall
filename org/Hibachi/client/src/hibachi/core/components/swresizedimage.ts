@@ -3,24 +3,28 @@
 class SWResizedImage{
 	public static Factory(){
 		var directive = (
-			$http, $log, $q, $slatwall, partialsPath
+			$http, $log, $q, $slatwall, corePartialsPath,
+			pathBuilderConfig
 		)=>new SWResizedImage(
-			$http, $log, $q, $slatwall, partialsPath
+			$http, $log, $q, $slatwall, corePartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
-			'$http', '$log', '$q', '$slatwall', 'partialsPath'
+			'$http', '$log', '$q', '$slatwall', 'corePartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	constructor(
-		$http, $log, $q, $slatwall, partialsPath
+		$http, $log, $q, $slatwall, corePartialsPath,
+			pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
 			scope:{
 				orderItem:"=",
 			},
-			templateUrl: partialsPath + "orderitem-image.html",
+			templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + "orderitem-image.html",
 			link: function(scope, element, attrs){
 				var profileName = attrs.profilename;
 				var skuID = scope.orderItem.data.sku.data.skuID;
