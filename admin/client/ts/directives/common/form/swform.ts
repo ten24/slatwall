@@ -193,12 +193,11 @@ module slatwalladmin {
             }
             /** refreshes this directive on event */
             vm.refresh  = (params) =>{
-                   
-               console.log("Refreshing this: ", vm.processObject, params);
+               //stub
             }
             /** updates this directive on event */
             vm.update  = (params) =>{
-               console.log("Updating this: ", vm.processObject, params); 
+               //stub
             }
             
             vm.parseEvents = function(str, evntType) {
@@ -212,7 +211,7 @@ module slatwalladmin {
                     let t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
                     let u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
                     if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
-                        if (u == "this") {u == vm.processObject.toLowerCase(); console.log("changing")} //<--replaces the alias this with the name of this form.
+                        if (u == "this") {u == vm.processObject.toLowerCase();} //<--replaces the alias this with the name of this form.
                         let event = {"name" : t, "value" : u};
                         eventsObj.events.push(event);
                     }
@@ -275,7 +274,6 @@ module slatwalladmin {
                             observerService.notify("onError", {"caller" : this.processObject, "events":vm.events.events});
                             //trigger an onError event
                         } else {
-                            console.log("Successfully Posted Form");
                             observerService.notify("onSuccess", {"caller":this.processObject, "events":vm.events.events});
                             //trigger a on success event
                         }
@@ -323,7 +321,7 @@ module slatwalladmin {
                 
             }else if(this.onError != undefined){
                 vm.parseEventString(this.onError, "onError");
-                //observerService.attach(vm.eventsHandler, "onError");
+                //observerService.attach(vm.eventsHandler, "onError");//stub
             }
         }
     }
