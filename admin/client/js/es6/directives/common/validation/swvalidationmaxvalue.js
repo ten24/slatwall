@@ -19,4 +19,4 @@ angular.module('slatwalladmin').directive("swvalidationmaxvalue", [function () {
         };
     }]);
 
-//# sourceMappingURL=swvalidationmaxvalue.js.map
+//# sourceMappingURL=../../../directives/common/validation/swvalidationmaxvalue.js.map

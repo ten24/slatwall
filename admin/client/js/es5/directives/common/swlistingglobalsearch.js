@@ -56,4 +56,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swListingGlobalSearch', ['utilityService', 'partialsPath', function (utilityService, partialsPath) { return new SWListingGlobalSearch(utilityService, partialsPath); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swlistingglobalsearch.js.map
+//# sourceMappingURL=../../directives/common/swlistingglobalsearch.js.map

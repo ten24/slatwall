@@ -132,4 +132,4 @@ angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$c
         };
     }]);
 
-//# sourceMappingURL=swconfirm.js.map
+//# sourceMappingURL=../../directives/common/swconfirm.js.map

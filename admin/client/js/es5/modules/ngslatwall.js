@@ -589,4 +589,4 @@ var ngSlatwall;
     angular.module('ngSlatwall').provider('$slatwall', $Slatwall);
 })(ngSlatwall || (ngSlatwall = {}));
 
-//# sourceMappingURL=ngslatwall.js.map
+//# sourceMappingURL=../modules/ngslatwall.js.map

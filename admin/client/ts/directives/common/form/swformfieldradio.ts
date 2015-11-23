@@ -1,25 +1,27 @@
-angular.module('slatwalladmin')
-.directive('swFormFieldRadio', [
-'$log',
-'$timeout',
-'$slatwall',
-'formService',
-'partialsPath',
-	function(
-	$log,
-	$timeout,
-	$slatwall,
-	formService,
-	partialsPath
-	){
-		return{
-			templateUrl:partialsPath+'formfields/radio.html',
+/// <reference path='../../../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../../../client/typings/tsd.d.ts' />
+module slatwalladmin {
+
+    export class swFormFieldRadio implements ng.IDirective {
+        public static $inject = ['$log','$timeout','$slatwall','formService','partialsPath'];
+		constructor(public $log, public $timeout, public $slatwall, public formService, public partialsPath){
+			this.partialsPath = partialsPath;
+			this.$slatwall = $slatwall;
+			this.formService = formService;
+			this.partialsPath = partialsPath;
+			this.$log = $log;
+            return this.getInstance(this.partialsPath, this.$log, this.$timeout);
+        }
+
+        getInstance(partialsPath, $log, $timeout): any {
+            return{
+			templateUrl: partialsPath+'formfields/radio.html',
 			require:"^form",
 			restrict: 'E',
 			scope:{
 				propertyDisplay:"="
 			},
-			link:function(scope,element,attr,formController){
+			link:function(scope, element, attr, formController){
 				var makeRandomID = function makeid(count)
 				{
 				    var text = "";
@@ -36,8 +38,6 @@ angular.module('slatwalladmin')
 
 					scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
 					scope.formFieldChanged = function(option){
-						$log.debug('formfieldchanged');
-						$log.debug(option);
 						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 						scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
 						scope.propertyDisplay.form['selected'+scope.propertyDisplay.object.metaData.className+scope.propertyDisplay.property+scope.selectedRadioFormName].$dirty = false;
@@ -73,6 +73,7 @@ angular.module('slatwalladmin')
 				}
 			}
 		};
+        }
 	}
-]);
-	
+	angular.module('slatwalladmin').directive('swFormFieldRadio',['$log','$timeout','$slatwall','formService','partialsPath',($log, $timeout, $slatwall, formService, partialsPath) => new swFormFieldRadio($log, $timeout, $slatwall, formService, partialsPath)]);
+}

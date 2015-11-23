@@ -19,4 +19,4 @@ var slatwalladmin;
     slatwalladmin.GiftCard = GiftCard;
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=giftCard.js.map
+//# sourceMappingURL=../model/giftCard.js.map

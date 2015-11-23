@@ -245,4 +245,4 @@ var slatwalladmin;
     angular.module('hibachi').service('utilityService', UtilityService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=utilityservice.js.map
+//# sourceMappingURL=../services/utilityservice.js.map

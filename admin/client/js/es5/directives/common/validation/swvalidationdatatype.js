@@ -39,4 +39,4 @@ angular.module('slatwalladmin').directive("swvalidationdatatype", [function () {
         };
     }]);
 
-//# sourceMappingURL=swvalidationdatatype.js.map
+//# sourceMappingURL=../../../directives/common/validation/swvalidationdatatype.js.map
