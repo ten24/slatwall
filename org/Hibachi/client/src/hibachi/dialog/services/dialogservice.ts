@@ -22,6 +22,7 @@ class DialogService{
     };
     
     addPageDialog = ( name:PageDialog, params?:any ):void =>{
+        console.log('addpagedialog');
         var newDialog = {
             'path' : this.partialsPath + name + '.html',
             'params' : params

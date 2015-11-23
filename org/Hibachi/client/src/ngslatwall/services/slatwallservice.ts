@@ -19,7 +19,7 @@ class SlatwallService{
 	public _deferred = {};
 	
 	public static $inject = ['$window','$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
-	
+	//@ngInject
 	constructor(
 		private $window:ng.IWindowService,
 		private $q:ng.IQService,

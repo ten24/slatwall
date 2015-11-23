@@ -121,11 +121,11 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      });  
 
  }])
- .run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService) => {
+ .run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService','pathBuilderConfig', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService,pathBuilderConfig) => {
         $anchorScroll.yOffset = 100;
     
         $rootScope.openPageDialog = function( partial ) {
-            dialogService.addPageDialog( partial );
+            dialogService.addPageDialog( pathBuilderConfig.buildPartialsPath(partial) );
         };
         
         $rootScope.closePageDialog = function( index ) {

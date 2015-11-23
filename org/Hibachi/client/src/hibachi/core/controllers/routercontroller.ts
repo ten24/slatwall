@@ -1,4 +1,4 @@
-class RouteController{
+class RouterController{
 	//@ngInject
 	constructor(
 		$scope,
@@ -27,5 +27,5 @@ class RouteController{
 	}
 }
 export{
-	RouteController
+	RouterController
 }

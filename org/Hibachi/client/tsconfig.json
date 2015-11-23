@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "sourceMap": false
+    "sourceMap": true
   },
   "files": [
     "typings/slatwallTypescript.d.ts",

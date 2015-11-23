@@ -2,24 +2,28 @@ class SWExportAction{
 	public static Factory(){
 		var directive = (
 			$log,
-			partialsPath
+			corePartialsPath,
+			pathBuilderConfig
 		)=>new SWExportAction(
 			$log,
-			partialsPath
+			corePartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject=[
 			'$log',
-			'partialsPath'
+			'corePartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
-		partialsPath
+		corePartialsPath,
+		pathBuilderConfig
 	){
 		return {
 			restrict:'A',
-			templateUrl: partialsPath+'exportaction.html',
+			templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath)+'exportaction.html',
 			scope: {
 			},
 			link:function(scope,element,attrs){

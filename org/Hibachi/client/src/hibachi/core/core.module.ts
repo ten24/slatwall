@@ -8,8 +8,8 @@ import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
-import {OtherwiseController} from "./controllers/otherwisecontroller";
-import {RouteController} from "./controllers/routecontroller";
+import {OtherWiseController} from "./controllers/otherwisecontroller";
+import {RouterController} from "./controllers/routercontroller";
 //filters
 import {PercentageFilter} from "./filters/percentage";
 //directives
@@ -86,8 +86,8 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .service('metadataService',MetaDataService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
-.controller('otherwiseController',OtherwiseController)
-.controller('routecontroller',RouteController)
+.controller('otherwiseController',OtherWiseController)
+.controller('routercontroller',RouterController)
 //filters 
 .filter('percentage',[PercentageFilter.Factory])
 //directives
