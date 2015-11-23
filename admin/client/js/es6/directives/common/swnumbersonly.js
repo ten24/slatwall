@@ -47,4 +47,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swNumbersOnly', [() => new SWNumbersOnly()]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swnumbersonly.js.map
+//# sourceMappingURL=../../directives/common/swnumbersonly.js.map

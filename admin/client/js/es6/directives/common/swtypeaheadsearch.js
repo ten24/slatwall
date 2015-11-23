@@ -133,4 +133,4 @@ var slatwalladmin;
             ($slatwall, $timeout, collectionConfigService, partialsPath) => new SWTypeaheadSearch($slatwall, $timeout, collectionConfigService, partialsPath)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swtypeaheadsearch.js.map
+//# sourceMappingURL=../../directives/common/swtypeaheadsearch.js.map

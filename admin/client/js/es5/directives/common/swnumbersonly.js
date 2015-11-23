@@ -48,4 +48,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').directive('swNumbersOnly', [function () { return new SWNumbersOnly(); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swnumbersonly.js.map
+//# sourceMappingURL=../../directives/common/swnumbersonly.js.map

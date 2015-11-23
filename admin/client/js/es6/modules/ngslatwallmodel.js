@@ -3921,4 +3921,4 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
             }]);
     }]);
 
-//# sourceMappingURL=ngslatwallmodel.js.map
+//# sourceMappingURL=../modules/ngslatwallmodel.js.map

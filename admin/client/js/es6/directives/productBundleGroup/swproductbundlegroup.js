@@ -260,4 +260,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swproductbundlegroup.js.map
+//# sourceMappingURL=../../directives/productBundleGroup/swproductbundlegroup.js.map

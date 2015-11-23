@@ -27,4 +27,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=swcolumnsorter.js.map
+//# sourceMappingURL=../../directives/common/swcolumnsorter.js.map

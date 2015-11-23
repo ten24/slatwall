@@ -46,4 +46,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('dialogService', DialogService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=dialogservice.js.map
+//# sourceMappingURL=../services/dialogservice.js.map

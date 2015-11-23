@@ -1,22 +1,34 @@
-angular.module('slatwalladmin')
-    .directive('swFormFieldJson', [
-    '$log',
-    '$slatwall',
-    'formService',
-    'partialsPath',
-    function ($log, $slatwall, formService, partialsPath) {
-        return {
-            templateUrl: partialsPath + 'formfields/json.html',
-            require: "^form",
-            restrict: 'E',
-            scope: {
-                propertyDisplay: "="
-            },
-            link: function (scope, element, attr, formController) {
-                scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-            }
-        };
+/// <reference path='../../../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../../../client/typings/tsd.d.ts' />
+var slatwalladmin;
+(function (slatwalladmin) {
+    class SWFormFieldJsonController {
+        constructor(formService) {
+            this.$inject = ['formService'];
+            this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
+        }
     }
-]);
+    slatwalladmin.SWFormFieldJsonController = SWFormFieldJsonController;
+    class SWFormFieldJson {
+        constructor($log, $slatwall, formService, partialsPath) {
+            this.$log = $log;
+            this.partialsPath = partialsPath;
+            this.restrict = 'E';
+            this.require = "^form";
+            this.scope = true;
+            this.controller = SWFormFieldJsonController;
+            this.bindToController = {
+                propertyDisplay: "=?"
+            };
+            this.controllerAs = "ctrl";
+            this.templateUrl = "";
+            this.link = (scope, element, attrs, formController) => { };
+            this.$inject = ['$log', '$slatwall', 'formService', 'partialsPath'];
+            this.templateUrl = this.partialsPath + "formfields/json.html";
+        }
+    }
+    slatwalladmin.SWFormFieldJson = SWFormFieldJson;
+    angular.module('slatwalladmin').directive('swFormFieldJson', ['$log', '$slatwall', 'formService', 'partialsPath', ($log, $slatwall, formService, partialsPath) => new SWFormFieldJson($log, $slatwall, formService, partialsPath)]);
+})(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=swformfieldjson.js.map
+//# sourceMappingURL=../../../directives/common/form/swformfieldjson.js.map
