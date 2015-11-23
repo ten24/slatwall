@@ -428,34 +428,38 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function getModel(required struct rc){
-		var entities = [];
-		var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
-		var entitiesListArray = listToArray(structKeyList(rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesMetaData()));
-		
 		var model = {};
-		model['entities'] = {};
-		model['validations'] = {};
-		model['defaultValues'] = {};
-		
-		for(var entityName in entitiesListArray) {
-			var entity = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntityObject(entityName);
+		if(!request.slatwallScope.hasApplicationValue('objectModel')){
+			var entities = [];
+			var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
+			var entitiesListArray = listToArray(structKeyList(rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesMetaData()));
 			
-			formatEntity(entity,model);
-			//add process objects to the entites array
-			if(structKeyExists(processContextsStruct,entityName)){
-				var processContexts = processContextsStruct[entityName];
-				for(var processContext in processContexts){
-					if(entity.hasProcessObject(processContext)){
+			
+			model['entities'] = {};
+			model['validations'] = {};
+			model['defaultValues'] = {};
+			
+			for(var entityName in entitiesListArray) {
+				var entity = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntityObject(entityName);
+				
+				formatEntity(entity,model);
+				//add process objects to the entites array
+				if(structKeyExists(processContextsStruct,entityName)){
+					var processContexts = processContextsStruct[entityName];
+					for(var processContext in processContexts){
+						if(entity.hasProcessObject(processContext)){
+							
+							formatEntity(entity.getProcessObject(processContext),model);
+						}
 						
-						formatEntity(entity.getProcessObject(processContext),model);
 					}
-					
 				}
 			}
+			
+			ORMClearSession();
+			request.slatwallScope.setApplicationValue('objectModel',model);
 		}
-		
-		ORMClearSession();
-	
+		model = request.slatwallScope.getApplicationValue('objectModel');
 		arguments.rc.apiResponse.content['data'] = model;
 	}
 	
