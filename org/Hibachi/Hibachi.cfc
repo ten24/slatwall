@@ -320,7 +320,10 @@ component extends="FW1.framework" {
 			if(structKeyExists(url,'ng')){
 			}else if(getSubsystem(request.context[ getAction() ]) == 'api'){
 				var context = getPageContext().getResponse();
-				request.context.messages = [];
+				if(!structKeyKeyExists(request.context,'messages')){
+					request.context.messages = [];
+				}
+				
 				var message = {};
 				var message['messageType'] = 'error';
 				if(structKeyExists(authorizationDetails,'forbidden') && authorizationDetails.forbidden == true){
@@ -615,8 +618,17 @@ component extends="FW1.framework" {
 		}
 		var responseString = '';
 		
-		if(structKeyExists(request.context, "messages") && !structKeyExists(request.context.apiResponse.content,'messages')) {
-			request.context.apiResponse.content["messages"] = request.context.messages;	
+		if(structKeyExists(request.context, "messages")) {
+			if(!structKeyExists(request.context.apiResponse.content,'messages')){
+				request.context.apiResponse.content["messages"] = request.context.messages;	
+			}else{
+				for(var message in request.context.messages){
+					request.context.apiResponse.content["messages"];	
+					arrayAppend(request.context.apiResponse.content["messages"],message);
+				}
+				
+			}
+			
 		}
 		
 		//leaving a note here in case we ever wish to support XML for api responses
