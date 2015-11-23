@@ -5,7 +5,7 @@ module slatwalladmin {
             dataFactory: {},
             GetInstance: () => {};
     }
-    export class AccountFactory implements IPostFactory {
+    export class AccountFactory implements IPostFactory { 
         
         public formType:Object = {'Content-Type':"application/x-www-form-urlencoded"};
         private baseUrl = "";
