@@ -230,8 +230,8 @@
 			</tr>
 			
 			<tr ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
-				<td colspan="#thistag.columnCount#" style="text-align:center;">
-					no records
+				<td colspan="{{swListingDisplay.collectionConfig.columns.length}}" style="text-align:center;">
+					No <span sw-rbkey="'entity.'+swListingDisplay.collectionObject+'_plural'"></span>
 				</td>
 			</tr>
 			<!--<cfif !arrayLen(attributes.smartList.getPageRecords())>
