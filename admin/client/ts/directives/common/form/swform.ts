@@ -43,7 +43,8 @@ module slatwalladmin {
         refresh:Function,
         update:Function,
         broadcast:Function,
-        parseEvents:Function
+        parseEvents:Function,
+        eventsHandler:Function
     }
     
     /**
@@ -88,13 +89,12 @@ module slatwalladmin {
             vm.actions          = this.actions;
             vm.$timeout         = this.$timeout;
             vm.postOnly         = false;
-            let observerService = this.observerService;
             
+            let observerService = this.observerService;
             /** parse the name */
             let entityName      = this.processObject.split("_")[0];
             let processObject   = this.processObject.split("_")[1];
             
-            console.log("Service: ", observerService);
             /** try to grab the meta data from the process entity in slatwall in a process exists
              *  otherwise, just use the service method to access it.
              */
@@ -123,10 +123,6 @@ module slatwalladmin {
                 vm.actionFn = this.$slatwall.newEntity(vm.processObject);
             }catch (e){
                 vm.postOnly = true;
-            }
-           
-            if (angular.isDefined(vm.actionFn)){
-                console.log("New Response: ", vm.actionFn);
             }
             
             /** We use these for our models */
@@ -168,40 +164,43 @@ module slatwalladmin {
             /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
             vm.parseEventString = function(evntStr, evntType) 
             {
-                vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+                vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
             }
             
-            vm.hide = function(params){
-                console.log("hiding", params);
-                if (params.caller == this.processObject){
-                   //hide this form
-               } 
-            }
-            vm.show = function(params){
-                console.log("show: ")
-                if (params.event == this.processObject){
-                   //show this form
+            vm.eventsHandler = (params) => {
+                
+                for (var e in params.events){
+                    if ( angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()){
+                        if (params.events[e].name == "hide")    {vm.hide(params.events[e].value)}
+                        if (params.events[e].name == "show")    {vm.show(params.events[e].value)}
+                        if (params.events[e].name == "update")  {vm.update(params.events[e].value)}
+                        if (params.events[e].name == "refresh") {vm.refresh(params.events[e].value)};
+                    }
                     
-               } 
+                } 
             }
-            vm.refresh = function(params){
-                console.log("refreshing: ");
-                if (params.event == this.processObject){
-                   //refresh this form
-                    
-               }
+            /** hides this directive on event */
+            vm.hide = (param) => {
+                if (vm.processObject.toLowerCase() == param){
+                    this.$element.hide();    
+                }
             }
-            vm.update = function(params){
-                console.log("updating"); 
-                if (params.event == this.processObject){
-                   //resubmit this form
-                    
-               }
+            /** shows this directive on event */
+            vm.show = (param) =>{
+                if (vm.processObject.toLowerCase() == param){
+                    this.$element.show();    
+                }
             }
-            vm.broadcast = function(params){
-               console.log("Broadcasting so something else handles something.") 
-               observerService.notify(params.eventType, {"caller":params.name});
+            /** refreshes this directive on event */
+            vm.refresh  = (params) =>{
+                   
+               console.log("Refreshing this: ", vm.processObject, params);
             }
+            /** updates this directive on event */
+            vm.update  = (params) =>{
+               console.log("Updating this: ", vm.processObject, params); 
+            }
+            
             vm.parseEvents = function(str, evntType) {
                 
                 if (str == undefined) return;
@@ -213,18 +212,16 @@ module slatwalladmin {
                     let t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
                     let u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
                     if (t == "show" || t == "hide" || t == "refresh" || t == "update"){
-                        if (u == "this") {u == this.processObject.toLowerCase(); console.log("changing")} //<--replaces the alias this with the name of this form.
+                        if (u == "this") {u == vm.processObject.toLowerCase(); console.log("changing")} //<--replaces the alias this with the name of this form.
                         let event = {"name" : t, "value" : u};
                         eventsObj.events.push(event);
                     }
                 }
-                for (var e in eventsObj.events){
-                    console.log("Setting the attach on the event: ", eventsObj.events[e]);
-                            if (eventsObj.events[e].name == 'show'     && eventsObj.events[e].value == this.processObject.toLowerCase()) {observerService.attach(vm.show, "onSuccess", {"event":"onSuccess","form":this.processObject}); console.log("Attaching: show");}//{"type" : evntType, "event": vm.eventsObj[e]}
-                            if (eventsObj.events[e].name == 'hide'     && eventsObj.events[e].value == this.processObject.toLowerCase()) {observerService.attach(vm.hide, "onSuccess", {"event":"onSuccess","form":this.processObject}); console.log("Attaching: hide");}
-                            //handle when we are not handling the case.
-                            if (eventsObj.events[e].value !== this.processObject.toLowerCase()) {observerService.attach(vm.broadcast, "broadcast", {"event":"onSuccess","form":eventsObj.events[e].value}); console.log("Attaching: broadcast", eventsObj.events[e].value, this.processObject.toLowerCase());}   
+                if (eventsObj.events.length){
+                    observerService.attach(vm.eventsHandler, "onSuccess");
                 }
+                
+                return eventsObj;
             }
             
             /** find and clear all errors on form */
@@ -275,11 +272,11 @@ module slatwalladmin {
                     submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then( (result) =>{
                         if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
                             vm.parseErrors(result.data);
-                            observerService.notify("onError", {"caller" : this.processObject});
+                            observerService.notify("onError", {"caller" : this.processObject, "events":vm.events.events});
                             //trigger an onError event
                         } else {
                             console.log("Successfully Posted Form");
-                            observerService.notify("onSuccess", {"caller":this.processObject});
+                            observerService.notify("onSuccess", {"caller":this.processObject, "events":vm.events.events});
                             //trigger a on success event
                         }
                     }, angular.noop);
@@ -322,8 +319,11 @@ module slatwalladmin {
             */
             if (this.onSuccess != undefined){
                 vm.parseEventString(this.onSuccess, "onSuccess");
+                observerService.attach(vm.eventsHandler, "onSuccess");
+                
             }else if(this.onError != undefined){
                 vm.parseEventString(this.onError, "onError");
+                //observerService.attach(vm.eventsHandler, "onError");
             }
         }
     }

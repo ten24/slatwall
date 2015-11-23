@@ -42,7 +42,6 @@ var slatwalladmin;
             /** parse the name */
             var entityName = this.processObject.split("_")[0];
             var processObject = this.processObject.split("_")[1];
-            console.log("Service: ", observerService);
             /** try to grab the meta data from the process entity in slatwall in a process exists
              *  otherwise, just use the service method to access it.
              */
@@ -66,9 +65,6 @@ var slatwalladmin;
             }
             catch (e) {
                 vm.postOnly = true;
-            }
-            if (angular.isDefined(vm.actionFn)) {
-                console.log("New Response: ", vm.actionFn);
             }
             /** We use these for our models */
             vm.formData = {};
@@ -104,31 +100,46 @@ var slatwalladmin;
             vm.eventsObj = [];
             /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
             vm.parseEventString = function (evntStr, evntType) {
-                vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+                vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
             };
-            vm.hide = function (params) {
-                console.log("hiding", params);
-                if (params.caller == this.processObject) {
+            vm.eventsHandler = function (params) {
+                for (var e in params.events) {
+                    if (angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()) {
+                        if (params.events[e].name == "hide") {
+                            vm.hide(params.events[e].value);
+                        }
+                        if (params.events[e].name == "show") {
+                            vm.show(params.events[e].value);
+                        }
+                        if (params.events[e].name == "update") {
+                            vm.update(params.events[e].value);
+                        }
+                        if (params.events[e].name == "refresh") {
+                            vm.refresh(params.events[e].value);
+                        }
+                        ;
+                    }
                 }
             };
-            vm.show = function (params) {
-                console.log("show: ");
-                if (params.event == this.processObject) {
+            /** hides this directive on event */
+            vm.hide = function (param) {
+                if (vm.processObject.toLowerCase() == param) {
+                    _this.$element.hide();
                 }
             };
+            /** shows this directive on event */
+            vm.show = function (param) {
+                if (vm.processObject.toLowerCase() == param) {
+                    _this.$element.show();
+                }
+            };
+            /** refreshes this directive on event */
             vm.refresh = function (params) {
-                console.log("refreshing: ");
-                if (params.event == this.processObject) {
-                }
+                console.log("Refreshing this: ", vm.processObject, params);
             };
+            /** updates this directive on event */
             vm.update = function (params) {
-                console.log("updating");
-                if (params.event == this.processObject) {
-                }
-            };
-            vm.broadcast = function (params) {
-                console.log("Broadcasting so something else handles something.");
-                observerService.notify(params.eventType, { "caller": params.name });
+                console.log("Updating this: ", vm.processObject, params);
             };
             vm.parseEvents = function (str, evntType) {
                 if (str == undefined)
@@ -142,29 +153,17 @@ var slatwalladmin;
                     var u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
                     if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
                         if (u == "this") {
-                            u == this.processObject.toLowerCase();
+                            u == vm.processObject.toLowerCase();
                             console.log("changing");
                         } //<--replaces the alias this with the name of this form.
                         var event_1 = { "name": t, "value": u };
                         eventsObj.events.push(event_1);
                     }
                 }
-                for (var e in eventsObj.events) {
-                    console.log("Setting the attach on the event: ", eventsObj.events[e]);
-                    if (eventsObj.events[e].name == 'show' && eventsObj.events[e].value == this.processObject.toLowerCase()) {
-                        observerService.attach(vm.show, "onSuccess", { "event": "onSuccess", "form": this.processObject });
-                        console.log("Attaching: show");
-                    } //{"type" : evntType, "event": vm.eventsObj[e]}
-                    if (eventsObj.events[e].name == 'hide' && eventsObj.events[e].value == this.processObject.toLowerCase()) {
-                        observerService.attach(vm.hide, "onSuccess", { "event": "onSuccess", "form": this.processObject });
-                        console.log("Attaching: hide");
-                    }
-                    //handle when we are not handling the case.
-                    if (eventsObj.events[e].value !== this.processObject.toLowerCase()) {
-                        observerService.attach(vm.broadcast, "broadcast", { "event": "onSuccess", "form": eventsObj.events[e].value });
-                        console.log("Attaching: broadcast", eventsObj.events[e].value, this.processObject.toLowerCase());
-                    }
+                if (eventsObj.events.length) {
+                    observerService.attach(vm.eventsHandler, "onSuccess");
                 }
+                return eventsObj;
             };
             /** find and clear all errors on form */
             vm.clearErrors = function () {
@@ -206,11 +205,11 @@ var slatwalladmin;
                     submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
                         if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
                             vm.parseErrors(result.data);
-                            observerService.notify("onError", { "caller": _this.processObject });
+                            observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events });
                         }
                         else {
                             console.log("Successfully Posted Form");
-                            observerService.notify("onSuccess", { "caller": _this.processObject });
+                            observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events });
                         }
                     }, angular.noop);
                 }
@@ -249,6 +248,7 @@ var slatwalladmin;
             */
             if (this.onSuccess != undefined) {
                 vm.parseEventString(this.onSuccess, "onSuccess");
+                observerService.attach(vm.eventsHandler, "onSuccess");
             }
             else if (this.onError != undefined) {
                 vm.parseEventString(this.onError, "onError");
