@@ -28,6 +28,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.publicMethods=listAppend(this.publicMethods, 'login');
 	this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
 	this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
+	this.publicMethods=listAppend(this.publicMethods, 'getModel');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -368,6 +369,96 @@ component output="false" accessors="true" extends="HibachiController" {
 		arguments.rc.apiResponse.content['data'] = eventNameOptions;
 	}
 	
+	private void function formatEntity(required any entity, required any model){
+		
+		model.entities[entity.getClassName()] = entity.getPropertiesStruct();
+		model.entities[entity.getClassName()]['className'] = entity.getClassName();
+		
+		var metaData = getMetaData(entity);
+		var isProcessObject = Int(Find('_',entity.getClassName()) gt 0);
+		
+		if (structKeyExists(metaData,'hb_parentPropertyName')){
+			model.entities[entity.getClassName()]['hb_parentPropertyName'] = metaData.hb_parentPropertyName;
+		}
+		if(structKeyExists(metaData,'hb_childPropertyName')){
+			model.entities[entity.getClassName()]['hb_childPropertyName'] = metaData.hb_childPropertyName;
+		}
+		
+		model.validations[entity.getClassName()] = getHibachiScope().getService('hibachiValidationService').getValidationStruct(entity);
+		model.defaultValues[entity.getClassName()] = {};
+		
+		
+		for(var property in entity.getProperties()){
+			//<!--- Make sure that this property is a persistent one --->
+			if (!structKeyExists(property, "persistent") && ( !structKeyExists(property,"fieldtype") || listFindNoCase("column,id", property.fieldtype) )){
+				if(!isProcessObject){
+					try{
+						var defaultValue = entity.invokeMethod('get#property.name#');
+						
+						if (isNull(defaultValue)){
+							model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
+						}else{
+							model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
+						}
+							
+					}catch(any e){
+					}
+				}else{
+					try{
+						var defaultValue = entity.invokeMethod('get#property.name#');
+						
+						if (isNull(defaultValue)){
+							if(isObject(defaultValue)){
+								model.defaultValues[entity.getClassName()][property.name] = '';
+							}else{
+								model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
+							}
+							
+						}else{
+							//model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
+						}
+							
+					}catch(any e){
+					}
+				}
+			}
+				
+		}
+	
+	}
+	
+	public any function getModel(required struct rc){
+		var entities = [];
+		var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
+		var entitiesListArray = listToArray(structKeyList(rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesMetaData()));
+		
+		var model = {};
+		model['entities'] = {};
+		model['validations'] = {};
+		model['defaultValues'] = {};
+		
+		for(var entityName in entitiesListArray) {
+			var entity = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntityObject(entityName);
+			
+			formatEntity(entity,model);
+			//add process objects to the entites array
+			if(structKeyExists(processContextsStruct,entityName)){
+				var processContexts = processContextsStruct[entityName];
+				for(var processContext in processContexts){
+					if(entity.hasProcessObject(processContext)){
+						
+						formatEntity(entity.getProcessObject(processContext),model);
+					}
+					
+				}
+			}
+		}
+		
+		ORMClearSession();
+	
+		arguments.rc.apiResponse.content['data'] = model;
+	}
+	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
 			create a base default properties function that can be overridden at the entity level via function
@@ -654,3 +745,4 @@ component output="false" accessors="true" extends="HibachiController" {
 		*/
 	
 }
+

@@ -8,21 +8,29 @@ import {loggermodule} from "./hibachi/logger/logger.module";
 //custom bootstrapper
 class bootstrapper{
     constructor(){
-      //this.fetchData().then(()=>{
+      this.fetchData().then((data)=>{
+          slatwallAngular.modelConfig = data.data;
           this.bootstrapApplication();
-      //});
+      });
     }
     //should contain any data that is required by angular prior to bootstrapping
-//    fetchData =()=> {
-//        var initInjector = angular.injector(["ng"]);
-//        var $timeout = initInjector.get<ng.ITimeoutService>("$timeout");
-//    
-//        return $timeout.then((response)=> {
-//            //appModule.constant("config", response.data);
-//        }, (errorResponse)=> {
-//            // Handle error case
-//        });
-//    }
+   fetchData =()=> {
+       var initInjector = angular.injector(["ng"]);
+       var $http = initInjector.get<ng.IHttpService>("$http");
+       var $q = initInjector.get<ng.IQService>("$q");
+   
+      var deferred = $q.defer();
+      var urlString = '/index.cfm/?slatAction=api:main.getModel';
+      var params = {};
+      $http.get(urlString,{
+          params:params
+      }).success((data)=>{
+          deferred.resolve(data);
+      }).error((reason)=>{
+          deferred.reject(reason);
+      });
+      return deferred.promise;
+   }
     
     bootstrapApplication = ()=> {
         angular.element(document).ready(function() {
