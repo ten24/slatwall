@@ -286,6 +286,10 @@ body.s-login-screen {
   background-size: cover;
   height: 100vh;
 }
+body.s-login-screen .form-group {
+  display: inline-block;
+  width: 100%;
+}
 @media only screen and (max-width: 992px) {
   body {
     padding: 0px /*Remove for responsive*/;
@@ -1004,6 +1008,7 @@ select.error {
 }
 .form-horizontal .control-label {
   margin-bottom: 4px;
+  text-align: left;
 }
 .btn-group {
   float: right;
@@ -1243,8 +1248,6 @@ table tr th .glyphicon {
 }
 .form-group {
   margin-bottom: 10px;
-  display: inline-block;
-  width: 100%;
 }
 .form-group .s-optional {
   color: #b3b3b3;
