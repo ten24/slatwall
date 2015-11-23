@@ -70,6 +70,13 @@ var ngSlatwall;
                 return angular.isDefined(entityMetaData[this.utilityService.listLast(propertyIdentifier, '.')].cfc);
             };
             this.getLastEntityNameInPropertyIdentifier = (entityName, propertyIdentifier) => {
+                if (!entityName) {
+                    throw ('no entity name supplied');
+                }
+                //strip alias if it exists
+                if (propertyIdentifier.charAt(0) === '_') {
+                    propertyIdentifier = this.utilityService.listRest(propertyIdentifier, '.');
+                }
                 if (propertyIdentifier.split('.').length > 1) {
                     var propertiesStruct = this.getEntityMetaData(entityName);
                     if (!propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')]

@@ -61,7 +61,8 @@ Notes:
 						   recordEditAction="admin:entity.editemail"
 						   recordEditQueryString="redirectAction=admin:entity.listemail">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailSubject" search="true" />
-	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailTo" search="true" />
+	<hb:HibachiListingColumn propertyIdentifier="emailTo" search="true" />
+	<hb:HibachiListingColumn propertyIdentifier="createdDateTime">
 </hb:HibachiListingDisplay>
 
 </cfoutput>

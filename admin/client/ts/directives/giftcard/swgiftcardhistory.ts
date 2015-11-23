@@ -7,6 +7,7 @@ module slatwalladmin {
 		public transactions;
 		public bouncedEmails; 
 		public giftCard; 
+		public emails; 
 		public order; 
 		
 		public static $inject = ["collectionConfigService"];
@@ -34,61 +35,73 @@ module slatwalladmin {
 			emailBounceConfig.setAllRecords(true);
 			emailBounceConfig.setOrderBy("rejectedEmailSendTime|DESC");
 			
-			emailBounceConfig.getEntity().then((response)=>{
-				this.bouncedEmails = response.records; 
-
-				transactionConfig.getEntity().then((response)=>{
-					this.transactions = response.records; 
-					var initialCreditIndex = this.transactions.length-1;
-					var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
-					var currentBalance = initialBalance; 
-					
-					for(var i = initialCreditIndex; i>=0; i--){
-						var transaction = this.transactions[i];
-						if(typeof transaction.debitAmount !== "string"){
-							transaction.debit = true;
-							totalDebit += transaction.debitAmount; 
-						} else if(typeof transaction.creditAmount !== "string") { 
-							if(i != initialCreditIndex){
-								currentBalance += transaction.creditAmount; 
+			var emailConfig = this.collectionConfigService.newCollectionConfig('Email'); 
+			emailConfig.setDisplayProperties('emailID, emailTo, relatedObject, relatedObjectID, createdDateTime');
+			emailConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
+			emailConfig.setAllRecords(true); 
+			emailConfig.setOrderBy("createdDateTime|DESC");
+			
+			emailConfig.getEntity().then((response)=>{
+				this.emails = response.records; 
+			
+				emailBounceConfig.getEntity().then((response)=>{
+					this.bouncedEmails = response.records; 
+	
+					transactionConfig.getEntity().then((response)=>{
+						this.transactions = response.records; 
+						var initialCreditIndex = this.transactions.length-1;
+						var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
+						var currentBalance = initialBalance; 
+						
+						for(var i = initialCreditIndex; i>=0; i--){
+							var transaction = this.transactions[i];
+							if(typeof transaction.debitAmount !== "string"){
+								transaction.debit = true;
+								totalDebit += transaction.debitAmount; 
+							} else if(typeof transaction.creditAmount !== "string") { 
+								if(i != initialCreditIndex){
+									currentBalance += transaction.creditAmount; 
+								}
+								transaction.debit = false;
 							}
-							transaction.debit = false;
+							
+							var tempCurrentBalance = currentBalance - totalDebit; 
+						
+							transaction.balance = tempCurrentBalance;
+							
+							if(i == initialCreditIndex){			
+								
+								var activeCard = {
+									activated: true, 
+									debit:false,
+									activeAt: transaction.orderPayment_order_orderOpenDateTime,
+									balance: initialBalance
+								}
+								
+								this.transactions.splice(i, 0, activeCard);  
+								
+								if(angular.isDefined(this.bouncedEmails)){
+									angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
+										email.bouncedEmail = true; 
+										email.balance = initialBalance; 
+										this.transactions.splice(i, 0, email);
+									}); 
+								}
+								if(angular.isDefined(this.emails)){
+									angular.forEach(this.emails, (email)=>{
+										email.emailSent = true; 
+										email.debit = false;
+										email.sentAt = email.createdDateTime;
+										email.balance = initialBalance;
+										this.transactions.splice(i, 0, email);
+									});
+								}
+							}		
 						}
 						
-						var tempCurrentBalance = currentBalance - totalDebit; 
-					
-						transaction.balance = tempCurrentBalance;
-						
-						if(i == initialCreditIndex){			
-							var emailSent = { 
-								emailSent: true, 
-								debit:false, 
-								sentAt: transaction.orderPayment_order_orderOpenDateTime,
-								balance: initialBalance
-							};
-							
-							var activeCard = {
-								activated: true, 
-								debit:false,
-								activeAt: transaction.orderPayment_order_orderOpenDateTime,
-								balance: initialBalance
-							}
-							
-							this.transactions.splice(i, 0, activeCard); 
-							this.transactions.splice(i, 0, emailSent); 
-							
-							if(angular.isDefined(this.bouncedEmails)){
-								angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
-									email.bouncedEmail = true; 
-									email.balance = initialBalance; 
-									this.transactions.splice(i, 0, email);
-								}); 
-							}
-						}		
-					}
-					
-				});
-			});		
+					});
+				});	
+			});	
 			
 			var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
 			orderConfig.setDisplayProperties("orderID,orderNumber,orderOpenDateTime,account.firstName,account.lastName,account.accountID,account.primaryEmailAddress.emailAddress");

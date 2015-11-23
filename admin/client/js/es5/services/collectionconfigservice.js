@@ -197,16 +197,17 @@ var slatwalladmin;
             this.capitalize = function (s) {
                 return s && s[0].toUpperCase() + s.slice(1);
             };
-            this.addColumn = function (column) {
-                if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
-                    _this.addColumn(column.propertyIdentifier, column.title, column);
-                }
-            };
+            //        private addColumn=(column:Column)=>{
+            //            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+            //                this.addColumn(column.propertyIdentifier,column.title,column);
+            //            }
+            //        }
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
                 if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
                     var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+                    var lastEntity = _this.$slatwall.getEntityExample(_this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, column));
                     if (angular.isUndefined(_this.columns)) {
                         _this.columns = [];
                     }
@@ -228,11 +229,11 @@ var slatwalladmin;
                     if (!angular.isUndefined(options['ormtype'])) {
                         ormtype = options['ormtype'];
                     }
-                    else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
-                        ormtype = _this.collection.metaData[lastProperty].ormtype;
+                    else if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
+                        ormtype = lastEntity.metaData[lastProperty].ormtype;
                     }
-                    if (angular.isDefined(_this.collection.metaData[lastProperty])) {
-                        persistent = _this.collection.metaData[lastProperty].persistent;
+                    if (angular.isDefined(lastEntity[lastProperty])) {
+                        persistent = lastEntity[lastProperty].persistent;
                     }
                     var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
                     if (options.aggregate) {
