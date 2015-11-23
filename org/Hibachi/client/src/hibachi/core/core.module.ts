@@ -90,7 +90,7 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 //controllers
 .controller('globalSearch',GlobalSearchController)
 .controller('otherwiseController',OtherWiseController)
-.controller('routercontroller',RouterController)
+.controller('routerController',RouterController)
 //filters 
 .filter('percentage',[PercentageFilter.Factory])
 //directives

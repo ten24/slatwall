@@ -4,18 +4,21 @@ class SWWorkflowTrigger{
 			$log,
 			$slatwall,
 			metadataService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		)=> new SWWorkflowTrigger(
 			$log,
 			$slatwall,
 			metadataService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'$slatwall',
 			'metadataService',
 			'workflowPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
@@ -23,7 +26,8 @@ class SWWorkflowTrigger{
 		$log,
 		$slatwall,
 		metadataService,
-		workflowPartialsPath
+		workflowPartialsPath,
+			pathBuilderConfig
 	){
 		return {
 			restrict: 'A',
@@ -32,7 +36,7 @@ class SWWorkflowTrigger{
 				workflowTrigger:"=",
 				workflowTriggers:"="
 			},
-			templateUrl:workflowPartialsPath+"workflowtrigger.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflow trigger init');
 				

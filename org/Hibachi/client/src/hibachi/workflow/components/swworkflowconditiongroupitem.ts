@@ -5,20 +5,23 @@ class SWWorkflowConditionGroupItem{
 			$location,
 			$slatwall,
 			formService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		)=> new (
 			$log,
 			$location,
 			$slatwall,
 			formService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'$location',
 			'$slatwall',
 			'formService',
-			'workflowPartialsPath'
+			'workflowPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
@@ -27,12 +30,13 @@ class SWWorkflowConditionGroupItem{
 		$location,
 		$slatwall,
 		formService,
-		workflowPartialsPath
+		workflowPartialsPath,
+			pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
 			
-			templateUrl:workflowPartialsPath+"workflowconditiongroupitem.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroupitem.html",
 			link: function(scope, element,attrs){
 			}
 		};

@@ -7,7 +7,8 @@ class SWWorkflowTask{
 			$slatwall,
 			metadataService,
 			collectionService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		)=> new SWWorkflowTask(
 			$log,
 			$location,
@@ -15,7 +16,8 @@ class SWWorkflowTask{
 			$slatwall,
 			metadataService,
 			collectionService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
@@ -24,7 +26,8 @@ class SWWorkflowTask{
 			'$slatwall',
 			'metadataService',
 			'collectionService',
-			'workflowPartialsPath'
+			'workflowPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
@@ -35,7 +38,8 @@ class SWWorkflowTask{
 		$slatwall,
 		metadataService,
 		collectionService,
-		workflowPartialsPath
+		workflowPartialsPath,
+			pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
@@ -44,7 +48,7 @@ class SWWorkflowTask{
 				workflowTasks:"=",
 				
 			},
-			templateUrl:workflowPartialsPath+"workflowtask.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtask.html",
 			link: function(scope, element,attrs){ 
      
 				scope.removeWorkflowTask = function(workflowTask){

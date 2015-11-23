@@ -44,7 +44,7 @@ class AlertService implements IAlertService{
     }
     
     addAlerts = (alerts:Alert[]):void =>{
-        console.log('addalert');
+      
         alerts.forEach(alert => {
             this.addAlert(alert);
         });

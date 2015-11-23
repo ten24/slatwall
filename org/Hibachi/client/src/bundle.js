@@ -722,6 +722,7 @@
 	            };
 	        });
 	        $httpProvider.interceptors.push('slatwallInterceptor');
+	        console.log(hibachi_module_1.hibachimodule);
 	        // route provider configuration
 	        $routeProvider.when('/entity/:entityName/', {
 	            template: function (params) {
@@ -881,24 +882,26 @@
 	/// <reference path='../../typings/tsd.d.ts' />
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
+	var collection_module_1 = __webpack_require__(73);
+	var content_module_1 = __webpack_require__(129);
 	var core_module_1 = __webpack_require__(15);
-	var pagination_module_1 = __webpack_require__(56);
 	var dialog_module_1 = __webpack_require__(59);
 	var giftcard_module_1 = __webpack_require__(62);
-	var collection_module_1 = __webpack_require__(73);
-	var workflow_module_1 = __webpack_require__(96);
-	var productbundle_module_1 = __webpack_require__(108);
+	var pagination_module_1 = __webpack_require__(56);
 	var product_module_1 = __webpack_require__(127);
+	var productbundle_module_1 = __webpack_require__(108);
+	var workflow_module_1 = __webpack_require__(96);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
+	    collection_module_1.collectionmodule.name,
+	    content_module_1.contentmodule.name,
+	    dialog_module_1.dialogmodule.name,
 	    giftcard_module_1.giftcardmodule.name,
 	    pagination_module_1.paginationmodule.name,
-	    dialog_module_1.dialogmodule.name,
-	    collection_module_1.collectionmodule.name,
-	    workflow_module_1.workflowmodule.name,
+	    product_module_1.productmodule.name,
 	    productbundle_module_1.productbundlemodule.name,
-	    product_module_1.productmodule.name
+	    workflow_module_1.workflowmodule.name
 	]);
 	exports.hibachimodule = hibachimodule;
 
@@ -1113,7 +1116,7 @@
 	    .service('metadataService', metadataservice_1.MetaDataService)
 	    .controller('globalSearch', globalsearch_1.GlobalSearchController)
 	    .controller('otherwiseController', otherwisecontroller_1.OtherWiseController)
-	    .controller('routercontroller', routercontroller_1.RouterController)
+	    .controller('routerController', routercontroller_1.RouterController)
 	    .filter('percentage', [percentage_1.PercentageFilter.Factory])
 	    .directive('swTypeahedSearch', swtypeaheadsearch_1.SWTypeaheadSearch.Factory())
 	    .directive('swActionCaller', swactioncaller_1.SWActionCaller.Factory())
@@ -4150,7 +4153,7 @@
 	    function SWDetail($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + 'entity/detail.html',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/detail.html',
 	            link: function (scope, element, attr) {
 	                scope.$id = "slatwallDetailController";
 	                $log.debug('slatwallDetailController');
@@ -4220,7 +4223,7 @@
 	    function SWList($log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + 'entity/list.html',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/list.html',
 	            link: function (scope, element, attr) {
 	                $log.debug('slatwallList init');
 	                scope.getCollection = function () {
@@ -10027,6 +10030,7 @@
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
+	    .constant('workflowPartialsPath', 'components/workflow')
 	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)
 	    .directive('swAdminCreateSuperUser', swadmincreatesuperuser_1.SWAdminCreateSuperUser.Factory())
 	    .directive('swWorkflowBasic', swworkflowbasic_1.SWWorkflowBasic.Factory())
@@ -10101,24 +10105,25 @@
 /***/ function(module, exports) {
 
 	var SWAdminCreateSuperUser = (function () {
-	    function SWAdminCreateSuperUser($log, $slatwall, partialsPath) {
+	    function SWAdminCreateSuperUser($log, $slatwall, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
 	            scope: {},
-	            templateUrl: partialsPath + "admincreatesuperuser.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "admincreatesuperuser.html",
 	            link: function (scope, element, attrs) {
 	                scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
 	            }
 	        };
 	    }
 	    SWAdminCreateSuperUser.Factory = function () {
-	        var directive = function ($log, $slatwall, partialsPath) {
-	            return new SWAdminCreateSuperUser($log, $slatwall, partialsPath);
+	        var directive = function ($log, $slatwall, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWAdminCreateSuperUser($log, $slatwall, workflowPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$slatwall',
-	            'partialsPath'
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10132,28 +10137,29 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowBasic = (function () {
-	    function SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath) {
+	    function SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'A',
 	            scope: {
 	                workflow: "="
 	            },
-	            templateUrl: workflowPartialsPath
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath)
 	                + "workflowbasic.html",
 	            link: function (scope, element, attrs) {
 	            }
 	        };
 	    }
 	    SWWorkflowBasic.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
-	            return new SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath);
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
 	            '$slatwall',
 	            'formService',
-	            'workflowPartialsPath',
+	            'workflowPartialsPath', ,
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10167,7 +10173,7 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowCondition = (function () {
-	    function SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
+	    function SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -10176,7 +10182,7 @@
 	                workflow: "=",
 	                filterPropertiesList: "="
 	            },
-	            templateUrl: workflowPartialsPath + "workflowcondition.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowcondition.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('workflowCondition init');
 	                $log.debug(scope);
@@ -10263,8 +10269,8 @@
 	        };
 	    }
 	    SWWorkflowCondition.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, metadataService, workflowPartialsPath) {
-	            return new SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath);
+	        var directive = function ($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -10272,7 +10278,8 @@
 	            '$slatwall',
 	            'formService',
 	            'metadataService',
-	            'workflowPartialsPath'
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10286,28 +10293,30 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowConditionGroupItem = (function () {
-	    function SWWorkflowConditionGroupItem($log, $location, $slatwall, formService, workflowPartialsPath) {
+	    function SWWorkflowConditionGroupItem($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: workflowPartialsPath + "workflowconditiongroupitem.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroupitem.html",
 	            link: function (scope, element, attrs) {
 	            }
 	        };
 	    }
 	    SWWorkflowConditionGroupItem.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath) {
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
 	            return new ($log,
 	                $location,
 	                $slatwall,
 	                formService,
-	                workflowPartialsPath);
+	                workflowPartialsPath,
+	                pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$location',
 	            '$slatwall',
 	            'formService',
-	            'workflowPartialsPath'
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10321,7 +10330,7 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowConditionGroups = (function () {
-	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath) {
+	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -10330,7 +10339,7 @@
 	                workflow: "=",
 	                filterPropertiesList: "="
 	            },
-	            templateUrl: workflowPartialsPath + "workflowconditiongroups.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroups.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('workflowconditiongroups init');
 	                scope.addWorkflowCondition = function () {
@@ -10347,13 +10356,14 @@
 	        };
 	    }
 	    SWWorkflowConditionGroups.Factory = function () {
-	        var directive = function ($log, workflowConditionService, workflowPartialsPath) {
-	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath);
+	        var directive = function ($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'workflowConditionService',
-	            'workflowPartialsPath'
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10367,14 +10377,14 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowTask = (function () {
-	    function SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	    function SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
 	            scope: {
 	                workflowTask: "=",
 	                workflowTasks: "="
 	            },
-	            templateUrl: workflowPartialsPath + "workflowtask.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtask.html",
 	            link: function (scope, element, attrs) {
 	                scope.removeWorkflowTask = function (workflowTask) {
 	                    var deletePromise = workflowTask.$$delete();
@@ -10392,8 +10402,8 @@
 	        };
 	    }
 	    SWWorkflowTask.Factory = function () {
-	        var directive = function ($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath) {
-	            return new SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath);
+	        var directive = function ($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -10402,7 +10412,8 @@
 	            '$slatwall',
 	            'metadataService',
 	            'collectionService',
-	            'workflowPartialsPath'
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10416,13 +10427,13 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowTaskActions = (function () {
-	    function SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	    function SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'AE',
 	            scope: {
 	                workflowTask: "="
 	            },
-	            templateUrl: workflowPartialsPath + "workflowtaskactions.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('Workflow Task Actions Init');
 	                $log.debug(scope.workflowTask);
@@ -10573,9 +10584,17 @@
 	        };
 	    }
 	    SWWorkflowTaskActions.Factory = function () {
-	        var directive = function ($log, $slatwall, metadataService, collectionService, workflowPartialsPath) {
-	            return new SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath);
+	        var directive = function ($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
 	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'metadataService',
+	            'collectionService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
 	        return directive;
 	    };
 	    return SWWorkflowTaskActions;
@@ -10591,13 +10610,13 @@
 	 * Handles adding, editing, and deleting Workflows Tasks.
 	 */
 	var SWWorkflowTasks = (function () {
-	    function SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath) {
+	    function SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'A',
 	            scope: {
 	                workflow: "="
 	            },
-	            templateUrl: workflowPartialsPath + "workflowtasks.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtasks.html",
 	            link: function (scope, element, attrs) {
 	                scope.workflowPartialsPath = workflowPartialsPath;
 	                scope.propertiesList = {};
@@ -10754,8 +10773,8 @@
 	        };
 	    }
 	    SWWorkflowTasks.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath) {
-	            return new SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath);
+	        var directive = function ($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -10763,7 +10782,8 @@
 	            '$slatwall',
 	            'metadataService',
 	            'collectionService',
-	            'workflowPartialsPath'
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10777,7 +10797,7 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowTrigger = (function () {
-	    function SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath) {
+	    function SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'A',
 	            replace: true,
@@ -10785,7 +10805,7 @@
 	                workflowTrigger: "=",
 	                workflowTriggers: "="
 	            },
-	            templateUrl: workflowPartialsPath + "workflowtrigger.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('workflow trigger init');
 	                /**
@@ -10843,14 +10863,15 @@
 	        };
 	    }
 	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($log, $slatwall, metadataService, workflowPartialsPath) {
-	            return new SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath);
+	        var directive = function ($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$slatwall',
 	            'metadataService',
 	            'workflowPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -10864,13 +10885,13 @@
 /***/ function(module, exports) {
 
 	var SWWorkflowTriggers = (function () {
-	    function SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService) {
+	    function SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
 	            scope: {
 	                workflow: "="
 	            },
-	            templateUrl: workflowPartialsPath + "workflowtriggers.html",
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
 	            link: function (scope, element, attrs, formController) {
 	                $log.debug('Workflow triggers init');
 	                scope.$id = 'swWorkflowTriggers';
@@ -11030,8 +11051,8 @@
 	        };
 	    }
 	    SWWorkflowTriggers.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, workflowPartialsPath, formService) {
-	            return new SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService);
+	        var directive = function ($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig) {
+	            return new SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -11039,6 +11060,7 @@
 	            '$slatwall',
 	            'workflowPartialsPath',
 	            'formService',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
@@ -12432,7 +12454,7 @@
 	                defaultValues['Audit'] = {
 	                    auditID: '',
 	                    auditType: null,
-	                    auditDateTime: '1448292601807',
+	                    auditDateTime: '1448308480430',
 	                    auditArchiveStartDateTime: null,
 	                    auditArchiveEndDateTime: null,
 	                    auditArchiveCreatedDateTime: null,
@@ -12483,7 +12505,7 @@
 	                    accountEmailAddressID: '',
 	                    emailAddress: null,
 	                    verifiedFlag: 0,
-	                    verificationCode: '6085d5feba316f55ca0f192b88450b40',
+	                    verificationCode: '69fcbfacc85721fe440aa0a4b25c70c5',
 	                    remoteID: null,
 	                    createdDateTime: '',
 	                    createdByAccountID: null,
@@ -14074,7 +14096,7 @@
 	                    swprid: '',
 	                    password: '',
 	                    passwordConfirm: '',
-	                    accountPasswordResetID: "e2de7a0f8705b527d38f88f7a80dff7e",
+	                    accountPasswordResetID: "e977cb01c8e2f3c579a56ceff0499447",
 	                    preProcessDisplayedFlag: 0,
 	                    populatedFlag: 0,
 	                    z: ''
@@ -16594,6 +16616,545 @@
 	    return ProductCreateController;
 	})();
 	exports.ProductCreateController = ProductCreateController;
+
+
+/***/ },
+/* 129 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	//services
+	//filters
+	//directives
+	var swcontentbasic_1 = __webpack_require__(130);
+	var swcontenteditor_1 = __webpack_require__(131);
+	var swcontentlist_1 = __webpack_require__(132);
+	var swcontentnode_1 = __webpack_require__(133);
+	var contentmodule = angular.module('hibachi.content', []).config(function () {
+	})
+	    .constant('contentPartialsPath', 'content/components/')
+	    .directive('swContentBasic', swcontentbasic_1.SWContentBasic.Factory())
+	    .directive('swContentEditor', swcontenteditor_1.SWContentEditor.Factory())
+	    .directive('swContentList', swcontentlist_1.SWContentList.Factory())
+	    .directive('swContentNode', swcontentnode_1.SWContentNode.Factory());
+	exports.contentmodule = contentmodule;
+
+
+/***/ },
+/* 130 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWContentBasic = (function () {
+	    function SWContentBasic($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'EA',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contentbasic.html",
+	            link: function (scope, element, attrs) {
+	                if (!scope.content.$$isPersisted()) {
+	                    if (angular.isDefined($routeParams.siteID)) {
+	                        var sitePromise;
+	                        var options = {
+	                            id: $routeParams.siteID
+	                        };
+	                        sitePromise = $slatwall.getSite(options);
+	                        sitePromise.promise.then(function () {
+	                            var site = sitePromise.value;
+	                            scope.content.$$setSite(site);
+	                        });
+	                    }
+	                    else {
+	                        var site = $slatwall.newSite();
+	                        scope.content.$$setSite(site);
+	                    }
+	                    var parentContent;
+	                    if (angular.isDefined($routeParams.parentContentID)) {
+	                        var parentContentPromise;
+	                        var options = {
+	                            id: $routeParams.parentContentID
+	                        };
+	                        parentContentPromise = $slatwall.getContent(options);
+	                        parentContentPromise.promise.then(function () {
+	                            var parentContent = parentContentPromise.value;
+	                            scope.content.$$setParentContent(parentContent);
+	                            $log.debug('contenttest');
+	                            $log.debug(scope.content);
+	                        });
+	                    }
+	                    else {
+	                        var parentContent = $slatwall.newContent();
+	                        scope.content.$$setParentContent(parentContent);
+	                    }
+	                    var contentTemplateType = $slatwall.newType();
+	                    scope.content.$$setContentTemplateType(contentTemplateType);
+	                }
+	                else {
+	                    scope.content.$$getSite();
+	                    scope.content.$$getParentContent();
+	                    scope.content.$$getContentTemplateType();
+	                }
+	            }
+	        };
+	    }
+	    SWContentBasic.Factory = function () {
+	        var directive = function ($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	            return new SWContentBasic($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$routeParams',
+	            '$slatwall',
+	            'formService',
+	            'contentPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentBasic;
+	})();
+	exports.SWContentBasic = SWContentBasic;
+
+
+/***/ },
+/* 131 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWContentEditor = (function () {
+	    function SWContentEditor($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'EA',
+	            scope: {
+	                content: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contenteditor.html",
+	            link: function (scope, element, attrs) {
+	                scope.editorOptions = CKEDITOR.editorConfig;
+	                scope.onContentChange = function () {
+	                    var form = formService.getForm('contentEditor');
+	                    form.contentBody.$setDirty();
+	                };
+	                //                scope.saveContent = function(){
+	                //                   var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';
+	                //                   var params = {
+	                //                        entityID:scope.content.contentID,
+	                //                        templateHTML:scope.content.templateHTML,
+	                //                        context:'saveTemplateHTML',
+	                //                        entityName:'content'   
+	                //                   }
+	                //                   $http.post(urlString,
+	                //                        {
+	                //                            params:params
+	                //                        }
+	                //                    )
+	                //                    .success(function(data){
+	                //                    }).error(function(reason){
+	                //                    });
+	                //                }
+	            }
+	        };
+	    }
+	    SWContentEditor.Factory = function () {
+	        var directive = function ($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	            return new SWContentEditor($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$http',
+	            '$slatwall',
+	            'formService',
+	            'contentPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentEditor;
+	})();
+	exports.SWContentEditor = SWContentEditor;
+
+
+/***/ },
+/* 132 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWContentListController = (function () {
+	    function SWContentListController($scope, $log, $timeout, $slatwall, paginationService, observerService, collectionConfigService) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$log = $log;
+	        this.$timeout = $timeout;
+	        this.$slatwall = $slatwall;
+	        this.paginationService = paginationService;
+	        this.observerService = observerService;
+	        this.collectionConfigService = collectionConfigService;
+	        this.openRoot = true;
+	        this.$log.debug('slatwallcontentList init');
+	        var pageShow = 50;
+	        if (this.pageShow !== 'Auto') {
+	            pageShow = this.pageShow;
+	        }
+	        this.pageShowOptions = [
+	            { display: 10, value: 10 },
+	            { display: 20, value: 20 },
+	            { display: 50, value: 50 },
+	            { display: 250, value: 250 }
+	        ];
+	        this.loadingCollection = false;
+	        this.selectedSite;
+	        this.orderBy;
+	        var orderByConfig;
+	        this.getCollection = function (isSearching) {
+	            _this.collectionConfig = collectionConfigService.newCollectionConfig('Content');
+	            var columnsConfig = [
+	                //{"propertyIdentifier":"_content_childContents","title":"","isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","aggregate":{"aggregateFunction":"COUNT","aggregateAlias":"childContentsCount"}},
+	                {
+	                    propertyIdentifier: '_content.contentID',
+	                    isVisible: false,
+	                    ormtype: 'id',
+	                    isSearchable: true
+	                },
+	                {
+	                    propertyIdentifier: '_content.urlTitlePath',
+	                    isVisible: false,
+	                    isSearchable: true
+	                },
+	                //need to get template via settings
+	                {
+	                    propertyIdentifier: '_content.allowPurchaseFlag',
+	                    isVisible: true,
+	                    ormtype: 'boolean',
+	                    isSearchable: false
+	                },
+	                {
+	                    propertyIdentifier: '_content.productListingPageFlag',
+	                    isVisible: true,
+	                    ormtype: 'boolean',
+	                    isSearchable: false
+	                },
+	                {
+	                    propertyIdentifier: '_content.activeFlag',
+	                    isVisible: true,
+	                    ormtype: 'boolean',
+	                    isSearchable: false
+	                }
+	            ];
+	            var options = {
+	                currentPage: '1',
+	                pageShow: '1',
+	                keywords: _this.keywords
+	            };
+	            var column = {};
+	            if (!isSearching || _this.keywords === '') {
+	                _this.isSearching = false;
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "parentContent",
+	                                "comparisonOperator": "is",
+	                                "value": 'null'
+	                            }
+	                        ]
+	                    }
+	                ];
+	                column = {
+	                    propertyIdentifier: '_content.title',
+	                    isVisible: true,
+	                    ormtype: 'string',
+	                    isSearchable: true,
+	                    tdclass: 'primary'
+	                };
+	                columnsConfig.unshift(column);
+	            }
+	            else {
+	                _this.isSearching = true;
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "excludeFromSearch",
+	                                "comparisonOperator": "!=",
+	                                "value": true
+	                            }
+	                        ]
+	                    }
+	                ];
+	                column = {
+	                    propertyIdentifier: '_content.title',
+	                    isVisible: false,
+	                    ormtype: 'string',
+	                    isSearchable: true
+	                };
+	                columnsConfig.unshift(column);
+	                var titlePathColumn = {
+	                    propertyIdentifier: '_content.titlePath',
+	                    isVisible: true,
+	                    ormtype: 'string',
+	                    isSearchable: false
+	                };
+	                columnsConfig.unshift(titlePathColumn);
+	            }
+	            //if we have a selected Site add the filter
+	            if (angular.isDefined(_this.selectedSite)) {
+	                var selectedSiteFilter = {
+	                    logicalOperator: "AND",
+	                    propertyIdentifier: "site.siteID",
+	                    comparisonOperator: "=",
+	                    value: _this.selectedSite.siteID
+	                };
+	                filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
+	            }
+	            if (angular.isDefined(_this.orderBy)) {
+	                var orderByConfig = [];
+	                orderByConfig.push(_this.orderBy);
+	                options.orderByConfig = angular.toJson(orderByConfig);
+	            }
+	            angular.forEach(columnsConfig, function (column) {
+	                _this.collectionConfig.addColumn(column.propertyIdentifier, column.title, column);
+	            });
+	            _this.collectionConfig.addDisplayAggregate('childContents', 'COUNT', 'childContentsCount', { isVisible: false, isSearchable: false, title: 'test' });
+	            _this.collectionConfig.addDisplayProperty('site.siteID', undefined, {
+	                isVisible: false,
+	                ormtype: 'id',
+	                isSearchable: false
+	            });
+	            _this.collectionConfig.addDisplayProperty('site.domainNames', undefined, {
+	                isVisible: false,
+	                isSearchable: true
+	            });
+	            angular.forEach(filterGroupsConfig[0].filterGroup, function (filter) {
+	                _this.collectionConfig.addFilter(filter.propertyIdentifier, filter.value, filter.comparisonOperator, filter.logicalOperator);
+	            });
+	            _this.collectionListingPromise = _this.collectionConfig.getEntity();
+	            _this.collectionListingPromise.then(function (value) {
+	                _this.collection = value;
+	                _this.collection.collectionConfig = _this.collectionConfig;
+	                _this.firstLoad = true;
+	                _this.loadingCollection = false;
+	            });
+	            _this.collectionListingPromise;
+	        };
+	        //this.getCollection(false);
+	        this.keywords = "";
+	        this.loadingCollection = false;
+	        var searchPromise;
+	        this.searchCollection = function () {
+	            if (searchPromise) {
+	                _this.$timeout.cancel(searchPromise);
+	            }
+	            searchPromise = $timeout(function () {
+	                $log.debug('search with keywords');
+	                $log.debug(_this.keywords);
+	                $('.childNode').remove();
+	                //Set current page here so that the pagination does not break when getting collection
+	                _this.loadingCollection = true;
+	                _this.getCollection(true);
+	            }, 500);
+	        };
+	        var siteChanged = function (selectedSiteOption) {
+	            _this.selectedSite = selectedSiteOption;
+	            _this.openRoot = true;
+	            _this.getCollection();
+	        };
+	        this.observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
+	        var sortChanged = function (orderBy) {
+	            _this.orderBy = orderBy;
+	            _this.getCollection();
+	        };
+	        this.observerService.attach(sortChanged, 'sortByColumn', 'siteSorting');
+	        var optionsLoaded = function () {
+	            _this.observerService.notify('selectFirstOption');
+	        };
+	        this.observerService.attach(optionsLoaded, 'optionsLoaded', 'siteOptionsLoaded');
+	    }
+	    SWContentListController.$inject = [
+	        '$scope',
+	        '$log',
+	        '$timeout',
+	        '$slatwall',
+	        'paginationService',
+	        'observerService',
+	        'collectionConfigService'
+	    ];
+	    return SWContentListController;
+	})();
+	var SWContentList = (function () {
+	    function SWContentList(contentPartialsPath, observerService, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        //public bindToController=true;
+	        this.controller = SWContentListController;
+	        this.controllerAs = "swContentList";
+	        this.link = function (scope, element, attrs, controller, transclude) {
+	            scope.$on('$destroy', function handler() {
+	                this.observerService.detachByEvent('optionsChanged');
+	                this.observerService.detachByEvent('sortByColumn');
+	            });
+	        };
+	        this.observerService = observerService;
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'content/contentlist.html';
+	    }
+	    SWContentList.Factory = function () {
+	        var directive = function (contentPartialsPath, observerService, pathBuilderConfig) {
+	            return new SWContentList(contentPartialsPath, observerService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'contentPartialsPath',
+	            'observerService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentList;
+	})();
+	exports.SWContentList = SWContentList;
+
+
+/***/ },
+/* 133 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWContentNode = (function () {
+	    function SWContentNode($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                contentData: '=',
+	                loadChildren: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'content/contentnode.html',
+	            link: function (scope, element, attr) {
+	                if (angular.isUndefined(scope.depth)) {
+	                    scope.depth = 0;
+	                }
+	                if (angular.isDefined(scope.$parent.depth)) {
+	                    scope.depth = scope.$parent.depth + 1;
+	                }
+	                var childContentColumnsConfig = [{
+	                        propertyIdentifier: '_content.contentID',
+	                        isVisible: false,
+	                        isSearchable: false
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.title',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.urlTitlePath',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.site.siteID',
+	                        isVisible: false,
+	                        isSearchable: false
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.site.siteName',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.site.domainNames',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    //                            {
+	                    //                                propertyIdentifier: '_content.contentTemplateFile',
+	                    //                                persistent: false,
+	                    //                                setting: true,
+	                    //                                isVisible: true
+	                    //                            },
+	                    //need to get template via settings
+	                    {
+	                        propertyIdentifier: '_content.allowPurchaseFlag',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    }, {
+	                        propertyIdentifier: '_content.productListingPageFlag',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    }, {
+	                        propertyIdentifier: '_content.activeFlag',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    }
+	                ];
+	                var childContentOrderBy = [
+	                    {
+	                        "propertyIdentifier": "_content.sortOrder",
+	                        "direction": "DESC"
+	                    }
+	                ];
+	                scope.toggleChildContent = function (parentContentRecord) {
+	                    if (angular.isUndefined(scope.childOpen) || scope.childOpen === false) {
+	                        scope.childOpen = true;
+	                        if (!scope.childrenLoaded) {
+	                            scope.getChildContent(parentContentRecord);
+	                        }
+	                    }
+	                    else {
+	                        scope.childOpen = false;
+	                    }
+	                };
+	                scope.getChildContent = function (parentContentRecord) {
+	                    var childContentfilterGroupsConfig = [{
+	                            "filterGroup": [{
+	                                    "propertyIdentifier": "_content.parentContent.contentID",
+	                                    "comparisonOperator": "=",
+	                                    "value": parentContentRecord.contentID
+	                                }]
+	                        }];
+	                    var collectionListingPromise = $slatwall.getEntity('Content', {
+	                        columnsConfig: angular.toJson(childContentColumnsConfig),
+	                        filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
+	                        orderByConfig: angular.toJson(childContentOrderBy),
+	                        allRecords: true
+	                    });
+	                    collectionListingPromise.then(function (value) {
+	                        parentContentRecord.children = value.records;
+	                        var index = 0;
+	                        angular.forEach(parentContentRecord.children, function (child) {
+	                            child.site_domainNames = child.site_domainNames.split(",")[0];
+	                            scope['child' + index] = child;
+	                            element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px" ng-if="childOpen"  sw-content-node data-content-data="child' + index + '"></tr>')(scope));
+	                            index++;
+	                        });
+	                        scope.childrenLoaded = true;
+	                    });
+	                };
+	                scope.childrenLoaded = false;
+	                //if the children have never been loaded and we are not in search mode based on the title received
+	                if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)) {
+	                    scope.toggleChildContent(scope.contentData);
+	                }
+	            }
+	        };
+	    }
+	    SWContentNode.Factory = function () {
+	        var directive = function ($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig) {
+	            return new SWContentNode($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$compile',
+	            '$slatwall',
+	            'contentPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentNode;
+	})();
+	exports.SWContentNode = SWContentNode;
 
 
 /***/ }

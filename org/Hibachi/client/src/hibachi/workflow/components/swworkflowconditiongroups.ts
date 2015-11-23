@@ -3,23 +3,27 @@ class SWWorkflowConditionGroups{
 		var directive = (
 			$log,
 			workflowConditionService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		)=> new SWWorkflowConditionGroups(
 			$log,
 			workflowConditionService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'workflowConditionService',
-			'workflowPartialsPath'
+			'workflowPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
 		workflowConditionService,
-		workflowPartialsPath
+		workflowPartialsPath,
+		pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
@@ -29,7 +33,7 @@ class SWWorkflowConditionGroups{
 				workflow:"=",
 				filterPropertiesList:"="
 			},
-			templateUrl:workflowPartialsPath+"workflowconditiongroups.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroups.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflowconditiongroups init');
 				

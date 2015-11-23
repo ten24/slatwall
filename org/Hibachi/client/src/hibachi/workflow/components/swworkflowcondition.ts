@@ -6,14 +6,16 @@ class SWWorkflowCondition{
 			$slatwall,
 			formService,
 			metadataService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		)=> new SWWorkflowCondition(
 			$log,
 			$location,
 			$slatwall,
 			formService,
 			metadataService,
-			workflowPartialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
@@ -21,7 +23,8 @@ class SWWorkflowCondition{
 			'$slatwall',
 			'formService',
 			'metadataService',
-			'workflowPartialsPath'
+			'workflowPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
@@ -31,7 +34,8 @@ class SWWorkflowCondition{
 		$slatwall,
 		formService,
 		metadataService,
-		workflowPartialsPath
+		workflowPartialsPath,
+			pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
@@ -41,7 +45,7 @@ class SWWorkflowCondition{
 				workflow:"=",
 				filterPropertiesList:"="
 			},
-			templateUrl:workflowPartialsPath+"workflowcondition.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowcondition.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflowCondition init');
 				$log.debug(scope);

@@ -1,26 +1,30 @@
 class SWWorkflowBasic{
 	public static Factory(){
 		var directive=(
-			$log, $location, $slatwall, formService, workflowPartialsPath
+			$log, $location, $slatwall, formService, workflowPartialsPath,
+			pathBuilderConfig
 		)=>new SWWorkflowBasic(
-			$log, $location, $slatwall, formService, workflowPartialsPath
+			$log, $location, $slatwall, formService, workflowPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'$location',
 			'$slatwall',
 			'formService',
-			'workflowPartialsPath',
+			'workflowPartialsPath',,
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
-	constructor($log, $location, $slatwall, formService, workflowPartialsPath){
+	constructor($log, $location, $slatwall, formService, workflowPartialsPath,
+			pathBuilderConfig){
 		return {
 			restrict : 'A',
 			scope : {
 				workflow : "="
 			},
-			templateUrl : workflowPartialsPath
+			templateUrl : pathBuilderConfig.buildPartialsPath(workflowPartialsPath)
 					+ "workflowbasic.html",
 			link : function(scope, element, attrs) {
 			}

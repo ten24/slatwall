@@ -5,13 +5,15 @@ class SWWorkflowTriggers{
 			$location,
 			$slatwall,
 			workflowPartialsPath,
-			formService
+			formService,
+			pathBuilderConfig
 		)=> new SWWorkflowTriggers(
 			$log,
 			$location,
 			$slatwall,
 			workflowPartialsPath,
-			formService
+			formService,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
@@ -19,6 +21,7 @@ class SWWorkflowTriggers{
 			'$slatwall',
 			'workflowPartialsPath',
 			'formService',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
@@ -27,14 +30,15 @@ class SWWorkflowTriggers{
 		$location,
 		$slatwall,
 		workflowPartialsPath,
-		formService
+		formService,
+			pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
 			scope:{
 				workflow:"="
 			},
-			templateUrl:workflowPartialsPath+"workflowtriggers.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtriggers.html",
 			link: function(scope, element,attrs,formController){
 				$log.debug('Workflow triggers init');	
 				scope.$id = 'swWorkflowTriggers';

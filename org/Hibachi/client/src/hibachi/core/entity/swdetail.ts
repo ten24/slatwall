@@ -31,7 +31,7 @@ class SWDetail{
 	){
 		return {
 	        restrict: 'E',
-	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'entity/detail.html',
+	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'/detail.html',
 	        link: function (scope, element, attr) {
 	        	scope.$id="slatwallDetailController";
 	        	$log.debug('slatwallDetailController');

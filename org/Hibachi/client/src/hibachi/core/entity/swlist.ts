@@ -27,7 +27,7 @@ class SWList{
 	){
 		return {
 	        restrict: 'E',
-	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'entity/list.html',
+	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'/list.html',
 	        link: function (scope, element, attr) {
 	        	$log.debug('slatwallList init');
 	        	

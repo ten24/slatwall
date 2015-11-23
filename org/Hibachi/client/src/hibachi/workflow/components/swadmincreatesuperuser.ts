@@ -3,29 +3,33 @@ class SWAdminCreateSuperUser{
 		var directive = (
 			$log,
 			$slatwall,
-			partialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		)=> new SWAdminCreateSuperUser(
 			$log,
 			$slatwall,
-			partialsPath
+			workflowPartialsPath,
+			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'$slatwall',
-			'partialsPath'
+			'workflowPartialsPath',
+			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
 		$slatwall,
-		partialsPath
+		workflowPartialsPath,
+			pathBuilderConfig
 	){
 		return {
 			restrict: 'E',
 			scope:{
 			},
-			templateUrl:partialsPath+"admincreatesuperuser.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"admincreatesuperuser.html",
 			link: function(scope, element,attrs){
                 scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
 			} 

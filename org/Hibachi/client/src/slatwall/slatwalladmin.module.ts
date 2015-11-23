@@ -93,7 +93,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      });
     
      $httpProvider.interceptors.push('slatwallInterceptor');
-
+    console.log(hibachimodule);
      // route provider configuration
      $routeProvider.when('/entity/:entityName/', {
          template: function(params){

@@ -5,14 +5,24 @@ class SWWorkflowTaskActions{
             $slatwall,
             metadataService,
             collectionService,
-            workflowPartialsPath
+            workflowPartialsPath,
+			pathBuilderConfig
         )=> new SWWorkflowTaskActions(
             $log,
             $slatwall,
             metadataService,
             collectionService,
-            workflowPartialsPath
+            workflowPartialsPath,
+			pathBuilderConfig
         );
+        directive.$inject = [
+            '$log',
+            '$slatwall',
+            'metadataService',
+            'collectionService',
+            'workflowPartialsPath',
+			'pathBuilderConfig'
+        ];
         return directive;
     }
     constructor(
@@ -20,14 +30,15 @@ class SWWorkflowTaskActions{
         $slatwall,
         metadataService,
         collectionService,
-        workflowPartialsPath
+        workflowPartialsPath,
+			pathBuilderConfig
     ){
         return {
             restrict: 'AE',
             scope: {
                 workflowTask: "="
             },
-            templateUrl: workflowPartialsPath + "workflowtaskactions.html",
+            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
             link: function (scope, element, attrs) {
                 $log.debug('Workflow Task Actions Init');
                 $log.debug(scope.workflowTask);
