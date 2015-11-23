@@ -2,6 +2,7 @@
 /// <reference path='../../../../client/typings/tsd.d.ts' />
 /// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../client/typings/tsd.d.ts' />
+/** This cart service is intended to be used by the frontend module on the frontend of sites. */
 module slatwalladmin {
     interface IPostFactory {
             dataFactory: {},
