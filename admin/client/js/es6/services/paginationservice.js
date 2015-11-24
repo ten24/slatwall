@@ -133,7 +133,7 @@ var slatwalladmin;
                 this.totalPagesArray = [];
                 if (angular.isUndefined(this.getCurrentPage()) || this.getCurrentPage() < 5) {
                     var start = 1;
-                    var end = (this.getTotalPages() <= 10) ? this.getTotalPages() : 10;
+                    var end = (this.getTotalPages() <= 10) ? this.getTotalPages() + 1 : 10;
                 }
                 else {
                     var start = (!this.showNextJump()) ? this.getTotalPages() - 4 : this.getCurrentPage() - 3;
