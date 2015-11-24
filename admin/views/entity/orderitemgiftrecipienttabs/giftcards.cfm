@@ -53,7 +53,8 @@ Notes:
 <cfparam name="rc.orderItemGiftRecipient" type="any" />
 
 <cfoutput>
-    <hb:HibachiListingDisplay smartList="#rc.orderItemGiftRecipient.getGiftCardSmartList()#">
+    <hb:HibachiListingDisplay smartList="#rc.orderItemGiftRecipient.getGiftCardsSmartList()#"
+                              recordDetailAction="admin:entity.detailgiftcard">
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
