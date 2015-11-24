@@ -466,6 +466,7 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 /*Global*/
 body { background-color: @background; font-family: 'Open Sans', sans-serif;color:@black-60; padding-top: 60px; font-size:12px;min-width: 992px /*Remove for responsive*/;}
 body.s-login-screen {background-image: url("../../../assets/images/login-bg.jpg");background-repeat: no-repeat;background-position: center center; background-size:cover;height:100vh;}
+body.s-login-screen .form-group {display: inline-block;width: 100%;}
 @media only screen and (max-width: 992px) {
     body {padding:0px /*Remove for responsive*/;}
 }
@@ -650,7 +651,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 .s-property-info dt, .s-property-info dd {text-align:left;padding: 7px 0px 11px 0px; }
 .s-property-info dd {padding-left:10px;}
 .s-property-info dt {font-family: @font-family-semibold;}
-.form-horizontal .control-label {margin-bottom:4px;}
+.form-horizontal .control-label {margin-bottom:4px;text-align: left;}
 
 .btn-group {float:right;}
 .btn-toolbar {float:right; margin-top:10px;}
@@ -716,7 +717,7 @@ table tr th .glyphicon {vertical-align:text-top;}
 .dropdown-menu .dropdown-header {padding: 3px 15px;text-transform: uppercase;}
 .dropdown-menu .search-filter, .dropdown-menu .range-filter {margin-right:15px;margin-left:15px;margin-bottom:5px;}
 
-.form-group {margin-bottom:10px;display: inline-block;width: 100%;}
+.form-group {margin-bottom:10px;}
 .form-group .s-optional {color: @black-30;font-size: 10px;position: relative;top: -1px;}
 input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;box-shadow: none !important;}
 
