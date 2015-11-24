@@ -88,15 +88,15 @@
 				<!--- Reporting Items Pagination --->
 				<nav class="pull-right" >
 					<!--- Set the previous item number --->
-					<cfset previousItem = attributes.report.getCurrentPage() - 1 />
+					<cfset previousItem = attributes.report.getCurrentPage() - 25 />
 
 					<!--- Set the next item number --->
-					<cfset nextItem = attributes.report.getCurrentPage() + 1 />
+					<cfset nextItem = attributes.report.getCurrentPage() + 25 />
 
 					<ul class="pagination" >
 
 						<!--- Get Previous page --->
-				        <li <cfif previousItem EQ 0>class="disabled" disabled</cfif> >
+				        <li <cfif previousItem LTE 0>class="disabled" disabled</cfif> >
 				            <a href="##" data-pagination="#previousItem#" class="hibachi-report-pagination" aria-label="Previous">
 				            	<span aria-hidden="true">&laquo;</span>
 				            </a>
