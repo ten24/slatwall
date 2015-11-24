@@ -5,10 +5,13 @@ require('./vendor.ts')();
 import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
 import {loggermodule} from "./hibachi/logger/logger.module"; 
 
+declare var slatwallAngular:any;
+
+
 //custom bootstrapper
 class bootstrapper{
     constructor(){
-      this.fetchData().then((data)=>{
+      this.fetchData().then((data:any)=>{
           slatwallAngular.modelConfig = data.data;
           this.bootstrapApplication();
       });
