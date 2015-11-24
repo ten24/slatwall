@@ -20,6 +20,14 @@
     	"generateSubscriptionSkus":{
     	    "generateSkusFlag": {"eq":1},
     		"baseProductType":	{"eq":"subscription"}
+    	},
+    	"subscriptionWithRenewalSku":{
+    		"baseProductType":	{"eq":"subscription"}, 
+    		"renewalSku":		{"null":false}
+    	},
+    	"subscriptionWithoutRenewalSku":{
+    		"baseProductType":	{"eq":"subscription"}, 
+    		"renewalSku":		{"null":true}
     	}
 	},
 	"properties":{
@@ -27,7 +35,9 @@
 		"productCode": 				[{"required":true}],
 		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
 		"subscriptionBenefits": 	[{"conditions":"baseProductTypeSubscription","required":true}],
-		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}]
+		"subscriptionTerms":		[{"conditions":"baseProductTypeSubscription","required":true}],
+		"renewalSubscriptionBenefits": [{"conditions":"subscriptionWithoutRenewalSku","required":true}],
+		"renewalPrice":  [{"conditions":"subscriptionWithoutRenewalSku","required":true}]
 	}
 }
 

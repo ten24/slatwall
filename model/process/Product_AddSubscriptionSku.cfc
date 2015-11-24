@@ -101,7 +101,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getRenewalSku(){
-		return this.getService("SkuService").getSku(variables.renewalSku);
+		if(!isNull(variables.renewalSku)){
+			return this.getService("SkuService").getSku(variables.renewalSku);
+		}
+		return;
 	}
 
 	// ========================  END: Defaults =============================

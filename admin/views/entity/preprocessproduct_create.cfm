@@ -135,10 +135,14 @@ Notes:
 						<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
 						</hb:HibachiListingDisplay>
-	
+
+						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
+						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
+						</hb:HibachiListingDisplay>
 
 				</cfif>
-				
+
 
 			</hb:HibachiPropertyList>
 
@@ -184,7 +188,7 @@ Notes:
 
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
-		
+
 		<!--- Merchandise --->
 		<cfelseif rc.processObject.getBaseProductType() eq "merchandise">
 
@@ -207,33 +211,45 @@ Notes:
 			</cfif>
 
 		<!--- Subscription --->
-			
+
 		<cfelseif rc.baseProductType eq "subscription">
 
-			<div class="row">
-				<div class="col-md-6">
-					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
-					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
-					</hb:HibachiListingDisplay>
+			<hb:HibachiPropertyList divClass="col-md-6">
+				<div class="form-horizontal">
+					<div class="form-group">
+						<label class="control-label col-sm-4" style="text-align:left">#$.slatwall.rbKey('admin.entity.processproduct.create.renewalSkuMethod')#</label>
+						<div class="col-sm-8">
+							<select class="form-control  j-custom-select valid" name="rskuOptions">
+								<option value="rsku" selected>#$.slatwall.rbKey('admin.entity.processproduct.create.selectRenewalSku')#</option>
+								<option value="custom">#$.slatwall.rbKey('admin.entity.processproduct.create.selectCustomRenewal')#</option>
+							</select>
+						</div>
+					</div>
 				</div>
-				<div class="col-md-6">
-					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
-					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
-					</hb:HibachiListingDisplay>
-				</div>
-				<div class="cold-md-12">
-					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
-					<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-						<hb:HibachiListingColumn propertyIdentifier="skuName" />
-						<hb:HibachiListingColumn propertyIdentifier="skuDescription" />
-						<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
-						<hb:HibachiListingColumn propertyIdentifier="price" />
-					</hb:HibachiListingDisplay>
-				</div>
-			</div>
+			</hb:HibachiPropertyList>
+
+			<hb:HibachiPropertyList divClass="col-md-6">
+
+				<hb:hibachidisplaytoggle selector="select[name='rskuOptions']" showvalues="custom" loadVisable="false">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="renewalPrice" fieldName="product.renewalPrice" edit="true" />
+						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
+						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
+						</hb:HibachiListingDisplay>
+				</hb:hibachiDisplayToggle>
+
+				<hb:hibachidisplaytoggle selector="select[name='rskuOptions']" showvalues="rsku" loadVisable="true">
+						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
+						<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+							<hb:HibachiListingColumn propertyIdentifier="skuName" />
+							<hb:HibachiListingColumn propertyIdentifier="skuDescription" />
+							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
+							<hb:HibachiListingColumn propertyIdentifier="price" />
+						</hb:HibachiListingDisplay>
+				</hb:hibachiDisplayToggle>
+
+			</hb:HibachiPropertyList>
 
 		</cfif>
 
