@@ -229,9 +229,10 @@
 				</td>
 			</tr>
 			
-			<tr ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
-				<td colspan="{{swListingDisplay.collectionConfig.columns.length}}" style="text-align:center;">
-					No <span sw-rbkey="'entity.'+swListingDisplay.collectionObject+'_plural'"></span>
+			<!--- Show message if no records are found --->
+			<tr class="no-records-found" ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
+				<td colspan="100" sw-rbkey="'admin.define.norecordsfound'">
+					<!--- JS creates message with rb keys --->
 				</td>
 			</tr>
 			<!--<cfif !arrayLen(attributes.smartList.getPageRecords())>
@@ -248,5 +249,3 @@
 		data-paginator="swListingDisplay.paginator"
 		>
 	</sw-pagination-bar>
-
-
