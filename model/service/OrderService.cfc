@@ -703,9 +703,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
-            newOrderPayment.setGiftCardNumberEncrypted(processObject.getNewOrderPayment().getGiftCardNumber());
-            var giftCard = getService("GiftCardService").get("GiftCard", getDAO("GiftCardDAO").getIDbyCode(processObject.getNewOrderPayment().getGiftCardNumber()));
-
+            if(!len(arguments.processObject.getAccountPaymentMethodID())){
+	            var giftCard = getService("GiftCardService").get("GiftCard", getDAO("GiftCardDAO").getIDbyCode(arguments.processObject.getNewOrderPayment().getGiftCardNumber()));
+            } else if(getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).isGiftCardAccountPaymentMethod()) {
+            	var giftCard = getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).getGiftCard();
+            }
+            newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
         }
 
 		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
@@ -1159,7 +1162,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
 
 			// Duplicate Order Fulfillment
-			if(!orderFulfillmentFound) {
+			if(!orderFulfillmentFound && !isNull(arguments.order.getOrderItems()[i].getOrderFulfillment())) {
 				var newOrderFulfillment = this.newOrderFulfillment();
 				newOrderFulfillment.setFulfillmentMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
 				newOrderFulfillment.setOrder( newOrder );
@@ -1183,7 +1186,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			}
 			newOrderItem.setOrder( newOrder );
-			newOrderItem.setOrderFulfillment( newOrderFulfillment );
+
+			///bypass fulfillment for return orders
+			if(!isNull(newOrderFulfillment)){
+				newOrderItem.setOrderFulfillment( newOrderFulfillment );
+			}
 
 		}
 
