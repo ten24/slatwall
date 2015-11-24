@@ -29,9 +29,9 @@
 				<cfif !isNull(rc.sku.getRenewalSku()) && !rc.edit>
 					<hb:HibachiPropertyDisplay object="#rc.sku.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.sku.getRenewalSku().getSkuID()#')#"/>
 				<cfelseif !isNull(rc.sku.getRenewalSku()) && rc.edit>
-					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
-					<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#"
-											  selectValue="#rc.product.getRenewalSku().getSkuID()#"
+					<swa:SlatwallErrorDisplay object="#rc.sku#" errorName="renewalSku" />
+					<hb:HibachiListingDisplay smartList="#rc.sku.getSubscriptionSkuSmartList()#"
+											  selectValue="#rc.sku.getRenewalSku().getSkuID()#"
 											  selectFieldName="renewalSku.skuID"
 											  title="#$.slatwall.rbKey('define.renewalSku')#"
 											  edit="#rc.edit#">
