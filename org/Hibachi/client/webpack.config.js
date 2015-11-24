@@ -4,7 +4,7 @@ var path = require('path');
 var PATHS = {
     app:__dirname + '/src'
 };
-var ngAnnotatePlugin = require('ng-annotate-webpack-plugin');
+
 module.exports = {  
   context:PATHS.app,
   entry: {
@@ -35,13 +35,7 @@ module.exports = {
   	}
   },
   
-  // Add minification
-  plugins: [
-  	new ngAnnotatePlugin({
-        add: true,
-        // other ng-annotate options here 
-    })
-  ],
+  
   module: {
     noParse: [ /bower_components/ ],
     loaders: [

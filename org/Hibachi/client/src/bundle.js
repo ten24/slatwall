@@ -188,8 +188,7 @@
 	d,e,f;d=0;for(e=c.length;d<e;d++)f=c[d],this[f]=b[f]}else this.$attr={};this.$$element=a};Z.prototype={$normalize:ya,$addClass:function(a){a&&0<a.length&&O.addClass(this.$$element,a)},$removeClass:function(a){a&&0<a.length&&O.removeClass(this.$$element,a)},$updateClass:function(a,b){var c=Zc(a,b);c&&c.length&&O.addClass(this.$$element,c);(c=Zc(b,a))&&c.length&&O.removeClass(this.$$element,c)},$set:function(a,b,d,e){var f=Rc(this.$$element[0],a),g=$c[a],h=a;f?(this.$$element.prop(a,b),e=f):g&&(this[g]=
 	b,h=g);this[a]=b;e?this.$attr[a]=e:(e=this.$attr[a])||(this.$attr[a]=e=Ac(a,"-"));f=wa(this.$$element);if("a"===f&&"href"===a||"img"===f&&"src"===a)this[a]=b=H(b,"src"===a);else if("img"===f&&"srcset"===a){for(var f="",g=T(b),k=/(\s+\d+x\s*,|\s+\d+w\s*,|\s+,|,\s+)/,k=/\s/.test(g)?k:/(,)/,g=g.split(k),k=Math.floor(g.length/2),l=0;l<k;l++)var r=2*l,f=f+H(T(g[r]),!0),f=f+(" "+T(g[r+1]));g=T(g[2*l]).split(/\s/);f+=H(T(g[0]),!0);2===g.length&&(f+=" "+T(g[1]));this[a]=b=f}!1!==d&&(null===b||v(b)?this.$$element.removeAttr(e):
 	this.$$element.attr(e,b));(a=this.$$observers)&&m(a[h],function(a){try{a(b)}catch(d){c(d)}})},$observe:function(a,b){var c=this,d=c.$$observers||(c.$$observers=fa()),e=d[a]||(d[a]=[]);e.push(b);z.$evalAsync(function(){e.$$inter||!c.hasOwnProperty(a)||v(c[a])||b(c[a])});return function(){cb(e,b)}}};var da=b.startSymbol(),ea=b.endSymbol(),ha="{{"==da||"}}"==ea?$a:function(a){return a.replace(/\{\{/g,da).replace(/}}/g,ea)},ja=/^ngAttr[A-Z]/;W.$$addBindingInfo=n?function(a,b){var c=a.data("$binding")||
-	[];J(b)?c=c.concat(b):c.push(b);a.data("$binding",c)}:y;W.$$addBindingClass=n?function(a){L(a,"ng-binding")}:y;W.$$addScopeInfo=n?function(a,b,c,d){a.data(c?d?"$isolateScopeNoTemplate":"$isolateScope":"$scope",b)}:y;W.$$addScopeClass=n?function(a,b){L(a,b?"ng-isolate-scope":"ng-scope")}:y;return W}]}
-	Dc.$inject = ["b", "a"];function ya(b){return gb(b.replace(Wc,""))}function Zc(b,a){var c="",d=b.split(/\s+/),e=a.split(/\s+/),f=0;a:for(;f<d.length;f++){for(var h=d[f],g=0;g<e.length;g++)if(h==e[g])continue a;c+=(0<c.length?
+	[];J(b)?c=c.concat(b):c.push(b);a.data("$binding",c)}:y;W.$$addBindingClass=n?function(a){L(a,"ng-binding")}:y;W.$$addScopeInfo=n?function(a,b,c,d){a.data(c?d?"$isolateScopeNoTemplate":"$isolateScope":"$scope",b)}:y;W.$$addScopeClass=n?function(a,b){L(a,b?"ng-isolate-scope":"ng-scope")}:y;return W}]}function ya(b){return gb(b.replace(Wc,""))}function Zc(b,a){var c="",d=b.split(/\s+/),e=a.split(/\s+/),f=0;a:for(;f<d.length;f++){for(var h=d[f],g=0;g<e.length;g++)if(h==e[g])continue a;c+=(0<c.length?
 	" ":"")+h}return c}function Xc(b){b=B(b);var a=b.length;if(1>=a)return b;for(;a--;)8===b[a].nodeType&&Nf.call(b,a,1);return b}function Xe(){var b={},a=!1;this.register=function(a,d){Ta(a,"controller");C(a)?P(b,a):b[a]=d};this.allowGlobals=function(){a=!0};this.$get=["$injector","$window",function(c,d){function e(a,b,c,d){if(!a||!C(a.$scope))throw I("$controller")("noscp",d,b);a.$scope[b]=c}return function(f,h,g,l){var k,n,p;g=!0===g;l&&G(l)&&(p=l);if(G(f)){l=f.match(Vc);if(!l)throw Of("ctrlfmt",f);
 	n=l[1];p=p||l[3];f=b.hasOwnProperty(n)?b[n]:Cc(h.$scope,n,!0)||(a?Cc(d,n,!0):w);Sa(f,n,!0)}if(g)return g=(J(f)?f[f.length-1]:f).prototype,k=Object.create(g||null),p&&e(h,p,k,n||f.name),P(function(){var a=c.invoke(f,k,h,n);a!==k&&(C(a)||x(a))&&(k=a,p&&e(h,p,k,n||f.name));return k},{instance:k,identifier:p});k=c.instantiate(f,h,n);p&&e(h,p,k,n||f.name);return k}}]}function Ye(){this.$get=["$window",function(b){return B(b.document)}]}function Ze(){this.$get=["$log",function(b){return function(a,c){b.error.apply(b,
 	arguments)}}]}function Yb(b){return C(b)?ea(b)?b.toISOString():eb(b):b}function df(){this.$get=function(){return function(b){if(!b)return"";var a=[];nc(b,function(b,d){null===b||v(b)||(J(b)?m(b,function(b,c){a.push(la(d)+"="+la(Yb(b)))}):a.push(la(d)+"="+la(Yb(b))))});return a.join("&")}}}function ef(){this.$get=function(){return function(b){function a(b,e,f){null===b||v(b)||(J(b)?m(b,function(b,c){a(b,e+"["+(C(b)?c:"")+"]")}):C(b)&&!ea(b)?nc(b,function(b,c){a(b,e+(f?"":"[")+c+(f?"":"]"))}):c.push(la(e)+
@@ -433,9 +432,7 @@
 	 License: MIT
 	*/
 	(function(p,c,C){'use strict';function v(r,h,g){return{restrict:"ECA",terminal:!0,priority:400,transclude:"element",link:function(a,f,b,d,y){function z(){k&&(g.cancel(k),k=null);l&&(l.$destroy(),l=null);m&&(k=g.leave(m),k.then(function(){k=null}),m=null)}function x(){var b=r.current&&r.current.locals;if(c.isDefined(b&&b.$template)){var b=a.$new(),d=r.current;m=y(b,function(b){g.enter(b,null,m||f).then(function(){!c.isDefined(t)||t&&!a.$eval(t)||h()});z()});l=d.scope=b;l.$emit("$viewContentLoaded");
-	l.$eval(w)}else z()}var l,m,k,t=b.autoscroll,w=b.onload||"";a.$on("$routeChangeSuccess",x);x()}}}
-	v.$inject = ["r", "h", "g"];function A(c,h,g){return{restrict:"ECA",priority:-400,link:function(a,f){var b=g.current,d=b.locals;f.html(d.$template);var y=c(f.contents());b.controller&&(d.$scope=a,d=h(b.controller,d),b.controllerAs&&(a[b.controllerAs]=d),f.data("$ngControllerController",d),f.children().data("$ngControllerController",d));y(a)}}}
-	A.$inject = ["c", "h", "g"];p=c.module("ngRoute",["ng"]).provider("$route",function(){function r(a,f){return c.extend(Object.create(a),
+	l.$eval(w)}else z()}var l,m,k,t=b.autoscroll,w=b.onload||"";a.$on("$routeChangeSuccess",x);x()}}}function A(c,h,g){return{restrict:"ECA",priority:-400,link:function(a,f){var b=g.current,d=b.locals;f.html(d.$template);var y=c(f.contents());b.controller&&(d.$scope=a,d=h(b.controller,d),b.controllerAs&&(a[b.controllerAs]=d),f.data("$ngControllerController",d),f.children().data("$ngControllerController",d));y(a)}}}p=c.module("ngRoute",["ng"]).provider("$route",function(){function r(a,f){return c.extend(Object.create(a),
 	f)}function h(a,c){var b=c.caseInsensitiveMatch,d={originalPath:a,regexp:a},g=d.keys=[];a=a.replace(/([().])/g,"\\$1").replace(/(\/)?:(\w+)([\?\*])?/g,function(a,c,b,d){a="?"===d?d:null;d="*"===d?d:null;g.push({name:b,optional:!!a});c=c||"";return""+(a?"":c)+"(?:"+(a?c:"")+(d&&"(.+?)"||"([^/]+)")+(a||"")+")"+(a||"")}).replace(/([\/$\*])/g,"\\$1");d.regexp=new RegExp("^"+a+"$",b?"i":"");return d}var g={};this.when=function(a,f){var b=c.copy(f);c.isUndefined(b.reloadOnSearch)&&(b.reloadOnSearch=!0);
 	c.isUndefined(b.caseInsensitiveMatch)&&(b.caseInsensitiveMatch=this.caseInsensitiveMatch);g[a]=c.extend(b,a&&h(a,b));if(a){var d="/"==a[a.length-1]?a.substr(0,a.length-1):a+"/";g[d]=c.extend({redirectTo:a},h(d,b))}return this};this.caseInsensitiveMatch=!1;this.otherwise=function(a){"string"===typeof a&&(a={redirectTo:a});this.when(null,a);return this};this.$get=["$rootScope","$location","$routeParams","$q","$injector","$templateRequest","$sce",function(a,f,b,d,h,p,x){function l(b){var e=s.current;
 	(v=(n=k())&&e&&n.$$route===e.$$route&&c.equals(n.pathParams,e.pathParams)&&!n.reloadOnSearch&&!w)||!e&&!n||a.$broadcast("$routeChangeStart",n,e).defaultPrevented&&b&&b.preventDefault()}function m(){var u=s.current,e=n;if(v)u.params=e.params,c.copy(u.params,b),a.$broadcast("$routeUpdate",u);else if(e||u)w=!1,(s.current=e)&&e.redirectTo&&(c.isString(e.redirectTo)?f.path(t(e.redirectTo,e.params)).search(e.params).replace():f.url(e.redirectTo(e.pathParams,f.path(),f.search())).replace()),d.when(e).then(function(){if(e){var a=
@@ -942,7 +939,6 @@
 	        $scope.$id = "alertController";
 	        $scope.alerts = alertService.getAlerts();
 	    }
-	    AlertController.$inject = ["$scope", "alertService"];
 	    return AlertController;
 	})();
 	exports.AlertController = AlertController;
@@ -1658,7 +1654,6 @@
 	        };
 	        this.observers = {};
 	    }
-	    ObserverService.$inject = ["utilityService"];
 	    return ObserverService;
 	})(baseservice_1.BaseService);
 	exports.ObserverService = ObserverService;
@@ -1975,7 +1970,6 @@
 	            }
 	        };
 	    }
-	    GlobalSearchController.$inject = ["$scope", "$log", "$window", "$timeout", "$slatwall"];
 	    return GlobalSearchController;
 	})();
 	exports.GlobalSearchController = GlobalSearchController;
@@ -1990,7 +1984,6 @@
 	    function OtherWiseController($scope) {
 	        $scope.$id = "otherwiseController";
 	    }
-	    OtherWiseController.$inject = ["$scope"];
 	    return OtherWiseController;
 	})();
 	exports.OtherWiseController = OtherWiseController;
@@ -2017,7 +2010,6 @@
 	            }
 	        }
 	    }
-	    RouterController.$inject = ["$scope", "$routeParams", "$location", "$log", "partialsPath", "baseURL"];
 	    return RouterController;
 	})();
 	exports.RouterController = RouterController;
@@ -5722,7 +5714,6 @@
 	            $('#postToIframe').submit().remove();
 	        };
 	    }
-	    CollectionController.$inject = ["$scope", "$location", "$log", "$timeout", "$slatwall", "collectionService", "metadataService", "selectionService", "paginationService", "collectionConfigService"];
 	    return CollectionController;
 	})();
 	exports.CollectionController = CollectionController;
@@ -5932,7 +5923,6 @@
 	            });
 	        };
 	    }
-	    CreateCollection.$inject = ["$scope", "$log", "$timeout", "$slatwall", "collectionService", "formService", "metadataService", "paginationService", "dialogService", "observerService", "selectionService", "collectionConfigService"];
 	    return CreateCollection;
 	})();
 	exports.CreateCollection = CreateCollection;
@@ -5965,7 +5955,6 @@
 	            $modalInstance.dismiss("cancel");
 	        };
 	    }
-	    ConfirmationController.$inject = ["$scope", "$log", "$modalInstance"];
 	    return ConfirmationController;
 	})();
 	exports.ConfirmationController = ConfirmationController;
@@ -5998,7 +5987,6 @@
 	            }
 	        };
 	    }
-	    SWCollection.$inject = ["$http", "$compile", "$log", "pathBuilderConfig", "collectionPartialsPath", "collectionService"];
 	    SWCollection.Factory = function () {
 	        var directive = function ($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
 	            return new SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService);
@@ -6045,7 +6033,6 @@
 	            }
 	        };
 	    }
-	    SWAddFilterButtons.$inject = ["$http", "$compile", "$templateCache", "collectionService", "collectionPartialsPath", "pathBuilderConfig"];
 	    SWAddFilterButtons.Factory = function () {
 	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
 	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig);
@@ -6210,7 +6197,6 @@
 	                }]
 	        };
 	    }
-	    SWDisplayOptions.$inject = ["$http", "$compile", "$templateCache", "$log", "$slatwall", "collectionService", "pathBuilderConfig", "collectionPartialsPath"];
 	    SWDisplayOptions.Factory = function () {
 	        var directive = function ($http, $compile, $templateCache, $log, $slatwall, collectionService, pathBuilderConfig, collectionPartialsPath) {
 	            return new SWDisplayOptions($http, $compile, $templateCache, $log, $slatwall, collectionService, pathBuilderConfig, collectionPartialsPath);
@@ -6289,7 +6275,6 @@
 	            }
 	        };
 	    }
-	    SWDisplayItem.$inject = ["$http", "$compile", "$templateCache", "$log", "$slatwall", "$filter", "collectionPartialsPath", "collectionService", "metadataService", "pathBuilderConfig"];
 	    SWDisplayItem.Factory = function () {
 	        var directive = function ($http, $compile, $templateCache, $log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	            return new SWDisplayItem($http, $compile, $templateCache, $log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
@@ -9482,7 +9467,6 @@
 	        };
 	        $scope.pageDialogStyle = { "z-index": 3000 };
 	    }
-	    PageDialogController.$inject = ["$scope", "$location", "$log", "$anchorScroll", "$slatwall", "dialogService"];
 	    return PageDialogController;
 	})();
 	exports.PageDialogController = PageDialogController;
@@ -10468,7 +10452,6 @@
 	        this.uuid = uuid;
 	        this.selectedPageShowOption = this.pageShowOptions[0];
 	    }
-	    Pagination.$inject = ["uuid"];
 	    return Pagination;
 	})();
 	exports.Pagination = Pagination;
@@ -10510,7 +10493,6 @@
 	            this.paginator = paginationService.createPagination();
 	        }
 	    }
-	    SWPaginationBarController.$inject = ["paginationService"];
 	    return SWPaginationBarController;
 	})();
 	exports.SWPaginationBarController = SWPaginationBarController;
@@ -10528,7 +10510,6 @@
 	        };
 	        this.templateUrl = pathBuilderConfig.buildPartialsPath(partialsPath) + 'paginationbar.html';
 	    }
-	    SWPaginationBar.$inject = ["pathBuilderConfig", "partialsPath"];
 	    SWPaginationBar.Factory = function () {
 	        var directive = function (pathBuilderConfig, partialsPath) { return new SWPaginationBar(pathBuilderConfig, partialsPath); };
 	        directive.$inject = ['pathBuilderConfig', 'partialsPath'];
@@ -10820,7 +10801,6 @@
 	            });
 	        };
 	    }
-	    CreateBundleController.$inject = ["$scope", "$location", "$log", "$rootScope", "$window", "$slatwall", "dialogService", "alertService", "productBundleService", "formService", "productBundlePartialsPath"];
 	    return CreateBundleController;
 	})();
 	exports.CreateBundleController = CreateBundleController;
@@ -17052,7 +17032,6 @@
 	            return text;
 	        };
 	    };
-	    EntityRBKey.Factory.$inject = ["$slatwall"];
 	    return EntityRBKey;
 	})();
 	exports.EntityRBKey = EntityRBKey;
@@ -17139,7 +17118,6 @@
 	            return filterStub;
 	        };
 	    };
-	    SWCurrency.Factory.$inject = ["$sce", "$log", "$slatwall"];
 	    return SWCurrency;
 	})();
 	exports.SWCurrency = SWCurrency;
