@@ -645,8 +645,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	public numeric function getRenewalPrice(){
 		if(!structKeyExists(variables, "renewalPrice")){
-			variables.renewalPrice = getSkuPrice();
-		} 
+			variables.renewalPrice = getPrice();
+		}
 		return variables.renewalPrice;
 	}
 
