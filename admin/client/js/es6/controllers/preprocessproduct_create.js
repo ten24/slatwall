@@ -32,6 +32,7 @@ var slatwalladmin;
             };
             var jQueryOptions = $("select[name='product.productType.productTypeID']")[0];
             this.$scope.preprocessproduct_createCtrl.options = [];
+            this.$scope.preprocessproduct_createCtrl.options.push({ label: this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'), value: "" });
             angular.forEach(jQueryOptions, (jQueryOption) => {
                 var option = {
                     label: jQueryOption.label,
