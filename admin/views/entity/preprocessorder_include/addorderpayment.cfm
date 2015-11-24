@@ -160,6 +160,7 @@ loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
 
 <hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject#"
                           fieldname="saveGiftCardToAccountFlag" property="saveGiftCardToAccountFlag"
+						  value="yes"
                           edit="#rc.edit#">
 
 
