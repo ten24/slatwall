@@ -1028,59 +1028,55 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// Persist the new item
 					getHibachiDAO().save( orderItem );
-
 				}
-
 			}
-		}
-
-		// Persist the new order
-		getHibachiDAO().save( returnOrder );
-
-		// Recalculate the order amounts for tax and promotions
-		this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
-
-		// Check to see if we are attaching an referenced orderPayment
-		if(len(arguments.processObject.getRefundOrderPaymentID())) {
-
-			var originalOrderPayment = this.getOrderPayment( arguments.processObject.getRefundOrderPaymentID() );
-
-			if(!isNull(originalOrderPayment)) {
-				var returnOrderPayment = this.newOrderPayment();
-				returnOrderPayment.copyFromOrderPayment( originalOrderPayment );
-				returnOrderPayment.setReferencedOrderPayment( originalOrderPayment );
-				returnOrderPayment.setOrder( returnOrder );
-				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
-				returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
-				returnOrderPayment.setAmount( precisionEvaluate(returnOrder.getTotal() * -1) );
-			}
-
 		}
 
 		// If the order doesn't have any errors, then we can flush the ormSession
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
 
-			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder" && orderItemFoundFlag) {
-				returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
+			// Recalculate the order amounts for tax and promotions
+			this.processOrder( returnOrder, {}, 'updateOrderAmounts' );
 
-				// If the process object was set to automatically receive these items, then we will do that
-				if(!returnOrder.hasErrors() && processObject.getReceiveItemsFlag()) {
-					var receiveData = {};
-					receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
-					receiveData.orderReturnItems = [];
-					for(var returnItem in orderReturn.getOrderReturnItems()) {
-						var thisData = {};
-						thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
-						thisData.quantity = returnItem.getQuantity();
-						arrayAppend(receiveData.orderReturnItems, thisData);
-					}
-					orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
+			// Check to see if we are attaching an referenced orderPayment
+			if(len(arguments.processObject.getRefundOrderPaymentID())) {
+
+				var originalOrderPayment = this.getOrderPayment( arguments.processObject.getRefundOrderPaymentID() );
+
+				if(!isNull(originalOrderPayment)) {
+					var returnOrderPayment = this.newOrderPayment();
+					returnOrderPayment.copyFromOrderPayment( originalOrderPayment );
+					returnOrderPayment.setReferencedOrderPayment( originalOrderPayment );
+					returnOrderPayment.setOrder( returnOrder );
+					returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
+					returnOrderPayment.setOrderPaymentType( getTypeService().getTypeBySystemCode( 'optCredit' ) );
+					returnOrderPayment.setAmount( precisionEvaluate(returnOrder.getTotal() * -1) );
 				}
+
 			}
+
+			getHibachiDAO().save( returnOrder );
 		}
 
+		if(!returnOrder.hasErrors() && arguments.processObject.getOrderTypeCode() eq "otReturnOrder" && orderItemFoundFlag) {
+			getHibachiDAO().flushORMSession();
+			returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
 
+			// If the process object was set to automatically receive these items, then we will do that
+			if(!returnOrder.hasErrors() && processObject.getReceiveItemsFlag()) {
+				var receiveData = {};
+				receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
+				receiveData.orderReturnItems = [];
+				for(var returnItem in orderReturn.getOrderReturnItems()) {
+					var thisData = {};
+					thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
+					thisData.quantity = returnItem.getQuantity();
+					arrayAppend(receiveData.orderReturnItems, thisData);
+				}
+				orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
+			}
+		}
 
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
@@ -1295,7 +1291,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
-					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || arguments.order.hasSavableOrderPaymentForSubscription() ) {
+					if((arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || arguments.order.hasSavableOrderPaymentForSubscription()) && !arguments.order.getTypeCode()=="otReturnOrder") {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 					}
 
