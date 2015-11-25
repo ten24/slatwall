@@ -139,6 +139,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		subscriptionUsage.setExpirationDate( arguments.orderItem.getSku().getSubscriptionTerm().getInitialTerm().getEndDate() );
 		subscriptionUsage.setNextBillDate( subscriptionUsage.getExpirationDate() );
 		subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
+		subscriptionUsage.setRenewalSku(arguments.orderItem.getSku().getRenewalSku());
 		
 		// add active status to subscription usage
 		setSubscriptionUsageStatus(subscriptionUsage, 'sstActive');
@@ -422,12 +423,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// set the account for order
 			arguments.processObject.getOrder().setAccount( arguments.subscriptionUsage.getAccount() );
 			
-			// add order item to order
+			// determine renewal sku 
+			if(!isNull(arguments.subscriptionUsage.getRenewalSku())){
+				var renewalSkuID = arguments.subscriptionUsage.getRenewalSku().getSkuID();
+			} else if(!isNull(arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getRenewalSku())) { 
+				var renewalSkuID = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getRenewalSku().getSkuID();
+			} else { 
+				var renewalSkuID = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID();
+			}
+
 			var itemData = {
 				preProcessDisplayedFlag=1,
-				skuID=arguments.subscriptionUsage.getInitialSku().getSkuID(),
+				skuID=renewalSkuID,
 				currencyCode=arguments.subscriptionUsage.getInitialOrder().getCurrencyCode()
 			};
+
+			// add order item to order
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
 			// Grab the original order fulfillment
