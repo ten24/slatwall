@@ -194,11 +194,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
     		var smartList = getService("ProductService").getSkuSmartList();
     		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is not null");
     		variables.subscriptionSkuSmartList = smartList;
     	}
     	return variables.subscriptionSkuSmartList;
     }
-    
+
 	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
         if(!arguments.sorted && !arguments.fetchOptions) {
         	return variables.skus;
