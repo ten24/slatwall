@@ -54,7 +54,7 @@ Notes:
 		<cfreturn this />
 	</cffunction>
 	
-	<cffunction name="getPaymentMethodTyoes" returntype="string">
+	<cffunction name="getPaymentMethodTypes" returntype="string">
 		<cfreturn "creditCard" />
 	</cffunction>
 	
@@ -80,9 +80,9 @@ Notes:
 					amount="#arguments.requestBean.getTransactionAmount()#"
 					invoice="#arguments.requestBean.getOrderID()#"
 					CVV="#arguments.requestBean.getSecurityCode()#"
-					email="#argumetns.requestBean.getAccountPrimaryEmailAddress()#"
+					email="#arguments.requestBean.getAccountPrimaryEmailAddress()#"
 					emailcustomer="false"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					avsstreet="#arguments.requestBean.getBillingStreetAddress()#"
 					avszip="#arguments.requestBean.getBillingPostalCode()#"
 					clientip="#cgi.REMOTE_ADDR#"
@@ -100,9 +100,9 @@ Notes:
 					amount="#arguments.requestBean.getTransactionAmount()#"
 					invoice="#arguments.requestBean.getOrderID()#"
 					CVV="#arguments.requestBean.getSecurityCode()#"
-					email="#argumetns.requestBean.getAccountPrimaryEmailAddress()#"
+					email="#arguments.requestBean.getAccountPrimaryEmailAddress()#"
 					emailcustomer="false"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					avsstreet="#arguments.requestBean.getBillingStreetAddress()#"
 					avszip="#arguments.requestBean.getBillingPostalCode()#"
 					clientip="#cgi.REMOTE_ADDR#"
@@ -132,7 +132,7 @@ Notes:
 					invoice="#arguments.requestBean.getOrderID()#"
 					refnum="#arguments.requestBean.getOriginalChargeProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					clientip="#cgi.REMOTE_ADDR#"
 				>
 			</cfcase>
@@ -146,7 +146,7 @@ Notes:
 					invoice="#arguments.requestBean.getOrderID()#"
 					refnum="#arguments.requestBean.getOriginalProviderTransactionID()#"
 					amount="#arguments.requestBean.getTransactionAmount()#"
-					custname="#arguments.requestBean.getAccountFirstName()# #argumetns.requestBean.getAccountLastName()#"						  
+					custname="#arguments.requestBean.getAccountFirstName()# #arguments.requestBean.getAccountLastName()#"						  
 					clientip="#cgi.REMOTE_ADDR#"
 				>
 			</cfcase>
@@ -159,7 +159,7 @@ Notes:
 		<cfset responseBean.setTransactionID(q_auth.UMrefNum) />
 		<cfset responseBean.setAuthorizationCode(q_auth.UMauthCode) />
 		<cfset responseBean.setStatusCode(q_auth.UMstatus) />
-		<cfset responseBean.addMessage(messageCode=q_auth.UMstatus, message=q_auth.UMresult) />
+		<cfset responseBean.addMessage(messageName=q_auth.UMstatus, message=q_auth.UMresult) />
 		
 		<cfif q_auth.UMstatus neq "Approved">
 			<cfset responseBean.addError(q_auth.UMstatus, q_auth.UMresult) />

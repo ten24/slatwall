@@ -81,6 +81,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
 	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
+	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
 	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
@@ -757,6 +758,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.registrantEmailList;
 	}
 	
+	public numeric function getRenewalPrice(){
+		if(!isNull(this.getRenewalSku())){
+			return this.getRenewalSku().getPrice();
+		} else if(!structKeyExists(variables, "renewalPrice")){
+			variables.renewalPrice = getPrice();
+		}
+		return variables.renewalPrice;
+	}
+
 	// @hint Returns the status of this event
 	public any function getEventStatus() {
 		if(!structKeyExists(variables, "eventStatus")) {
