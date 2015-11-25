@@ -1,12 +1,14 @@
-'use strict';
-angular.module('slatwalladmin')
-    .factory('productBundleService', [
-    '$log',
-    '$slatwall',
-    'utilityService',
-    function ($log, $slatwall, utilityService) {
-        var productBundleService = {
-            decorateProductBundleGroup: function (productBundleGroup) {
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
+var slatwalladmin;
+(function (slatwalladmin) {
+    class ProductBundleService extends slatwalladmin.BaseService {
+        constructor($log, $slatwall, utilityService) {
+            super();
+            this.$log = $log;
+            this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
+            this.decorateProductBundleGroup = (productBundleGroup) => {
                 productBundleGroup.data.$$editing = true;
                 var prototype = {
                     $$setMinimumQuantity: function (quantity) {
@@ -38,37 +40,45 @@ angular.module('slatwalladmin')
                     }
                 };
                 angular.extend(productBundleGroup.data, prototype);
-            },
-            formatProductBundleGroupFilters: function (productBundelGroupFilters, filterTerm) {
-                $log.debug('formatProductBundleGroupFilters');
-                $log.debug(filterTerm);
+            };
+            this.formatProductBundleGroupFilters = (productBundleGroupFilters, filterTerm) => {
+                this.$log.debug('FORMATTING PRODUCT BUNDLE FILTERs');
+                this.$log.debug(productBundleGroupFilters);
+                this.$log.debug(filterTerm);
                 if (filterTerm.value === 'sku') {
-                    for (var i in productBundelGroupFilters) {
-                        productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value + 'Code'];
-                        productBundelGroupFilters[i].type = filterTerm.name;
-                        productBundelGroupFilters[i].entityType = filterTerm.value;
-                        productBundelGroupFilters[i].propertyIdentifier = '_sku.skuID';
+                    for (var i in productBundleGroupFilters) {
+                        productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Code'];
+                        productBundleGroupFilters[i].type = filterTerm.name;
+                        productBundleGroupFilters[i].entityType = filterTerm.value;
+                        productBundleGroupFilters[i].propertyIdentifier = '_sku.skuID';
                     }
                 }
                 else {
-                    for (var i in productBundelGroupFilters) {
-                        productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value + 'Name'];
-                        productBundelGroupFilters[i].type = filterTerm.name;
-                        productBundelGroupFilters[i].entityType = filterTerm.value;
+                    for (var i in productBundleGroupFilters) {
+                        productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Name'];
+                        productBundleGroupFilters[i].type = filterTerm.name;
+                        productBundleGroupFilters[i].entityType = filterTerm.value;
                         if (filterTerm.value === 'brand' || filterTerm.value === 'productType') {
-                            productBundelGroupFilters[i].propertyIdentifier = '_sku.product.' + filterTerm.value + '.' + filterTerm.value + 'ID';
+                            productBundleGroupFilters[i].propertyIdentifier = '_sku.product.' + filterTerm.value + '.' + filterTerm.value + 'ID';
                         }
                         else {
-                            productBundelGroupFilters[i].propertyIdentifier = '_sku.' + filterTerm.value + '.' + filterTerm.value + 'ID';
+                            productBundleGroupFilters[i].propertyIdentifier = '_sku.' + filterTerm.value + '.' + filterTerm.value + 'ID';
                         }
                     }
                 }
-                $log.debug(productBundelGroupFilters);
-                return productBundelGroupFilters;
-            }
-        };
-        return productBundleService;
+                this.$log.debug(productBundleGroupFilters);
+                return productBundleGroupFilters;
+            };
+            this.$log = $log;
+            this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
+        }
     }
-]);
+    ProductBundleService.$inject = [
+        '$log', '$slatwall', 'utilityService'
+    ];
+    slatwalladmin.ProductBundleService = ProductBundleService;
+    angular.module('slatwalladmin').service('productBundleService', ProductBundleService);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=productbundleservice.js.map

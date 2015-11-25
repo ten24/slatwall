@@ -60,6 +60,7 @@
 						<div class="btn-toolbar">
 
 							<!--- ================ Listing =================== --->
+							
 							<cfif attributes.type eq "listing" >
 								
 								<cfparam name="request.context.keywords" default="" />
@@ -72,7 +73,6 @@
 										</cfif>
 									</cfloop>
 								</cfif>
-
 								<!--- Listing: Create --->
 								<cfif attributes.showCreate>
 									<cfif attributes.createModal>
@@ -84,6 +84,7 @@
 								
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
+							
 								<div class="btn-group btn-group-sm">
 									<!--- Detail: Back Button --->
 									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">

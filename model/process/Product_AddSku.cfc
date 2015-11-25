@@ -53,12 +53,35 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Data Properties
 	property name="newSku" cfc="Sku" fieldType="many-to-one" persistent="false" fkcolumn="skuID";
+	property name="giftCardExpirationTermID" hb_rbkey="entity.sku.giftCardExpirationTerm" hb_formFieldType="select";
+	property name="giftCardExpirationTermIDOptions";
 	
 	public any function getNewSku() {
 		if(!structKeyExists(variables, "newSku")) {
 			variables.newSku = getService("skuService").newSku();
+			
 		}
+		if(structKeyExists(variables,'giftCardExpirationTermID')){
+			var giftCardExpirationTerm = getService('hibachiService').getTerm(variables.giftCardExpirationTermID);
+			variables.newSku.setGiftCardExpirationTerm(giftCardExpirationTerm);
+		}
+		
 		return variables.newSku;
+	}
+	
+	public array function getGiftCardExpirationTermIDOptions(){
+		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
+			variables.giftCardExpirationTermIDOptions = [];
+			var termSmartList = getService('hibachiService').getTermSmartList();
+			termSmartList.addSelect('termID','value');
+			termSmartList.addSelect('termName','name');
+			variables.giftCardExpirationTermIDOptions = termSmartList.getRecords();
+			var option = {};
+			option['name'] = 'None';
+			option['value'] = '';
+			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
+		}
+		return variables.giftCardExpirationTermIDOptions;
 	}
 	
 }

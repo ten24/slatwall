@@ -88,24 +88,6 @@ Notes:
 				<input type="text" name="phoneNumber" value="#phoneValue#" />
 				<swa:SlatwallErrorDisplay object="#rc.account#" errorName="phoneNumber" for="phoneNumber" />
 			</dd>
-			<!--- extended attribute --->
-			<!---<cfset attributeValueIndex = 0 />
-			<cfloop array="#rc.attributeSets#" index="local.attributeSet">
-				<cfloop array="#local.attributeSet.getAttributes()#" index="local.attribute">
-					<cfset attributeValueIndex ++ />
-					<cfif local.attribute.getActiveFlag()>
-						<cfset local.attributeValue = rc.account.getAttributeValue(local.attribute.getAttributeID(), true) />
-						<dt>
-							<label for="attribute.#local.attribute.getAttributeID()#">#local.attribute.getAttributeName()#<cfif local.attribute.getRequiredFlag() EQ 1> *</cfif></label>
-						</dt>
-						<dd>
-							<input type="hidden" name="attributeValues[#attributeValueIndex#].attributeValueID" value="#local.attributeValue.getAttributeValueID()#" />
-							<input type="hidden" name="attributeValues[#attributeValueIndex#].attribute.attributeID" value="#local.attribute.getAttributeID()#" />
-							<swa:SlatwallFormField fieldName="attributeValues[#attributeValueIndex#].attributeValue" fieldType="#local.attribute.getAttributeInputType()#" value="#local.attributeValue.getAttributeValue()#" valueOptions="#local.attribute.getAttributeOptionsOptions()#" />
-						</dd>
-					</cfif>
-				</cfloop>
-			</cfloop> --->
 		</dl>
 		<cfif structKeyExists(rc,"accessID")>
 			<input type="hidden" name="access.accessID" value="#rc.accessID#" />

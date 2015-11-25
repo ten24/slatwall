@@ -1,73 +1,88 @@
-'use strict';
-angular.module('slatwalladmin')
-    .factory('formService', [
-    '$log',
-    function ($log) {
-        var _forms = {};
-        var _pristinePropertyValue = {};
-        function form(name, object, editing) {
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
+var slatwalladmin;
+(function (slatwalladmin) {
+    class Form {
+        constructor(name, object, editing) {
+            this.$addControl = (control) => { };
+            this.$removeControl = (control) => { };
+            this.$setValidity = (validationErrorKey, isValid, control) => { };
+            this.$setDirty = () => { };
+            this.$setPristine = () => { };
+            this.$commitViewValue = () => { };
+            this.$rollbackViewValue = () => { };
+            this.$setSubmitted = () => { };
+            this.$setUntouched = () => { };
             this.name = name;
             this.object = object;
             this.editing = editing;
         }
-        ;
-        var formService = {
-            setPristinePropertyValue: function (property, value) {
-                _pristinePropertyValue[property] = value;
-            },
-            getPristinePropertyValue: function (property) {
-                return _pristinePropertyValue[property];
-            },
-            clearForm: function (form) {
-                $log.debug('clear form');
-                $log.debug(form);
-                for (var key in form) {
-                    if (key.charAt(0) !== '$') {
-                        $log.debug(form[key]);
-                    }
-                }
-            },
-            setForm: function (form) {
-                _forms[form.name] = form;
-            },
-            getForm: function (formName) {
-                return _forms[formName];
-            },
-            getForms: function () {
-                return _forms;
-            },
-            getFormsByObjectName: function (objectName) {
+    }
+    slatwalladmin.Form = Form;
+    class FormService {
+        constructor($log) {
+            this.$log = $log;
+            this.setPristinePropertyValue = (property, value) => {
+                this._pristinePropertyValue[property] = value;
+            };
+            this.getPristinePropertyValue = (property) => {
+                return this._pristinePropertyValue[property];
+            };
+            this.setForm = (form) => {
+                this._forms[form.name] = form;
+            };
+            this.getForm = (formName) => {
+                return this._forms[formName];
+            };
+            this.getForms = () => {
+                return this._forms;
+            };
+            this.getFormsByObjectName = (objectName) => {
                 var forms = [];
-                for (var f in _forms) {
-                    if (angular.isDefined(_forms[f].$$swFormInfo.object) && _forms[f].$$swFormInfo.object.metaData.className === objectName) {
-                        forms.push(_forms[f]);
+                for (var f in this._forms) {
+                    if (angular.isDefined(this._forms[f].$$swFormInfo.object) && this._forms[f].$$swFormInfo.object.metaData.className === objectName) {
+                        forms.push(this._forms[f]);
                     }
                 }
                 return forms;
-            },
-            createForm: function (name, object, editing) {
-                var _form = new form(name, object, editing);
+            };
+            this.createForm = (name, object, editing) => {
+                var _form = new Form(name, object, editing);
                 this.setForm(_form);
                 return _form;
-            },
-            resetForm: function (form) {
+            };
+            this.resetForm = (form) => {
+                this.$log.debug('resetting form');
+                this.$log.debug(form);
                 for (var key in form) {
-                    if (key.charAt(0) !== '$') {
+                    if (angular.isDefined(form[key])
+                        && typeof form[key].$setViewValue == 'function'
+                        && angular.isDefined(form[key].$viewValue)) {
+                        this.$log.debug(form[key]);
                         if (angular.isDefined(this.getPristinePropertyValue(key))) {
                             form[key].$setViewValue(this.getPristinePropertyValue(key));
                         }
                         else {
                             form[key].$setViewValue('');
                         }
+                        form[key].$setUntouched(true);
                         form[key].$render();
+                        this.$log.debug(form[key]);
                     }
                 }
                 form.$submitted = false;
                 form.$setPristine();
-            }
-        };
-        return formService;
+                form.$setUntouched();
+            };
+            this.$log = $log;
+            this._forms = {};
+            this._pristinePropertyValue = {};
+        }
     }
-]);
+    FormService.$inject = ['$log'];
+    slatwalladmin.FormService = FormService;
+    angular.module('slatwalladmin')
+        .service('formService', FormService);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=formservice.js.map

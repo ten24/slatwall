@@ -16,6 +16,9 @@
 			<hb:HibachiDisplayToggle selector="select[name=amountType]" showValues="percentageOff" loadVisable="#rc.promotionReward.getNewFlag() || rc.promotionReward.getValueByPropertyIdentifier('amountType') eq 'percentageOff'#">
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="roundingRule" edit="#rc.edit#" />
 			</hb:HibachiDisplayToggle>
+			<hb:HibachiDisplayToggle selector="select[name=amountType]" showValues="amountOff,amount" loadVisable="#listfind('amountOff,amount',rc.promotionReward.getValueByPropertyIdentifier('amountType')) neq 0#">
+				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="currencyCode" fieldType="select" edit="#rc.edit#" />
+			</hb:HibachiDisplayToggle>
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
 				<cfif rc.rewardType eq "subscription">
 					<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="applicableTerm" edit="#rc.edit#" />

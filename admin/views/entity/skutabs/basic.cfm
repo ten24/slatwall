@@ -27,6 +27,15 @@
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalPrice" edit="#rc.edit#">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="listPrice" edit="#rc.edit#">
+			<cfif rc.product.getBaseProductType() EQ 'gift-card'>
+				<hb:HibachiPropertyDisplay object="#rc.sku#" property="giftCardExpirationTerm" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmountType" edit="#rc.edit#">
+				<cfif !rc.edit>
+					<hb:HibachiPropertyDisplay object="#rc.sku#" property="formattedRedemptionAmount">
+				<cfelse>
+					<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmount" edit="#rc.edit#">
+				</cfif>
+			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

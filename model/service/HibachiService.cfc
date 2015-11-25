@@ -109,16 +109,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		return arguments.entity;
 	}
 	
-	//used by the rest api to return default property values
-	public any function getDefaultPropertiesByEntityName(required string entityName){
-		// First Check the application cache
-		if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-			return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
-		}
-		
-		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
-		return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
-	}
+	
 	
 	public string function getAttributeCodeListByEntityName(required string entityName){
 		if( hasApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {

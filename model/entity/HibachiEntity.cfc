@@ -69,6 +69,44 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Return this object
 		return this;
 	}
+	
+	public any function validateAttributes(string context=""){
+		var attributeValues = getAttributeValuesForEntity();
+	    for(var i=1; i < arrayLen(attributeValues); i++) {
+			var attributeValue = attributeValues[i];
+			
+	      // check to make sure it's not a custom property
+	      if( !isNull(attributeValue.getAttribute().getValidationRegEx()) ) {
+	      		
+	             attributeValue.validate(context=arguments.context,passThrough=true);
+	             
+	             if(attributeValue.hasErrors()){
+					for(var errorKey in attributeValue.getErrors()){
+						for(var error in attributeValue.getErrors()[errorKey] ){
+							var message = "";
+							if(findNoCase('regex',error) && !isNull(attributeValue.getAttribute()) && !isNull(attributeValue.getAttribute().getValidationMessage())){
+		             			message = attributeValue.getAttribute().getValidationMessage();
+							}else{
+								message = error;
+							}
+							this.addError(errorKey,htmleditFormat(message));
+						}
+					}
+					
+	             }
+	    	}
+	    }
+		
+	}
+	
+	public any function validate(string context="", passThrough=false){
+		
+		if(!arguments.passThrough){
+			validateAttributes(context=arguments.context);
+		}
+		return super.validate(argumentCollection=arguments);
+		
+	}
 
 	// @hint Returns an array of comments related to this entity
 	public array function getComments( boolean publicFlag ) {
@@ -135,8 +173,33 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 
 	public any function getAttributeValue(required string attribute, returnEntity=false){
+		
+		//If custom property exists for this attribute, return the property value instead
+		if(len(arguments.attribute) eq 32) {
+			//If the id is passed in, need to load the attribute in order to get the attribute code
+			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
+			
+			//Check if a custom property exists
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
+				if (!isNull(invokeMethod("get#attributeEntity.getAttributeCode()#"))){
+					return invokeMethod("get#attributeEntity.getAttributeCode()#");
+				}else{
+					return '';
+				}
+			}
+		}else{
+			//Check if a custom property exists
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
+				if (!isNull(invokeMethod("get#arguments.attribute#"))){
+					return invokeMethod("get#arguments.attribute#");
+				}else{
+					return '';
+				}
+			}
+		}
+		
 		var attributeValueEntity = "";
-
+		
 		// If an ID was passed, and that value exists in the ID struct then use it
 		if(len(arguments.attribute) eq 32 && structKeyExists(getAttributeValuesByAttributeIDStruct(), arguments.attribute) ) {
 			attributeValueEntity = getAttributeValuesByAttributeIDStruct()[arguments.attribute];
@@ -175,9 +238,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 
 		// If the attributeValueEntity wasn't found, then lets just go look at the actual attribute object by ID/CODE for a defaultValue
-		if(len(arguments.attribute) eq 32) {
-			var attributeEntity = getService("attributeService").getAttribute(arguments.attribute);
-		} else {
+		if(len(arguments.attribute) neq 32) {
 			var attributeEntity = getService("attributeService").getAttributeByAttributeCode(arguments.attribute);
 		}
 		if(!isNull(attributeEntity) && !isNull(attributeEntity.getDefaultValue()) && len(attributeEntity.getDefaultValue())) {
@@ -188,6 +249,25 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
+		
+		//If custom property exists for this attribute, return the property value instead
+		if(len(arguments.attribute) eq 32) {
+			//If the id is passed in, need to load the attribute in order to get the attribute code
+			var attributeEntity = getService("attributeService").getAttributeByAttributeID(arguments.attribute);
+			
+			//Check if a custom property exists
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),attributeEntity.getAttributeCode())){
+				invokeMethod("set#attributeEntity.getAttributeCode()#", {1=arguments.value});
+				return '';
+			}
+		}else{
+			//Check if a custom property exists
+			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
+				invokeMethod("get#arguments.attribute#", {1=arguments.value});
+				return '';
+				
+			}
+		}
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
 		

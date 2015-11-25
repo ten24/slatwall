@@ -102,7 +102,6 @@ angular.module('slatwalladmin')
 				 * Handles user selection of the dropdown.
 				 */
 				$scope.selectProductBundleGroupType = function ($item, $model, $label) {
-					console.log("Selecting");
 				    $scope.$item = $item;
 				    $scope.$model = $model;
 				    $scope.$label = $label;
@@ -139,8 +138,8 @@ angular.module('slatwalladmin')
 						var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
 						promise.then(function(response){
 							//Calls close function
-							if (promise.valid){
-							$scope.closeAddScreen();
+							if (promise.$$state.status){
+								$scope.closeAddScreen();
 							}
 						});
 					
