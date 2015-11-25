@@ -91,13 +91,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.listPrice;
 	}
 
-	public any function getRenewalPrice() {
-		if(!structKeyExists(variables, "renewalPrice") && !isNull(getProduct().getRenewalPrice())) {
-			variables.renewalPrice = getProduct().getRenewalPrice();
+	public numeric function getRenewalPrice(){
+		if(!isNull(getRenewalSku())){
+			return this.getRenewalSku().getRenewalPrice();
+		} else if(structKeyExists(variables, "renewalPrice")) {
+			return variables.renewalPrice;
 		} else {
-			variables.renewalPrice = getProduct().getPrice();
+			//returns zero for modal load
+			return 0;
 		}
-		return variables.renewalPrice;
 	}
 
 	public any function getRenewalSku(){

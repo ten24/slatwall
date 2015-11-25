@@ -105,9 +105,8 @@ Notes:
 						<hb:HibachiListingDisplay object="#rc.processObject#" smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 							<hb:HibachiListingColumn propertyIdentifier="skuName" />
-							<hb:HibachiListingColumn propertyIdentifier="skuDescription" />
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
-							<hb:HibachiListingColumn propertyIdentifier="price" />
+							<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
 						</hb:HibachiListingDisplay>
 				</hb:hibachiDisplayToggle>
 

@@ -814,7 +814,9 @@ component extends="HibachiService" accessors="true" {
 				var thisSku = this.newSku();
 				thisSku.setProduct(arguments.product);
 				thisSku.setPrice(arguments.processObject.getPrice());
-				thisSku.setRenewalPrice(arguments.processObject.getPrice());
+				if(!isNull(arguments.processObject.getRenewalPrice())){
+					thisSku.setRenewalPrice(arguments.processObject.getRenewalPrice());
+				}
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
 				thisSku.setSkuCode(product.getProductCode() & "-#i#");
 				thisSku.setRenewalSku(arguments.processObject.getRenewalSku());

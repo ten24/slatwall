@@ -760,10 +760,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// @hint Returns the renewal price as a last resort it will return the price although this should not happen.
 	public numeric function getRenewalPrice(){
-		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
+		if(!isNull(this.getRenewalSku())){
 			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
-		} else {
-			variables.renewalPrice = this.getPrice();
 		}
 		return variables.renewalPrice;
 	}
