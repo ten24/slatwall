@@ -30,6 +30,8 @@ var slatwalladmin;
         SWFormController.prototype.handleSelfInspection = function (context) {
             var _this = this;
             /** local variables */
+            this.processObject = this.object || "";
+            console.log("Object: ", this.object);
             var vm = context;
             vm.hiddenFields = this.hiddenFields;
             vm.entityName = this.entityName || "Account";
@@ -277,9 +279,6 @@ var slatwalladmin;
              * Binds all of our variables to the controller so we can access using this
              */
             this.bindToController = {
-                object: "=?",
-                context: "@?",
-                name: "@?",
                 entityName: "@?",
                 processObject: "@?",
                 hiddenFields: "=?",
@@ -287,6 +286,7 @@ var slatwalladmin;
                 actions: "@?",
                 formClass: "@?",
                 formData: "=?",
+                object: "@?",
                 onSuccess: "@?",
                 onError: "@?",
                 hideUntil: "@?",

@@ -53,14 +53,14 @@ module slatwalladmin {
     export class SWFormController {
         
         //************************** Fields
-        isProcessForm:boolean|string;
-        hiddenFields:string;
-        entityName:string;
-        action:string;
-        actions:string;
-        processObject:string;
-        postOnly:boolean;
-        
+        public isProcessForm:boolean|string;
+        public hiddenFields:string;
+        public entityName:string;
+        public action:string;
+        public actions:string;
+        public processObject:string;
+        public postOnly:boolean;
+        public object:any;
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
@@ -73,6 +73,8 @@ module slatwalladmin {
             }
         }
         
+        
+        
         /**
          * Iterates through the form elements and checks if the names of any of them match
          * the meta data that comes back from the processObject call. Supplies a generic submit
@@ -81,6 +83,8 @@ module slatwalladmin {
          */
         handleSelfInspection ( context ) {
         /** local variables */
+        this.processObject = this.object || "";
+        console.log("Object: ", this.object);
         let vm: ViewModel       = context;
             vm.hiddenFields     = this.hiddenFields;
             vm.entityName       = this.entityName || "Account";
@@ -344,9 +348,6 @@ module slatwalladmin {
          * Binds all of our variables to the controller so we can access using this
          */
         public bindToController = {
-                object: "=?", 
-                context: "@?", 
-                name: "@?", 
                 entityName: "@?", 
                 processObject: "@?",
                 hiddenFields: "=?", 
@@ -354,6 +355,7 @@ module slatwalladmin {
                 actions: "@?", 
                 formClass: "@?", 
                 formData: "=?",
+                object: "@?",
                 onSuccess: "@?", 
                 onError: "@?",
                 hideUntil: "@?", 

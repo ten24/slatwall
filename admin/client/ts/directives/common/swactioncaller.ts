@@ -15,7 +15,6 @@ module slatwalladmin {
             this.partialsPath = partialsPath; 
             this.$slatwall = $slatwall;
 			this.utilityService = utilityService;
-            
             this.$templateRequest(this.partialsPath+"actioncaller.html").then((html)=>{
 				var template = angular.element(html);
 				this.$element.parent().append(template);
@@ -23,37 +22,15 @@ module slatwalladmin {
                 //need to perform init after promise completes
                 this.init(); 
 			});
-        }
+        } 
 		
 		public init = ():void =>{
-//			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
 			this.type = this.type || 'link';
-//			this.actionItem = this.getActionItem();
-//			this.actionItemEntityName = this.getActionItemEntityName();
-//			this.text = this.getText();
-//			if(this.getDisabled()){
-//				this.getDisabledText();
-//			}else if(this.getConfirm()){
-//				this.getConfirmText();
-//			}
-//			
-//			if(this.modalFullWidth && !this.getDisabled()){
-//				this.class = this.class + " modalload-fullwidth";
-//			}
-//			
-//			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-//				this.class = this.class + " modalload";
-//			}
-			
-			/*need authentication lookup by api to disable
-			<cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-				<cfset attributes.class &= " disabled" />
-			</cfif>
-			*/
+            this.actionClick = this.actionClick || "";
+            console.log("OnClick", this.actionclick); 
 		}
         
         public getAction = ():string =>{
-			
             return this.action || '';    
         }
         
@@ -65,7 +42,7 @@ module slatwalladmin {
             var firstFourLetters = this.utilityService.left(this.actionItem,4);
             var firstSixLetters = this.utilityService.left(this.actionItem,6);
             var minus4letters = this.utilityService.right(this.actionItem,4);
-            var minus6letters = this.utilityService.right(this.actionItem,6);
+            var minus6letters = this.utilityService.right(this.actionItem,6); 
             
             var actionItemEntityName = "";
             if(firstFourLetters === 'list' && this.actionItem.length > 4){
@@ -108,7 +85,7 @@ module slatwalladmin {
 			return this.utilityService.replaceAll(navRBKey,replaceKey, entityRBKey);
 		}
 		
-		public getText = ():string =>{
+		public getText = ():string =>{ 
 			//if we don't have text then make it up based on rbkeys
 			if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && !this.text.length)){
 				this.text = this.$slatwall.getRBKey(this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
@@ -201,6 +178,7 @@ module slatwalladmin {
         public scope={}; 
 		public bindToController={
             action:"@",
+            actionClick:"&?",
 			text:"@",
 			type:"@",
 			queryString:"@",

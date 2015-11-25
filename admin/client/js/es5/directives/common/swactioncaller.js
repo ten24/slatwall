@@ -14,29 +14,9 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.$slatwall = $slatwall;
             this.init = function () {
-                //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
                 _this.type = _this.type || 'link';
-                //			this.actionItem = this.getActionItem();
-                //			this.actionItemEntityName = this.getActionItemEntityName();
-                //			this.text = this.getText();
-                //			if(this.getDisabled()){
-                //				this.getDisabledText();
-                //			}else if(this.getConfirm()){
-                //				this.getConfirmText();
-                //			}
-                //			
-                //			if(this.modalFullWidth && !this.getDisabled()){
-                //				this.class = this.class + " modalload-fullwidth";
-                //			}
-                //			
-                //			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-                //				this.class = this.class + " modalload";
-                //			}
-                /*need authentication lookup by api to disable
-                <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-                    <cfset attributes.class &= " disabled" />
-                </cfif>
-                */
+                _this.actionClick = _this.actionClick || "";
+                console.log("OnClick", _this.actionclick);
             };
             this.getAction = function () {
                 return _this.action || '';
@@ -201,6 +181,7 @@ var slatwalladmin;
             this.scope = {};
             this.bindToController = {
                 action: "@",
+                actionClick: "&?",
                 text: "@",
                 type: "@",
                 queryString: "@",

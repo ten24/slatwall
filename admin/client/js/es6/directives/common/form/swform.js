@@ -132,11 +132,11 @@ var slatwalladmin;
             };
             /** refreshes this directive on event */
             vm.refresh = (params) => {
-                console.log("Refreshing this: ", vm.processObject, params);
+                //stub
             };
             /** updates this directive on event */
             vm.update = (params) => {
-                console.log("Updating this: ", vm.processObject, params);
+                //stub
             };
             vm.parseEvents = function (str, evntType) {
                 if (str == undefined)
@@ -151,7 +151,6 @@ var slatwalladmin;
                     if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
                         if (u == "this") {
                             u == vm.processObject.toLowerCase();
-                            console.log("changing");
                         } //<--replaces the alias this with the name of this form.
                         let event = { "name": t, "value": u };
                         eventsObj.events.push(event);
@@ -204,7 +203,6 @@ var slatwalladmin;
                             observerService.notify("onError", { "caller": this.processObject, "events": vm.events.events });
                         }
                         else {
-                            console.log("Successfully Posted Form");
                             observerService.notify("onSuccess", { "caller": this.processObject, "events": vm.events.events });
                         }
                     }, angular.noop);

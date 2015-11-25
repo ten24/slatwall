@@ -1,7 +1,7 @@
 <!-- Example Logout Form - This will be used with login form through events -->
 <sw-form
     data-is-process-form="true"
-    data-process-object="Account_Logout"
+    data-object="Account_Logout"
     data-on-success="hide:Account_Logout,show:Account_Login"
     data-action="$logout"
     data-form-class="cssform"
@@ -13,4 +13,13 @@
         data-class="formControl">Logout
     </swf-property-display>
     
+    <!---<sw-action-caller 
+        action="public:account.logout"
+        modal="false" 
+        type="link" 
+        class="btn" 
+        title="Submit" 
+        text="Logout">
+    <sw-action-caller>--->
+        
 </sw-form>
