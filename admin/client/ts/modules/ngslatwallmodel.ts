@@ -4370,21 +4370,16 @@
 	                
 	                var modifiedData = {};
 	                var valid = true;
-	                
 	                var forms = entityInstance.forms;
-	                //$log.debug('process base level data');
-	                for(var f in forms){
-	                    
+	                
+					for(var f in forms){
 	                    var form = forms[f];
 	                    form.$setSubmitted();   //Sets the form to submitted for the validation errors to pop up.
-	                    if(form.$dirty && form.$valid){
+						if(form.$dirty && form.$valid){
 	                        for(var key in form){
-	                            //$log.debug('key:'+key);
-	                            if(key.charAt(0) !== '$'){
+	                            if(key.charAt(0) !== '$' && angular.isObject(form[key])){
 	                                var inputField = form[key];
 	                                if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-	                                    
-	                                    
 	                                    if(angular.isDefined(entityInstance.metaData[key]) 
 	                                    && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 	                                    && entityInstance.metaData[key].hb_formfieldtype === 'json'){
