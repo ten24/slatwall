@@ -73,7 +73,7 @@ module slatwalladmin{
 
         ){
             if(angular.isDefined(this.baseEntityName)){
-                this.collection = this.$slatwall['new' + this.getEntityName()]();
+                this.collection = this.$slatwall.getEntityExample(this.baseEntityName);
                 if(angular.isUndefined(this.baseEntityAlias)){
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
                 }
@@ -160,34 +160,37 @@ module slatwalladmin{
         };
 
         private formatPropertyIdentifier= (propertyIdentifier:string, addJoin:boolean=false):string =>{
-            var _propertyIdentifier = this.baseEntityAlias,
-                _joinPropertyIdentifier='',
-                propertyIdentifierParts = propertyIdentifier.split('.'),
-                current_collection =  this.collection;
-
-            //Loop Over all property Identifier parts
-            for (var i = 0; i < propertyIdentifierParts.length; i++) {
-
-                //Check if current part is an Object
-                if('cfc' in current_collection.metaData[propertyIdentifierParts[i]]){
-                    current_collection = this.$slatwall['new' + current_collection.metaData[propertyIdentifierParts[i]].cfc]();
-                    if(addJoin) {
-                        var joinProperty = ((_joinPropertyIdentifier) ? _joinPropertyIdentifier + '.' : '') + propertyIdentifierParts[i];
-                        var join = new Join(joinProperty, this.baseEntityAlias + '_' + joinProperty.replace(/\./g, '_'));
-                        this.addJoin(join);
-                        _joinPropertyIdentifier += ((_joinPropertyIdentifier) ? '.' : '') + propertyIdentifierParts[i];
-                        _propertyIdentifier += '_' + propertyIdentifierParts[i];
-                    }else{
-                        _propertyIdentifier += '.' + propertyIdentifierParts[i];
-                    }
-
-                }else{
-                    _propertyIdentifier +=  '.' + propertyIdentifierParts[i];
-                }
-
+            var _propertyIdentifier = this.baseEntityAlias;
+            if(addJoin === true){
+                _propertyIdentifier +=  this.processJoin(propertyIdentifier)
+            }else{
+                _propertyIdentifier += '.' + propertyIdentifier;
             }
             return _propertyIdentifier;
         };
+
+
+        private processJoin = (propertyIdentifier:string):string => {
+            var _propertyIdentifier = '',
+                propertyIdentifierParts = propertyIdentifier.split('.'),
+                current_collection = this.collection;
+
+            for (var i = 0; i < propertyIdentifierParts.length; i++) {
+
+                if ('cfc' in current_collection.metaData[propertyIdentifierParts[i]]) {
+                    current_collection = this.$slatwall.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+                    _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                    this.addJoin(new Join(
+                        _propertyIdentifier.replace(/_/g, '.').substring(1),
+                        this.baseEntityAlias + _propertyIdentifier
+                    ));
+                } else {
+                    _propertyIdentifier += '.' + propertyIdentifierParts[i];
+                }
+            }
+            return _propertyIdentifier;
+        };
+
 
         private addJoin= (join:Join):void =>{
             if(!this.joins){
