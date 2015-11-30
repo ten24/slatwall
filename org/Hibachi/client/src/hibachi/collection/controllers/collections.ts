@@ -274,6 +274,7 @@ class CollectionController{
             $('#postToIframe').submit().remove();
         }
 	}
+	
 }
 export{
 	CollectionController

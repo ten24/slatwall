@@ -46,25 +46,34 @@ import {SWValidate} from "./validation/swvalidate";
 import {SWValidationMinLength} from "./validation/swvalidationminlength";
 import {SWValidationDataType} from "./validation/swvalidationdatatype";
 import {SWValidationEq} from "./validation/swvalidationeq";
-
-
+import {SWValidationGte} from "./validation/swvalidationgte";
+import {SWValidationLte} from "./validation/swvalidationlte";
+import {SWValidationMaxLength} from "./validation/swvalidationmaxlength";
+import {SWValidationMaxValue} from "./validation/swvalidationmaxvalue";
+import {SWValidationMinValue} from "./validation/swvalidationminvalue";
+import {SWValidationNeq} from "./validation/swvalidationneq";
+import {SWValidationNumeric} from "./validation/swvalidationnumeric";
+import {SWValidationRegex} from "./validation/swvalidationregex";
+import {SWValidationRequired} from "./validation/swvalidationrequired";
+import {SWValidationUnique} from "./validation/swvalidationunique";
+import {SWValidationUniqueOrNull} from "./validation/swvalidationuniqueornull";
 
 
 class PathBuilderConfig{
     public baseURL:string;
     public basePartialsPath:string;
     constructor(){
-        
+
     }
-    
+
     public setBaseURL = (baseURL:string):void=>{
         this.baseURL = baseURL;
     }
-    
+
     public setBasePartialsPath = (basePartialsPath:string):void=>{
         this.basePartialsPath = basePartialsPath
     }
-    
+
     public buildPartialsPath = (componentsPath:string):string=>{
         if(angular.isDefined(this.baseURL) && angular.isDefined(this.basePartialsPath)){
             return this.baseURL + this.basePartialsPath + componentsPath;
@@ -75,7 +84,7 @@ class PathBuilderConfig{
 }
 
 var coremodule = angular.module('hibachi.core',[]).config(()=>{
-    
+
 }).constant('pathBuilderConfig',new PathBuilderConfig())
 .constant('corePartialsPath','core/components/')
 .constant('coreEntityPartialsPath','core/entity')
@@ -84,14 +93,14 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 //services
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
-.service('observerService',ObserverService)  
+.service('observerService',ObserverService)
 .service('formService',FormService)
 .service('metadataService',MetaDataService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
 .controller('otherwiseController',OtherWiseController)
 .controller('routerController',RouterController)
-//filters 
+//filters
 .filter('percentage',[PercentageFilter.Factory])
 //directives
 .directive('swTypeahedSearch',SWTypeaheadSearch.Factory())
@@ -106,8 +115,6 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swListingColumn',SWListingColumn.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
-.directive('swValidate',SWValidate.Factory())
-.directive('swvalidationminlength',SWValidationMinLength.Factory())
 .directive('swLoading',SWLoading.Factory())
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
 .directive('swRbkey',SWRbKey.Factory())
@@ -122,9 +129,23 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('sw:sortable',SWSortable.Factory())
 .directive('swDetail',SWDetail.Factory())
 .directive('swList',SWList.Factory())
+//validation
+.directive('swValidate',SWValidate.Factory())
+.directive('swvalidationminlength',SWValidationMinLength.Factory())
 .directive('swvalidationdatatype',SWValidationDataType.Factory())
 .directive('swvalidationeq',SWValidationEq.Factory())
-;  
+.directive("swvalidationgte", SWValidationGte.Factory())
+.directive("swvalidationlte",SWValidationLte.Factory())
+.directive('swvalidationmaxlength',SWValidationMaxLength.Factory())
+.directive("swvalidationmaxvalue",SWValidationMaxValue.Factory())
+.directive("swvalidationminvalue",SWValidationMinValue.Factory())
+.directive("swvalidationneq",SWValidationNeq.Factory())
+.directive("swvalidationnumeric",SWValidationNumeric.Factory())
+.directive("swvalidationregex",SWValidationRegex.Factory())
+.directive("swvalidationrequired",SWValidationRequired.Factory())
+.directive("swvalidationunique",SWValidationUnique.Factory())
+.directive("swvalidationuniqueornull",SWValidationUniqueOrNull.Factory())
+;
 export{
 	coremodule
 }
