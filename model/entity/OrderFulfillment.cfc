@@ -177,6 +177,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return true;
 	}
 
+	public boolean function needsEmailForFulfillment(){
+		return !hasGiftCardRecipients();
+	}
+
 	public any function getNumberOfNeededGiftCardCodes(){
 		var count = 0;
 		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")){
