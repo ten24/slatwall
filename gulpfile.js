@@ -2,33 +2,14 @@
 /*  */
 var gulp = require('gulp'),
 Config = require('./gulpfile.config'),
-  //   traceur = require('gulp-traceur'),
-  //   to5 = require('gulp-6to5'),
-  //   plumber = require('gulp-plumber'),
-  //   rename = require('gulp-rename'),
-  //   uglify = require('gulp-uglify'),
-  //   sourcemaps = require('gulp-sourcemaps'),
-  //   concat = require('gulp-concat'),
-  //   fs = require('fs'),
-  //   debug = require('gulp-debug'),
-     inject = require('gulp-inject'),
-  //   tsc = require('gulp-typescript'),
-  //   tslint = require('gulp-tslint'),
-  //   rimraf = require('gulp-rimraf');
-	// Config = require('./gulpfile.config'),
-	// request = require('request'),
-	 chmod = require('gulp-chmod'),
-	 runSequence = require('run-sequence'),
-	//  ngmin = require("gulp-ngmin"),
-	// changed = require('gulp-changed');
-	// ngAnnotate = require('gulp-ng-annotate');
-  gutil = require('gutil'),
-  webpack = require('webpack'),
-  webpackConfig = require('./org/Hibachi/client/webpack.config');
+inject = require('gulp-inject'),
+chmod = require('gulp-chmod'),
+runSequence = require('run-sequence'),
+gutil = require('gutil'),
+webpack = require('webpack'),
+webpackConfig = require('./org/Hibachi/client/webpack.config');
   
-
-	
-	var config = new Config();
+var config = new Config();
 	
 
 gulp.task('watch', function() {
