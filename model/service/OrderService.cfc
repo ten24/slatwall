@@ -758,7 +758,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
 		} else if (!newOrderPayment.hasErrors()
 				&& ( arguments.processObject.getSaveAccountPaymentMethodFlag()
-				|| (arguments.processObject.getSaveGiftCardToAccountFlag() && isNull(giftCard.getOwnerAccount()) ))
+				|| (arguments.processObject.getSaveGiftCardToAccountFlag()
+				&& (!isNull(giftCard) && isNull(giftCard.getOwnerAccount())) ))
 				&& isNull(newOrderPayment.getAccountPaymentMethod())) {
 			// Create a new Account Payment Method
 			var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
