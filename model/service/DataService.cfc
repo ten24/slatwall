@@ -240,7 +240,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return attributeStruct;
 	}
 	
-	public string function formatValue(required struct data, required string format) {
+	public string function formatImportValueByType(required struct data, required string format) {
 		
 		var result = arguments.data.value;
 		
@@ -474,7 +474,7 @@ component output="false" accessors="true" extends="HibachiService" {
 									
 									// generate the value based on format type
 									if(structKeyExists(thisColumn, 'formatType')) {
-										columnRecord.value = formatValue({value=columnRecord.value, tableName=tableName} ,thisColumn.formatType);
+										columnRecord.value = formatImportValueByType({value=columnRecord.value, tableName=tableName} ,thisColumn.formatType);
 									}
 									
 									// Add this column record to the insert
