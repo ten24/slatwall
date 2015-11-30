@@ -9,10 +9,10 @@ class SWValidationMaxLength{
             restrict: "A",
             require: "^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                    ngModel.$validators.swvalidationmaxlength = 
+                    ngModel.$validators.swvalidationmaxlength =
                     function(modelValue, viewValue) {
-    
-                        
+
+
                             var constraintValue = attributes.swvalidationmaxlength;
                             var userValue = viewValue || 0;
                             if (parseInt(viewValue.length) >= parseInt(constraintValue))
@@ -20,13 +20,13 @@ class SWValidationMaxLength{
                                 return true;
                             }
                         return false;
-                        
+
                     };
             }
         };
     }
     public static Factory(){
-        var directive = ()=>SWValidationMaxLength();
+        var directive = ()=>new SWValidationMaxLength();
         directive.$inject = [];
         return directive;
     }
