@@ -320,7 +320,7 @@ component extends="FW1.framework" {
 			if(structKeyExists(url,'ng')){
 			}else if(getSubsystem(request.context[ getAction() ]) == 'api'){
 				var context = getPageContext().getResponse();
-				if(!structKeyKeyExists(request.context,'messages')){
+				if(!structKeyExists(request.context,'messages')){
 					request.context.messages = [];
 				}
 				
