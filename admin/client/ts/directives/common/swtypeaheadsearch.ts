@@ -166,7 +166,7 @@ module slatwalladmin {
         public controllerAs="swTypeaheadSearch";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.collectionConfigService, private partialsPath:slatwalladmin.partialsPath){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.CollectionConfig, private partialsPath:slatwalladmin.partialsPath){
 			this.templateUrl = partialsPath + "typeaheadsearch.html";	
 		}
 

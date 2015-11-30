@@ -257,6 +257,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
+			skuEmailFulfillmentTemplate = {fieldType="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
+			skuGiftCardEmailFulfillmentTemplate = {fieldtype="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
             skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
@@ -405,6 +407,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				return [{name='Increase Percentage', value='increasePercentage'}, {name='Decrease Percentage', value='decreasePercentage'}, {name='Increase Amount', value='increaseAmount'}, {name='Decrease Amount', value='decreaseAmount'}];
 			case "skuCurrency" :
 				return getCurrencyService().getCurrencyOptions();
+			case "skuEmailFulfillmentTemplate" :
+				return getEmailService().getEmailTemplateOptions("sku");
+			case "skuGiftCardEmailFulfillmentTemplate":
+				return getEmailService().getEmailTemplateOptions("giftCard");
 			case "skuTaxCategory":
 				var optionSL = getTaxService().getTaxCategorySmartList();
 				optionSL.addFilter('activeFlag', 1);

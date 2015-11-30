@@ -12,7 +12,7 @@ module slatwalladmin {
 	
 	export class GiftCardOverview implements ng.IDirective { 
 		
-		public static $inject = ["$slatwall", "partialsPath"];
+		public static $inject = ["partialsPath"];
 		
 		public restrict:string; 
 		public templateUrl:string;
@@ -23,7 +23,7 @@ module slatwalladmin {
 		public controller = swGiftCardOverviewController; 
 		public controllerAs = "swGiftCardOverview"
 			
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){ 
+		constructor(private partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/overview.html";
 			this.restrict = "EA";	
 		}
@@ -31,9 +31,9 @@ module slatwalladmin {
 	}
 	
 	angular.module('slatwalladmin')
-	.directive('swGiftCardOverview',["$slatwall", "partialsPath", 
-		($slatwall, partialsPath) => 
-			new GiftCardOverview($slatwall, partialsPath)
+	.directive('swGiftCardOverview',["partialsPath", 
+		(partialsPath) => 
+			new GiftCardOverview(partialsPath)
 	])
 	.controller('MyController', ['$scope', function ($scope) {
         $scope.textToCopy = 'I can copy by clicking!';

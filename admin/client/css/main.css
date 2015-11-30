@@ -286,6 +286,10 @@ body.s-login-screen {
   background-size: cover;
   height: 100vh;
 }
+body.s-login-screen .form-group {
+  display: inline-block;
+  width: 100%;
+}
 @media only screen and (max-width: 992px) {
   body {
     padding: 0px /*Remove for responsive*/;
@@ -360,6 +364,16 @@ a:hover {
 }
 .table-responsive .s-table-input-element input {
   font-size: 12px;
+}
+.table-responsive .s-table-input-element textarea {
+  width: auto;
+  margin-top: 5px;
+}
+.table-responsive .s-table-input-element .s-message-count {
+  text-align: right;
+}
+.table-responsive .s-table-input-element .s-message-count {
+  text-align: right;
 }
 .table-responsive .s-table-select a i {
   margin: 0px;
@@ -460,7 +474,6 @@ label {
   transition: all 0.5s ease-in-out;
 }
 .modal-body {
-  max-height: 400px;
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -995,6 +1008,7 @@ select.error {
 }
 .form-horizontal .control-label {
   margin-bottom: 4px;
+  text-align: left;
 }
 .btn-group {
   float: right;
@@ -1234,8 +1248,6 @@ table tr th .glyphicon {
 }
 .form-group {
   margin-bottom: 10px;
-  display: inline-block;
-  width: 100%;
 }
 .form-group .s-optional {
   color: #b3b3b3;
@@ -2071,6 +2083,9 @@ tabel .s-table-header {
 .pagination > li > span {
   color: #767676;
   padding: 6px 12px 6px 12px;
+}
+.pagination > li.disabled {
+  pointer-events: none;
 }
 .s-setting-options-body .s-filter-item {
   vertical-align: top;
@@ -3994,8 +4009,8 @@ tabel .s-table-header {
   border-color: #cccccc;
   -webkit-border-bottom-right-radius: 2px;
   -webkit-border-bottom-left-radius: 2px;
-  -moz-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-bottom-right: 2px;
+  -moz-border-radius-bottom-left: 2px;
   border-bottom-right-radius: 2px;
   border-bottom-left-radius: 2px;
   overflow: hidden;
@@ -4051,7 +4066,6 @@ tabel .s-table-header {
   margin: 15px;
 }
 .s-search-filter .dropdown-menu {
-  top: 30px;
   left: 0px;
 }
 .s-search-filter .dropdown-menu .s-photo {
@@ -4137,6 +4151,11 @@ tabel .s-table-header {
   z-index: 2000;
   color: #AAA;
   font-size: 15px;
+}
+.s-search-filter.s-gift-card .s-results {
+  position: relative;
+  display: block;
+  width: 100%;
 }
 .s-gift-card-table .admin {
   text-align: right !important;

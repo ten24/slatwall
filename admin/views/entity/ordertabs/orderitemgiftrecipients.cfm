@@ -68,6 +68,6 @@ Notes:
                 <hb:HibachiListingColumn propertyIdentifier="quantity" />
         </hb:HibachiListingDisplay>
 
-		<hb:HibachiProcessCaller action="admin:entity.preprocessorderitem" entity="#giftCardOrderItems[i]#" processContext="addRecipientsToOrderItem" class="btn btn-default" icon="plus" modal="true" hideDisabled="false" />
+		<hb:HibachiProcessCaller action="admin:entity.preprocessorderitem" entity="#giftCardOrderItems[i]#" processContext="addRecipientsToOrderItem" class="btn btn-default" icon="plus" modal="true" hideDisabled="true" />
     </cfoutput>
 </cfloop>

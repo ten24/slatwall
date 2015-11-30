@@ -174,6 +174,7 @@ Notes:
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.warehouse_nav')#" icon="barcode icon-white" type="nav">
+								<hb:HibachiActionCaller action="admin:entity.liststock" type="list">
 								<hb:HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
 								<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
 								<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
@@ -230,9 +231,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listsession" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtask" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtaskhistory" type="list">
-									<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
+									<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true">
 									<hb:HibachiActionCaller action="admin:main.log" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listemail" type="list">
 									<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
 									<hb:HibachiActionCaller action="admin:main.update" type="list">
 									<cfif $.slatwall.getAccount().getSuperUserFlag()>

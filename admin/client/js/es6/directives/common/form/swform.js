@@ -29,6 +29,7 @@ var slatwalladmin;
          */
         handleSelfInspection(context) {
             /** local variables */
+            this.processObject = this.object || "";
             let vm = context;
             vm.hiddenFields = this.hiddenFields;
             vm.entityName = this.entityName || "Account";
@@ -226,8 +227,8 @@ var slatwalladmin;
                 }
             };
             /** create the generic submit function */
-            vm.submit = () => {
-                let action = vm.action || vm.actions;
+            vm.submit = (Action) => {
+                let action = Action; //vm.action || vm.actions;
                 vm.clearErrors();
                 vm.formData = vm.getFormData() || "";
                 vm.doAction(action);
@@ -271,9 +272,6 @@ var slatwalladmin;
              * Binds all of our variables to the controller so we can access using this
              */
             this.bindToController = {
-                object: "=?",
-                context: "@?",
-                name: "@?",
                 entityName: "@?",
                 processObject: "@?",
                 hiddenFields: "=?",
@@ -281,6 +279,7 @@ var slatwalladmin;
                 actions: "@?",
                 formClass: "@?",
                 formData: "=?",
+                object: "@?",
                 onSuccess: "@?",
                 onError: "@?",
                 hideUntil: "@?",

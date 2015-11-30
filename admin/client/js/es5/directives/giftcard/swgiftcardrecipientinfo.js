@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
@@ -8,8 +10,7 @@ var slatwalladmin;
     })();
     slatwalladmin.swGiftCardRecipientInfoController = swGiftCardRecipientInfoController;
     var GiftCardRecipientInfo = (function () {
-        function GiftCardRecipientInfo($slatwall, partialsPath) {
-            this.$slatwall = $slatwall;
+        function GiftCardRecipientInfo(partialsPath) {
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
@@ -20,14 +21,14 @@ var slatwalladmin;
             this.templateUrl = partialsPath + "/entity/giftcard/recipientinfo.html";
             this.restrict = "EA";
         }
-        GiftCardRecipientInfo.$inject = ["$slatwall", "partialsPath"];
+        GiftCardRecipientInfo.$inject = ["partialsPath"];
         return GiftCardRecipientInfo;
     })();
     slatwalladmin.GiftCardRecipientInfo = GiftCardRecipientInfo;
     angular.module('slatwalladmin')
-        .directive('swGiftCardRecipientInfo', ["$slatwall", "partialsPath",
-        function ($slatwall, partialsPath) {
-            return new GiftCardRecipientInfo($slatwall, partialsPath);
+        .directive('swGiftCardRecipientInfo', ["partialsPath",
+        function (partialsPath) {
+            return new GiftCardRecipientInfo(partialsPath);
         }
     ]);
 })(slatwalladmin || (slatwalladmin = {}));

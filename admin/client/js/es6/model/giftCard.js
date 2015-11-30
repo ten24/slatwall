@@ -1,7 +1,9 @@
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
-    class GiftRecipient {
+    class GiftCard {
         constructor(giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag) {
             this.giftCardID = giftCardID;
             this.giftCardCode = giftCardCode;
@@ -13,7 +15,7 @@ var slatwalladmin;
             this.activeFlag = activeFlag;
         }
     }
-    slatwalladmin.GiftRecipient = GiftRecipient;
+    slatwalladmin.GiftCard = GiftCard;
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../model/giftCard.js.map

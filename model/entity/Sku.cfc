@@ -81,6 +81,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
 	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
+	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
 	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
@@ -162,6 +163,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
 	property name="giftCardExpirationTermOptions" persistent="false";	
+	property name="formattedRedemptionAmount" persistant="false"; 
 	// Deprecated Properties
 	
 	
@@ -243,6 +245,25 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 		} 
 		return 0; 
+	}
+
+	public string function getFormattedRedemptionAmount(){
+
+		if(this.isGiftCardSku() && structKeyExists(variables, "redemptionAmountType")){
+			switch(variables.redemptionAmountType){
+				case "percentage":
+					return getService("HibachiUtilityService").formatValue_percentage(this.getRedemptionAmount());
+					break;
+				default:
+					formatDetails = {};
+					formatDetails.currencyCode = this.getCurrencyCode(); 
+					return getService("HibachiUtilityService").formatValue_Currency(this.getRedemptionAmount(), formatDetails);
+					break;
+			}
+		} else {
+			return "";
+		}
+		
 	}
 	
 	// START: Image Methods
@@ -739,6 +760,15 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return variables.registrantEmailList;
 	}
 	
+	public numeric function getRenewalPrice(){
+		if(!isNull(this.getRenewalSku())){
+			return this.getRenewalSku().getPrice();
+		} else if(!structKeyExists(variables, "renewalPrice")){
+			variables.renewalPrice = getPrice();
+		}
+		return variables.renewalPrice;
+	}
+
 	// @hint Returns the status of this event
 	public any function getEventStatus() {
 		if(!structKeyExists(variables, "eventStatus")) {

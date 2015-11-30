@@ -1,8 +1,10 @@
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
-    var GiftRecipient = (function () {
-        function GiftRecipient(giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag) {
+    var GiftCard = (function () {
+        function GiftCard(giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag) {
             this.giftCardID = giftCardID;
             this.giftCardCode = giftCardCode;
             this.giftCardPin = giftCardPin;
@@ -12,9 +14,9 @@ var slatwalladmin;
             this.ownerEmailAddress = ownerEmailAddress;
             this.activeFlag = activeFlag;
         }
-        return GiftRecipient;
+        return GiftCard;
     })();
-    slatwalladmin.GiftRecipient = GiftRecipient;
+    slatwalladmin.GiftCard = GiftCard;
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../model/giftCard.js.map

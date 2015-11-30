@@ -1,40 +1,45 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class SWGiftCardBalanceController {
-        constructor($slatwall) {
-            this.$slatwall = $slatwall;
+        constructor(collectionConfigService) {
+            this.collectionConfigService = collectionConfigService;
             this.init = () => {
                 this.initialBalance = 0;
                 var totalDebit = 0;
-                var transactionConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCardTransaction');
+                var totalCredit = 0;
+                var transactionConfig = this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
                 transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
                 transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
                 transactionConfig.setAllRecords(true);
-                var transactionPromise = this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
+                transactionConfig.setOrderBy("createdDateTime|DESC");
+                var transactionPromise = transactionConfig.getEntity();
                 transactionPromise.then((response) => {
                     this.transactions = response.records;
+                    var initialCreditIndex = this.transactions.length - 1;
+                    this.initialBalance = this.transactions[initialCreditIndex].creditAmount;
                     angular.forEach(this.transactions, (transaction, index) => {
-                        if (typeof transaction.creditAmount !== "string") {
-                            this.initialBalance += transaction.creditAmount;
-                        }
-                        if (typeof transaction.debitAmount !== "string") {
+                        if (!angular.isString(transaction.debitAmount)) {
                             totalDebit += transaction.debitAmount;
                         }
+                        if (!angular.isString(transaction.creditAmount)) {
+                            totalCredit += transaction.creditAmount;
+                        }
                     });
-                    this.currentBalance = this.initialBalance - totalDebit;
-                    this.balancePercentage = ((this.currentBalance / this.initialBalance) * 100);
+                    this.currentBalance = totalCredit - totalDebit;
+                    this.balancePercentage = parseInt(((this.currentBalance / this.initialBalance) * 100).toString());
                 });
             };
-            this.$slatwall = $slatwall;
             this.init();
         }
     }
-    SWGiftCardBalanceController.$inject = ["$slatwall"];
+    SWGiftCardBalanceController.$inject = ["collectionConfigService"];
     slatwalladmin.SWGiftCardBalanceController = SWGiftCardBalanceController;
     class GiftCardBalance {
-        constructor($slatwall, partialsPath) {
-            this.$slatwall = $slatwall;
+        constructor(collectionConfigService, partialsPath) {
+            this.collectionConfigService = collectionConfigService;
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
@@ -52,11 +57,11 @@ var slatwalladmin;
             this.restrict = "EA";
         }
     }
-    GiftCardBalance.$inject = ["$slatwall", "partialsPath"];
+    GiftCardBalance.$inject = ["collectionConfigService", "partialsPath"];
     slatwalladmin.GiftCardBalance = GiftCardBalance;
     angular.module('slatwalladmin')
-        .directive('swGiftCardBalance', ["$slatwall", "partialsPath",
-            ($slatwall, partialsPath) => new GiftCardBalance($slatwall, partialsPath)
+        .directive('swGiftCardBalance', ["collectionConfigService", "partialsPath",
+            (collectionConfigService, partialsPath) => new GiftCardBalance(collectionConfigService, partialsPath)
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 

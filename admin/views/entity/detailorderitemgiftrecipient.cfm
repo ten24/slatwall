@@ -67,14 +67,10 @@ Notes:
             <input type="hidden" name="orderItemGiftRecipientID" value="#rc.orderItemGiftRecipient.getOrderItemGiftRecipientID()#" />
 		</cfif>
 
-	   <hb:HibachiEntityDetailGroup object="#rc.orderItemGiftRecipient#">
 
-           <hb:HibachiEntityDetailItem property="firstName" open="true" />
-           <hb:HibachiEntityDetailItem property="lastName" open="true" />
-           <hb:HibachiEntityDetailItem property="emailAddress" open="true" />
-           <hb:HibachiEntityDetailItem property="giftMessage" open="true" />
-           <hb:HibachiEntityDetailItem property="quantity" open="true" />
-
+		<hb:HibachiEntityDetailGroup object="#rc.orderItemGiftRecipient#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemgiftrecipienttabs/basic" open="true">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemgiftrecipienttabs/giftcards" open="true">
 		</hb:HibachiEntityDetailGroup>
 
     </hb:HibachiEntityDetailForm>

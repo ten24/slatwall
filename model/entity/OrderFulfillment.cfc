@@ -168,6 +168,15 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 	}
 
+	public boolean function hasGiftCardRecipients(){
+		for(var item in this.getOrderFulfillmentItems()){
+			if(!item.hasAllGiftCardsAssigned()){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public any function getNumberOfNeededGiftCardCodes(){
 		var count = 0;
 		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")){

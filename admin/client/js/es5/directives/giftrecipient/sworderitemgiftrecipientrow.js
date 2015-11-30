@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 angular.module('slatwalladmin')
     .directive('swOrderItemGiftRecipientRow', [
     '$templateCache',
@@ -10,12 +12,17 @@ angular.module('slatwalladmin')
                 recipient: "=",
                 recipients: "=",
                 quantity: "=",
+                showInvalidRecipientMessage: "=",
+                tableForm: "=?",
                 index: "="
             },
             bindToController: {
                 recipient: "=",
                 recipients: "=",
-                quantity: "="
+                quantity: "=",
+                showInvalidRecipientMessage: "=",
+                tableForm: "=?",
+                index: "="
             },
             controller: function () {
                 var _this = this;
@@ -31,7 +38,13 @@ angular.module('slatwalladmin')
                     _this.recipients.splice(_this.recipients.indexOf(recipient), 1);
                 };
                 this.saveGiftRecipient = function (recipient) {
-                    recipient.editing = false;
+                    if (_this.tableForm.$valid) {
+                        _this.showInvalidRecipientMessage = false;
+                        recipient.editing = false;
+                    }
+                    else {
+                        _this.showInvalidRecipientMessage = true;
+                    }
                 };
                 this.getQuantity = function () {
                     if (isNaN(_this.quantity)) {

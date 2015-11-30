@@ -142,6 +142,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="quantityUnreceived" persistent="false";
 	property name="returnItemSmartList" persistent="false";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
+	property name="rootOrderItems" persistent="false";
 	property name="saleItemSmartList" persistent="false";
 	property name="saveBillingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
 	property name="saveBillingAccountAddressName" hb_populateEnabled="public" persistent="false";
@@ -843,7 +844,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return precisionEvaluate(amountDelivered - getPaymentAmountReceivedTotal());
 	}
 
-
+	public any function getRootOrderItems(){
+		var rootOrderItems = [];
+		for(var orderItem in this.getOrderItems()){
+			if(isNull(orderItem.getParentOrderItem())){
+				ArrayAppend(rootOrderItems, orderItem);
+			}
+		}
+		return rootOrderItems;
+	}
 
 	public numeric function getTotalQuantity() {
 		var totalQuantity = 0;
@@ -927,11 +936,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public numeric function getSubtotal() {
 		var subtotal = 0;
-		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
-				subtotal = precisionEvaluate(subtotal + getOrderItems()[i].getExtendedPrice());
-			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
-				subtotal = precisionEvaluate(subtotal - getOrderItems()[i].getExtendedPrice());
+		var orderItems = this.getRootOrderItems();
+		for(var i=1; i<=arrayLen(orderItems); i++) {
+			if( listFindNoCase("oitSale,oitDeposit",orderItems[i].getTypeCode()) ) {
+				subtotal = precisionEvaluate(subtotal + orderItems[i].getExtendedPrice());
+			} else if ( orderItems[i].getTypeCode() == "oitReturn" ) {
+				subtotal = precisionEvaluate(subtotal - orderItems[i].getExtendedPrice());
 			} else {
 				throw("there was an issue calculating the subtotal because of a orderItemType associated with one of the items");
 			}

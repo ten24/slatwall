@@ -192,7 +192,7 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.restrict = 'EA';
             this.require = "?^swForm";
-            this.transclude = "true";
+            this.transclude = true;
             this.scope = {};
             this.bindToController = {
                 action: "@",

@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 module slatwalladmin { 
 	'use strict'; 
 	
@@ -5,15 +7,14 @@ module slatwalladmin {
 		public giftCardId; 
 		public giftCard; 
 		
-		public static $inject = ["$slatwall"];
+		public static $inject = ["collectionConfigService"];
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall){
-			this.$slatwall = $slatwall; 
+		constructor(private collectionConfigService:CollectionConfig){
 			this.init();
 		} 
 		
 		public init = ():void =>{
-			var giftCardConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCard');
+			var giftCardConfig = this.collectionConfigService.newCollectionConfig('GiftCard');
 			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
 			giftCardConfig.addFilter('giftCardID', this.giftCardId);
 			giftCardConfig.setAllRecords(true);
@@ -26,7 +27,7 @@ module slatwalladmin {
 	
 	export class GiftCardDetail implements ng.IDirective { 
 		
-		public static $inject = ["$slatwall", "partialsPath"];
+		public static $inject = ["collectionConfigService", "partialsPath"];
 		
 		public restrict:string; 
 		public templateUrl:string;
@@ -38,10 +39,9 @@ module slatwalladmin {
 		public controller= SWGiftCardDetailController;
         public controllerAs="swGiftCardDetail";
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){ 
+		constructor(private collectionConfigService:slatwalladmin.CollectionConfig, private partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/basic.html";
 			this.restrict = "E"; 
-			this.$slatwall = $slatwall;	
 		}
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -53,8 +53,8 @@ module slatwalladmin {
 	
 	angular.module('slatwalladmin')
 	.directive('swGiftCardDetail',
-		["$slatwall", "partialsPath", 
-			($slatwall, partialsPath) => 
-				new GiftCardDetail($slatwall, partialsPath)
+		["collectionConfigService", "partialsPath", 
+			(collectionConfigService, partialsPath) => 
+				new GiftCardDetail(collectionConfigService, partialsPath)
 			]);
 }

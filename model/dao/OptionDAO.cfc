@@ -47,7 +47,75 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiDAO">
-	
+
+	<cffunction name="getNumberOFUsedProductOptions">
+		<cfargument name="productID">
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs" maxrows=1>
+			SELECT
+				count(o.optionID) AS total
+			FROM SwOption AS o
+			    LEFT JOIN SwSkuOption AS so ON so.optionID = o.optionID
+			    LEFT JOIN SwSku AS s ON so.skuID = s.skuID
+			    LEFT JOIN SwProduct AS p ON s.productID = p.productID
+			WHERE
+				p.productID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#" />
+		</cfquery>
+
+
+		<cfreturn rs.total[1] />
+
+
+	</cffunction>
+
+	<cffunction name="getNumberOfOptionsForOptionGroup">
+		<cfargument name="optionGroupID">
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs" maxrows=1>
+			SELECT
+				count(o.optionID) AS total
+			FROM SwOption AS o
+			WHERE
+				o.optionGroupID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#optionGroupID#" />
+		</cfquery>
+
+
+		<cfreturn rs.total[1] />
+
+	</cffunction>
+
+	<cffunction name="getAllUsedProductOptionGroupIDs">
+
+		<cfargument name="productID">
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			SELECT DISTINCT
+            	og.optionGroupID as ogID
+			FROM SwOptionGroup as og
+			    Left Join SwOption as o on og.optionGroupID = o.optionGroupID
+			    Left Join SwSkuOption as so on so.optionID = o.optionID
+			    Left Join SwSku as s on so.skuID = s.skuID
+			    Left Join SwProduct as p on s.productID = p.productID
+			WHERE
+				p.productID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#" />
+		</cfquery>
+
+		<cfset var optionGroupIDs = ArrayNew(1) />
+
+		<cfloop query="rs">
+			<cfset arrayAppend(optionGroupIDs, ogID) />
+		</cfloop>
+
+		<cfreturn optionGroupIDs />
+
+	</cffunction>
+
 	<cffunction name="getUnusedProductOptionGroups">
 		<cfargument name="productTypeID" type="string" required="true" />
 		<cfargument name="existingOptionGroupIDList" type="string" required="true" />
@@ -68,7 +136,7 @@ Notes:
 			WHERE
 				SwOptionGroup.optionGroupID NOT IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
 			AND
-				( SwOptionGroup.globalFLag = true OR SwOptionGroupProductType.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeID#"> )
+				( SwOptionGroup.globalFLag = <cfqueryparam cfsqltype="cf_sql_bit" value="true"> OR SwOptionGroupProductType.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeID#"> )
 			ORDER BY 
 				SwOptionGroup.optionGroupName
 		</cfquery>

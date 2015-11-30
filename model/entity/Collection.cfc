@@ -92,6 +92,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
 	property name="collectionEntityObject" type="any" persistent="false";
+	property name="hasDisplayAggregate" type="boolean" persistent="false";
 	
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
@@ -113,7 +114,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var doJoin = false;
 		
 		if(!structKeyExists(collectionConfig,'filterGroups')){
-			collectionConfig.filterGroups = [{filterGroup=[]}];
+			collectionConfig["filterGroups"] = [{"filterGroup"=[]}];
 		}
 		
 		var collection = arguments.propertyIdentifier;
@@ -127,9 +128,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		//create filter Group
 		var filterGroup = {
-			propertyIdentifier = alias & '.' & arguments.propertyIdentifier,
-			comparisonOperator = arguments.comparisonOperator,
-			value = arguments.value
+			"propertyIdentifier" = alias & '.' & arguments.propertyIdentifier,
+			"comparisonOperator" = arguments.comparisonOperator,
+			"value" = arguments.value
 		};
 		
 		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
@@ -151,7 +152,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		//if we already have a filter group then we need a logicalOperator
 		if(arraylen(collectionConfig.filterGroups[1].filterGroup)){
-			filterGroup.logicalOperator=arguments.logicalOperator;
+			filterGroup["logicalOperator"]=arguments.logicalOperator;
 		}
 		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
@@ -159,7 +160,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifier=arguments.propertyIdentifier
 		); 
 		//if so then add attribute details
-		if(hasAttribute){
+		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty) && hasAttribute){
 			filterGroup['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
 			filterGroup['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
 				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
@@ -173,7 +174,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function setDisplayProperties(string displayPropertiesList=""){
 		var collectionConfig = this.getCollectionConfigStruct();
-		collectionConfig.columns = [];
+		collectionConfig["columns"] = [];
 		this.setCollectionConfigStruct(collectionConfig);
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
@@ -184,28 +185,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addGroupBy(required string groupByAlias){
 		var collectionConfig = this.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfig,'groupBys')){
-			collectionConfig.groupBys = arguments.groupByAlias;
+			collectionConfig["groupBys"] = arguments.groupByAlias;
 		}
 		listAppend(collectionConfig.groupBys,arguments.groupByAlias);
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 	
+	public void function setDistinct(required boolean isDistinct){
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig["isDistinct"] = arguments.isDistinct;
+		this.setCollectionConfigStruct(collectionConfig);
+	}
+
 	public void function addDisplayProperty(required string displayProperty){
 		var collectionConfig = this.getCollectionConfigStruct();
 		
 		var column = {
-			propertyIdentifier=arguments.displayProperty
+			"propertyIdentifier"=arguments.displayProperty
 		};
 		if(!structKeyExists(collectionConfig,'columns')){
-			collectionConfig.columns = [];
+			collectionConfig["columns"] = [];
 		}
+		
 		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
 			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 			propertyIdentifier=arguments.displayProperty
 		);
 		//if so then add attribute details
-		if(hasAttribute){
+		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty) && hasAttribute){
 			column['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.displayProperty,'.')).getAttributeID();
 			column['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
 				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
@@ -222,7 +230,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addColumn(required column){
 		var collectionConfig = this.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfig,'columns')){
-			collectionConfig.columns = [];
+			collectionConfig["columns"] = [];
 		}
 		arrayAppend(collectionConfig.columns,arguments.column);
 		this.setCollectionConfigStruct(collectionConfig);
@@ -243,10 +251,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		var column = {
-			propertyIdentifier = alias & '.' & arguments.propertyIdentifier,
-			aggregate = {
-				aggregateFunction = arguments.aggregateFunction,
-				aggregateAlias = arguments.aggregateAlias
+			"propertyIdentifier" = alias & '.' & arguments.propertyIdentifier,
+			"aggregate" = {
+				"aggregateFunction" = arguments.aggregateFunction,
+				"aggregateAlias" = arguments.aggregateAlias
 			}
 		};
 		
@@ -260,7 +268,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			//if is a one-to-many propertyKey then add a groupby
 			if(isOneToMany){
-				addGroupBy(alias);
+				//need to specify all possible non-aggregate selects and orderbys in groupby
+				
+				
 			}
 			
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
@@ -280,13 +290,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(doJoin) addJoin(join);
 	}
 	
+	
 	//Build correct PropertyIdentifier Alias
 	public string function BuildPropertyIdentifier(required string alias, required string pIdentifier, string joinChar = '_'){
 		return arguments.alias & arguments.joinChar & Replace(arguments.pIdentifier, '.', '_', 'All');
 	}
 	
 	public void function setOrderBy(required string orderByList){
-		var collectionConfig = this.getCollectionConfigStruct();
 		var orderBys = listToArray(arguments.orderByList);
 		for(var orderBy in orderBys){
 			addOrderBy(orderBy);
@@ -296,15 +306,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addOrderBy(required string orderByString){
 		var collectionConfig = this.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfig, 'orderBy')){
-			collectionConfig.orderBy = [];
+			collectionConfig["orderBy"] = [];
 		}
 		
 		var propertyIdentifier = listFirst(arguments.orderByString,'|');
 		var direction = listLast(arguments.orderByString,'|');
 		
 		var orderBy = {
-			propertyIdentifier=propertyIdentifier,
-			direction=direction
+			"propertyIdentifier"=propertyIdentifier,
+			"direction"=direction
 		};
 		
 		arrayAppend(collectionConfig.orderBy,orderBy);
@@ -347,6 +357,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postOrderBys = [];
 		variables.collectionConfig = '{}';
 		variables.processObjects = [];
+		variables.hasDisplayAggregate = false;
 	}
 	
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
@@ -387,7 +398,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					if(structKeyExists(defaultProperty,"fieldtype")){
 						columnStruct['ormtype'] = defaultProperty.fieldtype;
 					}
-					
+                    if(structKeyExists(defaultProperty,"hb_formatType")){
+                        columnStruct['ormtype'] = defaultProperty.hb_formatType;
+                    }
+
 					arrayAppend(columnsArray,columnStruct);
 				}
 			}
@@ -435,7 +449,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function addJoin(required any join){
 		if(!structKeyExists(getCollectionConfigStruct(),'joins')){
-			getCollectionConfigStruct().joins = [];
+				getCollectionConfigStruct()["joins"] = [];
 		}
 		var joinFound = false;
 		for(var configJoin in getCollectionConfigStruct().joins){
@@ -469,6 +483,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//GETTER FUNCTIONS
 	//limiting return values to prevent ORM injection
 	private string function getAggregateHQL(required any aggregate, required string propertyIdentifier){
+		setHasDisplayAggregate(true);
 		var aggregateFunction = '';
 		switch(arguments.aggregate.aggregateFunction){
 			
@@ -585,7 +600,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			for(var parentFilterGroup in parentFilterGroupArray){
 				if(!arrayFind(filterGroupArray,parentFilterGroup)){
 					if(!structKeyExists(parentFilterGroup,"logicalOperator")){
-						parentFilterGroup.logicalOperator = ' AND ';
+						parentFilterGroup["logicalOperator"] = ' AND ';
 					}
 					ArrayAppend(filterGroupArray,parentFilterGroup);
 				}
@@ -694,7 +709,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false){
-		var collectionConfig = getCollectionConfigStruct();
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
@@ -848,7 +862,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL = getHQL();
 					HQLParams = getHQLParams();
 					var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
-					var columns = getCollectionConfigStruct().columns;
+					var columns = getCollectionConfigStruct()["columns"];
 					
 					for(var entity in entities){
 						var pageRecord = {};
@@ -871,7 +885,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					} 
 				}else{
 					HQL = getHQL();
-					//writedump(HQL);abort;
 					HQLParams = getHQLParams();
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
@@ -913,7 +926,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL = getHQL(forExport=arguments.forExport);
 					HQLParams = getHQLParams();
 					var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-					var columns = getCollectionConfigStruct().columns;
+					var columns = getCollectionConfigStruct()["columns"];
 					for(var entity in entities){
 						var record = {};
 						
@@ -1228,6 +1241,35 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					orderByHQL &= getOrderByHQL();
 				}
 			}//<--end if build select
+			if(
+				getHasDisplayAggregate() 
+				&& (
+					!structKeyExists(collectionConfig,'groupBys') 
+					|| (
+						structKeyExists(collectionConfig,'groupBys') 
+						&& len(collectionConfig.groupBys)
+					)
+				)
+			){
+				var groupBys = [];
+				//add a group by for all selects that are not aggregates
+				for(var column in collectionConfig.columns){
+					if(!structKeyExists(column,'aggregate') && !structKeyExists(column,'persistent')){
+						arrayAppend(groupBys,column.propertyIdentifier);
+					}
+				}
+				
+				if(!structKeyExists(collectionConfig,'orderBy') || !arrayLen(collectionConfig.orderBy)){
+					arrayAppend(groupBys,'_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime");
+				}else{
+					//add a group by for all order bys
+					for(var orderBy in collectionConfig.orderBy){
+						arrayAppend(groupBy,orderBy.propertyIdentifier);
+					}
+				}
+				collectionConfig.groupBys = arrayToList(groupBys);
+				
+			}
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
@@ -1282,10 +1324,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//loop through columns
 			for(var column in columns) {
 							var postFilterGroup = {
-								filterGroup = [
+					"filterGroup" = [
 									{
-										comparisonOperator = "like",
-										value="%#keyword#%"
+										"comparisonOperator" = "like",
+										"value"="%#keyword#%"
 									}
 								] 
 							};

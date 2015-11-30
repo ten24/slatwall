@@ -70,6 +70,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
+	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
 
 	// Related Object Properties (one-to-many)
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -189,6 +190,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.listingPagesOptionsSmartList;
     }
 
+    public any function getSubscriptionSkuSmartList(){
+    	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
+    		var smartList = getService("ProductService").getSkuSmartList();
+    		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		variables.subscriptionSkuSmartList = smartList;
+    	}
+    	return variables.subscriptionSkuSmartList;
+    }
+    
 	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
         if(!arguments.sorted && !arguments.fetchOptions) {
         	return variables.skus;
@@ -887,31 +897,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getNumberOfUnusedProductOptionCombinations(){
 
 		var optionGroups = [];
-		var usedCombinations = [];
 		var unusedOptions = [];
 		var first = true;
 
-		for(var sku in this.getSkus()){
-			var combination = [];
-			for(var option in sku.getOptions()){
-				if(first){
-					ArrayAppend(optionGroups, option.getOptionGroup());
-					ArrayAppend(combination, option);
-				} else {
-					ArrayAppend(combination, option);
-				}
-			}
-			first = false;
-			ArrayAppend(usedCombinations, combination);
+		var optionGroupIDs = getDAO("OptionDAO").getAllUsedProductOptionGroupIDs(this.getProductID());
+		var numberOfUsedProductOptions = getDAO("OptionDAO").getNumberOfUsedProductOptions(this.getProductID());
+
+		if(ArrayLen(optionGroupIDs) > 0){
+			var usedCombinations = numberOfUsedProductOptions / ArrayLen(optionGroupIDs);
+		} else {
+			var usedCombinations = 1;
 		}
 
 		var possibilities = 1;
 
-		for(var optionGroup in optionGroups){
-			possibilities = possibilities * ArrayLen(optionGroup.getOptions());
+		for(var optionGroupID in optionGroupIDs){
+			possibilities = possibilities * getDAO("OptionDAO").getNumberOfOptionsForOptionGroup(OptionGroupID);
+
 		}
 
-		return possibilities - ArrayLen(usedCombinations);
+		return possibilities - usedCombinations;
 	}
 
 	public array function getUnusedProductOptionGroups() {

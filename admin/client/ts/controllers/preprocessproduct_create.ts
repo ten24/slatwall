@@ -29,7 +29,7 @@ module slatwalladmin {
                 //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
                 this.collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
                 this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID',this.$scope.preprocessproduct_createCtrl.selectedOption.value,'=','OR');
-                this.collectionConfig.setOrderBy('optionName|ASC');
+                this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
                 this.$scope.preprocessproduct_createCtrl.collectionListingPromise = this.collectionConfig.getEntity();
                 this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
                     this.$scope.preprocessproduct_createCtrl.collection = data;    
@@ -39,6 +39,7 @@ module slatwalladmin {
             
             var jQueryOptions = $("select[name='product.productType.productTypeID']")[0];
             this.$scope.preprocessproduct_createCtrl.options = [];
+            this.$scope.preprocessproduct_createCtrl.options.push({label:this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'),value:""})
             angular.forEach(jQueryOptions,(jQueryOption)=>{
                 var option = {
                     label:jQueryOption.label,

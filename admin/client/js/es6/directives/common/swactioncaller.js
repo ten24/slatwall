@@ -14,8 +14,21 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.init = () => {
                 this.type = this.type || 'link';
-                this.click = this.click || "";
-                console.log("OnClick", this.click);
+                if (this.type == "button") {
+                    //handle submit.
+                    /** in order to attach the correct controller to local vm, we need a watch to bind */
+                    var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+                        if (newValue !== undefined) {
+                            this.formCtrl = newValue;
+                        }
+                        //console.log("unbinding");
+                        unbindWatcher();
+                    });
+                }
+            };
+            this.submit = () => {
+                console.log(this.formCtrl);
+                this.formCtrl.submit(this.action);
             };
             this.getAction = () => {
                 return this.action || '';
@@ -175,10 +188,11 @@ var slatwalladmin;
             this.utiltiyService = utiltiyService;
             this.$slatwall = $slatwall;
             this.restrict = 'EA';
+            this.require = "?^swForm";
+            this.transclude = true;
             this.scope = {};
             this.bindToController = {
                 action: "@",
-                click: "@",
                 text: "@",
                 type: "@",
                 queryString: "@",
@@ -197,7 +211,8 @@ var slatwalladmin;
             };
             this.controller = SWActionCallerController;
             this.controllerAs = "swActionCaller";
-            this.link = (scope, element, attrs) => {
+            this.link = (scope, element, attrs, formController) => {
+                scope.frmController = formController;
             };
         }
     }

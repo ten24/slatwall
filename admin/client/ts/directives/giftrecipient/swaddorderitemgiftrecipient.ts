@@ -1,3 +1,5 @@
+/// <reference path="../../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
 module slatwalladmin {
 	'use strict';
 	
@@ -5,11 +7,15 @@ module slatwalladmin {
 		
 
 		public adding:boolean; 
-        public orderItemGiftRecipients:[]; 
+        public orderItemGiftRecipients:Array<slatwalladmin.GiftRecipient>; 
         public quantity:number;
         public searchText:string; 
 		public collection;  
         public currentGiftRecipient:slatwalladmin.GiftRecipient;
+		public showInvalidAddFormMessage; 
+		public showInvalidRowMessage;
+		public recipientAddForm;
+		public tableForm;
 		
 		public static $inject=["$slatwall"];
 		
@@ -19,6 +25,7 @@ module slatwalladmin {
 			var count = 1;
 			this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 			this.orderItemGiftRecipients = [];
+			this.showInvalidAddFormMessage = false;
 		}
 		
 		addGiftRecipientFromAccountList = (account:any):void =>{
@@ -64,20 +71,30 @@ module slatwalladmin {
 		}
 
 		addGiftRecipient = ():void =>{
+				if(this.recipientAddForm.$valid){
+					this.showInvalidAddFormMessage = true;
+					this.adding = false; 
+					var giftRecipient = new slatwalladmin.GiftRecipient();
+					angular.extend(giftRecipient,this.currentGiftRecipient);
+					this.orderItemGiftRecipients.push(giftRecipient);
+					this.searchText = ""; 
+					this.currentGiftRecipient.reset(); 
+				} else { 
+					this.showInvalidAddFormMessage = true;
+				}
+		}
+		
+		cancelAddRecipient = ():void =>{
 			this.adding = false; 
-			var giftRecipient = new GiftRecipient();
-			angular.extend(giftRecipient,this.currentGiftRecipient);
-			this.orderItemGiftRecipients.push(giftRecipient);
-			this.currentGiftRecipient = new slatwalladmin.GiftRecipient(); 
+			this.currentGiftRecipient.reset();
 			this.searchText = ""; 
+			this.showInvalidAddFormMessage = false;
 		}
 
 		startFormWithName = (searchString = this.searchText):void =>{
 			this.adding = true; 
 			
-			if(searchString == ""){
-				this.currentGiftRecipient.firstName = searchString;
-			} else { 
+			if(searchString != ""){
 				this.currentGiftRecipient.firstName = searchString; 
 				this.searchText = ""; 
 			}
@@ -85,7 +102,7 @@ module slatwalladmin {
 
 		getTotalQuantity = ():number =>{
 			var totalQuantity = 0;
-			angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
+			angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient:slatwalladmin.GiftRecipient)=>{
 					totalQuantity += orderItemGiftRecipient.quantity;
 			});
 			return totalQuantity;
@@ -105,7 +122,8 @@ module slatwalladmin {
         
 		public static $inject=["$slatwall"];
 		public templateUrl; 
-		public restrict = "EA"; 
+		public require = "^form";
+		public restrict = "EA";
 		public transclude = true; 
 		public scope = {}; 	
 		
@@ -114,19 +132,22 @@ module slatwalladmin {
 			"orderItemGiftRecipients":"=", 
 			"adding":"=", 
 			"searchText":"=", 
-			"currentgiftRecipient":"="
+			"currentgiftRecipient":"=",
+			"showInvalidAddFormMessage":"=?",
+			"showInvalidRowMessage":"=?",
+			"tableForm":"=",
+			"recipientAddForm":"="
 		};
 		
 		public controller=SWAddOrderItemRecipientController;
         public controllerAs="addGiftRecipientControl";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath){
 			this.templateUrl = partialsPath + "entity/OrderItemGiftRecipient/addorderitemgiftrecipient.html";
 		}
 
         public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
 		}
     }
     
