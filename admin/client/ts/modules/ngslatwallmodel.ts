@@ -4379,7 +4379,7 @@ $provide.decorator( '$slatwall', [
 			if(form.$dirty && form.$valid){
 				for(var key in form){
 					//$log.debug('key:'+key);
-					if(key.charAt(0) !== '$'){
+					if(key.charAt(0) !== '$' && angular.isObject(form[key])){
 						var inputField = form[key];
 						if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
 							

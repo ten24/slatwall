@@ -4,7 +4,7 @@ module slatwalladmin {
 export class SWFormFieldJsonController implements ng.IDirective {
 	public $inject = ['formService'];
     constructor (formService) {
-		this.propertyDisplay.form[this.propertyDisplay.property].$dirty = this.propertyDisplay.isDirty;
+		this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
 	}
 }	
 	
