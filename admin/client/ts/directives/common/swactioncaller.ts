@@ -6,8 +6,21 @@ module slatwalladmin {
     'use strict';
     
     export class SWActionCallerController{
+        public type:string;
+        public formCtrl:ng.IFormController;
+        public action:string;
+        public actionItem:string;
+        public actionItemEntityName:string;
+        public title:string;
+        public disabled:boolean;
+        public confirm:boolean;
+        public disabledtext:string;
+        public confirmtext:string;
+        public text:string;
+        public class:string;
+        
         public static $inject = ['$scope','$element','$templateRequest','$compile','partialsPath','utilityService','$slatwall'];
-        constructor(private $scope,private $element,private $templateRequest:ng.ITemplateRequestService, private $compile:ng.ICompileService,private partialsPath, private utilityService:slatwalladmin.UtilityService, private $slatwall:ngSlatwall.SlatwallService){
+        constructor(private $scope,private $element,private $templateRequest:ng.ITemplateRequestService, private $compile:ng.ICompileService,private partialsPath, private utilityService:slatwalladmin.UtilityService, public $slatwall:ngSlatwall.SlatwallService){
             this.$scope = $scope;
             this.$element = $element;
 			this.$templateRequest = $templateRequest;
@@ -33,9 +46,7 @@ module slatwalladmin {
                 var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
                     if (newValue !== undefined){
                         this.formCtrl = newValue;
-                        
                     }
-                    //console.log("unbinding");
                     unbindWatcher();
                 });
                 
@@ -155,7 +166,7 @@ module slatwalladmin {
                 //and no disabled text specified
                 if(angular.isUndefined(this.disabledtext) || !this.disabledtext.length ){
                     var disabledrbkey = this.utilityService.replaceAll(this.action,':','.')+'_disabled';
-                    this.disabledtext = $slatwall.getRBKey(disabledrbkey);
+                    this.disabledtext = this.$slatwall.getRBKey(disabledrbkey);
                 }
                 //add disabled class
                 this.class += " s-btn-disabled";
@@ -178,7 +189,7 @@ module slatwalladmin {
             if(this.getConfirm() ){
                 if(angular.isUndefined(this.confirmtext) && this.confirmtext.length){
                     var confirmrbkey = this.utilityService.replaceAll(this.action,':','.')+'_confirm';
-                    this.confirmtext = $slatwall.getRBKey(confirmrbkey);
+                    this.confirmtext = this.$slatwall.getRBKey(confirmrbkey);
                     /*<cfif right(attributes.confirmtext, "8") eq "_missing">
                         <cfset attributes.confirmtext = replace(attributes.hibachiScope.rbKey("admin.define.delete_confirm"),'${itemEntityName}', attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
                     </cfif>*/
