@@ -397,9 +397,6 @@ Notes:
 		</script>
 
 		<!--- Load up the Slatwall Angular Provider --->
-
-
-
 		<cfif request.slatwallScope.getApplicationValue('debugFlag')>
 			<cfset es5scriptPath = expandPath('/#request.slatwallScope.getDao('hibachiDao').getApplicationKey()#/admin/client/js/es5/')>
 			<cfdirectory name="es5Javascript"

@@ -1,0 +1,38 @@
+<!-- Example Login Form - need to use object and property instead of a grouping called object -->
+<sw-form
+    data-is-process-form="true"
+    data-object="Account_Login"
+    data-on-success="hide:Account_Login,show:Account_Logout"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-action="$login">
+    
+    <swf-property-display 
+        data-name="emailAddress"
+        data-type="email"
+        data-object="Account_login" 
+        data-property-identifier="emailAddress"
+        data-label-text="Email Address:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <swf-property-display
+        data-name="password"
+        data-type="password"
+        data-object="Account_login" 
+        data-property-identifier="password"
+        data-label-text="Password:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <sw-action-caller 
+        data-action="$login"
+        data-modal="false" 
+        data-type="button" 
+        data-class="btn"
+        data-text="Login">
+    <sw-action-caller>
+    
+</sw-form>

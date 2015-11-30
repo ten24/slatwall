@@ -15,7 +15,6 @@ module slatwalladmin {
             this.partialsPath = partialsPath; 
             this.$slatwall = $slatwall;
 			this.utilityService = utilityService;
-            
             this.$templateRequest(this.partialsPath+"actioncaller.html").then((html)=>{
 				var template = angular.element(html);
 				this.$element.parent().append(template);
@@ -23,37 +22,32 @@ module slatwalladmin {
                 //need to perform init after promise completes
                 this.init(); 
 			});
-        }
+        } 
 		
 		public init = ():void =>{
-//			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+            
 			this.type = this.type || 'link';
-//			this.actionItem = this.getActionItem();
-//			this.actionItemEntityName = this.getActionItemEntityName();
-//			this.text = this.getText();
-//			if(this.getDisabled()){
-//				this.getDisabledText();
-//			}else if(this.getConfirm()){
-//				this.getConfirmText();
-//			}
-//			
-//			if(this.modalFullWidth && !this.getDisabled()){
-//				this.class = this.class + " modalload-fullwidth";
-//			}
-//			
-//			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-//				this.class = this.class + " modalload";
-//			}
-			
-			/*need authentication lookup by api to disable
-			<cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-				<cfset attributes.class &= " disabled" />
-			</cfif>
-			*/
+            if (this.type == "button"){
+                //handle submit.
+                /** in order to attach the correct controller to local vm, we need a watch to bind */
+                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+                    if (newValue !== undefined){
+                        this.formCtrl = newValue;
+                        
+                    }
+                    //console.log("unbinding");
+                    unbindWatcher();
+                });
+                
+            }
+            
 		}
+        public submit = () => {
+            console.log(this.formCtrl);
+            this.formCtrl.submit(this.action);
+        }
         
         public getAction = ():string =>{
-			
             return this.action || '';    
         }
         
@@ -108,7 +102,7 @@ module slatwalladmin {
 			return this.utilityService.replaceAll(navRBKey,replaceKey, entityRBKey);
 		}
 		
-		public getText = ():string =>{
+		public getText = ():string =>{ 
 			//if we don't have text then make it up based on rbkeys
 			if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && !this.text.length)){
 				this.text = this.$slatwall.getRBKey(this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
@@ -198,6 +192,8 @@ module slatwalladmin {
         
 	export class SWActionCaller implements ng.IDirective{
 		public restrict:string = 'EA';
+        public require = "?^swForm"
+        public transclude = true; 
         public scope={}; 
 		public bindToController={
             action:"@",
@@ -222,10 +218,12 @@ module slatwalladmin {
 		public templateUrl;
         
 		constructor(private partialsPath:slatwalladmin.partialsPath,private utiltiyService:slatwalladmin.UtilityService,private $slatwall:ngSlatwall.SlatwallService){
-		}
+		  
+        }
 		
-		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-		}
+		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any) =>{
+		  scope.frmController = formController;
+        }
 	}
     
 	angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);

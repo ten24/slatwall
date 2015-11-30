@@ -1,6 +1,6 @@
 /*
 
-    Slatwall - An Open Source eCommerce Platform
+    Slatwall - An Open Soudatae eCommedatae Platform
     Copyright (C) ten24, LLC
 	
     This program is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@
 
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
-	GNU GPL requires distribution of source code.
+	provided that you include the soudatae code of that other code when and as the 
+	GNU GPL requires distribution of soudatae code.
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
@@ -63,44 +63,8 @@ component extends="HibachiService"  accessors="true" output="false"
 	variables.responseType = "json";
 	
 	/**
-	 * @method getPublicContexts
-	 * @http-context getPublicContexts 
-	 * @description Returns a JSON list of all public contexts available to this request. 
-	 * @example ...GET request to /api/scope/GetPublicContext
-	 * @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
-	 **/
-	public void function getPublicContexts( required struct rc ) {
-		var data = {};
-		var publicMetaData = getComponentMetaData("PublicService");
-		var publicContexts = publicMetaData.functions;
-		if (!isNull(publicContexts)){
-			
-			for (context in publicContexts){
-				if (StructKeyExists(context, "name") && StructKeyExists(context, "description") && StructKeyExists(context, "http-context") && StructKeyExists(context, "http-return")){
-					var info["#context.name#"] = formatMetaData({name=context.name, description=context.description, context=context["http-context"], httpReturn=context["http-return"]});
-   					StructAppend(data, info);
-				}
-			}
-			
-		}
-		
-		setResponse(true, 200, data, arguments.rc, true);
-	}
-	
-	private string function formatMetaData(struct contextData){
-		var stringBuilder = "<br><p><ul style='background:##ffffd5;color:black;'><li>Context-Name: #arguments.contextData.name#</li>" 
-								   & "<li>Description: <br><p>#arguments.contextData.description#</p></li>" 
-								   & "<li>Resource: <br><p>.../api/scope/#arguments.contextData.context#</p></li>" 
-								   & "<li>Http Return: <ul>"
-								   & "<li>#arguments.contextData.httpReturn#</li>"
-								   &"</ul></li>"
-								   &"</ul></p><br>";
-		return stringBuilder;
-	}
-	
-	/**
 	 @method Login <b>Log a user account into Slatwall given the users emailAddress and password</b>
-	 @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resource.
+	 @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resoudatae.
 	 @http-verb POST
 	 @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
 	 @param Required Header: emailAddress
@@ -111,34 +75,68 @@ component extends="HibachiService"  accessors="true" output="false"
 							   					  
 	  @example  testuser@slatwalltest.com:Vah7cIxXe would become dGVzdHVzZXJAc2xhdHdhbGx0ZXN0LmNvbTpWYWg3Y0l4WGU=				
 	 */
-	public any function login( required struct rc ){
-		//If this is an api request, decode the basic auth heading and put the email and password back into request context.
-		if (arguments.rc.APIRequest){
-			//Check for the basic auth heading
-			try {
-				if (StructKeyExists(arguments.rc.requestHeaderData.headers, "authorization")){
-					var plaintextArray = ListToArray( ToString( ToBinary( arguments.rc.requestHeaderData.headers.authorization ) ), ":" );
-					var email = plaintextArray[1];
-					var password = plaintextArray[2];
-					arguments.rc["emailAddress"] = email;
-					arguments.rc["password"] = password;
-				}
-			} catch (any e){
-				addDataToResponse("errors", "Unable to decode Basic Authorization Header to usable data", arguments.rc);		
+	public any function login( required struct data ){
+		var accountProcess = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'login' );
+		arguments.data.$.slatwall.addActionResult( "public:account.login", accountProcess.hasErrors() );
+		if (accountProcess.hasErrors()){
+			if (data.$.slatwall.getAccount().hasErrors()){
+				acountProcess.$errors = data.$.slatwall.getAccount().getErrors();
 			}
+			addErrors(data, data.$.slatwall.getAccount().getProcessObject("login").getErrors());
 		}
-		//Login the user
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
-		arguments.rc.$.slatwall.addActionResult( "public:account.login", account.hasErrors() );
-		//If this is a request from the api, setup the response header and populate it with data.
-		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(200, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), getHibachiScope().getSession().getSessionCookieNPSID(),  arguments.rc);
-		return account;
-	}	
-
+		return accountProcess;
+	}
+	
+	/** returns meta data as well as validation information for a process object. This is
+	    the default behavior for a GET request to process context /api/scope/process/*/	
+	public any function getProcessObjectDefinition(required struct data){
+        
+        try{
+            if (structKeyExists(data, entityName) && lCase(data.entityName) == "account"){
+            	var processObject = evaluate("data.$.slatwall.getAccount().getProcessObject('#data.processObject#')");
+            }else if(structKeyExists(data, entityName) && (lCase(data.entityName) == "order" || lCase(data.entityName) == "cart")){
+            	var processObject = evaluate("data.$.slatwall.cart().getProcessObject('#data.processObject#')");
+            }else{
+            	var processObject = evaluate("data.$.slatwall.#data.entityName#().getProcessObject('#data.processObject#')");
+            }
+            
+            arguments.data.ajaxResponse['processObject'] = processObject.getThisMetaData();
+            arguments.data.ajaxResponse['processObject']['validations'] = processObject.getValidations();
+            arguments.data.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
+            arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
+        }catch(any e){}
+        
+        var entity = evaluate('data.$.slatwall.get#data.entityName#()');
+        var entityMeta = entity.getThisMetaData();
+        arguments.data.ajaxResponse['processObject']["entityMeta"] = entityMeta.properties;
+    }
+    
+    /** returns the result of a processObject based action including error information. A form submit.
+        This is the default behavior for a POST request to process context /api/scope/process/ */    
+    public any function doProcess(required struct data){
+        
+        if (structKeyExists(data, "processObject")){
+        	try{
+            	var processObject = evaluate("this.#data.processObject#(data)");
+            	
+        	}catch(any e){
+        		arguments.data.ajaxResponse['processObject']['errors'] = "#e#";
+        	}
+        }
+        if (!isNull(processObject)){
+            arguments.data.ajaxResponse['processObject']                  = processObject.getThisMetaData();
+            arguments.data.ajaxResponse['processObject']['validations']   = processObject.getValidations();
+            arguments.data.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
+            arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
+            arguments.data.ajaxResponse['processObject']['messages']      = processObject.getMessages();	
+        }
+        
+        
+    }
+    
 	/** 
 	 * @method Logout <b>Log a user account outof Slatwall given the users request_token and deviceID</b>
-	 * @http-context Logout Use this context in conjunction with the listed http-verb to use this resource.
+	 * @http-context Logout Use this context in conjunction with the listed http-verb to use this resoudatae.
 	 * @http-verb POST
 	 * @http-return <b>(200)</b> Request Successful <b>(400)</b> Bad or Missing Input Data
 	 * @description  Logs a user out of the given device  
@@ -146,13 +144,13 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @param Required deviceID
 	 * @example POST to /api/scope/logout with request_token and deviceID in headers
 	 */
-	public any function logout( required struct rc ){ 
+	public any function logout( required struct data ){ 
 		
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'logout' );
-		arguments.rc.$.slatwall.addActionResult( "public:account.logout", false );
-		
-		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(200, 500, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "Logout Successful",  arguments.rc);
+		var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'logout' );
+		arguments.data.$.slatwall.addActionResult( "public:account.logout", account.hasErrors() );
+		if(account.hasErrors()){
+			addErrors(data, data.$.slatwall.getAccount().getProcessObject("logout").getErrors());
+		}
 		return account;
 	}	
 	
@@ -163,7 +161,6 @@ component extends="HibachiService"  accessors="true" output="false"
 	 *	@description  CreateAccount Creates a new user account.  
 	 *	@http-return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
 	 *	@param firstName {string}
-	 *	@param firstName {string}
 	 *	@param lastName {string}
 	 *	@param company {string}
 	 *	@param phone {string}
@@ -173,13 +170,13 @@ component extends="HibachiService"  accessors="true" output="false"
 	 *	@param password {string}
 	 *	@param passwordConfirm {string}
 	 */
-	public void function createAccount( required struct rc ) {
-		param name="arguments.rc.createAuthenticationFlag" default="1";
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
-		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
-		//If this is a request from the api, setup the response header and populate it with data.
-		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(201, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "",  arguments.rc);
+	public void function createAccount( required struct data ) {
+		param name="arguments.data.createAuthenticationFlag" default="1";
+		var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'create');
+		arguments.data.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
+		if(account.hasErrors()){
+            addErrors(data, data.$.slatwall.getAccount().getProcessObject("create").getErrors());
+        }
 	}
 	
 	/**
@@ -187,16 +184,16 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description  Updates the device ID for a user account 
 	 * @http-return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function updateDeviceID( required struct rc ){
-		param name="arguments.rc.deviceID" default="";
-		param name="arguments.rc.request_token" default="";
+	public void function updateDeviceID( required struct data ){
+		param name="arguments.data.deviceID" default="";
+		param name="arguments.data.request_token" default="";
 
-		var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.rc.request_token, true );
-		sessionEntity.setDeviceID(arguments.rc.deviceID);
+		var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.data.request_token, true );
+		sessionEntity.setDeviceID(arguments.data.deviceID);
 		
 		//If this is a request from the api, setup the response header and populate it with data.
-		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.rc.deviceID#",  arguments.rc);	
+		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct data
+		handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.data.deviceID#",  arguments.data);	
 	}
 	
 	
@@ -208,14 +205,10 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@htt-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
-    public any function forgotPassword( required struct rc ) {
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'forgotPassword');
-		arguments.rc.$.slatwall.addActionResult( "public:account.forgotPassword", account.hasErrors() );
-		
-		//If this is a request from the api, setup the response header and populate it with data.
-		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(200, 400, account, "Forgotten Password Email Sent", "",  arguments.rc);
-		return true;
+    public any function forgotPassword( required struct data ) {
+		var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'forgotPassword');
+		arguments.data.$.slatwall.addActionResult( "public:account.forgotPassword", account.hasErrors() );
+		return account;
 	}
 	
 	/**
@@ -227,22 +220,22 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@param accountID {string}
 	  * @param emailAddress {string}
 	  **/
-	public void function resetPassword( required struct rc ) {
-		param name="rc.accountID" default="";
-		var account = getAccountService().getAccount( rc.accountID );
+	public void function resetPassword( required struct data ) {
+		param name="data.accountID" default="";
+		var account = getAccountService().getAccount( data.accountID );
 		if(!isNull(account)) {
-			var account = getAccountService().processAccount(account, rc, "resetPassword");
-			arguments.rc.$.slatwall.addActionResult( "public:account.resetPassword", account.hasErrors() );	
+			var account = getAccountService().processAccount(account, data, "resetPassword");
+			arguments.data.$.slatwall.addActionResult( "public:account.resetPassword", account.hasErrors() );	
 			// As long as there were no errors resetting the password, then we can set the email address in the form scope so that a chained login action will work
 			if(!account.hasErrors() && !structKeyExists(form, "emailAddress") && !structKeyExists(url, "emailAddress")) {
 				form.emailAddress = account.getEmailAddress();
 			}
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.resetPassword", true );
+			arguments.data.$.slatwall.addActionResult( "public:account.resetPassword", true );
 		}
 		// Populate the current account with this processObject so that any errors are there.
-		arguments.rc.$.slatwall.account().setProcessObject( account.getProcessObject( "resetPassword" ) );
-		handlePublicAPICall(200, 400, account, "Reset Password Sucessful", "",  arguments.rc);
+		arguments.data.$.slatwall.account().setProcessObject( account.getProcessObject( "resetPassword" ) );
+		return account.getProcessObject( "resetPassword" ) ;
 	}
 	
 	/**
@@ -253,11 +246,11 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
-	public any function changePassword( required struct rc ) {
+	public any function changePassword( required struct data ) {
 		
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'changePassword');
-		arguments.rc.$.slatwall.addActionResult( "public:account.changePassword", account.hasErrors() );
-		handlePublicAPICall(200, 400, account, "Change Password Sucessful", "",  arguments.rc);
+		var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'changePassword');
+		arguments.data.$.slatwall.addActionResult( "public:account.changePassword", account.hasErrors() );
+		return account;
 	}
 	
 	/**
@@ -269,12 +262,11 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@param aFieldToUpdate {json key}
 	  * @param authToken {json key}
 	  **/
-	public any function updateAccount( required struct rc ) {
+	public any function updateAccount( required struct data ) {
 		
-		var account = getAccountService().saveAccount( rc.$.slatwall.getAccount(), arguments.rc );
-		arguments.rc.$.slatwall.addActionResult( "public:account.update", account.hasErrors() );
-		
-		handlePublicAPICall(200, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "",  arguments.rc);
+		var account = getAccountService().saveAccount( data.$.slatwall.getAccount(), arguments.data );
+		arguments.data.$.slatwall.addActionResult( "public:account.update", account.hasErrors() );
+		return account;
 	}
 	
 	/**
@@ -286,17 +278,17 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@param emailAddress {string}
 	  **/
 	public void function deleteAccountEmailAddress() {
-		param name="rc.accountEmailAddressID" default="";
+		param name="data.accountEmailAddressID" default="";
 		
-		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( data.accountEmailAddressID );
 		
-		if(!isNull(accountEmailAddress) && accountEmailAddress.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
+		if(!isNull(accountEmailAddress) && accountEmailAddress.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountEmailAddress( accountEmailAddress );
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", !deleteOK );
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", !deleteOK );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", true );	
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", true );	
 		}
-		handlePublicAPICall(200, 400, accountEmailAddress, "Email address deleted", "",  arguments.rc);
+		return accountEmailAddress;
 	}
 	
 	/** 
@@ -307,39 +299,39 @@ component extends="HibachiService"  accessors="true" output="false"
 	  * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  */
 	public void function sendAccountEmailAddressVerificationEmail() {
-		param name="rc.accountEmailAddressID" default="";
+		param name="data.accountEmailAddressID" default="";
 		
-		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( data.accountEmailAddressID );
 		
 		if(!isNull(accountEmailAddress) && !isNull(accountEmailAddress.getVerifiedFlag()) && !accountEmailAddress.getVerifiedFlag()) {
-			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'sendVerificationEmail' );
-			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", accountEmailAddress.hasErrors() );
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, data, 'sendVerificationEmail' );
+			arguments.data.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", accountEmailAddress.hasErrors() );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
+			arguments.data.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
 		}
 		
-		handlePublicAPICall(200, 400, accountEmailAddress, "Email address verification email sent", "",  arguments.rc);
+		return accountEmailAddress;
 	}
 	
 	/** 
 	 * @method verifyAccountEmailAddress
 	 * @http-context verifyAccountEmailAddress
-	 * @http-resource /api/scope/verifyAccountEmailAddress
+	 * @http-resoudatae /api/scope/verifyAccountEmailAddress
 	 * @description Account Email Address - Verify 
 	 * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function verifyAccountEmailAddress() {
-		param name="rc.accountEmailAddressID" default="";
+		param name="data.accountEmailAddressID" default="";
 		
-		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( data.accountEmailAddressID );
 		
 		if(!isNull(accountEmailAddress)) {
-			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'verify' );
-			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", accountEmailAddress.hasErrors() );
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, data, 'verify' );
+			arguments.data.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", accountEmailAddress.hasErrors() );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", true );
+			arguments.data.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", true );
 		}
-		handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.rc);
+		handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
 	}
 	
 	/** 
@@ -349,15 +341,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function deleteAccountPhoneNumber() {
-		param name="rc.accountPhoneNumberID" default="";
+		param name="data.accountPhoneNumberID" default="";
 		
-		var accountPhoneNumber = getAccountService().getAccountPhoneNumber( rc.accountPhoneNumberID );
+		var accountPhoneNumber = getAccountService().getAccountPhoneNumber( data.accountPhoneNumberID );
 		
-		if(!isNull(accountPhoneNumber) && accountPhoneNumber.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
+		if(!isNull(accountPhoneNumber) && accountPhoneNumber.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountPhoneNumber( accountPhoneNumber );
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountPhoneNumber", !deleteOK );
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPhoneNumber", !deleteOK );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountPhoneNumber", true );	
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPhoneNumber", true );	
 		}
 	}
 	
@@ -367,15 +359,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function deleteAccountAddress() {
-		param name="rc.accountAddressID" default="";
+		param name="data.accountAddressID" default="";
 		
-		var accountAddress = getAccountService().getAccountAddress( rc.accountAddressID );
+		var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
 		
-		if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
+		if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountAddress", !deleteOK );
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountAddress", !deleteOK );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountAddress", true );	
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountAddress", true );	
 		}
 	}
 	
@@ -385,15 +377,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function deleteAccountPaymentMethod() {
-		param name="rc.accountPaymentMethodID" default="";
+		param name="data.accountPaymentMethodID" default="";
 		
-		var accountPaymentMethod = getAccountService().getAccountPaymentMethod( rc.accountPaymentMethodID );
+		var accountPaymentMethod = getAccountService().getAccountPaymentMethod( data.accountPaymentMethodID );
 		
-		if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
+		if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", true );	
+			arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", true );	
 		}
 	}
 	
@@ -404,22 +396,22 @@ component extends="HibachiService"  accessors="true" output="false"
 	 */
 	public void function addAccountPaymentMethod() {
 		
-		if(arguments.rc.$.slatwall.getLoggedInFlag()) {
+		if(arguments.data.$.slatwall.getLoggedInFlag()) {
 			
-			// Force the payment method to be added to the current account
-			var accountPaymentMethod = arguments.rc.$.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
+			// Fodatae the payment method to be added to the current account
+			var accountPaymentMethod = arguments.data.$.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
 			
-			accountPaymentMethod.setAccount( arguments.rc.$.slatwall.getAccount() );
+			accountPaymentMethod.setAccount( arguments.data.$.slatwall.getAccount() );
 			
-			accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.rc );
+			accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
 			
-			arguments.rc.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
+			arguments.data.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
 			
 			// If there were no errors then we can clear out the
 			
 		} else {
 			
-			arguments.rc.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", true );
+			arguments.data.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", true );
 				
 		}
 		
@@ -430,21 +422,21 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Logs in a user with a guest account 
 	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function guestAccount(required any rc) {
-		param name="arguments.rc.createAuthenticationFlag" default="0";
+	public void function guestAccount(required any data) {
+		param name="arguments.data.createAuthenticationFlag" default="0";
 		
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
+		var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'create');
 		
 		if( !account.hasErrors() ) {
-			if( !isNull(rc.$.slatwall.getCart().getAccount())) {
-				var newCart = getOrderService().duplicateOrderWithNewAccount( rc.$.slatwall.getCart(), account );
-				rc.$.slatwall.getSession().setOrder( newCart );
+			if( !isNull(data.$.slatwall.getCart().getAccount())) {
+				var newCart = getOrderService().duplicateOrderWithNewAccount( data.$.slatwall.getCart(), account );
+				data.$.slatwall.getSession().setOrder( newCart );
 			} else {
-				rc.$.slatwall.getCart().setAccount( account );	
+				data.$.slatwall.getCart().setAccount( account );	
 			}
-			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", false );
+			arguments.data.$.slatwall.addActionResult( "public:cart.guestCheckout", false );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:cart.guestCheckout", true );	
+			arguments.data.$.slatwall.addActionResult( "public:cart.guestCheckout", true );	
 		}
 		
 	}
@@ -454,21 +446,21 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Save Guest Account
 	 * @http-return <b>(200)</b> Successfully Created Password or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function guestAccountCreatePassword( required struct rc ) {
-		param name="arguments.rc.orderID" default="";
-		param name="arguments.rc.accountID" default="";
+	public void function guestAccountCreatePassword( required struct data ) {
+		param name="arguments.data.orderID" default="";
+		param name="arguments.data.accountID" default="";
 
-		var order = getOrderService().getOrder( arguments.rc.orderID );
+		var order = getOrderService().getOrder( arguments.data.orderID );
 		
 		// verify that the orderID passed in was in fact the lastPlacedOrderID from the session, that the order & account match up, and that the account is in fact a guest account right now
-		if(!isNull(order) && arguments.rc.orderID == arguments.rc.$.slatwall.getSession().getLastPlacedOrderID() && order.getAccount().getAccountID() == arguments.rc.accountID && order.getAccount().getGuestAccountFlag()) {
+		if(!isNull(order) && arguments.data.orderID == arguments.data.$.slatwall.getSession().getLastPlacedOrderID() && order.getAccount().getAccountID() == arguments.data.accountID && order.getAccount().getGuestAccountFlag()) {
 			
-			var account = getAccountService().processAccount( order.getAccount(), arguments.rc, "createPassword" );
-			arguments.rc.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", account.hasErrors() );
-			
+			var account = getAccountService().processAccount( order.getAccount(), arguments.data, "createPassword" );
+			arguments.data.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", account.hasErrors() );
+			return account;
 		} else {
 			
-			arguments.rc.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", true );
+			arguments.data.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", true );
 		}
 		
 	}
@@ -478,17 +470,18 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function updateSubscriptionUsage() {
-		param name="rc.subscriptionUsageID" default="";
+		param name="data.subscriptionUsageID" default="";
 		
-		var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( rc.subscriptionUsageID );
+		var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( data.subscriptionUsageID );
 		
-		if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
-			var subscriptionUsage = getSubscriptionService().saveSubscriptionUsage( subscriptionUsage, arguments.rc );
-			arguments.rc.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
-			
+		if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+			var subscriptionUsage = getSubscriptionService().saveSubscriptionUsage( subscriptionUsage, arguments.data );
+			arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
+			return subscriptionUsage;
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
+			arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
 		}
+		
 	}
 	
 	/** 
@@ -497,18 +490,27 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function renewSubscriptionUsage() {
-		param name="rc.subscriptionUsageID" default="";
+		param name="data.subscriptionUsageID" default="";
 		
-		var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( rc.subscriptionUsageID );
+		var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( data.subscriptionUsageID );
 		
-		if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
-			var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.rc, 'renew' );
-			arguments.rc.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
-			
+		if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+			var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.data, 'renew' );
+			arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
+			return subscriptionUsage;
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
+			arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
 		}
 	}
+	
+	/** exposes the cart and account */
+	public void function getCartData(any data) {
+		arguments.data.ajaxResponse = data.$.slatwall.getHibachiScope().getCartData();
+	}
+	
+	public void function getAccountData(any data) {
+        arguments.data.ajaxResponse = data.$.slatwall.getHibachiScope().getAccountData();
+    }
 	
 	/** 
 	 * @http-context duplicateOrder
@@ -516,11 +518,11 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-return <b>(200)</b> Successfully Created Duplicate Order or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function duplicateOrder() {
-		param name="arguments.rc.orderID" default="";
-		param name="arguments.rc.setAsCartFlag" default="0";
+		param name="arguments.data.orderID" default="";
+		param name="arguments.data.setAsCartFlag" default="0";
 		
-		var order = getOrderService().getOrder( arguments.rc.orderID );
-		if(!isNull(order) && order.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID()) {
+		var order = getOrderService().getOrder( arguments.data.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID()) {
 			
 			var data = {
 				saveNewFlag=true,
@@ -529,12 +531,12 @@ component extends="HibachiService"  accessors="true" output="false"
 			
 			var duplicateOrder = getOrderService().processOrder(order,data,"duplicateOrder" );
 			
-			if(isBoolean(arguments.rc.setAsCartFlag) && arguments.rc.setAsCartFlag) {
-				arguments.rc.$.slatwall.getSession().setOrder( duplicateOrder );
+			if(isBoolean(arguments.data.setAsCartFlag) && arguments.data.setAsCartFlag) {
+				arguments.data.$.slatwall.getSession().setOrder( duplicateOrder );
 			}
-			arguments.rc.$.slatwall.addActionResult( "public:account.duplicateOrder", false );
+			arguments.data.$.slatwall.addActionResult( "public:account.duplicateOrder", false );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:account.duplicateOrder", true );
+			arguments.data.$.slatwall.addActionResult( "public:account.duplicateOrder", true );
 		}
 	}
 	
@@ -543,15 +545,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description  Update Order Data
 	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function updateOrder( required struct rc ) {
-		var cart = getOrderService().saveOrder( rc.$.slatwall.cart(), arguments.rc );
+	public void function updateOrder( required struct data ) {
+		var cart = getOrderService().saveOrder( data.$.slatwall.cart(), arguments.data );
 		
 		// Insure that all items in the cart are within their max constraint
 		if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
-			cart = getOrderService().processOrder(cart, 'forceItemQuantityUpdate');
+			cart = getOrderService().processOrder(cart, 'fodataeItemQuantityUpdate');
 		}
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.update", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.update", cart.hasErrors() );
 	}
 	
 	/** 
@@ -559,10 +561,10 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description  Clear the order data
 	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function clearOrder( required struct rc ) {
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'clear');
+	public void function clearOrder( required struct data ) {
+		var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'clear');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.clear", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.clear", cart.hasErrors() );
 	}
 	
 	/** 
@@ -570,15 +572,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Change Order
 	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function changeOrder( required struct rc ){
-		param name="arguments.rc.orderID" default="";
+	public void function changeOrder( required struct data ){
+		param name="arguments.data.orderID" default="";
 		
-		var order = getOrderService().getOrder( arguments.rc.orderID );
-		if(!isNull(order) && order.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID()) {
-			arguments.rc.$.slatwall.getSession().setOrder( order );
-			arguments.rc.$.slatwall.addActionResult( "public:cart.change", false );
+		var order = getOrderService().getOrder( arguments.data.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID()) {
+			arguments.data.$.slatwall.getSession().setOrder( order );
+			arguments.data.$.slatwall.addActionResult( "public:cart.change", false );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:cart.change", true );
+			arguments.data.$.slatwall.addActionResult( "public:cart.change", true );
 		}
 	}
 	
@@ -587,15 +589,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Delete an Order
 	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function deleteOrder( required struct rc ) {
-		param name="arguments.rc.orderID" default="";
+	public void function deleteOrder( required struct data ) {
+		param name="arguments.data.orderID" default="";
 		
-		var order = getOrderService().getOrder( arguments.rc.orderID );
-		if(!isNull(order) && order.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID()) {
+		var order = getOrderService().getOrder( arguments.data.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID()) {
 			var deleteOk = getOrderService().deleteOrder(order);
-			arguments.rc.$.slatwall.addActionResult( "public:cart.delete", !deleteOK );
+			arguments.data.$.slatwall.addActionResult( "public:cart.delete", !deleteOK );
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:cart.delete", true );
+			arguments.data.$.slatwall.addActionResult( "public:cart.delete", true );
 		}
 	}
 	
@@ -604,28 +606,28 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Add Order Item to an Order
 	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function addOrderItem(required any rc) {
+	public void function addOrderItem(required any data) {
 		// Setup the frontend defaults
-		param name="rc.preProcessDisplayedFlag" default="true";
-		param name="rc.saveShippingAccountAddressFlag" default="false";
+		param name="data.preProcessDisplayedFlag" default="true";
+		param name="data.saveShippingAccountAddressFlag" default="false";
 		
-		var cart = rc.$.slatwall.cart();
+		var cart = data.$.slatwall.cart();
 		
 		// Check to see if we can attach the current account to this order, required to apply price group details
-		if( isNull(cart.getAccount()) && rc.$.slatwall.getLoggedInFlag() ) {
-			cart.setAccount( rc.$.slatwall.getAccount() );
+		if( isNull(cart.getAccount()) && data.$.slatwall.getLoggedInFlag() ) {
+			cart.setAccount( data.$.slatwall.getAccount() );
 		}
 		
-		cart = getOrderService().processOrder( cart, arguments.rc, 'addOrderItem');
+		cart = getOrderService().processOrder( cart, arguments.data, 'addOrderItem');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
 		
 		if(!cart.hasErrors()) {
 			// If the cart doesn't have errors then clear the process object
 			cart.clearProcessObject("addOrderItem");
 			
 			// Also make sure that this cart gets set in the session as the order
-			rc.$.slatwall.getSession().setOrder( cart );
+			data.$.slatwall.getSession().setOrder( cart );
 			
 			// Make sure that the session is persisted
 			getHibachiSessionService().persistSession();
@@ -638,10 +640,10 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Remove Order Item from an Order
 	 * @http-return <b>(200)</b> Successfully Removed or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function removeOrderItem(required any rc) {
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderItem');
+	public void function removeOrderItem(required any data) {
+		var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'removeOrderItem');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
 	}
 	
 	/** 
@@ -649,10 +651,10 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Update Order Fulfillment 
 	  * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function updateOrderFulfillment(required any rc) {
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'updateOrderFulfillment');
+	public void function updateOrderFulfillment(required any data) {
+		var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'updateOrderFulfillment');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
 	}
 	
 	/** 
@@ -660,10 +662,10 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @description Add Promotion Code
 	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
-	public void function addPromotionCode(required any rc) {
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addPromotionCode');
+	public void function addPromotionCode(required any data) {
+		var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'addPromotionCode');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.addPromotionCode", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.addPromotionCode", cart.hasErrors() );
 		
 		if(!cart.hasErrors()) {
 			cart.clearProcessObject("addPromotionCode");
@@ -674,84 +676,84 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-context removePromotionCode
 	 * @description Remove Promotion Code
 	 */
-	public void function removePromotionCode(required any rc) {
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removePromotionCode');
+	public void function removePromotionCode(required any data) {
+		var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'removePromotionCode');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.removePromotionCode", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.removePromotionCode", cart.hasErrors() );
 	}
 	
 	/** 
 	 * @http-context addOrderPayment
 	 * @description Add Order Payment
 	 */
-	public void function addOrderPayment(required any rc) {
-		param name="rc.newOrderPayment" default="#structNew()#";
-		param name="rc.newOrderPayment.orderPaymentID" default="";
-		param name="rc.accountAddressID" default="";
-		param name="rc.accountPaymentMethodID" default="";
+	public void function addOrderPayment(required any data) {
+		param name="data.newOrderPayment" default="#structNew()#";
+		param name="data.newOrderPayment.orderPaymentID" default="";
+		param name="data.accountAddressID" default="";
+		param name="data.accountPaymentMethodID" default="";
 		
 		// Make sure that someone isn't trying to pass in another users orderPaymentID
-		if(len(rc.newOrderPayment.orderPaymentID)) {
-			var orderPayment = getOrderService().getOrderPayment(rc.newOrderPayment.orderPaymentID);
-			if(orderPayment.getOrder().getOrderID() != rc.$.slatwall.cart().getOrderID()) {
-				rc.newOrderPayment.orderPaymentID = "";
+		if(len(data.newOrderPayment.orderPaymentID)) {
+			var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);
+			if(orderPayment.getOrder().getOrderID() != data.$.slatwall.cart().getOrderID()) {
+				data.newOrderPayment.orderPaymentID = "";
 			}
 		}
 		
-		rc.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
-		rc.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
+		data.newOrderPayment.order.orderID = data.$.slatwall.cart().getOrderID();
+		data.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
 		
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addOrderPayment');
+		var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'addOrderPayment');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderPayment", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.addOrderPayment", cart.hasErrors() );
 	}
 	
 	/** 
 	 * @http-context removeOrderPayment
 	 * @description Remove Order Payment 
 	 */
-	public void function removeOrderPayment(required any rc) {
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderPayment');
+	public void function removeOrderPayment(required any data) {
+		var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'removeOrderPayment');
 		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
+		arguments.data.$.slatwall.addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
 	}
 	
 	/** 
 	 * @http-context placeOrder
 	 * @description Place Order
 	 */
-	public void function placeOrder(required any rc) {
+	public void function placeOrder(required any data) {
 		
 		// Insure that all items in the cart are within their max constraint
-		if(!rc.$.slatwall.cart().hasItemsQuantityWithinMaxOrderQuantity()) {
-			getOrderService().processOrder(rc.$.slatwall.cart(), 'forceItemQuantityUpdate');
-			arguments.rc.$.slatwall.addActionResult( "public:cart.placeOrder", true );
+		if(!data.$.slatwall.cart().hasItemsQuantityWithinMaxOrderQuantity()) {
+			getOrderService().processOrder(data.$.slatwall.cart(), 'fodataeItemQuantityUpdate');
+			arguments.data.$.slatwall.addActionResult( "public:cart.placeOrder", true );
 		} else {
 			// Setup newOrderPayment requirements
-			if(structKeyExists(rc, "newOrderPayment")) {
-				param name="rc.newOrderPayment.orderPaymentID" default="";
-				param name="rc.accountAddressID" default="";
-				param name="rc.accountPaymentMethodID" default="";
+			if(structKeyExists(data, "newOrderPayment")) {
+				param name="data.newOrderPayment.orderPaymentID" default="";
+				param name="data.accountAddressID" default="";
+				param name="data.accountPaymentMethodID" default="";
 				
 				// Make sure that someone isn't trying to pass in another users orderPaymentID
-				if(len(rc.newOrderPayment.orderPaymentID)) {
-					var orderPayment = getOrderService().getOrderPayment(rc.newOrderPayment.orderPaymentID);
-					if(orderPayment.getOrder().getOrderID() != rc.$.slatwall.cart().getOrderID()) {
-						rc.newOrderPayment.orderPaymentID = "";
+				if(len(data.newOrderPayment.orderPaymentID)) {
+					var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);
+					if(orderPayment.getOrder().getOrderID() != data.$.slatwall.cart().getOrderID()) {
+						data.newOrderPayment.orderPaymentID = "";
 					}
 				}
 				
-				rc.newOrderPayment.order.orderID = rc.$.slatwall.cart().getOrderID();
-				rc.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
+				data.newOrderPayment.order.orderID = data.$.slatwall.cart().getOrderID();
+				data.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
 			}
 			
-			var order = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'placeOrder');
+			var order = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'placeOrder');
 			
-			arguments.rc.$.slatwall.addActionResult( "public:cart.placeOrder", order.hasErrors() );
+			arguments.data.$.slatwall.addActionResult( "public:cart.placeOrder", order.hasErrors() );
 			
 			if(!order.hasErrors()) {
-				rc.$.slatwall.setSessionValue('confirmationOrderID', order.getOrderID());
-				rc.$.slatwall.getSession().setLastPlacedOrderID( order.getOrderID() );
+				data.$.slatwall.setSessionValue('confirmationOrderID', order.getOrderID());
+				data.$.slatwall.getSession().setLastPlacedOrderID( order.getOrderID() );
 			}
 			
 		}
@@ -762,157 +764,28 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-context addProductReview
 	 *  @description Add Product Review
 	 */
-	public void function addProductReview(required any rc) {
-		param name="rc.newProductReview.product.productID" default="";
+	public void function addProductReview(required any data) {
+		param name="data.newProductReview.product.productID" default="";
 		
-		var product = getProductService().getProduct( rc.newProductReview.product.productID );
+		var product = getProductService().getProduct( data.newProductReview.product.productID );
 		
 		if( !isNull(product) ) {
-			product = getProductService().processProduct( product, arguments.rc, 'addProductReview');
+			product = getProductService().processProduct( product, arguments.data, 'addProductReview');
 			
-			arguments.rc.$.slatwall.addActionResult( "public:product.addProductReview", product.hasErrors() );
+			arguments.data.$.slatwall.addActionResult( "public:product.addProductReview", product.hasErrors() );
 			
 			if(!product.hasErrors()) {
 				product.clearProcessObject("addProductReview");
 			}
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:product.addProductReview", true );
+			arguments.data.$.slatwall.addActionResult( "public:product.addProductReview", true );
 		}
 	}
 	
-	/* sets the status message, header and response */
-	any function setStatusMsg(struct rc){
-		arguments.rc.headers.contentType = "application/json";
-		arguments.rc.apiResponse.content.success = true;
-		var context = getPageContext();
-		context.getOut().clearBuffer();
-		var response = context.getResponse();
-		response.setStatus(200);
-	}
-	
-	/* Sets the API response 
-	 * @param success @type Boolean
-	 * @param statusCode @type Integer
-	 * @param data @type Struct
-	 * @param returnJson @type Boolean
-	 */
-	any function setResponse(any success=false, any statusCode=400, any data, required struct rc, any returnJson=true){
-		//Setup defaults.
-		if (!StructKeyExists(arguments.rc, "data") || isNull(arguments.rc.apiResponse.content.data)){
-				arguments.rc.apiResponse.content["data"] = "";
-		}
-		if (!StructKeyExists(arguments.rc, "status_code_message") || isNull(arguments.rc.apiResponse.content.messages)){
-				arguments.rc.apiResponse.content["status_code_message"] = "";
-		}
-		if (!StructKeyExists(arguments.rc, "errors") || isNull(arguments.rc.apiResponse.content.errors)){
-				arguments.rc.apiResponse.content["errors"] = "";
-		}
-		
-		arguments.rc.headers.contentType = "application/json";
-		arguments.rc.apiResponse.content["success"] = arguments.success;
-		//Add the status code message to our messages if success and to errors otherwise.
-		if (arguments.success){
-			arguments.rc.apiResponse.content['status_code_message'] &= "#serializeJson(getHTTPMsgByStatus(arguments.statusCode), true)#";
-		}else{
-			arguments.rc.apiResponse.content["errors"] = getHTTPMsgByStatus(arguments.statusCode);
-		}
-		if (!isNull(arguments.data) && arguments.returnJson){
-			try {	
-			arguments.rc.apiResponse.content["data"] = serializeJson(arguments.data, true);
-			}catch(any e){
-				//can't serialize the data so just return it.
-				setResponse(true, arguments.statusCode, arguments.data, arguments.rc, false);
-			}
-		}else if ( isNull(arguments.data) || isNull(arguments.returnJson) || arguments.returnJson ){
-			arguments.rc.apiResponse.content["data"] = "";
-		}
-		//Set the page context.
-		var context = getPageContext();
-		context.getOut().clearBuffer();
-		var response = context.getResponse();
-		//Set the response code.
-		response.setStatus(arguments.statusCode);
-		return;
-	}
-	
-	/*
-		Handles calling the set response if this was an api call.
-		@param onSuccessCode
-		@param onErrorCode
-		@param genericObject
-		@param responseData
-		@param extraData
-		@param rc (Request Context)
-	*/
-	private any function handlePublicAPICall(any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc){
-		if (arguments.rc.APIRequest){
-			var errors = genericObject.hasErrors();
-			if (!isNull(genericObject) && errors){
-				setResponse(false, onErrorCode, genericObject.getErrors(), arguments.rc, true);
-				return;
-			}
-			//Add the account data to the response
-			setResponse(true, onSuccessCode, arguments.responseData, arguments.rc, true);	
-			if (Len(extraData)){
-				addDataToResponse("status_code_message", arguments.extraData, arguments.rc);	
-			}
-		}
-	}
-	
-	/* Add data to the http response 
-		@param data The data to append to the response
-		@key The key to access the data
-	*/
-	private any function addDataToResponse(string key, data, required struct rc){
-		//Populate it with the data as JSON
-		if (!StructKeyExists(arguments.rc, "#arguments.key#") || isNull(arguments.rc.apiResponse.content["#arguments.key#"])){
-			arguments.rc.apiResponse.content["#arguments.key#"] = "";
-		}
-		
-		arguments.rc.apiResponse.content["#arguments.key#"] = serializeJson(arguments.data, true);
-		return true;	
-	}
-	
-	/*
-		Returns the API Response Message that goes with the 
-		@param statusCode any valid REST status code.
-	 */
-	private any function getHTTPMsgByStatus(any statusCode){
-		var msg = "";
-		switch (statusCode){
-			case 200:
-				msg = "Request is valid.";
-				break;
-			case 201:
-				msg = "Created Successfully";
-				break;
-			case 215:
-				msg = "Bad or Missing Authentication Data";
-				break;
-			case 400:
-				msg = "Bad or Missing Input Data";
-				break;
-			case 401:
-				msg = "Invalid Protocol In Use";
-				break;
-			case 403:
-				msg = "Context Not Allowed or No Such Resource";
-				break;
-			case 404:
-				msg = "Resource Not Found";
-				break;
-			case 500:
-				msg = "Internal Server Error, Invalid Endpoint, or Operation Timeout";
-				break;
-			case 503:
-				msg = "Server Busy";
-				break;
-			default:
-				msg = "Unknown Status Code";
-				break;
-		}
-		return msg;
-	}
-	
-	
+	public any function addErrors( required struct data , errors){
+        if (!structKeyExists(arguments.data.ajaxResponse, "errors")){
+        	arguments.data.ajaxResponse["errors"] = {};
+        }
+        arguments.data.ajaxResponse["errors"] = errors;
+    }	
 }

@@ -93,4 +93,3 @@ angular.module('slatwalladmin')
 		};
 	}
 ]);
-	

@@ -20,8 +20,6 @@ angular.module('slatwalladmin')
 				propertyDisplay:"="
 			},
 			link:function(scope,element,attr,formController){
-				
-				
 				//set up selectionOptions
 				scope.selectionOptions = {
 					value:[],

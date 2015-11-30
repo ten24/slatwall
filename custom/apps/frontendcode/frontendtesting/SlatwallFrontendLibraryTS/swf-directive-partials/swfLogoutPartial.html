@@ -1,0 +1,7 @@
+<!-- start logout form -->
+<swf-form process-object="Account_logout" action="$logout"
+          hide-until="Account_login"      on-success="Account_login">
+    
+    <span>Signed in as {{slatwall.account.firstName}} {{slatwall.account.lastName}}</span><br>      
+    <swf-form-field name="Logout" type="submit" class="formControl">Logout</swf-form-field>
+</swf-form>

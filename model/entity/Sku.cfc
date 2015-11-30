@@ -183,7 +183,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 		return variables.giftCardExpirationTermIDOptions;
 	}
-	
+    
 	public array function getRedemptionAmountTypeOptions(){
 		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){
 			variables.redemptionAmountTypeOptions = [];
@@ -501,9 +501,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// START: Gift Card Logical Methods
 	
 	public boolean function isGiftCardSku() { 
+		
 		if(this.getProduct().getBaseProductType() == "gift-card"){ 
 			return true; 
 		}
+		
 		return false; 
 	}
 
