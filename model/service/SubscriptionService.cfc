@@ -55,6 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="emailService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
+	property name="skuService" type="any";
 	property name="typeService" type="any";
 
 	public boolean function createSubscriptionUsageBenefitAccountByAccess(required any access, required any account) {
@@ -643,6 +644,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Status Methods ============================
 
 	// ====================== START: Save Overrides ===========================
+
+	public any function saveSubscriptionUsage(required any subscriptionUsage,struct data={},string context="save"){
+
+		//if the renewal sku has changed update the renewal price
+		if(!isNull(arguments.subscriptionUsage.getRenewalSku()) && arguments.subscriptionUsage.getRenewalSku().getSkuID() != arguments.data.renewalSku.skuID ){
+			arguments.data.renewalPrice = getSkuService().getSku(data.renewalSku.skuID).getRenewalPrice();
+		}
+
+		return this.save(arguments.subscriptionUsage, arguments.data, arguments.context);
+	}
 
 	// ======================  END: Save Overrides ============================
 
