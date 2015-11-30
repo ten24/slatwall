@@ -3987,7 +3987,7 @@ tabel .s-table-header {
   border-radius: 0px;
   border: 0px;
 }
-.s-search-filter .btn-primary {
+.s-search-filter .s-results > .btn-primary {
   width: 100%;
   text-align: left;
   border-radius: 0px;
@@ -4102,6 +4102,10 @@ tabel .s-table-header {
   background-color: #FBFBFB;
   display: inline-block;
   width: 100%;
+}
+.s-search-filter .s-add-info-dropdown .s-add-info-dropdown-inner .form-group {
+  margin-right: 0px;
+  margin-left: 0px;
 }
 .s-search-filter .s-add-info-dropdown h5 {
   border-bottom: 1px solid #ddd;
