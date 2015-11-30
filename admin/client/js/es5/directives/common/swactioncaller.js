@@ -15,8 +15,21 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.init = function () {
                 _this.type = _this.type || 'link';
-                _this.actionClick = _this.actionClick || "";
-                console.log("OnClick", _this.actionclick);
+                if (_this.type == "button") {
+                    //handle submit.
+                    /** in order to attach the correct controller to local vm, we need a watch to bind */
+                    var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.frmController; }, function (newValue, oldValue) {
+                        if (newValue !== undefined) {
+                            _this.formCtrl = newValue;
+                        }
+                        //console.log("unbinding");
+                        unbindWatcher();
+                    });
+                }
+            };
+            this.submit = function () {
+                console.log(_this.formCtrl);
+                _this.formCtrl.submit(_this.action);
             };
             this.getAction = function () {
                 return _this.action || '';
@@ -178,10 +191,11 @@ var slatwalladmin;
             this.utiltiyService = utiltiyService;
             this.$slatwall = $slatwall;
             this.restrict = 'EA';
+            this.require = "?^swForm";
+            this.transclude = "true";
             this.scope = {};
             this.bindToController = {
                 action: "@",
-                actionClick: "&?",
                 text: "@",
                 type: "@",
                 queryString: "@",
@@ -200,7 +214,8 @@ var slatwalladmin;
             };
             this.controller = SWActionCallerController;
             this.controllerAs = "swActionCaller";
-            this.link = function (scope, element, attrs) {
+            this.link = function (scope, element, attrs, formController) {
+                scope.frmController = formController;
             };
         }
         return SWActionCaller;

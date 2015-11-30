@@ -128,11 +128,7 @@ module slatwalladmin {
 			vm.noValidate			= this.noValidate;
 			
 			/** in order to attach the correct controller to local vm, we need a watch to bind */
-			this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
-    			if (newValue !== undefined){
-					vm.formCtrl = newValue;
-				}
-			});
+			
 
 			/** handle options */	
 			if (vm.options && angular.isString(vm.options)){
@@ -151,9 +147,7 @@ module slatwalladmin {
 			}
 			    
 			/** handle turning the options into an array of objects */
-			vm.submit = function(){
-				vm.formCtrl.submit();
-			}
+			
 			
 			/** handle setting the default value for the yes / no element  */
 			if (this.type=="yesno" && (this.value && angular.isString(this.value))){

@@ -3,7 +3,7 @@
     data-is-process-form="true"
     data-form-class="cssform"
     data-error-class="error"
-    data-process-object="Account_create"
+    data-object="Account_create"
     data-action="$createAccount"> 
     
     <!--- first name --->
@@ -82,12 +82,14 @@
         data-class="formControl"
         data-editing="true">
     </swf-property-display>
-    
-    <!-- Can we use a Action caller / Process caller for this -->
-    <swf-property-display
-        data-name="Create" 
-        data-type="submit" 
-        data-class="formControl">Create
-    </swf-property-display>
+   
+    <sw-action-caller 
+        action="$createAccount"
+        modal="false" 
+        type="button" 
+        class="btn" 
+        title="Create Account" 
+        text="Create Account">
+    <sw-action-caller>
     
 </sw-form>

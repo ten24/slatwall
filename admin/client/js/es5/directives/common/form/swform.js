@@ -31,7 +31,6 @@ var slatwalladmin;
             var _this = this;
             /** local variables */
             this.processObject = this.object || "";
-            console.log("Object: ", this.object);
             var vm = context;
             vm.hiddenFields = this.hiddenFields;
             vm.entityName = this.entityName || "Account";
@@ -233,8 +232,8 @@ var slatwalladmin;
                 }
             };
             /** create the generic submit function */
-            vm.submit = function () {
-                var action = vm.action || vm.actions;
+            vm.submit = function (Action) {
+                var action = Action; //vm.action || vm.actions;
                 vm.clearErrors();
                 vm.formData = vm.getFormData() || "";
                 vm.doAction(action);

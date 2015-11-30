@@ -84,7 +84,6 @@ module slatwalladmin {
         handleSelfInspection ( context ) {
         /** local variables */
         this.processObject = this.object || "";
-        console.log("Object: ", this.object);
         let vm: ViewModel       = context;
             vm.hiddenFields     = this.hiddenFields;
             vm.entityName       = this.entityName || "Account";
@@ -302,9 +301,9 @@ module slatwalladmin {
             }
 
             /** create the generic submit function */
-            vm.submit = () => 
+            vm.submit = (Action) => 
             {
-                let action = vm.action || vm.actions;
+                let action = Action;//vm.action || vm.actions;
                 vm.clearErrors();
                 vm.formData = vm.getFormData() || "";
                 vm.doAction(action);

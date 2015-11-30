@@ -21,16 +21,18 @@
         data-name="password"
         data-type="password"
         data-object="Account_login" 
-        data-property-identifier="emailAddress"
+        data-property-identifier="password"
         data-label-text="Password:"
         data-class="formControl"
         data-editing="true">
     </swf-property-display>
-
-    <swf-property-display
-        data-name="Login" 
-        data-type="submit" 
-        data-class="formControl">Login
-    </swf-property-display>
+    
+    <sw-action-caller 
+        data-action="$login"
+        data-modal="false" 
+        data-type="button" 
+        data-class="btn"
+        data-text="Login">
+    <sw-action-caller>
     
 </sw-form>

@@ -25,10 +25,27 @@ module slatwalladmin {
         } 
 		
 		public init = ():void =>{
+            
 			this.type = this.type || 'link';
-            this.actionClick = this.actionClick || "";
-            console.log("OnClick", this.actionclick); 
+            if (this.type == "button"){
+                //handle submit.
+                /** in order to attach the correct controller to local vm, we need a watch to bind */
+                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+                    if (newValue !== undefined){
+                        this.formCtrl = newValue;
+                        
+                    }
+                    //console.log("unbinding");
+                    unbindWatcher();
+                });
+                
+            }
+            
 		}
+        public submit = () => {
+            console.log(this.formCtrl);
+            this.formCtrl.submit(this.action);
+        }
         
         public getAction = ():string =>{
             return this.action || '';    
@@ -42,7 +59,7 @@ module slatwalladmin {
             var firstFourLetters = this.utilityService.left(this.actionItem,4);
             var firstSixLetters = this.utilityService.left(this.actionItem,6);
             var minus4letters = this.utilityService.right(this.actionItem,4);
-            var minus6letters = this.utilityService.right(this.actionItem,6); 
+            var minus6letters = this.utilityService.right(this.actionItem,6);
             
             var actionItemEntityName = "";
             if(firstFourLetters === 'list' && this.actionItem.length > 4){
@@ -175,10 +192,11 @@ module slatwalladmin {
         
 	export class SWActionCaller implements ng.IDirective{
 		public restrict:string = 'EA';
+        public require = "?^swForm"
+        public transclude = true; 
         public scope={}; 
 		public bindToController={
             action:"@",
-            actionClick:"&?",
 			text:"@",
 			type:"@",
 			queryString:"@",
@@ -200,10 +218,12 @@ module slatwalladmin {
 		public templateUrl;
         
 		constructor(private partialsPath:slatwalladmin.partialsPath,private utiltiyService:slatwalladmin.UtilityService,private $slatwall:ngSlatwall.SlatwallService){
-		}
+		  
+        }
 		
-		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-		}
+		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any) =>{
+		  scope.frmController = formController;
+        }
 	}
     
 	angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
