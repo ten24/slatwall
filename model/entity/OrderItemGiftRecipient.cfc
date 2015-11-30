@@ -153,20 +153,6 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 
 	// ================== START: Overridden Methods ========================
 
-	public string function getFirstName(){
-		if(structKeyExists(variables, "firstName")){
-			return variables.firstName;
-		}
-		return '';
-	}
-
-	public string function getLastName(){
-		if(structKeyExists(variables, "lastName")){
-			return variables.lastName;
-		}
-		return '';
-	}
-
     public string function getSimpleRepresentation() {
 		if(!isNull(this.getFirstName()) && !isNull(this.getLastName())){
 			return this.getFirstName() & " " & this.getLastName();
