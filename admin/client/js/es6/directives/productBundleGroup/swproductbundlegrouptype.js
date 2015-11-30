@@ -17,7 +17,7 @@ angular.module('slatwalladmin')
             scope: {
                 productBundleGroup: "="
             },
-            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs, ngModel) {
                     $log.debug('productBundleGrouptype');
                     $log.debug($scope.productBundleGroup);
                     $scope.productBundleGroupTypes = {};
@@ -45,6 +45,7 @@ angular.module('slatwalladmin')
                         productBundleGroupType.data.typeDescription = '';
                         productBundleGroupType.data.typeNameCode = '';
                         angular.extend($scope.productBundleGroup.data.productBundleGroupType, productBundleGroupType);
+                        console.log(formService.getForm('form.addProductBundleGroupType'));
                     };
                     $scope.showAddProductBundleGroupTypeBtn = false;
                     /**
