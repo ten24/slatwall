@@ -45,7 +45,7 @@ angular.module('slatwalladmin')
                         productBundleGroupType.data.typeDescription = '';
                         productBundleGroupType.data.typeNameCode = '';
                         angular.extend($scope.productBundleGroup.data.productBundleGroupType, productBundleGroupType);
-                        console.log(formService.getForm('form.addProductBundleGroupType'));
+                        formService.getForm('form.addProductBundleGroupType').$setDirty();
                     };
                     $scope.showAddProductBundleGroupTypeBtn = false;
                     /**
