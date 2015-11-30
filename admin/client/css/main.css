@@ -295,6 +295,17 @@ body.s-login-screen .form-group {
     padding: 0px /*Remove for responsive*/;
   }
 }
+.no-records-found {
+  font-style: italic;
+  text-align: center;
+  background: #F4F9FB;
+  color: #31708f;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.no-records-found:hover > td {
+  background-color: #F4F9FB !important;
+}
 .s-strong {
   font-weight: 600;
 }
@@ -2392,6 +2403,7 @@ tabel .s-table-header {
 }
 .s-table-header-nav .s-select-list-wrapper {
   max-width: 200px;
+  position: relative;
 }
 .s-filter-options .selectboxit {
   min-width: 120px;
@@ -4720,9 +4732,8 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-select-list-wrapper .s-input-btn span,
 .s-select-list-wrapper .s-input-btn i {
   position: absolute;
-  right: 10px;
-  top: 29px;
-  bottom: 0;
+  top: 8px;
+  right: 8px;
   height: 14px;
   margin: auto;
   font-size: 14px;
