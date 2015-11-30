@@ -37,25 +37,24 @@ module slatwalladmin {
                                 })
                         }
                         
-                        this.$scope.preprocessproduct_createCtrl.rskuOptions = [
-                                {
-                                        label:this.$slatwall.getRBKey('admin.entity.processproduct.create.selectRenewalSku'),
-                                        value:'rsku'
-                                },
-                                {
-                                        label:this.$slatwall.getRBKey('admin.entity.processproduct.create.selectCustomRenewal'),
-                                        value:'custom'
+                        var renewalMethodOptions = $("select[name='renewalMethod']")[0];
+                        this.$scope.preprocessproduct_createCtrl.renewalMethodOptions = [];
+                        angular.forEach(renewalMethodOptions,(option)=>{
+                                var optionToAdd = {
+                                        label:option.label,
+                                        value:option.value    
                                 }
-                        ];
-                        //
-                        this.$scope.preprocessproduct_createCtrl.rskuChoice = this.$scope.preprocessproduct_createCtrl.rskuOptions[0];
+                                this.$scope.preprocessproduct_createCtrl.renewalMethodOptions.push(optionToAdd); 
+                        });
+                        this.$scope.preprocessproduct_createCtrl.renewalSkuChoice =  this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[0];
                         
-                        var jQueryOptions = $("select[name='product.productType.productTypeID']")[0];
+                        
+                        var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
                         this.$scope.preprocessproduct_createCtrl.options = [];
-                        if(jQueryOptions > 1){
+                        if(productTypeOptions > 1){
                                 this.$scope.preprocessproduct_createCtrl.options.push({label:this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'),value:""})
                         }
-                        angular.forEach(jQueryOptions,(jQueryOption)=>{
+                        angular.forEach(productTypeOptions,(jQueryOption)=>{
                                 var option = {
                                         label:jQueryOption.label,
                                         value:jQueryOption.value    

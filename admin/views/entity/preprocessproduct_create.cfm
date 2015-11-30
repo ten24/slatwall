@@ -244,21 +244,12 @@ Notes:
 			<cfelseif rc.baseProductType eq "subscription">
 
 			<hb:HibachiPropertyList divClass="col-md-6">
-				<div class="form-horizontal">
-					<div class="form-group">
-						<label class="control-label col-sm-4" style="text-align:left">#$.slatwall.rbKey('admin.entity.processproduct.create.renewalSkuMethod')#</label>
-						<div class="col-sm-8">
-							<select class="form-control  j-custom-select valid" name="rskuOptions" ng-model="preprocessproduct_createCtrl.rskuChoice" ng-options="option.label for option in preprocessproduct_createCtrl.rskuOptions track by option.value">
-
-							</select>
-						</div>
-					</div>
-					</div>
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
 			</hb:HibachiPropertyList>
 
 			<hb:HibachiPropertyList divClass="col-md-6">
 
-				<div ng-if="preprocessproduct_createCtrl.rskuChoice.value == 'custom'">
+				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'custom'">
 						<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="renewalPrice" fieldName="product.renewalPrice" edit="true" />
 						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
 						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
@@ -266,7 +257,7 @@ Notes:
 						</hb:HibachiListingDisplay>
 				</div>
 
-				<div ng-if="preprocessproduct_createCtrl.rskuChoice.value == 'rsku'">
+				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'rsku'">
 						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
 						<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="skuCode" />

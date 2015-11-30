@@ -66,11 +66,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="redemptionAmountType" hb_formFieldType="select";
 	property name="redemptionAmount";
 	property name="redemptionAmountTypeOptions";
+	property name="renewalMethod" hb_formFieldType="select";
+	property name="renewalMethodOptions";
 	property name="giftCardExpirationTermID" hb_rbkey="entity.sku.giftCardExpirationTerm" hb_formFieldType="select";
 	property name="giftCardExpirationTermIDOptions";
 
 	public any function setupDefaults() {
 		variables.generateSkusFlag = true;
+	}
+
+	public array function getRenewalMethodOptions(){
+		return this.getProduct().getRenewalMethodOptions();
 	}
 
 	public array function getGiftCardExpirationTermIDOptions(){

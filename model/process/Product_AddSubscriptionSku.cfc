@@ -65,6 +65,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="subscriptionBenefits";
 	property name="renewalSubscriptionBenefits";
 	property name="renewalSku";
+	property name="renewalMethod" hb_formFieldType="select";
+	property name="renewalMethodOptions";
 
 	// Data Properties (Related Entity Populate)
 
@@ -89,6 +91,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.listPrice = getProduct().getListPrice();
 		}
 		return variables.listPrice;
+	}
+
+	public array function getRenewalMethodOptions(){
+		return this.getProduct().getRenewalMethodOptions();
 	}
 
 	public numeric function getRenewalPrice(){
