@@ -201,7 +201,7 @@ gulp.task('flattenNgSlatwallModel',function(){
 	    return text;
 	}
 	
-	request('http://cf10.localhost/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
+	request('http://cf10.slatwall/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
   		console.log('It\'s saved!');
 	  }else{
