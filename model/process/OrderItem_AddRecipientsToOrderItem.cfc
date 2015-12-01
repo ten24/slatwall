@@ -49,7 +49,13 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	// Injected Entity
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
 
+	property name="recipientFirstNames" type="array" hb_populateArray="true";
+	property name="recipientLastNames" type="array" hb_populateArray="true";
+	property name="recipientEmailAddresses" type="array" hb_populateArray="true";
+	property name="recipientGiftMessages" type="array" hb_populateArray="true";
+	property name="recipientQuantities" type="array" hb_populateArray="true";
     property name="assignedGiftRecipientQuantity";
+
     property name="quantity";
 
 

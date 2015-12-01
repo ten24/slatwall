@@ -402,33 +402,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-        if(arguments.processObject.getSku().isGiftCardSku()){
-            //look for recipients
-            var totalQuantity = 0;
-            var count = 0;
-            if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= arguments.processObject.getQuantity()){
-                while(totalQuantity < arguments.processObject.getQuantity()){
-                    var currentRecipient = count & "recipient";
-                    if(!isNull(newOrderItem)){
-                        var recipientProcessObject = newOrderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
-                        recipientProcessObject.setOrderItem(newOrderItem);
-                    }
-                    if(structKeyExists(request.context, currentRecipient & "firstName")){
-                        recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                        recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
-                        recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
-                        recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                        recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                        arguments.order = this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
-                        totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
-                        count++;
-                    } else {
-                        break;
-                    }
-                }
-            }
+        if(arguments.processObject.getSku().isGiftCardSku() && !isNull(arguments.processObject.getRecipientEmailAddresses())){
+			for(var i=1; i<=ArrayLen(arguments.processObject.getRecipientEmailAddresses());i++){
+				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
+				recipientProcessObject.setFirstName(arguments.processObject.getRecipientFirstNames()[i]);
+				recipientProcessObject.setLastName(arguments.processObject.getRecipientLastNames()[i]);
+				recipientProcessObject.setEmailAddress(arguments.processObject.getRecipientEmailAddresses()[i]);
+				recipientProcessObject.setGiftMessage(arguments.processObject.getRecipientGiftMessages()[i]);
+				recipientProcessObject.setQuantity(arguments.processObject.getRecipientQuantities()[i]);
+				recipientProcessObject.setOrderItem(newOrderItem);
+				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+			}
         }
-
 
 
 		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item.
@@ -590,31 +575,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
-		var totalQuantity = 0;
-        var count = 0;
-
-        if(!isNull(arguments.processObject.getAssignedGiftRecipientQuantity()) && arguments.processObject.getAssignedGiftRecipientQuantity() <= arguments.processObject.getQuantity()){
-            while(totalQuantity < arguments.processObject.getQuantity()){
-                var currentRecipient = count & "recipient";
-                if(!isNull(arguments.orderItem)){
-                    var recipientProcessObject = arguments.orderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
-                    recipientProcessObject.setOrderItem(arguments.orderItem);
-                }
-                if(structKeyExists(request.context, currentRecipient & "firstName")){
-                    recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                    recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
-                    recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
-                    recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                    recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                    var order = this.processOrder_addOrderItemGiftRecipient(arguments.orderItem.getOrder(), recipientProcessObject);
-                    totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        }
-
+		if(!isNull(arguments.processObject.getRecipientEmailAddresses())){
+	        for(var i=1; i<=ArrayLen(arguments.processObject.getRecipientEmailAddresses());i++){
+				var recipientProcessObject = arguments.orderitem.getOrder().getProcessObject("addOrderItemGiftRecipient");
+				recipientProcessObject.setFirstName(arguments.processObject.getRecipientFirstNames()[i]);
+				recipientProcessObject.setLastName(arguments.processObject.getRecipientLastNames()[i]);
+				recipientProcessObject.setEmailAddress(arguments.processObject.getRecipientEmailAddresses()[i]);
+				recipientProcessObject.setGiftMessage(arguments.processObject.getRecipientGiftMessages()[i]);
+				recipientProcessObject.setQuantity(arguments.processObject.getRecipientQuantities()[i]);
+				recipientProcessObject.setOrderItem(arguments.orderItem);
+				this.processOrder_addOrderItemGiftRecipient(arguments.orderitem.getOrder(), recipientProcessObject);
+			}
+		}
         return arguments.orderItem;
 	}
 
@@ -622,7 +594,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var item = arguments.processObject.getOrderItem();
 		var recipient = this.newOrderItemGiftRecipient();
-        var test = this.newOrderItem();
 
 		if(!isNull(arguments.processObject.getFirstName())){
 			recipient.setFirstName(arguments.processObject.getFirstName());
