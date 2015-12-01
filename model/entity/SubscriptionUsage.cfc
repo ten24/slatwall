@@ -174,8 +174,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public numeric function getRenewalPrice(){
-		if(!isNull(this.getRenewalSku())){
-			return this.getRenewalSku().getRenewalPrice();
+		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
+			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
 		}
 		return variables.renewalPrice;
 	}
@@ -263,7 +263,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		if( hasSubscriptionOrderItems() ){
 			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
 			subscriptionSmartList.addOrder("createdDateTime|DESC");
-			return subscriptionSmartList.getRecords();
+			return subscriptionSmartList.getRecords()[1];
 		}
 	}
 
@@ -314,6 +314,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
     		var smartList = getService("ProductService").getSkuSmartList();
     		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalPrice is not null");
     		variables.subscriptionSkuSmartList = smartList;
     	}
     	return variables.subscriptionSkuSmartList;
