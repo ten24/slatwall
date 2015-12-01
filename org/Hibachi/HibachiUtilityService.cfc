@@ -77,7 +77,7 @@
 
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
-			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno", arguments.formatType)) {
+			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno,urltitle,alphanumericdash", arguments.formatType)) {
 				return this.invokeMethod("formatValue_#arguments.formatType#", {value=arguments.value, formatDetails=arguments.formatDetails});
 			}
 			return arguments.value;
@@ -137,6 +137,37 @@
 
 		public any function formatValue_url( required string value, struct formatDetails={} ) {
 			return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
+		}
+		
+		public any function formatValue_urltitle( required string value, struct formatDetails={} ) {
+			return createUniqueURLTitle(arguments.value, arguments.formatDetails.tableName);
+		}
+		
+		public any function formatValue_alphanumericdash( required string value, struct formatDetails={} ) {
+			return createSEOString(arguments.data.value); 
+		}
+		
+		public string function createUniqueURLTitle(required string titleString, required string tableName) {
+			return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');
+		}
+		
+		public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
+	
+			var addon = 1;
+	
+			var urlTitle = getService("HibachiUtilityService").createSEOString(arguments.titleString);
+	
+			var returnTitle = urlTitle;
+	
+			var unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
+	
+			while(!unique) {
+				addon++;
+				returnTitle = "#urlTitle#-#addon#";
+				unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
+			}
+	
+			return returnTitle;
 		}
 
   		public string function generateRandomID( numeric numCharacters = 8){

@@ -50,29 +50,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	property name="dataDAO" type="any";
 
-	public string function createUniqueURLTitle(required string titleString, required string tableName) {
-		return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');
-	}
-	
-	public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
-
-		var addon = 1;
-
-		var urlTitle = getService("HibachiUtilityService").createSEOString(arguments.titleString);
-
-		var returnTitle = urlTitle;
-
-		var unique = getDataDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
-
-		while(!unique) {
-			addon++;
-			returnTitle = "#urlTitle#-#addon#";
-			unique = getDataDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
-		}
-
-		return returnTitle;
-	}
-
 	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
 		var dirList = directoryList(arguments.xmlDirectory);
 
@@ -474,7 +451,7 @@ component output="false" accessors="true" extends="HibachiService" {
 									
 									// generate the value based on format type
 									if(structKeyExists(thisColumn, 'formatType')) {
-										columnRecord.value = formatImportValueByType({value=columnRecord.value, tableName=tableName} ,thisColumn.formatType);
+										columnRecord.value = getHibachiUtilityService().formatValue(value=columnRecord.value, formatType=thisColumn.formatType, formatDetails={tableName=tableName});
 									}
 									
 									// Add this column record to the insert
