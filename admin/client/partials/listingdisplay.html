@@ -8,7 +8,7 @@
 		</ul>
 	</div>
 	<!-- search begin -->
-	<sw-listing-global-search 
+	<sw-listing-global-search
 		ng-if="swListingDislay.hasSearch && swListingDislay.hasSearch === true"
 		data-get-collection="swListingDisplay.getCollection"
 		data-search-text="swListingDisplay.collectionConfig.keywords"
@@ -114,7 +114,7 @@
 			</tr>
 		</thead>
 		<tbody ng-class="{'sortable':swListingDisplay.sortable}" ng-if="swListingDisplay.collectionData.pageRecords">
-			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-show="pageRecord.dataIsVisible !== false">
+			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-if="pageRecord.dataIsVisible !== false">
 				<!--Selectable-->
 				<td ng-if="swListingDisplay.selectable" class="s-table-select">
 					<a href="##" class="table-action-select{{swListingDisplay.edit ? '' : 'disabled'}}" data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
@@ -168,7 +168,8 @@
 					<span ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" style="margin-left:{{24+(pageRecord.depth*15)||0}}px" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]">
 					</span>
 					<span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
-				</td>
+                    <span ng-if="column.aggregate" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"></span>
+                </td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
 					<!--- Detail -->
@@ -245,7 +246,7 @@
 	</div><!--- table-responsive --->
 
 	<sw-pagination-bar
-		ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable"
+        ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable && swListingDisplay.collectionData.recordsCount"
 		data-paginator="swListingDisplay.paginator"
 		>
 	</sw-pagination-bar>
