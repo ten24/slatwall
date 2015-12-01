@@ -86,7 +86,7 @@ module slatwalladmin {
         this.processObject = this.object || "";
         let vm: ViewModel       = context;
             vm.hiddenFields     = this.hiddenFields;
-            vm.entityName       = this.entityName || "Account";
+            vm.entityName       = this.entityName;
             vm.processObject    = this.processObject;
             vm.action           = this.action;
             vm.actions          = this.actions;
@@ -95,7 +95,7 @@ module slatwalladmin {
             
             let observerService = this.observerService;
             /** parse the name */
-            let entityName      = this.processObject.split("_")[0];
+            vm.entityName      = this.processObject.split("_")[0];
             let processObject   = this.processObject.split("_")[1];
             
             /** try to grab the meta data from the process entity in slatwall in a process exists
@@ -103,8 +103,8 @@ module slatwalladmin {
              */
              
             /** Cart is an alias for an Order */
-            if (entityName == "Order") { 
-                entityName = "Cart" 
+            if (vm.entityName == "Order") { 
+                vm.entityName = "Cart" 
             };
             
             /** find the form scope */
@@ -118,7 +118,7 @@ module slatwalladmin {
             });
             
             /** make sure we have our data using new logic and $slatwall*/
-            if (this.processObject == undefined || this.entityName == undefined) {
+            if (this.processObject == undefined || vm.entityName == undefined) {
                 throw ("ProcessObject Undefined Exception");
             }
             
@@ -318,11 +318,12 @@ module slatwalladmin {
             
             /* handle events
             */
-            if (this.onSuccess != undefined){
+            if (this.onSuccess){
+                console.log("OnSuccess: ", this.onSuccess);
                 vm.parseEventString(this.onSuccess, "onSuccess");
                 observerService.attach(vm.eventsHandler, "onSuccess");
                 
-            }else if(this.onError != undefined){
+            }else if(this.onError){
                 vm.parseEventString(this.onError, "onError");
                 //observerService.attach(vm.eventsHandler, "onError");//stub
             }

@@ -1,0 +1,29 @@
+<!-- Example Add Promotion Form - Event should update the promotion listing on success -->
+<sw-form
+    data-is-process-form="true"
+    data-object="Order_AddPromotionCode"
+    data-action="$addPromotionCode"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-on-success="refresh:PromotionDisplay">
+    
+    <swf-property-display 
+        data-name="promotionCode"
+        data-type="text"
+        data-object="Order_AddPromotionCode" 
+        data-property-identifier="promotionCode"
+        data-label-text="Promotion Code:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <sw-action-caller 
+        action="$addPromotionCode"
+        modal="false" 
+        type="button" 
+        class="btn" 
+        title="Add" 
+        text="Add">
+    <sw-action-caller>
+    
+</sw-form>
