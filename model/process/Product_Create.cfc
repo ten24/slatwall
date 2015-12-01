@@ -59,7 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price";
 	property name="renewalSubscriptionBenefits";
 	property name="renewalSku";
-	property name="renewalPrice";
+	property name="renewalPrice" default=0;
 	property name="subscriptionBenefits";
 	property name="subscriptionTerms";
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
@@ -110,11 +110,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.redemptionAmountTypeOptions;
 	}
 
-	public numeric function getRenewalPrice(){
+	public any function getRenewalPrice(){
 		if(!isNull(getRenewalSku())){
 			return this.getRenewalSku().getRenewalPrice();
-		} else {
+		} else if(!isNull(variables.renewalPrice)) {
 			return variables.renewalPrice;
+		} else {
+			return;
 		}
 	}
 
