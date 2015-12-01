@@ -3350,7 +3350,6 @@ tabel .s-table-header {
 .s-bundle-group-dropdown-content .s-options .radio {
   display: inline-block;
   margin-right: 10px;
-  padding-left: 22px;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {
   width: 32px;
@@ -4058,7 +4057,7 @@ tabel .s-table-header {
 }
 .s-search-filter .s-add-content {
   border: 1px solid #cccccc;
-  padding: 15px 0px 15px 0px;
+  padding: 15px;
   border-top: 0px;
   margin-top: -2px;
   background: #ffffff;
@@ -4073,9 +4072,6 @@ tabel .s-table-header {
 }
 .s-search-filter .s-add-content hr {
   border-color: #cccccc;
-}
-.s-search-filter .s-add-content .btn {
-  margin: 15px;
 }
 .s-search-filter .dropdown-menu {
   left: 0px;
