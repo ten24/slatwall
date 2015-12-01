@@ -93,6 +93,8 @@ module slatwalladmin {
 
 		startFormWithName = (searchString = this.searchText):void =>{
 			this.adding = true; 
+			this.recipientAddForm.$setUntouched();
+			this.recipientAddForm.$setPristine();
 			
 			if(searchString != ""){
 				this.currentGiftRecipient.firstName = searchString; 

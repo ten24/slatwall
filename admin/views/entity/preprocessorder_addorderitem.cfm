@@ -155,9 +155,10 @@ Notes:
 
 									<!--- Email Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
-
+										<cfif !rc.processObject.getSku().isGiftCardSku()>
 										<!--- Email Address --->
-										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
+											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
+										</cfif>
 									</hb:HibachiDisplayToggle>
 
 									<!--- Pickup Fulfillment Details --->

@@ -60,6 +60,8 @@ var slatwalladmin;
             this.startFormWithName = function (searchString) {
                 if (searchString === void 0) { searchString = _this.searchText; }
                 _this.adding = true;
+                _this.recipientAddForm.$setUntouched();
+                _this.recipientAddForm.$setPristine();
                 if (searchString != "") {
                     _this.currentGiftRecipient.firstName = searchString;
                     _this.searchText = "";

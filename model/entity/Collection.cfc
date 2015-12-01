@@ -1295,7 +1295,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				joins = collectionConfig.joins;
 			}
 			
-			if(structKeyExists(collectionConfig,'groupBys')){
+			if(structKeyExists(collectionConfig,'groupBys') && !excludeSelectAndOrderBy){
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
 			
