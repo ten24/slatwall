@@ -7,6 +7,7 @@ module slatwalladmin {
                 
                 public static $inject=["$scope",'$element','$log', "$slatwall","collectionConfigService","selectionService"];        
         
+<<<<<<< HEAD
                 constructor(
                         private $scope: IOrderItemGiftRecipientScope, 
                         private $element, private $log:ng.ILogService,  
@@ -38,7 +39,9 @@ module slatwalladmin {
                         }
                         
                         var renewalMethodOptions = $("select[name='renewalMethod']")[0];
+                        
                         this.$scope.preprocessproduct_createCtrl.renewalMethodOptions = [];
+                        
                         angular.forEach(renewalMethodOptions,(option)=>{
                                 var optionToAdd = {
                                         label:option.label,
@@ -46,14 +49,30 @@ module slatwalladmin {
                                 }
                                 this.$scope.preprocessproduct_createCtrl.renewalMethodOptions.push(optionToAdd); 
                         });
+                        
                         this.$scope.preprocessproduct_createCtrl.renewalSkuChoice =  this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[0];
                         
+                        var jQueryOptionsRedemptionAmountType = $("select[name='redemptionAmountType'")[0];
+                        
+                        this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions = [];
+                        
+                        angular.forEach(jQueryOptionsRedemptionAmountType,(jQueryOption)=>{
+                            var option = {
+                                label:jQueryOption.label,
+                                value:jQueryOption.value    
+                            }
+                            this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option); 
+                        });
+                        
+                        this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
                         
                         var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
+                        
                         this.$scope.preprocessproduct_createCtrl.options = [];
                         if(productTypeOptions > 1){
                                 this.$scope.preprocessproduct_createCtrl.options.push({label:this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'),value:""})
                         }
+                        
                         angular.forEach(productTypeOptions,(jQueryOption)=>{
                                 var option = {
                                         label:jQueryOption.label,

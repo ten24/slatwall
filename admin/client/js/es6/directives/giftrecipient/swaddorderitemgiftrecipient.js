@@ -58,6 +58,8 @@ var slatwalladmin;
             };
             this.startFormWithName = (searchString = this.searchText) => {
                 this.adding = true;
+                this.recipientAddForm.$setUntouched();
+                this.recipientAddForm.$setPristine();
                 if (searchString != "") {
                     this.currentGiftRecipient.firstName = searchString;
                     this.searchText = "";
