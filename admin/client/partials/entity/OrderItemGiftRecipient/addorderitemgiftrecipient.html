@@ -9,11 +9,11 @@
 		<table class="table table-bordered table-hover">
 			<thead>
 				<tr>
-					<th sw-rbkey="'define.firstName'"></th>
-					<th sw-rbkey="'define.lastName'"></th>
-					<th sw-rbkey="'define.email'"></th>
-					<th sw-rbkey="'define.giftMessage'"></th>
-					<th sw-rbkey="'define.quantity'"></th>
+					<th sw-rbkey="'admin.entity.orderitemgiftrecipient.firstName'"></th>
+					<th sw-rbkey="'admin.entity.orderitemgiftrecipient.lastName'"></th>
+					<th sw-rbkey="'admin.entity.orderitemgiftrecipient.email'"></th>
+					<th sw-rbkey="'admin.entity.orderitemgiftrecipient.giftMessage'"></th>
+					<th sw-rbkey="'admin.entity.orderitemgiftrecipient.quantity'"></th>
 					<th></th>
 				</tr>
 			</thead>
@@ -48,26 +48,26 @@
 
 				<h5>Create New Recipient</h5>
 				<div class="form-group">
-					<label sw-rbkey="'define.firstName'"></label>
+					<label sw-rbkey="'admin.entity.orderitemgiftrecipient.firstName'"></label>
 					<input name="_recipientFirstName" type="text" class="form-control" ng-model="addGiftRecipientControl.currentGiftRecipient.firstName">
 				</div>
 				<div class="form-group">
-					<label sw-rbkey="'define.lastName'"></label>
+					<label sw-rbkey="'admin.entity.orderitemgiftrecipient.lastName'"></label>
 					<input name="_recipientLastName" type="text" class="form-control" ng-model="addGiftRecipientControl.currentGiftRecipient.lastName">
 				</div>
 				<div class="form-group">
-					<label sw-rbkey="'define.email'"><i class="fa fa-asterisk"></i></label>
+					<label sw-rbkey="'admin.entity.orderitemgiftrecipient.email'"><i class="fa fa-asterisk"></i></label>
 					<input name="_recipientEmail" type="email" class="form-control" ng-model="addGiftRecipientControl.currentGiftRecipient.email" required>
 				</div>
 				<div class="form-group">
-					<label sw-rbkey="'define.giftmessage'"></label>
+					<label sw-rbkey="'admin.entity.orderitemgiftrecipient.giftmessage'"></label>
 					<textarea name="_recipientMessage" class="form-control" rows="4" ng-model="addGiftRecipientControl.currentGiftRecipient.giftMessage" ng-trim="false"></textarea>
 					<div class="s-character-count">
 						Remaining characters: <strong><span ng-bind="addGiftRecipientControl.getMessageCharactersLeft()"></span></strong>
 					</div>
 				</div>
 				<div class="form-group">
-					<label sw-rbkey="'define.quantity'"></label>
+					<label sw-rbkey="'admin.entity.orderitemgiftrecipient.quantity'"></label>
 					<select class="form-control"
 							name="_recipientQuantity"
 							type="number"
