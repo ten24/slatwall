@@ -669,6 +669,8 @@ component extends="HibachiService"  accessors="true" output="false"
 		
 		if(!cart.hasErrors()) {
 			cart.clearProcessObject("addPromotionCode");
+		}else{
+			addErrors(data, data.$.slatwall.getCart().getProcessObject("AddPromotionCode").getErrors());
 		}
 	}
 	

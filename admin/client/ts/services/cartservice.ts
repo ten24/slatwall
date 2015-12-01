@@ -72,8 +72,9 @@ module slatwalladmin {
             },
             
             $addPromotionCode: (data):ng.IHttpPromise<Object> =>   {
-                var urlBase = '/index.cfm/api/scope/addPromotionCode/?ajaxRequest=1';
-                return this.$http.post(urlBase, data.params, {headers: data.formType});
+                console.log(data.params);
+                var urlBase = '/index.cfm/api/scope/addPromotionCode/?ajaxRequest=1&' + data.params;
+                return this.$http.get(urlBase);
             },
             
             $removePromotionCode: (data):ng.IHttpPromise<Object> =>   {
