@@ -6,7 +6,6 @@ import {collectionmodule} from "./collection/collection.module";
 import {contentmodule} from "./content/content.module";
 import {coremodule} from "./core/core.module";
 import {dialogmodule} from "./dialog/dialog.module";
-import {giftcardmodule} from "./giftcard/giftcard.module";
 import {paginationmodule} from "./pagination/pagination.module";
 import {productmodule} from "./product/product.module";
 import {productbundlemodule} from "./productbundle/productbundle.module";
@@ -18,7 +17,6 @@ var hibachimodule = angular.module('hibachi',[
     collectionmodule.name,
     contentmodule.name,
     dialogmodule.name,
-    giftcardmodule.name,
     paginationmodule.name,
     productmodule.name,
     productbundlemodule.name,
