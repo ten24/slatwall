@@ -1264,7 +1264,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					//add a group by for all order bys
 					for(var orderBy in collectionConfig.orderBy){
-						arrayAppend(groupBy,orderBy.propertyIdentifier);
+						arrayAppend(groupBys,orderBy.propertyIdentifier);
 					}
 				}
 				collectionConfig.groupBys = arrayToList(groupBys);
