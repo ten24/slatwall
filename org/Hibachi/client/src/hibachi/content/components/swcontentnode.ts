@@ -38,21 +38,21 @@ class SWContentNode{
                 contentData:'=',
                 loadChildren:"="
             },
-            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'content/contentnode.html',
+            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentnode.html',
             link: function(scope, element, attr) {
                 if(angular.isUndefined(scope.depth)){
                     scope.depth = 0;
                 }
-                
+
                 if(angular.isDefined(scope.$parent.depth)){
                     scope.depth = scope.$parent.depth+1;
                 }
-                
+
                 var childContentColumnsConfig = [{
                         propertyIdentifier: '_content.contentID',
                         isVisible: false,
                         isSearchable: false
-                    }, 
+                    },
                     {
                         propertyIdentifier: '_content.title',
                         isVisible: true,
@@ -75,8 +75,8 @@ class SWContentNode{
                     },
                     {
                         propertyIdentifier: '_content.site.domainNames',
-                        isVisible: true, 
-                        isSearchable: true  
+                        isVisible: true,
+                        isSearchable: true
                     },
 //                            {
 //                                propertyIdentifier: '_content.contentTemplateFile',
@@ -99,24 +99,24 @@ class SWContentNode{
                         isSearchable: true
                     }
                 ];
-                
+
                 var childContentOrderBy = [
                     {
                         "propertyIdentifier":"_content.sortOrder",
                         "direction":"DESC"
                     }
                 ];
-                
+
                 scope.toggleChildContent = function(parentContentRecord){
                     if(angular.isUndefined(scope.childOpen) || scope.childOpen === false){
-                        scope.childOpen = true;  
+                        scope.childOpen = true;
                         if(!scope.childrenLoaded){
-                            scope.getChildContent(parentContentRecord);    
+                            scope.getChildContent(parentContentRecord);
                         }
                     }else{
-                        scope.childOpen = false; 
+                        scope.childOpen = false;
                     }
-                        
+
                 }
 
                 scope.getChildContent = function(parentContentRecord) {
@@ -146,11 +146,11 @@ class SWContentNode{
                         scope.childrenLoaded = true;
                     });
                 }
-                
+
                 scope.childrenLoaded = false;
                 //if the children have never been loaded and we are not in search mode based on the title received
                 if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)){
-                    scope.toggleChildContent(scope.contentData);    
+                    scope.toggleChildContent(scope.contentData);
                 }
             }
         }

@@ -3,13 +3,13 @@
 
 class ProductCreateController{
         public collectionConfig;
-        
-        public static $inject=["$scope",'$element','$log', "$slatwall","collectionConfigService","selectionService"];        
-        
+
+        public static $inject=["$scope",'$element','$log', "$slatwall","collectionConfigService","selectionService"];
+
         constructor(
-                private $scope, 
-                private $element, private $log:ng.ILogService,  
-                private $slatwall, 
+                private $scope,
+                private $element, private $log:ng.ILogService,
+                private $slatwall,
                 private collectionConfigService,
                 private selectionService
         ){
@@ -19,8 +19,8 @@ class ProductCreateController{
                         this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
                         this.$scope.preprocessproduct_createCtrl.getCollection();
                         this.selectionService.clearSelection('ListingDisplay');
-                }  
-                
+                }
+
                 this.$scope.preprocessproduct_createCtrl.getCollection = ()=>{
                         this.collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
                         this.collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
@@ -31,22 +31,23 @@ class ProductCreateController{
                         this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
                         this.$scope.preprocessproduct_createCtrl.collectionListingPromise = this.collectionConfig.getEntity();
                         this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
-                                this.$scope.preprocessproduct_createCtrl.collection = data;    
+                                this.$scope.preprocessproduct_createCtrl.collection = data;
                                 this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = this.collectionConfig;
                         })
                 }
-                
+
                 var jQueryOptions = $("select[name='product.productType.productTypeID']")[0];
                 this.$scope.preprocessproduct_createCtrl.options = [];
+                this.$scope.preprocessproduct_createCtrl.options.push({label:this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'),value:""})
                 angular.forEach(jQueryOptions,(jQueryOption)=>{
                         var option = {
                                 label:jQueryOption.label,
-                                value:jQueryOption.value    
+                                value:jQueryOption.value
                         }
-                        this.$scope.preprocessproduct_createCtrl.options.push(option); 
+                        this.$scope.preprocessproduct_createCtrl.options.push(option);
                 });
                 this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.options[0]);
         }
 
-}	
+}
 export{ProductCreateController}

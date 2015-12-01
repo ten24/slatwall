@@ -7,21 +7,20 @@ class SWOptions{
             $slatwall,
             observerService,
             corePartialsPath,
-            pathBuiderConfig
+            pathBuilderConfig
         )=> new SWOptions(
             $log,
             $slatwall,
             observerService,
             corePartialsPath,
-            pathBuiderConfig
+            pathBuilderConfig
         );
         directive.$inject = [
             '$log',
             '$slatwall',
             'observerService',
-            'partialsPath',
             'corePartialsPath',
-            'pathBuiderConfig'
+            'pathBuilderConfig'
         ];
         return directive;
     }
@@ -30,14 +29,15 @@ class SWOptions{
         $slatwall,
         observerService,
         corePartialsPath,
-        pathBuiderConfig
+        pathBuilderConfig
     ){
+       
         return {
 			restrict: 'AE',
 			scope:{
 				objectName:'@'
 			},
-			templateUrl:pathBuiderConfig.buildPartialsPath(corePartialsPath)+"options.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+"options.html",
 			link: function(scope, element,attrs){
                 scope.swOptions = {};
                 scope.swOptions.objectName=scope.objectName;
@@ -46,10 +46,10 @@ class SWOptions{
                     scope.swOptions.object = $slatwall['new'+scope.swOptions.objectName]();
                     var columnsConfig = [
                         {
-                            "propertyIdentifier":scope.swOptions.objectName.charAt(0).toLowerCase()+scope.swOptions.objectName.slice(1)+'Name'    
+                            "propertyIdentifier":scope.swOptions.objectName.charAt(0).toLowerCase()+scope.swOptions.objectName.slice(1)+'Name'
                         },
                         {
-                            "propertyIdentifier":scope.swOptions.object.$$getIDName()   
+                            "propertyIdentifier":scope.swOptions.object.$$getIDName()
                         }
                     ]
                    $slatwall.getEntity(scope.swOptions.objectName,{allRecords:true, columnsConfig:angular.toJson(columnsConfig)})
@@ -57,16 +57,16 @@ class SWOptions{
                         scope.swOptions.options = value.records;
                         observerService.notify('optionsLoaded');
                     });
-                } 
-                
+                }
+
                 scope.getOptions();
-                
+
                 var selectFirstOption = function(){
                     scope.swOptions.selectOption(scope.swOptions.options[0]);
                 };
-                
+
                 observerService.attach(selectFirstOption,'selectFirstOption','selectFirstOption');
-                
+
                 //use by ng-change to record changes
                 scope.swOptions.selectOption = function(selectedOption){
                     scope.swOptions.selectedOption = selectedOption;

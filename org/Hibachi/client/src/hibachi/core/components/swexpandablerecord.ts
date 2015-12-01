@@ -34,21 +34,21 @@ class SWExpandableRecordController{
                     var childName = this.entity.metaData.hb_childPropertyName;
                     var childCFC = this.entity.metaData[childName].cfc
                     var childIDName = this.$slatwall.getEntityExample(childCFC).$$getIDName();
-                
-                    childCollectionConfig.clearFilterGroups(); 
+
+                    childCollectionConfig.clearFilterGroups();
                     childCollectionConfig.collection = this.entity;
                     childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
                     childCollectionConfig.setAllRecords(true);
                     angular.forEach(this.collectionConfig.columns,(column)=>{
                         childCollectionConfig.addColumn(column.propertyIdentifier,column.tilte,column);
                     });
-                
+
                     angular.forEach(this.collectionConfig.joins,(join)=>{
-                        childCollectionConfig.addJoin(join); 
+                        childCollectionConfig.addJoin(join);
                     });
                     childCollectionConfig.groupBys = this.collectionConfig.groupBys;
                     this.collectionPromise = childCollectionConfig.getEntity();
-                
+
                     this.collectionPromise.then((data)=>{
                         this.collectionData = data;
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
@@ -62,19 +62,19 @@ class SWExpandableRecordController{
                             });
                         }
                         this.childrenLoaded = true;
-                    });    
+                    });
             }
-            
+
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
             });
-        });   
+        });
     }
 }
-    
+
 class SWExpandableRecord implements ng.IDirective{
     public restrict:string = 'EA';
-    public scope={};  
+    public scope={};
     public bindToController={
         recordValue:"=",
         link:"@",
@@ -89,40 +89,46 @@ class SWExpandableRecord implements ng.IDirective{
         autoOpen:"=",
         multiselectIdPaths:"="
     };
-    
+
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            $compile:ng.ICompileService, 
-            $templateRequest:ng.ITemplateRequestService, 
-            $timeout:ng.ITimeoutService, 
+            $compile:ng.ICompileService,
+            $templateRequest:ng.ITemplateRequestService,
+            $timeout:ng.ITimeoutService,
             corePartialsPath,
             utilityService,
 			pathBuilderConfig
         ) => new SWExpandableRecord(
-            $compile, 
-            $templateRequest, 
-            $timeout, 
+            $compile,
+            $templateRequest,
+            $timeout,
             corePartialsPath,
             utilityService,
 			pathBuilderConfig
         );
         directive.$inject = [
-            '$compile', 
-            '$templateRequest', 
-            '$timeout', 
+            '$compile',
+            '$templateRequest',
+            '$timeout',
             'corePartialsPath',
             'utilityService',
 			'pathBuilderConfig'
         ];
         return directive;
     }
-    
+
     public controller=SWExpandableRecordController;
     public controllerAs="swExpandableRecord";
     public static $inject = ['$compile','$templateRequest','$timeout','corePartialsPath','utilityService',
 			'pathBuilderConfig'];
-    constructor(private $compile:ng.ICompileService, private $templateRequest:ng.ITemplateRequestService, private $timeout:ng.ITimeoutService, private corePartialsPath,private utilityService,
-			private pathBuilderConfig){
+    constructor(
+        public $compile:ng.ICompileService,
+        public $templateRequest:ng.ITemplateRequestService,
+        public $timeout:ng.ITimeoutService,
+        public corePartialsPath,
+        public utilityService,
+		public pathBuilderConfig
+     ){
         this.$compile = $compile;
         this.$templateRequest = $templateRequest;
         this.corePartialsPath = corePartialsPath;
@@ -130,7 +136,7 @@ class SWExpandableRecord implements ng.IDirective{
         this.utilityService = utilityService;
         this.pathBuilderConfig = pathBuilderConfig;
     }
-    
+
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
             if(scope.swExpandableRecord.recordValue){
@@ -146,10 +152,10 @@ class SWExpandableRecord implements ng.IDirective{
                     });
                 }
             }
-                
-            this.$templateRequest(this.pathBuilderConfig(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
+ 
+            this.$templateRequest(this.pathBuilderConfig.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
                 var template = angular.element(html);
-                
+
                 //get autoopen reference to ensure only the root is autoopenable
                 var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
                 scope.swExpandableRecord.autoOpen = false;
@@ -157,12 +163,12 @@ class SWExpandableRecord implements ng.IDirective{
                 element.html(template);
                 element.on('click',scope.swExpandableRecord.toggleChild);
                 if(autoOpen){
-                    scope.swExpandableRecord.toggleChild();    
+                    scope.swExpandableRecord.toggleChild();
                 }
             });
         }
-        
-        
+
+
     }
 }
 export{

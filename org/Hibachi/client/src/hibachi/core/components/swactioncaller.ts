@@ -1,9 +1,8 @@
 /// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../../typings/tsd.d.ts' />
 
-    
+
 class SWActionCallerController{
-    public static $inject = ['$scope','$element','$templateRequest','$compile','partialsPath','utilityService','$slatwall'];
     public type:string;
     public confirm:any;
     public action:string;
@@ -19,10 +18,10 @@ class SWActionCallerController{
     constructor(
         private $scope,
         private $element,
-        private $templateRequest:ng.ITemplateRequestService, 
+        private $templateRequest:ng.ITemplateRequestService,
         private $compile:ng.ICompileService,
-        private corePartialsPath, 
-        private utilityService, 
+        private corePartialsPath,
+        private utilityService,
         private $slatwall,
         pathBuilderConfig
     ){
@@ -30,19 +29,20 @@ class SWActionCallerController{
         this.$element = $element;
         this.$templateRequest = $templateRequest;
         this.$compile = $compile;
-       
+
         this.$slatwall = $slatwall;
         this.utilityService = utilityService;
-        
-        this.$templateRequest(pathBuilderConfig.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
+        this.pathBuilderConfig = pathBuilderConfig;
+
+        this.$templateRequest(this.pathBuilderConfig.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
             this.$element.parent().append(template);
             $compile(template)($scope);
             //need to perform init after promise completes
-            this.init(); 
+            this.init();
         });
     }
-    
+
     public init = ():void =>{
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
@@ -54,37 +54,37 @@ class SWActionCallerController{
 //			}else if(this.getConfirm()){
 //				this.getConfirmText();
 //			}
-//			
+//
 //			if(this.modalFullWidth && !this.getDisabled()){
 //				this.class = this.class + " modalload-fullwidth";
 //			}
-//			
+//
 //			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
 //				this.class = this.class + " modalload";
 //			}
-        
+
         /*need authentication lookup by api to disable
         <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
             <cfset attributes.class &= " disabled" />
         </cfif>
         */
     }
-    
+
     public getAction = ():string =>{
-        
-        return this.action || '';    
+
+        return this.action || '';
     }
-    
+
     public getActionItem = ():string =>{
         return this.utilityService.listLast(this.getAction(),'.');
     }
-    
+
     public getActionItemEntityName = ():string =>{
         var firstFourLetters = this.utilityService.left(this.actionItem,4);
         var firstSixLetters = this.utilityService.left(this.actionItem,6);
         var minus4letters = this.utilityService.right(this.actionItem,4);
         var minus6letters = this.utilityService.right(this.actionItem,6);
-        
+
         var actionItemEntityName = "";
         if(firstFourLetters === 'list' && this.actionItem.length > 4){
             actionItemEntityName = minus4letters;
@@ -93,7 +93,7 @@ class SWActionCallerController{
         }else if(firstFourLetters === 'save' && this.actionItem.length > 4){
             actionItemEntityName = minus4letters;
         }else if(firstSixLetters === 'create' && this.actionItem.length > 6){
-            actionItemEntityName = minus6letters; 
+            actionItemEntityName = minus6letters;
         }else if(firstSixLetters === 'detail' && this.actionItem.length > 6){
             actionItemEntityName = minus6letters;
         }else if(firstSixLetters === 'delete' && this.actionItem.length > 6){
@@ -101,18 +101,18 @@ class SWActionCallerController{
         }
         return actionItemEntityName;
     }
-    
+
     public getTitle = ():string =>{
         //if title is undefined then use text
         if(angular.isUndefined(this.title) || !this.title.length){
             this.title = this.getText();
-        }    
+        }
         return this.title;
     }
-    
+
     private getTextByRBKeyByAction = (actionItemType:string, plural:boolean=false):string =>{
         var navRBKey = this.$slatwall.getRBKey('admin.define.'+actionItemType+'_nav');
-        
+
         var entityRBKey = '';
         var replaceKey = '';
         if(plural){
@@ -122,10 +122,10 @@ class SWActionCallerController{
             entityRBKey = this.$slatwall.getRBKey('entity.'+this.actionItemEntityName);
             replaceKey = '${itemEntityName}';
         }
-        
+
         return this.utilityService.replaceAll(navRBKey,replaceKey, entityRBKey);
     }
-    
+
     public getText = ():string =>{
         //if we don't have text then make it up based on rbkeys
         if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && !this.text.length)){
@@ -137,7 +137,7 @@ class SWActionCallerController{
                 var firstSixLetters = this.utilityService.left(this.actionItem,6);
                 var minus4letters = this.utilityService.right(this.actionItem,4);
                 var minus6letters = this.utilityService.right(this.actionItem,6);
-                
+
                 if(firstFourLetters === 'list' && this.actionItem.length > 4){
                     this.text = this.getTextByRBKeyByAction('list' ,true);
                 }else if(firstFourLetters === 'edit' && this.actionItem.length > 4){
@@ -152,16 +152,16 @@ class SWActionCallerController{
                     this.text = this.getTextByRBKeyByAction('delete' ,false);
                 }
             }
-            
+
             if(this.utilityService.right(this.text,8)){
                 this.text = this.$slatwall.getRBKey(this.utilityService.replaceAll(this.getAction(),":","."));
             }
-            
+
         }
         if(!this.title || (this.title && !this.title.length)){
             this.title = this.text;
         }
-        
+
         return this.text
     }
 
@@ -170,10 +170,10 @@ class SWActionCallerController{
         if(angular.isDefined(this.disabled) && this.disabled){
             return true;
         }else{
-            return false;    
+            return false;
         }
     }
-    
+
     public getDisabledText = ():string =>{
         if(this.getDisabled()){
             //and no disabled text specified
@@ -183,21 +183,21 @@ class SWActionCallerController{
             }
             //add disabled class
             this.class += " s-btn-disabled";
-            this.confirm = false; 
+            this.confirm = false;
             return this.disabledtext;
         }
-        
-        return "";  
+
+        return "";
     }
-    
+
     public getConfirm = ():boolean =>{
         if(angular.isDefined(this.confirm) && this.confirm){
-            return true;    
+            return true;
         }else{
-            return false;    
+            return false;
         }
     }
-    
+
     public getConfirmText = ():string =>{
         if(this.getConfirm() ){
             if(angular.isUndefined(this.confirmtext) && this.confirmtext.length){
@@ -210,13 +210,13 @@ class SWActionCallerController{
             this.class += " alert-confirm";
             return this.confirm;
         }
-        return "";    
+        return "";
     }
 }
-    
+
 class SWActionCaller implements ng.IDirective{
     public restrict:string = 'EA';
-    public scope:any={}; 
+    public scope:any={};
     public bindToController:any={
         action:"@",
         text:"@",
@@ -246,23 +246,23 @@ class SWActionCaller implements ng.IDirective{
         ) => new SWActionCaller(
             partialsPath,
             utiltiyService,
-            $slatwall 
+            $slatwall
         );
         directive.$inject = [
             'partialsPath',
             'utilityService',
             '$slatwall'
         ];
-        return directive;    
+        return directive;
     }
-    
+
     constructor(
         public partialsPath,
         public utiltiyService,
         public $slatwall
         ){
     }
-    
+
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
     }
 }

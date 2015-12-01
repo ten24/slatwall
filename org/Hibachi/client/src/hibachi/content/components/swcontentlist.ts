@@ -15,7 +15,7 @@ class SWContentListController{
     public isSearching:boolean;
     public keywords:string;
     public searchCollection:any;
-    
+
     public static $inject = [
         '$scope',
         '$log',
@@ -40,25 +40,25 @@ class SWContentListController{
             if(this.pageShow !== 'Auto'){
                 pageShow = this.pageShow;
             }
-            
+
             this.pageShowOptions = [
                 {display:10,value:10},
                 {display:20,value:20},
                 {display:50,value:50},
                 {display:250,value:250}
             ];
-            
+
             this.loadingCollection = false;
-            
+
             this.selectedSite;
             this.orderBy;
             var orderByConfig;
-            
+
             this.getCollection = (isSearching)=>{
-                
+
                 this.collectionConfig = collectionConfigService.newCollectionConfig('Content');
-                
-                
+
+
                 var columnsConfig = [
                     //{"propertyIdentifier":"_content_childContents","title":"","isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","aggregate":{"aggregateFunction":"COUNT","aggregateAlias":"childContentsCount"}},
                     {
@@ -78,7 +78,7 @@ class SWContentListController{
                         isVisible:true,
                         ormtype:'boolean',
                         isSearchable:false
-                    }, 
+                    },
                     {
                         propertyIdentifier:'_content.productListingPageFlag',
                         isVisible:true,
@@ -92,12 +92,12 @@ class SWContentListController{
                         isSearchable:false
                     }
                 ];
-                
-                
-                
+
+
+
                 var options:any = {
-                    currentPage:'1', 
-                    pageShow:'1', 
+                    currentPage:'1',
+                    pageShow:'1',
                     keywords:this.keywords
                 };
                 var column:any = {};
@@ -148,7 +148,7 @@ class SWContentListController{
                         isVisible:true,
                         ormtype:'string',
                         isSearchable:false
-                    };  
+                    };
                     columnsConfig.unshift(titlePathColumn);
                 }
                 //if we have a selected Site add the filter
@@ -161,13 +161,13 @@ class SWContentListController{
                     };
                     filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
                 }
-                
+
                 if(angular.isDefined(this.orderBy)){
                     var orderByConfig = [];
-                    orderByConfig.push(this.orderBy);    
+                    orderByConfig.push(this.orderBy);
                     options.orderByConfig = angular.toJson(orderByConfig);
                 }
-                
+
                 angular.forEach(columnsConfig,(column:any)=>{
                     this.collectionConfig.addColumn(column.propertyIdentifier,column.title,column);
                 });
@@ -189,14 +189,14 @@ class SWContentListController{
                         isSearchable: true
                     }
                 );
-                
+
                 angular.forEach(filterGroupsConfig[0].filterGroup,(filter:any)=>{
-                    
+
                     this.collectionConfig.addFilter(filter.propertyIdentifier,filter.value,filter.comparisonOperator,filter.logicalOperator);
                 });
-                
-                
-                
+
+
+
                 this.collectionListingPromise = this.collectionConfig.getEntity();
                 this.collectionListingPromise.then((value)=>{
                     this.collection = value;
@@ -207,16 +207,16 @@ class SWContentListController{
                 this.collectionListingPromise;
             };
             //this.getCollection(false);
-            
+
             this.keywords = "";
             this.loadingCollection = false;
             var searchPromise;
             this.searchCollection = ()=>{
-                
+
                 if(searchPromise) {
                     this.$timeout.cancel(searchPromise);
                 }
-                
+
                 searchPromise = $timeout(()=>{
                     $log.debug('search with keywords');
                     $log.debug(this.keywords);
@@ -226,42 +226,42 @@ class SWContentListController{
                     this.getCollection(true);
                 }, 500);
             };
-            
-            
+
+
         var siteChanged = (selectedSiteOption)=>{
             this.selectedSite = selectedSiteOption;
             this.openRoot = true;
             this.getCollection();
         }
-        
+
         this.observerService.attach(siteChanged,'optionsChanged','siteOptions');
-            
+
         var sortChanged = (orderBy)=>{
             this.orderBy = orderBy;
             this.getCollection();
         };
         this.observerService.attach(sortChanged,'sortByColumn','siteSorting');
-        
+
         var optionsLoaded = ()=>{
             this.observerService.notify('selectFirstOption');
-            
+
         }
         this.observerService.attach(optionsLoaded,'optionsLoaded','siteOptionsLoaded');
-            
-        
+
+
     }
 }
 class SWContentList implements ng.IDirective{
-    
+
     public restrict:string = 'E';
-    
+
     //public bindToController=true;
     public controller=SWContentListController;
     public controllerAs="swContentList";
     public templateUrl;
     public partialsPath;
     public observerService;
-    
+
     public static Factory(){
         var directive = (
             contentPartialsPath,
@@ -279,17 +279,17 @@ class SWContentList implements ng.IDirective{
         ];
         return directive;
     }
-    
+
     constructor(
             contentPartialsPath,
             observerService,
             pathBuilderConfig
     ){
-        
+
         this.observerService = observerService;
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(contentPartialsPath)+'content/contentlist.html';
-    } 
-    
+        this.templateUrl = pathBuilderConfig.buildPartialsPath(contentPartialsPath)+'contentlist.html';
+    }
+
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
         scope.$on('$destroy', function handler() {
             this.observerService.detachByEvent('optionsChanged');

@@ -147,7 +147,7 @@ class Pagination{
 
         if(angular.isUndefined(this.getCurrentPage()) || this.getCurrentPage() < 5){
             var start = 1;
-            var end = (this.getTotalPages() <= 10) ? this.getTotalPages() : 10;
+                var end = (this.getTotalPages() <= 10) ? this.getTotalPages()+1 : 10;
         }else{
             var start = (!this.showNextJump()) ? this.getTotalPages() - 4 :this.getCurrentPage() - 3;
             var end = (this.showNextJump()) ? this.getCurrentPage() + 5 : this.getTotalPages() + 1;
@@ -173,7 +173,7 @@ class PaginationService implements IPaginationService{
     constructor(
         private utilityService
     ){
-        
+
     }
 
     public createPagination = ():Pagination =>{

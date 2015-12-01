@@ -75,15 +75,16 @@ class SWProductBundleGroupType{
 					productBundleGroupType.data.typeDescription = '';
 					productBundleGroupType.data.typeNameCode='';
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
+					formService.getForm('form.addProductBundleGroupType').$setDirty();
 				};
-				
+
 				$scope.showAddProductBundleGroupTypeBtn = false;
 				/**
 				 * Handles looking up the keyword and populating the dropdown as a user types.
 				 */
 				$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
 					$log.debug('getTypesByKeyword');
-					var filterGroupsConfig = '['+  
+					var filterGroupsConfig = '['+
 					  ' {  '+
 					      '"filterGroup":[  '+
 					        ' {  '+
@@ -109,7 +110,7 @@ class SWProductBundleGroupType{
 						$log.debug(value);
 						$scope.productBundleGroupTypes.value = value.pageRecords;
 						var myLength = keyword.length;
-						
+
 						if (myLength > 0) {
 							$scope.showAddProductBundleGroupTypeBtn = true;
 						}else{
@@ -119,7 +120,7 @@ class SWProductBundleGroupType{
 						return $scope.productBundleGroupTypes.value;
 					});
 				};
-				
+
 				/**
 				 * Handles user selection of the dropdown.
 				 */
@@ -127,14 +128,14 @@ class SWProductBundleGroupType{
 				    $scope.$item = $item;
 				    $scope.$model = $model;
 				    $scope.$label = $label;
-				    
+
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
 					var parentType = $slatwall.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					$scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
 				    $scope.showAddProductBundleGroupTypeBtn = false;
 				    	};
-				
+
 				/**
 				 * Closes the add screen
 				 */
@@ -142,7 +143,7 @@ class SWProductBundleGroupType{
 					$scope.productBundleGroupTypes.$$adding = false;
 					$scope.showAddProductBundleGroupTypeBtn = false;
 				};
-				
+
 				/**
 				 * Clears the type name
 				 */
@@ -151,7 +152,7 @@ class SWProductBundleGroupType{
 					$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
 					}
 				};
-				
+
 				/**
 				 * Saves product bundle group type
 				 */
@@ -164,9 +165,9 @@ class SWProductBundleGroupType{
 							$scope.closeAddScreen();
 							}
 						});
-					
+
 				};
-				
+
 				//Sets up clickOutside Directive call back arguments
 				$scope.clickOutsideArgs = {
 					callBackActions : [$scope.closeAddScreen,$scope.clearTypeName]

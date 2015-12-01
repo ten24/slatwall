@@ -17,7 +17,7 @@ class SlatwallService{
 	public _loadingResourceBundle = false;
 	public _loadedResourceBundle = false;
 	public _deferred = {};
-	
+
 	public static $inject = ['$window','$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
 	//@ngInject
 	constructor(
@@ -49,8 +49,8 @@ class SlatwallService{
 		this._jsEntities = _jsEntities;
 		this._jsEntityInstances = _jsEntityInstances;
 	}
-	
-	
+
+
 	public buildUrl = (action:string,queryString:string):string =>{
 		//actionName example: slatAction. defined in FW1 and populated to config
 		var actionName = this.getConfigValue('action');
@@ -59,50 +59,57 @@ class SlatwallService{
 		if(angular.isDefined(queryString) && queryString.length){
 			if(queryString.indexOf('&') !== 0){
 				queryString = '&'+ queryString;
-			}    
+			}
 		}
 		return baseUrl + '?' + actionName + '=' + action + queryString;
 	}
-	
+
 	getJsEntities= () =>{
-		return this._jsEntities;   
+		return this._jsEntities;
 	}
 		setJsEntities= (jsEntities) =>{
-		this._jsEntities = jsEntities;    
+		this._jsEntities = jsEntities;
 	}
-	
+
 	getJsEntityInstances= () =>{
-		return this._jsEntityInstances;   
+		return this._jsEntityInstances;
 	}
 		setJsEntityInstances= (jsEntityInstances) =>{
-		this._jsEntityInstances = jsEntityInstances;    
+		this._jsEntityInstances = jsEntityInstances;
 	}
 	getEntityExample = (entityName)=>{
-		return this._jsEntityInstances[entityName];  
+		return this._jsEntityInstances[entityName];
 	}
 	getEntityMetaData = (entityName)=>{
 		return this._jsEntityInstances[entityName].metaData;
 	}
-	
+
 	getPropertyByEntityNameAndPropertyName = (entityName,propertyName)=>{
 		return this.getEntityMetaData(entityName)[propertyName];
 	}
-	
+
 	getPrimaryIDPropertyNameByEntityName = (entityName)=>{
 		return this.getEntityMetaData(entityName).$$getIDName();
 	}
-	
+
 	getEntityHasPropertyByEntityName = (entityName,propertyName):boolean=>{
 		return angular.isDefined(this.getEntityMetaData(entityName)[propertyName]);
 	}
-	
+
 	getPropertyIsObjectByEntityNameAndPropertyIdentifier = (entityName:string,propertyIdentifier:string):boolean=>{
 		var lastEntity = this.getLastEntityNameInPropertyIdentifier(entityName,propertyIdentifier);
 		var entityMetaData = this.getEntityMetaData(lastEntity);
 		return angular.isDefined(entityMetaData[this.utilityService.listLast(propertyIdentifier,'.')].cfc);
 	}
-	
+
 	getLastEntityNameInPropertyIdentifier = (entityName,propertyIdentifier)=>{
+		if(!entityName){
+			throw('no entity name supplied');
+		}
+		//strip alias if it exists
+		if(propertyIdentifier.charAt(0) === '_'){
+			propertyIdentifier = this.utilityService.listRest(propertyIdentifier,'.');
+		}
 		if(propertyIdentifier.split('.').length > 1){
 			var propertiesStruct = this.getEntityMetaData(entityName);
 			if(
@@ -110,15 +117,15 @@ class SlatwallService{
 				|| !propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')].cfc
 			){
 				throw("The Property Identifier "+propertyIdentifier+" is invalid for the entity "+entityName);
-			} 
+			}
 			var currentEntityName = this.utilityService.listLast(propertiesStruct[this.utilityService.listFirst(propertyIdentifier,'.')].cfc,'.');
 			var currentPropertyIdentifier = this.utilityService.right(propertyIdentifier,propertyIdentifier.length-(this.utilityService.listFirst(propertyIdentifier,'.').length+1));
 			return this.getLastEntityNameInPropertyIdentifier(currentEntityName,currentPropertyIdentifier);
 		}
 		return entityName;
-		
+
 	}
-	
+
 	//service method used to transform collection data to collection objects based on a collectionconfig
 	populateCollection = (collectionData,collectionConfig) =>{
 		//create array to hold objects
@@ -190,16 +197,16 @@ class SlatwallService{
 			*
 			* getEntity('Product', '12345-12345-12345-12345');
 			* getEntity('Product', {keywords='Hello'});
-			* 
+			*
 			*/
 		if(angular.isUndefined(options)){
-			options = {};    
+			options = {};
 		}
-		
+
 		if(angular.isDefined(options.deferKey)) {
 			this.cancelPromise(options.deferKey);
 		}
-		
+
 		var params:any= {};
 		if(typeof options === 'string') {
 			var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
@@ -219,14 +226,14 @@ class SlatwallService{
 			params.processContext = options.processContext || '';
 			var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 		}
-		
+
 		var deferred = this.$q.defer();
 		if(angular.isDefined(options.id)) {
-			urlString += '&entityId='+options.id;   
+			urlString += '&entityId='+options.id;
 		}
 
-		/*var transformRequest = (data) => {    
-									
+		/*var transformRequest = (data) => {
+
 			return data;
 		};
 		//check if we are using a service to transform the request
@@ -237,22 +244,22 @@ class SlatwallService{
 			if(angular.isString(data)){
 				data = JSON.parse(data);
 			}
-			
+
 			return data;
 		};
 		//check if we are using a service to transform the response
 		if(angular.isDefined(options.transformResponse)) {
 			transformResponse=(data) => {
-				
+
 				var data = JSON.parse(data);
 				if(angular.isDefined(data.records))  {
 					data = options.transformResponse(data.records);
 				}
-				
+
 				return data;
 			};
 		}
-		
+
 		this.$http.get(urlString,
 			{
 				params:params,
@@ -266,12 +273,12 @@ class SlatwallService{
 		}).error((reason) => {
 			deferred.reject(reason);
 		});
-		
+
 		if(options.deferKey)  {
 			this._deferred[options.deferKey] = deferred;
 		}
 		return deferred.promise;
-		
+
 	}
 	getResizedImageByProfileName = (profileName, skuIDs) => {
 		var deferred = this.$q.defer();
@@ -285,25 +292,25 @@ class SlatwallService{
 	getEventOptions= (entityName) => {
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
-		
+
 		this.$http.get(urlString)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
 			deferred.reject(reason);
 		});
-		
+
 		return deferred.promise;
 	}
 	checkUniqueOrNullValue = (object, property, value) => {
-		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
+		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(
 	 (results:any):ng.IPromise<any> =>{
 		return results.data.uniqueStatus;
 		})
 	}
 	checkUniqueValue = (object, property, value) => {
-		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
+		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
 			 (results:any):ng.IPromise<any> =>{
 				return results.data.uniqueStatus;
@@ -320,7 +327,7 @@ class SlatwallService{
 		}).error((reason) => {
 			deferred.reject(reason);
 		});
-		
+
 		return deferred.promise;
 	}
 	getPropertyDisplayOptions = (entityName,options) => {
@@ -331,23 +338,23 @@ class SlatwallService{
 		if(angular.isDefined(options.argument1))  {
 			params.argument1 = options.argument1;
 		}
-		
+
 		this.$http.get(urlString,{params:params})
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
 			deferred.reject(reason);
 		});
-		
+
 		return deferred.promise;
 	}
 	saveEntity= (entityName,id,params,context) => {
-		
+
 		//$log.debug('save'+ entityName);
 		var deferred = this.$q.defer();
 
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.post'; 
-		
+		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.post';
+
 		if(angular.isDefined(entityName))  {
 			params.entityName = entityName;
 		}
@@ -358,7 +365,7 @@ class SlatwallService{
 		if(angular.isDefined(context))  {
 			params.context = context;
 		}
-		
+
 		this.$http({
 			url:urlString,
 			method:'POST',
@@ -367,7 +374,7 @@ class SlatwallService{
 		})
 		.success((data) => {
 			deferred.resolve(data);
-			
+
 		}).error((reason) => {
 			deferred.reject(reason);
 		});
@@ -376,7 +383,7 @@ class SlatwallService{
 	getExistingCollectionsByBaseEntity= (entityName) => {
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
-		
+
 		this.$http.get(urlString)
 		.success((data) => {
 			deferred.resolve(data);
@@ -384,12 +391,12 @@ class SlatwallService{
 			deferred.reject(reason);
 		});
 		return deferred.promise;
-		
+
 	}
 	getFilterPropertiesByBaseEntityName= (entityName) => {
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
-		
+
 		this.$http.get(urlString)
 		.success((data) => {
 			deferred.resolve(data);
@@ -421,12 +428,12 @@ class SlatwallService{
 				//$log.debug('get english');
 				this.getResourceBundle('en_us');
 				this.getResourceBundle('en');
-			}   
+			}
 			this.$q.all(rbPromises).then((data) => {
 				this.$rootScope.loadedResourceBundle = true;
 				this._loadingResourceBundle = false;
 				this._loadedResourceBundle = true;
-				
+
 			},(error) =>{
 				this.$rootScope.loadedResourceBundle = true;
 				this._loadingResourceBundle = false;
@@ -434,9 +441,9 @@ class SlatwallService{
 			});
 		}
 		return this._loadedResourceBundle;
-		
+
 	}
-	
+
 	login = (emailAddress,password) => {
 		var deferred = this.$q.defer();
 		var urlString = this.getConfig().baseURL+'/index.cfm/api/auth/login';
@@ -450,17 +457,17 @@ class SlatwallService{
 			deferred.reject(response);
 		});
 	}
-	
+
 	getResourceBundle= (locale) => {
 		var deferred = this.$q.defer();
 		var locale = locale || this.getConfig().rbLocale;
-		
+
 		if(this._resourceBundle[locale]) {
 			return this._resourceBundle[locale];
 		}
-		
+
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.getConfig().instantiationKey+'&locale='+locale;
-		
+
 		this.$http(
 			{
 				url:urlString,
@@ -475,10 +482,10 @@ class SlatwallService{
 		});
 		return deferred.promise
 	}
-	
+
 	getCurrencies = () =>{
 		var deferred = this.$q.defer();
-		
+
 		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey='+this.getConfig().instantiationKey;
 		this.$http.get(urlString).success((response) => {
 			deferred.resolve(response);
@@ -487,50 +494,50 @@ class SlatwallService{
 		});
 		return deferred.promise;
 	}
-	
+
 	rbKey= (key,replaceStringData) => {
 		////$log.debug('rbkey');
 		////$log.debug(key);
 		////$log.debug(this.getConfig().rbLocale);
-	
+
 		var keyValue = this.getRBKey(key,this.getConfig().rbLocale);
 		////$log.debug(keyValue);
-		
+
 		return keyValue;
 	}
-	getRBKey= (key:string,locale:string,checkedKeys?:string,originalKey?:string) => {
+	getRBKey= (key:string,locale?:string,checkedKeys?:string,originalKey?:string) => {
 		////$log.debug('getRBKey');
 		////$log.debug('loading:'+this._loadingResourceBundle);
 		////$log.debug('loaded'+this._loadedResourceBundle);
-		
+
 		if(!this._loadingResourceBundle && this._loadedResourceBundle) {
-			
+
 			key = key.toLowerCase();
 			checkedKeys = checkedKeys || "";
 			locale = locale || 'en_us';
 			////$log.debug('locale');
 			////$log.debug(locale);
-			
+
 			var keyListArray = key.split(',');
 			////$log.debug('keylistAray');
 			////$log.debug(keyListArray);
 			if(keyListArray.length > 1) {
 				var keyValue:string = "";
-				
+
 				for(var i=0; i<keyListArray.length; i++) {
-				
+
 					keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
 					//$log.debug('keyvalue:'+keyValue);
-					
+
 					if(keyValue.slice(-8) != "_missing") {
 						break;
 					}
 				}
-				
+
 				return keyValue;
 			}
-			
-			
+
+
 			var bundle = this.getResourceBundle(locale);
 			//$log.debug('bundle');
 			//$log.debug(bundle);
@@ -539,32 +546,32 @@ class SlatwallService{
 					//$log.debug('rbkeyfound:'+bundle[key]);
 					return bundle[key];
 				}
-				
-				
+
+
 				var checkedKeysListArray = checkedKeys.split(',');
 				checkedKeysListArray.push(key+'_'+locale+'_missing');
-				
+
 				checkedKeys = checkedKeysListArray.join(",");
 				if(angular.isUndefined(originalKey))  {
 					originalKey = key;
 				}
 				//$log.debug('originalKey:'+key);
 				//$log.debug(checkedKeysListArray);
-				
+
 				var localeListArray = locale.split('_');
 				//$log.debug(localeListArray);
 				if(localeListArray.length === 2)  {
-					
+
 					bundle = this.getResourceBundle(localeListArray[0]);
 					if(angular.isDefined(bundle[key])) {
 						//$log.debug('rbkey found:'+bundle[key]);
 						return bundle[key];
 					}
-					
+
 					checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
 					checkedKeys = checkedKeysListArray.join(",");
 				}
-				
+
 				var keyDotListArray = key.split('.');
 				if( keyDotListArray.length >= 3
 					&& keyDotListArray[keyDotListArray.length - 2] === 'define'
@@ -578,7 +585,7 @@ class SlatwallService{
 					return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 				}
 				//$log.debug(localeListArray);
-				
+
 				if(localeListArray[0] !== "en")  {
 					return this.getRBKey(originalKey,'en',checkedKeys);
 				}
@@ -602,17 +609,17 @@ class SlatwallService{
 }
 
 class $Slatwall implements ng.IServiceProvider{
-	
+
 	public _config = {};
 	private angular:ng.IAngularStatic = angular;
 	public _jsEntities;
 	public _jsEntityInstances;
 	public setJsEntities = (jsEntities):void =>{
-		this._jsEntities = jsEntities;    
+		this._jsEntities = jsEntities;
 	}
-	
+
 	constructor(){
-		
+
 		this._config = {
 			dateFormat : 'MM/DD/YYYY',
 			timeFormat : 'HH:MM',
@@ -624,9 +631,9 @@ class $Slatwall implements ng.IServiceProvider{
 		};
 		if(slatwallAngular.slatwallConfig){
 			angular.extend(this._config, slatwallAngular.slatwallConfig);
-		}   
-		
-		this.$get.$inject = [ 
+		}
+
+		this.$get.$inject = [
 			'$window',
 			'$q',
 			'$http',
@@ -639,8 +646,8 @@ class $Slatwall implements ng.IServiceProvider{
 			'formService'
 		];
 	}
-	
-	
+
+
 	public $get(
 		$window:ng.IWindowService,
 		$q:ng.IQService,
@@ -668,7 +675,7 @@ class $Slatwall implements ng.IServiceProvider{
 			this._jsEntities,
 			this._jsEntityInstances
 		);
-		
+
 	}
 	public getConfig = () =>{
 		return this._config;

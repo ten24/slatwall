@@ -367,7 +367,7 @@ Notes:
 				</span>
 			</span>
 		</span>
-		<p>Angular is working: {{1 + 1 === 2}}</p>
+		<p>Angular is working: {{1 + 1 === 2}} {{hibachiScope}}</p>
 		<script type="text/javascript">
 			var slatwallAngular = {};
 			slatwallAngular.slatwallConfig = $.slatwall.getConfig();
