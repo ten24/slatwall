@@ -31,6 +31,16 @@ var slatwalladmin;
                     _this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = _this.collectionConfig;
                 });
             };
+            var jQueryOptionsRedemptionAmountType = $("select[name='redemptionAmountType'")[0];
+            this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions = [];
+            angular.forEach(jQueryOptionsRedemptionAmountType, function (jQueryOption) {
+                var option = {
+                    label: jQueryOption.label,
+                    value: jQueryOption.value
+                };
+                _this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option);
+            });
+            this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
             var jQueryOptions = $("select[name='product.productType.productTypeID']")[0];
             this.$scope.preprocessproduct_createCtrl.options = [];
             this.$scope.preprocessproduct_createCtrl.options.push({ label: this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'), value: "" });

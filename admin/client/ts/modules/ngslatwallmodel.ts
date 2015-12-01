@@ -4,8 +4,8 @@
 			angular.module('ngSlatwallModel',['hibachi','ngSlatwall']).config(['$provide',function ($provide
 			 ) {
 	    	
-	    	$provide.decorator( '$slatwall', [ 
-		    	"$delegate", 
+	    	$provide.decorator( '$slatwall', [
+		    	"$delegate",
 		    	'$http',
 	            '$timeout',
 	            '$log',
@@ -13,8 +13,8 @@
 	            '$location',
 	            '$anchorScroll',
 	            '$q',
-	            'utilityService', 
-	            'formService', 
+	            'utilityService',
+	            'formService',
 	            function( $delegate,
 		            $http,
 		            $timeout,
@@ -23,11 +23,11 @@
 		            $location,
 		            $anchorScroll,
 		            $q,
-		            utilityService, 
-		            formService 
+		            utilityService,
+		            formService
 		        )
 	            {
-	            
+
 	            var _deferred = {};
 			    var _config = {
 			        dateFormat : 'MM/DD/YYYY',
@@ -38,11 +38,11 @@
 			        debugFlag : true,
 			        instantiationKey : '84552B2D-A049-4460-55F23F30FE7B26AD'
 			    };
-			    
+
 			    if(slatwallAngular.slatwallConfig){
 			        angular.extend(_config, slatwallAngular.slatwallConfig);
-			    }	
-			    
+			    }
+
                 var _jsEntities = {};
 				var _jsEntityInstances = {};
                 var entities = {};
@@ -70,7 +70,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1446232309623',
+									auditDateTime:'1448988029597',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -130,7 +130,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'2b9f3424de0268cdd338dc7ec4506ab2',
+									verificationCode:'a04f27569573253619fe9adf0aacb0e8',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -174,7 +174,7 @@
 						z:''
 	                };
                 
-                	entities['EmailTemplate'] = {"emailTemplateName":{"ormtype":"string","name":"emailTemplateName"},"eventTriggers":{"cfc":"EventTrigger","fieldtype":"one-to-many","lazy":"extra","singularname":"eventTrigger","cascade":"all","fkcolumn":"emailTemplateID","inverse":true,"name":"eventTriggers"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"emailBodyText":{"length":4000,"ormtype":"string","name":"emailBodyText"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"emailTemplateFile":{"hb_formfieldtype":"select","ormtype":"string","name":"emailTemplateFile"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"emailTemplateObjectOptions":{"persistent":false,"name":"emailTemplateObjectOptions"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"emailTemplateID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"emailTemplateID"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"emailTemplateObject":{"hb_formfieldtype":"select","ormtype":"string","name":"emailTemplateObject"},"validations":{"persistent":false,"type":"struct","name":"validations"},"emailTemplateFileOptions":{"persistent":false,"name":"emailTemplateFileOptions"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"logEmailFlag":{"ormtype":"boolean","default":false,"name":"logEmailFlag"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"emailBodyHTML":{"length":4000,"ormtype":"string","name":"emailBodyHTML"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
+                	entities['EmailTemplate'] = {"emailTemplateName":{"ormtype":"string","name":"emailTemplateName"},"eventTriggers":{"cfc":"EventTrigger","fieldtype":"one-to-many","lazy":"extra","singularname":"eventTrigger","cascade":"all","fkcolumn":"emailTemplateID","inverse":true,"name":"eventTriggers"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"emailBodyText":{"length":4000,"ormtype":"string","name":"emailBodyText"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"emailTemplateFile":{"hb_formfieldtype":"select","ormtype":"string","name":"emailTemplateFile"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"emailTemplateObjectOptions":{"persistent":false,"name":"emailTemplateObjectOptions"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"emailTemplateID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"emailTemplateID"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"emailTemplateObject":{"hb_formfieldtype":"select","ormtype":"string","name":"emailTemplateObject"},"validations":{"persistent":false,"type":"struct","name":"validations"},"emailTemplateFileOptions":{"persistent":false,"name":"emailTemplateFileOptions"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"logEmailFlag":{"ormtype":"boolean","name":"logEmailFlag"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"emailBodyHTML":{"length":4000,"ormtype":"string","name":"emailBodyHTML"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
                 	entities['EmailTemplate'].className = 'EmailTemplate';
                 	
                 	validations['EmailTemplate'] = {"properties":{"emailTemplateName":[{"contexts":"save","required":true}],"eventTriggers":[{"contexts":"delete","maxCollection":0}],"emails":[{"contexts":"delete","maxCollection":0}]}};
@@ -185,7 +185,7 @@
 									emailTemplateFile:null,
 									emailBodyHTML:'',
 										emailBodyText:'',
-										logEmailFlag:false,
+										logEmailFlag:null,
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -715,7 +715,7 @@
                 	entities['OrderFulfillment'] = {"accountEmailAddress":{"cfc":"AccountEmailAddress","fieldtype":"many-to-one","fkcolumn":"accountEmailAddressID","hb_populateenabled":"public","name":"accountEmailAddress"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"appliedPromotions":{"cfc":"PromotionApplied","fieldtype":"one-to-many","singularname":"appliedPromotion","cascade":"all-delete-orphan","fkcolumn":"orderFulfillmentID","inverse":true,"name":"appliedPromotions"},"accountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"accountAddressID","hb_populateenabled":"public","name":"accountAddress"},"requiredShippingInfoExistsFlag":{"persistent":false,"name":"requiredShippingInfoExistsFlag"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"shippingAddress":{"cfc":"Address","fieldtype":"many-to-one","fkcolumn":"shippingAddressID","hb_populateenabled":"public","name":"shippingAddress"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"shippingMethodOptions":{"persistent":false,"type":"array","name":"shippingMethodOptions"},"estimatedDeliveryDateTime":{"ormtype":"timestamp","name":"estimatedDeliveryDateTime"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"saveAccountAddress":{"persistent":false,"name":"saveAccountAddress"},"fulfillmentMethodType":{"persistent":false,"type":"numeric","name":"fulfillmentMethodType"},"shippingMethod":{"cfc":"ShippingMethod","fieldtype":"many-to-one","fkcolumn":"shippingMethodID","hb_populateenabled":"public","name":"shippingMethod"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"accountLoyaltyTransactions":{"cfc":"AccountLoyaltyTransaction","fieldtype":"one-to-many","singularname":"accountLoyaltyTransaction","cascade":"all","fkcolumn":"orderFulfillmentID","type":"array","inverse":true,"name":"accountLoyaltyTransactions"},"saveAccountAddressFlag":{"persistent":false,"hb_populateenabled":"public","name":"saveAccountAddressFlag"},"fulfillmentMethod":{"cfc":"FulfillmentMethod","fieldtype":"many-to-one","fkcolumn":"fulfillmentMethodID","hb_populateenabled":"public","name":"fulfillmentMethod"},"validations":{"persistent":false,"type":"struct","name":"validations"},"fulfillmentCharge":{"ormtype":"big_decimal","name":"fulfillmentCharge"},"taxAmount":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"taxAmount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"orderFulfillmentID","type":"array","inverse":true,"name":"attributeValues"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"shippingMethodRate":{"persistent":false,"type":"array","name":"shippingMethodRate"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"totalShippingWeight":{"persistent":false,"hb_formattype":"weight","type":"numeric","name":"totalShippingWeight"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"emailAddress":{"ormtype":"string","hb_populateenabled":"public","name":"emailAddress"},"discountAmount":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"discountAmount"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"order":{"cfc":"Order","fieldtype":"many-to-one","fkcolumn":"orderID","name":"order"},"subtotalAfterDiscounts":{"persistent":false,"hb_formattype":"currency","type":"array","name":"subtotalAfterDiscounts"},"subtotal":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"subtotal"},"pickupLocation":{"cfc":"Location","fieldtype":"many-to-one","fkcolumn":"locationID","hb_populateenabled":"public","name":"pickupLocation"},"fulfillmentShippingMethodOptions":{"cfc":"ShippingMethodOption","fieldtype":"one-to-many","singularname":"fulfillmentShippingMethodOption","cascade":"all-delete-orphan","fkcolumn":"orderFulfillmentID","inverse":true,"name":"fulfillmentShippingMethodOptions"},"orderFulfillmentID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderFulfillmentID"},"shippingCharge":{"persistent":false,"name":"shippingCharge"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"quantityUndelivered":{"persistent":false,"type":"numeric","name":"quantityUndelivered"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"estimatedFulfillmentDateTime":{"ormtype":"timestamp","name":"estimatedFulfillmentDateTime"},"orderStatusCode":{"persistent":false,"type":"numeric","name":"orderStatusCode"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"orderFulfillmentItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"orderFulfillmentItem","cascade":"all","fkcolumn":"orderFulfillmentID","hb_populateenabled":"public","inverse":true,"name":"orderFulfillmentItems"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"chargeAfterDiscount":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"chargeAfterDiscount"},"subtotalAfterDiscountsWithTax":{"persistent":false,"hb_formattype":"currency","type":"array","name":"subtotalAfterDiscountsWithTax"},"nextEstimatedFulfillmentDateTime":{"persistent":false,"type":"timestamp","name":"nextEstimatedFulfillmentDateTime"},"quantityDelivered":{"persistent":false,"type":"numeric","name":"quantityDelivered"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"saveAccountAddressName":{"persistent":false,"hb_populateenabled":"public","name":"saveAccountAddressName"},"remoteID":{"ormtype":"string","name":"remoteID"},"manualFulfillmentChargeFlag":{"ormtype":"boolean","hb_populateenabled":false,"name":"manualFulfillmentChargeFlag"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"accountAddressOptions":{"persistent":false,"type":"array","name":"accountAddressOptions"},"discountTotal":{"persistent":false,"name":"discountTotal"},"nextEstimatedDeliveryDateTime":{"persistent":false,"type":"timestamp","name":"nextEstimatedDeliveryDateTime"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"orderFulfillmentStatusType":{"cfc":"Type","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderFulfillmentStatusType","fkcolumn":"orderFulfillmentStatusTypeID","name":"orderFulfillmentStatusType"}};
                 	entities['OrderFulfillment'].className = 'OrderFulfillment';
                 	
-                	validations['OrderFulfillment'] = {"properties":{"quantityUndelivered":[{"contexts":"fulfillItems","minValue":0}],"order":[{"contexts":"save","required":true}],"fulfillmentCharge":[{"contexts":"save","dataType":"numeric","minValue":0}],"pickupLocation":[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],"shippingMethod":[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true},{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}],"orderStatusCode":[{"contexts":"edit,manualFulfillmentCharge","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},{"contexts":"fulfillItems","inList":"ostNew,ostProcessing"}],"emailAddress":[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmail","required":true}],"orderFulfillmentID":[{"contexts":"delete","maxValue":0}],"orderFulfillmentItems":[{"contexts":"placeOrder,fulfillItems","minCollection":1}],"requiredShippingInfoExistsFlag":[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","eq":true}],"fulfillmentMethod":[{"contexts":"save","required":true,"method":"allOrderFulfillmentItemsAreEligibleForFulfillmentMethod"}]},"conditions":{"fulfillmentTypePickup":{"fulfillmentMethodType":{"eq":"pickup"}},"fulfillmentTypeShippingWithoutRateOverride":{"fulfillmentMethodType":{"eq":"shipping"},"accountAddress":{"null":true}},"fulfillmentTypeShipping":{"fulfillmentMethodType":{"eq":"shipping"}},"fulfillmentTypeEmail":{"fulfillmentMethodType":{"eq":"email"}},"fulfillmentTypeShippingNoAccountAddress":{"fulfillmentMethodType":{"eq":"shipping"},"accountAddress":{"null":true}}},"populatedPropertyValidation":{"shippingAddress":[{"conditions":"fulfillmentTypeShippingNoAccountAddress","validate":"full"}]}};
+                	validations['OrderFulfillment'] = {"properties":{"quantityUndelivered":[{"contexts":"fulfillItems","minValue":0}],"order":[{"contexts":"save","required":true}],"fulfillmentCharge":[{"contexts":"save","dataType":"numeric","minValue":0}],"pickupLocation":[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],"shippingMethod":[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","required":true},{"contexts":"placeOrder","conditions":"fulfillmentTypeShippingWithoutRateOverride","method":"hasValidShippingMethodRate"}],"orderStatusCode":[{"contexts":"edit,manualFulfillmentCharge","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},{"contexts":"fulfillItems","inList":"ostNew,ostProcessing"}],"emailAddress":[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmailWithoutRecipients","required":true}],"orderFulfillmentID":[{"contexts":"delete","maxValue":0}],"orderFulfillmentItems":[{"contexts":"placeOrder,fulfillItems","minCollection":1}],"requiredShippingInfoExistsFlag":[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","eq":true}],"fulfillmentMethod":[{"contexts":"save","required":true,"method":"allOrderFulfillmentItemsAreEligibleForFulfillmentMethod"}]},"conditions":{"fulfillmentTypeEmailWithoutRecipients":{"fulfillmentMethodType":{"eq":"email"},"emailAddress":{"method":"needsEmailForFulfillment"}},"fulfillmentTypePickup":{"fulfillmentMethodType":{"eq":"pickup"}},"fulfillmentTypeShippingWithoutRateOverride":{"fulfillmentMethodType":{"eq":"shipping"},"accountAddress":{"null":true}},"fulfillmentTypeShipping":{"fulfillmentMethodType":{"eq":"shipping"}},"fulfillmentTypeShippingNoAccountAddress":{"fulfillmentMethodType":{"eq":"shipping"},"accountAddress":{"null":true}}},"populatedPropertyValidation":{"shippingAddress":[{"conditions":"fulfillmentTypeShippingNoAccountAddress","validate":"full"}]}};
                 	defaultValues['OrderFulfillment'] = {
                 	orderFulfillmentID:'',
 										fulfillmentCharge:0,
@@ -995,7 +995,7 @@
 						z:''
 	                };
                 
-                	entities['Order'] = {"totalReturnQuantity":{"persistent":false,"name":"totalReturnQuantity"},"appliedPromotions":{"cfc":"PromotionApplied","fieldtype":"one-to-many","singularname":"appliedPromotion","cascade":"all-delete-orphan","fkcolumn":"orderID","inverse":true,"name":"appliedPromotions"},"fulfillmentDiscountAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentDiscountAmountTotal"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"assignedAccount":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"assignedAccountID","name":"assignedAccount"},"orderID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderID"},"orderDiscountAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"orderDiscountAmountTotal"},"shippingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"shippingAccountAddressID","hb_populateenabled":"public","name":"shippingAccountAddress"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"referencedOrderType":{"ormtype":"string","hb_formattype":"rbKey","name":"referencedOrderType"},"shippingAddress":{"cfc":"Address","fieldtype":"many-to-one","fkcolumn":"shippingAddressID","hb_populateenabled":"public","name":"shippingAddress"},"dynamicCreditOrderPaymentAmount":{"persistent":false,"hb_formattype":"currency","name":"dynamicCreditOrderPaymentAmount"},"saveBillingAccountAddressFlag":{"persistent":false,"hb_populateenabled":"public","name":"saveBillingAccountAddressFlag"},"totalSaleQuantity":{"persistent":false,"name":"totalSaleQuantity"},"itemDiscountAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"itemDiscountAmountTotal"},"estimatedDeliveryDateTime":{"ormtype":"timestamp","name":"estimatedDeliveryDateTime"},"orderCloseDateTime":{"ormtype":"timestamp","name":"orderCloseDateTime"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"billingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"billingAccountAddressID","hb_populateenabled":"public","name":"billingAccountAddress"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"accountLoyaltyTransactions":{"cfc":"AccountLoyaltyTransaction","fieldtype":"one-to-many","singularname":"accountLoyaltyTransaction","cascade":"all","fkcolumn":"orderID","type":"array","inverse":true,"name":"accountLoyaltyTransactions"},"promotionCodeList":{"persistent":false,"name":"promotionCodeList"},"validations":{"persistent":false,"type":"struct","name":"validations"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"orderID","type":"array","inverse":true,"name":"attributeValues"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"saveBillingAccountAddressName":{"persistent":false,"hb_populateenabled":"public","name":"saveBillingAccountAddressName"},"taxTotal":{"persistent":false,"hb_formattype":"currency","name":"taxTotal"},"paymentMethodOptionsSmartList":{"persistent":false,"name":"paymentMethodOptionsSmartList"},"eligiblePaymentMethodDetails":{"persistent":false,"name":"eligiblePaymentMethodDetails"},"paymentAmountDue":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountDue"},"saveShippingAccountAddressName":{"persistent":false,"hb_populateenabled":"public","name":"saveShippingAccountAddressName"},"promotionCodes":{"cfc":"PromotionCode","linktable":"SwOrderPromotionCode","fieldtype":"many-to-many","singularname":"promotionCode","inversejoincolumn":"promotionCodeID","fkcolumn":"orderID","name":"promotionCodes"},"subTotalAfterItemDiscounts":{"persistent":false,"hb_formattype":"currency","name":"subTotalAfterItemDiscounts"},"paymentAmountCreditedTotal":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountCreditedTotal"},"orderFulfillments":{"cfc":"OrderFulfillment","fieldtype":"one-to-many","singularname":"orderFulfillment","cascade":"all-delete-orphan","fkcolumn":"orderID","hb_populateenabled":"public","inverse":true,"name":"orderFulfillments"},"dynamicChargeOrderPayment":{"persistent":false,"name":"dynamicChargeOrderPayment"},"orderPaymentAmountNeeded":{"persistent":false,"hb_formattype":"currency","name":"orderPaymentAmountNeeded"},"saleItemSmartList":{"persistent":false,"name":"saleItemSmartList"},"orderNumber":{"ormtype":"string","name":"orderNumber"},"quantityUnreceived":{"persistent":false,"name":"quantityUnreceived"},"depositItemSmartList":{"persistent":false,"name":"depositItemSmartList"},"orderOpenDateTime":{"ormtype":"timestamp","name":"orderOpenDateTime"},"orderReturns":{"cfc":"OrderReturn","fieldtype":"one-to-many","cascade":"all-delete-orphan","singularname":"orderReturn","fkcolumn":"orderID","inverse":true,"hb_populateenabled":"public","type":"array","name":"orderReturns"},"orderPaymentCreditAmountNeeded":{"persistent":false,"hb_formattype":"currency","name":"orderPaymentCreditAmountNeeded"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"deliveredItemsAmountTotal":{"persistent":false,"name":"deliveredItemsAmountTotal"},"quantityUndelivered":{"persistent":false,"name":"quantityUndelivered"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"paymentAmountReceivedTotal":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountReceivedTotal"},"referencedOrder":{"cfc":"Order","fieldtype":"many-to-one","fkcolumn":"referencedOrderID","name":"referencedOrder"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"addOrderItemStockOptionsSmartList":{"persistent":false,"name":"addOrderItemStockOptionsSmartList"},"statusCode":{"persistent":false,"name":"statusCode"},"estimatedFulfillmentDateTime":{"ormtype":"timestamp","name":"estimatedFulfillmentDateTime"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"dynamicChargeOrderPaymentAmount":{"persistent":false,"hb_formattype":"currency","name":"dynamicChargeOrderPaymentAmount"},"fulfillmentChargeAfterDiscountTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentChargeAfterDiscountTotal"},"orderPaymentChargeAmountNeeded":{"persistent":false,"hb_formattype":"currency","name":"orderPaymentChargeAmountNeeded"},"addOrderItemSkuOptionsSmartList":{"persistent":false,"name":"addOrderItemSkuOptionsSmartList"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"fulfillmentTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentTotal"},"quantityDelivered":{"persistent":false,"name":"quantityDelivered"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"totalQuantity":{"persistent":false,"name":"totalQuantity"},"orderTypeOptions":{"persistent":false,"name":"orderTypeOptions"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"quantityReceived":{"persistent":false,"name":"quantityReceived"},"discountTotal":{"persistent":false,"hb_formattype":"currency","name":"discountTotal"},"dynamicCreditOrderPayment":{"persistent":false,"name":"dynamicCreditOrderPayment"},"nextEstimatedDeliveryDateTime":{"persistent":false,"type":"timestamp","name":"nextEstimatedDeliveryDateTime"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"orderPayments":{"cfc":"OrderPayment","fieldtype":"one-to-many","singularname":"orderPayment","cascade":"all-delete-orphan","fkcolumn":"orderID","hb_populateenabled":"public","inverse":true,"name":"orderPayments"},"paymentAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountTotal"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"account":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"accountID","name":"account"},"totalItems":{"persistent":false,"name":"totalItems"},"orderDeliveries":{"cfc":"OrderDelivery","fieldtype":"one-to-many","singularname":"orderDelivery","cascade":"delete-orphan","fkcolumn":"orderID","inverse":true,"name":"orderDeliveries"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"referencingPaymentAmountCreditedTotal":{"persistent":false,"hb_formattype":"currency","name":"referencingPaymentAmountCreditedTotal"},"referencingOrders":{"cfc":"Order","fieldtype":"one-to-many","singularname":"referencingOrder","cascade":"all-delete-orphan","fkcolumn":"referencedOrderID","inverse":true,"name":"referencingOrders"},"orderType":{"cfc":"Type","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderType","fkcolumn":"orderTypeID","name":"orderType"},"orderStatusType":{"cfc":"Type","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderStatusType","fkcolumn":"orderStatusTypeID","name":"orderStatusType"},"saveShippingAccountAddressFlag":{"persistent":false,"hb_populateenabled":"public","name":"saveShippingAccountAddressFlag"},"orderPlacedSite":{"cfc":"Site","fieldtype":"many-to-one","fkcolumn":"orderPlcaedSiteID","hb_populateenabled":"public","name":"orderPlacedSite"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"orderCreatedSite":{"cfc":"Site","fieldtype":"many-to-one","fkcolumn":"orderCreatedSiteID","hb_populateenabled":"public","name":"orderCreatedSite"},"returnItemSmartList":{"persistent":false,"name":"returnItemSmartList"},"orderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"orderItem","cascade":"all-delete-orphan","fkcolumn":"orderID","hb_populateenabled":"public","inverse":true,"name":"orderItems"},"defaultStockLocationOptions":{"persistent":false,"name":"defaultStockLocationOptions"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"orderOpenIPAddress":{"ormtype":"string","name":"orderOpenIPAddress"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"subTotal":{"persistent":false,"hb_formattype":"currency","name":"subTotal"},"billingAddress":{"cfc":"Address","fieldtype":"many-to-one","fkcolumn":"billingAddressID","hb_populateenabled":"public","name":"billingAddress"},"calculatedTotal":{"ormtype":"big_decimal","name":"calculatedTotal"},"fulfillmentChargeTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentChargeTotal"},"total":{"persistent":false,"hb_formattype":"currency","name":"total"},"orderRequirementsList":{"persistent":false,"name":"orderRequirementsList"},"fulfillmentRefundTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentRefundTotal"},"addPaymentRequirementDetails":{"persistent":false,"name":"addPaymentRequirementDetails"},"stockReceivers":{"cfc":"StockReceiver","fieldtype":"one-to-many","singularname":"stockReceiver","cascade":"all-delete-orphan","fkcolumn":"orderID","type":"array","inverse":true,"name":"stockReceivers"},"nextEstimatedFulfillmentDateTime":{"persistent":false,"type":"timestamp","name":"nextEstimatedFulfillmentDateTime"},"defaultStockLocation":{"cfc":"Location","fieldtype":"many-to-one","fkcolumn":"locationID","name":"defaultStockLocation"},"remoteID":{"ormtype":"string","name":"remoteID"},"orderPaymentRefundOptions":{"persistent":false,"name":"orderPaymentRefundOptions"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"orderOrigin":{"cfc":"OrderOrigin","fieldtype":"many-to-one","fkcolumn":"orderOriginID","hb_optionsnullrbkey":"define.none","name":"orderOrigin"}};
+                	entities['Order'] = {"totalReturnQuantity":{"persistent":false,"name":"totalReturnQuantity"},"appliedPromotions":{"cfc":"PromotionApplied","fieldtype":"one-to-many","singularname":"appliedPromotion","cascade":"all-delete-orphan","fkcolumn":"orderID","inverse":true,"name":"appliedPromotions"},"fulfillmentDiscountAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentDiscountAmountTotal"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"assignedAccount":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"assignedAccountID","name":"assignedAccount"},"orderID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderID"},"orderDiscountAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"orderDiscountAmountTotal"},"shippingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"shippingAccountAddressID","hb_populateenabled":"public","name":"shippingAccountAddress"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"referencedOrderType":{"ormtype":"string","hb_formattype":"rbKey","name":"referencedOrderType"},"shippingAddress":{"cfc":"Address","fieldtype":"many-to-one","fkcolumn":"shippingAddressID","hb_populateenabled":"public","name":"shippingAddress"},"dynamicCreditOrderPaymentAmount":{"persistent":false,"hb_formattype":"currency","name":"dynamicCreditOrderPaymentAmount"},"saveBillingAccountAddressFlag":{"persistent":false,"hb_populateenabled":"public","name":"saveBillingAccountAddressFlag"},"totalSaleQuantity":{"persistent":false,"name":"totalSaleQuantity"},"itemDiscountAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"itemDiscountAmountTotal"},"estimatedDeliveryDateTime":{"ormtype":"timestamp","name":"estimatedDeliveryDateTime"},"orderCloseDateTime":{"ormtype":"timestamp","name":"orderCloseDateTime"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"billingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"billingAccountAddressID","hb_populateenabled":"public","name":"billingAccountAddress"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"accountLoyaltyTransactions":{"cfc":"AccountLoyaltyTransaction","fieldtype":"one-to-many","singularname":"accountLoyaltyTransaction","cascade":"all","fkcolumn":"orderID","type":"array","inverse":true,"name":"accountLoyaltyTransactions"},"promotionCodeList":{"persistent":false,"name":"promotionCodeList"},"validations":{"persistent":false,"type":"struct","name":"validations"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"orderID","type":"array","inverse":true,"name":"attributeValues"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"saveBillingAccountAddressName":{"persistent":false,"hb_populateenabled":"public","name":"saveBillingAccountAddressName"},"taxTotal":{"persistent":false,"hb_formattype":"currency","name":"taxTotal"},"paymentMethodOptionsSmartList":{"persistent":false,"name":"paymentMethodOptionsSmartList"},"eligiblePaymentMethodDetails":{"persistent":false,"name":"eligiblePaymentMethodDetails"},"paymentAmountDue":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountDue"},"saveShippingAccountAddressName":{"persistent":false,"hb_populateenabled":"public","name":"saveShippingAccountAddressName"},"promotionCodes":{"cfc":"PromotionCode","linktable":"SwOrderPromotionCode","fieldtype":"many-to-many","singularname":"promotionCode","inversejoincolumn":"promotionCodeID","fkcolumn":"orderID","name":"promotionCodes"},"subTotalAfterItemDiscounts":{"persistent":false,"hb_formattype":"currency","name":"subTotalAfterItemDiscounts"},"paymentAmountCreditedTotal":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountCreditedTotal"},"orderFulfillments":{"cfc":"OrderFulfillment","fieldtype":"one-to-many","singularname":"orderFulfillment","cascade":"all-delete-orphan","fkcolumn":"orderID","hb_populateenabled":"public","inverse":true,"name":"orderFulfillments"},"dynamicChargeOrderPayment":{"persistent":false,"name":"dynamicChargeOrderPayment"},"orderPaymentAmountNeeded":{"persistent":false,"hb_formattype":"currency","name":"orderPaymentAmountNeeded"},"saleItemSmartList":{"persistent":false,"name":"saleItemSmartList"},"orderNumber":{"ormtype":"string","name":"orderNumber"},"quantityUnreceived":{"persistent":false,"name":"quantityUnreceived"},"depositItemSmartList":{"persistent":false,"name":"depositItemSmartList"},"orderOpenDateTime":{"ormtype":"timestamp","name":"orderOpenDateTime"},"orderReturns":{"cfc":"OrderReturn","fieldtype":"one-to-many","cascade":"all-delete-orphan","singularname":"orderReturn","fkcolumn":"orderID","inverse":true,"hb_populateenabled":"public","type":"array","name":"orderReturns"},"orderPaymentCreditAmountNeeded":{"persistent":false,"hb_formattype":"currency","name":"orderPaymentCreditAmountNeeded"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"deliveredItemsAmountTotal":{"persistent":false,"name":"deliveredItemsAmountTotal"},"quantityUndelivered":{"persistent":false,"name":"quantityUndelivered"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"paymentAmountReceivedTotal":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountReceivedTotal"},"referencedOrder":{"cfc":"Order","fieldtype":"many-to-one","fkcolumn":"referencedOrderID","name":"referencedOrder"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"addOrderItemStockOptionsSmartList":{"persistent":false,"name":"addOrderItemStockOptionsSmartList"},"statusCode":{"persistent":false,"name":"statusCode"},"estimatedFulfillmentDateTime":{"ormtype":"timestamp","name":"estimatedFulfillmentDateTime"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"dynamicChargeOrderPaymentAmount":{"persistent":false,"hb_formattype":"currency","name":"dynamicChargeOrderPaymentAmount"},"fulfillmentChargeAfterDiscountTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentChargeAfterDiscountTotal"},"orderPaymentChargeAmountNeeded":{"persistent":false,"hb_formattype":"currency","name":"orderPaymentChargeAmountNeeded"},"addOrderItemSkuOptionsSmartList":{"persistent":false,"name":"addOrderItemSkuOptionsSmartList"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"fulfillmentTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentTotal"},"quantityDelivered":{"persistent":false,"name":"quantityDelivered"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"totalQuantity":{"persistent":false,"name":"totalQuantity"},"orderTypeOptions":{"persistent":false,"name":"orderTypeOptions"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"rootOrderItems":{"persistent":false,"name":"rootOrderItems"},"quantityReceived":{"persistent":false,"name":"quantityReceived"},"discountTotal":{"persistent":false,"hb_formattype":"currency","name":"discountTotal"},"dynamicCreditOrderPayment":{"persistent":false,"name":"dynamicCreditOrderPayment"},"nextEstimatedDeliveryDateTime":{"persistent":false,"type":"timestamp","name":"nextEstimatedDeliveryDateTime"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"orderPayments":{"cfc":"OrderPayment","fieldtype":"one-to-many","singularname":"orderPayment","cascade":"all-delete-orphan","fkcolumn":"orderID","hb_populateenabled":"public","inverse":true,"name":"orderPayments"},"paymentAmountTotal":{"persistent":false,"hb_formattype":"currency","name":"paymentAmountTotal"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"account":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"accountID","name":"account"},"totalItems":{"persistent":false,"name":"totalItems"},"orderDeliveries":{"cfc":"OrderDelivery","fieldtype":"one-to-many","singularname":"orderDelivery","cascade":"delete-orphan","fkcolumn":"orderID","inverse":true,"name":"orderDeliveries"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"referencingPaymentAmountCreditedTotal":{"persistent":false,"hb_formattype":"currency","name":"referencingPaymentAmountCreditedTotal"},"referencingOrders":{"cfc":"Order","fieldtype":"one-to-many","singularname":"referencingOrder","cascade":"all-delete-orphan","fkcolumn":"referencedOrderID","inverse":true,"name":"referencingOrders"},"orderType":{"cfc":"Type","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderType","fkcolumn":"orderTypeID","name":"orderType"},"orderStatusType":{"cfc":"Type","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderStatusType","fkcolumn":"orderStatusTypeID","name":"orderStatusType"},"saveShippingAccountAddressFlag":{"persistent":false,"hb_populateenabled":"public","name":"saveShippingAccountAddressFlag"},"orderPlacedSite":{"cfc":"Site","fieldtype":"many-to-one","fkcolumn":"orderPlcaedSiteID","hb_populateenabled":"public","name":"orderPlacedSite"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"orderCreatedSite":{"cfc":"Site","fieldtype":"many-to-one","fkcolumn":"orderCreatedSiteID","hb_populateenabled":"public","name":"orderCreatedSite"},"returnItemSmartList":{"persistent":false,"name":"returnItemSmartList"},"orderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"orderItem","cascade":"all-delete-orphan","fkcolumn":"orderID","hb_populateenabled":"public","inverse":true,"name":"orderItems"},"defaultStockLocationOptions":{"persistent":false,"name":"defaultStockLocationOptions"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"orderOpenIPAddress":{"ormtype":"string","name":"orderOpenIPAddress"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"subTotal":{"persistent":false,"hb_formattype":"currency","name":"subTotal"},"billingAddress":{"cfc":"Address","fieldtype":"many-to-one","fkcolumn":"billingAddressID","hb_populateenabled":"public","name":"billingAddress"},"calculatedTotal":{"ormtype":"big_decimal","name":"calculatedTotal"},"fulfillmentChargeTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentChargeTotal"},"total":{"persistent":false,"hb_formattype":"currency","name":"total"},"orderRequirementsList":{"persistent":false,"name":"orderRequirementsList"},"fulfillmentRefundTotal":{"persistent":false,"hb_formattype":"currency","name":"fulfillmentRefundTotal"},"addPaymentRequirementDetails":{"persistent":false,"name":"addPaymentRequirementDetails"},"stockReceivers":{"cfc":"StockReceiver","fieldtype":"one-to-many","singularname":"stockReceiver","cascade":"all-delete-orphan","fkcolumn":"orderID","type":"array","inverse":true,"name":"stockReceivers"},"nextEstimatedFulfillmentDateTime":{"persistent":false,"type":"timestamp","name":"nextEstimatedFulfillmentDateTime"},"defaultStockLocation":{"cfc":"Location","fieldtype":"many-to-one","fkcolumn":"locationID","name":"defaultStockLocation"},"remoteID":{"ormtype":"string","name":"remoteID"},"orderPaymentRefundOptions":{"persistent":false,"name":"orderPaymentRefundOptions"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"orderOrigin":{"cfc":"OrderOrigin","fieldtype":"many-to-one","fkcolumn":"orderOriginID","hb_optionsnullrbkey":"define.none","name":"orderOrigin"}};
                 	entities['Order'].className = 'Order';
                 	
                 	validations['Order'] = {"properties":{"account":[{"contexts":"addOrderPayment,placeOrder","required":true}],"statusCode":[{"contexts":"placeOrder,delete","inList":"ostNotPlaced"},{"contexts":"addSaleOrderItem,addOrderPayment,addPromotionCode,updateStatus","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},{"contexts":"cancelOrder,closeOrder","inList":"ostNew,ostProcessing,ostOnHold"},{"contexts":"createReturn","inList":"ostNew,ostProcessing,ostOnHold,ostClosed"},{"contexts":"takeOffHold","inList":"ostOnHold"},{"contexts":"placeOnHold","inList":"ostNew,ostProcessing"},{"contexts":"auditRollback","inList":"ostNotPlaced"}],"orderType":[{"contexts":"save","required":true}],"quantityReceived":[{"contexts":"cancelOrder","maxValue":0}],"orderStatusType":[{"contexts":"save","required":true}],"quantityDelivered":[{"contexts":"cancelOrder","maxValue":0},{"contexts":"createReturn","minValue":1}],"orderItems":[{"contexts":"placeOrder,addOrderPayment","minCollection":1},{"contexts":"cancelOrder","method":"canCancel"}]},"populatedPropertyValidation":{"billingAddress":[{"validate":"full"}],"shippingAddress":[{"validate":"full"}]}};
@@ -1073,7 +1073,7 @@
                 	entities['Order_AddOrderPayment'] = {"newOrderPayment":{"cfc":"OrderPayment","persistent":false,"fieldtype":"many-to-one","fkcolumn":"orderPaymentID","name":"newOrderPayment"},"preProcessDisplayedFlag":{"name":"preProcessDisplayedFlag"},"populatedFlag":{"name":"populatedFlag"},"previousOrderPaymentID":{"hb_rbkey":"entity.previousOrderPayment","hb_formfieldtype":"select","name":"previousOrderPaymentID"},"paymentTermIDOptions":{"name":"paymentTermIDOptions"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"saveGiftCardToAccountFlag":{"hb_formfieldtype":"yesno","name":"saveGiftCardToAccountFlag"},"saveAccountPaymentMethodFlag":{"hb_formfieldtype":"yesno","name":"saveAccountPaymentMethodFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"copyFromType":{"hb_rbkey":"entity.copyFromType","hb_formfieldtype":"select","ormtype":"string","name":"copyFromType"},"saveAccountPaymentMethodName":{"hb_rbkey":"entity.accountPaymentMethod.accountPaymentMethodName","name":"saveAccountPaymentMethodName"},"copyFromTypeOptions":{"name":"copyFromTypeOptions"},"accountAddressID":{"hb_rbkey":"entity.accountAddress","hb_formfieldtype":"select","name":"accountAddressID"},"validations":{"persistent":false,"type":"struct","name":"validations"},"accountPaymentMethodIDOptions":{"name":"accountPaymentMethodIDOptions"},"order":{"name":"order"},"attributeValuesByCodeStruct":{"name":"attributeValuesByCodeStruct"},"previousOrderPaymentIDOptions":{"name":"previousOrderPaymentIDOptions"},"paymentMethodIDOptions":{"name":"paymentMethodIDOptions"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"accountPaymentMethodID":{"hb_rbkey":"entity.accountPaymentMethod","hb_formfieldtype":"select","name":"accountPaymentMethodID"},"accountAddressIDOptions":{"name":"accountAddressIDOptions"}};
                 	entities['Order_AddOrderPayment'].className = 'Order_AddOrderPayment';
                 	
-                	validations['Order_AddOrderPayment'] = {"properties":{"newOrderPayment.currencyCode":[{"conditions":"giftCardPayment,redeemGiftCardToAccount,giftCardOrderTypeReturn","method":"giftCardCurrencyMatches"}],"newOrderPayment.giftCardNumberEncrypted":[{"conditions":"redeemGiftCardToAccount","method":"canRedeemGiftCardToAccount"},{"conditions":"giftCardPayment,redeemGiftCardToAccount","method":"canPurchaseWithGiftCard"}],"newOrderPayment.paymentMethodID":[{"conditions":"giftCardOrderTypeReturn","eq":"50d8cd61009931554764385482347f3a"}],"newOrderPayment.dynamicAmountFlag":[{"conditions":"noPaymentAmountNeeded","eq":false}]},"conditions":{"giftCardOrderTypeReturn":{"newOrderPayment":{"method":"isReturnWithGiftCardOrderPayment"},"order.typeCode":{"eq":"otReturnOrder"}},"orderTypeReturn":{"order.typeCode":{"eq":"otReturnOrder"}},"redeemGiftCardToAccount":{"saveGiftCardToAccountFlag":{"eq":true},"newOrderPayment.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}},"giftCardPayment":{"saveGiftCardToAccountFlag":{"eq":false},"newOrderPayment.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}},"noPaymentAmountNeeded":{"order.orderPaymentAmountNeeded":{"eq":0}}},"populatedPropertyValidation":{"newOrderPayment":[{"validate":false}]}};
+                	validations['Order_AddOrderPayment'] = {"properties":{"newOrderPayment.currencyCode":[{"conditions":"giftCardPayment,redeemGiftCardToAccount,giftCardOrderTypeReturn","method":"giftCardCurrencyMatches"}],"newOrderPayment.giftCardNumberEncrypted":[{"conditions":"redeemGiftCardToAccount","method":"canRedeemGiftCardToAccount"},{"conditions":"giftCardPayment,redeemGiftCardToAccount","method":"canPurchaseWithGiftCard"}],"newOrderPayment.paymentMethodID":[{"conditions":"giftCardOrderTypeReturn","eq":"50d8cd61009931554764385482347f3a"}],"newOrderPayment.dynamicAmountFlag":[{"conditions":"noPaymentAmountNeeded","eq":false}]},"conditions":{"giftCardOrderTypeReturn":{"newOrderPayment":{"method":"isReturnWithGiftCardOrderPayment"},"order.typeCode":{"eq":"otReturnOrder"}},"orderTypeReturn":{"order.typeCode":{"eq":"otReturnOrder"}},"redeemGiftCardToAccount":{"newOrderPayment.paymentMethod.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"},"saveGiftCardToAccountFlag":{"eq":true}},"giftCardPayment":{"newOrderPayment.paymentMethod.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"},"saveGiftCardToAccountFlag":{"eq":false}},"noPaymentAmountNeeded":{"order.orderPaymentAmountNeeded":{"eq":0}}},"populatedPropertyValidation":{"newOrderPayment":[{"validate":false}]}};
                 	defaultValues['Order_AddOrderPayment'] = {
                 	order:'',
 										copyFromType:"",
@@ -1492,14 +1492,13 @@
 						z:''
 	                };
                 
-                	entities['SubscriptionUsage'] = {"nextBillDate":{"hb_formfieldtype":"date","ormtype":"timestamp","hb_formattype":"date","name":"nextBillDate"},"subscriptionOrderItems":{"cfc":"SubscriptionOrderItem","fieldtype":"one-to-many","singularname":"subscriptionOrderItem","cascade":"all-delete-orphan","fkcolumn":"subscriptionUsageID","type":"array","inverse":true,"name":"subscriptionOrderItems"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"subscriptionUsageID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"subscriptionUsageID"},"mostRecentSubscriptionOrderItem":{"persistant":false,"name":"mostRecentSubscriptionOrderItem"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"mostRecentOrder":{"persistant":false,"name":"mostRecentOrder"},"nextReminderEmailDate":{"hb_formfieldtype":"date","ormtype":"timestamp","hb_formattype":"date","name":"nextReminderEmailDate"},"currentStatus":{"persistent":false,"name":"currentStatus"},"initialSku":{"persistant":false,"name":"initialSku"},"totalNumberOfSubscriptionOrderItems":{"persistant":false,"name":"totalNumberOfSubscriptionOrderItems"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"account":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"accountID","name":"account"},"shippingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"shippingAccountAddressID","hb_populateenabled":"public","name":"shippingAccountAddress"},"currentStatusCode":{"persistent":false,"name":"currentStatusCode"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"shippingAddress":{"cfc":"Address","fieldtype":"many-to-one","fkcolumn":"shippingAddressID","hb_populateenabled":"public","name":"shippingAddress"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"initialOrderItem":{"persistant":false,"name":"initialOrderItem"},"initialOrder":{"persistant":false,"name":"initialOrder"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"subscriptionTerm":{"cfc":"SubscriptionTerm","fieldtype":"many-to-one","fkcolumn":"subscriptionTermID","name":"subscriptionTerm"},"shippingMethod":{"cfc":"ShippingMethod","fieldtype":"many-to-one","fkcolumn":"shippingMethodID","hb_populateenabled":"public","name":"shippingMethod"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"autoPayFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"autoPayFlag"},"validations":{"persistent":false,"type":"struct","name":"validations"},"accountPaymentMethod":{"cfc":"AccountPaymentMethod","fieldtype":"many-to-one","fkcolumn":"accountPaymentMethodID","name":"accountPaymentMethod"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"currentStatusType":{"persistent":false,"name":"currentStatusType"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"renewalPrice":{"ormtype":"big_decimal","hb_formattype":"currency","name":"renewalPrice"},"emailAddress":{"ormtype":"string","hb_populateenabled":"public","name":"emailAddress"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"initialProduct":{"persistant":false,"name":"initialProduct"},"renewalTerm":{"cfc":"Term","fieldtype":"many-to-one","fkcolumn":"renewalTermID","name":"renewalTerm"},"allowProrateFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"allowProrateFlag"},"subscriptionUsageBenefits":{"cfc":"SubscriptionUsageBenefit","fieldtype":"one-to-many","singularname":"subscriptionUsageBenefit","cascade":"all-delete-orphan","fkcolumn":"subscriptionUsageID","type":"array","name":"subscriptionUsageBenefits"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"mostRecentOrderItem":{"persistant":false,"name":"mostRecentOrderItem"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"subscriptionOrderItemName":{"persistent":false,"name":"subscriptionOrderItemName"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"gracePeriodTerm":{"cfc":"Term","fieldtype":"many-to-one","fkcolumn":"gracePeriodTermID","name":"gracePeriodTerm"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"autoRenewFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"autoRenewFlag"},"expirationDate":{"hb_formfieldtype":"date","ormtype":"timestamp","hb_formattype":"date","name":"expirationDate"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"initialTerm":{"cfc":"Term","fieldtype":"many-to-one","fkcolumn":"initialTermID","name":"initialTerm"},"subscriptionStatus":{"cfc":"SubscriptionStatus","fieldtype":"one-to-many","singularname":"subscriptionStatus","cascade":"all-delete-orphan","fkcolumn":"subscriptionUsageID","type":"array","inverse":true,"name":"subscriptionStatus"},"renewalSubscriptionUsageBenefits":{"cfc":"SubscriptionUsageBenefit","fieldtype":"one-to-many","singularname":"renewalSubscriptionUsageBenefit","cascade":"all-delete-orphan","fkcolumn":"renewalSubscriptionUsageID","type":"array","name":"renewalSubscriptionUsageBenefits"},"initialSubscriptionOrderItem":{"persistant":false,"name":"initialSubscriptionOrderItem"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
+                	entities['SubscriptionUsage'] = {"nextBillDate":{"hb_formfieldtype":"date","ormtype":"timestamp","hb_formattype":"date","name":"nextBillDate"},"subscriptionOrderItems":{"cfc":"SubscriptionOrderItem","fieldtype":"one-to-many","singularname":"subscriptionOrderItem","cascade":"all-delete-orphan","fkcolumn":"subscriptionUsageID","type":"array","inverse":true,"name":"subscriptionOrderItems"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"subscriptionUsageID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"subscriptionUsageID"},"mostRecentSubscriptionOrderItem":{"persistant":false,"name":"mostRecentSubscriptionOrderItem"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"mostRecentOrder":{"persistant":false,"name":"mostRecentOrder"},"nextReminderEmailDate":{"hb_formfieldtype":"date","ormtype":"timestamp","hb_formattype":"date","name":"nextReminderEmailDate"},"currentStatus":{"persistent":false,"name":"currentStatus"},"initialSku":{"persistant":false,"name":"initialSku"},"totalNumberOfSubscriptionOrderItems":{"persistant":false,"name":"totalNumberOfSubscriptionOrderItems"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"account":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"accountID","name":"account"},"shippingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"shippingAccountAddressID","hb_populateenabled":"public","name":"shippingAccountAddress"},"currentStatusCode":{"persistent":false,"name":"currentStatusCode"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"shippingAddress":{"cfc":"Address","fieldtype":"many-to-one","fkcolumn":"shippingAddressID","hb_populateenabled":"public","name":"shippingAddress"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"initialOrderItem":{"persistant":false,"name":"initialOrderItem"},"initialOrder":{"persistant":false,"name":"initialOrder"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"subscriptionTerm":{"cfc":"SubscriptionTerm","fieldtype":"many-to-one","fkcolumn":"subscriptionTermID","name":"subscriptionTerm"},"shippingMethod":{"cfc":"ShippingMethod","fieldtype":"many-to-one","fkcolumn":"shippingMethodID","hb_populateenabled":"public","name":"shippingMethod"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"autoPayFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"autoPayFlag"},"validations":{"persistent":false,"type":"struct","name":"validations"},"accountPaymentMethod":{"cfc":"AccountPaymentMethod","fieldtype":"many-to-one","fkcolumn":"accountPaymentMethodID","name":"accountPaymentMethod"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"currentStatusType":{"persistent":false,"name":"currentStatusType"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"renewalPrice":{"ormtype":"big_decimal","hb_formattype":"currency","name":"renewalPrice"},"emailAddress":{"ormtype":"string","hb_populateenabled":"public","name":"emailAddress"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"initialProduct":{"persistant":false,"name":"initialProduct"},"order":{"persistent":false,"name":"order"},"subscriptionOrderItemType":{"persistent":false,"name":"subscriptionOrderItemType"},"renewalTerm":{"cfc":"Term","fieldtype":"many-to-one","fkcolumn":"renewalTermID","name":"renewalTerm"},"allowProrateFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"allowProrateFlag"},"subscriptionUsageBenefits":{"cfc":"SubscriptionUsageBenefit","fieldtype":"one-to-many","singularname":"subscriptionUsageBenefit","cascade":"all-delete-orphan","fkcolumn":"subscriptionUsageID","type":"array","name":"subscriptionUsageBenefits"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"mostRecentOrderItem":{"persistant":false,"name":"mostRecentOrderItem"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"subscriptionOrderItemName":{"persistent":false,"name":"subscriptionOrderItemName"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"gracePeriodTerm":{"cfc":"Term","fieldtype":"many-to-one","fkcolumn":"gracePeriodTermID","name":"gracePeriodTerm"},"renewalSku":{"cfc":"Sku","fieldtype":"many-to-one","fkcolumn":"renewalSkuID","name":"renewalSku"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"autoRenewFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"autoRenewFlag"},"expirationDate":{"hb_formfieldtype":"date","ormtype":"timestamp","hb_formattype":"date","name":"expirationDate"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"initialTerm":{"cfc":"Term","fieldtype":"many-to-one","fkcolumn":"initialTermID","name":"initialTerm"},"subscriptionStatus":{"cfc":"SubscriptionStatus","fieldtype":"one-to-many","singularname":"subscriptionStatus","cascade":"all-delete-orphan","fkcolumn":"subscriptionUsageID","type":"array","inverse":true,"name":"subscriptionStatus"},"renewalSubscriptionUsageBenefits":{"cfc":"SubscriptionUsageBenefit","fieldtype":"one-to-many","singularname":"renewalSubscriptionUsageBenefit","cascade":"all-delete-orphan","fkcolumn":"renewalSubscriptionUsageID","type":"array","name":"renewalSubscriptionUsageBenefits"},"initialSubscriptionOrderItem":{"persistant":false,"name":"initialSubscriptionOrderItem"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
                 	entities['SubscriptionUsage'].className = 'SubscriptionUsage';
                 	
                 	validations['SubscriptionUsage'] = {"properties":{"currentStatusCode":[{"contexts":"cancel","inList":"sstActive,sstSuspended"}],"subscriptionUsageID":[{"contexts":"delete","maxLength":0}]}};
                 	defaultValues['SubscriptionUsage'] = {
                 	subscriptionUsageID:'',
 										allowProrateFlag:null,
-									renewalPrice:null,
 									currencyCode:null,
 									autoRenewFlag:null,
 									autoPayFlag:null,
@@ -1803,7 +1802,7 @@
                 	entities['OrderItem'] = {"orderItemStatusType":{"cfc":"Type","fetch":"join","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderItemStatusType","fkcolumn":"orderItemStatusTypeID","name":"orderItemStatusType"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"quantity":{"ormtype":"integer","hb_populateenabled":"public","name":"quantity"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"appliedPromotions":{"cfc":"PromotionApplied","fieldtype":"one-to-many","singularname":"appliedPromotion","cascade":"all-delete-orphan","fkcolumn":"orderItemID","inverse":true,"name":"appliedPromotions"},"eventRegistrations":{"cfc":"EventRegistration","fieldtype":"one-to-many","lazy":"extra","cascade":"all-delete-orphan","singularname":"eventRegistration","fkcolumn":"orderItemID","inverse":true,"hb_populateenabled":"public","name":"eventRegistrations"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"orderItemID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderItemID"},"productBundlePrice":{"persistent":false,"hb_formattype":"currency","name":"productBundlePrice"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"extendedPrice":{"persistent":false,"hb_formattype":"currency","name":"extendedPrice"},"stockReceiverItems":{"cfc":"StockReceiverItem","fieldtype":"one-to-many","singularname":"stockReceiverItem","fkcolumn":"orderItemID","type":"array","inverse":true,"name":"stockReceiverItems"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"parentOrderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","fkcolumn":"parentOrderItemID","name":"parentOrderItem"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"childOrderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"childOrderItem","cascade":"all-delete-orphan","fkcolumn":"parentOrderItemID","hb_populateenabled":"public","inverse":true,"name":"childOrderItems"},"estimatedDeliveryDateTime":{"ormtype":"timestamp","name":"estimatedDeliveryDateTime"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"price":{"ormtype":"big_decimal","name":"price"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"accountLoyaltyTransactions":{"cfc":"AccountLoyaltyTransaction","fieldtype":"one-to-many","singularname":"accountLoyaltyTransaction","cascade":"all","fkcolumn":"orderItemID","type":"array","inverse":true,"name":"accountLoyaltyTransactions"},"validations":{"persistent":false,"type":"struct","name":"validations"},"taxAmount":{"persistent":false,"hb_formattype":"currency","name":"taxAmount"},"appliedPriceGroup":{"cfc":"PriceGroup","fieldtype":"many-to-one","fkcolumn":"appliedPriceGroupID","name":"appliedPriceGroup"},"activeEventRegistrations":{"persistent":false,"name":"activeEventRegistrations"},"orderFulfillment":{"cfc":"OrderFulfillment","fieldtype":"many-to-one","fkcolumn":"orderFulfillmentID","name":"orderFulfillment"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"orderItemID","inverse":true,"name":"attributeValues"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"publicRemoteID":{"ormtype":"string","hb_populateenabled":"public","name":"publicRemoteID"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"salePrice":{"persistent":false,"type":"struct","name":"salePrice"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"skuPrice":{"ormtype":"big_decimal","name":"skuPrice"},"productBundleGroup":{"cfc":"ProductBundleGroup","fieldtype":"many-to-one","fkcolumn":"productBundleGroupID","hb_populateenabled":"public","name":"productBundleGroup"},"taxLiabilityAmount":{"persistent":false,"hb_formattype":"currency","name":"taxLiabilityAmount"},"orderReturn":{"cfc":"OrderReturn","fieldtype":"many-to-one","fkcolumn":"orderReturnID","name":"orderReturn"},"referencingOrderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"referencingOrderItem","cascade":"all","fkcolumn":"referencedOrderItemID","inverse":true,"name":"referencingOrderItems"},"discountAmount":{"persistent":false,"hint":"This is the discount amount after quantity (talk to Greg if you don't understand)","hb_formattype":"currency","name":"discountAmount"},"extendedPriceAfterDiscount":{"persistent":false,"hb_formattype":"currency","name":"extendedPriceAfterDiscount"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"orderItemType":{"cfc":"Type","fetch":"join","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderItemType","fkcolumn":"orderItemTypeID","name":"orderItemType"},"stock":{"cfc":"Stock","fieldtype":"many-to-one","fkcolumn":"stockID","hb_populateenabled":"public","name":"stock"},"order":{"cfc":"Order","fetch":"join","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"orderID","hb_populateenabled":false,"name":"order"},"registrants":{"persistent":false,"name":"registrants"},"quantityUnreceived":{"persistent":false,"name":"quantityUnreceived"},"giftCards":{"cfc":"GiftCard","fieldtype":"one-to-many","singularname":"giftCard","cascade":"all","fkcolumn":"originalOrderItemID","type":"array","inverse":true,"name":"giftCards"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"appliedTaxes":{"cfc":"TaxApplied","fieldtype":"one-to-many","singularname":"appliedTax","cascade":"all-delete-orphan","fkcolumn":"orderItemID","inverse":true,"name":"appliedTaxes"},"quantityUndelivered":{"persistent":false,"name":"quantityUndelivered"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"estimatedFulfillmentDateTime":{"ormtype":"timestamp","name":"estimatedFulfillmentDateTime"},"orderDeliveryItems":{"cfc":"OrderDeliveryItem","fieldtype":"one-to-many","singularname":"orderDeliveryItem","cascade":"delete-orphan","fkcolumn":"orderItemID","inverse":true,"name":"orderDeliveryItems"},"orderStatusCode":{"persistent":false,"name":"orderStatusCode"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"quantityDelivered":{"persistent":false,"name":"quantityDelivered"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"itemTotal":{"persistent":false,"hb_formattype":"currency","name":"itemTotal"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"quantityReceived":{"persistent":false,"name":"quantityReceived"},"orderItemGiftRecipients":{"cfc":"OrderItemGiftRecipient","fieldtype":"one-to-many","singularname":"orderItemGiftRecipient","cascade":"all","fkcolumn":"orderItemID","type":"array","inverse":true,"name":"orderItemGiftRecipients"},"referencedOrderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","fkcolumn":"referencedOrderItemID","name":"referencedOrderItem"},"sku":{"cfc":"Sku","fetch":"join","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"skuID","hb_populateenabled":"public","name":"sku"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"productBundleGroupPrice":{"persistent":false,"hb_formattype":"currency","name":"productBundleGroupPrice"}};
                 	entities['OrderItem'].className = 'OrderItem';
                 	
-                	validations['OrderItem'] = {"properties":{"orderItemStatusType":[{"contexts":"save","required":true}],"quantity":[{"contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},{"contexts":"save","method":"hasQuantityWithinMinOrderQuantity"}],"orderStatusCode":[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],"orderItemType":[{"contexts":"save","required":true}],"sku":[{"contexts":"save","required":true}]}};
+                	validations['OrderItem'] = {"properties":{"orderItemStatusType":[{"contexts":"save","required":true}],"quantity":[{"contexts":"save","dataType":"numeric","method":"hasQuantityWithinMaxOrderQuantity"},{"contexts":"save","method":"hasQuantityWithinMinOrderQuantity"}],"orderStatusCode":[{"contexts":"edit,delete","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],"orderItemGiftRecipients":[{"contexts":"addRecipientsToOrderItem","method":"hasUnassignedGiftCards"}],"orderItemType":[{"contexts":"save","required":true}],"sku":[{"contexts":"save","required":true}],"quantityDelivered":[{"contexts":"delete","eq":0}]}};
                 	defaultValues['OrderItem'] = {
                 	orderItemID:'',
 										price:null,
@@ -1822,10 +1821,10 @@
 						z:''
 	                };
                 
-                	entities['Email'] = {"emailFailTo":{"ormtype":"string","hb_populateenabled":"public","name":"emailFailTo"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"emailBodyText":{"length":4000,"ormtype":"string","hb_populateenabled":"public","name":"emailBodyText"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"relatedObject":{"ormtype":"string","name":"relatedObject"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"emailTo":{"ormtype":"string","hb_populateenabled":"public","name":"emailTo"},"voidSendFlag":{"persistent":false,"name":"voidSendFlag"},"emailBCC":{"ormtype":"string","hb_populateenabled":"public","name":"emailBCC"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"emailFrom":{"ormtype":"string","hb_populateenabled":"public","name":"emailFrom"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"emailSubject":{"ormtype":"string","hb_populateenabled":"public","name":"emailSubject"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"emailCC":{"ormtype":"string","hb_populateenabled":"public","name":"emailCC"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"logEmailFlag":{"persistent":false,"name":"logEmailFlag"},"emailBodyHTML":{"length":4000,"ormtype":"string","hb_populateenabled":"public","name":"emailBodyHTML"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"relatedObjectID":{"ormtype":"string","name":"relatedObjectID"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"emailID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"emailID"}};
+                	entities['Email'] = {"emailFailTo":{"ormtype":"string","hb_populateenabled":"public","name":"emailFailTo"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"emailBodyText":{"length":4000,"ormtype":"string","hb_populateenabled":"public","name":"emailBodyText"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"relatedObject":{"ormtype":"string","name":"relatedObject"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"emailTo":{"ormtype":"string","hb_populateenabled":"public","name":"emailTo"},"voidSendFlag":{"persistent":false,"name":"voidSendFlag"},"emailBCC":{"ormtype":"string","hb_populateenabled":"public","name":"emailBCC"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"emailFrom":{"ormtype":"string","hb_populateenabled":"public","name":"emailFrom"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"emailSubject":{"ormtype":"string","hb_populateenabled":"public","name":"emailSubject"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"emailCC":{"ormtype":"string","hb_populateenabled":"public","name":"emailCC"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"logEmailFlag":{"persistent":false,"name":"logEmailFlag"},"emailBodyHTML":{"length":4000,"ormtype":"string","hb_populateenabled":"public","name":"emailBodyHTML"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"relatedObjectID":{"ormtype":"string","name":"relatedObjectID"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"emailID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"emailID"},"relatedObjectPrimaryIDField":{"name":"relatedObjectPrimaryIDField"}};
                 	entities['Email'].className = 'Email';
                 	
-                	validations['Email'] = {"properties":{"emailName":[{"contexts":"save","required":true}]}};
+                	validations['Email'] = {"properties":{"emailName":[{"contexts":"save","required":true}],"emailID":[{"contexts":"edit","maxLength":0}]}};
                 	defaultValues['Email'] = {
                 	emailID:'',
 										emailTo:null,
@@ -1841,6 +1840,7 @@
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
+									relatedObjectPrimaryIDField:null,
 									
 						z:''
 	                };
@@ -2027,7 +2027,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"e5aa9af7a458ad26e2fd5e7537562cf1",
+									accountPasswordResetID:"62a600cd7f756302df62469380a28a4f",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -2182,7 +2182,7 @@
 						z:''
 	                };
                 
-                	entities['Product'] = {"listingPages":{"cfc":"Content","linktable":"SwProductListingPage","fieldtype":"many-to-many","singularname":"listingPage","inversejoincolumn":"contentID","fkcolumn":"productID","name":"listingPages"},"promotionRewards":{"cfc":"PromotionReward","linktable":"SwPromoRewardProduct","fieldtype":"many-to-many","singularname":"promotionReward","inversejoincolumn":"promotionRewardID","fkcolumn":"productID","inverse":true,"name":"promotionRewards"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"redemptionAmountTypeOptions":{"persistent":false,"type":"array","name":"redemptionAmountTypeOptions"},"productImages":{"cfc":"Image","fieldtype":"one-to-many","singularname":"productImage","cascade":"all-delete-orphan","fkcolumn":"productID","type":"array","inverse":true,"name":"productImages"},"relatedProducts":{"cfc":"Product","linktable":"SwRelatedProduct","fieldtype":"many-to-many","singularname":"relatedProduct","inversejoincolumn":"relatedProductID","fkcolumn":"productID","type":"array","name":"relatedProducts"},"vendors":{"cfc":"Vendor","linktable":"SwVendorProduct","fieldtype":"many-to-many","singularname":"vendor","inversejoincolumn":"vendorID","fkcolumn":"productID","inverse":true,"type":"array","name":"vendors"},"eventRegistrations":{"persistent":false,"type":"array","name":"eventRegistrations"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"sortOrder":{"ormtype":"integer","name":"sortOrder"},"loyaltyRedemptions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedemptionProduct","fieldtype":"many-to-many","singularname":"loyaltyRedemption","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"productID","inverse":true,"type":"array","name":"loyaltyRedemptions"},"defaultProductImageFiles":{"persistent":false,"name":"defaultProductImageFiles"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"schedulingOptions":{"persistent":false,"hb_formattype":"array","name":"schedulingOptions"},"livePrice":{"persistent":false,"hb_formattype":"currency","name":"livePrice"},"brandOptions":{"persistent":false,"type":"array","name":"brandOptions"},"transactionExistsFlag":{"persistent":false,"type":"boolean","name":"transactionExistsFlag"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"promotionRewardExclusions":{"cfc":"PromotionReward","linktable":"SwPromoRewardExclProduct","fieldtype":"many-to-many","singularname":"promotionRewardExclusion","inversejoincolumn":"promotionRewardID","fkcolumn":"productID","inverse":true,"type":"array","name":"promotionRewardExclusions"},"productDescription":{"length":4000,"hb_formfieldtype":"wysiwyg","ormtype":"string","name":"productDescription"},"baseProductType":{"persistent":false,"type":"string","name":"baseProductType"},"productSchedules":{"cfc":"ProductSchedule","fieldtype":"one-to-many","singularname":"productSchedule","cascade":"all-delete-orphan","fkcolumn":"productID","inverse":true,"name":"productSchedules"},"loyaltyRedemptionExclusions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedempExclProduct","fieldtype":"many-to-many","singularname":"loyaltyRedemptionExclusion","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"productID","inverse":true,"type":"array","name":"loyaltyRedemptionExclusions"},"availableForPurchaseFlag":{"persistent":false,"type":"boolean","name":"availableForPurchaseFlag"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"priceGroupRates":{"cfc":"PriceGroupRate","linktable":"SwPriceGroupRateProduct","fieldtype":"many-to-many","singularname":"priceGroupRate","inversejoincolumn":"priceGroupRateID","fkcolumn":"productID","inverse":true,"name":"priceGroupRates"},"price":{"persistent":false,"hb_formattype":"currency","name":"price"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"qats":{"persistent":false,"type":"numeric","name":"qats"},"estimatedReceivalDetails":{"persistent":false,"type":"struct","name":"estimatedReceivalDetails"},"productName":{"notnull":true,"ormtype":"string","name":"productName"},"promotionQualifierExclusions":{"cfc":"PromotionQualifier","linktable":"SwPromoQualExclProduct","fieldtype":"many-to-many","singularname":"promotionQualifierExclusion","inversejoincolumn":"promotionQualifierID","fkcolumn":"productID","inverse":true,"type":"array","name":"promotionQualifierExclusions"},"categories":{"cfc":"Category","linktable":"SwProductCategory","fieldtype":"many-to-many","singularname":"category","inversejoincolumn":"categoryID","fkcolumn":"productID","name":"categories"},"unusedProductOptionGroups":{"persistent":false,"type":"array","name":"unusedProductOptionGroups"},"productReviews":{"cfc":"ProductReview","fieldtype":"one-to-many","singularname":"productReview","cascade":"all-delete-orphan","fkcolumn":"productID","inverse":true,"name":"productReviews"},"loyaltyAccruements":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruProduct","fieldtype":"many-to-many","singularname":"loyaltyAccruement","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"productID","inverse":true,"name":"loyaltyAccruements"},"eventConflictExistsFlag":{"persistent":false,"type":"boolean","name":"eventConflictExistsFlag"},"publishedFlag":{"ormtype":"boolean","default":false,"name":"publishedFlag"},"brand":{"cfc":"Brand","fetch":"join","fieldtype":"many-to-one","fkcolumn":"brandID","hb_optionsnullrbkey":"define.none","name":"brand"},"validations":{"persistent":false,"type":"struct","name":"validations"},"activeFlag":{"ormtype":"boolean","name":"activeFlag"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"productID","inverse":true,"name":"attributeValues"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"purchaseStartDateTime":{"ormtype":"timestamp","name":"purchaseStartDateTime"},"calculatedQATS":{"ormtype":"integer","name":"calculatedQATS"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"urlTitle":{"unique":true,"ormtype":"string","name":"urlTitle"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"unusedProductOptions":{"persistent":false,"type":"array","name":"unusedProductOptions"},"calculatedTitle":{"ormtype":"string","name":"calculatedTitle"},"salePrice":{"persistent":false,"hb_formattype":"currency","name":"salePrice"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"brandName":{"persistent":false,"type":"string","name":"brandName"},"renewalPrice":{"persistent":false,"hb_formattype":"currency","name":"renewalPrice"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"productID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"productID"},"productCode":{"unique":true,"ormtype":"string","index":"PI_PRODUCTCODE","name":"productCode"},"skus":{"cfc":"Sku","fieldtype":"one-to-many","singularname":"sku","cascade":"all-delete-orphan","fkcolumn":"productID","type":"array","inverse":true,"name":"skus"},"bundleSkusSmartList":{"persistent":false,"name":"bundleSkusSmartList"},"placedOrderItemsSmartList":{"persistent":false,"type":"any","name":"placedOrderItemsSmartList"},"calculatedAllowBackorderFlag":{"ormtype":"boolean","name":"calculatedAllowBackorderFlag"},"physicals":{"cfc":"Physical","linktable":"SwPhysicalProduct","fieldtype":"many-to-many","singularname":"physical","inversejoincolumn":"physicalID","fkcolumn":"productID","inverse":true,"type":"array","name":"physicals"},"nextSkuCodeCount":{"persistent":false,"name":"nextSkuCodeCount"},"listPrice":{"persistent":false,"hb_formattype":"currency","name":"listPrice"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"defaultSku":{"cfc":"Sku","fetch":"join","fieldtype":"many-to-one","cascade":"delete","fkcolumn":"defaultSkuID","name":"defaultSku"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"calculatedSalePrice":{"ormtype":"big_decimal","name":"calculatedSalePrice"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"promotionQualifiers":{"cfc":"PromotionQualifier","linktable":"SwPromoQualProduct","fieldtype":"many-to-many","singularname":"promotionQualifier","inversejoincolumn":"promotionQualifierID","fkcolumn":"productID","inverse":true,"name":"promotionQualifiers"},"allowBackorderFlag":{"persistent":false,"type":"boolean","name":"allowBackorderFlag"},"optionGroupCount":{"persistent":false,"type":"numeric","name":"optionGroupCount"},"salePriceDetailsForSkus":{"persistent":false,"type":"struct","name":"salePriceDetailsForSkus"},"currentAccountPrice":{"persistent":false,"hb_formattype":"currency","name":"currentAccountPrice"},"currencyCode":{"persistent":false,"name":"currencyCode"},"productType":{"cfc":"ProductType","fetch":"join","fieldtype":"many-to-one","fkcolumn":"productTypeID","name":"productType"},"allowAddOptionGroupFlag":{"persistent":false,"type":"boolean","name":"allowAddOptionGroupFlag"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"unusedProductSubscriptionTerms":{"persistent":false,"type":"array","name":"unusedProductSubscriptionTerms"},"loyaltyAccruementExclusions":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruExclProduct","fieldtype":"many-to-many","singularname":"loyaltyAccruementExclusion","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"productID","inverse":true,"type":"array","name":"loyaltyAccruementExclusions"},"title":{"persistent":false,"type":"string","name":"title"},"purchaseEndDateTime":{"ormtype":"timestamp","name":"purchaseEndDateTime"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
+                	entities['Product'] = {"listingPages":{"cfc":"Content","linktable":"SwProductListingPage","fieldtype":"many-to-many","singularname":"listingPage","inversejoincolumn":"contentID","fkcolumn":"productID","name":"listingPages"},"promotionRewards":{"cfc":"PromotionReward","linktable":"SwPromoRewardProduct","fieldtype":"many-to-many","singularname":"promotionReward","inversejoincolumn":"promotionRewardID","fkcolumn":"productID","inverse":true,"name":"promotionRewards"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"redemptionAmountTypeOptions":{"persistent":false,"type":"array","name":"redemptionAmountTypeOptions"},"productImages":{"cfc":"Image","fieldtype":"one-to-many","singularname":"productImage","cascade":"all-delete-orphan","fkcolumn":"productID","type":"array","inverse":true,"name":"productImages"},"relatedProducts":{"cfc":"Product","linktable":"SwRelatedProduct","fieldtype":"many-to-many","singularname":"relatedProduct","inversejoincolumn":"relatedProductID","fkcolumn":"productID","type":"array","name":"relatedProducts"},"vendors":{"cfc":"Vendor","linktable":"SwVendorProduct","fieldtype":"many-to-many","singularname":"vendor","inversejoincolumn":"vendorID","fkcolumn":"productID","inverse":true,"type":"array","name":"vendors"},"eventRegistrations":{"persistent":false,"type":"array","name":"eventRegistrations"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"sortOrder":{"ormtype":"integer","name":"sortOrder"},"loyaltyRedemptions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedemptionProduct","fieldtype":"many-to-many","singularname":"loyaltyRedemption","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"productID","inverse":true,"type":"array","name":"loyaltyRedemptions"},"defaultProductImageFiles":{"persistent":false,"name":"defaultProductImageFiles"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"schedulingOptions":{"persistent":false,"hb_formattype":"array","name":"schedulingOptions"},"livePrice":{"persistent":false,"hb_formattype":"currency","name":"livePrice"},"brandOptions":{"persistent":false,"type":"array","name":"brandOptions"},"transactionExistsFlag":{"persistent":false,"type":"boolean","name":"transactionExistsFlag"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"promotionRewardExclusions":{"cfc":"PromotionReward","linktable":"SwPromoRewardExclProduct","fieldtype":"many-to-many","singularname":"promotionRewardExclusion","inversejoincolumn":"promotionRewardID","fkcolumn":"productID","inverse":true,"type":"array","name":"promotionRewardExclusions"},"productDescription":{"length":4000,"hb_formfieldtype":"wysiwyg","ormtype":"string","name":"productDescription"},"baseProductType":{"persistent":false,"type":"string","name":"baseProductType"},"productSchedules":{"cfc":"ProductSchedule","fieldtype":"one-to-many","singularname":"productSchedule","cascade":"all-delete-orphan","fkcolumn":"productID","inverse":true,"name":"productSchedules"},"loyaltyRedemptionExclusions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedempExclProduct","fieldtype":"many-to-many","singularname":"loyaltyRedemptionExclusion","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"productID","inverse":true,"type":"array","name":"loyaltyRedemptionExclusions"},"availableForPurchaseFlag":{"persistent":false,"type":"boolean","name":"availableForPurchaseFlag"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"priceGroupRates":{"cfc":"PriceGroupRate","linktable":"SwPriceGroupRateProduct","fieldtype":"many-to-many","singularname":"priceGroupRate","inversejoincolumn":"priceGroupRateID","fkcolumn":"productID","inverse":true,"name":"priceGroupRates"},"price":{"persistent":false,"hb_formattype":"currency","name":"price"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"qats":{"persistent":false,"type":"numeric","name":"qats"},"estimatedReceivalDetails":{"persistent":false,"type":"struct","name":"estimatedReceivalDetails"},"productName":{"notnull":true,"ormtype":"string","name":"productName"},"promotionQualifierExclusions":{"cfc":"PromotionQualifier","linktable":"SwPromoQualExclProduct","fieldtype":"many-to-many","singularname":"promotionQualifierExclusion","inversejoincolumn":"promotionQualifierID","fkcolumn":"productID","inverse":true,"type":"array","name":"promotionQualifierExclusions"},"categories":{"cfc":"Category","linktable":"SwProductCategory","fieldtype":"many-to-many","singularname":"category","inversejoincolumn":"categoryID","fkcolumn":"productID","name":"categories"},"unusedProductOptionGroups":{"persistent":false,"type":"array","name":"unusedProductOptionGroups"},"productReviews":{"cfc":"ProductReview","fieldtype":"one-to-many","singularname":"productReview","cascade":"all-delete-orphan","fkcolumn":"productID","inverse":true,"name":"productReviews"},"loyaltyAccruements":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruProduct","fieldtype":"many-to-many","singularname":"loyaltyAccruement","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"productID","inverse":true,"name":"loyaltyAccruements"},"eventConflictExistsFlag":{"persistent":false,"type":"boolean","name":"eventConflictExistsFlag"},"publishedFlag":{"ormtype":"boolean","default":false,"name":"publishedFlag"},"brand":{"cfc":"Brand","fetch":"join","fieldtype":"many-to-one","fkcolumn":"brandID","hb_optionsnullrbkey":"define.none","name":"brand"},"validations":{"persistent":false,"type":"struct","name":"validations"},"activeFlag":{"ormtype":"boolean","name":"activeFlag"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"productID","inverse":true,"name":"attributeValues"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"purchaseStartDateTime":{"ormtype":"timestamp","name":"purchaseStartDateTime"},"calculatedQATS":{"ormtype":"integer","name":"calculatedQATS"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"urlTitle":{"unique":true,"ormtype":"string","name":"urlTitle"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"unusedProductOptions":{"persistent":false,"type":"array","name":"unusedProductOptions"},"calculatedTitle":{"ormtype":"string","name":"calculatedTitle"},"salePrice":{"persistent":false,"hb_formattype":"currency","name":"salePrice"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"brandName":{"persistent":false,"type":"string","name":"brandName"},"renewalPrice":{"persistent":false,"hb_formattype":"currency","name":"renewalPrice"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"productID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"productID"},"productCode":{"unique":true,"ormtype":"string","index":"PI_PRODUCTCODE","name":"productCode"},"skus":{"cfc":"Sku","fieldtype":"one-to-many","singularname":"sku","cascade":"all-delete-orphan","fkcolumn":"productID","type":"array","inverse":true,"name":"skus"},"bundleSkusSmartList":{"persistent":false,"name":"bundleSkusSmartList"},"placedOrderItemsSmartList":{"persistent":false,"type":"any","name":"placedOrderItemsSmartList"},"calculatedAllowBackorderFlag":{"ormtype":"boolean","name":"calculatedAllowBackorderFlag"},"physicals":{"cfc":"Physical","linktable":"SwPhysicalProduct","fieldtype":"many-to-many","singularname":"physical","inversejoincolumn":"physicalID","fkcolumn":"productID","inverse":true,"type":"array","name":"physicals"},"nextSkuCodeCount":{"persistent":false,"name":"nextSkuCodeCount"},"listPrice":{"persistent":false,"hb_formattype":"currency","name":"listPrice"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"defaultSku":{"cfc":"Sku","fetch":"join","fieldtype":"many-to-one","cascade":"delete","fkcolumn":"defaultSkuID","name":"defaultSku"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"calculatedSalePrice":{"ormtype":"big_decimal","name":"calculatedSalePrice"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"renewalSku":{"cfc":"Sku","fetch":"join","fieldtype":"many-to-one","cascade":"delete","fkcolumn":"renewalSkuID","name":"renewalSku"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"promotionQualifiers":{"cfc":"PromotionQualifier","linktable":"SwPromoQualProduct","fieldtype":"many-to-many","singularname":"promotionQualifier","inversejoincolumn":"promotionQualifierID","fkcolumn":"productID","inverse":true,"name":"promotionQualifiers"},"allowBackorderFlag":{"persistent":false,"type":"boolean","name":"allowBackorderFlag"},"optionGroupCount":{"persistent":false,"type":"numeric","name":"optionGroupCount"},"salePriceDetailsForSkus":{"persistent":false,"type":"struct","name":"salePriceDetailsForSkus"},"currentAccountPrice":{"persistent":false,"hb_formattype":"currency","name":"currentAccountPrice"},"currencyCode":{"persistent":false,"name":"currencyCode"},"productType":{"cfc":"ProductType","fetch":"join","fieldtype":"many-to-one","fkcolumn":"productTypeID","name":"productType"},"allowAddOptionGroupFlag":{"persistent":false,"type":"boolean","name":"allowAddOptionGroupFlag"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"unusedProductSubscriptionTerms":{"persistent":false,"type":"array","name":"unusedProductSubscriptionTerms"},"loyaltyAccruementExclusions":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruExclProduct","fieldtype":"many-to-many","singularname":"loyaltyAccruementExclusion","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"productID","inverse":true,"type":"array","name":"loyaltyAccruementExclusions"},"title":{"persistent":false,"type":"string","name":"title"},"purchaseEndDateTime":{"ormtype":"timestamp","name":"purchaseEndDateTime"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
                 	entities['Product'].className = 'Product';
                 	
                 	validations['Product'] = {"properties":{"baseProductType":[{"contexts":"addSku","inList":"gift-card,event,merchandise"},{"contexts":"addOptionGroup,addOption","inList":"merchandise"},{"contexts":"addSubscriptionSku","inList":"subscription"},{"contexts":"addEventSchedule,addSkuBundle","inList":"event"}],"price":[{"contexts":"save","dataType":"numeric","required":true}],"optionGroupCount":[{"contexts":"addSku","eq":0}],"productName":[{"contexts":"save","required":true}],"productCode":[{"contexts":"save","regex":"^[a-zA-Z0-9-_.|:~^]+$","required":true,"unique":true}],"unusedProductOptionGroups":[{"contexts":"addOptionGroup","minCollection":1}],"productType":[{"contexts":"save","required":true}],"allowAddOptionGroupFlag":[{"contexts":"addOptionGroup,addOption","eq":true}],"unusedProductSubscriptionTerms":[{"contexts":"addSubscriptionTerm","minCollection":1}],"transactionExistsFlag":[{"contexts":"delete","eq":false}],"physicalCounts":[{"contexts":"delete","maxCollection":0}],"urlTitle":[{"contexts":"save","required":true,"unique":true}],"unusedProductOptions":[{"contexts":"addOption","method":"hasUnusedProductOptionCombinations"}]}};
@@ -2236,10 +2236,10 @@
 						z:''
 	                };
                 
-                	entities['Product_AddSubscriptionSku'] = {"preProcessDisplayedFlag":{"name":"preProcessDisplayedFlag"},"populatedFlag":{"name":"populatedFlag"},"price":{"hb_rbkey":"entity.sku.price","name":"price"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"renewalPrice":{"hb_rbkey":"entity.sku.renewalPrice","name":"renewalPrice"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"validations":{"persistent":false,"type":"struct","name":"validations"},"product":{"name":"product"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"subscriptionTermID":{"name":"subscriptionTermID"},"listPrice":{"hb_rbkey":"entity.sku.listPrice","name":"listPrice"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"renewalSubscriptionBenefits":{"name":"renewalSubscriptionBenefits"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"subscriptionBenefits":{"name":"subscriptionBenefits"}};
+                	entities['Product_AddSubscriptionSku'] = {"preProcessDisplayedFlag":{"name":"preProcessDisplayedFlag"},"populatedFlag":{"name":"populatedFlag"},"price":{"hb_rbkey":"entity.sku.price","name":"price"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"renewalPrice":{"hb_rbkey":"entity.sku.renewalPrice","name":"renewalPrice"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"renewalSku":{"name":"renewalSku"},"validations":{"persistent":false,"type":"struct","name":"validations"},"product":{"name":"product"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"subscriptionTermID":{"name":"subscriptionTermID"},"listPrice":{"hb_rbkey":"entity.sku.listPrice","name":"listPrice"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"renewalSubscriptionBenefits":{"name":"renewalSubscriptionBenefits"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"subscriptionBenefits":{"name":"subscriptionBenefits"}};
                 	entities['Product_AddSubscriptionSku'].className = 'Product_AddSubscriptionSku';
                 	
-                	validations['Product_AddSubscriptionSku'] = {"properties":{"price":[{"dataType":"numeric","required":true}],"renewalPrice":[{"dataType":"numeric","required":true}],"listPrice":[{"dataType":"numeric"}],"renewalSubscriptionBenefits":[{"required":true}],"subscriptionBenefits":[{"required":true}]}};
+                	validations['Product_AddSubscriptionSku'] = {"properties":{"price":[{"dataType":"numeric","required":true}],"renewalPrice":[{"dataType":"numeric","conditions":"customRenewal","required":true}],"listPrice":[{"dataType":"numeric"}],"renewalSubscriptionBenefits":[{"conditions":"customRenewal","required":true}],"subscriptionBenefits":[{"required":true}]},"conditions":{"customRenewal":{"renewalSku":{"null":true}},"renewalSku":{"renewalSku":{"null":false}}}};
                 	defaultValues['Product_AddSubscriptionSku'] = {
                 	product:'',
 										subscriptionTermID:'',
@@ -2247,6 +2247,7 @@
 										renewalPrice:0,
 										subscriptionBenefits:'',
 									renewalSubscriptionBenefits:'',
+									renewalSku:'',
 									preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -2910,10 +2911,10 @@
 						z:''
 	                };
                 
-                	entities['OrderDeliveryItem'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"quantity":{"ormtype":"integer","name":"quantity"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"referencingOrderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"referencingOrderItem","cascade":"all","fkcolumn":"referencedOrderDeliveryItemID","inverse":true,"name":"referencingOrderItems"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"orderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"orderItemID","name":"orderItem"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"stock":{"cfc":"Stock","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"stockID","name":"stock"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"orderDeliveryItemID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderDeliveryItemID"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"orderDelivery":{"cfc":"OrderDelivery","fieldtype":"many-to-one","fkcolumn":"orderDeliveryID","name":"orderDelivery"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"quantityReturned":{"persistent":false,"name":"quantityReturned"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
+                	entities['OrderDeliveryItem'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"quantity":{"ormtype":"integer","name":"quantity"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"referencingOrderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"referencingOrderItem","cascade":"all","fkcolumn":"referencedOrderDeliveryItemID","inverse":true,"name":"referencingOrderItems"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"orderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"orderItemID","name":"orderItem"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"stock":{"cfc":"Stock","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"stockID","name":"stock"},"order":{"persistent":false,"name":"order"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"orderDeliveryItemID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderDeliveryItemID"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"orderDelivery":{"cfc":"OrderDelivery","fieldtype":"many-to-one","fkcolumn":"orderDeliveryID","name":"orderDelivery"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"quantityReturned":{"persistent":false,"name":"quantityReturned"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"sku":{"persistent":false,"type":"any","name":"sku"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
                 	entities['OrderDeliveryItem'].className = 'OrderDeliveryItem';
                 	
-                	validations['OrderDeliveryItem'] = {"properties":{"quantity":[{"contexts":"save","dataType":"numeric","required":true}],"orderDelivery":[{"contexts":"save","required":true}],"orderItem":[{"contexts":"save","required":true}],"stock":[{"contexts":"save","required":true}],"orderDeliveryItemID":[{"contexts":"edit","maxLength":0}]}};
+                	validations['OrderDeliveryItem'] = {"properties":{"quantity":[{"contexts":"save","dataType":"numeric","required":true}],"orderDelivery":[{"contexts":"save","required":true}],"orderItem":[{"contexts":"save","required":true}],"stock":[{"contexts":"save","required":true}],"orderDeliveryItemID":[{"contexts":"edit,delete","maxLength":0}]}};
                 	defaultValues['OrderDeliveryItem'] = {
                 	orderDeliveryItemID:'',
 										quantity:null,
@@ -3451,7 +3452,7 @@
 						z:''
 	                };
                 
-                	entities['OrderPayment'] = {"appliedAccountPayments":{"cfc":"AccountPaymentApplied","fieldtype":"one-to-many","singularname":"appliedAccountPayment","cascade":"all","fkcolumn":"orderPaymentID","type":"array","inverse":true,"name":"appliedAccountPayments"},"amountUnreceived":{"persistent":false,"hb_formattype":"currency","name":"amountUnreceived"},"expirationYearOptions":{"persistent":false,"name":"expirationYearOptions"},"originalAuthorizationCode":{"persistent":false,"name":"originalAuthorizationCode"},"creditCardType":{"ormtype":"string","name":"creditCardType"},"paymentMethodOptions":{"persistent":false,"name":"paymentMethodOptions"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"expirationMonth":{"hb_formfieldtype":"select","ormtype":"string","hb_populateenabled":"public","name":"expirationMonth"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"experationMonthOptions":{"persistent":false,"name":"experationMonthOptions"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"companyPaymentMethodFlag":{"ormtype":"boolean","hb_populateenabled":"public","name":"companyPaymentMethodFlag"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"amount":{"ormtype":"big_decimal","hb_populateenabled":"public","name":"amount"},"referencingOrderPayments":{"cfc":"OrderPayment","fieldtype":"one-to-many","singularname":"referencingOrderPayment","cascade":"all","fkcolumn":"referencedOrderPaymentID","inverse":true,"name":"referencingOrderPayments"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"sucessfulPaymentTransactionExistsFlag":{"persistent":false,"name":"sucessfulPaymentTransactionExistsFlag"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"orderAmountNeeded":{"persistent":false,"name":"orderAmountNeeded"},"paymentDueDate":{"ormtype":"timestamp","hb_populateenabled":"public","name":"paymentDueDate"},"creditCardNumber":{"persistent":false,"hb_populateenabled":"public","name":"creditCardNumber"},"saveBillingAccountAddressFlag":{"persistent":false,"name":"saveBillingAccountAddressFlag"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"purchaseOrderNumber":{"ormtype":"string","hb_populateenabled":"public","name":"purchaseOrderNumber"},"originalAuthorizationProviderTransactionID":{"persistent":false,"name":"originalAuthorizationProviderTransactionID"},"orderPaymentID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderPaymentID"},"bankRoutingNumberEncrypted":{"ormtype":"string","name":"bankRoutingNumberEncrypted"},"providerToken":{"ormtype":"string","name":"providerToken"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"creditCardLastFour":{"ormtype":"string","name":"creditCardLastFour"},"creditCardNumberEncryptedDateTime":{"column":"creditCardNumberEncryptDT","hb_auditable":false,"ormtype":"timestamp","name":"creditCardNumberEncryptedDateTime"},"billingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"billingAccountAddressID","hb_populateenabled":"public","name":"billingAccountAddress"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"amountCredited":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"amountCredited"},"validations":{"persistent":false,"type":"struct","name":"validations"},"referencedOrderPayment":{"cfc":"OrderPayment","fieldtype":"many-to-one","fkcolumn":"referencedOrderPaymentID","name":"referencedOrderPayment"},"accountPaymentMethod":{"cfc":"AccountPaymentMethod","fieldtype":"many-to-one","fkcolumn":"accountPaymentMethodID","hb_populateenabled":"public","name":"accountPaymentMethod"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"peerOrderPaymentNullAmountExistsFlag":{"persistent":false,"name":"peerOrderPaymentNullAmountExistsFlag"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"orderPaymentID","type":"array","inverse":true,"name":"attributeValues"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"saveBillingAccountAddressName":{"persistent":false,"name":"saveBillingAccountAddressName"},"paymentTransactions":{"cfc":"PaymentTransaction","fieldtype":"one-to-many","cascade":"all","singularname":"paymentTransaction","fkcolumn":"orderPaymentID","inverse":true,"type":"array","orderby":"createdDateTime DESC","name":"paymentTransactions"},"originalProviderTransactionID":{"persistent":false,"name":"originalProviderTransactionID"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"paymentTerm":{"cfc":"PaymentTerm","fetch":"join","fieldtype":"many-to-one","fkcolumn":"paymentTermID","name":"paymentTerm"},"giftCardNumber":{"persistent":false,"hb_populateenabled":"public","name":"giftCardNumber"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"orderPaymentType":{"cfc":"Type","fetch":"join","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderPaymentType","fkcolumn":"orderPaymentTypeID","name":"orderPaymentType"},"dynamicAmountFlag":{"persistent":false,"hb_formattype":"yesno","name":"dynamicAmountFlag"},"maximumPaymentMethodPaymentAmount":{"persistent":false,"name":"maximumPaymentMethodPaymentAmount"},"nameOnCreditCard":{"ormtype":"string","hb_populateenabled":"public","name":"nameOnCreditCard"},"paymentMethod":{"cfc":"PaymentMethod","fetch":"join","fieldtype":"many-to-one","fkcolumn":"paymentMethodID","hb_populateenabled":"public","name":"paymentMethod"},"order":{"cfc":"Order","fieldtype":"many-to-one","fkcolumn":"orderID","name":"order"},"bankRoutingNumber":{"persistent":false,"hb_populateenabled":"public","name":"bankRoutingNumber"},"expirationYear":{"hb_formfieldtype":"select","ormtype":"string","hb_populateenabled":"public","name":"expirationYear"},"creditCardNumberEncryptedGenerator":{"column":"creditCardNumberEncryptGen","hb_auditable":false,"ormtype":"string","name":"creditCardNumberEncryptedGenerator"},"billingAddress":{"cfc":"Address","fieldtype":"many-to-one","cascade":"all","fkcolumn":"billingAddressID","hb_populateenabled":"public","name":"billingAddress"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"originalChargeProviderTransactionID":{"persistent":false,"name":"originalChargeProviderTransactionID"},"amountUncaptured":{"persistent":false,"hb_formattype":"currency","name":"amountUncaptured"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"creditCardNumberEncrypted":{"hb_auditable":false,"ormtype":"string","name":"creditCardNumberEncrypted"},"checkNumberEncrypted":{"ormtype":"string","name":"checkNumberEncrypted"},"orderPaymentStatusType":{"cfc":"Type","fetch":"join","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderPaymentStatusType","fkcolumn":"orderPaymentStatusTypeID","hb_populateenabled":false,"name":"orderPaymentStatusType"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"bankAccountNumber":{"persistent":false,"hb_populateenabled":"public","name":"bankAccountNumber"},"statusCode":{"persistent":false,"name":"statusCode"},"bankAccountNumberEncrypted":{"ormtype":"string","name":"bankAccountNumberEncrypted"},"amountUncredited":{"persistent":false,"hb_formattype":"currency","name":"amountUncredited"},"orderStatusCode":{"persistent":false,"name":"orderStatusCode"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"expirationDate":{"persistent":false,"name":"expirationDate"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"amountAuthorized":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"amountAuthorized"},"creditCardOrProviderTokenExistsFlag":{"persistent":false,"name":"creditCardOrProviderTokenExistsFlag"},"giftCardPaymentProcessedFlag":{"ormtype":"boolean","hb_populateenabled":"public","default":false,"name":"giftCardPaymentProcessedFlag"},"remoteID":{"ormtype":"string","name":"remoteID"},"checkNumber":{"persistent":false,"hb_populateenabled":"public","name":"checkNumber"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"termPaymentAccount":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"termPaymentAccountID","name":"termPaymentAccount"},"amountReceived":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"amountReceived"},"paymentMethodType":{"persistent":false,"name":"paymentMethodType"},"giftCardTransactions":{"cfc":"GiftCardTransaction","fieldtype":"one-to-many","singularname":"giftCardTransaction","cascade":"all-delete-orphan","fkcolumn":"orderPaymentID","type":"array","inverse":true,"name":"giftCardTransactions"},"giftCardNumberEncrypted":{"ormtype":"string","name":"giftCardNumberEncrypted"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"amountUnauthorized":{"persistent":false,"hb_formattype":"currency","name":"amountUnauthorized"},"securityCode":{"persistent":false,"hb_populateenabled":"public","name":"securityCode"}};
+                	entities['OrderPayment'] = {"appliedAccountPayments":{"cfc":"AccountPaymentApplied","fieldtype":"one-to-many","singularname":"appliedAccountPayment","cascade":"all","fkcolumn":"orderPaymentID","type":"array","inverse":true,"name":"appliedAccountPayments"},"amountUnreceived":{"persistent":false,"hb_formattype":"currency","name":"amountUnreceived"},"expirationYearOptions":{"persistent":false,"name":"expirationYearOptions"},"originalAuthorizationCode":{"persistent":false,"name":"originalAuthorizationCode"},"creditCardType":{"ormtype":"string","name":"creditCardType"},"paymentMethodOptions":{"persistent":false,"name":"paymentMethodOptions"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"expirationMonth":{"hb_formfieldtype":"select","ormtype":"string","hb_populateenabled":"public","name":"expirationMonth"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"experationMonthOptions":{"persistent":false,"name":"experationMonthOptions"},"giftCard":{"persistent":false,"name":"giftCard"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"companyPaymentMethodFlag":{"ormtype":"boolean","hb_populateenabled":"public","name":"companyPaymentMethodFlag"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"amount":{"ormtype":"big_decimal","hb_populateenabled":"public","name":"amount"},"referencingOrderPayments":{"cfc":"OrderPayment","fieldtype":"one-to-many","singularname":"referencingOrderPayment","cascade":"all","fkcolumn":"referencedOrderPaymentID","inverse":true,"name":"referencingOrderPayments"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"sucessfulPaymentTransactionExistsFlag":{"persistent":false,"name":"sucessfulPaymentTransactionExistsFlag"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"orderAmountNeeded":{"persistent":false,"name":"orderAmountNeeded"},"paymentDueDate":{"ormtype":"timestamp","hb_populateenabled":"public","name":"paymentDueDate"},"creditCardNumber":{"persistent":false,"hb_populateenabled":"public","name":"creditCardNumber"},"saveBillingAccountAddressFlag":{"persistent":false,"name":"saveBillingAccountAddressFlag"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"purchaseOrderNumber":{"ormtype":"string","hb_populateenabled":"public","name":"purchaseOrderNumber"},"originalAuthorizationProviderTransactionID":{"persistent":false,"name":"originalAuthorizationProviderTransactionID"},"orderPaymentID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderPaymentID"},"bankRoutingNumberEncrypted":{"ormtype":"string","name":"bankRoutingNumberEncrypted"},"providerToken":{"ormtype":"string","name":"providerToken"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"creditCardLastFour":{"ormtype":"string","name":"creditCardLastFour"},"creditCardNumberEncryptedDateTime":{"column":"creditCardNumberEncryptDT","hb_auditable":false,"ormtype":"timestamp","name":"creditCardNumberEncryptedDateTime"},"billingAccountAddress":{"cfc":"AccountAddress","fieldtype":"many-to-one","fkcolumn":"billingAccountAddressID","hb_populateenabled":"public","name":"billingAccountAddress"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"amountCredited":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"amountCredited"},"validations":{"persistent":false,"type":"struct","name":"validations"},"referencedOrderPayment":{"cfc":"OrderPayment","fieldtype":"many-to-one","fkcolumn":"referencedOrderPaymentID","name":"referencedOrderPayment"},"accountPaymentMethod":{"cfc":"AccountPaymentMethod","fieldtype":"many-to-one","fkcolumn":"accountPaymentMethodID","hb_populateenabled":"public","name":"accountPaymentMethod"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"peerOrderPaymentNullAmountExistsFlag":{"persistent":false,"name":"peerOrderPaymentNullAmountExistsFlag"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"orderPaymentID","type":"array","inverse":true,"name":"attributeValues"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"saveBillingAccountAddressName":{"persistent":false,"name":"saveBillingAccountAddressName"},"paymentTransactions":{"cfc":"PaymentTransaction","fieldtype":"one-to-many","cascade":"all","singularname":"paymentTransaction","fkcolumn":"orderPaymentID","inverse":true,"type":"array","orderby":"createdDateTime DESC","name":"paymentTransactions"},"originalProviderTransactionID":{"persistent":false,"name":"originalProviderTransactionID"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"paymentTerm":{"cfc":"PaymentTerm","fetch":"join","fieldtype":"many-to-one","fkcolumn":"paymentTermID","name":"paymentTerm"},"giftCardNumber":{"persistent":false,"hb_populateenabled":"public","name":"giftCardNumber"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"orderPaymentType":{"cfc":"Type","fetch":"join","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderPaymentType","fkcolumn":"orderPaymentTypeID","name":"orderPaymentType"},"dynamicAmountFlag":{"persistent":false,"hb_formattype":"yesno","name":"dynamicAmountFlag"},"maximumPaymentMethodPaymentAmount":{"persistent":false,"name":"maximumPaymentMethodPaymentAmount"},"nameOnCreditCard":{"ormtype":"string","hb_populateenabled":"public","name":"nameOnCreditCard"},"paymentMethod":{"cfc":"PaymentMethod","fetch":"join","fieldtype":"many-to-one","fkcolumn":"paymentMethodID","hb_populateenabled":"public","name":"paymentMethod"},"order":{"cfc":"Order","fieldtype":"many-to-one","fkcolumn":"orderID","name":"order"},"bankRoutingNumber":{"persistent":false,"hb_populateenabled":"public","name":"bankRoutingNumber"},"expirationYear":{"hb_formfieldtype":"select","ormtype":"string","hb_populateenabled":"public","name":"expirationYear"},"creditCardNumberEncryptedGenerator":{"column":"creditCardNumberEncryptGen","hb_auditable":false,"ormtype":"string","name":"creditCardNumberEncryptedGenerator"},"billingAddress":{"cfc":"Address","fieldtype":"many-to-one","cascade":"all","fkcolumn":"billingAddressID","hb_populateenabled":"public","name":"billingAddress"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"originalChargeProviderTransactionID":{"persistent":false,"name":"originalChargeProviderTransactionID"},"amountUncaptured":{"persistent":false,"hb_formattype":"currency","name":"amountUncaptured"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"creditCardNumberEncrypted":{"hb_auditable":false,"ormtype":"string","name":"creditCardNumberEncrypted"},"checkNumberEncrypted":{"ormtype":"string","name":"checkNumberEncrypted"},"orderPaymentStatusType":{"cfc":"Type","fetch":"join","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=orderPaymentStatusType","fkcolumn":"orderPaymentStatusTypeID","hb_populateenabled":false,"name":"orderPaymentStatusType"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"bankAccountNumber":{"persistent":false,"hb_populateenabled":"public","name":"bankAccountNumber"},"statusCode":{"persistent":false,"name":"statusCode"},"bankAccountNumberEncrypted":{"ormtype":"string","name":"bankAccountNumberEncrypted"},"amountUncredited":{"persistent":false,"hb_formattype":"currency","name":"amountUncredited"},"orderStatusCode":{"persistent":false,"name":"orderStatusCode"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"expirationDate":{"persistent":false,"name":"expirationDate"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"amountAuthorized":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"amountAuthorized"},"creditCardOrProviderTokenExistsFlag":{"persistent":false,"name":"creditCardOrProviderTokenExistsFlag"},"giftCardPaymentProcessedFlag":{"ormtype":"boolean","hb_populateenabled":"public","default":false,"name":"giftCardPaymentProcessedFlag"},"remoteID":{"ormtype":"string","name":"remoteID"},"checkNumber":{"persistent":false,"hb_populateenabled":"public","name":"checkNumber"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"termPaymentAccount":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"termPaymentAccountID","name":"termPaymentAccount"},"amountReceived":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"amountReceived"},"paymentMethodType":{"persistent":false,"name":"paymentMethodType"},"giftCardTransactions":{"cfc":"GiftCardTransaction","fieldtype":"one-to-many","singularname":"giftCardTransaction","cascade":"all-delete-orphan","fkcolumn":"orderPaymentID","type":"array","inverse":true,"name":"giftCardTransactions"},"giftCardNumberEncrypted":{"ormtype":"string","name":"giftCardNumberEncrypted"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"amountUnauthorized":{"persistent":false,"hb_formattype":"currency","name":"amountUnauthorized"},"securityCode":{"persistent":false,"hb_populateenabled":"public","name":"securityCode"}};
                 	entities['OrderPayment'].className = 'OrderPayment';
                 	
                 	validations['OrderPayment'] = {"properties":{"paymentMethod":[{"contexts":"save","required":true}],"expirationYear":[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],"amount":[{"contexts":"save","dataType":"numeric","minValue":0},{"contexts":"save","conditions":"peerNullValueAlreadyExists","required":true},{"contexts":"save","lteProperty":"termPaymentAccount.termAccountAvailableCredit","conditions":"paymentTypeTermPayment"},{"contexts":"save","lteProperty":"maximumPaymentMethodPaymentAmount"}],"expirationMonth":[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],"termPaymentAccount":[{"contexts":"save","conditions":"paymentTypeTermPayment","required":true}],"orderStatusCode":[{"contexts":"createTransaction","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}],"creditCardNumber":[{"contexts":"save","dataType":"creditCard","conditions":"creditCardWithoutToken","required":true}],"paymentTransactions":[{"contexts":"delete","maxCollection":0}],"nameOnCreditCard":[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],"securityCode":[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNewAndNotCopied","required":true}]},"conditions":{"paymentTypeCreditCardNoTokenAndNewAndNotCopied":{"referencedOrderPayment":{"null":true},"newFlag":{"eq":true},"providerToken":{"null":true},"accountPaymentMethod":{"null":true},"paymentMethodType":{"eq":"creditCard"}},"creditCardWithoutToken":{"providerToken":{"null":true},"paymentMethodType":{"eq":"creditCard"}},"peerNullValueAlreadyExists":{"peerOrderPaymentNullAmountExistsFlag":{"eq":true}},"paymentTypeCreditCard":{"paymentMethodType":{"eq":"creditCard"}},"paymentTypeTermPayment":{"paymentMethodType":{"eq":"termPayment"}}},"populatedPropertyValidation":{"billingAddress":[{"conditions":"paymentTypeCreditCard,paymentTypeTermPayment","validate":"full"}]}};
@@ -3488,7 +3489,7 @@
                 	entities['OrderPayment_CreateTransaction'] = {"preProcessDisplayedFlag":{"name":"preProcessDisplayedFlag"},"populatedFlag":{"name":"populatedFlag"},"amount":{"name":"amount"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"transactionType":{"hb_formfieldtype":"select","name":"transactionType"},"orderPayment":{"name":"orderPayment"},"transactionTypeOptions":{"name":"transactionTypeOptions"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"validations":{"persistent":false,"type":"struct","name":"validations"}};
                 	entities['OrderPayment_CreateTransaction'].className = 'OrderPayment_CreateTransaction';
                 	
-                	validations['OrderPayment_CreateTransaction'] = {"properties":{"amount":[{"dataType":"numeric","required":true,"minValue":0},{"lteProperty":"orderPayment.amountUnAuthorized","conditions":"transactionTypeAuthorize"},{"lteProperty":"orderPayment.amountUnreceived","conditions":"transactionTypeAuthorizeAndCharge"},{"lteProperty":"orderPayment.amountUncredited","conditions":"transactionTypeCredit"},{"lteProperty":"orderPayment.amountUncaptured","conditions":"transactionTypeChargePreAuthorization"}],"transactionType":[{"required":true}]},"conditions":{"transactionTypeCredit":{"transactionType":{"eq":"credit"}},"transactionTypeChargePreAuthorization":{"transactionType":{"eq":"chargePreAuthorization"}},"transactionTypeAuthorize":{"transactionType":{"eq":"authorize"}},"transactionTypeAuthorizeAndCharge":{"transactionType":{"eq":"authorizeAndCharge"}}}};
+                	validations['OrderPayment_CreateTransaction'] = {"properties":{"amount":[{"dataType":"numeric","required":true},{"conditions":"transactionTypeAuthorize,transactionTypeAuthorizeAndCharge,transactionTypeCredit,transactionTypeChargePreAuthorization","minValue":0},{"lteProperty":"orderPayment.amountUnAuthorized","conditions":"transactionTypeAuthorize"},{"lteProperty":"orderPayment.amountUnreceived","conditions":"transactionTypeAuthorizeAndCharge"},{"lteProperty":"orderPayment.amountUncredited","conditions":"transactionTypeCredit"},{"lteProperty":"orderPayment.amountUncaptured","conditions":"transactionTypeChargePreAuthorization"}],"transactionType":[{"required":true}]},"conditions":{"transactionTypeCredit":{"transactionType":{"eq":"credit"}},"transactionTypeGiftCard":{"transactionType":{"eq":"giftCard"}},"transactionTypeChargePreAuthorization":{"transactionType":{"eq":"chargePreAuthorization"}},"transactionTypeAuthorize":{"transactionType":{"eq":"authorize"}},"transactionTypeAuthorizeAndCharge":{"transactionType":{"eq":"authorizeAndCharge"}}}};
                 	defaultValues['OrderPayment_CreateTransaction'] = {
                 	orderPayment:'',
 										transactionType:"receive",
@@ -3516,7 +3517,7 @@
 						z:''
 	                };
                 
-                	entities['Sku'] = {"endReservationDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"endReservationDateTime"},"skuCode":{"length":50,"unique":true,"ormtype":"string","index":"PI_SKUCODE","name":"skuCode"},"bundledSkus":{"cfc":"SkuBundle","fieldtype":"one-to-many","singularname":"bundledSku","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"bundledSkus"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"transactionExistsFlag":{"persistent":false,"type":"boolean","name":"transactionExistsFlag"},"eligibleFulfillmentMethods":{"persistent":false,"type":"array","name":"eligibleFulfillmentMethods"},"promotionRewardExclusions":{"cfc":"PromotionReward","linktable":"SwPromoRewardExclSku","fieldtype":"many-to-many","singularname":"promotionRewardExclusion","inversejoincolumn":"promotionRewardID","fkcolumn":"skuID","inverse":true,"type":"array","name":"promotionRewardExclusions"},"loyaltyRedemptionExclusions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedemptionExclSku","fieldtype":"many-to-many","singularname":"loyaltyRedemptionExclusion","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"skuID","inverse":true,"type":"array","name":"loyaltyRedemptionExclusions"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"priceGroupRates":{"cfc":"PriceGroupRate","linktable":"SwPriceGroupRateSku","fieldtype":"many-to-many","singularname":"priceGroupRate","inversejoincolumn":"priceGroupRateID","fkcolumn":"skuID","inverse":true,"name":"priceGroupRates"},"eventCapacity":{"ormtype":"integer","name":"eventCapacity"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"assignedOrderItemAttributeSetSmartList":{"persistent":false,"name":"assignedOrderItemAttributeSetSmartList"},"registrantEmailList":{"persistent":false,"type":"array","name":"registrantEmailList"},"productBundleGroups":{"cfc":"ProductBundleGroup","fieldtype":"one-to-many","singularname":"productBundleGroup","cascade":"all-delete-orphan","fkcolumn":"productBundleSkuID","type":"array","inverse":true,"name":"productBundleGroups"},"options":{"cfc":"Option","linktable":"SwSkuOption","fieldtype":"many-to-many","singularname":"option","inversejoincolumn":"optionID","fkcolumn":"skuID","name":"options"},"promotionQualifierExclusions":{"cfc":"PromotionQualifier","linktable":"SwPromoQualExclSku","fieldtype":"many-to-many","singularname":"promotionQualifierExclusion","inversejoincolumn":"promotionQualifierID","fkcolumn":"skuID","inverse":true,"type":"array","name":"promotionQualifierExclusions"},"productReviews":{"cfc":"ProductReview","fieldtype":"one-to-many","singularname":"productReview","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"productReviews"},"validations":{"persistent":false,"type":"struct","name":"validations"},"giftCardExpirationTermOptions":{"persistent":false,"name":"giftCardExpirationTermOptions"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"eventStartDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"eventStartDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"skuID","type":"array","inverse":true,"name":"attributeValues"},"purchaseStartDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"purchaseStartDateTime"},"currencyDetails":{"persistent":false,"type":"struct","name":"currencyDetails"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"salePrice":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"salePrice"},"attendedQuantity":{"hint":"Optional field for manually entered event attendance.","ormtype":"integer","name":"attendedQuantity"},"skuCurrencies":{"cfc":"SkuCurrency","fieldtype":"one-to-many","singularname":"skuCurrency","cascade":"all-delete-orphan","fkcolumn":"skuID","type":"array","inverse":true,"name":"skuCurrencies"},"eventConflictsSmartList":{"persistent":false,"name":"eventConflictsSmartList"},"renewalPrice":{"ormtype":"big_decimal","hb_formattype":"currency","default":0,"name":"renewalPrice"},"adminIcon":{"persistent":false,"name":"adminIcon"},"availableSeatCount":{"persistent":false,"name":"availableSeatCount"},"placedOrderItemsSmartList":{"persistent":false,"type":"any","name":"placedOrderItemsSmartList"},"optionsByOptionGroupCodeStruct":{"persistent":false,"name":"optionsByOptionGroupCodeStruct"},"nextEstimatedAvailableDate":{"persistent":false,"type":"string","name":"nextEstimatedAvailableDate"},"listPrice":{"ormtype":"big_decimal","hb_formattype":"currency","default":0,"name":"listPrice"},"userDefinedPriceFlag":{"ormtype":"boolean","default":0,"name":"userDefinedPriceFlag"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"renewalSubscriptionBenefits":{"cfc":"SubscriptionBenefit","linktable":"SwSkuRenewalSubsBenefit","fieldtype":"many-to-many","singularname":"renewalSubscriptionBenefit","inversejoincolumn":"subscriptionBenefitID","fkcolumn":"skuID","type":"array","name":"renewalSubscriptionBenefits"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"defaultFlag":{"persistent":false,"type":"boolean","name":"defaultFlag"},"subscriptionBenefits":{"cfc":"SubscriptionBenefit","linktable":"SwSkuSubsBenefit","fieldtype":"many-to-many","singularname":"subscriptionBenefit","inversejoincolumn":"subscriptionBenefitID","fkcolumn":"skuID","type":"array","name":"subscriptionBenefits"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"startReservationDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"startReservationDateTime"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"promotionQualifiers":{"cfc":"PromotionQualifier","linktable":"SwPromoQualSku","fieldtype":"many-to-many","singularname":"promotionQualifier","inversejoincolumn":"promotionQualifierID","fkcolumn":"skuID","inverse":true,"name":"promotionQualifiers"},"skuID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"skuID"},"skuDescription":{"length":4000,"hb_formfieldtype":"wysiwyg","ormtype":"string","name":"skuDescription"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"loyaltyAccruementExclusions":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruExclSku","fieldtype":"many-to-many","singularname":"loyaltyAccruementExclusion","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"skuID","inverse":true,"type":"array","name":"loyaltyAccruementExclusions"},"skuName":{"ormtype":"string","name":"skuName"},"stocks":{"cfc":"Stock","fieldtype":"one-to-many","hb_cascadecalculate":true,"singularname":"stock","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"stocks"},"salePriceDiscountType":{"persistent":false,"type":"string","name":"salePriceDiscountType"},"stocksDeletableFlag":{"persistent":false,"type":"boolean","name":"stocksDeletableFlag"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"formattedRedemptionAmount":{"persistant":false,"name":"formattedRedemptionAmount"},"locations":{"persistent":false,"type":"array","name":"locations"},"promotionRewards":{"cfc":"PromotionReward","linktable":"SwPromoRewardSku","fieldtype":"many-to-many","singularname":"promotionReward","inversejoincolumn":"promotionRewardID","fkcolumn":"skuID","inverse":true,"name":"promotionRewards"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"productSchedule":{"cfc":"ProductSchedule","fieldtype":"many-to-one","fkcolumn":"productScheduleID","name":"productSchedule"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"redemptionAmountTypeOptions":{"persistent":false,"name":"redemptionAmountTypeOptions"},"eventRegistrations":{"cfc":"EventRegistration","fieldtype":"one-to-many","lazy":"extra","singularname":"eventRegistration","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"eventRegistrations"},"allowEventWaitlistingFlag":{"ormtype":"boolean","default":0,"name":"allowEventWaitlistingFlag"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"loyaltyRedemptions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedemptionSku","fieldtype":"many-to-many","singularname":"loyaltyRedemption","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"skuID","inverse":true,"type":"array","name":"loyaltyRedemptions"},"registrantCount":{"persistent":false,"type":"integer","name":"registrantCount"},"redemptionAmountType":{"hint":"used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage","hb_formfieldtype":"select","ormtype":"string","hb_formattype":"rbKey","name":"redemptionAmountType"},"product":{"cfc":"Product","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"productID","name":"product"},"livePrice":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"livePrice"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"productScheduleSmartList":{"persistent":false,"type":"any","name":"productScheduleSmartList"},"baseProductType":{"persistent":false,"name":"baseProductType"},"availableForPurchaseFlag":{"persistent":false,"name":"availableForPurchaseFlag"},"price":{"ormtype":"big_decimal","hb_formattype":"currency","default":0,"name":"price"},"subscriptionTerm":{"cfc":"SubscriptionTerm","fieldtype":"many-to-one","fkcolumn":"subscriptionTermID","name":"subscriptionTerm"},"eventStatus":{"persistent":false,"type":"any","name":"eventStatus"},"qats":{"persistent":false,"type":"numeric","name":"qats"},"loyaltyAccruements":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruSku","fieldtype":"many-to-many","singularname":"loyaltyAccruement","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"skuID","inverse":true,"name":"loyaltyAccruements"},"eventConflictExistsFlag":{"persistent":false,"type":"boolean","name":"eventConflictExistsFlag"},"registeredUserCount":{"persistent":false,"type":"integer","name":"registeredUserCount"},"publishedFlag":{"ormtype":"boolean","default":0,"name":"publishedFlag"},"giftCardExpirationTerm":{"cfc":"Term","fieldtype":"many-to-one","hint":"Term that is used to set the Expiration Date of the ordered gift card.","fkcolumn":"giftCardExpirationTermID","name":"giftCardExpirationTerm"},"activeFlag":{"ormtype":"boolean","default":1,"name":"activeFlag"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"eventEndDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"eventEndDateTime"},"calculatedQATS":{"ormtype":"integer","name":"calculatedQATS"},"orderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","lazy":"extra","singularname":"orderItem","fkcolumn":"skuID","inverse":true,"name":"orderItems"},"assignedSkuBundles":{"cfc":"SkuBundle","fieldtype":"one-to-many","lazy":"extra","singularname":"assignedSkuBundle","cascade":"all-delete-orphan","fkcolumn":"bundledSkuID","inverse":true,"name":"assignedSkuBundles"},"salePriceDetails":{"persistent":false,"type":"struct","name":"salePriceDetails"},"salePriceDiscountAmount":{"persistent":false,"type":"string","name":"salePriceDiscountAmount"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"alternateSkuCodes":{"cfc":"AlternateSkuCode","fieldtype":"one-to-many","singularname":"alternateSkuCode","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"alternateSkuCodes"},"locationConfigurations":{"cfc":"LocationConfiguration","linktable":"SwSkuLocationConfiguration","fieldtype":"many-to-many","singularname":"locationConfiguration","inversejoincolumn":"locationConfigurationID","fkcolumn":"skuID","type":"array","name":"locationConfigurations"},"redemptionAmount":{"hint":"value to be used in calculation conjunction with redeptionAmountType","ormtype":"big_decimal","name":"redemptionAmount"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"waitlistQueueTerm":{"cfc":"Term","fieldtype":"many-to-one","hint":"Term that a waitlisted registrant has to claim offer.","fkcolumn":"termID","name":"waitlistQueueTerm"},"physicals":{"cfc":"Physical","linktable":"SwPhysicalSku","fieldtype":"many-to-many","singularname":"physical","inversejoincolumn":"physicalID","fkcolumn":"skuID","inverse":true,"type":"array","name":"physicals"},"eventAttendanceCode":{"hint":"Unique code to track event attendance","length":8,"ormtype":"string","name":"eventAttendanceCode"},"salePriceExpirationDateTime":{"persistent":false,"hb_formattype":"datetime","type":"date","name":"salePriceExpirationDateTime"},"eventOverbookedFlag":{"persistent":false,"type":"boolean","name":"eventOverbookedFlag"},"bundleFlag":{"ormtype":"boolean","default":0,"name":"bundleFlag"},"imageExistsFlag":{"persistent":false,"type":"boolean","name":"imageExistsFlag"},"accessContents":{"cfc":"Content","linktable":"SwSkuAccessContent","fieldtype":"many-to-many","singularname":"accessContent","inversejoincolumn":"contentID","fkcolumn":"skuID","type":"array","name":"accessContents"},"currentAccountPrice":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"currentAccountPrice"},"remoteID":{"ormtype":"string","name":"remoteID"},"optionsByOptionGroupIDStruct":{"persistent":false,"name":"optionsByOptionGroupIDStruct"},"optionsIDList":{"persistent":false,"name":"optionsIDList"},"skuDefinition":{"persistent":false,"name":"skuDefinition"},"purchaseEndDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"purchaseEndDateTime"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"imageFile":{"length":250,"ormtype":"string","name":"imageFile"}};
+                	entities['Sku'] = {"endReservationDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"endReservationDateTime"},"skuCode":{"length":50,"unique":true,"ormtype":"string","index":"PI_SKUCODE","name":"skuCode"},"bundledSkus":{"cfc":"SkuBundle","fieldtype":"one-to-many","singularname":"bundledSku","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"bundledSkus"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"transactionExistsFlag":{"persistent":false,"type":"boolean","name":"transactionExistsFlag"},"eligibleFulfillmentMethods":{"persistent":false,"type":"array","name":"eligibleFulfillmentMethods"},"promotionRewardExclusions":{"cfc":"PromotionReward","linktable":"SwPromoRewardExclSku","fieldtype":"many-to-many","singularname":"promotionRewardExclusion","inversejoincolumn":"promotionRewardID","fkcolumn":"skuID","inverse":true,"type":"array","name":"promotionRewardExclusions"},"loyaltyRedemptionExclusions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedemptionExclSku","fieldtype":"many-to-many","singularname":"loyaltyRedemptionExclusion","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"skuID","inverse":true,"type":"array","name":"loyaltyRedemptionExclusions"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"priceGroupRates":{"cfc":"PriceGroupRate","linktable":"SwPriceGroupRateSku","fieldtype":"many-to-many","singularname":"priceGroupRate","inversejoincolumn":"priceGroupRateID","fkcolumn":"skuID","inverse":true,"name":"priceGroupRates"},"eventCapacity":{"ormtype":"integer","name":"eventCapacity"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"assignedOrderItemAttributeSetSmartList":{"persistent":false,"name":"assignedOrderItemAttributeSetSmartList"},"registrantEmailList":{"persistent":false,"type":"array","name":"registrantEmailList"},"productBundleGroups":{"cfc":"ProductBundleGroup","fieldtype":"one-to-many","singularname":"productBundleGroup","cascade":"all-delete-orphan","fkcolumn":"productBundleSkuID","type":"array","inverse":true,"name":"productBundleGroups"},"options":{"cfc":"Option","linktable":"SwSkuOption","fieldtype":"many-to-many","singularname":"option","inversejoincolumn":"optionID","fkcolumn":"skuID","name":"options"},"promotionQualifierExclusions":{"cfc":"PromotionQualifier","linktable":"SwPromoQualExclSku","fieldtype":"many-to-many","singularname":"promotionQualifierExclusion","inversejoincolumn":"promotionQualifierID","fkcolumn":"skuID","inverse":true,"type":"array","name":"promotionQualifierExclusions"},"productReviews":{"cfc":"ProductReview","fieldtype":"one-to-many","singularname":"productReview","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"productReviews"},"validations":{"persistent":false,"type":"struct","name":"validations"},"giftCardExpirationTermOptions":{"persistent":false,"name":"giftCardExpirationTermOptions"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"eventStartDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"eventStartDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"skuID","type":"array","inverse":true,"name":"attributeValues"},"purchaseStartDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"purchaseStartDateTime"},"currencyDetails":{"persistent":false,"type":"struct","name":"currencyDetails"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"salePrice":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"salePrice"},"attendedQuantity":{"hint":"Optional field for manually entered event attendance.","ormtype":"integer","name":"attendedQuantity"},"skuCurrencies":{"cfc":"SkuCurrency","fieldtype":"one-to-many","singularname":"skuCurrency","cascade":"all-delete-orphan","fkcolumn":"skuID","type":"array","inverse":true,"name":"skuCurrencies"},"eventConflictsSmartList":{"persistent":false,"name":"eventConflictsSmartList"},"renewalPrice":{"ormtype":"big_decimal","hb_formattype":"currency","default":0,"name":"renewalPrice"},"adminIcon":{"persistent":false,"name":"adminIcon"},"availableSeatCount":{"persistent":false,"name":"availableSeatCount"},"placedOrderItemsSmartList":{"persistent":false,"type":"any","name":"placedOrderItemsSmartList"},"optionsByOptionGroupCodeStruct":{"persistent":false,"name":"optionsByOptionGroupCodeStruct"},"nextEstimatedAvailableDate":{"persistent":false,"type":"string","name":"nextEstimatedAvailableDate"},"listPrice":{"ormtype":"big_decimal","hb_formattype":"currency","default":0,"name":"listPrice"},"userDefinedPriceFlag":{"ormtype":"boolean","default":0,"name":"userDefinedPriceFlag"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"renewalSubscriptionBenefits":{"cfc":"SubscriptionBenefit","linktable":"SwSkuRenewalSubsBenefit","fieldtype":"many-to-many","singularname":"renewalSubscriptionBenefit","inversejoincolumn":"subscriptionBenefitID","fkcolumn":"skuID","type":"array","name":"renewalSubscriptionBenefits"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"defaultFlag":{"persistent":false,"type":"boolean","name":"defaultFlag"},"subscriptionBenefits":{"cfc":"SubscriptionBenefit","linktable":"SwSkuSubsBenefit","fieldtype":"many-to-many","singularname":"subscriptionBenefit","inversejoincolumn":"subscriptionBenefitID","fkcolumn":"skuID","type":"array","name":"subscriptionBenefits"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"startReservationDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"startReservationDateTime"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"renewalSku":{"cfc":"Sku","fieldtype":"many-to-one","fkcolumn":"renewalSkuID","name":"renewalSku"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"promotionQualifiers":{"cfc":"PromotionQualifier","linktable":"SwPromoQualSku","fieldtype":"many-to-many","singularname":"promotionQualifier","inversejoincolumn":"promotionQualifierID","fkcolumn":"skuID","inverse":true,"name":"promotionQualifiers"},"skuID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"skuID"},"skuDescription":{"length":4000,"hb_formfieldtype":"wysiwyg","ormtype":"string","name":"skuDescription"},"currencyCode":{"length":3,"ormtype":"string","name":"currencyCode"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"loyaltyAccruementExclusions":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruExclSku","fieldtype":"many-to-many","singularname":"loyaltyAccruementExclusion","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"skuID","inverse":true,"type":"array","name":"loyaltyAccruementExclusions"},"skuName":{"ormtype":"string","name":"skuName"},"stocks":{"cfc":"Stock","fieldtype":"one-to-many","hb_cascadecalculate":true,"singularname":"stock","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"stocks"},"salePriceDiscountType":{"persistent":false,"type":"string","name":"salePriceDiscountType"},"stocksDeletableFlag":{"persistent":false,"type":"boolean","name":"stocksDeletableFlag"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"formattedRedemptionAmount":{"persistant":false,"name":"formattedRedemptionAmount"},"locations":{"persistent":false,"type":"array","name":"locations"},"promotionRewards":{"cfc":"PromotionReward","linktable":"SwPromoRewardSku","fieldtype":"many-to-many","singularname":"promotionReward","inversejoincolumn":"promotionRewardID","fkcolumn":"skuID","inverse":true,"name":"promotionRewards"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"productSchedule":{"cfc":"ProductSchedule","fieldtype":"many-to-one","fkcolumn":"productScheduleID","name":"productSchedule"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"redemptionAmountTypeOptions":{"persistent":false,"name":"redemptionAmountTypeOptions"},"eventRegistrations":{"cfc":"EventRegistration","fieldtype":"one-to-many","lazy":"extra","singularname":"eventRegistration","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"eventRegistrations"},"allowEventWaitlistingFlag":{"ormtype":"boolean","default":0,"name":"allowEventWaitlistingFlag"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"loyaltyRedemptions":{"cfc":"LoyaltyRedemption","linktable":"SwLoyaltyRedemptionSku","fieldtype":"many-to-many","singularname":"loyaltyRedemption","inversejoincolumn":"loyaltyRedemptionID","fkcolumn":"skuID","inverse":true,"type":"array","name":"loyaltyRedemptions"},"registrantCount":{"persistent":false,"type":"integer","name":"registrantCount"},"redemptionAmountType":{"hint":"used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage","hb_formfieldtype":"select","ormtype":"string","hb_formattype":"rbKey","name":"redemptionAmountType"},"product":{"cfc":"Product","fieldtype":"many-to-one","hb_cascadecalculate":true,"fkcolumn":"productID","name":"product"},"livePrice":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"livePrice"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"productScheduleSmartList":{"persistent":false,"type":"any","name":"productScheduleSmartList"},"baseProductType":{"persistent":false,"name":"baseProductType"},"availableForPurchaseFlag":{"persistent":false,"name":"availableForPurchaseFlag"},"price":{"ormtype":"big_decimal","hb_formattype":"currency","default":0,"name":"price"},"subscriptionTerm":{"cfc":"SubscriptionTerm","fieldtype":"many-to-one","fkcolumn":"subscriptionTermID","name":"subscriptionTerm"},"eventStatus":{"persistent":false,"type":"any","name":"eventStatus"},"qats":{"persistent":false,"type":"numeric","name":"qats"},"loyaltyAccruements":{"cfc":"LoyaltyAccruement","linktable":"SwLoyaltyAccruSku","fieldtype":"many-to-many","singularname":"loyaltyAccruement","inversejoincolumn":"loyaltyAccruementID","fkcolumn":"skuID","inverse":true,"name":"loyaltyAccruements"},"eventConflictExistsFlag":{"persistent":false,"type":"boolean","name":"eventConflictExistsFlag"},"registeredUserCount":{"persistent":false,"type":"integer","name":"registeredUserCount"},"publishedFlag":{"ormtype":"boolean","default":0,"name":"publishedFlag"},"giftCardExpirationTerm":{"cfc":"Term","fieldtype":"many-to-one","hint":"Term that is used to set the Expiration Date of the ordered gift card.","fkcolumn":"giftCardExpirationTermID","name":"giftCardExpirationTerm"},"activeFlag":{"ormtype":"boolean","default":1,"name":"activeFlag"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"eventEndDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"eventEndDateTime"},"calculatedQATS":{"ormtype":"integer","name":"calculatedQATS"},"orderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","lazy":"extra","singularname":"orderItem","fkcolumn":"skuID","inverse":true,"name":"orderItems"},"assignedSkuBundles":{"cfc":"SkuBundle","fieldtype":"one-to-many","lazy":"extra","singularname":"assignedSkuBundle","cascade":"all-delete-orphan","fkcolumn":"bundledSkuID","inverse":true,"name":"assignedSkuBundles"},"salePriceDetails":{"persistent":false,"type":"struct","name":"salePriceDetails"},"salePriceDiscountAmount":{"persistent":false,"type":"string","name":"salePriceDiscountAmount"},"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"alternateSkuCodes":{"cfc":"AlternateSkuCode","fieldtype":"one-to-many","singularname":"alternateSkuCode","cascade":"all-delete-orphan","fkcolumn":"skuID","inverse":true,"name":"alternateSkuCodes"},"locationConfigurations":{"cfc":"LocationConfiguration","linktable":"SwSkuLocationConfiguration","fieldtype":"many-to-many","singularname":"locationConfiguration","inversejoincolumn":"locationConfigurationID","fkcolumn":"skuID","type":"array","name":"locationConfigurations"},"redemptionAmount":{"hint":"value to be used in calculation conjunction with redeptionAmountType","ormtype":"big_decimal","name":"redemptionAmount"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"waitlistQueueTerm":{"cfc":"Term","fieldtype":"many-to-one","hint":"Term that a waitlisted registrant has to claim offer.","fkcolumn":"termID","name":"waitlistQueueTerm"},"physicals":{"cfc":"Physical","linktable":"SwPhysicalSku","fieldtype":"many-to-many","singularname":"physical","inversejoincolumn":"physicalID","fkcolumn":"skuID","inverse":true,"type":"array","name":"physicals"},"eventAttendanceCode":{"hint":"Unique code to track event attendance","length":8,"ormtype":"string","name":"eventAttendanceCode"},"salePriceExpirationDateTime":{"persistent":false,"hb_formattype":"datetime","type":"date","name":"salePriceExpirationDateTime"},"eventOverbookedFlag":{"persistent":false,"type":"boolean","name":"eventOverbookedFlag"},"bundleFlag":{"ormtype":"boolean","default":0,"name":"bundleFlag"},"imageExistsFlag":{"persistent":false,"type":"boolean","name":"imageExistsFlag"},"accessContents":{"cfc":"Content","linktable":"SwSkuAccessContent","fieldtype":"many-to-many","singularname":"accessContent","inversejoincolumn":"contentID","fkcolumn":"skuID","type":"array","name":"accessContents"},"currentAccountPrice":{"persistent":false,"hb_formattype":"currency","type":"numeric","name":"currentAccountPrice"},"remoteID":{"ormtype":"string","name":"remoteID"},"optionsByOptionGroupIDStruct":{"persistent":false,"name":"optionsByOptionGroupIDStruct"},"optionsIDList":{"persistent":false,"name":"optionsIDList"},"skuDefinition":{"persistent":false,"name":"skuDefinition"},"purchaseEndDateTime":{"ormtype":"timestamp","hb_formattype":"dateTime","name":"purchaseEndDateTime"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"imageFile":{"length":250,"ormtype":"string","name":"imageFile"}};
                 	entities['Sku'].className = 'Sku';
                 	
                 	validations['Sku'] = {"properties":{"price":[{"contexts":"save","dataType":"numeric","required":true,"minValue":0}],"skuCode":[{"contexts":"save","regex":"^[a-zA-Z0-9-_.|:~^]+$","required":true,"unique":true}],"product":[{"contexts":"save","required":true}],"renewalPrice":[{"contexts":"save","dataType":"numeric","minValue":0}],"transactionExistsFlag":[{"contexts":"delete","eq":false}],"redemptionAmount":[{"dataType":"numeric","conditions":"createGiftCardSku","minValue":0}],"listPrice":[{"contexts":"save","dataType":"numeric","minValue":0}],"options":[{"contexts":"save","conditions":"notSkuBundle","method":"hasUniqueOptions"},{"contexts":"save","method":"hasOneOptionPerOptionGroup"}],"physicalCounts":[{"contexts":"delete","maxCollection":0}],"defaultFlag":[{"contexts":"delete","eq":false}]},"conditions":{"notSkuBundle":{"bundleFlag":{"eq":0}},"createGiftCardSku":{"product":{"method":"isGiftCardSku"}}}};
@@ -3621,7 +3622,7 @@
 	                };
                 
                 angular.forEach(entities,function(entity){
-					
+
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
 						var entityDataPromise = $delegate.getEntity(entity.className,options);
@@ -3639,10 +3640,10 @@
 						});
 						return {
 							promise:entityDataPromise,
-							value:entityInstance	
+							value:entityInstance
 						}
 					}
-					
+
 					 
 					$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
@@ -3661,20 +3662,20 @@
 						});
 						return {
 							promise:entityDataPromise,
-							value:entityInstance	
+							value:entityInstance
 						}
 					}
-					
+
 					$delegate['new'+entity.className] = function(){
 						return $delegate.newEntity(entity.className);
 					}
-					
+
 					entity.isProcessObject = entity.className.indexOf('_') >= 0;
-					
+
 					 _jsEntities[ entity.className ]=function() {
-				
+
 						this.validations = validations[entity.className];
-						
+
 						this.metaData = entity;
 						this.metaData.className = entity.className;
 						if(entity.hb_parentPropertyName){
@@ -3683,11 +3684,11 @@
 						if(entity.hb_childPropertyName){
 							this.metaData.hb_childPropertyName = entity.hb_childPropertyName;
 						}
-						
+
 						this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 							return $delegate.rbKey(rbKey,replaceStringData);
 						};
-						
+
 						
 						this.metaData.$$getPropertyTitle = function(propertyName){
 							return _getPropertyTitle(propertyName,this);
@@ -3696,7 +3697,7 @@
 						this.metaData.$$getPropertyHint = function(propertyName){
 							return _getPropertyHint(propertyName,this);
 						}
-		
+
 						this.metaData.$$getManyToManyName = function(singularname){
 							var metaData = this;
 							for(var i in metaData){
@@ -3726,14 +3727,14 @@
 		                    }).error(function(reason){
 		                        deferred.reject(reason);
 		                    });
-		                    
+
 							return deferred.promise;
 						}
-						
+
 						this.$$getFormattedValue = function(propertyName,formatType){
 							return _getFormattedValue(propertyName,formatType,this);
 						}
-						
+
 						this.data = {};
 						this.modifiedData = {};
 						
@@ -3741,7 +3742,7 @@
 						if(entity.isProcessObject){
 							(function(entity){_jsEntities[ entity.className ].prototype = {
 								$$getID:function(){
-									
+
 									return '';
 								}
 								,$$getIDName:function(){
@@ -3750,16 +3751,16 @@
 								}
 							}})(entity);
 						}
-						
+
 						angular.forEach(entity,function(property){
 							if(angular.isObject(property) && angular.isDefined(property.name)){
 								
 								if(angular.isDefined(defaultValues[entity.className][property.name])){
-									jsEntity.data[property.name] = defaultValues[entity.className][property.name]; 
+									jsEntity.data[property.name] = defaultValues[entity.className][property.name];
 								}
 							}
 						});
-							
+
 					};
 					 _jsEntities[ entity.className ].prototype = {
 						$$getPropertyByName:function(propertyName){
@@ -3849,7 +3850,7 @@
 													}]),
 													allRecords:true
 												};
-												
+
 												var collectionPromise = $delegate.getEntity(entity.className,options);
 												collectionPromise.then(function(response){
 													for(var i in response.records){
@@ -3864,13 +3865,13 @@
 													}
 												});
 												return collectionPromise;
-												
+
 											}
-											
+
 											return null;
 										};
 										_jsEntities[ entity.className ].prototype['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(entityInstance) {
-										
+
 											
 											var thisEntityInstance = this;
 											var metaData = this.metaData;
@@ -3878,43 +3879,43 @@
 											if(property.name === 'parent'+this.metaData.className){
 												var childName = 'child'+this.metaData.className;
 												manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
-												
+
 											}else{
 												manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
 											}
-											
+
 											if(angular.isUndefined(thisEntityInstance.parents)){
 												thisEntityInstance.parents = [];
 											}
-											
+
 											thisEntityInstance.parents.push(thisEntityInstance.metaData[property.name]);
-											
+
 											
 											if(angular.isDefined(manyToManyName)){
 												if(angular.isUndefined(entityInstance.children)){
 													entityInstance.children = [];
 												}
-												
+
 												var child = entityInstance.metaData[manyToManyName];;
-												
+
 												if(entityInstance.children.indexOf(child) === -1){
 													entityInstance.children.push(child);
 												}
-												
+
 												if(angular.isUndefined(entityInstance.data[manyToManyName])){
 													entityInstance.data[manyToManyName] = [];
 												}
 												entityInstance.data[manyToManyName].push(thisEntityInstance);
 											}
-		
+
 											thisEntityInstance.data[property.name] = entityInstance;
 										};
-									
+
 									}else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
+
 									
-									
-									
-									
+
+
 										_jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
 
 										
@@ -3932,23 +3933,23 @@
 											}
 											entityInstance.data[manyToManyName].push(this);
 										}
-										
+
 										if(angular.isDefined(metaData[property.name])){
 											if(angular.isDefined(entityInstance.metaData[metaData[property.name].fkcolumn.slice(0,-2)])){
-												
+
 												if(angular.isUndefined(entityInstance.parents)){
 													entityInstance.parents = [];
 												}
-	
+
 												entityInstance.parents.push(entityInstance.metaData[metaData[property.name].fkcolumn.slice(0,-2)]);
 											}
-											
+
 											if(angular.isUndefined(this.children)){
 												this.children = [];
 											}
-	
+
 											var child = metaData[property.name];
-											
+
 											if(this.children.indexOf(child) === -1){
 												this.children.push(child);
 											}
@@ -3956,13 +3957,13 @@
 										if(angular.isUndefined(this.data[property.name])){
 											this.data[property.name] = [];
 										}
-										
+
 										this.data[property.name].push(entityInstance);
 										return entityInstance;
 									};
 									
 									
-									
+
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
 
 										var thisEntityInstance = this;
@@ -3979,7 +3980,7 @@
 												}]),
 												allRecords:true
 											};
-											
+
 											var collectionPromise = $delegate.getEntity(property.cfc,options);
 											collectionPromise.then(function(response){
 												
@@ -4003,13 +4004,13 @@
 											//this should retreive id from the metadata
 											return this.data[this.$$getIDName()];
 										};
-										
+
 										_jsEntities[ entity.className ].prototype['$$getIDName']=function(){
 											var IDNameString = property.name;
 											return IDNameString;
 										};
 									}
-									
+
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(){
 										return this.data[property.name];
 									};
@@ -4022,43 +4023,43 @@
 						}
 						}
 					});
-					
+
                 });
 				$delegate.setJsEntities(_jsEntities);
-				
+
 				angular.forEach(_jsEntities,(jsEntity)=>{
 					var jsEntityInstance = new jsEntity;
 					_jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
 				});
-				
+
 				$delegate.setJsEntityInstances(_jsEntityInstances);
-				
+
 				var _init = function(entityInstance,data){
 	                for(var key in data) {
 	                    if(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])){
 	                        var propertyMetaData = entityInstance.metaData[key];
-	                        
+
 	                        if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
 	                            if(data[key].trim() !== ''){
 	                                entityInstance.data[key] = angular.fromJson(data[key]);
 	                            }
-	                            
+
 	                        }else{
-		                        entityInstance.data[key] = data[key];   
+		                        entityInstance.data[key] = data[key];
 		                    }
 	                	}
 	           	 	}
 	            }
-	            
+
 	            var _getPropertyTitle = function(propertyName,metaData){
 	                var propertyMetaData = metaData[propertyName];
 	                if(angular.isDefined(propertyMetaData['hb_rbkey'])){
 	                    return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
 	                }else if (angular.isUndefined(propertyMetaData['persistent'])){
-	                    if(angular.isDefined(propertyMetaData['fieldtype']) 
+	                    if(angular.isDefined(propertyMetaData['fieldtype'])
 	                    && angular.isDefined(propertyMetaData['cfc'])
 	                    && ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1){
-	                        
+
 	                        return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+"."+propertyName+',entity.'+propertyMetaData.cfc+'_plural');
 	                    }else if(angular.isDefined(propertyMetaData.fieldtype)
 	                    && angular.isDefined(propertyMetaData.cfc)
@@ -4067,22 +4068,22 @@
 	                    }
 	                    return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 	                }else if(metaData.isProcessObject){
-	                    if(angular.isDefined(propertyMetaData.fieldtype) 
-	                        && angular.isDefined(propertyMetaData.cfc) 
+	                    if(angular.isDefined(propertyMetaData.fieldtype)
+	                        && angular.isDefined(propertyMetaData.cfc)
 	                        && ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
 	                    ){
 	                        return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase()+'_plural');
-	                    }else if(angular.isDefined(propertyMetaData.fieldtype) 
-	                        && angular.isDefined(propertyMetaData.cfc) 
+	                    }else if(angular.isDefined(propertyMetaData.fieldtype)
+	                        && angular.isDefined(propertyMetaData.cfc)
 	                    ){
 	                        return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase());
 	                    }
 	                    return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
-	                    
+
 	                }
 	                return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 	            }
-	            
+
 	            var _getPropertyHint = function(propertyName,metaData){
 	                var propertyMetaData = metaData[propertyName];
 	                var keyValue = '';
@@ -4098,18 +4099,18 @@
 	                }
 	                return '';
 	            }
-	            
-	            
-	            
+
+
+
 	            var _getPropertyFieldType = function(propertyName,metaData){
 	                var propertyMetaData = metaData[propertyName];
 	                if(angular.isDefined(propertyMetaData['hb_formfieldtype'])){
 	                    return propertyMetaData['hb_formfieldtype'];
 	                }
-	                
+
 	                if(angular.isUndefined(propertyMetaData.fieldtype) || propertyMetaData.fieldtype === 'column'){
 	                    var dataType = "";
-	                    
+
 	                    if(angular.isDefined(propertyMetaData.ormtype)){
 	                        dataType = propertyMetaData.ormtype;
 	                    }else if (angular.isDefined(propertyMetaData.type)){
@@ -4126,7 +4127,7 @@
 	                    }else if(propertyName.indexOf('password') > -1){
 	                        return "password";
 	                    }
-	                    
+
 	                }else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'many-to-one'){
 	                    return 'select';
 	                }else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'one-to-many'){
@@ -4134,24 +4135,24 @@
 	                }else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'many-to-many'){
 	                    return "listingMultiselect";
 	                }
-	            
+
 	                return "text";
 	            }
-	            
+
 	            var _getPropertyFormatType = function(propertyName,metaData){
 	                var propertyMetaData = metaData[propertyName];
-	                
+
 	                if(angular.isDefined(propertyMetaData['hb_formattype'])){
 	                    return propertyMetaData['hb_formattype'];
 	                }else if(angular.isUndefined(propertyMetaData.fieldtype) || propertyMetaData.fieldtype === 'column'){
 	                    var dataType = "";
-	                    
+
 	                    if(angular.isDefined(propertyMetaData.ormtype)){
 	                        dataType = propertyMetaData.ormtype;
 	                    }else if (angular.isDefined(propertyMetaData.type)){
 	                        dataType = propertyMetaData.type;
 	                    }
-	                    
+
 	                    if(["boolean","yes_no","true_false"].indexOf(dataType) > -1){
 	                        return "yesno";
 	                    }else if (["date","timestamp"].indexOf(dataType) > -1){
@@ -4164,11 +4165,11 @@
 	                }
 	                return 'none';
 	            }
-	            
+
 	            var _isSimpleValue = function(value){
-	                
-	                if( 
-	                    angular.isString(value) || angular.isNumber(value) 
+
+	                if(
+	                    angular.isString(value) || angular.isNumber(value)
 	                    || angular.isDate(value) || value === false || value === true
 	                ){
 	                    return true;
@@ -4176,15 +4177,15 @@
 	                    return false;
 	                }
 	            }
-	            
-	            
+
+
 	            var _getFormattedValue = function(propertyName,formatType,entityInstance){
 	                var value = entityInstance.$$getPropertyByName(propertyName);
-	                
+
 	                if(angular.isUndefined(formatType)){
 	                    formatType = entityInstance.metaData.$$getPropertyFormatType(propertyName);
 	                }
-	                
+
 	                if(formatType === "custom"){
 	                    return entityInstance['$$get'+propertyName+Formatted]();
 	                }else if(formatType === "rbkey"){
@@ -4199,19 +4200,19 @@
 	                    if(angular.isDefined(propertyMeta['hb_nullRBKey'])){
 	                        return entityInstance.$$getRbKey(propertyMeta['hb_nullRBKey']);
 	                    }
-	                    
+
 	                    return "";
 	                }else if (_isSimpleValue(value)){
 	                    var formatDetails = {};
 	                    if(angular.isDefined(entityInstance.data['currencyCode'])){
 	                        formatDetails.currencyCode = entityInstance.$$getCurrencyCode();
 	                    }
-	                    
-	                    
+
+
 	                    return utilityService.formatValue(value,formatType,formatDetails,entityInstance);
 	                }
 	            }
-	            
+
 	            var _delete = function(entityInstance){
 	                var entityName = entityInstance.metaData.className;
 	                var entityID = entityInstance.$$getID();
@@ -4219,35 +4220,35 @@
 	                var deletePromise = $delegate.saveEntity(entityName,entityID,{},context);
 	                return deletePromise;
 	            }
-	            
+
 	            var _setValueByPropertyPath = function (obj,path, value) {
 	                var a = path.split('.');
 	                var context = obj;
 	                var selector;
 	                var myregexp = /([a-zA-Z]+)(\[(\d)\])+/; // matches:  item[0]
 	                var match = null;
-	
+
 	                for (var i = 0; i < a.length - 1; i += 1) {
 	                    match = myregexp.exec(a[i]);
 	                    if (match !== null) context = context[match[1]][match[3]];
 	                    else context = context[a[i]];
-	
+
 	                }
-	
+
 	                // check for ending item[xx] syntax
 	                match = myregexp.exec([a[a.length - 1]]);
-	
+
 	                if (match !== null) context[match[1]][match[3]] = value;
 	                else context[a[a.length - 1]] = value;
-	
-	                
+
+
 	            }
-	            
+
 	            var _getValueByPropertyPath = function(obj,path) {
 	                  var paths = path.split('.')
 	                    , current = obj
 	                    , i;
-	
+
 	                  for (i = 0; i < paths.length; ++i) {
 	                    if (current[paths[i]] == undefined) {
 	                      return undefined;
@@ -4257,9 +4258,9 @@
 	                  }
 	                  return current;
 	            }
-	            
+
 	            var _addReturnedIDs = function(returnedIDs,entityInstance){
-	                
+
 	                for(var key in returnedIDs){
 	                    if(angular.isArray(returnedIDs[key])){
 	                        var arrayItems = returnedIDs[key];
@@ -4333,62 +4334,62 @@
                 	//return timeoutPromise;
                 	return deferred.promise;
 	                /*
-	                
-	                
-	                
-	                
+
+
+
+
 	                */
 	            }
-	            
+
 	            var _getModifiedData = function(entityInstance){
 	                var modifiedData = {};
 	                modifiedData = getModifiedDataByInstance(entityInstance);
 	                return modifiedData;
 	            }
-	            
+
 	            var getObjectSaveLevel = function(entityInstance){
 	                var objectLevel = entityInstance;
-	                
-	                var entityID = entityInstance.$$getID();    
-	                
+
+	                var entityID = entityInstance.$$getID();
+
 	                angular.forEach(entityInstance.parents,function(parentObject){
 	                    if(angular.isDefined(entityInstance.data[parentObject.name]) && entityInstance.data[parentObject.name].$$getID() === '' && (angular.isUndefined(entityID) || !entityID.trim().length)){
-	                        
-	                        
-	                        var parentEntityInstance = entityInstance.data[parentObject.name]; 
+
+
+	                        var parentEntityInstance = entityInstance.data[parentObject.name];
 	                        var parentEntityID = parentEntityInstance.$$getID();
 	                        if(parentEntityID === '' && parentEntityInstance.forms){
 	                            objectLevel = getObjectSaveLevel(parentEntityInstance);
 	                        }
 	                    }
 	                });
-	                
+
 	                return objectLevel;
 	            }
-	
+
 	            var validateObject = function(entityInstance){
-	                
+
 	                var modifiedData = {};
 	                var valid = true;
-	                
+
 	                var forms = entityInstance.forms;
 	                //$log.debug('process base level data');
 	                for(var f in forms){
-	                    
+
 	                    var form = forms[f];
 	                    form.$setSubmitted();   //Sets the form to submitted for the validation errors to pop up.
 	                    if(form.$dirty && form.$valid){
 	                        for(var key in form){
 	                            //$log.debug('key:'+key);
-	                            if(key.charAt(0) !== '$'){
+	                            if(key.charAt(0) !== '$' && angular.isObject(form[key])){
 	                                var inputField = form[key];
 	                                if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-	                                    
-	                                    
-	                                    if(angular.isDefined(entityInstance.metaData[key]) 
-	                                    && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+
+
+	                                    if(angular.isDefined(entityInstance.metaData[key])
+	                                    && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
 	                                    && entityInstance.metaData[key].hb_formfieldtype === 'json'){
-	                                        modifiedData[key] = angular.toJson(form[key].$modelValue);      
+	                                        modifiedData[key] = angular.toJson(form[key].$modelValue);
 	                                    }else{
 	                                        modifiedData[key] = form[key].$modelValue;
 	                                    }
@@ -4399,14 +4400,14 @@
 	                        if(!form.$valid){
 	                            valid = false;
 	                        }
-	                        
+
 	                    }
 	                }
 	                modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
-	                //$log.debug(modifiedData); 
-	
-	
-	                
+	                //$log.debug(modifiedData);
+
+
+
 	                //$log.debug('process parent data');
 	                if(angular.isDefined(entityInstance.parents)){
 	                    for(var p in entityInstance.parents){
@@ -4421,14 +4422,15 @@
 	                            form.$setSubmitted();
 	                            if(form.$dirty && form.$valid){
 	                            for(var key in form){
-	                                if(key.charAt(0) !== '$'){
+	                                if(key.charAt(0) !== '$' && angular.isObject(form[key])){
 	                                    var inputField = form[key];
+										console.log(inputField);
 	                                    if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-	                                        
-	                                        if(angular.isDefined(parentInstance.metaData[key]) 
-	                                        && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
+
+	                                        if(angular.isDefined(parentInstance.metaData[key])
+	                                        && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype)
 	                                        && parentInstance.metaData[key].hb_formfieldtype === 'json'){
-	                                            modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);       
+	                                            modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);
 	                                        }else{
 	                                            modifiedData[parentObject.name][key] = form[key].$modelValue;
 	                                        }
@@ -4439,15 +4441,15 @@
 	                                if(!form.$valid){
 	                                    valid = false;
 	                                }
-	                                
+
 	                            }
 	                        }
 	                        modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
 	                    }
 	                }
 	                //$log.debug(modifiedData);
-	
-	                
+
+
 	                //$log.debug('begin child data');
 	                var childrenData = validateChildren(entityInstance);
 	                //$log.debug('child Data');
@@ -4457,80 +4459,80 @@
 	                    valid:valid,
 	                    value:modifiedData
 	                };
-	                
+
 	            }
-	
-	            
+
+
 	            var validateChildren = function(entityInstance){
 	                var data = {}
-	                
+
 	                if(angular.isDefined(entityInstance.children) && entityInstance.children.length){
-	                    
+
 	                    data = getDataFromChildren(entityInstance);
 	                }
 	                return data;
 	            }
-	            
+
 	            var processChild = function(entityInstance,entityInstanceParent){
-	     
+
 	                var data = {};
 	                var forms = entityInstance.forms;
-	                
+
 	                for(var f in forms){
-	                    
+
 	                    var form = forms[f];
-	                    
+
 	                    angular.extend(data,processForm(form,entityInstance));
 	                }
-	                
+
 	                if(angular.isDefined(entityInstance.children) && entityInstance.children.length){
-	                    
+
 	                    var childData = getDataFromChildren(entityInstance);
 	                    angular.extend(data,childData);
 	                }
 	                if(angular.isDefined(entityInstance.parents) && entityInstance.parents.length){
-	                    
+
 	                    var parentData = getDataFromParents(entityInstance,entityInstanceParent);
 	                    angular.extend(data,parentData);
 	                }
-	                
+
 	                return data;
 	            }
-	
+
 	            var processParent = function(entityInstance){
 	                var data = {};
 	                if(entityInstance.$$getID() !== ''){
 	                    data[entityInstance.$$getIDName()] = entityInstance.$$getID();
 	                }
-	                
+
 	                //$log.debug('processParent');
 	                //$log.debug(entityInstance);
 	                var forms = entityInstance.forms;
-	                    
+
 	                for(var f in forms){
 	                    var form = forms[f];
-	                    
+
 	                    data = angular.extend(data,processForm(form,entityInstance));
 	                }
-	                
+
 	                return data;
 	            }
-	
+
 	            var processForm = function(form,entityInstance){
 	                //$log.debug('begin process form');
 	                var data = {};
-	                form.$setSubmitted();   
+	                form.$setSubmitted();
 	                for(var key in form){
-	                    if(key.charAt(0) !== '$'){
+	                    if(key.charAt(0) !== '$' && angular.isObject(form[key])){
 	                        var inputField = form[key];
-	                        if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){ 
-	                            
+	                        if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){
+
 	                            if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
-	                                data[key] = angular.toJson(form[key].$modelValue);      
+	                                data[key] = angular.toJson(form[key].$modelValue);
 	                            }else{
-	                                data[key] = form[key].$modelValue;      
+	                                data[key] = form[key].$modelValue;
 	                            }
-	                                        
+
 	                        }
 	                    }
 	                }
@@ -4539,10 +4541,10 @@
 	                //$log.debug(data);
 	                return data;
 	            }
-	
+
 	            var getDataFromParents = function(entityInstance,entityInstanceParent){
 	                var data = {};
-	                
+
 	                for(var c in entityInstance.parents){
 	                    var parentMetaData = entityInstance.parents[c];
 	                    if(angular.isDefined(parentMetaData)){
@@ -4556,15 +4558,15 @@
 	                            //$log.debug(parentData);
 	                            angular.extend(data[parentMetaData.name],parentData);
 	                        }else{
-	                            
+
 	                        }
 	                    }
-	                    
+
 	                };
-	                
+
 	                return data;
 	            }
-	
+
 	            var getDataFromChildren = function(entityInstance){
 							var data = {};
 							
@@ -4597,27 +4599,27 @@
 									//$log.debug(childData);
 									angular.extend(data,childData);
 								}
-								 
+
 							}
 							//$log.debug('returning child data');
 							//$log.debug(data);
 
 							return data;
 				    	}
-				    	
+
 				    	var getModifiedDataByInstance = function(entityInstance){
 				    		var modifiedData = {};
+
 				    		
-				    		
-				    		
-				    		
+
+
 				    		
 				    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
 							//$log.debug('objectSaveLevel : ' + objectSaveLevel );
 							var valueStruct = validateObject(objectSaveLevel);
 							//$log.debug('validateObject data');
 							//$log.debug(valueStruct.value);
-							
+
 							modifiedData = {
 								objectLevel:objectSaveLevel,
 								value:valueStruct.value,
@@ -4625,26 +4627,26 @@
 							}
 				    		return modifiedData;
 				    	}
-				    	
+
 				    	var _getValidationsByProperty = function(entityInstance,property){
 				    		return entityInstance.validations.properties[property];
 				    	}
-	            
+
 	            var _getValidationByPropertyAndContext = function(entityInstance,property,context){
 	                var validations = _getValidationsByProperty(entityInstance,property);
 	                for(var i in validations){
-	                    
+
 	                    var contexts = validations[i].contexts.split(',');
 	                    for(var j in contexts){
 	                        if(contexts[j] === context){
 	                            return validations[i];
 	                        }
 	                    }
-	                    
+
 	                }
 	            }
-				
+
 				return $delegate;
 			}]);
-		 }]);		
+		 }]);
 		
