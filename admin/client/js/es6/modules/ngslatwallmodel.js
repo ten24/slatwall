@@ -3662,10 +3662,10 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     //return timeoutPromise;
                     return deferred.promise;
                     /*
-                    
-                    
-                    
-                    
+
+
+
+
                     */
                 };
                 var _getModifiedData = function (entityInstance) {
@@ -3700,6 +3700,10 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                                 //$log.debug('key:'+key);
                                 if (key.charAt(0) !== '$') {
                                     var inputField = form[key];
+                                    console.log(form);
+                                    console.log('test');
+                                    console.log(key);
+                                    console.log(inputField);
                                     if (angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true) {
                                         if (angular.isDefined(entityInstance.metaData[key])
                                             && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
@@ -3720,7 +3724,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                         }
                     }
                     modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
-                    //$log.debug(modifiedData); 
+                    //$log.debug(modifiedData);
                     //$log.debug('process parent data');
                     if (angular.isDefined(entityInstance.parents)) {
                         for (var p in entityInstance.parents) {
