@@ -217,25 +217,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		return attributeStruct;
 	}
 	
-	public string function formatImportValueByType(required struct data, required string format) {
-		
-		var result = arguments.data.value;
-		
-		switch (arguments.format) {
-			
-			case "urltitle":
-				result = createUniqueURLTitle(arguments.data.value, arguments.data.tableName);
-				break;
-				
-			case "alphanumericdash":
-				result = reReplace(lcase(trim(arguments.data.value)), "[^a-z0-9 \-]", "", "all");
-        		result = reReplace(result, "[-\s]+", "-", "all");
-				break;
-			
-		}
-		return result;
-	}
-	
 	public any function parseImportConfig(required any configJSON) {
 		var config = deserializeJSON(arguments.configJSON);
 		var tables = {};
