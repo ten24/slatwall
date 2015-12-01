@@ -155,7 +155,7 @@
 	
 			var addon = 1;
 	
-			var urlTitle = getService("HibachiUtilityService").createSEOString(arguments.titleString);
+			var urlTitle = createSEOString(arguments.titleString);
 	
 			var returnTitle = urlTitle;
 	
