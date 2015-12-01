@@ -7,7 +7,6 @@ module slatwalladmin {
                 
                 public static $inject=["$scope",'$element','$log', "$slatwall","collectionConfigService","selectionService"];        
         
-<<<<<<< HEAD
                 constructor(
                         private $scope: IOrderItemGiftRecipientScope, 
                         private $element, private $log:ng.ILogService,  
