@@ -104,7 +104,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//is it time to credit the card
 		if(arguments.processObject.getCreditGiftCardFlag()){
-			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
+			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount());
 		}
 
 		arguments.giftCard.setIssuedDate(now());
