@@ -134,6 +134,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
+	property name="renewalMethodOptions" type="array" persistent="false";
 	property name="renewalPrice" hb_formatType="currency" persistent="false";
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
@@ -194,11 +195,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
     		var smartList = getService("ProductService").getSkuSmartList();
     		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is not null");
     		variables.subscriptionSkuSmartList = smartList;
     	}
     	return variables.subscriptionSkuSmartList;
     }
-    
+
 	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
         if(!arguments.sorted && !arguments.fetchOptions) {
         	return variables.skus;
@@ -419,6 +421,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		smartList.addFilter("skus.product.productID",this.getProductID());
 		smartList.addOrder("sortOrder|ASC");
 		return smartList.getRecords();
+	}
+
+	public array function getRenewalMethodOptions(){
+		if(!structKeyExists(variables, "renewalMethodOptions")){
+			variables.renewalMethodOptions = [];
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectRenewalSku'), value="rsku"});
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectCustomRenewal'), value="custom"});
+		}
+		return variables.renewalMethodOptions;
 	}
 
 	public any function getSkuBySelectedOptions(string selectedOptions="") {
