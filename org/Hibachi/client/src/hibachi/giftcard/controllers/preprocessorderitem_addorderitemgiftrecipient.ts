@@ -18,16 +18,16 @@ class OrderItemGiftRecipientControl{
         public orderItemGiftRecipients;
         public quantity:number;
         public searchText:string;
-        public currentGiftRecipient:slatwalladmin.GiftRecipient;
+        public currentGiftRecipient:GiftRecipient;
         public quantityForm;
 
-        constructor(private $scope: IOrderItemGiftRecipientScope,  private $slatwall:ngSlatwall.$Slatwall){
+        constructor(private $scope: IOrderItemGiftRecipientScope,  private $slatwall){
                 this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                 $scope.collection = {};
                 this.adding = false;
                 this.searchText = "";
                 var count = 1;
-                this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+                this.currentGiftRecipient = new GiftRecipient();
 
         }
 

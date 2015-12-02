@@ -14,6 +14,7 @@ class SWActionCallerController{
     public text:string;
     public disabled:boolean;
     public actionItemEntityName:string;
+    public pathBuilderConfig:any;
     //@ngInject
     constructor(
         private $scope,

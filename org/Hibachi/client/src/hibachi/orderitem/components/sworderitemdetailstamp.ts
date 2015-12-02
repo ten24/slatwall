@@ -3,13 +3,33 @@
  * @module slatwalladmin
  * @class swOrderItemsShippingLabelStamp
  */
-angular.module('slatwalladmin')
-.directive('swOrderItemDetailStamp', 
-[
-'partialsPath',
-'$log',
-'$slatwall',
-	function(partialsPath, $log, $slatwall){
+class SWOrderItemDetailStamp{
+	public static Factory(){
+		var directive = (
+			$log,
+			$slatwall,
+			orderItemPartialsPath,
+			pathBuilderConfig
+		) => new SWOrderItemDetailStamp(
+			$log,
+			$slatwall,
+			orderItemPartialsPath,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$log',
+			'$slatwall',
+			'orderItemPartialsPath',
+			'pathBuilderConfig'
+		]
+		return directive;
+	}
+	constructor(
+		$log,
+		$slatwall,
+		orderItemPartialsPath,
+		pathBuilderConfig
+	){
 		return {
 			restrict: 'A',
 			scope:{
@@ -18,7 +38,7 @@ angular.module('slatwalladmin')
 				skuId:"=",
 				orderItem:"="
 			},
-			templateUrl:partialsPath+"orderitem-detaillabel.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(orderItemPartialsPath)+"orderitem-detaillabel.html",
 			link: function(scope, element, attrs){
 				scope.details = [];
 				scope.orderItem.detailsName = [];
@@ -28,13 +48,13 @@ angular.module('slatwalladmin')
 				$log.debug(scope.orderItemId);
 				$log.debug(scope.skuId);
 				$log.debug(scope.orderItem);
-				
+
 				/**
 				 * For each type of orderItem, get the appropriate detail information.
-				 * 
-				 * Merchandise: Option Group Name and Option 
+				 *
+				 * Merchandise: Option Group Name and Option
 				 * Event: Event Date, Event Location
-				 * Subscription: Subscription Term, Subscription Benefits 
+				 * Subscription: Subscription Term, Subscription Benefits
 				 */
 				var getMerchandiseDetails = function(orderItem){
 					//Get option and option groups
@@ -42,35 +62,35 @@ angular.module('slatwalladmin')
 						orderItem.details.push(orderItem.data.sku.data.options[i].optionCode);
 						orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
 					}
-					
+
 				};
-				
+
 				var getSubscriptionDetails = function(orderItem){
-					
+
 					//get Subscription Term and Subscription Benefits
 					var name = orderItem.data.sku.data.subscriptionTerm.data.subscriptionTermName || "";
 					orderItem.detailsName.push("Subscription Term:");
 					orderItem.details.push(name);
-					
+
 					//Maybe multiple benefits so show them all.
 					for (var i = 0; i <=  orderItem.data.sku.data.subscriptionBenefits.length - 1; i++){
 						var benefitName = orderItem.data.sku.data.subscriptionBenefits[i].subscriptionBenefitName || "";
 						orderItem.detailsName.push("Subscription Benefit:");
 						orderItem.details.push(benefitName);
 					}
-					
+
 				};
-				
+
 				var getEventDetails = function(orderItem){
 					//get event date, and event location
 					orderItem.detailsName.push("Event Date: ");
-					orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);		
+					orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);
 					//Need to iterate this.
 					for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++ ){
 						orderItem.detailsName.push("Location: ");
 						orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
 					}
-				
+
 				};
 				if (angular.isDefined(scope.orderItem.details)){
 					switch (scope.systemCode){
@@ -82,7 +102,7 @@ angular.module('slatwalladmin')
 							break;
 						case "event":
 							results = getEventDetails(scope.orderItem);
-							break;	
+							break;
 				}
 
 					scope.orderItem.details.push(results);
@@ -90,4 +110,7 @@ angular.module('slatwalladmin')
 			}
 		};
 	}
-]);
+}
+export{
+	SWOrderItemDetailStamp
+}

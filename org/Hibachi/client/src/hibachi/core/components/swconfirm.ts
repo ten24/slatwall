@@ -59,15 +59,15 @@ class SWConfirm{
         var yesVal = "<yes>";
 
         /* Parse Tags */
-        var startTag = "\"'";
-        var endTag = "'\"";
-        var startParen = "'";
-        var endParen = "'";
-        var empty = "";
+        var startTag:string = "\"'";
+        var endTag:string = "'\"";
+        var startParen:string = "'";
+        var endParen:string = "'";
+        var empty:string = "";
 
         /* Modal String */
-        var parsedKeyString = "";
-        var finishedString = "";
+        var parsedKeyString:string = "";
+        var finishedString:string = "";
 
         //Figure out which version of this tag we are using
 
@@ -96,7 +96,7 @@ class SWConfirm{
                                                                     .replace(yesKey, yesText);
 
             $log.debug(finishedString);
-            finishedString	 = parsedKeyString.replace(confirm, empty)
+            finishedString	 = parsedKeyString.replace(confirmKey, empty)
                                                                     .replace(messageVal, empty)
                                                                     .replace(noVal, empty)
                                                                     .replace(yesVal, empty);
