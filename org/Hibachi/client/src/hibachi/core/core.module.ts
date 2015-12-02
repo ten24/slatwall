@@ -41,6 +41,20 @@ import {SWSortable} from "./components/swsortable";
 //  entity
 import {SWDetail} from "./entity/swdetail";
 import {SWList} from "./entity/swlist";
+//form
+import {SWInput} from "./form/swinput";
+import {SWFFormField} from "./form/swfformfield";
+import {SWForm} from "./form/swform";
+import {SWFormField} from "./form/swformfield";
+import {SWFormFieldJson} from "./form/swformfieldjson";
+import {SWFormFieldNumber} from "./form/swformfieldnumber";
+import {SWFormFieldPassword} from "./form/swformfieldpassword";
+import {SWFormFieldRadio} from "./form/swformfieldradio";
+import {SWFormFieldSearchSelect} from "./form/swformfieldsearchselect";
+import {SWFormFieldSelect} from "./form/swformfieldselect";
+import {SWFormFieldText} from "./form/swformfieldtext";
+import {SWFormRegistrar} from "./form/swformregistrar";
+import {SWFPropertyDisplay} from "./form/swfpropertydisplay";
 //  validation
 import {SWValidate} from "./validation/swvalidate";
 import {SWValidationMinLength} from "./validation/swvalidationminlength";
@@ -127,8 +141,23 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('swresizedimage',SWResizedImage.Factory())
 .directive('sw:sortable',SWSortable.Factory())
+//entity
 .directive('swDetail',SWDetail.Factory())
 .directive('swList',SWList.Factory())
+//form
+.directive('swInput',SWInput.Factory())
+.directive('swfFormField',SWFFormField.Factory())
+.directive('swForm',SWForm.Factory())
+.directive('swFormField',SWFormField.Factory())
+.directive('swFormFieldJson',SWFormFieldJson.Factory())
+.directive('swFormFieldNumber',SWFormFieldNumber.Factory())
+.directive('swFormFieldPassword',SWFormFieldPassword.Factory())
+.directive('swFormFieldRadio',SWFormFieldRadio.Factory())
+.directive('swFormFieldSearchSelect',SWFormFieldSearchSelect.Factory())
+.directive('swFormFieldSelect',SWFormFieldSelect.Factory())
+.directive('swFormFieldText',SWFormFieldText.Factory())
+.directive('swFormRegistrar',SWFormRegistrar.Factory())
+.directive('swfPropertyDisplay',SWFPropertyDisplay.Factory())
 //validation
 .directive('swValidate',SWValidate.Factory())
 .directive('swvalidationminlength',SWValidationMinLength.Factory())

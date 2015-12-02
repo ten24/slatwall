@@ -35,5 +35,6 @@
 <button ng-if="swActionCaller.type ==='button'" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-attr-title="{{swActionCaller.title}}"
+	ng-click="swActionCaller.submit()"
 	><i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 </button>

@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(138);
+	var logger_module_1 = __webpack_require__(145);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -653,12 +653,12 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(132);
-	var ngslatwall_module_1 = __webpack_require__(133);
-	var ngslatwallmodel_module_1 = __webpack_require__(135);
+	var slatwallinterceptor_1 = __webpack_require__(139);
+	var ngslatwall_module_1 = __webpack_require__(140);
+	var ngslatwallmodel_module_1 = __webpack_require__(142);
 	//filters
-	var entityrbkey_1 = __webpack_require__(136);
-	var swcurrency_1 = __webpack_require__(137);
+	var entityrbkey_1 = __webpack_require__(143);
+	var swcurrency_1 = __webpack_require__(144);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -888,15 +888,15 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var collection_module_1 = __webpack_require__(15);
-	var content_module_1 = __webpack_require__(90);
+	var content_module_1 = __webpack_require__(91);
 	var core_module_1 = __webpack_require__(16);
-	var dialog_module_1 = __webpack_require__(95);
-	var giftcard_module_1 = __webpack_require__(98);
-	var orderitem_module_1 = __webpack_require__(139);
-	var pagination_module_1 = __webpack_require__(109);
-	var product_module_1 = __webpack_require__(112);
-	var productbundle_module_1 = __webpack_require__(114);
-	var workflow_module_1 = __webpack_require__(120);
+	var dialog_module_1 = __webpack_require__(96);
+	var giftcard_module_1 = __webpack_require__(99);
+	var orderitem_module_1 = __webpack_require__(110);
+	var pagination_module_1 = __webpack_require__(116);
+	var product_module_1 = __webpack_require__(119);
+	var productbundle_module_1 = __webpack_require__(121);
+	var workflow_module_1 = __webpack_require__(127);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -1046,30 +1046,30 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(68);
-	var collectionservice_1 = __webpack_require__(69);
+	var collectionconfigservice_1 = __webpack_require__(69);
+	var collectionservice_1 = __webpack_require__(70);
 	//controllers
-	var collections_1 = __webpack_require__(70);
-	var createcollection_1 = __webpack_require__(71);
-	var confirmationcontroller_1 = __webpack_require__(72);
+	var collections_1 = __webpack_require__(71);
+	var createcollection_1 = __webpack_require__(72);
+	var confirmationcontroller_1 = __webpack_require__(73);
 	//directives
-	var swcollection_1 = __webpack_require__(73);
-	var swaddfilterbuttons_1 = __webpack_require__(74);
-	var swdisplayoptions_1 = __webpack_require__(75);
-	var swdisplayitem_1 = __webpack_require__(76);
-	var swcollectiontable_1 = __webpack_require__(77);
-	var swcolumnitem_1 = __webpack_require__(78);
-	var swconditioncriteria_1 = __webpack_require__(79);
-	var swcriteria_1 = __webpack_require__(80);
-	var swcriteriaboolean_1 = __webpack_require__(81);
-	var swcriteriamanytomany_1 = __webpack_require__(82);
-	var swcriteriamanytoone_1 = __webpack_require__(83);
-	var swcriterianumber_1 = __webpack_require__(84);
-	var swcriteriaonetomany_1 = __webpack_require__(85);
-	var swcriteriastring_1 = __webpack_require__(86);
-	var sweditfilteritem_1 = __webpack_require__(87);
-	var swfiltergroups_1 = __webpack_require__(88);
-	var swfilteritem_1 = __webpack_require__(89);
+	var swcollection_1 = __webpack_require__(74);
+	var swaddfilterbuttons_1 = __webpack_require__(75);
+	var swdisplayoptions_1 = __webpack_require__(76);
+	var swdisplayitem_1 = __webpack_require__(77);
+	var swcollectiontable_1 = __webpack_require__(78);
+	var swcolumnitem_1 = __webpack_require__(79);
+	var swconditioncriteria_1 = __webpack_require__(80);
+	var swcriteria_1 = __webpack_require__(81);
+	var swcriteriaboolean_1 = __webpack_require__(82);
+	var swcriteriamanytomany_1 = __webpack_require__(83);
+	var swcriteriamanytoone_1 = __webpack_require__(84);
+	var swcriterianumber_1 = __webpack_require__(85);
+	var swcriteriaonetomany_1 = __webpack_require__(86);
+	var swcriteriastring_1 = __webpack_require__(87);
+	var sweditfilteritem_1 = __webpack_require__(88);
+	var swfiltergroups_1 = __webpack_require__(89);
+	var swfilteritem_1 = __webpack_require__(90);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -1147,22 +1147,36 @@
 	//  entity
 	var swdetail_1 = __webpack_require__(51);
 	var swlist_1 = __webpack_require__(52);
+	//form
+	var swinput_1 = __webpack_require__(53);
+	var swfformfield_1 = __webpack_require__(146);
+	var swform_1 = __webpack_require__(147);
+	var swformfield_1 = __webpack_require__(148);
+	var swformfieldjson_1 = __webpack_require__(149);
+	var swformfieldnumber_1 = __webpack_require__(150);
+	var swformfieldpassword_1 = __webpack_require__(151);
+	var swformfieldradio_1 = __webpack_require__(152);
+	var swformfieldsearchselect_1 = __webpack_require__(153);
+	var swformfieldselect_1 = __webpack_require__(154);
+	var swformfieldtext_1 = __webpack_require__(155);
+	var swformregistrar_1 = __webpack_require__(156);
+	var swfpropertydisplay_1 = __webpack_require__(157);
 	//  validation
-	var swvalidate_1 = __webpack_require__(53);
-	var swvalidationminlength_1 = __webpack_require__(54);
-	var swvalidationdatatype_1 = __webpack_require__(55);
-	var swvalidationeq_1 = __webpack_require__(56);
-	var swvalidationgte_1 = __webpack_require__(57);
-	var swvalidationlte_1 = __webpack_require__(58);
-	var swvalidationmaxlength_1 = __webpack_require__(59);
-	var swvalidationmaxvalue_1 = __webpack_require__(60);
-	var swvalidationminvalue_1 = __webpack_require__(61);
-	var swvalidationneq_1 = __webpack_require__(62);
-	var swvalidationnumeric_1 = __webpack_require__(63);
-	var swvalidationregex_1 = __webpack_require__(64);
-	var swvalidationrequired_1 = __webpack_require__(65);
-	var swvalidationunique_1 = __webpack_require__(66);
-	var swvalidationuniqueornull_1 = __webpack_require__(67);
+	var swvalidate_1 = __webpack_require__(54);
+	var swvalidationminlength_1 = __webpack_require__(55);
+	var swvalidationdatatype_1 = __webpack_require__(56);
+	var swvalidationeq_1 = __webpack_require__(57);
+	var swvalidationgte_1 = __webpack_require__(58);
+	var swvalidationlte_1 = __webpack_require__(59);
+	var swvalidationmaxlength_1 = __webpack_require__(60);
+	var swvalidationmaxvalue_1 = __webpack_require__(61);
+	var swvalidationminvalue_1 = __webpack_require__(62);
+	var swvalidationneq_1 = __webpack_require__(63);
+	var swvalidationnumeric_1 = __webpack_require__(64);
+	var swvalidationregex_1 = __webpack_require__(65);
+	var swvalidationrequired_1 = __webpack_require__(66);
+	var swvalidationunique_1 = __webpack_require__(67);
+	var swvalidationuniqueornull_1 = __webpack_require__(68);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1224,6 +1238,19 @@
 	    .directive('sw:sortable', swsortable_1.SWSortable.Factory())
 	    .directive('swDetail', swdetail_1.SWDetail.Factory())
 	    .directive('swList', swlist_1.SWList.Factory())
+	    .directive('swInput', swinput_1.SWInput.Factory())
+	    .directive('swfFormField', swfformfield_1.SWFFormField.Factory())
+	    .directive('swForm', swform_1.SWForm.Factory())
+	    .directive('swFormField', swformfield_1.SWFormField.Factory())
+	    .directive('swFormFieldJson', swformfieldjson_1.SWFormFieldJson.Factory())
+	    .directive('swFormFieldNumber', swformfieldnumber_1.SWFormFieldNumber.Factory())
+	    .directive('swFormFieldPassword', swformfieldpassword_1.SWFormFieldPassword.Factory())
+	    .directive('swFormFieldRadio', swformfieldradio_1.SWFormFieldRadio.Factory())
+	    .directive('swFormFieldSearchSelect', swformfieldsearchselect_1.SWFormFieldSearchSelect.Factory())
+	    .directive('swFormFieldSelect', swformfieldselect_1.SWFormFieldSelect.Factory())
+	    .directive('swFormFieldText', swformfieldtext_1.SWFormFieldText.Factory())
+	    .directive('swFormRegistrar', swformregistrar_1.SWFormRegistrar.Factory())
+	    .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory())
 	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
 	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory())
 	    .directive('swvalidationdatatype', swvalidationdatatype_1.SWValidationDataType.Factory())
@@ -2083,6 +2110,16 @@
 	        this.init = function () {
 	            //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
 	            _this.type = _this.type || 'link';
+	            if (_this.type == "button") {
+	                //handle submit.
+	                /** in order to attach the correct controller to local vm, we need a watch to bind */
+	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.frmController; }, function (newValue, oldValue) {
+	                    if (newValue !== undefined) {
+	                        _this.formCtrl = newValue;
+	                    }
+	                    unbindWatcher();
+	                });
+	            }
 	            //			this.actionItem = this.getActionItem();
 	            //			this.actionItemEntityName = this.getActionItemEntityName();
 	            //			this.text = this.getText();
@@ -2104,6 +2141,9 @@
 	                <cfset attributes.class &= " disabled" />
 	            </cfif>
 	            */
+	        };
+	        this.submit = function () {
+	            _this.formCtrl.submit(_this.action);
 	        };
 	        this.getAction = function () {
 	            return _this.action || '';
@@ -4375,6 +4415,128 @@
 	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
 	 * validate based on that context as defined in the validation properties object.
 	 */
+	var SWInput = (function () {
+	    function SWInput($log, $compile, utilityService) {
+	        var getValidationDirectives = function (propertyDisplay) {
+	            var spaceDelimitedList = '';
+	            var name = propertyDisplay.property;
+	            var form = propertyDisplay.form.$$swFormInfo;
+	            $log.debug("Name is:" + name + " and form is: " + form);
+	            var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+	            $log.debug("Validations: ");
+	            var validationsForContext = [];
+	            //get the form context and the form name.
+	            var formContext = propertyDisplay.form.$$swFormInfo.context;
+	            var formName = propertyDisplay.form.$$swFormInfo.name;
+	            $log.debug("Form context is: ");
+	            $log.debug(formContext);
+	            $log.debug("Form Name: ");
+	            $log.debug(formName);
+	            //get the validations for the current element.
+	            var propertyValidations = propertyDisplay.object.validations.properties[name];
+	            /*
+	            * Investigating why number inputs are not working.
+	            * */
+	            //check if the contexts match.
+	            if (angular.isObject(propertyValidations)) {
+	                //if this is a procesobject validation then the context is implied
+	                if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
+	                    propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+	                }
+	                if (propertyValidations[0].contexts === formContext) {
+	                    $log.debug("Matched");
+	                    for (var prop in propertyValidations[0]) {
+	                        if (prop != "contexts" && prop !== "conditions") {
+	                            spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+	                        }
+	                    }
+	                }
+	                $log.debug(spaceDelimitedList);
+	            }
+	            //loop over validations that are required and create the space delimited list
+	            $log.debug(validations);
+	            //get all validations related to the form context;
+	            $log.debug(form);
+	            $log.debug(propertyDisplay);
+	            angular.forEach(validations, function (validation, key) {
+	                if (utilityService.listFind(validation.contexts.toLowerCase(), form.context.toLowerCase()) !== -1) {
+	                    $log.debug("Validations for context");
+	                    $log.debug(validation);
+	                    validationsForContext.push(validation);
+	                }
+	            });
+	            //now that we have all related validations for the specific form context that we are working with collection the directives we need
+	            //getValidationDirectiveByType();
+	            return spaceDelimitedList;
+	        };
+	        var getTemplate = function (propertyDisplay) {
+	            var template = '';
+	            var validations = '';
+	            if (!propertyDisplay.noValidate) {
+	                validations = getValidationDirectives(propertyDisplay);
+	            }
+	            if (propertyDisplay.fieldType === 'text') {
+	                template = '<input type="text" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            else if (propertyDisplay.fieldType === 'password') {
+	                template = '<input type="password" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            return template;
+	        };
+	        return {
+	            require: '^form',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            restrict: "E",
+	            //adding model and form controller
+	            link: function (scope, element, attr, formController) {
+	                //renders the template and compiles it
+	                element.html(getTemplate(scope.propertyDisplay));
+	                $compile(element.contents())(scope);
+	            }
+	        };
+	    }
+	    SWInput.Factory = function () {
+	        var directive = function ($log, $compile, utilityService) {
+	            return new SWInput($log, $compile, utilityService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$compile',
+	            'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWInput;
+	})();
+	exports.SWInput = SWInput;
+
+
+/***/ },
+/* 54 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	/**
+	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
+	 * validate based on that context as defined in the validation properties object.
+	 */
 	// 'use strict';
 	// angular.module('slatwalladmin').directive('swValidate',
 	// [ '$log','$slatwall', function($log, $slatwall) {
@@ -4752,7 +4914,7 @@
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4793,7 +4955,7 @@
 
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4852,7 +5014,7 @@
 
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/**
@@ -4892,7 +5054,7 @@
 
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4930,7 +5092,7 @@
 
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -4969,7 +5131,7 @@
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5006,7 +5168,7 @@
 
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5043,7 +5205,7 @@
 
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5080,7 +5242,7 @@
 
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5115,7 +5277,7 @@
 
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5154,7 +5316,7 @@
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5194,7 +5356,7 @@
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5230,7 +5392,7 @@
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5282,7 +5444,7 @@
 
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5334,7 +5496,7 @@
 
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -5708,7 +5870,7 @@
 
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -5909,7 +6071,7 @@
 
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6171,7 +6333,7 @@
 
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6353,7 +6515,7 @@
 
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6389,7 +6551,7 @@
 
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6435,7 +6597,7 @@
 
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6481,7 +6643,7 @@
 
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6647,7 +6809,7 @@
 
 
 /***/ },
-/* 76 */
+/* 77 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6727,7 +6889,7 @@
 
 
 /***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6794,7 +6956,7 @@
 
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -6994,7 +7156,7 @@
 
 
 /***/ },
-/* 79 */
+/* 80 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7884,7 +8046,7 @@
 
 
 /***/ },
-/* 80 */
+/* 81 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -7926,7 +8088,7 @@
 
 
 /***/ },
-/* 81 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8026,7 +8188,7 @@
 
 
 /***/ },
-/* 82 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8165,7 +8327,7 @@
 
 
 /***/ },
-/* 83 */
+/* 84 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8327,7 +8489,7 @@
 
 
 /***/ },
-/* 84 */
+/* 85 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8492,7 +8654,7 @@
 
 
 /***/ },
-/* 85 */
+/* 86 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8627,7 +8789,7 @@
 
 
 /***/ },
-/* 86 */
+/* 87 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -8809,7 +8971,7 @@
 
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -9117,7 +9279,7 @@
 
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -9216,7 +9378,7 @@
 
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -9282,7 +9444,7 @@
 
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9290,10 +9452,10 @@
 	//services
 	//filters
 	//directives
-	var swcontentbasic_1 = __webpack_require__(91);
-	var swcontenteditor_1 = __webpack_require__(92);
-	var swcontentlist_1 = __webpack_require__(93);
-	var swcontentnode_1 = __webpack_require__(94);
+	var swcontentbasic_1 = __webpack_require__(92);
+	var swcontenteditor_1 = __webpack_require__(93);
+	var swcontentlist_1 = __webpack_require__(94);
+	var swcontentnode_1 = __webpack_require__(95);
 	var contentmodule = angular.module('hibachi.content', []).config(function () {
 	})
 	    .constant('contentPartialsPath', 'content/components/')
@@ -9305,7 +9467,7 @@
 
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -9381,7 +9543,7 @@
 
 
 /***/ },
-/* 92 */
+/* 93 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -9441,7 +9603,7 @@
 
 
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -9679,7 +9841,7 @@
 
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -9821,15 +9983,15 @@
 
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(96);
+	var dialogservice_1 = __webpack_require__(97);
 	//controllers
-	var pagedialog_1 = __webpack_require__(97);
+	var pagedialog_1 = __webpack_require__(98);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -9839,7 +10001,7 @@
 
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -9880,7 +10042,7 @@
 
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports) {
 
 	var PageDialogController = (function () {
@@ -9901,7 +10063,7 @@
 
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9909,16 +10071,16 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//controllers
-	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(99);
+	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(100);
 	//directives
-	var swaddorderitemgiftrecipient_1 = __webpack_require__(101);
-	var swgiftcardbalance_1 = __webpack_require__(102);
-	var swgiftcarddetail_1 = __webpack_require__(103);
-	var swgiftcardhistory_1 = __webpack_require__(104);
-	var swgiftcardoverview_1 = __webpack_require__(105);
-	var swgiftcardorderinfo_1 = __webpack_require__(106);
-	var swgiftcardrecipientinfo_1 = __webpack_require__(107);
-	var sworderitemgiftrecipientrow_1 = __webpack_require__(108);
+	var swaddorderitemgiftrecipient_1 = __webpack_require__(102);
+	var swgiftcardbalance_1 = __webpack_require__(103);
+	var swgiftcarddetail_1 = __webpack_require__(104);
+	var swgiftcardhistory_1 = __webpack_require__(105);
+	var swgiftcardoverview_1 = __webpack_require__(106);
+	var swgiftcardorderinfo_1 = __webpack_require__(107);
+	var swgiftcardrecipientinfo_1 = __webpack_require__(108);
+	var sworderitemgiftrecipientrow_1 = __webpack_require__(109);
 	var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -9937,12 +10099,12 @@
 
 
 /***/ },
-/* 99 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(100);
+	var giftrecipient_1 = __webpack_require__(101);
 	var OrderItemGiftRecipientControl = (function () {
 	    function OrderItemGiftRecipientControl($scope, $slatwall) {
 	        var _this = this;
@@ -9983,7 +10145,7 @@
 
 
 /***/ },
-/* 100 */
+/* 101 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -10009,12 +10171,12 @@
 
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
 	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var giftrecipient_1 = __webpack_require__(100);
+	var giftrecipient_1 = __webpack_require__(101);
 	var SWAddOrderItemRecipientController = (function () {
 	    function SWAddOrderItemRecipientController($slatwall) {
 	        var _this = this;
@@ -10131,7 +10293,7 @@
 
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
@@ -10205,7 +10367,7 @@
 
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
@@ -10263,7 +10425,7 @@
 
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
@@ -10384,7 +10546,7 @@
 
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
@@ -10424,7 +10586,7 @@
 
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
@@ -10483,7 +10645,7 @@
 
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
@@ -10523,7 +10685,7 @@
 
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../../client/typings/tsd.d.ts" />
@@ -10619,14 +10781,1277 @@
 
 
 /***/ },
-/* 109 */
+/* 110 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../../typings/tsd.d.ts" />
+	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
+	var core_module_1 = __webpack_require__(16);
+	//directives
+	var swchildorderitem_1 = __webpack_require__(111);
+	var sworderitem_1 = __webpack_require__(112);
+	var swoishippinglabelstamp_1 = __webpack_require__(113);
+	var sworderitemdetailstamp_1 = __webpack_require__(114);
+	var sworderitems_1 = __webpack_require__(115);
+	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
+	    .run([function () {
+	    }])
+	    .directive('swChildOrderItem', swchildorderitem_1.SWChildOrderItem.Factory())
+	    .directive('swOrderItem', sworderitem_1.SWOrderItem.Factory())
+	    .directive('swoishippinglabelstamp', swoishippinglabelstamp_1.SWOiShippingLabelStamp.Factory())
+	    .directive('swOrderItemDetailStamp', sworderitemdetailstamp_1.SWOrderItemDetailStamp.Factory())
+	    .directive('swOrderItems', sworderitems_1.SWOrderItems.Factory())
+	    .constant('orderItemPartialsPath', 'orderitem/components/');
+	exports.orderitemmodule = orderitemmodule;
+
+
+/***/ },
+/* 111 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWChildOrderItem = (function () {
+	    function SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: "A",
+	            scope: {
+	                orderItem: "=",
+	                orderId: "@",
+	                childOrderItems: "=",
+	                attributes: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "childorderitem.html",
+	            link: function (scope, element, attr) {
+	                var columnsConfig = [
+	                    {
+	                        "isDeletable": false,
+	                        "isExportable": true,
+	                        "propertyIdentifier": "_orderitem.orderItemID",
+	                        "ormtype": "id",
+	                        "isVisible": true,
+	                        "isSearchable": true,
+	                        "title": "Order Item ID"
+	                    },
+	                    {
+	                        "title": "Order Item Type",
+	                        "propertyIdentifier": "_orderitem.orderItemType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Order Item Price",
+	                        "propertyIdentifier": "_orderitem.price",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Name",
+	                        "propertyIdentifier": "_orderitem.sku.skuName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Price",
+	                        "propertyIdentifier": "_orderitem.skuPrice",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku ID",
+	                        "propertyIdentifier": "_orderitem.sku.skuID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "SKU Code",
+	                        "propertyIdentifier": "_orderitem.sku.skuCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product ID",
+	                        "propertyIdentifier": "_orderitem.sku.product.productID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Name",
+	                        "propertyIdentifier": "_orderitem.sku.product.productName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Description",
+	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Image File Name",
+	                        "propertyIdentifier": "_orderitem.sku.imageFile",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
+	                        "ormtype": "string"
+	                    },
+	                    {
+	                        "title": "Product Type",
+	                        "propertyIdentifier": "_orderitem.sku.product.productType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Qty.",
+	                        "propertyIdentifier": "_orderitem.quantity",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Name",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment ID",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Type",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address 2",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Postal Code",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "City",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "State",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Country",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Total",
+	                        "propertyIdentifier": "_orderitem.itemTotal",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Discount Amount",
+	                        "propertyIdentifier": "_orderitem.discountAmount",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.extendedPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount"
+	                    },
+	                    {
+	                        "title": "Product Bundle Group",
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundlePrice",
+	                        "persistent": false
+	                    }
+	                ];
+	                //add attributes to the column config
+	                angular.forEach(scope.attributes, function (attribute) {
+	                    var attributeColumn = {
+	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
+	                        attributeID: attribute.attributeID,
+	                        attributeSetObject: "orderItem"
+	                    };
+	                    columnsConfig.push(attributeColumn);
+	                });
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
+	                                "comparisonOperator": "=",
+	                                "value": scope.orderItem.$$getID()
+	                            }
+	                        ]
+	                    }
+	                ];
+	                var options = {
+	                    columnsConfig: angular.toJson(columnsConfig),
+	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
+	                    allRecords: true
+	                };
+	                //hide the children on click
+	                scope.hideChildren = function (orderItem) {
+	                    //Set all child order items to clicked = false.
+	                    angular.forEach(scope.childOrderItems, function (child) {
+	                        console.dir(child);
+	                        child.hide = !child.hide;
+	                        scope.orderItem.clicked = !scope.orderItem.clicked;
+	                    });
+	                };
+	                /**
+	                * Returns a list of child order items.
+	                */
+	                scope.getChildOrderItems = function (orderItem) {
+	                    orderItem.clicked = true;
+	                    if (!scope.orderItem.childItemsRetrieved) {
+	                        scope.orderItem.childItemsRetrieved = true;
+	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+	                        orderItemsPromise.then(function (value) {
+	                            var collectionConfig = {};
+	                            collectionConfig.columns = columnsConfig;
+	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
+	                            collectionConfig.baseEntityAlias = '_orderitem';
+	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
+	                            angular.forEach(childOrderItems, function (childOrderItem) {
+	                                childOrderItem.hide = false;
+	                                childOrderItem.depth = orderItem.depth + 1;
+	                                childOrderItem.data.parentOrderItem = orderItem;
+	                                childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
+	                                scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem) + 1, 0, childOrderItem);
+	                                childOrderItem.data.productBundleGroupPercentage = 1;
+	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                            });
+	                        });
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWChildOrderItem.Factory = function () {
+	        var directive = function ($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$slatwall',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWChildOrderItem;
+	})();
+	exports.SWChildOrderItem = SWChildOrderItem;
+
+
+/***/ },
+/* 112 */
+/***/ function(module, exports) {
+
+	var SWOrderItem = (function () {
+	    function SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: "A",
+	            scope: {
+	                orderItem: "=",
+	                orderId: "@",
+	                attributes: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem.html",
+	            link: function (scope, element, attr) {
+	                $log.debug('order item init');
+	                $log.debug(scope.orderItem);
+	                scope.orderItem.clicked = false; //Never been clicked
+	                scope.orderItem.details = [];
+	                scope.orderItem.events = [];
+	                scope.orderItem.queuePosition;
+	                scope.orderItem.onWaitlist = false;
+	                scope.orderItem.isPending = false;
+	                scope.orderItem.isRegistered = false;
+	                var foundPosition = false;
+	                if (scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event') {
+	                    var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
+	                    eventRegistrationPromise.then(function () {
+	                        angular.forEach(scope.orderItem.data.eventRegistrations, function (eventRegistration) {
+	                            $log.debug(eventRegistration);
+	                            var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
+	                            eventRegistrationPromise.then(function (rec) {
+	                                $log.debug(rec);
+	                                angular.forEach(rec.records, function (record) {
+	                                    $log.debug("Records");
+	                                    $log.debug(record.eventRegistrationStatusType);
+	                                    angular.forEach(record.eventRegistrationStatusType, function (statusType) {
+	                                        if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstWaitlisted") {
+	                                            scope.orderItem.onWaitlist = true;
+	                                            $log.debug("Found + " + statusType.systemCode);
+	                                            //Because the customer is waitlisted, we need to get the number of customers ahead of them in the queue.
+	                                            var position = getPositionInQueueFor(scope.orderItem);
+	                                            scope.orderItem.queuePosition = position;
+	                                        }
+	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstRegistered") {
+	                                            scope.orderItem.isRegistered = true;
+	                                            $log.debug("Found + " + statusType.systemCode);
+	                                        }
+	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstPendingApproval") {
+	                                            scope.orderItem.isPending = true;
+	                                            $log.debug("Found + " + statusType.systemCode);
+	                                        }
+	                                        else {
+	                                            $log.error("Couldn't resolve a status type for: " + statusType.systemCode);
+	                                        }
+	                                    });
+	                                });
+	                            });
+	                        });
+	                    });
+	                }
+	                /**
+	                * Returns the current position in the queue for an orderItem that's on the waiting list.
+	                */
+	                var getPositionInQueueFor = function (orderItem) {
+	                    $log.debug("Retrieving position in Queue: ");
+	                    var queueConfig = [
+	                        {
+	                            "propertyIdentifier": "_eventregistration.waitlistQueuePositionStruct",
+	                            "isVisible": true,
+	                            "persistent": false,
+	                            "title": "Event Registrations"
+	                        }];
+	                    var queueGroupsConfig = [
+	                        {
+	                            "filterGroup": [
+	                                {
+	                                    "propertyIdentifier": "_eventregistration.orderItem.orderItemID",
+	                                    "comparisonOperator": "=",
+	                                    "value": orderItem.$$getID()
+	                                }
+	                            ]
+	                        }
+	                    ];
+	                    var queueOptions = {
+	                        columnsConfig: angular.toJson(queueConfig),
+	                        filterGroupsConfig: angular.toJson(queueGroupsConfig),
+	                        allRecords: true
+	                    };
+	                    var positionPromise = $slatwall.getEntity('EventRegistration', queueOptions);
+	                    $log.debug(positionPromise);
+	                    positionPromise.then(function (value) {
+	                        angular.forEach(value.records, function (position) {
+	                            $log.debug("Position: " + position.waitlistQueuePositionStruct);
+	                            if (position.waitlistQueuePositionStruct !== -1) {
+	                                scope.orderItem.queuePosition = position.waitlistQueuePositionStruct; //Use the value.
+	                                return position.waitlistQueuePositionStruct;
+	                            }
+	                        });
+	                    });
+	                };
+	                //define how we get child order items
+	                var columnsConfig = [
+	                    {
+	                        "isDeletable": false,
+	                        "isExportable": true,
+	                        "propertyIdentifier": "_orderitem.orderItemID",
+	                        "ormtype": "id",
+	                        "isVisible": true,
+	                        "isSearchable": true,
+	                        "title": "Order Item ID"
+	                    },
+	                    {
+	                        "title": "Order Item Type",
+	                        "propertyIdentifier": "_orderitem.orderItemType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Order Item Price",
+	                        "propertyIdentifier": "_orderitem.price",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Name",
+	                        "propertyIdentifier": "_orderitem.sku.skuName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Price",
+	                        "propertyIdentifier": "_orderitem.skuPrice",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku ID",
+	                        "propertyIdentifier": "_orderitem.sku.skuID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "SKU Code",
+	                        "propertyIdentifier": "_orderitem.sku.skuCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Bundle Group",
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product ID",
+	                        "propertyIdentifier": "_orderitem.sku.product.productID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Name",
+	                        "propertyIdentifier": "_orderitem.sku.product.productName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Type",
+	                        "propertyIdentifier": "_orderitem.sku.product.productType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Description",
+	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Event Start Date",
+	                        "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Description",
+	                        "propertyIdentifier": "_orderitem.sku.options",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
+	                        "ormtype": "string"
+	                    },
+	                    {
+	                        "title": "Image File Name",
+	                        "propertyIdentifier": "_orderitem.sku.imageFile",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Qty.",
+	                        "propertyIdentifier": "_orderitem.quantity",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Name",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment ID",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Type",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address 2",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Postal Code",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "City",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "State",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Country",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Total",
+	                        "propertyIdentifier": "_orderitem.itemTotal",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Discount Amount",
+	                        "propertyIdentifier": "_orderitem.discountAmount",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Tax Amount",
+	                        "propertyIdentifier": "_orderitem.taxAmount",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.extendedPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount",
+	                        "ormtype": "big_decimal"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType",
+	                        "ormtype": "string"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundlePrice",
+	                        "persistent": false
+	                    }
+	                ];
+	                //Add attributes to the column configuration
+	                angular.forEach(scope.attributes, function (attribute) {
+	                    var attributeColumn = {
+	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
+	                        attributeID: attribute.attributeID,
+	                        attributeSetObject: "orderItem"
+	                    };
+	                    columnsConfig.push(attributeColumn);
+	                });
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
+	                                "comparisonOperator": "=",
+	                                "value": scope.orderItem.$$getID()
+	                            }
+	                        ]
+	                    }
+	                ];
+	                var options = {
+	                    columnsConfig: angular.toJson(columnsConfig),
+	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
+	                    allRecords: true
+	                };
+	                //Create a list of order items.
+	                scope.childOrderItems = [];
+	                scope.orderItem.depth = 1;
+	                /**
+	                * Hide orderItem children on clicking the details link.
+	                */
+	                scope.hideChildren = function (orderItem) {
+	                    //Set all child order items to clicked = false.
+	                    angular.forEach(scope.childOrderItems, function (child) {
+	                        $log.debug("hideing");
+	                        child.hide = !child.hide;
+	                        scope.orderItem.clicked = !scope.orderItem.clicked;
+	                    });
+	                };
+	                //Delete orderItem
+	                scope.deleteEntity = function () {
+	                    $log.debug("Deleting");
+	                    $log.debug(scope.orderItem);
+	                    var deletePromise = scope.orderItem.$$delete();
+	                    deletePromise.then(function () {
+	                        delete scope.orderItem;
+	                    });
+	                };
+	                /**
+	                * Gets a list of child order items if they exist.
+	                */
+	                scope.getChildOrderItems = function () {
+	                    if (!scope.orderItem.childItemsRetrieved) {
+	                        scope.orderItem.clicked = !scope.orderItem.clicked;
+	                        scope.orderItem.hide = !scope.orderItem.hide;
+	                        scope.orderItem.childItemsRetrieved = true;
+	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+	                        orderItemsPromise.then(function (value) {
+	                            var collectionConfig = {};
+	                            collectionConfig.columns = columnsConfig;
+	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
+	                            collectionConfig.baseEntityAlias = '_orderitem';
+	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
+	                            angular.forEach(childOrderItems, function (childOrderItem) {
+	                                childOrderItem.depth = scope.orderItem.depth + 1;
+	                                scope.childOrderItems.push(childOrderItem);
+	                                childOrderItem.data.productBundleGroupPercentage = 1;
+	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                            });
+	                        });
+	                    }
+	                    else {
+	                        //We already have the items so we just need to show them.
+	                        angular.forEach(scope.childOrderItems, function (child) {
+	                            child.hide = !child.hide;
+	                            scope.orderItem.clicked = !scope.orderItem.clicked;
+	                        });
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWOrderItem.Factory = function () {
+	        var directive = function ($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$compile',
+	            '$http',
+	            '$templateCache',
+	            '$slatwall',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOrderItem;
+	})();
+	exports.SWOrderItem = SWOrderItem;
+
+
+/***/ },
+/* 113 */
+/***/ function(module, exports) {
+
+	/**
+	 * Displays a shipping label in the order items row.
+	 * @module slatwalladmin
+	 * @class swOrderItemsShippingLabelStamp
+	 */
+	var SWOiShippingLabelStamp = (function () {
+	    function SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                orderFulfillment: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderfulfillment-shippinglabel.html",
+	            link: function (scope, element, attrs) {
+	                //Get the template.
+	                $log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");
+	                $log.debug(scope.orderFulfillment);
+	                $log.debug(scope.orderFulfillment.data.fulfillmentMethodType);
+	            }
+	        };
+	    }
+	    SWOiShippingLabelStamp.Factory = function () {
+	        var directive = function ($log, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOiShippingLabelStamp;
+	})();
+	exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
+
+
+/***/ },
+/* 114 */
+/***/ function(module, exports) {
+
+	/**
+	 * Displays a shipping label in the order items row.
+	 * @module slatwalladmin
+	 * @class swOrderItemsShippingLabelStamp
+	 */
+	var SWOrderItemDetailStamp = (function () {
+	    function SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                systemCode: "=",
+	                orderItemId: "=",
+	                skuId: "=",
+	                orderItem: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem-detaillabel.html",
+	            link: function (scope, element, attrs) {
+	                scope.details = [];
+	                scope.orderItem.detailsName = [];
+	                var results;
+	                $log.debug("Detail stamp");
+	                $log.debug(scope.systemCode);
+	                $log.debug(scope.orderItemId);
+	                $log.debug(scope.skuId);
+	                $log.debug(scope.orderItem);
+	                /**
+	                 * For each type of orderItem, get the appropriate detail information.
+	                 *
+	                 * Merchandise: Option Group Name and Option
+	                 * Event: Event Date, Event Location
+	                 * Subscription: Subscription Term, Subscription Benefits
+	                 */
+	                var getMerchandiseDetails = function (orderItem) {
+	                    //Get option and option groups
+	                    for (var i = 0; i <= orderItem.data.sku.data.options.length - 1; i++) {
+	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionCode);
+	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
+	                    }
+	                };
+	                var getSubscriptionDetails = function (orderItem) {
+	                    //get Subscription Term and Subscription Benefits
+	                    var name = orderItem.data.sku.data.subscriptionTerm.data.subscriptionTermName || "";
+	                    orderItem.detailsName.push("Subscription Term:");
+	                    orderItem.details.push(name);
+	                    //Maybe multiple benefits so show them all.
+	                    for (var i = 0; i <= orderItem.data.sku.data.subscriptionBenefits.length - 1; i++) {
+	                        var benefitName = orderItem.data.sku.data.subscriptionBenefits[i].subscriptionBenefitName || "";
+	                        orderItem.detailsName.push("Subscription Benefit:");
+	                        orderItem.details.push(benefitName);
+	                    }
+	                };
+	                var getEventDetails = function (orderItem) {
+	                    //get event date, and event location
+	                    orderItem.detailsName.push("Event Date: ");
+	                    orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);
+	                    //Need to iterate this.
+	                    for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++) {
+	                        orderItem.detailsName.push("Location: ");
+	                        orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
+	                    }
+	                };
+	                if (angular.isDefined(scope.orderItem.details)) {
+	                    switch (scope.systemCode) {
+	                        case "merchandise":
+	                            results = getMerchandiseDetails(scope.orderItem);
+	                            break;
+	                        case "subscription":
+	                            results = getSubscriptionDetails(scope.orderItem);
+	                            break;
+	                        case "event":
+	                            results = getEventDetails(scope.orderItem);
+	                            break;
+	                    }
+	                    scope.orderItem.details.push(results);
+	                }
+	            }
+	        };
+	    }
+	    SWOrderItemDetailStamp.Factory = function () {
+	        var directive = function ($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOrderItemDetailStamp;
+	})();
+	exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
+
+
+/***/ },
+/* 115 */
+/***/ function(module, exports) {
+
+	var SWOrderItems = (function () {
+	    function SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                orderId: "@"
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
+	            link: function (scope, element, attrs) {
+	                var options = {};
+	                scope.keywords = "";
+	                scope.loadingCollection = false;
+	                var searchPromise;
+	                scope.searchCollection = function () {
+	                    if (searchPromise) {
+	                        $timeout.cancel(searchPromise);
+	                    }
+	                    searchPromise = $timeout(function () {
+	                        $log.debug('search with keywords');
+	                        $log.debug(scope.keywords);
+	                        //Set current page here so that the pagination does not break when getting collection
+	                        scope.paginator.setCurrentPage(1);
+	                        scope.loadingCollection = true;
+	                        scope.getCollection();
+	                    }, 500);
+	                };
+	                $log.debug('Init Order Item');
+	                $log.debug(scope.orderId);
+	                //Setup the data needed for each order item object.
+	                scope.getCollection = function () {
+	                    if (scope.pageShow === 'Auto') {
+	                        scope.pageShow = 50;
+	                    }
+	                    var columnsConfig = [
+	                        {
+	                            "isDeletable": false,
+	                            "isExportable": true,
+	                            "propertyIdentifier": "_orderitem.orderItemID",
+	                            "ormtype": "id",
+	                            "isVisible": true,
+	                            "title": "Order Item ID",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "isVisible": false,
+	                            "ormtype": "string",
+	                            "propertyIdentifier": "_orderitem.currencyCode"
+	                        },
+	                        {
+	                            "title": "Order Item Type",
+	                            "propertyIdentifier": "_orderitem.orderItemType",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Order Item Price",
+	                            "propertyIdentifier": "_orderitem.price",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Sku Name",
+	                            "propertyIdentifier": "_orderitem.sku.skuName",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Sku Price",
+	                            "propertyIdentifier": "_orderitem.skuPrice",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Sku ID",
+	                            "propertyIdentifier": "_orderitem.sku.skuID",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "SKU Code",
+	                            "propertyIdentifier": "_orderitem.sku.skuCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Product Bundle Group",
+	                            "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Product ID",
+	                            "propertyIdentifier": "_orderitem.sku.product.productID",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Product Name",
+	                            "propertyIdentifier": "_orderitem.sku.product.productName",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Product Type",
+	                            "propertyIdentifier": "_orderitem.sku.product.productType",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "propertyIdentifier": "_orderitem.sku.baseProductType",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Product Description",
+	                            "propertyIdentifier": "_orderitem.sku.product.productDescription",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Event Start Date Time",
+	                            "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Product Description",
+	                            "propertyIdentifier": "_orderitem.sku.options",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Sku Location",
+	                            "propertyIdentifier": "_orderitem.sku.locations",
+	                            "isVisible": true,
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Subscription Term",
+	                            "propertyIdentifier": "_orderitem.sku.subscriptionTerm.subscriptionTermName",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Subscription Benefits",
+	                            "propertyIdentifier": "_orderitem.sku.subscriptionBenefits",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Qty.",
+	                            "propertyIdentifier": "_orderitem.quantity",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Fulfillment Method Name",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Fulfillment ID",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Fulfillment Method Type",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Street Address",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Street Address",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Street Address 2",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Postal Code",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "City",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "State",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Country",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Image File Name",
+	                            "propertyIdentifier": "_orderitem.sku.imageFile",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "title": "Total",
+	                            "propertyIdentifier": "_orderitem.itemTotal",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Discount Amount",
+	                            "propertyIdentifier": "_orderitem.discountAmount",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Tax Amount",
+	                            "propertyIdentifier": "_orderitem.taxAmount",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "propertyIdentifier": "_orderitem.extendedPrice",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "propertyIdentifier": "_orderitem.productBundlePrice",
+	                            "persistent": false
+	                        }
+	                    ];
+	                    //add attributes to the column config
+	                    angular.forEach(scope.attributes, function (attribute) {
+	                        var attributeColumn = {
+	                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
+	                            attributeID: attribute.attributeID,
+	                            attributeSetObject: "orderItem"
+	                        };
+	                        columnsConfig.push(attributeColumn);
+	                    });
+	                    var filterGroupsConfig = [
+	                        {
+	                            "filterGroup": [
+	                                {
+	                                    "propertyIdentifier": "_orderitem.order.orderID",
+	                                    "comparisonOperator": "=",
+	                                    "value": scope.orderId
+	                                },
+	                                {
+	                                    "logicalOperator": "AND",
+	                                    "propertyIdentifier": "_orderitem.parentOrderItem",
+	                                    "comparisonOperator": "is",
+	                                    "value": "null"
+	                                }
+	                            ]
+	                        }
+	                    ];
+	                    options = {
+	                        columnsConfig: angular.toJson(columnsConfig),
+	                        filterGroupsConfig: angular.toJson(filterGroupsConfig),
+	                        currentPage: scope.paginator.getCurrentPage(),
+	                        pageShow: scope.paginator.getPageShow(),
+	                        keywords: scope.keywords
+	                    };
+	                    //Create a list of order items.
+	                    //scope.orderItems = [];
+	                    scope.orderAttributes = [];
+	                    scope.attributeValues = [];
+	                    var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+	                    orderItemsPromise.then(function (value) {
+	                        scope.collection = value;
+	                        var collectionConfig = {};
+	                        collectionConfig.columns = columnsConfig;
+	                        collectionConfig.baseEntityName = 'SlatwallOrderItem';
+	                        collectionConfig.baseEntityAlias = '_orderitem';
+	                        scope.orderItems = $slatwall.populateCollection(value.pageRecords, collectionConfig);
+	                        for (var orderItem in scope.orderItems) {
+	                            $log.debug("OrderItem Product Type");
+	                            $log.debug(scope.orderItems);
+	                        }
+	                        scope.paginator.setPageRecordsInfo(scope.collection);
+	                        scope.loadingCollection = false;
+	                    }, function (value) {
+	                        scope.orderItems = [];
+	                    });
+	                };
+	                //get all possible attributes
+	                var attributesConfig = [
+	                    {
+	                        "propertyIdentifier": "_attribute.attributeID",
+	                        "ormtype": "id",
+	                        "title": "attributeID"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_attribute.attributeCode",
+	                        "ormtype": "string",
+	                        "title": "Attribute Code"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_attribute.attributeName",
+	                        "ormtype": "string",
+	                        "title": "Attribute Name"
+	                    }
+	                ];
+	                var attributesFilters = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "_attribute.displayOnOrderDetailFlag",
+	                                "comparisonOperator": "=",
+	                                "value": true
+	                            },
+	                            {
+	                                "logicalOperator": "AND",
+	                                "propertyIdentifier": "_attribute.activeFlag",
+	                                "comparisonOperator": "=",
+	                                "value": true
+	                            }
+	                        ]
+	                    }
+	                ];
+	                var attributeOptions = {
+	                    columnsConfig: angular.toJson(attributesConfig),
+	                    filterGroupsConfig: angular.toJson(attributesFilters),
+	                    allRecords: true
+	                };
+	                var attItemsPromise = $slatwall.getEntity('attribute', attributeOptions);
+	                attItemsPromise.then(function (value) {
+	                    scope.attributes = [];
+	                    angular.forEach(value.records, function (attributeItemData) {
+	                        //Use that custom attribute name to get the value.
+	                        scope.attributes.push(attributeItemData);
+	                    });
+	                    scope.getCollection();
+	                });
+	                //Add claim function and cancel function
+	                scope.appendToCollection = function () {
+	                    if (scope.pageShow === 'Auto') {
+	                        $log.debug('AppendToCollection');
+	                        if (scope.paginator.autoScrollPage < scope.collection.totalPages) {
+	                            scope.paginator.autoScrollDisabled = true;
+	                            scope.paginator.autoScrollPage++;
+	                            var appendOptions = {};
+	                            angular.extend(appendOptions, options);
+	                            appendOptions.pageShow = 50;
+	                            appendOptions.currentPage = scope.paginator.autoScrollPage;
+	                            var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
+	                            collectionListingPromise.then(function (value) {
+	                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
+	                                scope.autoScrollDisabled = false;
+	                            }, function (reason) {
+	                                scope.collection.pageRecords = [];
+	                            });
+	                        }
+	                    }
+	                };
+	                scope.paginator = paginationService.createPagination();
+	                scope.paginator.collection = scope.collection;
+	                scope.paginator.getCollection = scope.getCollection;
+	            } //<--End link
+	        };
+	    }
+	    SWOrderItems.Factory = function () {
+	        var directive = function ($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
+	            return new SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$timeout',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig',
+	            'paginationService'
+	        ];
+	        return directive;
+	    };
+	    return SWOrderItems;
+	})();
+	exports.SWOrderItems = SWOrderItems;
+
+
+/***/ },
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(110);
-	var swpaginationbar_1 = __webpack_require__(111);
+	var paginationservice_1 = __webpack_require__(117);
+	var swpaginationbar_1 = __webpack_require__(118);
 	var core_module_1 = __webpack_require__(16);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -10638,7 +12063,7 @@
 
 
 /***/ },
-/* 110 */
+/* 117 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -10816,7 +12241,7 @@
 
 
 /***/ },
-/* 111 */
+/* 118 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -10875,7 +12300,7 @@
 
 
 /***/ },
-/* 112 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10884,7 +12309,7 @@
 	var core_module_1 = __webpack_require__(16);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(113);
+	var preprocessproduct_create_1 = __webpack_require__(120);
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -10895,7 +12320,7 @@
 
 
 /***/ },
-/* 113 */
+/* 120 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -10949,7 +12374,7 @@
 
 
 /***/ },
-/* 114 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10957,13 +12382,13 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var productbundleservice_1 = __webpack_require__(115);
+	var productbundleservice_1 = __webpack_require__(122);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(116);
+	var create_bundle_controller_1 = __webpack_require__(123);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(117);
-	var swproductbundlegroups_1 = __webpack_require__(118);
-	var swproductbundlegroup_1 = __webpack_require__(119);
+	var swproductbundlegrouptype_1 = __webpack_require__(124);
+	var swproductbundlegroups_1 = __webpack_require__(125);
+	var swproductbundlegroup_1 = __webpack_require__(126);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -10977,7 +12402,7 @@
 
 
 /***/ },
-/* 115 */
+/* 122 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -11062,7 +12487,7 @@
 
 
 /***/ },
-/* 116 */
+/* 123 */
 /***/ function(module, exports) {
 
 	var CreateBundleController = (function () {
@@ -11146,7 +12571,7 @@
 
 
 /***/ },
-/* 117 */
+/* 124 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -11311,7 +12736,7 @@
 
 
 /***/ },
-/* 118 */
+/* 125 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -11369,7 +12794,7 @@
 
 
 /***/ },
-/* 119 */
+/* 126 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -11640,24 +13065,24 @@
 
 
 /***/ },
-/* 120 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(121);
+	var workflowconditionservice_1 = __webpack_require__(128);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(122);
-	var swworkflowbasic_1 = __webpack_require__(123);
-	var swworkflowcondition_1 = __webpack_require__(124);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(125);
-	var swworkflowconditiongroups_1 = __webpack_require__(126);
-	var swworkflowtask_1 = __webpack_require__(127);
-	var swworkflowtaskactions_1 = __webpack_require__(128);
-	var swworkflowtasks_1 = __webpack_require__(129);
-	var swworkflowtrigger_1 = __webpack_require__(130);
-	var swworkflowtriggers_1 = __webpack_require__(131);
+	var swadmincreatesuperuser_1 = __webpack_require__(129);
+	var swworkflowbasic_1 = __webpack_require__(130);
+	var swworkflowcondition_1 = __webpack_require__(131);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(132);
+	var swworkflowconditiongroups_1 = __webpack_require__(133);
+	var swworkflowtask_1 = __webpack_require__(134);
+	var swworkflowtaskactions_1 = __webpack_require__(135);
+	var swworkflowtasks_1 = __webpack_require__(136);
+	var swworkflowtrigger_1 = __webpack_require__(137);
+	var swworkflowtriggers_1 = __webpack_require__(138);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
@@ -11677,7 +13102,7 @@
 
 
 /***/ },
-/* 121 */
+/* 128 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -11732,7 +13157,7 @@
 
 
 /***/ },
-/* 122 */
+/* 129 */
 /***/ function(module, exports) {
 
 	var SWAdminCreateSuperUser = (function () {
@@ -11764,7 +13189,7 @@
 
 
 /***/ },
-/* 123 */
+/* 130 */
 /***/ function(module, exports) {
 
 	var SWWorkflowBasic = (function () {
@@ -11800,7 +13225,7 @@
 
 
 /***/ },
-/* 124 */
+/* 131 */
 /***/ function(module, exports) {
 
 	var SWWorkflowCondition = (function () {
@@ -11920,7 +13345,7 @@
 
 
 /***/ },
-/* 125 */
+/* 132 */
 /***/ function(module, exports) {
 
 	var SWWorkflowConditionGroupItem = (function () {
@@ -11957,7 +13382,7 @@
 
 
 /***/ },
-/* 126 */
+/* 133 */
 /***/ function(module, exports) {
 
 	var SWWorkflowConditionGroups = (function () {
@@ -12004,7 +13429,7 @@
 
 
 /***/ },
-/* 127 */
+/* 134 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTask = (function () {
@@ -12054,7 +13479,7 @@
 
 
 /***/ },
-/* 128 */
+/* 135 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTaskActions = (function () {
@@ -12234,7 +13659,7 @@
 
 
 /***/ },
-/* 129 */
+/* 136 */
 /***/ function(module, exports) {
 
 	/**
@@ -12424,7 +13849,7 @@
 
 
 /***/ },
-/* 130 */
+/* 137 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTrigger = (function () {
@@ -12512,7 +13937,7 @@
 
 
 /***/ },
-/* 131 */
+/* 138 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTriggers = (function () {
@@ -12701,7 +14126,7 @@
 
 
 /***/ },
-/* 132 */
+/* 139 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12828,20 +14253,20 @@
 
 
 /***/ },
-/* 133 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(134);
+	var slatwallservice_1 = __webpack_require__(141);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 134 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13431,12 +14856,12 @@
 
 
 /***/ },
-/* 135 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var ngslatwall_module_1 = __webpack_require__(133);
+	var ngslatwall_module_1 = __webpack_require__(140);
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngslatwallmodelmodule = angular.module('ngSlatwallModel', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name]).config(['$provide', function ($provide) {
 	        $provide.decorator('$slatwall', [
@@ -17361,7 +18786,7 @@
 
 
 /***/ },
-/* 136 */
+/* 143 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17385,7 +18810,7 @@
 
 
 /***/ },
-/* 137 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17393,36 +18818,6 @@
 	var SWCurrency = (function () {
 	    function SWCurrency() {
 	    }
-	    // public $slatwall;
-	    // public realFilter = (value,decimalPlace):string=> {
-	    //     // REAL FILTER LOGIC, DISREGARDING PROMISES
-	    //     if(!angular.isDefined(data)){
-	    //         $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-	    //         data="$";
-	    //     }
-	    //     if(angular.isDefined(value)){
-	    //         if(angular.isDefined(decimalPlace)){
-	    //             value = parseFloat(value.toString()).toFixed(decimalPlace)
-	    //         } else {
-	    //             value = parseFloat(value.toString()).toFixed(2)
-	    //         }
-	    //     }
-	    //     return data + value;
-	    // }
-	    // public filterStub = (value:string, currencyCode:string, decimalPlace:number)=> {
-	    //     if( data === null ) {
-	    //         if( !serviceInvoked ) {
-	    //             serviceInvoked = true;
-	    //                 $slatwall.getCurrencies().then((currencies)=>{
-	    //                 var result = currencies.data;
-	    //                 data = result[currencyCode];
-	    //             });
-	    //         }
-	    //         return "-";
-	    //     }
-	    //     else
-	    //     return realFilter(value,decimalPlace);
-	    // }
 	    //@ngInject
 	    SWCurrency.Factory = function ($sce, $log, $slatwall) {
 	        var data = null, serviceInvoked = false;
@@ -17466,7 +18861,7 @@
 
 
 /***/ },
-/* 138 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
@@ -17480,1266 +18875,1179 @@
 
 
 /***/ },
-/* 139 */
-/***/ function(module, exports, __webpack_require__) {
+/* 146 */
+/***/ function(module, exports) {
 
-	/// <reference path="../../../typings/tsd.d.ts" />
-	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
-	var core_module_1 = __webpack_require__(16);
-	//directives
-	var swchildorderitem_1 = __webpack_require__(140);
-	var sworderitem_1 = __webpack_require__(141);
-	var swoishippinglabelstamp_1 = __webpack_require__(142);
-	var sworderitemdetailstamp_1 = __webpack_require__(143);
-	var sworderitems_1 = __webpack_require__(144);
-	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
-	    .run([function () {
-	    }])
-	    .directive('swChildOrderItem', swchildorderitem_1.SWChildOrderItem.Factory())
-	    .directive('swOrderItem', sworderitem_1.SWOrderItem.Factory())
-	    .directive('swoishippinglabelstamp', swoishippinglabelstamp_1.SWOiShippingLabelStamp.Factory())
-	    .directive('swOrderItemDetailStamp', sworderitemdetailstamp_1.SWOrderItemDetailStamp.Factory())
-	    .directive('swOrderItems', sworderitems_1.SWOrderItems.Factory())
-	    .constant('orderItemPartialsPath', 'orderitem/components/');
-	exports.orderitemmodule = orderitemmodule;
+	/**********************************************************************************************
+	 **********************************************************************************************
+	 **********************************************************************************************
+	 **		___________________________________________
+	 ** 	Form Field - type have the following options (This is for the frontend so it can be modified):
+	 **
+	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
+	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		file				|	No value can be passed in
+	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		password			|	No Value can be passed in
+	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		text				|	Simple Text Field
+	 **		textarea			|	Simple Textarea
+	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
+	 **		submit				|	submit button to post these properties back to the server.
+	 **		------------------------------------------------------------------------------------------------------
+	 **
+	 **		attr.valueObject" type="any" default="" />
+	 **		attr.valueObjectProperty" type="string" default="" />
+	 **
+	 **		General Settings that end up getting applied to the value object
+	 **		attr.type" type="string" default="text"
+	 **		attr.name" type="string" default=""
+	 **		attr.class" type="string" default=""
+	 **		attr.value" type="any" default=""
+	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
+	 **		attr.fieldAttributes" type="string" default=""
+	 **
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 */
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	/**
+	    * Property Display Controller handles the logic for this directive.
+	    */
+	var SWFFormFieldController = (function () {
+	    function SWFFormFieldController($scope) {
+	        this.$scope = $scope;
+	        var vm = this;
+	        vm.propertyDisplay = this.propertyDisplay;
+	    }
+	    /**
+	        * Handles the logic for the frontend version of the property display.
+	        */
+	    SWFFormFieldController.$inject = ['$scope'];
+	    return SWFFormFieldController;
+	})();
+	/**
+	    * This class handles configuring formFields for use in process forms on the front end.
+	    */
+	var SWFFormField = (function () {
+	    function SWFFormField(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = "E";
+	        this.require = "^swfPropertyDisplay";
+	        this.controller = SWFFormFieldController;
+	        this.controllerAs = "swfFormField";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.link = function (scope, element, attrs, formController, transcludeFn) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfformfield.html';
+	    }
+	    /**
+	        * Handles injecting the partials path into this class
+	        */
+	    SWFFormField.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFFormField(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFFormField;
+	})();
+	exports.SWFFormField = SWFFormField;
 
 
 /***/ },
-/* 140 */
+/* 147 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWChildOrderItem = (function () {
-	    function SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: "A",
-	            scope: {
-	                orderItem: "=",
-	                orderId: "@",
-	                childOrderItems: "=",
-	                attributes: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "childorderitem.html",
-	            link: function (scope, element, attr) {
-	                var columnsConfig = [
-	                    {
-	                        "isDeletable": false,
-	                        "isExportable": true,
-	                        "propertyIdentifier": "_orderitem.orderItemID",
-	                        "ormtype": "id",
-	                        "isVisible": true,
-	                        "isSearchable": true,
-	                        "title": "Order Item ID"
-	                    },
-	                    {
-	                        "title": "Order Item Type",
-	                        "propertyIdentifier": "_orderitem.orderItemType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Order Item Price",
-	                        "propertyIdentifier": "_orderitem.price",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Name",
-	                        "propertyIdentifier": "_orderitem.sku.skuName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Price",
-	                        "propertyIdentifier": "_orderitem.skuPrice",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku ID",
-	                        "propertyIdentifier": "_orderitem.sku.skuID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "SKU Code",
-	                        "propertyIdentifier": "_orderitem.sku.skuCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product ID",
-	                        "propertyIdentifier": "_orderitem.sku.product.productID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Name",
-	                        "propertyIdentifier": "_orderitem.sku.product.productName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Description",
-	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Image File Name",
-	                        "propertyIdentifier": "_orderitem.sku.imageFile",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
-	                        "ormtype": "string"
-	                    },
-	                    {
-	                        "title": "Product Type",
-	                        "propertyIdentifier": "_orderitem.sku.product.productType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Qty.",
-	                        "propertyIdentifier": "_orderitem.quantity",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Name",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment ID",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Type",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address 2",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Postal Code",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "City",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "State",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Country",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Total",
-	                        "propertyIdentifier": "_orderitem.itemTotal",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Discount Amount",
-	                        "propertyIdentifier": "_orderitem.discountAmount",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.extendedPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount"
-	                    },
-	                    {
-	                        "title": "Product Bundle Group",
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundlePrice",
-	                        "persistent": false
+	/**
+	    * Form Controller handles the logic for this directive.
+	    */
+	var SWFormController = (function () {
+	    function SWFormController($scope, $element, $slatwall, AccountFactory, CartFactory, $http, $timeout, observerService) {
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$slatwall = $slatwall;
+	        this.AccountFactory = AccountFactory;
+	        this.CartFactory = CartFactory;
+	        this.$http = $http;
+	        this.$timeout = $timeout;
+	        this.observerService = observerService;
+	        /** only use if the developer has specified these features with isProcessForm */
+	        this.isProcessForm = this.isProcessForm || "false";
+	        if (this.isProcessForm == "true") {
+	            this.handleSelfInspection(this);
+	        }
+	    }
+	    /**
+	        * Iterates through the form elements and checks if the names of any of them match
+	        * the meta data that comes back from the processObject call. Supplies a generic submit
+	        * method that can be called by any subclasses that inject formCtrl. On submit,
+	        * this class will attach any errors to the correspnding form element.
+	        */
+	    SWFormController.prototype.handleSelfInspection = function (context) {
+	        var _this = this;
+	        /** local variables */
+	        this.processObject = this.object || "";
+	        var vm = context;
+	        vm.hiddenFields = this.hiddenFields;
+	        vm.entityName = this.entityName || "Account";
+	        vm.processObject = this.processObject;
+	        vm.action = this.action;
+	        vm.actions = this.actions;
+	        vm.$timeout = this.$timeout;
+	        vm.postOnly = false;
+	        var observerService = this.observerService;
+	        /** parse the name */
+	        var entityName = this.processObject.split("_")[0];
+	        var processObject = this.processObject.split("_")[1];
+	        /** try to grab the meta data from the process entity in slatwall in a process exists
+	            *  otherwise, just use the service method to access it.
+	            */
+	        /** Cart is an alias for an Order */
+	        if (entityName == "Order") {
+	            entityName = "Cart";
+	        }
+	        ;
+	        /** find the form scope */
+	        this.$scope.$on('anchor', function (event, data) {
+	            if (data.anchorType == "form" && data.scope !== undefined) {
+	                vm["formCtrl"] = data.scope;
+	            }
+	        });
+	        /** make sure we have our data using new logic and $slatwall*/
+	        if (this.processObject == undefined || this.entityName == undefined) {
+	            throw ("ProcessObject Undefined Exception");
+	        }
+	        try {
+	            vm.actionFn = this.$slatwall.newEntity(vm.processObject);
+	        }
+	        catch (e) {
+	            vm.postOnly = true;
+	        }
+	        /** We use these for our models */
+	        vm.formData = {};
+	        /** returns all the data from the form by iterating the form elements */
+	        vm.getFormData = function () {
+	            var _this = this;
+	            angular.forEach(vm["formCtrl"][vm.processObject], function (val, key) {
+	                /** Check for form elements that have a name that doesn't start with $ */
+	                if (key.toString().indexOf('$') == -1) {
+	                    _this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
+	                }
+	            });
+	            return vm.formData || "";
+	        };
+	        /****
+	            * Handle parsing through the server errors and injecting the error text for that field
+	            * If the form only has a submit, then simply call that function and set errors.
+	            ***/
+	        vm.parseErrors = function (result) {
+	            var _this = this;
+	            if (angular.isDefined(result.errors) && result.errors.length != 0) {
+	                angular.forEach(result.errors, function (val, key) {
+	                    if (angular.isDefined(vm["formCtrl"][vm.processObject][key])) {
+	                        var primaryElement = _this.$element.find("[error-for='" + key + "']");
+	                        vm.$timeout(function () {
+	                            primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+	                        }, 0);
+	                        vm["formCtrl"][vm.processObject][key].$setValidity(key, false); //set field invalid
 	                    }
-	                ];
-	                //add attributes to the column config
-	                angular.forEach(scope.attributes, function (attribute) {
-	                    var attributeColumn = {
-	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
-	                        attributeID: attribute.attributeID,
-	                        attributeSetObject: "orderItem"
-	                    };
-	                    columnsConfig.push(attributeColumn);
-	                });
-	                var filterGroupsConfig = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
-	                                "comparisonOperator": "=",
-	                                "value": scope.orderItem.$$getID()
-	                            }
-	                        ]
-	                    }
-	                ];
-	                var options = {
-	                    columnsConfig: angular.toJson(columnsConfig),
-	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
-	                    allRecords: true
-	                };
-	                //hide the children on click
-	                scope.hideChildren = function (orderItem) {
-	                    //Set all child order items to clicked = false.
-	                    angular.forEach(scope.childOrderItems, function (child) {
-	                        console.dir(child);
-	                        child.hide = !child.hide;
-	                        scope.orderItem.clicked = !scope.orderItem.clicked;
-	                    });
-	                };
-	                /**
-	                * Returns a list of child order items.
-	                */
-	                scope.getChildOrderItems = function (orderItem) {
-	                    orderItem.clicked = true;
-	                    if (!scope.orderItem.childItemsRetrieved) {
-	                        scope.orderItem.childItemsRetrieved = true;
-	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-	                        orderItemsPromise.then(function (value) {
-	                            var collectionConfig = {};
-	                            collectionConfig.columns = columnsConfig;
-	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
-	                            collectionConfig.baseEntityAlias = '_orderitem';
-	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
-	                            angular.forEach(childOrderItems, function (childOrderItem) {
-	                                childOrderItem.hide = false;
-	                                childOrderItem.depth = orderItem.depth + 1;
-	                                childOrderItem.data.parentOrderItem = orderItem;
-	                                childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
-	                                scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem) + 1, 0, childOrderItem);
-	                                childOrderItem.data.productBundleGroupPercentage = 1;
-	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                            });
-	                        });
-	                    }
-	                };
+	                }, this);
 	            }
 	        };
-	    }
-	    SWChildOrderItem.Factory = function () {
-	        var directive = function ($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        vm.eventsObj = [];
+	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
+	        vm.parseEventString = function (evntStr, evntType) {
+	            vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
 	        };
-	        directive.$inject = [
-	            '$log',
-	            '$http',
-	            '$compile',
-	            '$templateCache',
-	            '$slatwall',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWChildOrderItem;
-	})();
-	exports.SWChildOrderItem = SWChildOrderItem;
-
-
-/***/ },
-/* 141 */
-/***/ function(module, exports) {
-
-	var SWOrderItem = (function () {
-	    function SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: "A",
-	            scope: {
-	                orderItem: "=",
-	                orderId: "@",
-	                attributes: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem.html",
-	            link: function (scope, element, attr) {
-	                $log.debug('order item init');
-	                $log.debug(scope.orderItem);
-	                scope.orderItem.clicked = false; //Never been clicked
-	                scope.orderItem.details = [];
-	                scope.orderItem.events = [];
-	                scope.orderItem.queuePosition;
-	                scope.orderItem.onWaitlist = false;
-	                scope.orderItem.isPending = false;
-	                scope.orderItem.isRegistered = false;
-	                var foundPosition = false;
-	                if (scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event') {
-	                    var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
-	                    eventRegistrationPromise.then(function () {
-	                        angular.forEach(scope.orderItem.data.eventRegistrations, function (eventRegistration) {
-	                            $log.debug(eventRegistration);
-	                            var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
-	                            eventRegistrationPromise.then(function (rec) {
-	                                $log.debug(rec);
-	                                angular.forEach(rec.records, function (record) {
-	                                    $log.debug("Records");
-	                                    $log.debug(record.eventRegistrationStatusType);
-	                                    angular.forEach(record.eventRegistrationStatusType, function (statusType) {
-	                                        if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstWaitlisted") {
-	                                            scope.orderItem.onWaitlist = true;
-	                                            $log.debug("Found + " + statusType.systemCode);
-	                                            //Because the customer is waitlisted, we need to get the number of customers ahead of them in the queue.
-	                                            var position = getPositionInQueueFor(scope.orderItem);
-	                                            scope.orderItem.queuePosition = position;
-	                                        }
-	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstRegistered") {
-	                                            scope.orderItem.isRegistered = true;
-	                                            $log.debug("Found + " + statusType.systemCode);
-	                                        }
-	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstPendingApproval") {
-	                                            scope.orderItem.isPending = true;
-	                                            $log.debug("Found + " + statusType.systemCode);
-	                                        }
-	                                        else {
-	                                            $log.error("Couldn't resolve a status type for: " + statusType.systemCode);
-	                                        }
-	                                    });
-	                                });
-	                            });
-	                        });
+	        vm.eventsHandler = function (params) {
+	            for (var e in params.events) {
+	                if (angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()) {
+	                    if (params.events[e].name == "hide") {
+	                        vm.hide(params.events[e].value);
+	                    }
+	                    if (params.events[e].name == "show") {
+	                        vm.show(params.events[e].value);
+	                    }
+	                    if (params.events[e].name == "update") {
+	                        vm.update(params.events[e].value);
+	                    }
+	                    if (params.events[e].name == "refresh") {
+	                        vm.refresh(params.events[e].value);
+	                    }
+	                    ;
+	                }
+	            }
+	        };
+	        /** hides this directive on event */
+	        vm.hide = function (param) {
+	            if (vm.processObject.toLowerCase() == param) {
+	                _this.$element.hide();
+	            }
+	        };
+	        /** shows this directive on event */
+	        vm.show = function (param) {
+	            if (vm.processObject.toLowerCase() == param) {
+	                _this.$element.show();
+	            }
+	        };
+	        /** refreshes this directive on event */
+	        vm.refresh = function (params) {
+	            //stub
+	        };
+	        /** updates this directive on event */
+	        vm.update = function (params) {
+	            //stub
+	        };
+	        vm.parseEvents = function (str, evntType) {
+	            if (str == undefined)
+	                return;
+	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
+	            var eventsObj = {
+	                "events": []
+	            }; //will hold events
+	            for (var token in strTokens) {
+	                var t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
+	                var u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+	                if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
+	                    if (u == "this") {
+	                        u == vm.processObject.toLowerCase();
+	                    } //<--replaces the alias this with the name of this form.
+	                    var event_1 = { "name": t, "value": u };
+	                    eventsObj.events.push(event_1);
+	                }
+	            }
+	            if (eventsObj.events.length) {
+	                observerService.attach(vm.eventsHandler, "onSuccess");
+	            }
+	            return eventsObj;
+	        };
+	        /** find and clear all errors on form */
+	        vm.clearErrors = function () {
+	            var errorElements = _this.$element.find("[error-for]");
+	            errorElements.empty();
+	        };
+	        /** sets the correct factory to use for submission */
+	        vm.setFactoryIterator = function (fn) {
+	            var account = _this.AccountFactory.GetInstance();
+	            var cart = _this.CartFactory.GetInstance();
+	            var factories = [account, cart];
+	            var factoryFound = false;
+	            for (var _i = 0; _i < factories.length; _i++) {
+	                var factory = factories[_i];
+	                if (!factoryFound) {
+	                    angular.forEach(factory, function (val, key) {
+	                        if (!factoryFound) {
+	                            if (key == fn) {
+	                                vm.factoryIterator = factory;
+	                                factoryFound = true;
+	                            }
+	                        }
 	                    });
 	                }
-	                /**
-	                * Returns the current position in the queue for an orderItem that's on the waiting list.
-	                */
-	                var getPositionInQueueFor = function (orderItem) {
-	                    $log.debug("Retrieving position in Queue: ");
-	                    var queueConfig = [
-	                        {
-	                            "propertyIdentifier": "_eventregistration.waitlistQueuePositionStruct",
-	                            "isVisible": true,
-	                            "persistent": false,
-	                            "title": "Event Registrations"
-	                        }];
-	                    var queueGroupsConfig = [
-	                        {
-	                            "filterGroup": [
-	                                {
-	                                    "propertyIdentifier": "_eventregistration.orderItem.orderItemID",
-	                                    "comparisonOperator": "=",
-	                                    "value": orderItem.$$getID()
-	                                }
-	                            ]
-	                        }
-	                    ];
-	                    var queueOptions = {
-	                        columnsConfig: angular.toJson(queueConfig),
-	                        filterGroupsConfig: angular.toJson(queueGroupsConfig),
-	                        allRecords: true
-	                    };
-	                    var positionPromise = $slatwall.getEntity('EventRegistration', queueOptions);
-	                    $log.debug(positionPromise);
-	                    positionPromise.then(function (value) {
-	                        angular.forEach(value.records, function (position) {
-	                            $log.debug("Position: " + position.waitlistQueuePositionStruct);
-	                            if (position.waitlistQueuePositionStruct !== -1) {
-	                                scope.orderItem.queuePosition = position.waitlistQueuePositionStruct; //Use the value.
-	                                return position.waitlistQueuePositionStruct;
-	                            }
-	                        });
-	                    });
-	                };
-	                //define how we get child order items
-	                var columnsConfig = [
-	                    {
-	                        "isDeletable": false,
-	                        "isExportable": true,
-	                        "propertyIdentifier": "_orderitem.orderItemID",
-	                        "ormtype": "id",
-	                        "isVisible": true,
-	                        "isSearchable": true,
-	                        "title": "Order Item ID"
-	                    },
-	                    {
-	                        "title": "Order Item Type",
-	                        "propertyIdentifier": "_orderitem.orderItemType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Order Item Price",
-	                        "propertyIdentifier": "_orderitem.price",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Name",
-	                        "propertyIdentifier": "_orderitem.sku.skuName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Price",
-	                        "propertyIdentifier": "_orderitem.skuPrice",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku ID",
-	                        "propertyIdentifier": "_orderitem.sku.skuID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "SKU Code",
-	                        "propertyIdentifier": "_orderitem.sku.skuCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Bundle Group",
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product ID",
-	                        "propertyIdentifier": "_orderitem.sku.product.productID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Name",
-	                        "propertyIdentifier": "_orderitem.sku.product.productName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Type",
-	                        "propertyIdentifier": "_orderitem.sku.product.productType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Description",
-	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Event Start Date",
-	                        "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Description",
-	                        "propertyIdentifier": "_orderitem.sku.options",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
-	                        "ormtype": "string"
-	                    },
-	                    {
-	                        "title": "Image File Name",
-	                        "propertyIdentifier": "_orderitem.sku.imageFile",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Qty.",
-	                        "propertyIdentifier": "_orderitem.quantity",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Name",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment ID",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Type",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address 2",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Postal Code",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "City",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "State",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Country",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Total",
-	                        "propertyIdentifier": "_orderitem.itemTotal",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Discount Amount",
-	                        "propertyIdentifier": "_orderitem.discountAmount",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Tax Amount",
-	                        "propertyIdentifier": "_orderitem.taxAmount",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.extendedPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount",
-	                        "ormtype": "big_decimal"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType",
-	                        "ormtype": "string"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundlePrice",
-	                        "persistent": false
-	                    }
-	                ];
-	                //Add attributes to the column configuration
-	                angular.forEach(scope.attributes, function (attribute) {
-	                    var attributeColumn = {
-	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
-	                        attributeID: attribute.attributeID,
-	                        attributeSetObject: "orderItem"
-	                    };
-	                    columnsConfig.push(attributeColumn);
-	                });
-	                var filterGroupsConfig = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
-	                                "comparisonOperator": "=",
-	                                "value": scope.orderItem.$$getID()
-	                            }
-	                        ]
-	                    }
-	                ];
-	                var options = {
-	                    columnsConfig: angular.toJson(columnsConfig),
-	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
-	                    allRecords: true
-	                };
-	                //Create a list of order items.
-	                scope.childOrderItems = [];
-	                scope.orderItem.depth = 1;
-	                /**
-	                * Hide orderItem children on clicking the details link.
-	                */
-	                scope.hideChildren = function (orderItem) {
-	                    //Set all child order items to clicked = false.
-	                    angular.forEach(scope.childOrderItems, function (child) {
-	                        $log.debug("hideing");
-	                        child.hide = !child.hide;
-	                        scope.orderItem.clicked = !scope.orderItem.clicked;
-	                    });
-	                };
-	                //Delete orderItem
-	                scope.deleteEntity = function () {
-	                    $log.debug("Deleting");
-	                    $log.debug(scope.orderItem);
-	                    var deletePromise = scope.orderItem.$$delete();
-	                    deletePromise.then(function () {
-	                        delete scope.orderItem;
-	                    });
-	                };
-	                /**
-	                * Gets a list of child order items if they exist.
-	                */
-	                scope.getChildOrderItems = function () {
-	                    if (!scope.orderItem.childItemsRetrieved) {
-	                        scope.orderItem.clicked = !scope.orderItem.clicked;
-	                        scope.orderItem.hide = !scope.orderItem.hide;
-	                        scope.orderItem.childItemsRetrieved = true;
-	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-	                        orderItemsPromise.then(function (value) {
-	                            var collectionConfig = {};
-	                            collectionConfig.columns = columnsConfig;
-	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
-	                            collectionConfig.baseEntityAlias = '_orderitem';
-	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
-	                            angular.forEach(childOrderItems, function (childOrderItem) {
-	                                childOrderItem.depth = scope.orderItem.depth + 1;
-	                                scope.childOrderItems.push(childOrderItem);
-	                                childOrderItem.data.productBundleGroupPercentage = 1;
-	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                            });
-	                        });
+	            }
+	        };
+	        /** sets the type of the form to submit */
+	        vm.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
+	        vm.toFormParams = function (data) {
+	            return data = $.param(data) || "";
+	        };
+	        /** iterates through the factory submitting data */
+	        vm.iterateFactory = function (submitFunction) {
+	            vm.setFactoryIterator(submitFunction);
+	            var factoryIterator = vm.factoryIterator;
+	            if (factoryIterator != undefined) {
+	                var submitFn = factoryIterator[submitFunction];
+	                vm.formData = vm.formData || {};
+	                submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
+	                    if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
+	                        vm.parseErrors(result.data);
+	                        observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events });
 	                    }
 	                    else {
-	                        //We already have the items so we just need to show them.
-	                        angular.forEach(scope.childOrderItems, function (child) {
-	                            child.hide = !child.hide;
-	                            scope.orderItem.clicked = !scope.orderItem.clicked;
-	                        });
+	                        observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events });
 	                    }
-	                };
+	                }, angular.noop);
+	            }
+	            else {
+	                throw ("Action does not exist in Account or Cart Exception  *" + vm.action);
 	            }
 	        };
-	    }
-	    SWOrderItem.Factory = function () {
-	        var directive = function ($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        /** does either a single or multiple actions */
+	        vm.doAction = function (actionObject) {
+	            if (angular.isArray(actionObject)) {
+	                for (var _i = 0; _i < actionObject.length; _i++) {
+	                    var submitFunction = actionObject[_i];
+	                    vm.iterateFactory(submitFunction);
+	                }
+	            }
+	            else if (angular.isString(actionObject)) {
+	                vm.iterateFactory(actionObject);
+	            }
+	            else {
+	                throw ("Unknown type of action exception");
+	            }
 	        };
-	        directive.$inject = [
-	            '$log',
-	            '$compile',
-	            '$http',
-	            '$templateCache',
-	            '$slatwall',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
-	        ];
+	        /** create the generic submit function */
+	        vm.submit = function (Action) {
+	            var action = Action; //vm.action || vm.actions;
+	            vm.clearErrors();
+	            vm.formData = vm.getFormData() || "";
+	            vm.doAction(action);
+	        };
+	        /* give children access to the process
+	        */
+	        vm.getProcessObject = function () {
+	            return vm.processEntity;
+	        };
+	        /* handle events
+	        */
+	        if (this.onSuccess != undefined) {
+	            vm.parseEventString(this.onSuccess, "onSuccess");
+	            observerService.attach(vm.eventsHandler, "onSuccess");
+	        }
+	        else if (this.onError != undefined) {
+	            vm.parseEventString(this.onError, "onError");
+	        }
+	    };
+	    /**
+	        * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
+	        */
+	    SWFormController.$inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout', 'observerService'];
+	    return SWFormController;
+	})();
+	var SWForm = (function () {
+	    function SWForm(coreFormPartialsPath, pathBuilderConfig) {
+	        this.coreFormPartialsPath = coreFormPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.templateUrl = "";
+	        this.transclude = true;
+	        this.restrict = "E";
+	        this.replace = true;
+	        this.controller = SWFormController;
+	        this.controllerAs = "swFormController";
+	        this.scope = {
+	            object: "=",
+	            context: "@",
+	            name: "@"
+	        };
+	        /**
+	            * Binds all of our variables to the controller so we can access using this
+	            */
+	        this.bindToController = {
+	            entityName: "@?",
+	            processObject: "@?",
+	            hiddenFields: "=?",
+	            action: "@?",
+	            actions: "@?",
+	            formClass: "@?",
+	            formData: "=?",
+	            object: "@?",
+	            onSuccess: "@?",
+	            onError: "@?",
+	            hideUntil: "@?",
+	            isProcessForm: "@"
+	        };
+	        /**
+	            * Sets the context of this form
+	            */
+	        this.link = function (scope, element, attrs, controller, transclude) {
+	            scope.context = scope.context || 'save';
+	        };
+	        this.templateUrl = this.coreFormPartialsPath + "formPartial.html";
+	    }
+	    /**
+	        * Handles injecting the partials path into this class
+	        */
+	    SWForm.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWForm(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
 	        return directive;
 	    };
-	    return SWOrderItem;
+	    return SWForm;
 	})();
-	exports.SWOrderItem = SWOrderItem;
+	exports.SWForm = SWForm;
 
 
 /***/ },
-/* 142 */
+/* 148 */
 /***/ function(module, exports) {
 
-	/**
-	 * Displays a shipping label in the order items row.
-	 * @module slatwalladmin
-	 * @class swOrderItemsShippingLabelStamp
-	 */
-	var SWOiShippingLabelStamp = (function () {
-	    function SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig) {
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormField = (function () {
+	    function SWFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
 	        return {
-	            restrict: 'E',
+	            require: "^form",
+	            restrict: 'AE',
 	            scope: {
-	                orderFulfillment: "="
+	                propertyDisplay: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderfulfillment-shippinglabel.html",
-	            link: function (scope, element, attrs) {
-	                //Get the template.
-	                $log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");
-	                $log.debug(scope.orderFulfillment);
-	                $log.debug(scope.orderFulfillment.data.fulfillmentMethodType);
-	            }
-	        };
-	    }
-	    SWOiShippingLabelStamp.Factory = function () {
-	        var directive = function ($log, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWOiShippingLabelStamp;
-	})();
-	exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
-
-
-/***/ },
-/* 143 */
-/***/ function(module, exports) {
-
-	/**
-	 * Displays a shipping label in the order items row.
-	 * @module slatwalladmin
-	 * @class swOrderItemsShippingLabelStamp
-	 */
-	var SWOrderItemDetailStamp = (function () {
-	    function SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'A',
-	            scope: {
-	                systemCode: "=",
-	                orderItemId: "=",
-	                skuId: "=",
-	                orderItem: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem-detaillabel.html",
-	            link: function (scope, element, attrs) {
-	                scope.details = [];
-	                scope.orderItem.detailsName = [];
-	                var results;
-	                $log.debug("Detail stamp");
-	                $log.debug(scope.systemCode);
-	                $log.debug(scope.orderItemId);
-	                $log.debug(scope.skuId);
-	                $log.debug(scope.orderItem);
-	                /**
-	                 * For each type of orderItem, get the appropriate detail information.
-	                 *
-	                 * Merchandise: Option Group Name and Option
-	                 * Event: Event Date, Event Location
-	                 * Subscription: Subscription Term, Subscription Benefits
-	                 */
-	                var getMerchandiseDetails = function (orderItem) {
-	                    //Get option and option groups
-	                    for (var i = 0; i <= orderItem.data.sku.data.options.length - 1; i++) {
-	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionCode);
-	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
-	                    }
-	                };
-	                var getSubscriptionDetails = function (orderItem) {
-	                    //get Subscription Term and Subscription Benefits
-	                    var name = orderItem.data.sku.data.subscriptionTerm.data.subscriptionTermName || "";
-	                    orderItem.detailsName.push("Subscription Term:");
-	                    orderItem.details.push(name);
-	                    //Maybe multiple benefits so show them all.
-	                    for (var i = 0; i <= orderItem.data.sku.data.subscriptionBenefits.length - 1; i++) {
-	                        var benefitName = orderItem.data.sku.data.subscriptionBenefits[i].subscriptionBenefitName || "";
-	                        orderItem.detailsName.push("Subscription Benefit:");
-	                        orderItem.details.push(benefitName);
-	                    }
-	                };
-	                var getEventDetails = function (orderItem) {
-	                    //get event date, and event location
-	                    orderItem.detailsName.push("Event Date: ");
-	                    orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);
-	                    //Need to iterate this.
-	                    for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++) {
-	                        orderItem.detailsName.push("Location: ");
-	                        orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
-	                    }
-	                };
-	                if (angular.isDefined(scope.orderItem.details)) {
-	                    switch (scope.systemCode) {
-	                        case "merchandise":
-	                            results = getMerchandiseDetails(scope.orderItem);
-	                            break;
-	                        case "subscription":
-	                            results = getSubscriptionDetails(scope.orderItem);
-	                            break;
-	                        case "event":
-	                            results = getEventDetails(scope.orderItem);
-	                            break;
-	                    }
-	                    scope.orderItem.details.push(results);
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'formfield.html',
+	            link: function (scope, element, attrs, formController) {
+	                if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
+	                    scope.propertyDisplay.isDirty = true;
+	                }
+	                if (angular.isDefined(formController[scope.propertyDisplay.property])) {
+	                    scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
+	                    formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
 	                }
 	            }
 	        };
 	    }
-	    SWOrderItemDetailStamp.Factory = function () {
-	        var directive = function ($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	    SWFormField.Factory = function () {
+	        var directive = function ($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
+	            '$templateCache',
+	            '$window',
 	            '$slatwall',
-	            'orderItemPartialsPath',
+	            'formService',
+	            'coreFormPartialsPath',
 	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
-	    return SWOrderItemDetailStamp;
+	    return SWFormField;
 	})();
-	exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
+	exports.SWFormField = SWFormField;
+	//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$slatwall', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath)]);
 
 
 /***/ },
-/* 144 */
+/* 149 */
 /***/ function(module, exports) {
 
-	var SWOrderItems = (function () {
-	    function SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                orderId: "@"
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
-	            link: function (scope, element, attrs) {
-	                var options = {};
-	                scope.keywords = "";
-	                scope.loadingCollection = false;
-	                var searchPromise;
-	                scope.searchCollection = function () {
-	                    if (searchPromise) {
-	                        $timeout.cancel(searchPromise);
-	                    }
-	                    searchPromise = $timeout(function () {
-	                        $log.debug('search with keywords');
-	                        $log.debug(scope.keywords);
-	                        //Set current page here so that the pagination does not break when getting collection
-	                        scope.paginator.setCurrentPage(1);
-	                        scope.loadingCollection = true;
-	                        scope.getCollection();
-	                    }, 500);
-	                };
-	                $log.debug('Init Order Item');
-	                $log.debug(scope.orderId);
-	                //Setup the data needed for each order item object.
-	                scope.getCollection = function () {
-	                    if (scope.pageShow === 'Auto') {
-	                        scope.pageShow = 50;
-	                    }
-	                    var columnsConfig = [
-	                        {
-	                            "isDeletable": false,
-	                            "isExportable": true,
-	                            "propertyIdentifier": "_orderitem.orderItemID",
-	                            "ormtype": "id",
-	                            "isVisible": true,
-	                            "title": "Order Item ID",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "isVisible": false,
-	                            "ormtype": "string",
-	                            "propertyIdentifier": "_orderitem.currencyCode"
-	                        },
-	                        {
-	                            "title": "Order Item Type",
-	                            "propertyIdentifier": "_orderitem.orderItemType",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Order Item Price",
-	                            "propertyIdentifier": "_orderitem.price",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Sku Name",
-	                            "propertyIdentifier": "_orderitem.sku.skuName",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Sku Price",
-	                            "propertyIdentifier": "_orderitem.skuPrice",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Sku ID",
-	                            "propertyIdentifier": "_orderitem.sku.skuID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "SKU Code",
-	                            "propertyIdentifier": "_orderitem.sku.skuCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Product Bundle Group",
-	                            "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product ID",
-	                            "propertyIdentifier": "_orderitem.sku.product.productID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product Name",
-	                            "propertyIdentifier": "_orderitem.sku.product.productName",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product Type",
-	                            "propertyIdentifier": "_orderitem.sku.product.productType",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.sku.baseProductType",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Product Description",
-	                            "propertyIdentifier": "_orderitem.sku.product.productDescription",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Event Start Date Time",
-	                            "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product Description",
-	                            "propertyIdentifier": "_orderitem.sku.options",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Sku Location",
-	                            "propertyIdentifier": "_orderitem.sku.locations",
-	                            "isVisible": true,
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Subscription Term",
-	                            "propertyIdentifier": "_orderitem.sku.subscriptionTerm.subscriptionTermName",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Subscription Benefits",
-	                            "propertyIdentifier": "_orderitem.sku.subscriptionBenefits",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Qty.",
-	                            "propertyIdentifier": "_orderitem.quantity",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Fulfillment Method Name",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Fulfillment ID",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Fulfillment Method Type",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Street Address",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Street Address",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Street Address 2",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Postal Code",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "City",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "State",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Country",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Image File Name",
-	                            "propertyIdentifier": "_orderitem.sku.imageFile",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Total",
-	                            "propertyIdentifier": "_orderitem.itemTotal",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Discount Amount",
-	                            "propertyIdentifier": "_orderitem.discountAmount",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Tax Amount",
-	                            "propertyIdentifier": "_orderitem.taxAmount",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.extendedPrice",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.productBundlePrice",
-	                            "persistent": false
-	                        }
-	                    ];
-	                    //add attributes to the column config
-	                    angular.forEach(scope.attributes, function (attribute) {
-	                        var attributeColumn = {
-	                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
-	                            attributeID: attribute.attributeID,
-	                            attributeSetObject: "orderItem"
-	                        };
-	                        columnsConfig.push(attributeColumn);
-	                    });
-	                    var filterGroupsConfig = [
-	                        {
-	                            "filterGroup": [
-	                                {
-	                                    "propertyIdentifier": "_orderitem.order.orderID",
-	                                    "comparisonOperator": "=",
-	                                    "value": scope.orderId
-	                                },
-	                                {
-	                                    "logicalOperator": "AND",
-	                                    "propertyIdentifier": "_orderitem.parentOrderItem",
-	                                    "comparisonOperator": "is",
-	                                    "value": "null"
-	                                }
-	                            ]
-	                        }
-	                    ];
-	                    options = {
-	                        columnsConfig: angular.toJson(columnsConfig),
-	                        filterGroupsConfig: angular.toJson(filterGroupsConfig),
-	                        currentPage: scope.paginator.getCurrentPage(),
-	                        pageShow: scope.paginator.getPageShow(),
-	                        keywords: scope.keywords
-	                    };
-	                    //Create a list of order items.
-	                    //scope.orderItems = [];
-	                    scope.orderAttributes = [];
-	                    scope.attributeValues = [];
-	                    var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-	                    orderItemsPromise.then(function (value) {
-	                        scope.collection = value;
-	                        var collectionConfig = {};
-	                        collectionConfig.columns = columnsConfig;
-	                        collectionConfig.baseEntityName = 'SlatwallOrderItem';
-	                        collectionConfig.baseEntityAlias = '_orderitem';
-	                        scope.orderItems = $slatwall.populateCollection(value.pageRecords, collectionConfig);
-	                        for (var orderItem in scope.orderItems) {
-	                            $log.debug("OrderItem Product Type");
-	                            $log.debug(scope.orderItems);
-	                        }
-	                        scope.paginator.setPageRecordsInfo(scope.collection);
-	                        scope.loadingCollection = false;
-	                    }, function (value) {
-	                        scope.orderItems = [];
-	                    });
-	                };
-	                //get all possible attributes
-	                var attributesConfig = [
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeID",
-	                        "ormtype": "id",
-	                        "title": "attributeID"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeCode",
-	                        "ormtype": "string",
-	                        "title": "Attribute Code"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeName",
-	                        "ormtype": "string",
-	                        "title": "Attribute Name"
-	                    }
-	                ];
-	                var attributesFilters = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "_attribute.displayOnOrderDetailFlag",
-	                                "comparisonOperator": "=",
-	                                "value": true
-	                            },
-	                            {
-	                                "logicalOperator": "AND",
-	                                "propertyIdentifier": "_attribute.activeFlag",
-	                                "comparisonOperator": "=",
-	                                "value": true
-	                            }
-	                        ]
-	                    }
-	                ];
-	                var attributeOptions = {
-	                    columnsConfig: angular.toJson(attributesConfig),
-	                    filterGroupsConfig: angular.toJson(attributesFilters),
-	                    allRecords: true
-	                };
-	                var attItemsPromise = $slatwall.getEntity('attribute', attributeOptions);
-	                attItemsPromise.then(function (value) {
-	                    scope.attributes = [];
-	                    angular.forEach(value.records, function (attributeItemData) {
-	                        //Use that custom attribute name to get the value.
-	                        scope.attributes.push(attributeItemData);
-	                    });
-	                    scope.getCollection();
-	                });
-	                //Add claim function and cancel function
-	                scope.appendToCollection = function () {
-	                    if (scope.pageShow === 'Auto') {
-	                        $log.debug('AppendToCollection');
-	                        if (scope.paginator.autoScrollPage < scope.collection.totalPages) {
-	                            scope.paginator.autoScrollDisabled = true;
-	                            scope.paginator.autoScrollPage++;
-	                            var appendOptions = {};
-	                            angular.extend(appendOptions, options);
-	                            appendOptions.pageShow = 50;
-	                            appendOptions.currentPage = scope.paginator.autoScrollPage;
-	                            var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
-	                            collectionListingPromise.then(function (value) {
-	                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
-	                                scope.autoScrollDisabled = false;
-	                            }, function (reason) {
-	                                scope.collection.pageRecords = [];
-	                            });
-	                        }
-	                    }
-	                };
-	                scope.paginator = paginationService.createPagination();
-	                scope.paginator.collection = scope.collection;
-	                scope.paginator.getCollection = scope.getCollection;
-	            } //<--End link
-	        };
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormFieldJsonController = (function () {
+	    //@ngInject
+	    function SWFormFieldJsonController(formService) {
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
 	    }
-	    SWOrderItems.Factory = function () {
-	        var directive = function ($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
-	            return new SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService);
+	    return SWFormFieldJsonController;
+	})();
+	var SWFormFieldJson = (function () {
+	    function SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.controller = SWFormFieldJsonController;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.controllerAs = "ctrl";
+	        this.templateUrl = "";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "json.html";
+	    }
+	    SWFormFieldJson.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
-	            '$log',
-	            '$timeout',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig',
-	            'paginationService'
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
-	    return SWOrderItems;
+	    return SWFormFieldJson;
 	})();
-	exports.SWOrderItems = SWOrderItems;
+	exports.SWFormFieldJson = SWFormFieldJson;
+
+
+/***/ },
+/* 150 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormFieldNumberController = (function () {
+	    function SWFormFieldNumberController() {
+	        if (this.propertyDisplay.isDirty == undefined)
+	            this.propertyDisplay.isDirty = false;
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return SWFormFieldNumberController;
+	})();
+	var SWFormFieldNumber = (function () {
+	    function SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.templateUrl = "";
+	        this.controller = SWFormFieldNumberController;
+	        this.controllerAs = "ctrl";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "number.html";
+	    }
+	    SWFormFieldNumber.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFormFieldNumber;
+	})();
+	exports.SWFormFieldNumber = SWFormFieldNumber;
+
+
+/***/ },
+/* 151 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var swFormFieldPasswordController = (function () {
+	    //@ngInject
+	    function swFormFieldPasswordController() {
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return swFormFieldPasswordController;
+	})();
+	var SWFormFieldPassword = (function () {
+	    //@ngInject
+	    function SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.controller = swFormFieldPasswordController;
+	        this.controllerAs = "ctrl";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "password.html";
+	    }
+	    SWFormFieldPassword.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFormFieldPassword;
+	})();
+	exports.SWFormFieldPassword = SWFormFieldPassword;
+
+
+/***/ },
+/* 152 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormFieldRadio = (function () {
+	    //@ngInject
+	    function SWFormFieldRadio($log, $timeout, coreFormPartailsPath, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartailsPath) + 'radio.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                var makeRandomID = function makeid(count) {
+	                    var text = "";
+	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	                    for (var i = 0; i < count; i++)
+	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	                    return text;
+	                };
+	                if (scope.propertyDisplay.fieldType === 'yesno') {
+	                    //format value
+	                    scope.selectedRadioFormName = makeRandomID(26);
+	                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
+	                    scope.formFieldChanged = function (option) {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+	                        scope.propertyDisplay.form['selected' + scope.propertyDisplay.object.metaData.className + scope.propertyDisplay.property + scope.selectedRadioFormName].$dirty = false;
+	                    };
+	                    scope.propertyDisplay.options = [
+	                        {
+	                            name: 'Yes',
+	                            value: 1
+	                        },
+	                        {
+	                            name: 'No',
+	                            value: 0
+	                        }
+	                    ];
+	                    if (angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
+	                        for (var i in scope.propertyDisplay.options) {
+	                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                scope.selected = scope.propertyDisplay.options[i];
+	                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                            }
+	                        }
+	                    }
+	                    else {
+	                        scope.selected = scope.propertyDisplay.options[0];
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
+	                    }
+	                    $timeout(function () {
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
+	                    });
+	                }
+	            }
+	        };
+	    }
+	    SWFormFieldRadio.Factory = function () {
+	        var directive = function ($log, $timeout, coreFormPartailsPath, pathBuilderConfig) { return new SWFormFieldRadio($log, $timeout, coreFormPartailsPath, pathBuilderConfig); };
+	        directive.$inject = ['$log', '$timeout', 'coreFormPartailsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFormFieldRadio;
+	})();
+	exports.SWFormFieldRadio = SWFormFieldRadio;
+
+
+/***/ },
+/* 153 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormFieldSearchSelect = (function () {
+	    function SWFormFieldSearchSelect($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                //set up selectionOptions
+	                scope.selectionOptions = {
+	                    value: [],
+	                    $$adding: false
+	                };
+	                //match in matches track by
+	                //function to set state of adding new item
+	                scope.setAdding = function (isAdding) {
+	                    scope.isAdding = isAdding;
+	                    scope.showAddBtn = false;
+	                };
+	                scope.selectedOption = {};
+	                scope.showAddBtn = false;
+	                var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
+	                //create basic
+	                var object = $slatwall.newEntity(propertyMetaData.cfc);
+	                //				scope.propertyDisplay.template = '';
+	                //				//check for a template
+	                //				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
+	                //				var templatePath = coreFormPartialsPath + 'formfields/searchselecttemplates/';
+	                //				if(angular.isUndefined(scope.propertyDisplay.template)){
+	                //					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
+	                //						$log.debug('template');
+	                //						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
+	                //					},function(){
+	                //						scope.propertyDisplay.template = templatePath+'index.html';
+	                //						$log.debug('template');
+	                //						$log.debug(scope.propertyDisplay.template);
+	                //					});
+	                //				}
+	                //set up query function for finding related object
+	                scope.cfcProperCase = propertyMetaData.cfcProperCase;
+	                scope.selectionOptions.getOptionsByKeyword = function (keyword) {
+	                    var filterGroupsConfig = '[' +
+	                        ' {  ' +
+	                        '"filterGroup":[  ' +
+	                        '{' +
+	                        ' "propertyIdentifier":"_' + scope.cfcProperCase.toLowerCase() + '.' + scope.cfcProperCase + 'Name",' +
+	                        ' "comparisonOperator":"like",' +
+	                        ' "ormtype":"string",' +
+	                        ' "value":"%' + keyword + '%"' +
+	                        '  }' +
+	                        ' ]' +
+	                        ' }' +
+	                        ']';
+	                    return $slatwall.getEntity(propertyMetaData.cfc, { filterGroupsConfig: filterGroupsConfig.trim() })
+	                        .then(function (value) {
+	                        $log.debug('typesByKeyword');
+	                        $log.debug(value);
+	                        scope.selectionOptions.value = value.pageRecords;
+	                        var myLength = keyword.length;
+	                        if (myLength > 0) {
+	                            scope.showAddBtn = true;
+	                        }
+	                        else {
+	                            scope.showAddBtn = false;
+	                        }
+	                        return scope.selectionOptions.value;
+	                    });
+	                };
+	                var propertyPromise = scope.propertyDisplay.object['$$get' + propertyMetaData.nameCapitalCase]();
+	                propertyPromise.then(function (data) {
+	                });
+	                //set up behavior when selecting an item
+	                scope.selectItem = function ($item, $model, $label) {
+	                    scope.$item = $item;
+	                    scope.$model = $model;
+	                    scope.$label = $label;
+	                    scope.showAddBtn = false; //turns off the add btn on select
+	                    //angular.extend(inflatedObject.data,$item);
+	                    object.$$init($item);
+	                    $log.debug('select item');
+	                    $log.debug(object);
+	                    scope.propertyDisplay.object['$$set' + propertyMetaData.nameCapitalCase](object);
+	                };
+	                //				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
+	                //					$log.debug('getmeta');
+	                //					$log.debug(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+	                //
+	                //					//scope.propertyDipslay.object['$$get'+]
+	                //				}
+	                //
+	                //				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
+	            }
+	        };
+	    }
+	    SWFormFieldSearchSelect.Factory = function () {
+	        var directive = function ($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldSearchSelect($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$log',
+	            '$slatwall',
+	            'formService',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldSearchSelect;
+	})();
+	exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
+
+
+/***/ },
+/* 154 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormFieldSelect = (function () {
+	    //@ngInject
+	    function SWFormFieldSelect($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'select.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                var selectType;
+	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
+	                    selectType = 'object';
+	                    $log.debug('selectType:object');
+	                }
+	                else {
+	                    selectType = 'string';
+	                    $log.debug('selectType:string');
+	                }
+	                scope.formFieldChanged = function (option) {
+	                    $log.debug('formfieldchanged');
+	                    $log.debug(option);
+	                    if (selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
+	                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
+	                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
+	                        }
+	                    }
+	                    else if (selectType === 'string') {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+	                    }
+	                };
+	                scope.getOptions = function () {
+	                    if (angular.isUndefined(scope.propertyDisplay.options)) {
+	                        var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
+	                        optionsPromise.then(function (value) {
+	                            scope.propertyDisplay.options = value.data;
+	                            if (selectType === 'object') {
+	                                if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+	                                }
+	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === '') {
+	                                    $log.debug('no ID');
+	                                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
+	                                }
+	                                else {
+	                                    var found = false;
+	                                    for (var i in scope.propertyDisplay.options) {
+	                                        if (angular.isObject(scope.propertyDisplay.options[i].value)) {
+	                                            $log.debug('isObject');
+	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                                                found = true;
+	                                                break;
+	                                            }
+	                                        }
+	                                        else {
+	                                            $log.debug('notisObject');
+	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()) {
+	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
+	                                                found = true;
+	                                                break;
+	                                            }
+	                                        }
+	                                        if (!found) {
+	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                        }
+	                                    }
+	                                }
+	                            }
+	                            else if (selectType === 'string') {
+	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null) {
+	                                    for (var i in scope.propertyDisplay.options) {
+	                                        if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                            scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                                        }
+	                                    }
+	                                }
+	                                else {
+	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
+	                                }
+	                            }
+	                        });
+	                    }
+	                };
+	                if (scope.propertyDisplay.eagerLoadOptions == true) {
+	                    scope.getOptions();
+	                }
+	                //formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
+	                if (selectType === 'object') {
+	                    formController[scope.propertyDisplay.property + 'ID'].$dirty = scope.propertyDisplay.isDirty;
+	                }
+	                else if (selectType === 'string') {
+	                    formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
+	                }
+	            }
+	        }; //<--end return
+	    }
+	    SWFormFieldSelect.Factory = function () {
+	        var directive = function ($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
+	            return new SWFormFieldSelect($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'formService',
+	            'coreFormPartialsPath',
+	            'utilityService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldSelect;
+	})();
+	exports.SWFormFieldSelect = SWFormFieldSelect;
+
+
+/***/ },
+/* 155 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormFieldTextController = (function () {
+	    //@ngInject
+	    function SWFormFieldTextController(formService) {
+	        this.formService = formService;
+	        if (this.propertyDisplay.isDirty == undefined)
+	            this.propertyDisplay.isDirty = false;
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	        this.formService.setPristinePropertyValue(this.propertyDisplay.property, this.propertyDisplay.object.data[this.propertyDisplay.property]);
+	    }
+	    return SWFormFieldTextController;
+	})();
+	var SWFormFieldText = (function () {
+	    function SWFormFieldText(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.controller = SWFormFieldTextController;
+	        this.controllerAs = "ctrl";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "="
+	        };
+	        //@ngInject
+	        this.link = function (scope, element, attr, formController) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "text.html";
+	    }
+	    SWFormFieldText.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldText(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldText;
+	})();
+	exports.SWFormFieldText = SWFormFieldText;
+	//     angular.module('slatwalladmin').directive('swFormFieldText', ['$log','$slatwall','formService','partialsPath', ($log, $slatwall, formService, partialsPath) => new SWFormFieldText($log, $slatwall, formService, partialsPath)]);
+	// }
+
+
+/***/ },
+/* 156 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	var SWFormRegistrar = (function () {
+	    //@ngInject
+	    function SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            require: "^form",
+	            link: function (scope, element, attrs, formController) {
+	                /*add form info at the form level*/
+	                formController.$$swFormInfo = {
+	                    object: scope.object,
+	                    context: scope.context || 'save',
+	                    name: scope.name
+	                };
+	                var makeRandomID = function makeid(count) {
+	                    var text = "";
+	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	                    for (var i = 0; i < count; i++)
+	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	                    return text;
+	                };
+	                scope.form = formController;
+	                /*register form with service*/
+	                formController.name = scope.name;
+	                formService.setForm(formController);
+	                /*register form at object level*/
+	                if (!angular.isDefined(scope.object.forms)) {
+	                    scope.object.forms = {};
+	                }
+	                scope.object.forms[scope.name] = formController;
+	            }
+	        };
+	    }
+	    SWFormRegistrar.Factory = function () {
+	        var directive = function (formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'formService',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormRegistrar;
+	})();
+	exports.SWFormRegistrar = SWFormRegistrar;
+	// 	angular.module('slatwalladmin').directive('swFormRegistrar',[ 'formService', 'partialsPath', (formService, partialsPath) => new swFormRegistrar(formService, partialsPath)]);
+	// } 
+
+
+/***/ },
+/* 157 */
+/***/ function(module, exports) {
+
+	/**********************************************************************************************
+	 **********************************************************************************************
+	 **********************************************************************************************
+	 **		Property Display (This one is specifically for the frontend so that it can be modified)
+	 **		isHidden
+	 **		requiredFlag
+	 **		title
+	 **		hint
+	 **		editting
+	 **		object
+	 **		class
+	 **		___________________________________________
+	 ** 	attr.type have the following options:
+	 **
+	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
+	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		file				|	No value can be passed in
+	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		password			|	No Value can be passed in
+	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		text				|	Simple Text Field
+	 **		textarea			|	Simple Textarea
+	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
+	 **		submit				|	submit button to post these properties back to the server.
+	 **		------------------------------------------------------------------------------------------------------
+	 **
+	 **		attr.valueObject" type="any" default="" />
+	 **		attr.valueObjectProperty" type="string" default="" />
+	 **
+	 **		General Settings that end up getting applied to the value object
+	 **		attr.type" type="string" default="text"
+	 **		attr.name" type="string" default=""
+	 **		attr.class" type="string" default=""
+	 **		attr.value" type="any" default=""
+	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
+	 **		attr.fieldAttributes" type="string" default=""
+	 **
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 */
+	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../../typings/tsd.d.ts' />
+	/**
+	    * Property Display Controller handles the logic for this directive.
+	    */
+	var SWFPropertyDisplayController = (function () {
+	    /**
+	        * Handles the logic for the frontend version of the property display.
+	        */
+	    //@ngInject
+	    function SWFPropertyDisplayController($scope) {
+	        this.$scope = $scope;
+	        var vm = this;
+	        vm.processObject = {};
+	        vm.valueObjectProperty = this.valueObjectProperty;
+	        vm.type = this.type || "text";
+	        vm.class = this.class || "formControl";
+	        vm.valueObject = this.valueObject;
+	        vm.fieldAttributes = this.fieldAttributes || "";
+	        vm.label = this.label || "true";
+	        vm.labelText = this.labelText || "";
+	        vm.labelClass = this.labelClass || "";
+	        vm.name = this.name || "unnamed";
+	        vm.options = this.options;
+	        vm.optionValues = this.optionValues;
+	        vm.errorClass = this.errorClass;
+	        vm.errorText = this.errorText;
+	        vm.formCtrl = {};
+	        vm.object = this.object; //this is the process object
+	        vm.propertyIdentifier = this.propertyIdentifier; //this is the property
+	        vm.loader = this.loader;
+	        vm.noValidate = this.noValidate;
+	        /** in order to attach the correct controller to local vm, we need a watch to bind */
+	        /** handle options */
+	        if (vm.options && angular.isString(vm.options)) {
+	            var optionsArray = [];
+	            optionsArray = vm.options.toString().split(",");
+	            angular.forEach(optionsArray, function (o) {
+	                var newOption = {
+	                    name: "",
+	                    value: ""
+	                };
+	                newOption.name = o.name;
+	                newOption.value = o.value;
+	                vm.optionValues.push(newOption);
+	            }, vm);
+	        }
+	        /** handle turning the options into an array of objects */
+	        /** handle setting the default value for the yes / no element  */
+	        if (this.type == "yesno" && (this.value && angular.isString(this.value))) {
+	            vm.selected == this.value;
+	        }
+	        this.propertyDisplay = {
+	            type: vm.type,
+	            name: vm.name,
+	            class: vm.class,
+	            loader: vm.loader,
+	            errorClass: vm.errorClass,
+	            option: vm.options,
+	            valueObject: vm.valueObject,
+	            object: vm.object,
+	            label: vm.label,
+	            labelText: vm.labelText,
+	            labelClass: vm.labelClass,
+	            optionValues: vm.optionValues,
+	            edit: vm.editting,
+	            title: vm.title,
+	            value: vm.value,
+	            errorText: vm.errorText
+	        };
+	    }
+	    return SWFPropertyDisplayController;
+	})();
+	/**
+	    * This class handles configuring formFields for use in process forms on the front end.
+	    */
+	var SWFPropertyDisplay = (function () {
+	    //@ngInject
+	    function SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = "E";
+	        this.require = "?^swForm";
+	        this.transclude = true;
+	        this.templateUrl = "";
+	        this.controller = SWFPropertyDisplayController;
+	        this.controllerAs = "swfPropertyDisplayController";
+	        this.scope = {};
+	        this.bindToController = {
+	            type: "@?",
+	            name: "@?",
+	            class: "@?",
+	            edit: "@?",
+	            title: "@?",
+	            hint: "@?",
+	            valueObject: "=?",
+	            valueObjectProperty: "=?",
+	            options: "@?",
+	            fieldAttributes: "@?",
+	            object: "=",
+	            label: "@?",
+	            labelText: "@?",
+	            labelClass: "@?",
+	            errorText: "@?",
+	            errorClass: "@?",
+	            formTemplate: "@?"
+	        };
+	        this.link = function (scope, element, attrs, formController, transcludeFn) {
+	            scope.frmController = formController;
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
+	    }
+	    SWFPropertyDisplay.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFPropertyDisplay;
+	})();
+	exports.SWFPropertyDisplay = SWFPropertyDisplay;
 
 
 /***/ }

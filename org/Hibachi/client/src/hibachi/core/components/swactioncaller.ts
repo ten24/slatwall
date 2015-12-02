@@ -15,6 +15,7 @@ class SWActionCallerController{
     public disabled:boolean;
     public actionItemEntityName:string;
     public pathBuilderConfig:any;
+    public formCtrl:any;
     //@ngInject
     constructor(
         private $scope,
@@ -47,6 +48,20 @@ class SWActionCallerController{
     public init = ():void =>{
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
+
+            if (this.type == "button"){
+                //handle submit.
+                /** in order to attach the correct controller to local vm, we need a watch to bind */
+                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+                    if (newValue !== undefined){
+                        this.formCtrl = newValue;
+
+                    }
+
+                    unbindWatcher();
+                });
+
+            }
 //			this.actionItem = this.getActionItem();
 //			this.actionItemEntityName = this.getActionItemEntityName();
 //			this.text = this.getText();
@@ -70,6 +85,11 @@ class SWActionCallerController{
         </cfif>
         */
     }
+
+    public submit = () => {
+
+            this.formCtrl.submit(this.action);
+        }
 
     public getAction = ():string =>{
 
