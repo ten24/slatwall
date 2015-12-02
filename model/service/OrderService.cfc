@@ -184,7 +184,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 
 	// Process: Order
-	public any function processOrder_addOrderItem(required any order, required any processObject) {
+	public any function processOrder_addOrderItem(required any order, required any processObject){
 
 		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
@@ -402,18 +402,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-        if(arguments.processObject.getSku().isGiftCardSku() && !isNull(arguments.processObject.getRecipientEmailAddresses())){
-			for(var i=1; i<=ArrayLen(arguments.processObject.getRecipientEmailAddresses());i++){
+        var recipients = arguments.processObject.getRecipients();
+		if(!isNull(recipients) && arguments.processObject.getSku().isGiftCardSku()){
+	        for(var i=1; i<=ArrayLen(recipients);i++){
 				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
-				recipientProcessObject.setFirstName(arguments.processObject.getRecipientFirstNames()[i]);
-				recipientProcessObject.setLastName(arguments.processObject.getRecipientLastNames()[i]);
-				recipientProcessObject.setEmailAddress(arguments.processObject.getRecipientEmailAddresses()[i]);
-				recipientProcessObject.setGiftMessage(arguments.processObject.getRecipientGiftMessages()[i]);
-				recipientProcessObject.setQuantity(arguments.processObject.getRecipientQuantities()[i]);
+				var recipient = this.newOrderItemGiftRecipient();
+				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
 				recipientProcessObject.setOrderItem(newOrderItem);
+				recipientProcessObject.setRecipient(recipient);
 				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
 			}
-        }
+
+		}
 
 
 		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item.
@@ -575,15 +575,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
-		if(!isNull(arguments.processObject.getRecipientEmailAddresses())){
-	        for(var i=1; i<=ArrayLen(arguments.processObject.getRecipientEmailAddresses());i++){
+		var recipients = arguments.processObject.getRecipients();
+		if(!isNull(recipients)){
+	        for(var i=1; i<=ArrayLen(recipients);i++){
 				var recipientProcessObject = arguments.orderitem.getOrder().getProcessObject("addOrderItemGiftRecipient");
-				recipientProcessObject.setFirstName(arguments.processObject.getRecipientFirstNames()[i]);
-				recipientProcessObject.setLastName(arguments.processObject.getRecipientLastNames()[i]);
-				recipientProcessObject.setEmailAddress(arguments.processObject.getRecipientEmailAddresses()[i]);
-				recipientProcessObject.setGiftMessage(arguments.processObject.getRecipientGiftMessages()[i]);
-				recipientProcessObject.setQuantity(arguments.processObject.getRecipientQuantities()[i]);
-				recipientProcessObject.setOrderItem(arguments.orderItem);
+				var recipient = this.newOrderItemGiftRecipient();
+				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
+				recipientProcessObject.setOrderItem(arguments.orderitem);
+				recipientProcessObject.setRecipient(recipient);
 				this.processOrder_addOrderItemGiftRecipient(arguments.orderitem.getOrder(), recipientProcessObject);
 			}
 		}
@@ -593,7 +592,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
 
 		var item = arguments.processObject.getOrderItem();
-		var recipient = this.newOrderItemGiftRecipient();
+
+		if(isNull(arguments.processObject.getRecipient())){
+			var recipient = this.newOrderItemGiftRecipient();
+		} else {
+			var recipient = arguments.processObject.getRecipient();
+		}
 
 		if(!isNull(arguments.processObject.getFirstName())){
 			recipient.setFirstName(arguments.processObject.getFirstName());
@@ -619,7 +623,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			recipient.setGiftMessage(arguments.processObject.getGiftMessage());
 		}
 
-        recipient.setQuantity(processObject.getQuantity());
+		if(!isNull(processObject.getQuantity())){
+        	recipient.setQuantity(processObject.getQuantity());
+        }
+
         recipient = this.saveOrderItemGiftRecipient(recipient);
 
         recipient.setOrderItem(item);

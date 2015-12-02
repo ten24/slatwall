@@ -26,11 +26,15 @@ module slatwalladmin {
                         this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                         $scope.collection = {};
                         this.adding = false; 
-                        this.searchText = ""; 
+                        this.searchText = "";
                         var count = 1;
                         this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
                        
 		}
+                
+                setQuantity = (value:number)=>{
+                        this.quantity = Number(value);
+                }
         
                 getUnassignedCountArray = ():number[] =>{
                         var unassignedCountArray = new Array();

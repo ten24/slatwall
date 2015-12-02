@@ -285,7 +285,7 @@ module slatwalladmin{
 
 
         public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:Object = {}):void =>{
-            this.addDisplayProperty= (propertyIdentifier, title, options);
+            this.addDisplayProperty(propertyIdentifier, title, options);
         };
 
         public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?):void=>{

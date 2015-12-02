@@ -88,11 +88,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="registrants" type="array" hb_populateArray="true";
 	property name="childOrderItems" type="array" hb_populateArray="true";
 	property name="publicRemoteID";
-	property name="recipientFirstNames" type="array" hb_populateArray="true";
-	property name="recipientLastNames" type="array" hb_populateArray="true";
-	property name="recipientEmailAddresses" type="array" hb_populateArray="true";
-	property name="recipientGiftMessages" type="array" hb_populateArray="true";
-	property name="recipientQuantities" type="array" hb_populateArray="true";
+	property name="recipients" type="array" hb_populateArray="true";
 	property name="assignedGiftRecipientQuantity";
 
 	// Data Properties (Related Entity Populate)
