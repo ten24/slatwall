@@ -31,6 +31,16 @@ var slatwalladmin;
                     _this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = _this.collectionConfig;
                 });
             };
+            var renewalMethodOptions = $("select[name='renewalMethod']")[0];
+            this.$scope.preprocessproduct_createCtrl.renewalMethodOptions = [];
+            angular.forEach(renewalMethodOptions, function (option) {
+                var optionToAdd = {
+                    label: option.label,
+                    value: option.value
+                };
+                _this.$scope.preprocessproduct_createCtrl.renewalMethodOptions.push(optionToAdd);
+            });
+            this.$scope.preprocessproduct_createCtrl.renewalSkuChoice = this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[0];
             var jQueryOptionsRedemptionAmountType = $("select[name='redemptionAmountType'")[0];
             this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions = [];
             angular.forEach(jQueryOptionsRedemptionAmountType, function (jQueryOption) {
@@ -41,10 +51,12 @@ var slatwalladmin;
                 _this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option);
             });
             this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
-            var jQueryOptions = $("select[name='product.productType.productTypeID']")[0];
+            var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
             this.$scope.preprocessproduct_createCtrl.options = [];
-            this.$scope.preprocessproduct_createCtrl.options.push({ label: this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'), value: "" });
-            angular.forEach(jQueryOptions, function (jQueryOption) {
+            if (productTypeOptions > 1) {
+                this.$scope.preprocessproduct_createCtrl.options.push({ label: this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'), value: "" });
+            }
+            angular.forEach(productTypeOptions, function (jQueryOption) {
                 var option = {
                     label: jQueryOption.label,
                     value: jQueryOption.value
