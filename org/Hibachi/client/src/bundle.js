@@ -17402,8 +17402,8 @@
 	    //     }
 	    //     if(angular.isDefined(value)){
 	    //         if(angular.isDefined(decimalPlace)){
-	    //             value = parseFloat(value.toString()).toFixed(decimalPlace) 
-	    //         } else { 
+	    //             value = parseFloat(value.toString()).toFixed(decimalPlace)
+	    //         } else {
 	    //             value = parseFloat(value.toString()).toFixed(2)
 	    //         }
 	    //     }
@@ -17420,50 +17420,45 @@
 	    //         }
 	    //         return "-";
 	    //     }
-	    //     else 
+	    //     else
 	    //     return realFilter(value,decimalPlace);
 	    // }
 	    //@ngInject
 	    SWCurrency.Factory = function ($sce, $log, $slatwall) {
-	        // var data = null, serviceInvoked = false;
-	        // var filterStub = this.filterStub;
-	        // filterStub.$stateful = true;
-	        // return filterStub;  
-	        return function (value, currencyCode, decimalPlace) {
-	            var data = null, serviceInvoked = false;
-	            function realFilter(value, decimalPlace) {
-	                // REAL FILTER LOGIC, DISREGARDING PROMISES
-	                if (!angular.isDefined(data)) {
-	                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
-	                    data = "$";
-	                }
-	                if (angular.isDefined(value)) {
-	                    if (angular.isDefined(decimalPlace)) {
-	                        value = parseFloat(value.toString()).toFixed(decimalPlace);
-	                    }
-	                    else {
-	                        value = parseFloat(value.toString()).toFixed(2);
-	                    }
-	                }
-	                return data + value;
+	        var data = null, serviceInvoked = false;
+	        function realFilter(value, decimalPlace) {
+	            // REAL FILTER LOGIC, DISREGARDING PROMISES
+	            if (!angular.isDefined(data)) {
+	                $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+	                data = "$";
 	            }
-	            function filterStub(value, currencyCode, decimalPlace) {
-	                this.$stateful = true;
-	                if (data === null) {
-	                    if (!serviceInvoked) {
-	                        serviceInvoked = true;
-	                        $slatwall.getCurrencies().then(function (currencies) {
-	                            var result = currencies.data;
-	                            data = result[currencyCode];
-	                        });
-	                    }
-	                    return "-";
+	            if (angular.isDefined(value)) {
+	                if (angular.isDefined(decimalPlace)) {
+	                    value = parseFloat(value.toString()).toFixed(decimalPlace);
 	                }
-	                else
-	                    return realFilter(value, decimalPlace);
+	                else {
+	                    value = parseFloat(value.toString()).toFixed(2);
+	                }
 	            }
-	            return filterStub;
+	            return data + value;
+	        }
+	        var filterStub;
+	        filterStub = function (value, currencyCode, decimalPlace) {
+	            if (data === null) {
+	                if (!serviceInvoked) {
+	                    serviceInvoked = true;
+	                    $slatwall.getCurrencies().then(function (currencies) {
+	                        var result = currencies.data;
+	                        data = result[currencyCode];
+	                    });
+	                }
+	                return "-";
+	            }
+	            else
+	                return realFilter(value, decimalPlace);
 	        };
+	        filterStub.$stateful = true;
+	        return filterStub;
 	    };
 	    return SWCurrency;
 	})();
