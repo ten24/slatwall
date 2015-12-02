@@ -1,1 +1,0 @@
-This is where apps get added to the Slatwall core.
