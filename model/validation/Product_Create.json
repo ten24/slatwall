@@ -23,7 +23,7 @@
     	},	
     	"subscriptionWithRenewalSku":{
     		"baseProductType":	{"eq":"subscription"}, 
-    		"renewalMethod": {"eq":"rsku"}
+    		"renewalMethod": {"eq":"renewalsku"}
     	},
     	"subscriptionWithoutRenewalSku":{
     		"baseProductType":	{"eq":"subscription"}, 

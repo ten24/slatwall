@@ -257,7 +257,7 @@ Notes:
 						</hb:HibachiListingDisplay>
 				</div>
 
-				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'rsku'">
+				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'renewalsku'">
 						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
 						<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="skuCode" />

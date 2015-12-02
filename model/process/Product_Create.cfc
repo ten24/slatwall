@@ -59,7 +59,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price";
 	property name="renewalSubscriptionBenefits";
 	property name="renewalSku";
-	property name="renewalPrice" default=0;
+	property name="renewalPrice";
 	property name="subscriptionBenefits";
 	property name="subscriptionTerms";
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";

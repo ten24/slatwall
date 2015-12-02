@@ -426,7 +426,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public array function getRenewalMethodOptions(){
 		if(!structKeyExists(variables, "renewalMethodOptions")){
 			variables.renewalMethodOptions = [];
-			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectRenewalSku'), value="rsku"});
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectRenewalSku'), value="renewalsku"});
 			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectCustomRenewal'), value="custom"});
 		}
 		return variables.renewalMethodOptions;
