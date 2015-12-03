@@ -36,6 +36,7 @@ module slatwalladmin {
         formType:Object,
         formData:Object,
         processEntity:Object,
+        hibachiScope:Object,
         //************************** Events
         identity: Function,
         hide:Function,
@@ -64,16 +65,14 @@ module slatwalladmin {
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
-        public static $inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout', 'observerService'];
-        constructor(public $scope, public $element, public $slatwall, public AccountFactory, public CartFactory, public $http, public $timeout, public observerService){
+        public static $inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout', 'observerService', '$rootScope'];
+        constructor(public $scope, public $element, public $slatwall, public AccountFactory, public CartFactory, public $http, public $timeout, public observerService, public $rootScope){
             /** only use if the developer has specified these features with isProcessForm */           
             this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
                 this.handleSelfInspection( this );    
             }
         }
-        
-        
         
         /**
          * Iterates through the form elements and checks if the names of any of them match
@@ -92,6 +91,7 @@ module slatwalladmin {
             vm.actions          = this.actions;
             vm.$timeout         = this.$timeout;
             vm.postOnly         = false;
+            vm.hibachiScope     = this.$rootScope.hibachiScope;
             
             let observerService = this.observerService;
             /** parse the name */
@@ -158,6 +158,7 @@ module slatwalladmin {
                                 primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
                             }, 0);
                             vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
+                            vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
                         }
                     }, this);
                 }
@@ -229,61 +230,36 @@ module slatwalladmin {
             /** find and clear all errors on form */
             vm.clearErrors = () => 
             {
-                let errorElements = this.$element.find("[error-for]");
-                errorElements.empty();
+               /** clear all form errors on submit. */
+                this.$timeout(()=>{
+                     let errorElements = this.$element.find("[error-for]");
+                     errorElements.empty();
+                     vm["formCtrl"][vm.processObject].$setPristine(true);
+                },0);
+                
+                console.log("form", vm["formCtrl"][vm.processObject]);
+               
+                
             }
 
-            /** sets the correct factory to use for submission */
-            vm.setFactoryIterator = (fn) => 
-            {
-                let account     = this.AccountFactory.GetInstance();
-                let cart        = this.CartFactory.GetInstance();
-                let factories   = [account, cart];
-                let factoryFound = false;
-                for (var factory of factories) {
-                    if (!factoryFound) {
-                        angular.forEach(factory, (val, key) => {
-                            if (!factoryFound) {
-                                if (key == fn) {
-                                    vm.factoryIterator = factory;
-                                    factoryFound = true;
-                                }
-                            }
-                        })
-                    }
-                }
-            }
-        
-            /** sets the type of the form to submit */
-            vm.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
-            
-            vm.toFormParams = (data) => 
-            {
-                return data = $.param(data) || "";
-            }
-        
             /** iterates through the factory submitting data */
             vm.iterateFactory = (submitFunction) => 
             {
-                vm.setFactoryIterator(submitFunction);
-                let factoryIterator = vm.factoryIterator;
-
-                if (factoryIterator != undefined) {
-                    let submitFn = factoryIterator[submitFunction];
+                if (!submitFunction) {throw "Action not defined on form";}
+                
+                    let submitFn = vm.hibachiScope.doAction;
                     vm.formData = vm.formData || {};
-                    submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then( (result) =>{
-                        if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
+                    submitFn(submitFunction, vm.formData).then( (result) =>{
+                        console.log("Result of doAction being returned", result);
+                        if (vm.hibachiScope.hasErrors) {
                             vm.parseErrors(result.data);
-                            observerService.notify("onError", {"caller" : this.processObject, "events":vm.events.events});
-                            //trigger an onError event
+                             //trigger an onError event
+                            observerService.notify("onError", {"caller" : this.processObject, "events": vm.events.events||""});
                         } else {
-                            observerService.notify("onSuccess", {"caller":this.processObject, "events":vm.events.events});
                             //trigger a on success event
+                            observerService.notify("onSuccess", {"caller":this.processObject, "events":vm.events.events||""});
                         }
                     }, angular.noop);
-                } else {
-                    throw ("Action does not exist in Account or Cart Exception  *" + vm.action);
-                }
             }
 
             /** does either a single or multiple actions */

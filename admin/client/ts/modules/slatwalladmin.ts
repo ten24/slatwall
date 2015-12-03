@@ -159,14 +159,11 @@
             
             return filterStub;        
     }]);
-    /** test the public service in the rootscope */
+    /** test the public service in the rootscope by grabbing the initital cart and account for the user. */
     app.run(['$rootScope', 'publicService', function($rootScope, publicService){
          $rootScope.hibachiScope = publicService;
-         
-         var accountPromise = $rootScope.hibachiScope.getAccount();
-         var cartPromise = $rootScope.hibachiScope.getCart();
-         
-         
+         $rootScope.hibachiScope.getAccount();
+         $rootScope.hibachiScope.getCart();
     }]);
     
     

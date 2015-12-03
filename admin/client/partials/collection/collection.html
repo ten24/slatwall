@@ -1,18 +1,12 @@
 <div>
-	<div>
-        <h2>Account</h2>
-        Hello,
-        <span ng-bind="hibachiScope.account.firstName"></span> <span ng-bind="hibachiScope.account.lastName"></span>
-    </div>
-    
-	<!--- Example Login Directive --->
-    <div>
-       <sw-login-test ></sw-login-test>
-    </div>
-    
-    <!--- Example logout Directive --->
-    <div>
+	<div ng-if="hibachiScope.account.accountID">
+        Hello, <span ng-bind="hibachiScope.account.firstName"></span>&nbsp<span ng-bind="hibachiScope.account.lastName"></span>
         <sw-logout-test></sw-logout-test>
+    </div>
+   
+	<!--- Example Login Directive --->
+    <div ng-if="!hibachiScope.account.accountID">
+       <sw-login-test ></sw-login-test>
     </div>
     
     <!--- Example Add Promo Code Directive --->
