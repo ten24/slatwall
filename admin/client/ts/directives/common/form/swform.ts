@@ -65,8 +65,8 @@ module slatwalladmin {
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
-        public static $inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout', 'observerService', '$rootScope'];
-        constructor(public $scope, public $element, public $slatwall, public AccountFactory, public CartFactory, public $http, public $timeout, public observerService, public $rootScope){
+        public static $inject = ['$scope', '$element', '$slatwall','$http', '$timeout', 'observerService', '$rootScope'];
+        constructor(public $scope, public $element, public $slatwall, public $http, public $timeout, public observerService, public $rootScope){
             /** only use if the developer has specified these features with isProcessForm */           
             this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
