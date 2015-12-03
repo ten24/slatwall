@@ -87,8 +87,8 @@ Notes:
 									<div class="form-group ">
 										<label for="quantity" class="control-label col-sm-4" style="text-align:left;">Quantity</label>
 										<div class="col-sm-8">
-											<input type="text" ng-bind="giftRecipientControl.quantity" readonly class="hide">
-											<input type="number" value="1" class="form-control" ng-model="giftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" max-number="1000">
+											<input type="text" name="quantity" ng-bind="giftRecipientControl.quantity" readonly class="hide">
+											<input type="number" class="form-control" ng-value="#rc.processObject.getQuantity()#" ng-model="giftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" max-number="1000">
 										</div>
 									</div>
 								</div>

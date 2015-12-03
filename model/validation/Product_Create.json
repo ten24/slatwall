@@ -23,33 +23,28 @@
     	},	
     	"subscriptionWithRenewalSku":{
     		"baseProductType":	{"eq":"subscription"}, 
-    		"renewalSku":		{"null":false}
+    		"renewalMethod": {"eq":"renewalsku"}
     	},
     	"subscriptionWithoutRenewalSku":{
     		"baseProductType":	{"eq":"subscription"}, 
-    		"renewalSku":		{"null":true}
-    	},
-    	"subscriptionWithRenewalSku":{
-    		"baseProductType":	{"eq":"subscription"}, 
-    		"renewalSku":		{"null":false}
-    	},
-    	"subscriptionWithoutRenewalSku":{
-    		"baseProductType":	{"eq":"subscription"}, 
-    		"renewalSku":		{"null":true}
+    		"renewalMethod": {"eq":"custom"}
     	},
     	"createGiftCard":{
     		"baseProductType": {"eq":"gift-card"}
     	}
 	},
 	"properties":{
-	    "productName": 				[{"required":true}],
-		"productCode": 				[{"required":true}],
+	    "product.productName": 		[{"required":true}],
+		"product.productCode": 		[{"required":true}],
 		"contents": 				[{"conditions":"generateContentAccessSkus","required":true}],
 		"subscriptionBenefits": 	[{"conditions":"generateSubscriptionSkus","required":true}],
 		"subscriptionTerms":		[{"conditions":"generateSubscriptionSkus","required":true}],
 		"redemptionAmount":			[{"conditions":"createGiftCard", "dataType":"numeric","minValue":0}],
 		"renewalSubscriptionBenefits": [{"conditions":"subscriptionWithoutRenewalSku","required":true}],
-		"renewalPrice":  [{"conditions":"subscriptionWithoutRenewalSku","required":true}]
+		"renewalPrice":  	[{"conditions":"subscriptionWithoutRenewalSku","required":true,"dataType":"numeric","minValue":0}],
+		"renewalSku": 				[{"conditions":"subscriptionWithRenewalSku", "required":true},
+									 {"conditions":"subscriptionWithoutRenewalSku", "null":true}]
+		
 	}
 }
 

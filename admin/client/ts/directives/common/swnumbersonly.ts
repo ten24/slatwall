@@ -13,7 +13,7 @@ module slatwalladmin {
         
         public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
 
-            modelCtrl.$parsers.push((inputValue) =>{
+            modelCtrl.$parsers.unshift((inputValue) =>{
                 var modelValue = modelCtrl.$modelValue;
                 if(inputValue != "" && !isNaN(Number(inputValue))){ 
                     if(angular.isDefined($scope.minNumber)){
