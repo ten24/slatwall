@@ -13,6 +13,7 @@ angular.module('slatwalladmin')
 			restrict: 'AE',
 			scope:{
 				object:"=",
+				options:"=?",
 				property:"@",
 				editable:"=",
 				editing:"=",
@@ -23,7 +24,6 @@ angular.module('slatwalladmin')
 				eagerLoadOptions:"=",
 				isDirty:"=",
 				onChange:"=",
-				fieldName:"@",
 				fieldType:"@",
 				noValidate:"="
 					
@@ -43,7 +43,8 @@ angular.module('slatwalladmin')
 				 * Configuration for property display object.
 				 */
 				scope.propertyDisplay = {
-					object:scope.object ,
+					object:scope.object,
+					options:scope.options,
 					property:scope.property,
 					errors:{},
 					editing:scope.editing,
@@ -58,6 +59,8 @@ angular.module('slatwalladmin')
 					onChange:scope.onChange,
 					noValidate:scope.noValidate
 				};
+				console.log("COME ON")
+				console.log(scope.propertyDisplay);
 				if(angular.isUndefined(scope.propertyDisplay.noValidate)){
 					scope.propertyDisplay.noValidate = false;
 				}
@@ -84,8 +87,6 @@ angular.module('slatwalladmin')
 				
 				/* register form that the propertyDisplay belongs to*/
 				scope.propertyDisplay.form = formController;
-				console.log("LOOKY LOOKY")
-				console.log(formController);
 				$log.debug(scope.propertyDisplay);
 							
 				
