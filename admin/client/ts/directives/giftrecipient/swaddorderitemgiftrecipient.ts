@@ -23,7 +23,7 @@ module slatwalladmin {
 			this.adding = false; 
 			this.searchText = ""; 
 			var count = 1;
-			this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+			this.currentGiftRecipient = $slatwall.newEntity("OrderItemGiftRecipient");
 			this.orderItemGiftRecipients = [];
 			this.showInvalidAddFormMessage = false;
 		}

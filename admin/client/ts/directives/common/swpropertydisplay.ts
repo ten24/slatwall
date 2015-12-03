@@ -23,6 +23,7 @@ angular.module('slatwalladmin')
 				eagerLoadOptions:"=",
 				isDirty:"=",
 				onChange:"=",
+				fieldName:"@",
 				fieldType:"@",
 				noValidate:"="
 					
@@ -42,7 +43,7 @@ angular.module('slatwalladmin')
 				 * Configuration for property display object.
 				 */
 				scope.propertyDisplay = {
-					object:scope.object,
+					object:scope.object ,
 					property:scope.property,
 					errors:{},
 					editing:scope.editing,
@@ -83,7 +84,8 @@ angular.module('slatwalladmin')
 				
 				/* register form that the propertyDisplay belongs to*/
 				scope.propertyDisplay.form = formController;
-				
+				console.log("LOOKY LOOKY")
+				console.log(formController);
 				$log.debug(scope.propertyDisplay);
 							
 				

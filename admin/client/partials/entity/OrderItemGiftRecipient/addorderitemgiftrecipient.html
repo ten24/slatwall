@@ -47,7 +47,7 @@
 			<div class="s-add-info-dropdown-inner">
 
 				<h5>Create New Recipient</h5>
-				<div class="form-group">
+				<!---<div class="form-group">
 					<label sw-rbkey="'admin.entity.orderitemgiftrecipient.firstName'"></label>
 					<input name="_recipientFirstName" type="text" class="form-control" ng-model="addGiftRecipientControl.currentGiftRecipient.firstName">
 				</div>
@@ -65,12 +65,18 @@
 					<div class="s-character-count">
 						Remaining characters: <strong><span ng-bind="addGiftRecipientControl.getMessageCharactersLeft()"></span></strong>
 					</div>
-				</div>
+				</div>--->
+				<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="firstName" data-editing="addGiftRecipientControl.adding"></sw-property-display>
+				<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="lastName" data-editing="addGiftRecipientControl.adding"></sw-property-display>
+				<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="emailAddress" data-editing="addGiftRecipientControl.adding"></sw-property-display>
+				<sw-property-display data-object="addGiftRecipientControl.currentGiftRecipient" data-property="giftMessage" data-editing="addGiftRecipientControl.adding"></sw-property-display>
+				
 				<div class="form-group">
 					<label sw-rbkey="'admin.entity.orderitemgiftrecipient.quantity'"></label>
 					<select class="form-control"
 							name="_recipientQuantity"
 							type="number"
+							ng-value="addGiftRecipientControl.getUnassignedCountArray()[0]"
 							ng-model="addGiftRecipientControl.currentGiftRecipient.quantity"
 							ng-options="quantity for quantity in addGiftRecipientControl.getUnassignedCountArray() track by quantity"
 							required
