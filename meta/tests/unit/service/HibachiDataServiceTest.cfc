@@ -51,22 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("dataService");
+		variables.service = request.slatwallScope.getBean("hibachiDataService");
 	}
 	
-	titleStrings = ["Gift Card-$50", "Gift Card $50", "Gift - Card - $50", "Gift -- Card -- $50"];
-	
-	/**
-	* @mxunit:dataprovider titleStrings
-	*/
-	public void function getUrlTitle(titleString) {
-		
-		var expectedTitle = "gift-card-50";
-		var urlTitle = variables.service.createUniqueURLTitle(titleString=arguments.titleString, tableName="SwProduct");
-		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
-		urlTitle = variables.service.createUniqueURLTitle(titleString=lcase(arguments.titleString), tableName="SwProduct");
-		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
-		urlTitle = variables.service.createUniqueURLTitle(titleString=ucase(arguments.titleString), tableName="SwProduct");
-		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
-	}
 }

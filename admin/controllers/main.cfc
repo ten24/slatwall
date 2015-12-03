@@ -53,7 +53,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="productService" type="any";
 	property name="orderService" type="any";
 	property name="vendorService" type="any";
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="imageService" type="any";
 	property name="integrationService" type="any";
 	property name="permissionService" type="any";

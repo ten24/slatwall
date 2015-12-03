@@ -51,7 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("dataService");
+		variables.service = request.slatwallScope.getBean("contentService");
 	}
 	
 	public void function deleteCategory_removes_content_assignments() {

@@ -53,7 +53,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
 
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
 	property name="hibachiEventService" type="any";
@@ -839,7 +839,7 @@ component extends="HibachiService" accessors="true" {
 		}
 
 		// Generate the URL Title
-		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
@@ -862,7 +862,7 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
 
-		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 
 		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
@@ -997,9 +997,9 @@ component extends="HibachiService" accessors="true" {
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
 			} else if (!isNull(arguments.product.getProductName()) && len(arguments.product.getProductName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
 
@@ -1010,7 +1010,7 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
 		}
 		if(isNull(arguments.product.getURLTitle())){
-			arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+			arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		}
 		// Generate Image Files
 		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
@@ -1022,9 +1022,9 @@ component extends="HibachiService" accessors="true" {
 	public any function saveProductType(required any productType, struct data={}) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productTypeName") && len(arguments.data.productTypeName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");
 			} else if (!isNull(arguments.productType.getProductTypeName()) && len(arguments.productType.getProductTypeName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
 
