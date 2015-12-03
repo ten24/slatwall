@@ -286,4 +286,109 @@
 			</cflock>
 		
 	</cffunction>
+	
+	<cffunction name="recordUpdate" returntype="any">
+		<cfargument name="tableName" required="true" type="string" />
+		<cfargument name="idColumns" required="true" type="string" />
+		<cfargument name="updateData" required="true" type="struct" />
+		<cfargument name="insertData" required="true" type="struct" />
+		<cfargument name="updateOnlyFlag" required="true" type="boolean" default="false" />
+		<cfargument name="returnPrimaryKeyValue" required="false" default="false" />
+		<cfargument name="primaryKeyColumn" required="false" default="" />
+		
+		<cfset var keyList = structKeyList(arguments.updateData) />
+		<cfset var rs = "" />
+		<cfset var sqlResult = "" />
+		<cfset var i = 0 />
+		
+		<cfif arguments.returnPrimaryKeyValue>
+			<cfset var checkrs = "" />
+			<cfset var primaryKeyValue = "" />
+
+			<cfquery name="checkrs" result="sqlResult">
+				SELECT
+					#arguments.primaryKeyColumn#
+				FROM
+					#arguments.tableName#
+				WHERE
+					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="i">
+						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
+						<cfif listLen(arguments.idColumns) gt i>AND </cfif>
+					</cfloop>
+			</cfquery>
+			<cfif checkrs.recordCount>
+				<cfif !structIsEmpty(arguments.updateData)>
+					<cfset primaryKeyValue = checkrs[arguments.primaryKeyColumn][1] />
+					<cfquery name="rs" result="sqlResult">
+						UPDATE
+							#arguments.tableName#
+						SET
+							<cfloop from="1" to="#listLen(keyList)#" index="i">
+								<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+								<cfelse>
+									#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+								</cfif>
+								<cfif listLen(keyList) gt i>, </cfif>
+							</cfloop>
+						WHERE
+							#arguments.primaryKeyColumn# = <cfqueryparam cfsqltype="cf_sql_varchar" value="#primaryKeyValue#" />
+					</cfquery>
+				</cfif>
+			<cfelse>
+				<cfset primaryKeyValue = arguments.insertData[ arguments.primaryKeyColumn ].value />
+				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData) />
+			</cfif>
+			<cfreturn primaryKeyValue />
+		<cfelse>
+			<cfquery name="rs" result="sqlResult">
+				UPDATE
+					#arguments.tableName#
+				SET
+					<cfloop from="1" to="#listLen(keyList)#" index="i">
+						<cfif arguments.updateData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+						<cfelse>
+							#listGetAt(keyList, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(keyList, i) ].dataType#" value="#arguments.updateData[ listGetAt(keyList, i) ].value#">
+						</cfif>
+						<cfif listLen(keyList) gt i>, </cfif>
+					</cfloop>
+				WHERE
+					<cfloop from="1" to="#listLen(arguments.idColumns)#" index="i">
+						#listGetAt(arguments.idColumns, i)# = <cfqueryparam cfsqltype="cf_sql_#arguments.updateData[ listGetAt(arguments.idColumns, i) ].datatype#" value="#arguments.updateData[ listGetAt(arguments.idColumns, i) ].value#">
+						<cfif listLen(arguments.idColumns) gt i>AND </cfif>
+					</cfloop>
+			</cfquery>
+			<cfif !sqlResult.recordCount>
+				<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData) />
+			</cfif>
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="recordInsert" returntype="void">
+		<cfargument name="tableName" required="true" type="string" />
+		<cfargument name="insertData" required="true" type="struct" />
+		
+		<cfset var keyList = structKeyList(arguments.insertData) />
+		<cfset var keyListOracle = keyList />
+		<cfset var rs = "" />
+		<cfset var sqlResult = "" />
+		<cfset var i = 0 />
+		
+		<cfquery name="rs" result="sqlResult"> 
+			INSERT INTO	#arguments.tableName# (
+				<cfif getApplicationValue("databaseType") eq "Oracle10g" AND listFindNoCase(keyListOracle,'type')>#listSetAt(keyListOracle,listFindNoCase(keyListOracle,'type'),'"type"')#<cfelse>#keyList#</cfif>
+			) VALUES (
+				<cfloop from="1" to="#listLen(keyList)#" index="i">
+					<cfif arguments.insertData[ listGetAt(keyList, i) ].value eq "NULL" OR (arguments.insertData[ listGetAt(keyList, i) ].value EQ "" AND arguments.insertData[ listGetAt(keyList, i) ].dataType EQ "timestamp")>
+						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="" null="yes">
+					<cfelse>
+						<cfqueryparam cfsqltype="cf_sql_#arguments.insertData[ listGetAt(keyList, i) ].dataType#" value="#arguments.insertData[ listGetAt(keyList, i) ].value#">
+					</cfif>
+					<cfif listLen(keyList) gt i>,</cfif>
+				</cfloop>
+			)
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>
