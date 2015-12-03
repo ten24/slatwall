@@ -59,8 +59,6 @@ angular.module('slatwalladmin')
 					onChange:scope.onChange,
 					noValidate:scope.noValidate
 				};
-				console.log("COME ON")
-				console.log(scope.propertyDisplay);
 				if(angular.isUndefined(scope.propertyDisplay.noValidate)){
 					scope.propertyDisplay.noValidate = false;
 				}
