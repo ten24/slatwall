@@ -13,7 +13,6 @@ angular.module('slatwalladmin')
 			restrict: 'AE',
 			scope:{
 				object:"=",
-				options:"=?",
 				property:"@",
 				editable:"=",
 				editing:"=",
@@ -44,7 +43,6 @@ angular.module('slatwalladmin')
 				 */
 				scope.propertyDisplay = {
 					object:scope.object,
-					options:scope.options,
 					property:scope.property,
 					errors:{},
 					editing:scope.editing,
@@ -85,6 +83,7 @@ angular.module('slatwalladmin')
 				
 				/* register form that the propertyDisplay belongs to*/
 				scope.propertyDisplay.form = formController;
+				
 				$log.debug(scope.propertyDisplay);
 							
 				
