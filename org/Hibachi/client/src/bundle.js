@@ -5344,15 +5344,16 @@
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWFormFieldRadio = (function () {
 	    //@ngInject
-	    function SWFormFieldRadio($log, $timeout, coreFormPartailsPath, pathBuilderConfig) {
+	    function SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
 	        return {
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartailsPath) + 'radio.html',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'radio.html',
 	            require: "^form",
 	            restrict: 'E',
 	            scope: {
 	                propertyDisplay: "="
 	            },
 	            link: function (scope, element, attr, formController) {
+	                console.log('radio');
 	                var makeRandomID = function makeid(count) {
 	                    var text = "";
 	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -5399,8 +5400,12 @@
 	        };
 	    }
 	    SWFormFieldRadio.Factory = function () {
-	        var directive = function ($log, $timeout, coreFormPartailsPath, pathBuilderConfig) { return new SWFormFieldRadio($log, $timeout, coreFormPartailsPath, pathBuilderConfig); };
-	        directive.$inject = ['$log', '$timeout', 'coreFormPartailsPath', 'pathBuilderConfig'];
+	        var directive = function ($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log', '$timeout', 'coreFormPartialsPath', 'pathBuilderConfig'
+	        ];
 	        return directive;
 	    };
 	    return SWFormFieldRadio;

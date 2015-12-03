@@ -3,21 +3,28 @@
 
 class SWFormFieldRadio implements ng.IDirective {
 	public static Factory(){
-		var directive = ($log,$timeout,coreFormPartailsPath,pathBuilderConfig)=> new SWFormFieldRadio($log,$timeout,coreFormPartailsPath,pathBuilderConfig);
-		directive.$inject = ['$log','$timeout','coreFormPartailsPath','pathBuilderConfig'];
+		var directive = (
+			$log,$timeout,coreFormPartialsPath,pathBuilderConfig
+		)=> new SWFormFieldRadio(
+			$log,$timeout,coreFormPartialsPath,pathBuilderConfig
+		);
+		directive.$inject = [
+			'$log','$timeout','coreFormPartialsPath','pathBuilderConfig'
+		];
 		return directive;
 	}
 	//@ngInject
-	constructor($log,$timeout,coreFormPartailsPath,pathBuilderConfig){
+	constructor($log,$timeout,coreFormPartialsPath,pathBuilderConfig){
 
 		return{
-			templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartailsPath)+'radio.html',
+			templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+'radio.html',
 			require:"^form",
 			restrict: 'E',
 			scope:{
 				propertyDisplay:"="
 			},
 			link:function(scope, element, attr, formController){
+				console.log('radio');
 				var makeRandomID = function makeid(count)
 				{
 					var text = "";
