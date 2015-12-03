@@ -1,9 +1,9 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
 //modules
-import {coremodule} from '../core/core.module';
-import {slatwalladminmodule} from "../../slatwall/slatwalladmin.module";
-import {ngslatwallmodule} from "../../ngslatwall/ngslatwall.module";
+import {hibachimodule} from '../hibachi/hibachi.module';
+import {slatwalladminmodule} from "../slatwall/slatwalladmin.module";
+import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 //controllers
 import {OrderItemGiftRecipientControl} from "./controllers/preprocessorderitem_addorderitemgiftrecipient"; 
 //directives
@@ -19,7 +19,7 @@ import {SWOrderItemGiftRecipientRow} from "./components/sworderitemgiftrecipient
 import {GiftCard} from "./models/giftcard";
 import {GiftRecipient} from "./models/giftrecipient";
 
-var giftcardmodule = angular.module('giftcard',[coremodule.name])
+var giftcardmodule = angular.module('giftcard',[hibachimodule.name, slatwalladminmodule.name, ngslatwallmodule.name])
 .config([()=>{
 	
 }]).run([()=>{
