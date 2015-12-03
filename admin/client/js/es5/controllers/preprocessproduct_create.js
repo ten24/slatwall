@@ -20,7 +20,7 @@ var slatwalladmin;
             this.$scope.preprocessproduct_createCtrl.getCollection = function () {
                 _this.collectionConfig = _this.collectionConfigService.newCollectionConfig('Option');
                 _this.collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName', undefined, { isVisible: true });
-                _this.collectionConfig.addDisplayProperty('optionID', undefined, { isVisible: false });
+                _this.collectionConfig.setDisplayProperties('optionID', undefined, { isVisible: false });
                 //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
                 _this.collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
                 _this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID', _this.$scope.preprocessproduct_createCtrl.selectedOption.value, '=', 'OR');
