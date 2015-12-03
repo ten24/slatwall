@@ -1,7 +1,13 @@
 <div>
+	<div>
+        <h2>Account</h2>
+        Hello,
+        <span ng-bind="hibachiScope.account.firstName"></span> <span ng-bind="hibachiScope.account.lastName"></span>
+    </div>
+    
 	<!--- Example Login Directive --->
     <div>
-       <sw-login-test></sw-login-test>
+       <sw-login-test ></sw-login-test>
     </div>
     
     <!--- Example logout Directive --->
@@ -14,12 +20,8 @@
         <sw-promo-test></sw-promo-test>
     </div>
     
-    <!--- Example Add Promo Code Directive --->
-    <div>
-        <sw-create-account-test></sw-create-account-test>
-    </div>
-    
     <!---<swf-directive directive-path="/admin/client/partials/frontend/" directive-name="logouttestdirectivepartial.html"></swf-directive>--->
+    <!-- tests that slatwall is working in rootscope -->
     
     <br><br><br>
     <!--- Collection --->

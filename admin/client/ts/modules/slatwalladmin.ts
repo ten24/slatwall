@@ -4,7 +4,7 @@
 ((): void => {
     
     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
-
+    
     app.config(
         ["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
         ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig) =>
@@ -159,4 +159,15 @@
             
             return filterStub;        
     }]);
+    /** test the public service in the rootscope */
+    app.run(['$rootScope', 'publicService', function($rootScope, publicService){
+         $rootScope.hibachiScope = publicService;
+         
+         var accountPromise = $rootScope.hibachiScope.getAccount();
+         var cartPromise = $rootScope.hibachiScope.getCart();
+         
+         
+    }]);
+    
+    
 })();
