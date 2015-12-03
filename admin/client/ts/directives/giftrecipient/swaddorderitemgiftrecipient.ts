@@ -77,8 +77,6 @@ module slatwalladmin {
 		}
 
 		addGiftRecipient = ():void =>{
-			console.log("current")
-			console.log(this.currentGiftRecipient.forms.createRecipient)
 				if(this.currentGiftRecipient.forms.createRecipient.$valid){
 					this.showInvalidAddFormMessage = true;
 					this.adding = false; 
