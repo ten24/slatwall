@@ -50,7 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="contentDAO" type="any";
 
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="productService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";

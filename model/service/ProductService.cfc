@@ -53,7 +53,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
 
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
 	property name="hibachiEventService" type="any";

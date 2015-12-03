@@ -48,7 +48,7 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	

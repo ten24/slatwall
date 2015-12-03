@@ -50,113 +50,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiD
 
 	property name="dataDAO" type="any";
 
-	public boolean function loadDataFromXMLDirectory(required string xmlDirectory, boolean ignorePreviouslyInserted=true) {
-		var dirList = directoryList(arguments.xmlDirectory);
-
-		// Because some records might depend on other records already being in the DB (fk constraints) we catch errors and re-loop over records
-		var retryCount=0;
-		var runPopulation = true;
-
-		do{
-			// Set to false so that it will only rerun if an error occurs
-			runPopulation = false;
-
-			// Loop over files, read them, and send to loadData function
-			for(var i=1; i<= arrayLen(dirList); i++) {
-				if(len(dirList[i]) gt 7 && right(dirList[i],7) == "xml.cfm"){
-					var xmlRaw = FileRead(dirList[i]);
-
-					try{
-						if( loadDataFromXMLRaw(xmlRaw, arguments.ignorePreviouslyInserted) && retryCount <= 3) {
-							retryCount += 1;
-							runPopulation = true;
-						}
-					} catch (any e) {
-						// If we haven't retried 3 times, then incriment the retry counter and re-run the population
-						if(retryCount <= 3) {
-							retryCount += 1;
-							runPopulation = true;
-						} else {
-							rethrow;
-						}
-					}
-
-				}
-			}
-		} while (runPopulation);
-
-		return true;
-	}
-
-	public boolean function loadDataFromXMLRaw(required string xmlRaw, boolean ignorePreviouslyInserted=true) {
-		var xmlRawEscaped = replace(xmlRaw,"&","&amp;","all");
-		var xmlData = xmlParse(xmlRawEscaped);
-		var columns = {};
-		var idColumns = "";
-		var includesCircular = false;
-
-		// Loop over each column to parse xml
-		for(var ii=1; ii<= arrayLen(xmlData.Table.Columns.xmlChildren); ii++) {
-			columns[  xmlData.Table.Columns.xmlChildren[ii].xmlAttributes.name ] = xmlData.Table.Columns.xmlChildren[ii].xmlAttributes;
-			if(structKeyExists(xmlData.Table.Columns.xmlChildren[ii].xmlAttributes, "fieldType") && xmlData.Table.Columns.xmlChildren[ii].xmlAttributes.fieldtype == "id") {
-				idColumns = listAppend(idColumns, xmlData.Table.Columns.xmlChildren[ii].xmlAttributes.name);
-			}
-		}
-
-		// Loop over each record to insert or update
-		for(var r=1; r <= arrayLen(xmlData.Table.Records.xmlChildren); r++) {
-
-			var updateData = {};
-			var insertData = {};
-
-			for(var rp = 1; rp <= listLen(structKeyList(xmlData.Table.Records.xmlChildren[r].xmlAttributes)); rp ++) {
-
-				var thisColumnName = listGetAt(structKeyList(xmlData.Table.Records.xmlChildren[r].xmlAttributes), rp);
-
-				// Create the column data details
-				var columnRecord = {
-					value = xmlData.Table.Records.xmlChildren[r].xmlAttributes[ thisColumnName ],
-					dataType = 'varchar'
-				};
-
-				// Check for a custom dataType for this column
-				if(structKeyExists(columns[ thisColumnName ], 'dataType')) {
-					columnRecord.dataType = columns[ thisColumnName ].dataType;
-				}
-
-				// Add this column record to the insert
-				if(!structKeyExists(columns[ thisColumnName ], 'circular') || columns[ thisColumnName ].circular == false) {
-					insertData[ thisColumnName ] = columnRecord;
-				} else {
-					includesCircular = true;
-				}
-
-				// Check to see if this column either has no update attribute, or it is set to true
-				if(!structKeyExists(columns[ thisColumnName ], 'update') || columns[ thisColumnName ].update == true) {
-					updateData[ thisColumnName ] = columnRecord;
-				}
-
-			}
-
-			var idKey = xmlData.table.xmlAttributes.tableName;
-			for(var l=1; l<=listLen(idColumns); l++) {
-				idKey = listAppend(idKey, insertData[listGetAt(idColumns, l)].value, "~");
-			}
-
-			var insertedData = getDataDAO().getInsertedDataFile();
-			var updateOnly = ignorePreviouslyInserted && listFindNoCase(insertedData, idKey);
-
-			getDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
-			getDataDAO().updateInsertedDataFile( idKey );
-		}
-
-		return includesCircular;
-	}
-
-	public boolean function isUniqueProperty( required string propertyName, required any entity ) {
-		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
-	}
-
 	public any function toBundle(required any bundle, required string tableList) {
 		getDataDAO().toBundle(argumentcollection=arguments);
 	}
@@ -175,6 +68,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiD
 		}
 
 		return attributeStruct;
+	}
+	
+	public string function getAttributeValueTableName(){
+		return "SwAttributeValue";
 	}
 	
 	// ===================== START: Logical Methods ===========================
