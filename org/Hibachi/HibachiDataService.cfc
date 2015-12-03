@@ -274,7 +274,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						if(tables[ tableName ][ "tableType" ] == "linktable") {
 							tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = thisTableData[ "#tables[ tableName ][ "primaryKeyColumn" ]#_new" ][r], dataType = 'varchar'};
 							tableData[ tableName ].updateData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = thisTableData[ "#tables[ tableName ][ "primaryKeyColumn" ]#_new" ][r], dataType = 'varchar'};
-							getDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false);
+							getHibachiDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false);
 						} else {
 							// make sure all ID keys have value
 							var okToImport = true;
@@ -288,7 +288,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								// set the primary key ID for insert
 								primaryKeyValue = getHibachiScope().createHibachiUUID();
 								tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = primaryKeyValue, dataType = 'varchar'};
-								primaryKeyValue = getDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false, true, tables[ tableName ][ "primaryKeyColumn" ]);
+								primaryKeyValue = getHibachiDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false, true, tables[ tableName ][ "primaryKeyColumn" ]);
 							}
 						}
 						
@@ -316,41 +316,43 @@ component accessors="true" output="false" extends="HibachiService" {
 						var tableData = {};
 						var updateData = {};
 						var insertData = {};
-						var attributeValueTableName = "SwAttributeValue";
-		
-						for(var sourceColumnName in tables[ tableName ]["attributes"]) {
-							
-							// if source column is part of the table column list then import
-							if(sourceColumnName != "" && thisTableData[ sourceColumnName ][r] != "" && listFindNoCase(thisTableAttributeList, sourceColumnName)) {
+						var attributeValueTableName = getAttributeValueTableName();
+						
+						if(len(attributeValueTableName)){
+							for(var sourceColumnName in tables[ tableName ]["attributes"]) {
 								
-								if(!structKeyExists(tableData, attributeValueTableName)) {
-									tableData[ attributeValueTableName ] = {};
-									tableData[ attributeValueTableName ].insertData = {};
-									tableData[ attributeValueTableName ].updateData = {};
+								// if source column is part of the table column list then import
+								if(sourceColumnName != "" && thisTableData[ sourceColumnName ][r] != "" && listFindNoCase(thisTableAttributeList, sourceColumnName)) {
+									
+									if(!structKeyExists(tableData, attributeValueTableName)) {
+										tableData[ attributeValueTableName ] = {};
+										tableData[ attributeValueTableName ].insertData = {};
+										tableData[ attributeValueTableName ].updateData = {};
+									}
+									tableData[ attributeValueTableName ].idColumns = "attributeID,#tables[ tableName ][ "primaryKeyColumn" ]#";
+									
+									// Add attributeID record to the insert
+									tableData[ attributeValueTableName ].insertData[ "attributeID" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeID"], dataType = 'varchar'};
+									tableData[ attributeValueTableName ].updateData[ "attributeID" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeID"], dataType = 'varchar'};
+									
+									// Add the atribute value type of record to the insert
+									tableData[ attributeValueTableName ].insertData[ "attributeValueType" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeValueType"], dataType = 'varchar'};
+									tableData[ attributeValueTableName ].updateData[ "attributeValueType" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeValueType"], dataType = 'varchar'};
+									
+									// Add the value of record to the insert
+									tableData[ attributeValueTableName ].insertData[ "attributeValue" ] = {value = thisTableData[ sourceColumnName ][r], dataType = 'varchar'};
+									tableData[ attributeValueTableName ].updateData[ "attributeValue" ] = {value = thisTableData[ sourceColumnName ][r], dataType = 'varchar'};
+									
+									// Add the primarykey ID record to the insert
+									tableData[ attributeValueTableName ].insertData[ "#tables[ tableName ][ "primaryKeyColumn" ]#" ] = {value = primaryKeyValue, dataType = 'varchar'};
+									tableData[ attributeValueTableName ].updateData[ "#tables[ tableName ][ "primaryKeyColumn" ]#" ] = {value = primaryKeyValue, dataType = 'varchar'};
+									
+									tableData[ attributeValueTableName ].insertData[ "attributeValueID" ] = {value = getHibachiScope().createHibachiUUID(), dataType = 'varchar'};
+			
+									//writedump(label="#attributeValueTableName#",var="#tableData[attributeValueTableName]#");
+									getHibachiDataDAO().recordUpdate(attributeValueTableName, tableData[attributeValueTableName].idColumns, tableData[attributeValueTableName].updateData, tableData[attributeValueTableName].insertData, false);
+									
 								}
-								tableData[ attributeValueTableName ].idColumns = "attributeID,#tables[ tableName ][ "primaryKeyColumn" ]#";
-								
-								// Add attributeID record to the insert
-								tableData[ attributeValueTableName ].insertData[ "attributeID" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeID"], dataType = 'varchar'};
-								tableData[ attributeValueTableName ].updateData[ "attributeID" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeID"], dataType = 'varchar'};
-								
-								// Add the atribute value type of record to the insert
-								tableData[ attributeValueTableName ].insertData[ "attributeValueType" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeValueType"], dataType = 'varchar'};
-								tableData[ attributeValueTableName ].updateData[ "attributeValueType" ] = {value = tables[ tableName ]["attributes"][ sourceColumnName ]["attributeValueType"], dataType = 'varchar'};
-								
-								// Add the value of record to the insert
-								tableData[ attributeValueTableName ].insertData[ "attributeValue" ] = {value = thisTableData[ sourceColumnName ][r], dataType = 'varchar'};
-								tableData[ attributeValueTableName ].updateData[ "attributeValue" ] = {value = thisTableData[ sourceColumnName ][r], dataType = 'varchar'};
-								
-								// Add the primarykey ID record to the insert
-								tableData[ attributeValueTableName ].insertData[ "#tables[ tableName ][ "primaryKeyColumn" ]#" ] = {value = primaryKeyValue, dataType = 'varchar'};
-								tableData[ attributeValueTableName ].updateData[ "#tables[ tableName ][ "primaryKeyColumn" ]#" ] = {value = primaryKeyValue, dataType = 'varchar'};
-								
-								tableData[ attributeValueTableName ].insertData[ "attributeValueID" ] = {value = getHibachiScope().createHibachiUUID(), dataType = 'varchar'};
-		
-								//writedump(label="#attributeValueTableName#",var="#tableData[attributeValueTableName]#");
-								getDataDAO().recordUpdate(attributeValueTableName, tableData[attributeValueTableName].idColumns, tableData[attributeValueTableName].updateData, tableData[attributeValueTableName].insertData, false);
-								
 							}
 						}
 					}	
