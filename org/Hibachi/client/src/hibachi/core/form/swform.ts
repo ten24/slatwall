@@ -67,9 +67,10 @@ class SWFormController {
     /**
         * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
         */
-    public static $inject = ['$scope', '$element', '$slatwall', 'AccountFactory', 'CartFactory', '$http', '$timeout', 'observerService'];
-    constructor(public $scope, public $element, public $slatwall, public AccountFactory, public CartFactory, public $http, public $timeout, public observerService){
+    //@ngInject
+    constructor(public $scope, public $element, public $slatwall, public accountService, public cartService, public $http, public $timeout, public observerService){
         /** only use if the developer has specified these features with isProcessForm */
+
         this.isProcessForm = this.isProcessForm || "false";
         if (this.isProcessForm == "true") {
             this.handleSelfInspection( this );
@@ -85,16 +86,16 @@ class SWFormController {
         * this class will attach any errors to the correspnding form element.
         */
     handleSelfInspection ( context ) {
-    /** local variables */
-    this.processObject = this.object || "";
-    let vm: ViewModel       = context;
-        vm.hiddenFields     = this.hiddenFields;
-        vm.entityName       = this.entityName || "Account";
-        vm.processObject    = this.processObject;
-        vm.action           = this.action;
-        vm.actions          = this.actions;
-        vm.$timeout         = this.$timeout;
-        vm.postOnly         = false;
+        /** local variables */
+        this.processObject = this.object || "";
+        let vm: ViewModel       = context;
+            vm.hiddenFields     = this.hiddenFields;
+            vm.entityName       = this.entityName || "Account";
+            vm.processObject    = this.processObject;
+            vm.action           = this.action;
+            vm.actions          = this.actions;
+            vm.$timeout         = this.$timeout;
+            vm.postOnly         = false;
 
         let observerService = this.observerService;
         /** parse the name */
@@ -239,8 +240,8 @@ class SWFormController {
         /** sets the correct factory to use for submission */
         vm.setFactoryIterator = (fn) =>
         {
-            let account     = this.AccountFactory.GetInstance();
-            let cart        = this.CartFactory.GetInstance();
+            let account     = this.accountService.GetInstance();
+            let cart        = this.cartService.GetInstance();
             let factories   = [account, cart];
             let factoryFound = false;
             for (var factory of factories) {
@@ -389,7 +390,7 @@ class SWForm implements ng.IDirective {
         return directive;
     }
     constructor( public coreFormPartialsPath, public pathBuilderConfig) {
-        this.templateUrl = this.coreFormPartialsPath + "formPartial.html";
+        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
     }
 }
 export{

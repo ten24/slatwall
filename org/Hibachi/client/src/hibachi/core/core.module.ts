@@ -41,6 +41,7 @@ import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWResizedImage} from "./components/swresizedimage";
 import {SWSortable} from "./components/swsortable";
 //  entity
+import {SWDetailTabs} from "./entity/swdetailtabs";
 import {SWDetail} from "./entity/swdetail";
 import {SWList} from "./entity/swlist";
 //form
@@ -57,6 +58,7 @@ import {SWFormFieldSelect} from "./form/swformfieldselect";
 import {SWFormFieldText} from "./form/swformfieldtext";
 import {SWFormRegistrar} from "./form/swformregistrar";
 import {SWFPropertyDisplay} from "./form/swfpropertydisplay";
+import {SWPropertyDisplay} from "./form/swpropertydisplay";
 //  validation
 import {SWValidate} from "./validation/swvalidate";
 import {SWValidationMinLength} from "./validation/swvalidationminlength";
@@ -103,9 +105,9 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 
 }).constant('pathBuilderConfig',new PathBuilderConfig())
 .constant('corePartialsPath','core/components/')
-.constant('coreEntityPartialsPath','core/entity')
-.constant('coreFormPartialsPath','core/form')
-.constant('coreValidationPartialsPath','core/validation')
+.constant('coreEntityPartialsPath','core/entity/')
+.constant('coreFormPartialsPath','core/form/')
+.constant('coreValidationPartialsPath','core/validation/')
 //services
 .service('accountService',AccountService)
 .service('cartService',CartService)
@@ -147,6 +149,7 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('sw:sortable',SWSortable.Factory())
 //entity
 .directive('swDetail',SWDetail.Factory())
+.directive('swDetailTabs',SWDetailTabs.Factory())
 .directive('swList',SWList.Factory())
 //form
 .directive('swInput',SWInput.Factory())
@@ -162,6 +165,7 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swFormFieldText',SWFormFieldText.Factory())
 .directive('swFormRegistrar',SWFormRegistrar.Factory())
 .directive('swfPropertyDisplay',SWFPropertyDisplay.Factory())
+.directive('swPropertyDisplay',SWPropertyDisplay.Factory())
 //validation
 .directive('swValidate',SWValidate.Factory())
 .directive('swvalidationminlength',SWValidationMinLength.Factory())

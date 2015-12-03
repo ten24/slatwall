@@ -21,23 +21,23 @@ import {SWWorkflowTriggers} from "./components/swworkflowtriggers";
 var workflowmodule = angular.module('hibachi.workflow',[]).config(()=>{
 })
 //constants
-.constant('workflowPartialsPath','components/workflow')
+.constant('workflowPartialsPath','workflow/components/')
 //services
 .service('workflowConditionService',WorkflowConditionService)
 //directives
 .directive('swAdminCreateSuperUser',SWAdminCreateSuperUser.Factory())
 .directive('swWorkflowBasic',SWWorkflowBasic.Factory())
 .directive('swWorkflowCondition',SWWorkflowCondition.Factory())
-.directive('swWorkflowCondition',SWWorkflowConditionGroupItem.Factory())
-.directive('swWorkflowCondition',SWWorkflowConditionGroups.Factory())
-.directive('swWorkflowCondition',SWWorkflowTask.Factory())
-.directive('swWorkflowCondition',SWWorkflowTaskActions.Factory())
-.directive('swWorkflowCondition',SWWorkflowTasks.Factory())
-.directive('swWorkflowCondition',SWWorkflowTrigger.Factory())
-.directive('swWorkflowCondition',SWWorkflowTriggers.Factory())
-//filters 
+.directive('swWorkflowConditionGroupItem',SWWorkflowConditionGroupItem.Factory())
+.directive('swWorkflowConditionGroups',SWWorkflowConditionGroups.Factory())
+.directive('swWorkflowTask',SWWorkflowTask.Factory())
+.directive('swWorkflowTaskActions',SWWorkflowTaskActions.Factory())
+.directive('swWorkflowTasks',SWWorkflowTasks.Factory())
+.directive('swWorkflowTrigger',SWWorkflowTrigger.Factory())
+.directive('swWorkflowTriggers',SWWorkflowTriggers.Factory())
+//filters
 
-;  
+;
 export{
 	workflowmodule
 }

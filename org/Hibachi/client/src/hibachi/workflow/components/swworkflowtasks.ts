@@ -47,9 +47,9 @@ class SWWorkflowTasks{
 			},
 			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtasks.html",
 			link: function(scope, element,attrs){
-				scope.workflowPartialsPath = workflowPartialsPath;
+				scope.workflowPartialsPath = pathBuilderConfig.buildPartialsPath(workflowPartialsPath);
 				scope.propertiesList = {};
-				
+
 				function logger(context, message){
 					$log.debug("SwWorkflowTasks :" + context + " : " + message);
 				}
@@ -60,13 +60,13 @@ class SWWorkflowTasks{
 					logger("getWorkflowTasks", "Retrieving items");
 					logger("getWorkflowTasks", "Workflow Tasks");
 					$log.debug(scope.workflowTasks);
-					
+
 					/***
 					   Note:
 					   This conditional is checking whether or not we need to be retrieving to
 					   items all over again. If we already have them, we won't make another
-					   trip to the database. 
-					   
+					   trip to the database.
+
 					 ***/
 					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
 						var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
@@ -77,18 +77,18 @@ class SWWorkflowTasks{
 						logger("getWorkflowTasks", "Retrieving cached Items");
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
 					}
-					
-					
+
+
 					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
 						//Reset the workflowTasks.
 						logger("getWorkflowTasks","workflowTasks is undefined.");
 						scope.workflow.data.workflowTasks = [];
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
 					}
-					
+
 				};
 				scope.getWorkflowTasks();//call tasks
-				
+
 				/**
 				 * Sets the editing state to show/hide the edit screen.
 				 */
@@ -100,16 +100,16 @@ class SWWorkflowTasks{
 						task.hidden = !task.hidden;
 					}
 				};
-				
+
 				/**
 				 * Add a workflow task and logs the result.
 				 */
-				scope.addWorkflowTask = function(){ 
+				scope.addWorkflowTask = function(){
 					var newWorkflowTask = scope.workflow.$$addWorkflowTask();
 					logger("var newWorkflowTask", newWorkflowTask);
 					scope.selectWorkflowTask(newWorkflowTask);
 				};
-				
+
 			   /**
 				 * Watches the select for changes.
 				 */
@@ -119,9 +119,9 @@ class SWWorkflowTasks{
 						logger("scope.$watch", "Change to " + newValue)
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
-					}	
+					}
 				});
-			  
+
 			  /**
                  * --------------------------------------------------------------------------------------------------------
                  * Saves the workflow task by calling the objects $$save method.
@@ -146,7 +146,7 @@ class SWWorkflowTasks{
                     });
                     scope.setHidden(scope.workflowTasks.selectedTask);
                 }//<--end save*/
-				 
+
                 /**
 				 * Select a workflow task.
 				 */
@@ -156,7 +156,7 @@ class SWWorkflowTasks{
 					$log.debug(workflowTask);
 					scope.finished = false;
 					scope.workflowTasks.selectedTask = undefined;
-					
+
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
@@ -167,10 +167,10 @@ class SWWorkflowTasks{
 						scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
 						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
 						scope.workflowTasks.selectedTask = workflowTask;
-						
+
 					});
 				};
-				
+
 				/* Does a delete of the property using delete */
 				scope.softRemoveTask = function(workflowTask){
 					logger("SoftRemoveTask", "calling delete");
@@ -180,7 +180,7 @@ class SWWorkflowTasks{
 					scope.removeIndexFromTasks(workflowTask.$$index);
 					scope.reindexTaskList();
 				};
-				
+
 				/* Does an API call delete using $$delete */
 				scope.hardRemoveTask = function(workflowTask){
 					logger("HardRemoveTask", "$$delete");
@@ -204,19 +204,18 @@ class SWWorkflowTasks{
 						scope.workflowTasks[i].$$index = i;
 					}
 				};
-				
+
 				/* Removes the tasks index from the tasks array */
 				scope.removeIndexFromTasks = function(index){
 					logger("RemoveIndexFromTasks", index);
 					scope.workflowTasks.splice(index, 1);
 				};
-				
+
 			}
-		}; 
+		};
 	}
 }
 export{
 	SWWorkflowTasks
 }
 
-	

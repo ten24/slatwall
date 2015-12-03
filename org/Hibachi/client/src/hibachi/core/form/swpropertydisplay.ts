@@ -1,12 +1,32 @@
-angular.module('slatwalladmin')
-.directive('swPropertyDisplay', [
-'$log',
-'partialsPath',
-'$filter',
-	function(
-	$log,
-	partialsPath,
-	$filter
+/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../typings/tsd.d.ts' />
+
+class SWPropertyDisplay{
+	public static Factory(){
+		var directive = (
+			$log,
+			$filter,
+			coreFormPartialsPath,
+			pathBuilderConfig
+		)=>new SWPropertyDisplay(
+			$log,
+			$filter,
+			coreFormPartialsPath,
+			pathBuilderConfig
+		);
+		directive.$inject = [
+			'$log',
+			'$filter',
+			'coreFormPartialsPath',
+			'pathBuilderConfig'
+		];
+		return directive;
+	}
+	constructor(
+		$log,
+		$filter,
+		coreFormPartialsPath,
+		pathBuilderConfig
 	){
 		return {
 			require:'^form',
@@ -25,9 +45,9 @@ angular.module('slatwalladmin')
 				onChange:"=",
 				fieldType:"@",
 				noValidate:"="
-					
+
 			},
-			templateUrl:partialsPath+"propertydisplay.html",
+			templateUrl:pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
 				//if the item is new, then all fields at the object level are dirty
 				$log.debug('editingproper');
@@ -66,7 +86,7 @@ angular.module('slatwalladmin')
 				if(angular.isUndefined(scope.editing)){
 					scope.propertyDisplay.editing = false;
 				}
-				
+
 				if(angular.isUndefined(scope.propertyDisplay.isHidden)){
 					scope.propertyDisplay.isHidden = false;
 				}
@@ -80,17 +100,19 @@ angular.module('slatwalladmin')
 				};
 
 				scope.$id = 'propertyDisplay:'+scope.property;
-				
+
 				/* register form that the propertyDisplay belongs to*/
 				scope.propertyDisplay.form = formController;
-				
+
 				$log.debug(scope.propertyDisplay);
-							
-				
+
+
 				$log.debug('propertyDisplay');
 				$log.debug(scope.propertyDisplay);
 			}
 		};
 	}
-]);
-	
+}
+export{
+	SWPropertyDisplay
+}

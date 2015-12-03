@@ -27,7 +27,7 @@ class SWDetail{
 		$log,
 		$slatwall,
 		coreEntityPartialsPath,
-			pathBuilderConfig
+		pathBuilderConfig
 	){
 		return {
 	        restrict: 'E',
@@ -35,13 +35,13 @@ class SWDetail{
 	        link: function (scope, element, attr) {
 	        	scope.$id="slatwallDetailController";
 	        	$log.debug('slatwallDetailController');
-	        
-            /*Sets the view dirty on save*/
-            scope.setDirty = function(entity){  
-                angular.forEach(entity.forms,function(form){
-                    form.$setSubmitted();
-                });    
-            };  
+
+				/*Sets the view dirty on save*/
+				scope.setDirty = function(entity){
+					angular.forEach(entity.forms,function(form){
+						form.$setSubmitted();
+					});
+				};
 	        	var setupMetaData = function(){
 	        		scope[scope.entityName.toLowerCase()] = scope.entity;
 	        		scope.entity.metaData.$$getDetailTabs().then(function(value){
@@ -49,13 +49,14 @@ class SWDetail{
                         $log.debug('detailtabs');
                         $log.debug(scope.detailTabs);
                     });
-	        		
+
+
 	        	};
-	        	
+
 	        	var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
-	        		
-	        	scope.tabPartialPath = coreEntityPartialsPath+'entity/';
-	        	
+
+	        	scope.tabPartialPath = pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath);
+
 	        	scope.getEntity = function(){
 	        		if(scope.entityID === 'null'){
 	        			scope.entity = $slatwall['new'+propertyCasedEntityName]();
@@ -67,7 +68,7 @@ class SWDetail{
 	        				setupMetaData();
 	        			});
 	        		}
-	        		
+
 	        	};
 	        	scope.getEntity();
 	        	scope.deleteEntity = function(){

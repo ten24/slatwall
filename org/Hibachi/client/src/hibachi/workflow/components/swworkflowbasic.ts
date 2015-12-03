@@ -12,13 +12,14 @@ class SWWorkflowBasic{
 			'$location',
 			'$slatwall',
 			'formService',
-			'workflowPartialsPath',,
+			'workflowPartialsPath',
 			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	constructor($log, $location, $slatwall, formService, workflowPartialsPath,
 			pathBuilderConfig){
+
 		return {
 			restrict : 'A',
 			scope : {
@@ -27,8 +28,10 @@ class SWWorkflowBasic{
 			templateUrl : pathBuilderConfig.buildPartialsPath(workflowPartialsPath)
 					+ "workflowbasic.html",
 			link : function(scope, element, attrs) {
+				console.log('workflowtest');
+				console.log(scope.workflow);
 			}
-		}; 
+		};
 	}
 }
 export{
