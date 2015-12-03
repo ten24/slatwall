@@ -246,7 +246,7 @@ var slatwalladmin;
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                _this.addDisplayProperty = (propertyIdentifier, title, options);
+                _this.addDisplayProperty(propertyIdentifier, title, options);
             };
             this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
                 var column = {

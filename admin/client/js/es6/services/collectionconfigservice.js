@@ -224,7 +224,7 @@ var slatwalladmin;
                 }
             };
             this.setDisplayProperties = (propertyIdentifier, title = '', options = {}) => {
-                this.addDisplayProperty = (propertyIdentifier, title, options);
+                this.addDisplayProperty(propertyIdentifier, title, options);
             };
             this.addDisplayAggregate = (propertyIdentifier, aggregateFunction, aggregateAlias, options) => {
                 var column = {

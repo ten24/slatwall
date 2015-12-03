@@ -250,14 +250,14 @@ Notes:
 			<hb:HibachiPropertyList divClass="col-md-6">
 
 				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'custom'">
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="renewalPrice" fieldName="product.renewalPrice" edit="true" />
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalPrice" fieldName="renewalPrice" edit="true" />
 						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
 						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 						</hb:HibachiListingDisplay>
 				</div>
 
-				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'rsku'">
+				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'renewalsku'">
 						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
 						<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="skuCode" />

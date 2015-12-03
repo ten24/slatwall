@@ -184,7 +184,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 
 	// Process: Order
-	public any function processOrder_addOrderItem(required any order, required any processObject) {
+	public any function processOrder_addOrderItem(required any order, required any processObject){
 
 		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
@@ -402,33 +402,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-        if(arguments.processObject.getSku().isGiftCardSku()){
-            //look for recipients
-            var totalQuantity = 0;
-            var count = 0;
-            if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= arguments.processObject.getQuantity()){
-                while(totalQuantity < arguments.processObject.getQuantity()){
-                    var currentRecipient = count & "recipient";
-                    if(!isNull(newOrderItem)){
-                        var recipientProcessObject = newOrderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
-                        recipientProcessObject.setOrderItem(newOrderItem);
-                    }
-                    if(structKeyExists(request.context, currentRecipient & "firstName")){
-                        recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                        recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
-                        recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
-                        recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                        recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                        arguments.order = this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
-                        totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
-                        count++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
+        var recipients = arguments.processObject.getRecipients();
+		if(!isNull(recipients) && arguments.processObject.getSku().isGiftCardSku()){
+	        for(var i=1; i<=ArrayLen(recipients);i++){
+				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
+				var recipient = this.newOrderItemGiftRecipient();
+				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
+				recipientProcessObject.setOrderItem(newOrderItem);
+				recipientProcessObject.setRecipient(recipient);
+				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+			}
 
+		}
 
 
 		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item.
@@ -590,39 +575,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
-		var totalQuantity = 0;
-        var count = 0;
-
-        if(!isNull(arguments.processObject.getAssignedGiftRecipientQuantity()) && arguments.processObject.getAssignedGiftRecipientQuantity() <= arguments.processObject.getQuantity()){
-            while(totalQuantity < arguments.processObject.getQuantity()){
-                var currentRecipient = count & "recipient";
-                if(!isNull(arguments.orderItem)){
-                    var recipientProcessObject = arguments.orderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
-                    recipientProcessObject.setOrderItem(arguments.orderItem);
-                }
-                if(structKeyExists(request.context, currentRecipient & "firstName")){
-                    recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                    recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
-                    recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
-                    recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                    recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                    var order = this.processOrder_addOrderItemGiftRecipient(arguments.orderItem.getOrder(), recipientProcessObject);
-                    totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        }
-
+		var recipients = arguments.processObject.getRecipients();
+		if(!isNull(recipients)){
+	        for(var i=1; i<=ArrayLen(recipients);i++){
+				var recipientProcessObject = arguments.orderitem.getOrder().getProcessObject("addOrderItemGiftRecipient");
+				var recipient = this.newOrderItemGiftRecipient();
+				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
+				recipientProcessObject.setOrderItem(arguments.orderitem);
+				recipientProcessObject.setRecipient(recipient);
+				this.processOrder_addOrderItemGiftRecipient(arguments.orderitem.getOrder(), recipientProcessObject);
+			}
+		}
         return arguments.orderItem;
 	}
 
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
 
 		var item = arguments.processObject.getOrderItem();
-		var recipient = this.newOrderItemGiftRecipient();
-        var test = this.newOrderItem();
+
+		if(isNull(arguments.processObject.getRecipient())){
+			var recipient = this.newOrderItemGiftRecipient();
+		} else {
+			var recipient = arguments.processObject.getRecipient();
+		}
 
 		if(!isNull(arguments.processObject.getFirstName())){
 			recipient.setFirstName(arguments.processObject.getFirstName());
@@ -648,7 +623,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			recipient.setGiftMessage(arguments.processObject.getGiftMessage());
 		}
 
-        recipient.setQuantity(processObject.getQuantity());
+		if(!isNull(processObject.getQuantity())){
+        	recipient.setQuantity(processObject.getQuantity());
+        }
+
         recipient = this.saveOrderItemGiftRecipient(recipient);
 
         recipient.setOrderItem(item);

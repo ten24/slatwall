@@ -110,11 +110,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.redemptionAmountTypeOptions;
 	}
 
-	public numeric function getRenewalPrice(){
+	public any function getRenewalPrice(){
 		if(!isNull(getRenewalSku())){
 			return this.getRenewalSku().getRenewalPrice();
-		} else {
+		} else if(!isNull(variables.renewalPrice)) {
 			return variables.renewalPrice;
+		} else {
+			return;
 		}
 	}
 
