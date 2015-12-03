@@ -17,10 +17,10 @@
 	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
-	<input type="text" name="_rowRecipientFirstName" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName" required>
+	<input type="text" name="_rowRecipientFirstName" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName">
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
-	<input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName" required>
+	<input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName">
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
 	<input type="email" name="_rowRecipientEmail" class="form-control" ng-model="giftRecipientRowControl.recipient.email" required>
