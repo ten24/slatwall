@@ -4,50 +4,53 @@
 class SWListingDisplayController{
     /* local state variables */
 
-    private adminattributes;
-    private administrativeCount;
-    private allpropertyidentifiers:string = "";
-    private allprocessobjectproperties:string = "false";
-    private buttonGroup = [];
-    private collectionID;
-    private collectionPromise;
-    private collectionData;
-    private collectionObject;
-    private collectionConfig:slatwalladmin.CollectionConfig;
-    private collection;
-    private childPropertyName;
-    private columns = [];
-    private columnCount;
-    private expandable:boolean;
-    private exampleEntity:any = "";
-    private exportAction;
-    private getCollection;
-    private getChildCount;
-    private hasCollectionPromise;
-    private multiselectable:boolean = false;
-    private multiselectFieldName;
-    private multiselectIdPaths;
-    private multiselectPropertyIdentifier;
-    private multiselectValues;
-    private norecordstext;
-    private paginator;
-    private parentPropertyName;
-    private processObjectProperties;
-    private recordAddAction;
-    private recordDetailAction;
-    private recordEditAction;
-    private recordDeleteAction
-    private recordProcessButtonDisplayFlag;
-    private searching:boolean = false;
-    private searchText;
-    private savedSearchText;
-    private selectFieldName;
-    private selectable:boolean = false;
-    private sortable:boolean = false;
-    private sortProperty;
-    private tableID;
-    private tableclass;
-    private tableattributes;
+    public adminattributes;
+    public administrativeCount;
+    public allpropertyidentifiers:string = "";
+    public allprocessobjectproperties:string = "false";
+    public buttonGroup = [];
+    public collectionID;
+    public collectionPromise;
+    public collectionData;
+    public collectionObject;
+    public collectionConfig;
+    public collection;
+    public childPropertyName;
+    public columns = [];
+    public columnCount;
+    public expandable:boolean;
+    public exampleEntity:any = "";
+    public exportAction;
+    public getCollection;
+    public getChildCount;
+    public hasCollectionPromise;
+    public multiselectable:boolean = false;
+    public multiselectFieldName;
+    public multiselectIdPaths;
+    public multiselectPropertyIdentifier;
+    public multiselectValues;
+    public norecordstext;
+    public paginator;
+    public parentPropertyName;
+    public processObjectProperties;
+    public recordAddAction;
+    public recordDetailAction;
+    public recordEditAction;
+    public recordDeleteAction
+    public recordProcessButtonDisplayFlag;
+    public searching:boolean = false;
+    public searchText;
+    public savedSearchText;
+    public selectFieldName;
+    public selectable:boolean = false;
+    public sortable:boolean = false;
+    public sortProperty;
+    public tableID;
+    public tableclass;
+    public tableattributes;
+    public hasSearch:boolean = true;
+
+
 
     private _timeoutPromise;
 
@@ -58,13 +61,13 @@ class SWListingDisplayController{
         public $transclude,
         public $timeout,
         public $q,
-        public $slatwall:ngSlatwall.SlatwallService,
+        public $slatwall,
         public partialsPath,
-        public utilityService:slatwalladmin.UtilityService,
-        public collectionConfigService:slatwalladmin.CollectionConfig,
-        public paginationService:slatwalladmin.PaginationService,
-        public selectionService:slatwalladmin.SelectionService,
-        public observerService:slatwalladmin.ObserverService
+        public utilityService,
+        public collectionConfigService,
+        public paginationService,
+        public selectionService,
+        public observerService
     ){
         this.$q = $q;
         this.$timeout = $timeout;
@@ -88,7 +91,7 @@ class SWListingDisplayController{
             this.hasSearch = true;
         }
 
-            this.paginator = this.paginationService.createPagination();
+        this.paginator = this.paginationService.createPagination();
 
         this.hasCollectionPromise = false;
         if(angular.isUndefined(this.getChildCount)){
@@ -113,7 +116,7 @@ class SWListingDisplayController{
 
         //if a collectionConfig was not passed in then we can run run swListingColumns
         //this is performed early to populate columns with swlistingcolumn info
-        this.$transclude = $transclude;
+        this.$transclude = this.$transclude;
         this.$transclude(this.$scope,()=>{});
 
         this.setupColumns();
@@ -519,7 +522,7 @@ class SWListingDisplayController{
     }
 }
 
-export class SWListingDisplay implements ng.IDirective{
+class SWListingDisplay implements ng.IDirective{
 
     public restrict:string = 'E';
     public scope = {};
@@ -640,7 +643,7 @@ export class SWListingDisplay implements ng.IDirective{
         ];
         return directive;
     }
-    
+
     constructor(
         public corePartialsPath,
         public observerService,
@@ -651,9 +654,9 @@ export class SWListingDisplay implements ng.IDirective{
         this.templateUrl = pathBuilderConfig.buildPartialsPath(this.corePartialsPath)+'listingdisplay.html';
     }
 
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
+    public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
         scope.$on('$destroy',()=>{
-            observerService.detachByID(scope.collection);
+            this.observerService.detachByID(scope.collection);
         });
 
     }

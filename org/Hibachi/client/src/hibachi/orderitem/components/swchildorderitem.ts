@@ -8,14 +8,16 @@ class SWChildOrderItem{
       $compile,
       $templateCache,
       $slatwall,
-      orderItemPartialsPath
+      orderItemPartialsPath,
+      pathBuilderConfig
     )=> new SWChildOrderItem(
       $log,
       $http,
       $compile,
       $templateCache,
       $slatwall,
-      orderItemPartialsPath
+      orderItemPartialsPath,
+      pathBuilderConfig
     );
     directive.$inject = [
       '$log',
@@ -23,7 +25,8 @@ class SWChildOrderItem{
       '$compile',
       '$templateCache',
       '$slatwall',
-      'orderItemPartialsPath'
+      'orderItemPartialsPath',
+      'pathBuilderConfig'
     ];
     return directive;
   }
@@ -33,7 +36,8 @@ class SWChildOrderItem{
     $compile,
     $templateCache,
     $slatwall,
-    orderItemPartialsPath
+    orderItemPartialsPath,
+    pathBuilderConfig
   ){
     return {
       restrict : "A",
@@ -43,9 +47,9 @@ class SWChildOrderItem{
         childOrderItems:"=",
         attributes:"="
       },
-      templateUrl:orderItemPartialsPath+"childorderitem.html",
+      templateUrl:pathBuilderConfig.buildPartialsPath(orderItemPartialsPath)+"childorderitem.html",
       link:function(scope, element, attr) {
-  
+
         var columnsConfig =[
               {
                 "isDeletable":false,
@@ -125,7 +129,7 @@ class SWChildOrderItem{
                 "propertyIdentifier":"_orderitem.sku.product.productType",
                 "isVisible":true,
                 "isDeletable":true
-              }, 
+              },
               {
                   "propertyIdentifier":"_orderitem.sku.baseProductType",
                   "persistent":false
@@ -229,9 +233,9 @@ class SWChildOrderItem{
                 "propertyIdentifier":"_orderitem.productBundlePrice",
                 "persistent":false
               }
-            
+
         ];
-        
+
         //add attributes to the column config
         angular.forEach(scope.attributes,function(attribute){
           var attributeColumn = {
@@ -241,7 +245,7 @@ class SWChildOrderItem{
           };
           columnsConfig.push(attributeColumn);
         });
-      
+
         var filterGroupsConfig =[
             {
               "filterGroup": [
@@ -253,7 +257,7 @@ class SWChildOrderItem{
               ]
             }
           ];
-        
+
         var options = {
           columnsConfig:angular.toJson(columnsConfig),
           filterGroupsConfig:angular.toJson(filterGroupsConfig),
@@ -261,10 +265,10 @@ class SWChildOrderItem{
         };
         //hide the children on click
         scope.hideChildren = function(orderItem){
-          
+
           //Set all child order items to clicked = false.
           angular.forEach(scope.childOrderItems, function(child){
-            
+
             console.dir(child);
             child.hide = !child.hide;
             scope.orderItem.clicked = !scope.orderItem.clicked;
@@ -279,7 +283,7 @@ class SWChildOrderItem{
             scope.orderItem.childItemsRetrieved = true;
             var orderItemsPromise = $slatwall.getEntity('orderItem', options);
             orderItemsPromise.then(function(value){
-              var collectionConfig = {};
+              var collectionConfig:any = {};
               collectionConfig.columns = columnsConfig;
               collectionConfig.baseEntityName = 'SlatwallOrderItem';
               collectionConfig.baseEntityAlias = '_orderitem';
@@ -290,16 +294,16 @@ class SWChildOrderItem{
                 childOrderItem.data.parentOrderItem = orderItem;
                 childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
                 scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem)+1,0,childOrderItem);
-  
+
                 childOrderItem.data.productBundleGroupPercentage = 1;
                 if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
                   childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
                 }else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
                   childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
                 }
-                
+
               });
-              
+
             });
           }
         };

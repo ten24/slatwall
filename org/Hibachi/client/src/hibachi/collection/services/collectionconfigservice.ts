@@ -90,7 +90,7 @@ class CollectionConfig {
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
         public columns?:Column[],
-        private filterGroups:Array=[{filterGroup: []}],
+        private filterGroups:Array<any>=[{filterGroup: []}],
         private joins?:Join[],
         private orderBy?:OrderBy[],
         private groupBys?:string,
@@ -137,7 +137,7 @@ class CollectionConfig {
         this.allRecords = jsonCollection.allRecords;
     };
 
-    public loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]):void =>{
+    public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):void =>{
         this.filterGroups = filterGroupsConfig;
     };
 
@@ -145,7 +145,7 @@ class CollectionConfig {
         this.columns = columns;
     };
 
-    public getCollectionConfig= ():Object =>{
+    public getCollectionConfig= ():any =>{
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
@@ -245,7 +245,7 @@ class CollectionConfig {
         return propertyIdentifier;
     };
 
-    public addColumn= (column: string, title: string = '', options:Object = {}):void =>{
+    public addColumn= (column: string, title: string = '', options:any = {}):void =>{
         if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
@@ -313,7 +313,7 @@ class CollectionConfig {
     };
 
 
-    public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:Object = {}):void =>{
+    public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:any = {}):void =>{
         this.addDisplayProperty= (propertyIdentifier, title, options);
     };
 
@@ -339,7 +339,7 @@ class CollectionConfig {
         this.groupBys = this.utilityService.listAppend(this.groupBys,groupByAlias);
     };
 
-    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:Object = {}):void =>{
+    public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):void =>{
         var _DividedColumns = propertyIdentifier.trim().split(',');
         var _DividedTitles = title.trim().split(',');
         _DividedColumns.forEach((column:string, index)  => {

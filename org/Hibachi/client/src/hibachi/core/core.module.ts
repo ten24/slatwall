@@ -1,6 +1,8 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 //services
+import {AccountService} from "./services/accountservice";
+import {CartService} from "./services/cartservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
@@ -39,8 +41,24 @@ import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWResizedImage} from "./components/swresizedimage";
 import {SWSortable} from "./components/swsortable";
 //  entity
+import {SWDetailTabs} from "./entity/swdetailtabs";
 import {SWDetail} from "./entity/swdetail";
 import {SWList} from "./entity/swlist";
+//form
+import {SWInput} from "./form/swinput";
+import {SWFFormField} from "./form/swfformfield";
+import {SWForm} from "./form/swform";
+import {SWFormField} from "./form/swformfield";
+import {SWFormFieldJson} from "./form/swformfieldjson";
+import {SWFormFieldNumber} from "./form/swformfieldnumber";
+import {SWFormFieldPassword} from "./form/swformfieldpassword";
+import {SWFormFieldRadio} from "./form/swformfieldradio";
+import {SWFormFieldSearchSelect} from "./form/swformfieldsearchselect";
+import {SWFormFieldSelect} from "./form/swformfieldselect";
+import {SWFormFieldText} from "./form/swformfieldtext";
+import {SWFormRegistrar} from "./form/swformregistrar";
+import {SWFPropertyDisplay} from "./form/swfpropertydisplay";
+import {SWPropertyDisplay} from "./form/swpropertydisplay";
 //  validation
 import {SWValidate} from "./validation/swvalidate";
 import {SWValidationMinLength} from "./validation/swvalidationminlength";
@@ -87,10 +105,12 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 
 }).constant('pathBuilderConfig',new PathBuilderConfig())
 .constant('corePartialsPath','core/components/')
-.constant('coreEntityPartialsPath','core/entity')
-.constant('coreFormPartialsPath','core/form')
-.constant('coreValidationPartialsPath','core/validation')
+.constant('coreEntityPartialsPath','core/entity/')
+.constant('coreFormPartialsPath','core/form/')
+.constant('coreValidationPartialsPath','core/validation/')
 //services
+.service('accountService',AccountService)
+.service('cartService',CartService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
@@ -127,8 +147,25 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('swresizedimage',SWResizedImage.Factory())
 .directive('sw:sortable',SWSortable.Factory())
+//entity
 .directive('swDetail',SWDetail.Factory())
+.directive('swDetailTabs',SWDetailTabs.Factory())
 .directive('swList',SWList.Factory())
+//form
+.directive('swInput',SWInput.Factory())
+.directive('swfFormField',SWFFormField.Factory())
+.directive('swForm',SWForm.Factory())
+.directive('swFormField',SWFormField.Factory())
+.directive('swFormFieldJson',SWFormFieldJson.Factory())
+.directive('swFormFieldNumber',SWFormFieldNumber.Factory())
+.directive('swFormFieldPassword',SWFormFieldPassword.Factory())
+.directive('swFormFieldRadio',SWFormFieldRadio.Factory())
+.directive('swFormFieldSearchSelect',SWFormFieldSearchSelect.Factory())
+.directive('swFormFieldSelect',SWFormFieldSelect.Factory())
+.directive('swFormFieldText',SWFormFieldText.Factory())
+.directive('swFormRegistrar',SWFormRegistrar.Factory())
+.directive('swfPropertyDisplay',SWFPropertyDisplay.Factory())
+.directive('swPropertyDisplay',SWPropertyDisplay.Factory())
 //validation
 .directive('swValidate',SWValidate.Factory())
 .directive('swvalidationminlength',SWValidationMinLength.Factory())
