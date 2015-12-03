@@ -1,8 +1,8 @@
-<input type="hidden" name="{{giftRecipientRowControl.index}}recipientfirstname" ng-value="recipient.firstName">
-<input type="hidden" name="{{giftRecipientRowControl.index}}recipientlastname" ng-value="recipient.lastName">
-<input type="hidden" name="{{giftRecipientRowControl.index}}recipientemail" ng-value="recipient.email">
-<input type="hidden" name="{{giftRecipientRowControl.index}}recipientmessage" ng-value="recipient.giftMessage">
-<input type="hidden" name="{{giftRecipientRowControl.index}}recipientquantity" ng-value="recipient.quantity">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].firstName" ng-value="recipient.firstName">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].lastName" ng-value="recipient.lastName">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].emailAddress" ng-value="recipient.email">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].giftMessage" ng-value="recipient.giftMessage">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].quantity" ng-value="recipient.quantity">
 
 <td ng-bind="recipient.firstName" ng-hide="recipient.editing" ng-if="!recipient.account"></td>
 <td ng-bind="recipient.lastName" ng-hide="recipient.editing" ng-if="!recipient.account"></td>

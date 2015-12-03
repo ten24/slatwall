@@ -1214,6 +1214,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// If the primary phone number is this phone number then set the primary to null
 			if(arguments.accountPhoneNumber.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID() eq arguments.accountPhoneNumber.getAccountPhoneNumberID()) {
 				arguments.accountPhoneNumber.getAccount().setPrimaryPhoneNumber(javaCast("null",""));
+				arguments.accountPhoneNumber.removeAccount();
 			}
 			
 		}
@@ -1229,6 +1230,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			// If the primary address is this address then set the primary to null
 			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
 				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
+					arguments.accountAddress.removeAccount();
 			}
 			
 			// Remove from any order objects

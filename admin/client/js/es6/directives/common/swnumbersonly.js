@@ -12,7 +12,7 @@ var slatwalladmin;
                 maxNumber: '=?'
             };
             this.link = ($scope, element, attrs, modelCtrl) => {
-                modelCtrl.$parsers.push((inputValue) => {
+                modelCtrl.$parsers.unshift((inputValue) => {
                     var modelValue = modelCtrl.$modelValue;
                     if (inputValue != "" && !isNaN(Number(inputValue))) {
                         if (angular.isDefined($scope.minNumber)) {

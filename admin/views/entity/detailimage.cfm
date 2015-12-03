@@ -83,16 +83,16 @@ Notes:
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
-		<hb:HibachiTabGroup object="#rc.image#">
-			<hb:HibachiTab view="admin:entity/imagetabs/image" />
+		<hb:HibachiEntityDetailGroup object="#rc.image#">
+			<hb:HibachiEntityDetailItem view="admin:entity/imagetabs/image" />
 			<cfif not isNull(rc.image.getProduct())>
-				<hb:HibachiTab view="admin:entity/imagetabs/options" />
+				<hb:HibachiEntityDetailItem view="admin:entity/imagetabs/options" />
 			</cfif>
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.image.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.image#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
