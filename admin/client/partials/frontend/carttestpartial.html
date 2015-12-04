@@ -1,0 +1,8 @@
+<!-- Example of using the cart directive to list various items and well as modify -->
+<ul>
+    <li ng-repeat="item in SwCartTest.listItem[0]">
+    	<span ng-if="angular.isObject(item)" ng-repeat="i in item trackby $index" ng-bind="i"></span>
+    </li>
+</ul>
+
+
