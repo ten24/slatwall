@@ -891,7 +891,6 @@
 	var content_module_1 = __webpack_require__(107);
 	var core_module_1 = __webpack_require__(16);
 	var dialog_module_1 = __webpack_require__(112);
-	var giftcard_module_1 = __webpack_require__(115);
 	var orderitem_module_1 = __webpack_require__(126);
 	var pagination_module_1 = __webpack_require__(132);
 	var product_module_1 = __webpack_require__(135);
@@ -903,7 +902,6 @@
 	    collection_module_1.collectionmodule.name,
 	    content_module_1.contentmodule.name,
 	    dialog_module_1.dialogmodule.name,
-	    giftcard_module_1.giftcardmodule.name,
 	    orderitem_module_1.orderitemmodule.name,
 	    pagination_module_1.paginationmodule.name,
 	    product_module_1.productmodule.name,
@@ -11577,724 +11575,17 @@
 
 
 /***/ },
-/* 115 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	//modules
-	var core_module_1 = __webpack_require__(16);
-	//controllers
-	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(116);
-	//directives
-	var swaddorderitemgiftrecipient_1 = __webpack_require__(118);
-	var swgiftcardbalance_1 = __webpack_require__(119);
-	var swgiftcarddetail_1 = __webpack_require__(120);
-	var swgiftcardhistory_1 = __webpack_require__(121);
-	var swgiftcardoverview_1 = __webpack_require__(122);
-	var swgiftcardorderinfo_1 = __webpack_require__(123);
-	var swgiftcardrecipientinfo_1 = __webpack_require__(124);
-	var sworderitemgiftrecipientrow_1 = __webpack_require__(125);
-	var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
-	    .config([function () {
-	    }]).run([function () {
-	    }])
-	    .constant('giftCardPartialsPath', 'giftcard/components')
-	    .controller('preprocessorderitem_addorderitemgiftrecipient', preprocessorderitem_addorderitemgiftrecipient_1.OrderItemGiftRecipientControl)
-	    .directive('swAddOrderItemGiftRecipient', swaddorderitemgiftrecipient_1.SWAddOrderItemGiftRecipient.Factory())
-	    .directive('swGiftCardBalance', swgiftcardbalance_1.SWGiftCardBalance.Factory())
-	    .directive('swGiftCardOverview', swgiftcardoverview_1.SWGiftCardOverview.Factory())
-	    .directive('swGiftCardDetail', swgiftcarddetail_1.SWGiftCardDetail.Factory())
-	    .directive('swGiftCardHistory', swgiftcardhistory_1.SWGiftCardHistory.Factory())
-	    .directive('swGiftCardRecipientInfo', swgiftcardrecipientinfo_1.SWGiftCardRecipientInfo.Factory())
-	    .directive('swGiftCardOrderInfo', swgiftcardorderinfo_1.SWGiftCardOrderInfo.Factory())
-	    .directive('swOrderItemGiftRecipientRow', sworderitemgiftrecipientrow_1.SWOrderItemGiftRecipientRow.Factory());
-	exports.giftcardmodule = giftcardmodule;
-
-
-/***/ },
-/* 116 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(117);
-	var OrderItemGiftRecipientControl = (function () {
-	    function OrderItemGiftRecipientControl($scope, $slatwall) {
-	        var _this = this;
-	        this.$scope = $scope;
-	        this.$slatwall = $slatwall;
-	        this.getUnassignedCountArray = function () {
-	            var unassignedCountArray = new Array();
-	            for (var i = 1; i <= _this.getUnassignedCount(); i++) {
-	                unassignedCountArray.push(i);
-	            }
-	            return unassignedCountArray;
-	        };
-	        this.getAssignedCount = function () {
-	            var assignedCount = 0;
-	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
-	                assignedCount += orderItemGiftRecipient.quantity;
-	            });
-	            return assignedCount;
-	        };
-	        this.getUnassignedCount = function () {
-	            var unassignedCount = _this.quantity;
-	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
-	                unassignedCount -= orderItemGiftRecipient.quantity;
-	            });
-	            return unassignedCount;
-	        };
-	        this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
-	        $scope.collection = {};
-	        this.adding = false;
-	        this.searchText = "";
-	        var count = 1;
-	        this.currentGiftRecipient = new giftrecipient_1.GiftRecipient();
-	    }
-	    OrderItemGiftRecipientControl.$inject = ["$scope", "$slatwall"];
-	    return OrderItemGiftRecipientControl;
-	})();
-	exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
-
-
-/***/ },
-/* 117 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var GiftRecipient = (function () {
-	    function GiftRecipient(firstName, lastName, email, giftMessage, quantity, account, editing) {
-	        var _this = this;
-	        this.reset = function () {
-	            _this.firstName = null;
-	            _this.lastName = null;
-	            _this.email = null;
-	            _this.account = null;
-	            _this.editing = false;
-	            _this.quantity = 1;
-	        };
-	        this.quantity = 1;
-	        this.editing = false;
-	        this.account = false;
-	    }
-	    return GiftRecipient;
-	})();
-	exports.GiftRecipient = GiftRecipient;
-
-
-/***/ },
-/* 118 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var giftrecipient_1 = __webpack_require__(117);
-	var SWAddOrderItemRecipientController = (function () {
-	    function SWAddOrderItemRecipientController($slatwall) {
-	        var _this = this;
-	        this.$slatwall = $slatwall;
-	        this.addGiftRecipientFromAccountList = function (account) {
-	            var giftRecipient = new giftrecipient_1.GiftRecipient();
-	            giftRecipient.firstName = account.firstName;
-	            giftRecipient.lastName = account.lastName;
-	            giftRecipient.email = account.primaryEmailAddress_emailAddress;
-	            giftRecipient.account = true;
-	            _this.orderItemGiftRecipients.push(giftRecipient);
-	            _this.searchText = "";
-	        };
-	        this.getUnassignedCountArray = function () {
-	            var unassignedCountArray = new Array();
-	            for (var i = 1; i <= _this.getUnassignedCount(); i++) {
-	                unassignedCountArray.push(i);
-	            }
-	            return unassignedCountArray;
-	        };
-	        this.getAssignedCount = function () {
-	            var assignedCount = 0;
-	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
-	                assignedCount += orderItemGiftRecipient.quantity;
-	            });
-	            return assignedCount;
-	        };
-	        this.getUnassignedCount = function () {
-	            var unassignedCount = _this.quantity;
-	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
-	                unassignedCount -= orderItemGiftRecipient.quantity;
-	            });
-	            return unassignedCount;
-	        };
-	        this.addGiftRecipient = function () {
-	            _this.adding = false;
-	            var giftRecipient = new giftrecipient_1.GiftRecipient();
-	            angular.extend(giftRecipient, _this.currentGiftRecipient);
-	            _this.orderItemGiftRecipients.push(giftRecipient);
-	            _this.currentGiftRecipient = new giftrecipient_1.GiftRecipient();
-	            _this.searchText = "";
-	        };
-	        this.startFormWithName = function (searchString) {
-	            if (searchString === void 0) { searchString = _this.searchText; }
-	            _this.adding = true;
-	            if (searchString == "") {
-	                _this.currentGiftRecipient.firstName = searchString;
-	            }
-	            else {
-	                _this.currentGiftRecipient.firstName = searchString;
-	                _this.searchText = "";
-	            }
-	        };
-	        this.getTotalQuantity = function () {
-	            var totalQuantity = 0;
-	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
-	                totalQuantity += orderItemGiftRecipient.quantity;
-	            });
-	            return totalQuantity;
-	        };
-	        this.getMessageCharactersLeft = function () {
-	            if (angular.isDefined(_this.currentGiftRecipient.giftMessage)) {
-	                return 250 - _this.currentGiftRecipient.giftMessage.length;
-	            }
-	            else {
-	                return 250;
-	            }
-	        };
-	        this.adding = false;
-	        this.searchText = "";
-	        var count = 1;
-	        this.currentGiftRecipient = new giftrecipient_1.GiftRecipient();
-	        this.orderItemGiftRecipients = [];
-	    }
-	    SWAddOrderItemRecipientController.$inject = ["$slatwall"];
-	    return SWAddOrderItemRecipientController;
-	})();
-	exports.SWAddOrderItemRecipientController = SWAddOrderItemRecipientController;
-	var SWAddOrderItemGiftRecipient = (function () {
-	    function SWAddOrderItemGiftRecipient($slatwall, giftCardPartialsPath, pathBuilderConfig) {
-	        this.$slatwall = $slatwall;
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.restrict = "EA";
-	        this.transclude = true;
-	        this.scope = {};
-	        this.bindToController = {
-	            "quantity": "=",
-	            "orderItemGiftRecipients": "=",
-	            "adding": "=",
-	            "searchText": "=",
-	            "currentgiftRecipient": "="
-	        };
-	        this.controller = SWAddOrderItemRecipientController;
-	        this.controllerAs = "addGiftRecipientControl";
-	        this.link = function ($scope, element, attrs) {
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "entity/OrderItemGiftRecipient/addorderitemgiftrecipient.html";
-	    }
-	    SWAddOrderItemGiftRecipient.Factory = function () {
-	        var directive = function ($slatwall, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWAddOrderItemGiftRecipient($slatwall, giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$slatwall',
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWAddOrderItemGiftRecipient;
-	})();
-	exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
-
-
-/***/ },
-/* 119 */
-/***/ function(module, exports) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var SWGiftCardBalanceController = (function () {
-	    function SWGiftCardBalanceController(collectionConfigService) {
-	        var _this = this;
-	        this.collectionConfigService = collectionConfigService;
-	        this.init = function () {
-	            _this.initialBalance = 0;
-	            var totalDebit = 0;
-	            var transactionConfig = _this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-	            transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
-	            transactionConfig.addFilter('giftCard.giftCardID', _this.giftCard.giftCardID);
-	            transactionConfig.setAllRecords(true);
-	            var transactionPromise = transactionConfig.getEntity();
-	            transactionPromise.then(function (response) {
-	                _this.transactions = response.records;
-	                angular.forEach(_this.transactions, function (transaction, index) {
-	                    if (typeof transaction.creditAmount !== "string") {
-	                        _this.initialBalance += transaction.creditAmount;
-	                    }
-	                    if (typeof transaction.debitAmount !== "string") {
-	                        totalDebit += transaction.debitAmount;
-	                    }
-	                });
-	                _this.currentBalance = _this.initialBalance - totalDebit;
-	                _this.balancePercentage = ((_this.currentBalance / _this.initialBalance) * 100);
-	            });
-	        };
-	        this.init();
-	    }
-	    SWGiftCardBalanceController.$inject = ["collectionConfigService"];
-	    return SWGiftCardBalanceController;
-	})();
-	exports.SWGiftCardBalanceController = SWGiftCardBalanceController;
-	var SWGiftCardBalance = (function () {
-	    function SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	        this.collectionConfigService = collectionConfigService;
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.scope = {};
-	        this.bindToController = {
-	            giftCard: "=?",
-	            transactions: "=?",
-	            initialBalance: "=?",
-	            currentBalance: "=?",
-	            balancePercentage: "=?"
-	        };
-	        this.controller = SWGiftCardBalanceController;
-	        this.controllerAs = "swGiftCardBalance";
-	        this.link = function (scope, element, attrs) {
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/balance.html";
-	        this.restrict = "EA";
-	    }
-	    SWGiftCardBalance.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'collectionConfigService',
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWGiftCardBalance;
-	})();
-	exports.SWGiftCardBalance = SWGiftCardBalance;
-
-
-/***/ },
-/* 120 */
-/***/ function(module, exports) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var SWGiftCardDetailController = (function () {
-	    function SWGiftCardDetailController(collectionConfigService) {
-	        var _this = this;
-	        this.collectionConfigService = collectionConfigService;
-	        this.init = function () {
-	            var giftCardConfig = _this.collectionConfigService.newCollectionConfig('GiftCard');
-	            giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
-	            giftCardConfig.addFilter('giftCardID', _this.giftCardId);
-	            giftCardConfig.setAllRecords(true);
-	            giftCardConfig.getEntity().then(function (response) {
-	                _this.giftCard = response.records[0];
-	            });
-	        };
-	        this.init();
-	    }
-	    SWGiftCardDetailController.$inject = ["collectionConfigService"];
-	    return SWGiftCardDetailController;
-	})();
-	exports.SWGiftCardDetailController = SWGiftCardDetailController;
-	var SWGiftCardDetail = (function () {
-	    function SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	        this.collectionConfigService = collectionConfigService;
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.scope = {};
-	        this.bindToController = {
-	            giftCardId: "@",
-	            giftCard: "=?"
-	        };
-	        this.controller = SWGiftCardDetailController;
-	        this.controllerAs = "swGiftCardDetail";
-	        this.link = function (scope, element, attrs) {
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/basic.html";
-	        this.restrict = "E";
-	    }
-	    SWGiftCardDetail.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'collectionConfigService',
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWGiftCardDetail;
-	})();
-	exports.SWGiftCardDetail = SWGiftCardDetail;
-
-
-/***/ },
-/* 121 */
-/***/ function(module, exports) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var SWGiftCardHistoryController = (function () {
-	    function SWGiftCardHistoryController(collectionConfigService) {
-	        var _this = this;
-	        this.collectionConfigService = collectionConfigService;
-	        this.init = function () {
-	            var initialBalance = 0;
-	            var totalDebit = 0;
-	            var transactionConfig = _this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
-	            transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime");
-	            transactionConfig.addFilter('giftCard.giftCardID', _this.giftCard.giftCardID);
-	            transactionConfig.setAllRecords(true);
-	            transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime");
-	            var transactionPromise = transactionConfig.getEntity();
-	            var emailBounceConfig = _this.collectionConfigService.newCollectionConfig('EmailBounce');
-	            emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
-	            emailBounceConfig.addFilter('relatedObject', "giftCard");
-	            emailBounceConfig.addFilter('relatedObjectID', _this.giftCard.giftCardID);
-	            emailBounceConfig.setAllRecords(true);
-	            emailBounceConfig.setOrderBy("rejectedEmailSendTime");
-	            var emailBouncePromise = emailBounceConfig.getEntity();
-	            emailBouncePromise.then(function (response) {
-	                _this.bouncedEmails = response.records;
-	            });
-	            transactionPromise.then(function (response) {
-	                _this.transactions = response.records;
-	                var initialCreditIndex = _this.transactions.length - 1;
-	                var initialBalance = _this.transactions[initialCreditIndex].creditAmount;
-	                var currentBalance = initialBalance;
-	                angular.forEach(_this.transactions, function (transaction, index) {
-	                    if (typeof transaction.debitAmount !== "string") {
-	                        transaction.debit = true;
-	                        totalDebit += transaction.debitAmount;
-	                    }
-	                    else {
-	                        if (index != initialCreditIndex) {
-	                            currentBalance += transaction.creditAmount;
-	                        }
-	                        transaction.debit = false;
-	                    }
-	                    var tempCurrentBalance = currentBalance - totalDebit;
-	                    transaction.balance = tempCurrentBalance;
-	                    if (index == initialCreditIndex) {
-	                        var emailSent = {
-	                            emailSent: true,
-	                            debit: false,
-	                            sentAt: transaction.orderPayment_order_orderOpenDateTime,
-	                            balance: initialBalance
-	                        };
-	                        var activeCard = {
-	                            activated: true,
-	                            debit: false,
-	                            activeAt: transaction.orderPayment_order_orderOpenDateTime,
-	                            balance: initialBalance
-	                        };
-	                        _this.transactions.splice(index, 0, activeCard);
-	                        _this.transactions.splice(index, 0, emailSent);
-	                        if (angular.isDefined(_this.bouncedEmails)) {
-	                            angular.forEach(_this.bouncedEmails, function (email, bouncedEmailIndex) {
-	                                email.bouncedEmail = true;
-	                                email.balance = initialBalance;
-	                                _this.transactions.splice(index, 0, email);
-	                            });
-	                        }
-	                    }
-	                });
-	            });
-	            var orderConfig = _this.collectionConfigService.newCollectionConfig('Order');
-	            orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
-	            orderConfig.addFilter('orderID', _this.giftCard.originalOrderItem_order_orderID);
-	            orderConfig.setAllRecords(true);
-	            orderConfig.getEntity().then(function (response) {
-	                _this.order = response.records[0];
-	            });
-	        };
-	        this.init();
-	    }
-	    SWGiftCardHistoryController.$inject = ["collectionConfigService"];
-	    return SWGiftCardHistoryController;
-	})();
-	exports.SWGiftCardHistoryController = SWGiftCardHistoryController;
-	var SWGiftCardHistory = (function () {
-	    function SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	        this.collectionConfigService = collectionConfigService;
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.scope = {};
-	        this.bindToController = {
-	            giftCard: "=?",
-	            transactions: "=?",
-	            bouncedEmails: "=?",
-	            order: "=?"
-	        };
-	        this.controller = SWGiftCardHistoryController;
-	        this.controllerAs = "swGiftCardHistory";
-	        this.link = function (scope, element, attrs) {
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/history.html";
-	        this.restrict = "EA";
-	    }
-	    SWGiftCardHistory.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'collectionConfigService',
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWGiftCardHistory;
-	})();
-	exports.SWGiftCardHistory = SWGiftCardHistory;
-
-
-/***/ },
-/* 122 */
-/***/ function(module, exports) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var SWGiftCardOverviewController = (function () {
-	    function SWGiftCardOverviewController() {
-	    }
-	    return SWGiftCardOverviewController;
-	})();
-	exports.SWGiftCardOverviewController = SWGiftCardOverviewController;
-	var SWGiftCardOverview = (function () {
-	    function SWGiftCardOverview(giftCardPartialsPath, pathBuilderConfig) {
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.scope = {};
-	        this.bindToController = {
-	            giftCard: "=?"
-	        };
-	        this.controller = SWGiftCardOverviewController;
-	        this.controllerAs = "swGiftCardOverview";
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
-	        this.restrict = "EA";
-	    }
-	    SWGiftCardOverview.Factory = function () {
-	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardOverview(giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWGiftCardOverview;
-	})();
-	exports.SWGiftCardOverview = SWGiftCardOverview;
-
-
-/***/ },
-/* 123 */
-/***/ function(module, exports) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var SWGiftCardOrderInfoController = (function () {
-	    function SWGiftCardOrderInfoController(collectionConfigService) {
-	        var _this = this;
-	        this.collectionConfigService = collectionConfigService;
-	        this.init = function () {
-	            var orderConfig = _this.collectionConfigService.newCollectionConfig('Order');
-	            orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
-	            orderConfig.addFilter('orderID', _this.giftCard.originalOrderItem_order_orderID);
-	            orderConfig.setAllRecords(true);
-	            orderConfig.getEntity().then(function (response) {
-	                _this.order = response.records[0];
-	            });
-	        };
-	        this.init();
-	    }
-	    SWGiftCardOrderInfoController.$inject = ["collectionConfigService"];
-	    return SWGiftCardOrderInfoController;
-	})();
-	exports.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
-	var SWGiftCardOrderInfo = (function () {
-	    function SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	        this.collectionConfigService = collectionConfigService;
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.scope = {};
-	        this.bindToController = {
-	            giftCard: "=?",
-	            order: "=?"
-	        };
-	        this.controller = SWGiftCardOrderInfoController;
-	        this.controllerAs = "swGiftCardOrderInfo";
-	        this.link = function (scope, element, attrs) {
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/orderinfo.html";
-	        this.restrict = "EA";
-	    }
-	    SWGiftCardOrderInfo.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'collectionConfigService',
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    SWGiftCardOrderInfo.$inject = ["collectionConfigService", "partialsPath"];
-	    return SWGiftCardOrderInfo;
-	})();
-	exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
-
-
-/***/ },
-/* 124 */
-/***/ function(module, exports) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var SWGiftCardRecipientInfoController = (function () {
-	    function SWGiftCardRecipientInfoController() {
-	    }
-	    return SWGiftCardRecipientInfoController;
-	})();
-	exports.SWGiftCardRecipientInfoController = SWGiftCardRecipientInfoController;
-	var SWGiftCardRecipientInfo = (function () {
-	    function SWGiftCardRecipientInfo(giftCardPartialsPath, pathBuilderConfig) {
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.scope = {};
-	        this.bindToController = {
-	            giftCard: "=?"
-	        };
-	        this.controller = SWGiftCardRecipientInfoController;
-	        this.controllerAs = "swGiftCardRecipientInfo";
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
-	        this.restrict = "EA";
-	    }
-	    SWGiftCardRecipientInfo.Factory = function () {
-	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardRecipientInfo(giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWGiftCardRecipientInfo;
-	})();
-	exports.SWGiftCardRecipientInfo = SWGiftCardRecipientInfo;
-
-
-/***/ },
-/* 125 */
-/***/ function(module, exports) {
-
-	/// <reference path="../../../../../client/typings/tsd.d.ts" />
-	/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-	var SWOrderItemGiftRecipientRowController = (function () {
-	    function SWOrderItemGiftRecipientRowController() {
-	        var _this = this;
-	        this.edit = function (recipient) {
-	            angular.forEach(_this.recipients, function (recipient) {
-	                recipient.editing = false;
-	            });
-	            if (!recipient.editing) {
-	                recipient.editing = true;
-	            }
-	        };
-	        this.delete = function (recipient) {
-	            _this.recipients.splice(_this.recipients.indexOf(recipient), 1);
-	        };
-	        this.saveGiftRecipient = function (recipient) {
-	            recipient.editing = false;
-	        };
-	        this.getQuantity = function () {
-	            if (isNaN(_this.quantity)) {
-	                return 0;
-	            }
-	            else {
-	                return _this.quantity;
-	            }
-	        };
-	        this.getUnassignedCount = function () {
-	            var unassignedCount = _this.getQuantity();
-	            angular.forEach(_this.recipients, function (recipient) {
-	                unassignedCount -= recipient.quantity;
-	            });
-	            return unassignedCount;
-	        };
-	        this.getMessageCharactersLeft = function () {
-	            if (angular.isDefined(_this.recipient.giftMessage)) {
-	                return 250 - _this.recipient.giftMessage.length;
-	            }
-	            else {
-	                return 250;
-	            }
-	        };
-	        this.getUnassignedCountArray = function () {
-	            var unassignedCountArray = new Array();
-	            for (var i = 1; i <= _this.recipient.quantity + _this.getUnassignedCount(); i++) {
-	                unassignedCountArray.push(i);
-	            }
-	            return unassignedCountArray;
-	        };
-	    }
-	    return SWOrderItemGiftRecipientRowController;
-	})();
-	exports.SWOrderItemGiftRecipientRowController = SWOrderItemGiftRecipientRowController;
-	var SWOrderItemGiftRecipientRow = (function () {
-	    function SWOrderItemGiftRecipientRow(giftCardPartialsPath, pathBuilderConfig) {
-	        var _this = this;
-	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.restrict = 'AE';
-	        this.scope = {
-	            recipient: "=",
-	            recipients: "=",
-	            quantity: "=",
-	            index: "="
-	        };
-	        this.bindToController = {
-	            recipient: "=",
-	            recipients: "=",
-	            quantity: "="
-	        };
-	        this.controller = SWOrderItemGiftRecipientRowController;
-	        this.controllerAs = "giftRecipientRowControl";
-	        this.init = function () {
-	            _this.templateUrl = _this.pathBuilderConfig.buildPartialsPath(_this.giftCardPartialsPath) + "/orderitemgiftrecipientrow.html";
-	        };
-	        this.init();
-	    }
-	    SWOrderItemGiftRecipientRow.Factory = function () {
-	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItemGiftRecipientRow(giftCardPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWOrderItemGiftRecipientRow;
-	})();
-	exports.SWOrderItemGiftRecipientRow = SWOrderItemGiftRecipientRow;
-
-
-/***/ },
+/* 115 */,
+/* 116 */,
+/* 117 */,
+/* 118 */,
+/* 119 */,
+/* 120 */,
+/* 121 */,
+/* 122 */,
+/* 123 */,
+/* 124 */,
+/* 125 */,
 /* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -13906,11 +13197,11 @@
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
-	    .constant('productBundlePartialsPath', 'productbundle/components')
+	    .constant('productBundlePartialsPath', 'productbundle/components/')
 	    .service('productBundleService', productbundleservice_1.ProductBundleService)
 	    .controller('create-bundle-controller', create_bundle_controller_1.CreateBundleController)
 	    .directive('swProductBundleGroupType', swproductbundlegrouptype_1.SWProductBundleGroupType.Factory())
-	    .directive('swProductBundleGrups', swproductbundlegroups_1.SWProductBundleGroups.Factory())
+	    .directive('swProductBundleGroups', swproductbundlegroups_1.SWProductBundleGroups.Factory())
 	    .directive('swProductBundleGroup', swproductbundlegroup_1.SWProductBundleGroup.Factory());
 	exports.productbundlemodule = productbundlemodule;
 
@@ -14514,7 +13805,7 @@
 	                _this.value = value;
 	            }
 	        };
-	        this.filterTemplatePath = this.productBundlePartialsPath + "productBundle/productbundlefilter.html";
+	        this.filterTemplatePath = this.productBundlePartialsPath + "productbundlefilter.html";
 	        this.productBundleGroupFilters = {};
 	        this.productBundleGroupFilters.value = [];
 	        if (angular.isUndefined(this.productBundleGroup.productBundleGroupFilters)) {
@@ -14560,7 +13851,7 @@
 	        this.controllerAs = "swProductBundleGroup";
 	        this.link = function ($scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundle/productbundlegroup.html";
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	    }
 	    SWProductBundleGroup.Factory = function () {
 	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath, pathBuilderConfig) {
@@ -16427,7 +15718,7 @@
 	                defaultValues['Audit'] = {
 	                    auditID: '',
 	                    auditType: null,
-	                    auditDateTime: '1449169767836',
+	                    auditDateTime: '1449238454468',
 	                    auditArchiveStartDateTime: null,
 	                    auditArchiveEndDateTime: null,
 	                    auditArchiveCreatedDateTime: null,
@@ -16478,7 +15769,7 @@
 	                    accountEmailAddressID: '',
 	                    emailAddress: null,
 	                    verifiedFlag: 0,
-	                    verificationCode: 'c903137de1e10b168806e8a85b5e9d01',
+	                    verificationCode: 'd3bf9bfbc649f1eb5e31b92aae28417e',
 	                    remoteID: null,
 	                    createdDateTime: '',
 	                    createdByAccountID: null,
@@ -18069,7 +17360,7 @@
 	                    swprid: '',
 	                    password: '',
 	                    passwordConfirm: '',
-	                    accountPasswordResetID: "ae3ea302320d3a1f5a9d6085d351260e",
+	                    accountPasswordResetID: "a4f98cd7b408d3c6995b123a2001ea61",
 	                    preProcessDisplayedFlag: 0,
 	                    populatedFlag: 0,
 	                    z: ''

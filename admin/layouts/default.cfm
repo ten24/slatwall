@@ -367,7 +367,7 @@ Notes:
 				</span>
 			</span>
 		</span>
-		<p>Angular is working: {{1 + 1 === 2}} {{hibachiScope}}</p>
+		
 		<script type="text/javascript">
 			var slatwallAngular = {};
 			slatwallAngular.slatwallConfig = $.slatwall.getConfig();
@@ -382,8 +382,8 @@ Notes:
 		</script>
 
 
-		<script type="text/javascript" src="/org/Hibachi/client/src/bundle.js" charset="utf-8"></script>
-		
+		<script type="text/javascript" src="/org/Hibachi/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
+
 
 		<!---<script type="text/javascript">
 			//bootstrap logger
