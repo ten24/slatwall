@@ -6,7 +6,7 @@ module slatwalladmin {
     export class GiftRecipient {
         public firstName
         public lastName;
-        public email;
+        public emailAddress;
         public giftMessage; 
         public quantity; 
         public account; 
@@ -15,7 +15,7 @@ module slatwalladmin {
         constructor(
             firstName?: string,
             lastName?: string,
-            email?: string, 
+            emailAddress?: string, 
             giftMessage?: string,
             quantity?:number,
             account?:boolean, 
@@ -29,7 +29,7 @@ module slatwalladmin {
         public reset = () =>{
             this.firstName = null;
             this.lastName = null;
-            this.email = null; 
+            this.emailAddress = null; 
             this.account = null;
             this.editing = false; 
             this.quantity = 1; 
