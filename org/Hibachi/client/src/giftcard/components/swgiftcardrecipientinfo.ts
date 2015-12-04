@@ -1,27 +1,26 @@
-/// <reference path="../../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+class SWGiftCardRecipientInfoController {
 
-class SWGiftCardRecipientInfoController { 
-	
-	public giftCard; 
-	
-	constructor(){ 
-		
+	public giftCard;
+
+	constructor(){
+
 	}
-	
+
 }
 
-class SWGiftCardRecipientInfo implements ng.IDirective { 
-	
-	public restrict:string; 
+class SWGiftCardRecipientInfo implements ng.IDirective {
+
+	public restrict:string;
 	public templateUrl:string;
-	public scope = {}; 
+	public scope = {};
 	public bindToController = {
 		giftCard:"=?"
-	}; 
-	public controller = SWGiftCardRecipientInfoController; 
+	};
+	public controller = SWGiftCardRecipientInfoController;
 	public controllerAs = "swGiftCardRecipientInfo";
-	
+
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
 			giftCardPartialsPath,
@@ -34,18 +33,18 @@ class SWGiftCardRecipientInfo implements ng.IDirective {
 			'giftCardPartialsPath',
 			'pathBuilderConfig'
 		];
-		return directive;    
+		return directive;
 	}
-		
-	constructor(private giftCardPartialsPath, private pathBuilderConfig){ 
+
+	constructor(private giftCardPartialsPath, private pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
 		this.restrict = "EA";
 	}
-	
+
 }
 
 export{
 	SWGiftCardRecipientInfoController,
 	SWGiftCardRecipientInfo
 }
-	
+

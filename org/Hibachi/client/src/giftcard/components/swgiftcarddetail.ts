@@ -1,16 +1,15 @@
-/// <reference path="../../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWGiftCardDetailController{
-	public giftCardId; 
-	public giftCard; 
-	
+	public giftCardId;
+	public giftCard;
+
 	public static $inject = ["collectionConfigService"];
-	
+
 	constructor(private collectionConfigService){
 		this.init();
-	} 
-	
+	}
+
 	public init = ():void =>{
 		var giftCardConfig = this.collectionConfigService.newCollectionConfig('GiftCard');
 		giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
@@ -23,18 +22,18 @@ class SWGiftCardDetailController{
 	}
 }
 
-class SWGiftCardDetail implements ng.IDirective { 
-	
-	public restrict:string; 
+class SWGiftCardDetail implements ng.IDirective {
+
+	public restrict:string;
 	public templateUrl:string;
-	public scope = {}; 	
+	public scope = {};
 	public bindToController = {
 		giftCardId:"@",
 		giftCard:"=?"
 	};
 	public controller= SWGiftCardDetailController;
 	public controllerAs="swGiftCardDetail";
-	
+
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
 			collectionConfigService,
@@ -50,19 +49,19 @@ class SWGiftCardDetail implements ng.IDirective {
 			'giftCardPartialsPath',
 			'pathBuilderConfig'
 		];
-		return directive;    
+		return directive;
 	}
-	
-	constructor(private collectionConfigService, private giftCardPartialsPath, private pathBuilderConfig){ 
+
+	constructor(private collectionConfigService, private giftCardPartialsPath, private pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/basic.html";
-		this.restrict = "E"; 
+		this.restrict = "E";
 	}
-	
-	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{	
+
+	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 	}
-	
+
 }
-	
+
 export {
 	SWGiftCardDetailController,
 	SWGiftCardDetail

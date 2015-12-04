@@ -1,26 +1,25 @@
-/// <reference path="../../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-	
-class SWGiftCardOverviewController { 
-	
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+class SWGiftCardOverviewController {
+
 	public giftCard
-	
-	constructor(){ 
-		
-	}		
+
+	constructor(){
+
+	}
 }
 
-class SWGiftCardOverview implements ng.IDirective { 
-	
-	public restrict:string; 
+class SWGiftCardOverview implements ng.IDirective {
+
+	public restrict:string;
 	public templateUrl:string;
-	public scope = {}; 
+	public scope = {};
 	public bindToController = {
 		giftCard:"=?"
-	}; 
-	public controller = SWGiftCardOverviewController; 
+	};
+	public controller = SWGiftCardOverviewController;
 	public controllerAs = "swGiftCardOverview"
-	
+
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
 			giftCardPartialsPath,
@@ -33,14 +32,14 @@ class SWGiftCardOverview implements ng.IDirective {
 			'giftCardPartialsPath',
 			'pathBuilderConfig'
 		];
-		return directive;    
+		return directive;
 	}
-		
-	constructor(private giftCardPartialsPath, private pathBuilderConfig){ 
+
+	constructor(private giftCardPartialsPath, private pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
-		this.restrict = "EA";	
+		this.restrict = "EA";
 	}
-	
+
 }
 
 export {

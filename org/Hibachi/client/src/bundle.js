@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(161);
+	var logger_module_1 = __webpack_require__(150);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -653,12 +653,12 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(155);
-	var ngslatwall_module_1 = __webpack_require__(156);
-	var ngslatwallmodel_module_1 = __webpack_require__(158);
+	var slatwallinterceptor_1 = __webpack_require__(144);
+	var ngslatwall_module_1 = __webpack_require__(145);
+	var ngslatwallmodel_module_1 = __webpack_require__(147);
 	//filters
-	var entityrbkey_1 = __webpack_require__(159);
-	var swcurrency_1 = __webpack_require__(160);
+	var entityrbkey_1 = __webpack_require__(148);
+	var swcurrency_1 = __webpack_require__(149);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -891,11 +891,11 @@
 	var content_module_1 = __webpack_require__(107);
 	var core_module_1 = __webpack_require__(16);
 	var dialog_module_1 = __webpack_require__(112);
-	var orderitem_module_1 = __webpack_require__(126);
-	var pagination_module_1 = __webpack_require__(132);
-	var product_module_1 = __webpack_require__(135);
-	var productbundle_module_1 = __webpack_require__(137);
-	var workflow_module_1 = __webpack_require__(143);
+	var orderitem_module_1 = __webpack_require__(115);
+	var pagination_module_1 = __webpack_require__(121);
+	var product_module_1 = __webpack_require__(124);
+	var productbundle_module_1 = __webpack_require__(126);
+	var workflow_module_1 = __webpack_require__(132);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -11121,6 +11121,7 @@
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../../typings/tsd.d.ts' />
 	var SWContentListController = (function () {
+	    //@ngInject
 	    function SWContentListController($scope, $log, $timeout, $slatwall, paginationService, observerService, collectionConfigService) {
 	        var _this = this;
 	        this.$scope = $scope;
@@ -11310,15 +11311,6 @@
 	        };
 	        this.observerService.attach(optionsLoaded, 'optionsLoaded', 'siteOptionsLoaded');
 	    }
-	    SWContentListController.$inject = [
-	        '$scope',
-	        '$log',
-	        '$timeout',
-	        '$slatwall',
-	        'paginationService',
-	        'observerService',
-	        'collectionConfigService'
-	    ];
 	    return SWContentListController;
 	})();
 	var SWContentList = (function () {
@@ -11575,29 +11567,18 @@
 
 
 /***/ },
-/* 115 */,
-/* 116 */,
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	var core_module_1 = __webpack_require__(16);
 	//directives
-	var swchildorderitem_1 = __webpack_require__(127);
-	var sworderitem_1 = __webpack_require__(128);
-	var swoishippinglabelstamp_1 = __webpack_require__(129);
-	var sworderitemdetailstamp_1 = __webpack_require__(130);
-	var sworderitems_1 = __webpack_require__(131);
+	var swchildorderitem_1 = __webpack_require__(116);
+	var sworderitem_1 = __webpack_require__(117);
+	var swoishippinglabelstamp_1 = __webpack_require__(118);
+	var sworderitemdetailstamp_1 = __webpack_require__(119);
+	var sworderitems_1 = __webpack_require__(120);
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -11611,7 +11592,7 @@
 
 
 /***/ },
-/* 127 */
+/* 116 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -11901,7 +11882,7 @@
 
 
 /***/ },
-/* 128 */
+/* 117 */
 /***/ function(module, exports) {
 
 	var SWOrderItem = (function () {
@@ -12318,7 +12299,7 @@
 
 
 /***/ },
-/* 129 */
+/* 118 */
 /***/ function(module, exports) {
 
 	/**
@@ -12359,7 +12340,7 @@
 
 
 /***/ },
-/* 130 */
+/* 119 */
 /***/ function(module, exports) {
 
 	/**
@@ -12458,7 +12439,7 @@
 
 
 /***/ },
-/* 131 */
+/* 120 */
 /***/ function(module, exports) {
 
 	var SWOrderItems = (function () {
@@ -12849,14 +12830,14 @@
 
 
 /***/ },
-/* 132 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
 	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(133);
-	var swpaginationbar_1 = __webpack_require__(134);
+	var paginationservice_1 = __webpack_require__(122);
+	var swpaginationbar_1 = __webpack_require__(123);
 	var core_module_1 = __webpack_require__(16);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -12868,7 +12849,7 @@
 
 
 /***/ },
-/* 133 */
+/* 122 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../../typings/tsd.d.ts" />
@@ -13046,7 +13027,7 @@
 
 
 /***/ },
-/* 134 */
+/* 123 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -13105,7 +13086,7 @@
 
 
 /***/ },
-/* 135 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13114,7 +13095,7 @@
 	var core_module_1 = __webpack_require__(16);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(136);
+	var preprocessproduct_create_1 = __webpack_require__(125);
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -13125,7 +13106,7 @@
 
 
 /***/ },
-/* 136 */
+/* 125 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -13179,7 +13160,7 @@
 
 
 /***/ },
-/* 137 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13187,13 +13168,13 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var productbundleservice_1 = __webpack_require__(138);
+	var productbundleservice_1 = __webpack_require__(127);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(139);
+	var create_bundle_controller_1 = __webpack_require__(128);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(140);
-	var swproductbundlegroups_1 = __webpack_require__(141);
-	var swproductbundlegroup_1 = __webpack_require__(142);
+	var swproductbundlegrouptype_1 = __webpack_require__(129);
+	var swproductbundlegroups_1 = __webpack_require__(130);
+	var swproductbundlegroup_1 = __webpack_require__(131);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -13207,7 +13188,7 @@
 
 
 /***/ },
-/* 138 */
+/* 127 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -13292,7 +13273,7 @@
 
 
 /***/ },
-/* 139 */
+/* 128 */
 /***/ function(module, exports) {
 
 	var CreateBundleController = (function () {
@@ -13376,7 +13357,7 @@
 
 
 /***/ },
-/* 140 */
+/* 129 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -13541,7 +13522,7 @@
 
 
 /***/ },
-/* 141 */
+/* 130 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -13599,7 +13580,7 @@
 
 
 /***/ },
-/* 142 */
+/* 131 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -13870,24 +13851,24 @@
 
 
 /***/ },
-/* 143 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(144);
+	var workflowconditionservice_1 = __webpack_require__(133);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(145);
-	var swworkflowbasic_1 = __webpack_require__(146);
-	var swworkflowcondition_1 = __webpack_require__(147);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(148);
-	var swworkflowconditiongroups_1 = __webpack_require__(149);
-	var swworkflowtask_1 = __webpack_require__(150);
-	var swworkflowtaskactions_1 = __webpack_require__(151);
-	var swworkflowtasks_1 = __webpack_require__(152);
-	var swworkflowtrigger_1 = __webpack_require__(153);
-	var swworkflowtriggers_1 = __webpack_require__(154);
+	var swadmincreatesuperuser_1 = __webpack_require__(134);
+	var swworkflowbasic_1 = __webpack_require__(135);
+	var swworkflowcondition_1 = __webpack_require__(136);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(137);
+	var swworkflowconditiongroups_1 = __webpack_require__(138);
+	var swworkflowtask_1 = __webpack_require__(139);
+	var swworkflowtaskactions_1 = __webpack_require__(140);
+	var swworkflowtasks_1 = __webpack_require__(141);
+	var swworkflowtrigger_1 = __webpack_require__(142);
+	var swworkflowtriggers_1 = __webpack_require__(143);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
 	})
@@ -13907,7 +13888,7 @@
 
 
 /***/ },
-/* 144 */
+/* 133 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
@@ -13962,7 +13943,7 @@
 
 
 /***/ },
-/* 145 */
+/* 134 */
 /***/ function(module, exports) {
 
 	var SWAdminCreateSuperUser = (function () {
@@ -13994,7 +13975,7 @@
 
 
 /***/ },
-/* 146 */
+/* 135 */
 /***/ function(module, exports) {
 
 	var SWWorkflowBasic = (function () {
@@ -14032,7 +14013,7 @@
 
 
 /***/ },
-/* 147 */
+/* 136 */
 /***/ function(module, exports) {
 
 	var SWWorkflowCondition = (function () {
@@ -14152,7 +14133,7 @@
 
 
 /***/ },
-/* 148 */
+/* 137 */
 /***/ function(module, exports) {
 
 	var SWWorkflowConditionGroupItem = (function () {
@@ -14189,7 +14170,7 @@
 
 
 /***/ },
-/* 149 */
+/* 138 */
 /***/ function(module, exports) {
 
 	var SWWorkflowConditionGroups = (function () {
@@ -14236,7 +14217,7 @@
 
 
 /***/ },
-/* 150 */
+/* 139 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTask = (function () {
@@ -14286,7 +14267,7 @@
 
 
 /***/ },
-/* 151 */
+/* 140 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTaskActions = (function () {
@@ -14466,7 +14447,7 @@
 
 
 /***/ },
-/* 152 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/**
@@ -14656,7 +14637,7 @@
 
 
 /***/ },
-/* 153 */
+/* 142 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTrigger = (function () {
@@ -14744,7 +14725,7 @@
 
 
 /***/ },
-/* 154 */
+/* 143 */
 /***/ function(module, exports) {
 
 	var SWWorkflowTriggers = (function () {
@@ -14933,7 +14914,7 @@
 
 
 /***/ },
-/* 155 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15060,20 +15041,20 @@
 
 
 /***/ },
-/* 156 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(157);
+	var slatwallservice_1 = __webpack_require__(146);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 157 */
+/* 146 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15663,12 +15644,12 @@
 
 
 /***/ },
-/* 158 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var ngslatwall_module_1 = __webpack_require__(156);
+	var ngslatwall_module_1 = __webpack_require__(145);
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngslatwallmodelmodule = angular.module('ngSlatwallModel', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name]).config(['$provide', function ($provide) {
 	        $provide.decorator('$slatwall', [
@@ -16047,7 +16028,7 @@
 	                $delegate.setJsEntityInstances(_jsEntityInstances);
 	                var _init = function (entityInstance, data) {
 	                    for (var key in data) {
-	                        if (key.charAt(0) !== '$' && angular.isObject(form[key]) && angular.isDefined(entityInstance.metaData[key])) {
+	                        if (key.charAt(0) !== '$' && angular.isObject(data[key]) && angular.isDefined(entityInstance.metaData[key])) {
 	                            var propertyMetaData = entityInstance.metaData[key];
 	                            if (angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json') {
 	                                if (data[key].trim() !== '') {
@@ -16590,7 +16571,7 @@
 
 
 /***/ },
-/* 159 */
+/* 148 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16614,7 +16595,7 @@
 
 
 /***/ },
-/* 160 */
+/* 149 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16665,7 +16646,7 @@
 
 
 /***/ },
-/* 161 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />

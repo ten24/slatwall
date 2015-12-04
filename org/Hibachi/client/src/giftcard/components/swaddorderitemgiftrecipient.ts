@@ -1,61 +1,60 @@
-/// <reference path="../../../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../../../client/typings/slatwallTypeScript.d.ts" />
-
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 import {GiftRecipient} from "../models/giftrecipient";
 
 class SWAddOrderItemRecipientController {
 
-	public adding:boolean; 
-	public orderItemGiftRecipients:Array<GiftRecipient>; 
+	public adding:boolean;
+	public orderItemGiftRecipients:Array<GiftRecipient>;
 	public quantity:number;
-	public searchText:string; 
-	public collection;  
+	public searchText:string;
+	public collection;
 	public currentGiftRecipient:GiftRecipient;
-	
+
 	public static $inject=["$slatwall"];
-	
+
 	constructor(private $slatwall){
-		this.adding = false; 
-		this.searchText = ""; 
+		this.adding = false;
+		this.searchText = "";
 		var count = 1;
 		this.currentGiftRecipient = new GiftRecipient();
 		this.orderItemGiftRecipients = [];
 	}
-	
+
 	public addGiftRecipientFromAccountList = (account:any):void =>{
 		var giftRecipient = new GiftRecipient();
-		giftRecipient.firstName = account.firstName; 
-		giftRecipient.lastName = account.lastName; 
+		giftRecipient.firstName = account.firstName;
+		giftRecipient.lastName = account.lastName;
 		giftRecipient.email = account.primaryEmailAddress_emailAddress;
-		giftRecipient.account = true; 
-		this.orderItemGiftRecipients.push(giftRecipient); 
-		this.searchText = "";   
+		giftRecipient.account = true;
+		this.orderItemGiftRecipients.push(giftRecipient);
+		this.searchText = "";
 	}
-	
+
 	public getUnassignedCountArray = ():number[] =>{
 		var unassignedCountArray = new Array();
 
-		for(var i = 1; i <= this.getUnassignedCount(); i++ ){			
+		for(var i = 1; i <= this.getUnassignedCount(); i++ ){
 				unassignedCountArray.push(i);
-		}		
+		}
 
-		return unassignedCountArray; 
+		return unassignedCountArray;
 	}
-	
+
 	public getAssignedCount = ():number =>{
-	
-		var assignedCount = 0; 
-		
+
+		var assignedCount = 0;
+
 		angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
 				assignedCount += orderItemGiftRecipient.quantity;
 		});
-		
-		return assignedCount; 
+
+		return assignedCount;
 
 	}
 
 	public getUnassignedCount = ():number =>{
-		var unassignedCount = this.quantity; 
+		var unassignedCount = this.quantity;
 
 		angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
 				unassignedCount -= orderItemGiftRecipient.quantity;
@@ -65,22 +64,22 @@ class SWAddOrderItemRecipientController {
 	}
 
 	public addGiftRecipient = ():void =>{
-		this.adding = false; 
+		this.adding = false;
 		var giftRecipient = new GiftRecipient();
 		angular.extend(giftRecipient,this.currentGiftRecipient);
 		this.orderItemGiftRecipients.push(giftRecipient);
-		this.currentGiftRecipient = new GiftRecipient(); 
-		this.searchText = ""; 
+		this.currentGiftRecipient = new GiftRecipient();
+		this.searchText = "";
 	}
 
 	public startFormWithName = (searchString = this.searchText):void =>{
-		this.adding = true; 
-		
+		this.adding = true;
+
 		if(searchString == ""){
 			this.currentGiftRecipient.firstName = searchString;
-		} else { 
-			this.currentGiftRecipient.firstName = searchString; 
-			this.searchText = ""; 
+		} else {
+			this.currentGiftRecipient.firstName = searchString;
+			this.searchText = "";
 		}
 	}
 
@@ -92,34 +91,34 @@ class SWAddOrderItemRecipientController {
 		return totalQuantity;
 	}
 
-	public getMessageCharactersLeft = ():number =>{				
-		if(angular.isDefined(this.currentGiftRecipient.giftMessage)){ 
+	public getMessageCharactersLeft = ():number =>{
+		if(angular.isDefined(this.currentGiftRecipient.giftMessage)){
 			return 250 - this.currentGiftRecipient.giftMessage.length;
-		} else { 
-			return 250; 
+		} else {
+			return 250;
 		}
 	}
-	
+
 }
 
 class SWAddOrderItemGiftRecipient implements ng.IDirective{
-	
-	public templateUrl; 
-	public restrict = "EA"; 
-	public transclude = true; 
-	public scope = {}; 	
-	
+
+	public templateUrl;
+	public restrict = "EA";
+	public transclude = true;
+	public scope = {};
+
 	public bindToController = {
-		"quantity":"=", 
-		"orderItemGiftRecipients":"=", 
-		"adding":"=", 
-		"searchText":"=", 
+		"quantity":"=",
+		"orderItemGiftRecipients":"=",
+		"adding":"=",
+		"searchText":"=",
 		"currentgiftRecipient":"="
 	};
-	
+
 	public controller=SWAddOrderItemRecipientController;
 	public controllerAs="addGiftRecipientControl";
-	
+
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
             $slatwall,
@@ -135,9 +134,9 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
 			'giftCardPartialsPath',
 			'pathBuilderConfig'
         ];
-        return directive;    
+        return directive;
     }
-	
+
 	constructor(
 		private $slatwall,
 	    private giftCardPartialsPath,
@@ -154,4 +153,4 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
 export {
 	SWAddOrderItemRecipientController,
 	SWAddOrderItemGiftRecipient
-}; 
+};

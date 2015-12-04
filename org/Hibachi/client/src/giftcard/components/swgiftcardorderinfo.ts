@@ -1,43 +1,42 @@
-/// <reference path="../../../../client/typings/tsd.d.ts" />
-/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-	
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWGiftCardOrderInfoController{
-	public order; 
-	public giftCard;  
-	
+	public order;
+	public giftCard;
+
 	public static $inject = ["collectionConfigService"];
-	
+
 	constructor(private collectionConfigService){
-		this.init(); 	
-	} 
-	
+		this.init();
+	}
+
 	public init = ():void =>{
 
 		var orderConfig = this.collectionConfigService.newCollectionConfig('Order');
 		orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
 		orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 		orderConfig.setAllRecords(true);
-	
+
 		orderConfig.getEntity().then((response)=>{
 			this.order = response.records[0];
-		});	
+		});
 	}
 }
 
-class SWGiftCardOrderInfo implements ng.IDirective { 
-	
+class SWGiftCardOrderInfo implements ng.IDirective {
+
 	public static $inject = ["collectionConfigService", "partialsPath"];
-	
-	public restrict:string; 
+
+	public restrict:string;
 	public templateUrl:string;
-	public scope = {};  
-	public bindToController = { 
-		giftCard:"=?", 
+	public scope = {};
+	public bindToController = {
+		giftCard:"=?",
 		order:"=?"
-	}; 
-	public controller = SWGiftCardOrderInfoController; 
+	};
+	public controller = SWGiftCardOrderInfoController;
 	public controllerAs = "swGiftCardOrderInfo";
-	
+
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
 			collectionConfigService,
@@ -53,17 +52,17 @@ class SWGiftCardOrderInfo implements ng.IDirective {
 			'giftCardPartialsPath',
 			'pathBuilderConfig'
 		];
-		return directive;    
+		return directive;
 	}
-		
-	constructor(private collectionConfigService, private giftCardPartialsPath, private pathBuilderConfig){ 
+
+	constructor(private collectionConfigService, private giftCardPartialsPath, private pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/orderinfo.html";
 		this.restrict = "EA";
 	}
-	
+
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 	}
-	
+
 }
 
 export {

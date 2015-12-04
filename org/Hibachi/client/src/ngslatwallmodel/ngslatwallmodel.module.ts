@@ -52,7 +52,7 @@
                 var entities = slatwallAngular.modelConfig.entities,
                     validations = slatwallAngular.modelConfig.validations,
                     defaultValues = slatwallAngular.modelConfig.defaultValues;
-                   
+
                 angular.forEach(entities,function(entity){
 
                 	$delegate['get'+entity.className] = function(options){
@@ -468,7 +468,7 @@
 
 				var _init = function(entityInstance,data){
 	                for(var key in data) {
-	                    if(key.charAt(0) !== '$' && angular.isObject(form[key]) && angular.isDefined(entityInstance.metaData[key])){
+	                    if(key.charAt(0) !== '$' && angular.isObject(data[key]) && angular.isDefined(entityInstance.metaData[key])){
 	                        var propertyMetaData = entityInstance.metaData[key];
 
 	                        if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){

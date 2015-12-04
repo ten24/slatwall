@@ -16,15 +16,7 @@ class SWContentListController{
     public keywords:string;
     public searchCollection:any;
 
-    public static $inject = [
-        '$scope',
-        '$log',
-        '$timeout',
-        '$slatwall',
-        'paginationService',
-        'observerService',
-        'collectionConfigService'
-    ];
+    //@ngInject
     constructor(
         private $scope:ng.IScope,
         private $log:ng.ILogService,
