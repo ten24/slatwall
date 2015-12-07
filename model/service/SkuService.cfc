@@ -534,15 +534,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveSku(required any sku, required struct data={}){
-		if(structKeyExists(arguments.data,"renewalMethod")){
-			if(arguments.data.renewalMethod == "renewalsku"){
-				structDelete(arguments.data, "renewalSubscriptionBenefit");
-				structDelete(arguments.data, "renewalPrice");
-			}
-			if(arguments.data.renewalMethod == "custom"){
-				structDelete(arguments.data, "renewalSku");
-				if(sku.hasRenewalSku()){
-					sku.setRenewalSku(javaCast("null",""));
+		if(sku.getProduct().getBaseProductType() == "subscription"){
+			if(structKeyExists(arguments.data,"renewalMethod")){
+				if(arguments.data.renewalMethod == "renewalsku"){
+					structDelete(arguments.data, "renewalSubscriptionBenefit");
+					structDelete(arguments.data, "renewalPrice");
+				}
+				if(arguments.data.renewalMethod == "custom"){
+					structDelete(arguments.data, "renewalSku");
+					if(sku.hasRenewalSku()){
+						sku.setRenewalSku(javaCast("null",""));
+					}
 				}
 			}
 		}
