@@ -49,7 +49,7 @@ module slatwalladmin {
                                 this.$scope.preprocessproduct_createCtrl.renewalMethodOptions.push(optionToAdd); 
                         });
                         
-                        this.$scope.preprocessproduct_createCtrl.renewalSkuChoice =  this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[0];
+                        this.$scope.preprocessproduct_createCtrl.renewalSkuChoice =  this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[1];
                         
                         var jQueryOptionsRedemptionAmountType = $("select[name='redemptionAmountType'")[0];
                         

@@ -247,10 +247,12 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
 			</hb:HibachiPropertyList>
 
-			<hb:HibachiPropertyList divClass="col-md-6">
+			<hb:HibachiPropertyList divClass="col-md-12">
 
 				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'custom'">
-						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalPrice" fieldName="renewalPrice" edit="true" />
+						<hb:HibachiPropertyList divClass="col-md-6">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalPrice" fieldName="renewalPrice" edit="true" />
+						</hb:HibachiPropertyList>
 						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
 						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
