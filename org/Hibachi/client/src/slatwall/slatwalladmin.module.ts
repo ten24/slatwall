@@ -24,10 +24,10 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   hibachimodule.name,
   ngslatwallmodule.name,
   ngslatwallmodelmodule.name,
-  
+
   //3rdParty modules
   'ui.bootstrap'
-  
+
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
 .config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','pathBuilderConfig',
@@ -36,7 +36,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
       //configure partials path properties
      pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
      pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/hibachi/');
-     
+
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
      datepickerPopupConfig.toggleWeeksText = null;
@@ -45,30 +45,30 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      }
      //
      //$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
-     
-    
+
+
     //  var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
-    
+
     //   $provide.constant("partialsPath", _partialsPath);
     //  $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-    
+
 
     //  angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
     //      var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
     //      var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
     //      $provide.constant(constantKey, constantPartialsPath);
     //  });
-    
+
      $logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
      $filterProvider.register('likeFilter',function(){
          return function(text){
              if(angular.isDefined(text) && angular.isString(text)){
                  return text.replace(new RegExp('%', 'g'), '');
-                
+
              }
          };
      });
-    
+
      $filterProvider.register('truncate',function(){
          return function (input, chars, breakOnWord) {
              if (isNaN(chars)) return input;
@@ -91,8 +91,9 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
              return input;
          };
      });
-    
+
      $httpProvider.interceptors.push('slatwallInterceptor');
+     console.log($httpProvider.interceptors);
     console.log(hibachimodule);
      // route provider configuration
      $routeProvider.when('/entity/:entityName/', {
@@ -116,37 +117,37 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
          },
          controller: 'routerController',
      }).otherwise({
-         //controller:'otherwiseController'        
+         //controller:'otherwiseController'
          templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
-     });  
+     });
 
  }])
  .run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService','pathBuilderConfig', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService,pathBuilderConfig) => {
         $anchorScroll.yOffset = 100;
-    
+
         $rootScope.openPageDialog = function( partial ) {
             dialogService.addPageDialog( pathBuilderConfig.buildPartialsPath(partial) );
         };
-        
+
         $rootScope.closePageDialog = function( index ) {
             dialogService.removePageDialog( index );
         };
-        
+
         $rootScope.loadedResourceBundle = false;
         $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
         $rootScope.buildUrl = $slatwall.buildUrl;
         $rootScope.createID = utilityService.createID;
-        
+
         var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
             if(newValue !== oldValue){
                 $rootScope.$broadcast('hasResourceBundle');
                 rbListener();
             }
         });
-    
+
     }])
  //services
-.service('slatwallInterceptor', SlatwallInterceptor)
+.service('slatwallInterceptor', SlatwallInterceptor.Factory())
 //filters
 .filter('entityRBKey',['$slatwall',EntityRBKey.Factory])
 .filter('swcurrency',['$sce','$log','$slatwall',SWCurrency.Factory])
@@ -156,7 +157,7 @@ export{
     slatwallAngular
 };
 // ((): void => {
-    
+
 //     var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
 //     app.config(
 //         ["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
@@ -170,29 +171,29 @@ export{
 //         }
 //         //
 //         $provide.constant("baseURL", $.slatwall.getConfig().baseURL);
-        
+
 //         var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
-        
+
 //         $provide.constant("partialsPath", _partialsPath);
 //         $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-        
-    
+
+
 //         angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
 //             var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
 //             var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
 //             $provide.constant(constantKey, constantPartialsPath);
 //         });
-        
+
 //         $logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
 //         $filterProvider.register('likeFilter',function(){
 //             return function(text){
 //                 if(angular.isDefined(text) && angular.isString(text)){
 //                     return text.replace(new RegExp('%', 'g'), '');
-                    
+
 //                 }
 //             };
 //         });
-        
+
 //         $filterProvider.register('truncate',function(){
 //             return function (input, chars, breakOnWord) {
 //                 if (isNaN(chars)) return input;
@@ -215,9 +216,9 @@ export{
 //                 return input;
 //             };
 //         });
-        
+
 //         $httpProvider.interceptors.push('slatwallInterceptor');
-    
+
 //         // route provider configuration
 //         $routeProvider.when('/entity/:entityName/', {
 //             template: function(params){
@@ -240,32 +241,32 @@ export{
 //             },
 //             controller: 'routerController',
 //         }).otherwise({
-//             //controller:'otherwiseController'        
+//             //controller:'otherwiseController'
 //             templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
-//         });  
-    
+//         });
+
 //     }]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService) => {
 //         $anchorScroll.yOffset = 100;
-    
+
 //         $rootScope.openPageDialog = function( partial ) {
 //             dialogService.addPageDialog( partial );
 //         };
-        
+
 //         $rootScope.closePageDialog = function( index ) {
 //             dialogService.removePageDialog( index );
 //         };
-        
+
 //         $rootScope.loadedResourceBundle = false;
 //         $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
 //         $rootScope.buildUrl = $slatwall.buildUrl;
 //         $rootScope.createID = utilityService.createID;
-        
+
 //         var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
 //             if(newValue !== oldValue){
 //                 $rootScope.$broadcast('hasResourceBundle');
 //                 rbListener();
 //             }
 //         });
-    
+
 //     }])
 // })();

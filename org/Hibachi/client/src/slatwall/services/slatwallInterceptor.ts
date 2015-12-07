@@ -23,7 +23,7 @@ interface IInterceptor {
 interface IParams{
 	serializedJsonData?:any,
 	context?:string,
-	
+
 }
 
 interface ISlatwallInterceptorPromise<T> extends ng.IPromise<any>{
@@ -33,35 +33,56 @@ interface ISlatwallInterceptorPromise<T> extends ng.IPromise<any>{
 
 
 class SlatwallInterceptor implements IInterceptor{
-	public static $inject = ['$location','$window','$q','$log','$injector','alertService','baseURL','dialogService','utilityService'];
-	
-	public static Factory(
-        $location:ng.ILocationService,
-		$window:ng.IWindowService ,
-		$q:ng.IQService,
-		$log:ng.ILogService,
-		$injector:ng.auto.IInjectorService,
-		alertService,
-		baseURL:string,
-		dialogService,
-        utilityService
-	) {
-        return new SlatwallInterceptor($location, $window, $q, $log, $injector, alertService,baseURL,dialogService,utilityService);
-    }
-    
+
+	public static Factory() {
+        var eventHandler = (
+			$location:ng.ILocationService,
+			$window:ng.IWindowService ,
+			$q:ng.IQService,
+			$log:ng.ILogService,
+			$injector:ng.auto.IInjectorService,
+			alertService,
+			baseURL:string,
+			dialogService,
+			utilityService
+		)=> new SlatwallInterceptor(
+			$location,
+			$window,
+			$q,
+			$log,
+			$injector,
+			alertService,
+			baseURL,
+			dialogService,
+			utilityService
+		);
+		eventHandler.$inject = [
+			'$location',
+			'$window',
+			'$q',
+			'$log',
+			'$injector',
+			'alertService',
+			'baseURL',
+			'dialogService',
+			'utilityService'
+		];
+		return eventHandler;
+	}
+
     public urlParam = null;
     public authHeader = 'Authorization';
     public authPrefix = 'Bearer ';
-
+	//@ngInject
     constructor(
         public $location:ng.ILocationService,
-		public $window:ng.IWindowService, 
-		public $q:ng.IQService, 
+		public $window:ng.IWindowService,
+		public $q:ng.IQService,
 		public $log:ng.ILogService,
-		public $injector:ng.auto.IInjectorService, 
+		public $injector:ng.auto.IInjectorService,
 		public alertService,
 		public baseURL:string,
-		public dialogService, 
+		public dialogService,
         public utilityService
 	) {
         this.$location = $location;
@@ -74,12 +95,12 @@ class SlatwallInterceptor implements IInterceptor{
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
     }
-    
+
 	public request = (config): ng.IPromise<any> => {
         this.$log.debug('request');
         //bypass interceptor rules when checking template cache
         if(config.url.charAt(0) !== '/'){
-            return config;   
+            return config;
         }
         if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
             //all partials are bound to instantiation key
@@ -89,7 +110,7 @@ class SlatwallInterceptor implements IInterceptor{
         config.cache = true;
         config.headers = config.headers || {};
         if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
-            
+
             config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
         }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
@@ -108,7 +129,7 @@ class SlatwallInterceptor implements IInterceptor{
 			delete config.params;
 			config.headers['Content-Type']= 'application/x-www-form-urlencoded';
 		}
-		
+
 		return config;
     }
     public requestError = (rejection): ng.IPromise<any> => {
@@ -121,12 +142,12 @@ class SlatwallInterceptor implements IInterceptor{
 		if(response.data.messages){
             var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
             this.alertService.addAlerts(alerts);
-			
+
         }
 		return response;
     }
     public responseError = (rejection): ng.IPromise<any> => {
-       
+
 		this.$log.debug('responseReject');
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401){
 			if(rejection.data && rejection.data.messages){
@@ -143,7 +164,7 @@ class SlatwallInterceptor implements IInterceptor{
 		if (rejection.status === 401) {
 			// handle the case where the user is not authenticated
 			if(rejection.data && rejection.data.messages){
-				//var deferred = $q.defer(); 
+				//var deferred = $q.defer();
 				var $http = this.$injector.get<ng.IHttpService>('$http');
 				if(rejection.data.messages[0].message === 'timeout'){
 					//open dialog
@@ -164,7 +185,7 @@ class SlatwallInterceptor implements IInterceptor{
         }
 		return rejection;
     }
-	
+
 }
 export{
 	SlatwallInterceptor,
