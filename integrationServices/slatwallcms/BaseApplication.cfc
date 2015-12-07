@@ -166,7 +166,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
-			var contentTemplateFile = content.Setting('contentTemplateFile',[content]);
+			var contentTemplateFile = content.Setting('contentTemplateFile');
 			//templatePath relative to the slatwallCMS
 			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
