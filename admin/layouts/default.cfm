@@ -356,7 +356,7 @@ Notes:
 
 			<!---displays alerts to the user --->
 			<span ng-controller="alertController" >
-			test
+			
 				<span ng-repeat="alert in alerts">
 					<div style="z-index:11000" ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer fade in" role="alert" >
 						<!---only show a dismissable button if we are showing info or a warning --->
