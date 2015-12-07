@@ -53,8 +53,7 @@ class SWListingDisplayController{
 
 
     private _timeoutPromise;
-
-    public static $inject = ['$scope','$element','$transclude','$timeout','$q','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
+    //@ngInject
     constructor(
         public $scope,
         public $element,
@@ -643,7 +642,7 @@ class SWListingDisplay implements ng.IDirective{
         ];
         return directive;
     }
-
+    //@ngInject
     constructor(
         public corePartialsPath,
         public observerService,

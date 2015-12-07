@@ -18,13 +18,13 @@ class SWContentListController{
 
     //@ngInject
     constructor(
-        private $scope:ng.IScope,
-        private $log:ng.ILogService,
-        private $timeout:ng.ITimeoutService,
-        private $slatwall,
-        private paginationService,
-        private observerService,
-        private collectionConfigService
+        public $scope:ng.IScope,
+        public $log:ng.ILogService,
+        public $timeout:ng.ITimeoutService,
+        public $slatwall,
+        public paginationService,
+        public observerService,
+        public collectionConfigService
     ){
             this.openRoot = true;
             this.$log.debug('slatwallcontentList init');
@@ -271,7 +271,7 @@ class SWContentList implements ng.IDirective{
         ];
         return directive;
     }
-
+    //@ngInject
     constructor(
             contentPartialsPath,
             observerService,
