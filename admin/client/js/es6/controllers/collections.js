@@ -68,7 +68,6 @@ angular.module('slatwalladmin')
                 //Set current page here so that the pagination does not break when getting collection
                 $scope.paginator.setCurrentPage(1);
                 $scope.loadingCollection = true;
-                //$scope.getCollection();
             }, 500);
         };
         $scope.getCollection = function () {
@@ -167,7 +166,6 @@ angular.module('slatwalladmin')
                         $scope.errorMessage = {};
                         //Set current page here so that the pagination does not break when getting collection
                         $scope.paginator.setCurrentPage(1);
-                        //$scope.getCollection();
                         $scope.collectionDetails.isOpen = false;
                     }, function (reason) {
                         //revert to original
