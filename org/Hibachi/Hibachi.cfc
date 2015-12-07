@@ -235,7 +235,7 @@ component extends="FW1.framework" {
 			onEveryRequest();
 		}
 		if(structKeyExists(request,'context')){
-			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
+			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete");
 		}
 	}
 	
