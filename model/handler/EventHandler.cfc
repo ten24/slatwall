@@ -18,7 +18,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		if(structKeyExists(eventTriggerEvents, arguments.eventName)) {
 			
 			// Loop over each of the eventTriggers for this event
-			for(eventTriggerDetails in eventTriggerEvents[ arguments.eventName ]) {
+			for(var eventTriggerDetails in eventTriggerEvents[ arguments.eventName ]) {
 				
 				// Event Trigger - Email
 				if(eventTriggerDetails.eventTriggerType eq 'email' && structKeyExists(eventTriggerDetails,'emailTemplateID')) {
