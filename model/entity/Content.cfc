@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Content" entityname="SlatwallContent" table="SwContent" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentContent" hb_processContexts="createSku" {
+component displayname="Content" entityname="SlatwallContent" table="SwContent" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentContent" hb_childPropertyName="childContents" hb_processContexts="createSku" {
 	
 	// Persistent Properties
 	property name="contentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -58,7 +58,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
 	property name="urlTitlePath" ormtype="string" length="8000";
-	property name="contentBody" ormtype="string" length="4000" ;
+	property name="contentBody" ormtype="string" length="8000" ;
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
 	property name="sortOrder" ormtype="integer";

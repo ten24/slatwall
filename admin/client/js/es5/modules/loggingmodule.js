@@ -1,7 +1,8 @@
-"use strict";
-var logger;
-(function(logger) {
-  angular.module('logger', []).run([function() {}]);
-})(logger || (logger = {}));
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
+(function () {
+    angular.module('logger', []).run([function () {
+        }]);
+})();
 
 //# sourceMappingURL=loggingmodule.js.map

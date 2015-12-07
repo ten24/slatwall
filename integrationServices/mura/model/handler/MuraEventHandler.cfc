@@ -722,7 +722,7 @@
 				if(slatwallSiteWasNew) {
 					slatwallSite.setSiteName( cmsSiteName );
 					slatwallSite.setSiteCode( 
-						$.slatwall.getService('DataService').createUniqueColumn(titleString='mura-#cmsSiteID#', tableName="SwSite",columnName="siteCode")	 
+						$.slatwall.getService('hibachiUtilityService').createUniqueColumn(titleString='mura-#cmsSiteID#', tableName="SwSite",columnName="siteCode")	 
 					);
 					$.slatwall.getService("siteService").saveSite( slatwallSite );
 					slatwallSite.setCMSSiteID( cmsSiteID );

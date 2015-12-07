@@ -526,7 +526,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			if(getSelectDistinctFlag()) {
 					hqlSelect &= "distinct ";
 			}
-			hqlSelect &= "#variables.entities[getBaseEntityName()].entityAlias#.#getService('hibachiService').getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#)";
+			hqlSelect &= "#getBaseEntityPrimaryAliase()#)";
 		} else {
 			if(structCount(variables.selects)) {
 				hqlSelect = "SELECT";
@@ -744,7 +744,11 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public string function getBaseEntityPrimaryAliase() {
-		return "#variables.entities[ getBaseEntityName() ].entityAlias#.#getService("hibachiService").getPrimaryIDPropertyNameByEntityName(getBaseEntityName())#";
+		var idColumnNames = getService("hibachiService").getEntityORMMetaDataObject( getBaseEntityName() ).getIdentifierColumnNames();
+		if( arrayLen(idColumnNames) > 1) {
+			return getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
+		}
+		return "#variables.entities[ getBaseEntityName() ].entityAlias#.id";
 	}
 	
 	public string function getHQLOrder(boolean supressOrderBy=false) {

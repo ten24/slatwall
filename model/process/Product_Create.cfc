@@ -59,13 +59,65 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="price";
 	property name="renewalSubscriptionBenefits";
 	property name="renewalSku";
+	property name="renewalPrice";
 	property name="subscriptionBenefits";
 	property name="subscriptionTerms";
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
-
+	property name="redemptionAmountType" hb_formFieldType="select";
+	property name="redemptionAmount";
+	property name="redemptionAmountTypeOptions";
+	property name="renewalMethod" hb_formFieldType="select";
+	property name="renewalMethodOptions";
+	property name="giftCardExpirationTermID" hb_rbkey="entity.sku.giftCardExpirationTerm" hb_formFieldType="select";
+	property name="giftCardExpirationTermIDOptions";
 
 	public any function setupDefaults() {
 		variables.generateSkusFlag = true;
+	}
+
+	public array function getRenewalMethodOptions(){
+		return this.getProduct().getRenewalMethodOptions();
+	}
+
+	public array function getGiftCardExpirationTermIDOptions(){
+		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
+			variables.giftCardExpirationTermIDOptions = [];
+			var termSmartList = getService('hibachiService').getTermSmartList();
+			termSmartList.addSelect('termID','value');
+			termSmartList.addSelect('termName','name');
+			variables.giftCardExpirationTermIDOptions = termSmartList.getRecords();
+			var option = {};
+			option['name'] = 'None';
+			option['value'] = '';
+			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
+		}
+		return variables.giftCardExpirationTermIDOptions;
+	}
+
+	public array function getRedemptionAmountTypeOptions(){
+		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){
+			variables.redemptionAmountTypeOptions = [];
+			var optionValues = 'sameAsPrice,fixedAmount,percentage';
+			var optionValuesArray = listToArray(optionValues);
+			for(var optionValue in optionValuesArray){
+				var option = {};
+				option['name'] = rbKey('define.#optionValue#');
+				option['value'] = optionValue;
+				arrayAppend(variables.redemptionAmountTypeOptions,option);
+			}
+		}
+
+		return variables.redemptionAmountTypeOptions;
+	}
+
+	public any function getRenewalPrice(){
+		if(!isNull(getRenewalSku())){
+			return this.getRenewalSku().getRenewalPrice();
+		} else if(!isNull(variables.renewalPrice)) {
+			return variables.renewalPrice;
+		} else {
+			return;
+		}
 	}
 
 	public any function getRenewalSku(){
@@ -74,7 +126,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return;
 	}
-
 
 
 }

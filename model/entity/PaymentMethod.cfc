@@ -61,7 +61,7 @@ Notes:
 		chargePreAuthorization	
 		generateToken
 */
-component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" hb_processContexts="processPayment,processCashPayment,processCheckPayment,processCreditCardPayment,processExternalPayment,processGiftCardPayment,processTermAccountPayment" {
+component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="paymentService" hb_permission="this" hb_processContexts="processPayment,processCashPayment,processCheckPayment,processCreditCardPayment,processExternalPayment,processGiftCardPayment,processTermAccountPayment" {
 	
 	// Persistent Properties
 	property name="paymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -213,7 +213,8 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 
 		return variables.paymentIntegrationOptions;
 	} 
-
+	
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

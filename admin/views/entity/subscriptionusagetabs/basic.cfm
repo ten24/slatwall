@@ -13,11 +13,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="autoPayFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="initialTerm" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getInitialSku()#" property="skuCode" edit="false" title="#$.slatwall.getRBKey('define.initialSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getInitialSku().getSkuID()#')#">
-			<cfif isNull(rc.subscriptionUsage.getRenewalSku())>
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="#rc.edit#">
-			<cfelse>
-				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="false">
-			</cfif>
+			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="accountPaymentMethod" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">
@@ -25,19 +21,28 @@
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="gracePeriodTerm" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextBillDate" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="nextReminderEmailDate" edit="#rc.edit#">
-			<cfif !isNull(rc.subscriptionUsage.getRenewalSku()) && !rc.edit>
+			<cfif rc.edit>
+				<cfif !isNull(rc.subscriptionUsage.getRenewalSku())>
+					<cfset renewalSkuID = rc.subscriptionUsage.getRenewalSku().getSkuID() />
+				<cfelse>
+					<cfset renewalSkuID = "" />
+				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="useRenewalSku" edit=true>
+				<hb:hibachidisplaytoggle selector="input[name='useRenewalSku']" showvalues="1" loadVisable="#!isNull(rc.subscriptionUsage.getRenewalSku())#">
+					<swa:SlatwallErrorDisplay object="#rc.subscriptionUsage#" errorName="renewalSku" />
+					<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionSkuSmartList()#"
+											  selectValue="#renewalSkuID#"
+											  selectFieldName="renewalSku.skuID"
+											  title="#$.slatwall.rbKey('define.renewalSku')#"
+											  edit="#rc.edit#">
+						<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+						<hb:HibachiListingColumn propertyIdentifier="skuName" />
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" title="#$.slatwall.getRBKey('define.renewalTerm')#"/>
+						<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+					</hb:HibachiListingDisplay>
+				</hb:HibachiDisplayToggle>
+			<cfelseif !isNull(rc.subscriptionUsage.getRenewalSku())>
 				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.subscriptionUsage.getRenewalSku().getSkuID()#')#"/>
-			<cfelseif !isNull(rc.subscriptionUsage.getRenewalSku()) && rc.edit>
-				<swa:SlatwallErrorDisplay object="#rc.subscriptionUsage#" errorName="renewalSku" />
-				<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionSkuSmartList()#"
-										  selectValue="#rc.subscriptionUsage.getRenewalSku().getSkuID()#"
-										  selectFieldName="renewalSku.skuID"
-										  title="#$.slatwall.rbKey('define.renewalSku')#"
-										  edit="#rc.edit#">
-					<hb:HibachiListingColumn propertyIdentifier="skuCode" />
-					<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" title="#$.slatwall.getRBKey('define.renewalTerm')#"/>
-					<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
-				</hb:HibachiListingDisplay>
 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

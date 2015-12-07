@@ -1,0 +1,8 @@
+{
+	"properties":{
+		"giftCards":					[{"contexts":"edit,delete", "method":"canEditOrDelete"}], 
+        "emailAddress":             [{"contexts":"save","required":true}],
+        "giftMessage":              [{"contexts":"save", "method":"hasCorrectGiftMessageLength"}],
+        "quantity":                 [{"contexts":"save","required":true, "minValue":1}]
+	}
+}

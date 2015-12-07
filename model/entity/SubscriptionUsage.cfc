@@ -58,6 +58,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="nextBillDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="nextReminderEmailDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="expirationDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
+	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -67,6 +68,10 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID";
 	property name="renewalTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="renewalTermID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
+
+	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
+	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
+	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 
 	// Related Object Properties (one-to-many)
 	property name="subscriptionUsageBenefits" singularname="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" type="array" fieldtype="one-to-many" fkcolumn="subscriptionUsageID" cascade="all-delete-orphan";
@@ -87,12 +92,21 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 
 	// Non-Persistent Properties
 	property name="order" persistent="false";
-	property name="initialSku" persistent="false";
 	property name="currentStatus" persistent="false";
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
+	property name="initialSubscriptionOrderItem" persistant="false";
+	property name="initialOrderItem" persistant="false";
+	property name="initialOrder" persistant="false";
+	property name="initialSku" persistant="false";
+	property name="initialProduct" persistant="false";
+	property name="mostRecentSubscriptionOrderItem" persistant="false";
+	property name="mostRecentOrderItem" persistant="false";
+	property name="mostRecentOrder" persistant="false";
+	property name="totalNumberOfSubscriptionOrderItems" persistant="false";
 	property name="subscriptionOrderItemType" persistent="false";
+	property name="useRenewalSku" persistent="false" hb_formFieldType="yesno";
 
 	public boolean function isActive() {
 		if(!isNull(getCurrentStatus())) {
@@ -137,9 +151,17 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		setAutoRenewFlag( subscriptionTerm.getAutoRenewFlag() );
 		setAutoPayFlag( subscriptionTerm.getAutoPayFlag() );
 
+		//Copy the shipping information from order fulfillment.
+		var orderFulfillment = orderItem.getOrderFulfillment();
+		if (!isNull(orderFulfillment)){
+			setEmailAddress( orderFulfillment.getEmailAddress() );
+			setShippingAddress( orderFulfillment.getShippingAddress() );
+			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
+			setShippingMethod( orderFulfillment.getShippingMethod() );
+		}
 	}
 
-	// ============ START: Non-Persistent Property Methods =================
+	// ============ START: Non-Persistent Property Helper Methods =================
 
 	public any function getCurrentStatus() {
 		return getService("subscriptionService").getSubscriptionCurrentStatus( variables.subscriptionUsageID );
@@ -153,14 +175,18 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public numeric function getRenewalPrice(){
-		if(!isNull(this.getRenewalSku())){
-			return this.getRenewalSku().getRenewalPrice();
+		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
+			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
 		}
 		return variables.renewalPrice;
 	}
 
+	public boolean function getUseRenewalSku(){
+		return !isNull(this.getRenewalSku());
+	}
+
 	public string function getCurrentStatusType() {
-		if(!isNull(getCurrentStatus())) {
+		if(!isNull( getCurrentStatus() )) {
 			return getCurrentStatus().getSubscriptionStatusType().getTypeName();
 		}
 		return "";
@@ -174,16 +200,96 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public any function getSubscriptionOrderItemName() {
-		if(arrayLen(getSubscriptionOrderItems())) {
-			var subscriptionOrderItem = getSubscriptionOrderItems()[1];
-			if(	!isnull(subscriptionOrderItem.getOrderItem())
-				&& !isnull(subscriptionOrderItem.getOrderItem().getSku())
-				&& !isnull(subscriptionOrderItem.getOrderItem().getSku().getProduct())
-			){
-				return subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductName();
+		if( hasSubscriptionOrderItems() ) {
+			if( !isnull( getInitialProduct() ) ){
+				return getInitialProduct().getProductName();
 			}
 		}
 		return "";
+	}
+
+	public any function hasSubscriptionOrderItems(){
+		if ( arrayLen( getSubscriptionOrderItems() ) ) {
+			return true;
+		}
+		return false;
+	}
+
+	public any function getInitialSubscriptionOrderItem(){
+		if( hasSubscriptionOrderItems() ){
+			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
+			subscriptionSmartList.addFilter("subscriptionOrderItemType.systemCode", "soitInitial");
+			return subscriptionSmartList.getRecords();
+		}
+	}
+
+	public any function getInitialOrderItem(){
+
+		if( hasSubscriptionOrderItems() ){
+			var initialSubscriptionOrderItem = getInitialSubscriptionOrderItem();
+
+			if(!isNull(initialSubscriptionOrderItem)){
+				var orderitem = initialSubscriptionOrderItem[1].getOrderItem();
+				return orderitem;
+			}
+		}
+	}
+
+	public any function getInitialSku(){
+		var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
+		subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
+		subscriptionOrderItemSmartList.setPageRecordsShow(1);
+		subscriptionOrderItemSmartList.addOrder("createdDateTime | ASC");
+        var records = subscriptionOrderItemSmartList.getPageRecords();
+        if(arrayLen(records)){
+        	return records[1].getOrderItem().getSku();
+        }
+        return;
+	}
+
+	public any function getInitialProduct(){
+		if( hasSubscriptionOrderItems() ){
+			var initialSku = getInitialSku();
+
+			if(!isNull(initialSku)){
+				return initialSku.getProduct();
+			}
+		}
+	}
+
+	public any function getInitialOrder(){
+		if( hasSubscriptionOrderItems() ){
+			return getInitialOrderItem().getOrder();
+		}
+
+	}
+
+	public any function getMostRecentSubscriptionOrderItem(){
+		if( hasSubscriptionOrderItems() ){
+			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
+			subscriptionSmartList.addOrder("createdDateTime|DESC");
+			return subscriptionSmartList.getRecords()[1];
+		}
+	}
+
+	public any function getMostRecentOrderItem(){
+		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+			return getMostRecentSubscriptionOrderItem().getOrderItem();
+		}
+	}
+
+	public any function getMostRecentOrder(){
+		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+			return getMostRecentOrderItem().getOrder();
+		}
+	}
+
+	public any function getTotalNumberOfSubscriptionOrderItems(){
+		if( hasSubscriptionOrderItems() ){
+			return arrayLen( getSubscriptionOrderItems() );
+		}else{
+			return 0;
+		}
 	}
 
 	public string function getSubscriptionOrderItemType() {
@@ -209,22 +315,11 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
            	return "";
 	}
 
-	public any function getInitialSku(){
-		var subscriptionOrderItemSmartList = getService("subscriptionService").getSubscriptionOrderItemSmartList();
-		subscriptionOrderItemSmartList.addFilter('subscriptionUsage.subscriptionUsageID', this.getSubscriptionUsageID());
-		subscriptionOrderItemSmartList.setPageRecordsShow(1);
-		subscriptionOrderItemSmartList.addOrder("createdDateTime | ASC");
-        var records = subscriptionOrderItemSmartList.getPageRecords();
-        if(arrayLen(records)){
-        	return records[1].getOrderItem().getSku();
-        }
-        return;
-	}
-
 	public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
     		var smartList = getService("ProductService").getSkuSmartList();
     		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is null");
     		variables.subscriptionSkuSmartList = smartList;
     	}
     	return variables.subscriptionSkuSmartList;
@@ -304,6 +399,15 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return getSubscriptionOrderItemName();
 	}
 
+	public any function getShippingAddress() {
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
+		} else if (!isNull(getShippingAccountAddress())) {
+			setShippingAddress( getShippingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+		}
+		return getService("addressService").newAddress();
+	}
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================

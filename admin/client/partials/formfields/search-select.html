@@ -5,7 +5,7 @@
 				ng-model="propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']"
 				placeholder="Search"
 				class="form-control input-sm"
-				typeahead="object[cfcProperCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
+				typeahead="object[cfcProperCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue)"
 				typeahead-on-select="selectItem($item, $model, $label)">
 		
 		<input 	type="text"  

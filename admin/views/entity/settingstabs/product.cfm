@@ -54,14 +54,13 @@ Notes:
 <cfoutput>
 	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
 		<swa:SlatwallSetting settingName="productShowDetailWhenNotPublishedFlag" />
-		<swa:SlatwallSetting settingName="productImageDefaultExtension" />
+		<swa:SlatwallSetting settingName="productImageDefaultExtension" /> 
 		<swa:SlatwallSetting settingName="productImageOptionCodeDelimiter" />
 		<swa:SlatwallSetting settingName="productTitleString" />
 		<swa:SlatwallSetting settingName="productHTMLTitleString" />
 		<swa:SlatwallSetting settingName="productMetaDescriptionString" />
 		<swa:SlatwallSetting settingName="productMetaKeywordsString" />
-		<swa:SlatwallSetting settingName="productAutoApproveReviewsFlag" />
-		
+		<swa:SlatwallSetting settingName="productAutoApproveReviewsFlag" />	
 		<swa:SlatwallSetting settingName="productImageSmallWidth"  />
 		<swa:SlatwallSetting settingName="productImageSmallHeight"/>
 		<swa:SlatwallSetting settingName="productImageMediumWidth"/>
