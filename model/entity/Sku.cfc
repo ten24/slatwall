@@ -153,6 +153,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="registeredUserCount" type="integer" persistent="false";
 	property name="registrantCount" type="integer" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
+	property name="renewalMethod" persistent="false" hb_formFieldType="select";
 	property name="salePriceDetails" type="struct" persistent="false";
 	property name="salePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="salePriceDiscountType" type="string" persistent="false";

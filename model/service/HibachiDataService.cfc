@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,61 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiDataService" {
 
-<cfparam name="rc.subscriptionUsage" type="any" />
+	property name="dataDAO" type="any";
 
-<cfoutput>
-	<div class="col-md-6">
-		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
-		<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
-								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</hb:HibachiListingDisplay>
-	</div>
-	<hb:hibachidisplaytoggle selector="input[name='useRenewalSku']" showvalues="0" loadVisable="#isNull(rc.subscriptionUsage.getRenewalSku())#">
-		<div class="col-md-6">
-			<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
-			<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
-									  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
-									  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
-									  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-				<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-			</hb:HibachiListingDisplay>
-		</div>
-	</hb:HibachiDisplayToggle>
-</cfoutput>
+	public any function toBundle(required any bundle, required string tableList) {
+		getDataDAO().toBundle(argumentcollection=arguments);
+	}
+
+	public any function fromBundle(required any bundle, required string tableList) {
+		getDataDAO().toBundle(argumentcollection=arguments);
+	}
+	
+	public any function getAllAttributeStruct() {
+		var attributeStruct = { attributeCode = {attributeID = "", attributeValueType = ""}};
+		
+		var qry = new Query( sql="SELECT attributeID,attributeCode FROM SwAttribute" );
+		var attributes = qry.execute().getResult();
+		for(var i = 1; i <= attributes.recordCount; i++) {
+			attributeStruct[ attributes.attributeCode[i] ]["attributeID"] = attributes.attributeID[i];
+		}
+
+		return attributeStruct;
+	}
+	
+	public string function getAttributeValueTableName(){
+		return "SwAttributeValue";
+	}
+	
+	// ===================== START: Logical Methods ===========================
+
+	// =====================  END: Logical Methods ============================
+
+	// ===================== START: DAO Passthrough ===========================
+
+	public string function getShortReferenceID() {
+		return getDataDAO().getShortReferenceID(argumentcollection=arguments);
+	}
+
+	// ===================== START: DAO Passthrough ===========================
+
+	// ===================== START: Process Methods ===========================
+
+	// =====================  END: Process Methods ============================
+
+	// ====================== START: Save Overrides ===========================
+
+	// ======================  END: Save Overrides ============================
+
+	// ==================== START: Smart List Overrides =======================
+
+	// ====================  END: Smart List Overrides ========================
+
+	// ====================== START: Get Overrides ============================
+
+	// ======================  END: Get Overrides =============================
+
+}

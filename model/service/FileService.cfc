@@ -115,15 +115,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			   
 			// Look for URL Title in the data
 			if (structKeyExists(arguments, "data") && structKeyExists(arguments.data, "urlTitle") && isSimpleValue(arguments.data.urlTitle) && len(arguments.data.urlTitle)) {
-				arguments.file.setURLTitle(getService("dataService").createUniqueURLTitle(titleString=arguments.data.urlTitle, tableName=getMetaData(arguments.file).table));
+				arguments.file.setURLTitle(getService("hibachiUtilityService").createUniqueURLTitle(titleString=arguments.data.urlTitle, tableName=getMetaData(arguments.file).table));
 				
 			// Look for fileName in the data to set a urlTitle
 			} else if (structKeyExists(arguments, "data") && structKeyExists(arguments.data, "filename") && isSimpleValue(arguments.data.filename) && len(arguments.data.filename)) {
-				arguments.file.setURLTitle(getService("dataService").createUniqueURLTitle(titleString=arguments.data.filename, tableName=getMetaData(arguments.file).table));
+				arguments.file.setURLTitle(getService("hibachiUtilityService").createUniqueURLTitle(titleString=arguments.data.filename, tableName=getMetaData(arguments.file).table));
 				
 			// Look for an non null filename to set the urlTitle
 			} else if (!isNull(arguments.file.getFileName())) {
-				arguments.file.setURLTitle(getService("dataService").createUniqueURLTitle(titleString=arguments.file.getFileName(), tableName=getMetaData(arguments.file).table));
+				arguments.file.setURLTitle(getService("hibachiUtilityService").createUniqueURLTitle(titleString=arguments.file.getFileName(), tableName=getMetaData(arguments.file).table));
 				
 			}
 		}

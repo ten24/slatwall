@@ -50,7 +50,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 
 	property name="accountService" type="any";
 	property name="brandService" type="any";
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="locationService" type="any";
 	property name="orderService" type="any";
 	property name="productService" type="any";
