@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation" {
+component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation" {
 
 	// Persistent Properties
 	property name="skuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -153,6 +153,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="registeredUserCount" type="integer" persistent="false";
 	property name="registrantCount" type="integer" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
+	property name="renewalMethod" persistent="false" hb_formFieldType="select";
 	property name="salePriceDetails" type="struct" persistent="false";
 	property name="salePrice" type="numeric" hb_formatType="currency" persistent="false";
 	property name="salePriceDiscountType" type="string" persistent="false";
