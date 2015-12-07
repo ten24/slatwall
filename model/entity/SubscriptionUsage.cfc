@@ -106,6 +106,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="mostRecentOrder" persistant="false";
 	property name="totalNumberOfSubscriptionOrderItems" persistant="false";
 	property name="subscriptionOrderItemType" persistent="false";
+	property name="useRenewalSku" persistent="false" hb_formFieldType="yesno";
 
 	public boolean function isActive() {
 		if(!isNull(getCurrentStatus())) {
@@ -178,6 +179,10 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
 		}
 		return variables.renewalPrice;
+	}
+
+	public boolean function getUseRenewalSku(){
+		return !isNull(this.getRenewalSku());
 	}
 
 	public string function getCurrentStatusType() {
@@ -314,7 +319,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
     		var smartList = getService("ProductService").getSkuSmartList();
     		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
-    		smartList.addWhereCondition("aslatwallsku.renewalPrice is not null");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is null");
     		variables.subscriptionSkuSmartList = smartList;
     	}
     	return variables.subscriptionSkuSmartList;

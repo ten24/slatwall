@@ -195,7 +195,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
     		var smartList = getService("ProductService").getSkuSmartList();
     		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
-    		smartList.addWhereCondition("aslatwallsku.renewalSku is not null");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is null");
     		variables.subscriptionSkuSmartList = smartList;
     	}
     	return variables.subscriptionSkuSmartList;
