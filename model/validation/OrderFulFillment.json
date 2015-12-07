@@ -20,7 +20,7 @@
 	    }
 	},
 	"properties":{
-		"orderFulfillmentID":				[{"contexts":"delete","maxValue":0}],
+		"orderFulfillmentID":				[{"contexts":"delete","maxValue":0},{"contexts":"save","method":"hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity"}],
 		"order":							[{"contexts":"save","required":true}],
 		"fulfillmentCharge":				[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"fulfillmentMethod":				[{"contexts":"save","required":true,"method":"allOrderFulfillmentItemsAreEligibleForFulfillmentMethod"}],
