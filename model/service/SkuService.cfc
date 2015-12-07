@@ -542,8 +542,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				if(arguments.data.renewalMethod == "custom"){
 					structDelete(arguments.data, "renewalSku");
-					if(sku.hasRenewalSku()){
-						sku.setRenewalSku(javaCast("null",""));
+					if(arguments.sku.hasRenewalSku()){
+						arguments.sku.setRenewalSku(javaCast("null",""));
 					}
 				}
 			}
