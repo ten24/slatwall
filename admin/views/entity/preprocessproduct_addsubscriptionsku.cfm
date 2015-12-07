@@ -90,7 +90,7 @@ Notes:
 						</hb:HibachiListingDisplay>
 				</hb:hibachiDisplayToggle>
 
-				<hb:hibachidisplaytoggle selector="select[name='renewalMethod']" showvalues="rsku" loadVisable="true">
+				<hb:hibachidisplaytoggle selector="select[name='renewalMethod']" showvalues="renewalsku" loadVisable="true">
 						<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalSku" />
 						<hb:HibachiListingDisplay object="#rc.processObject#" smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="skuCode" />
