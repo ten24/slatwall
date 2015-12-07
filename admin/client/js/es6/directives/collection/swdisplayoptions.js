@@ -71,15 +71,21 @@ angular.module('slatwalladmin')
                         if (selectedProperty.$$group === 'simple' || 'attribute') {
                             $log.debug($scope.columns);
                             if (angular.isDefined(selectedProperty)) {
-                                var column = {};
-                                column.title = getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier);
-                                column.propertyIdentifier = selectedProperty.propertyIdentifier;
-                                column.isVisible = true;
-                                column.isDeletable = true;
+                                var column = {
+                                    title: getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier),
+                                    propertyIdentifier: selectedProperty.propertyIdentifier,
+                                    isVisible: true,
+                                    isDeletable: true,
+                                    isSearchable: true,
+                                    isExportable: true
+                                };
                                 //only add attributeid if the selectedProperty is attributeid
                                 if (angular.isDefined(selectedProperty.attributeID)) {
-                                    column.attributeID = selectedProperty.attributeID;
-                                    column.attributeSetObject = selectedProperty.attributeSetObject;
+                                    column['attributeID'] = selectedProperty.attributeID;
+                                    column['attributeSetObject'] = selectedProperty.attributeSetObject;
+                                }
+                                if (angular.isDefined(selectedProperty.ormtype)) {
+                                    column['ormtype'] = selectedProperty.ormtype;
                                 }
                                 $scope.columns.push(column);
                                 $scope.saveCollection();

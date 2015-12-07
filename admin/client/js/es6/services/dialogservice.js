@@ -1,24 +1,41 @@
-'use strict';
-angular.module('slatwalladmin').factory('dialogService', [
-    'partialsPath',
-    function (partialsPath) {
-        var _pageDialogs = [];
-        var dialogService = {
-            addPageDialog: function (name) {
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
+var slatwalladmin;
+(function (slatwalladmin) {
+    class DialogService extends slatwalladmin.BaseService {
+        constructor(partialsPath) {
+            super();
+            this.partialsPath = partialsPath;
+            this.get = () => {
+                return this._pageDialogs || [];
+            };
+            this.addPageDialog = (name, params) => {
                 var newDialog = {
-                    'path': partialsPath + name + '.html'
+                    'path': this.partialsPath + name + '.html',
+                    'params': params
                 };
-                _pageDialogs.push(newDialog);
-            },
-            removePageDialog: function (index) {
-                _pageDialogs.splice(index, 1);
-            },
-            getPageDialogs: function () {
-                return _pageDialogs;
-            }
-        };
-        return dialogService;
+                this._pageDialogs.push(newDialog);
+            };
+            this.removePageDialog = (index) => {
+                this._pageDialogs.splice(index, 1);
+            };
+            this.getPageDialogs = () => {
+                return this._pageDialogs;
+            };
+            this.removeCurrentDialog = () => {
+                this._pageDialogs.splice(this._pageDialogs.length - 1, 1);
+            };
+            this.getCurrentDialog = () => {
+                return this._pageDialogs[this._pageDialogs.length - 1];
+            };
+            this._pageDialogs = [];
+        }
     }
-]);
+    DialogService.$inject = [
+        'partialsPath'
+    ];
+    slatwalladmin.DialogService = DialogService;
+    angular.module('slatwalladmin').service('dialogService', DialogService);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=dialogservice.js.map

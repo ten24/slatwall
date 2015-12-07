@@ -32,20 +32,22 @@ var slatwalladmin;
             };
             this.formatMessagesToAlerts = (messages) => {
                 var alerts = [];
-                for (var message in messages) {
-                    var alert = new slatwalladmin.Alert();
-                    alert.msg = messages[message].message;
-                    alert.type = messages[message].messageType;
-                    alerts.push(alert);
-                    if (alert.type === 'success' || alert.type === 'error') {
-                        $timeout(function () {
-                            alert.fade = true;
-                        }, 3500);
-                        alert.dismissable = false;
-                    }
-                    else {
-                        alert.fade = false;
-                        alert.dismissable = true;
+                if (messages) {
+                    for (var message in messages) {
+                        var alert = new slatwalladmin.Alert();
+                        alert.msg = messages[message].message;
+                        alert.type = messages[message].messageType;
+                        alerts.push(alert);
+                        if (alert.type === 'success' || alert.type === 'error') {
+                            this.$timeout(function () {
+                                alert.fade = true;
+                            }, 3500);
+                            alert.dismissable = false;
+                        }
+                        else {
+                            alert.fade = false;
+                            alert.dismissable = true;
+                        }
                     }
                 }
                 return alerts;
@@ -60,11 +62,8 @@ var slatwalladmin;
         '$timeout'
     ];
     slatwalladmin.AlertService = AlertService;
-})(slatwalladmin || (slatwalladmin = {}));
-var slatwalladmin;
-(function (slatwalladmin) {
     angular.module('slatwalladmin')
-        .service('alertService', slatwalladmin.AlertService);
+        .service('alertService', AlertService);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=alertservice.js.map

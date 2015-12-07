@@ -199,13 +199,13 @@
 	}
 	
 	public any function validate(required any object, string context="", boolean setErrors=true) {
-		
 		// Setup an error bean
 		if(setErrors) {
 			var errorBean = arguments.object.getHibachiErrors();
 		} else {
 			var errorBean = getTransient("hibachiErrors");
 		}
+		
 		// If the context was 'false' then we don't do any validation
 		if(!isBoolean(arguments.context) || arguments.context) {
 			
@@ -217,7 +217,6 @@
 				
 				// First make sure that the proerty exists
 				if(arguments.object.hasProperty( propertyIdentifier )) {
-					
 					// Loop over each of the constraints for this given property
 					for(var c=1; c<=arrayLen(contextValidations[ propertyIdentifier ]); c++) {
 						
@@ -234,6 +233,7 @@
 					}	
 				}
 			}
+			
 		}
 		
 		// If the setErrors was true, then we can set this error
@@ -257,6 +257,7 @@
 				
 			var replaceTemplateStruct = {};
 			replaceTemplateStruct.propertyName = arguments.object.getPropertyTitle(thisPropertyName);
+			
 			if(arguments.object.isPersistent()) {
 				var thisClassName = getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
 				replaceTemplateStruct.className = getHibachiScope().rbKey('entity.#thisClassName#');

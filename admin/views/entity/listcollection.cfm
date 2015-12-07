@@ -63,7 +63,8 @@ Notes:
 <hb:HibachiListingDisplay smartList="#rc.collectionSmartList#"
 						   recordDetailAction="admin:entity.detailcollection"
 						   recordEditAction="admin:entity.editcollection"
-						   recordDeleteAction="admin:entity.deletecollection">
+						   recordDeleteAction="admin:entity.deletecollection"
+						   >
 
 	<hb:HibachiListingColumn propertyIdentifier="collectionName" />
 	<hb:HibachiListingColumn propertyIdentifier="collectionCode" />

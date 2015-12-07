@@ -50,7 +50,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 
 	property name="accountService" type="any";
 	property name="brandService" type="any";
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="locationService" type="any";
 	property name="orderService" type="any";
 	property name="productService" type="any";
@@ -149,9 +149,16 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			if( isStruct(admin) ){
 				// Add the admin buttons
 				if(structKeyExists(admin, "detailAction")) {
+					if(structKeyExists(admin,"detailActionProperty")){
+						detailActionProperty=listlast(admin.detailActionProperty,'.');
+						detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.detailActionProperty);
+					}else{
+						detailActionProperty=record.getPrimaryIDPropertyName();
+						detailActionPropertyValue=record.getPrimaryIDValue();
+					}
 					var attributes = {
 						action=admin.detailAction,
-						queryString="#listPrepend(admin.detailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
+						queryString="#listPrepend(admin.detailQueryString, '#detailActionProperty#=#detailActionPropertyValue#', '&')#",
 						class="btn btn-default btn-xs",
 						icon="eye-open",
 						iconOnly="true",
@@ -160,9 +167,16 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "editAction")) {
+					if(structKeyExists(admin,"editActionProperty")){
+						var editActionProperty=listlast(admin.editActionProperty,'.');
+						var editActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.editActionProperty);
+					}else{
+						var editActionProperty=record.getPrimaryIDPropertyName();
+						var editActionPropertyValue=record.getPrimaryIDValue();
+					}
 					var attributes = {
 						action=admin.editAction,
-						queryString="#listPrepend(admin.editQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
+						queryString="#listPrepend(admin.editQueryString, '#editActionProperty#=#editActionPropertyValue#', '&')#",
 						class="btn btn-default btn-xs",
 						icon="pencil",
 						iconOnly="true",
@@ -172,10 +186,17 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "deleteAction")) {
+					if(structKeyExists(admin,"deleteActionProperty")){
+						var deleteActionProperty=listlast(admin.deleteActionProperty,'.');
+						var deleteActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.deleteActionProperty);
+					}else{
+						var deleteActionProperty=record.getPrimaryIDPropertyName();
+						var deleteActionPropertyValue=record.getPrimaryIDValue();
+					}
 					var deleteErrors = record.validate(context="delete");
 					var attributes = {
 						action=admin.deleteAction,
-						queryString="#listPrepend(admin.deleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
+						queryString="#listPrepend(admin.deleteQueryString, '#deleteActionProperty#=#deleteActionPropertyValue#', '&')#",
 						class="btn btn-default btn-xs",
 						icon="trash",
 						iconOnly="true",
@@ -186,11 +207,18 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "processAction")) {
+					if(structKeyExists(admin,"processActionProperty")){
+						var processActionProperty=listlast(admin.processActionProperty,'.');
+						var processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=admin.processActionProperty);
+					}else{
+						var processActionProperty=record.getPrimaryIDPropertyName();
+						var processActionPropertyValue=record.getPrimaryIDValue();
+					}
 					var attributes = {
 						action=admin.processAction,
 						entity=processEntity,
 						processContext=admin.processContext,
-						queryString="#listPrepend(admin.processQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
+						queryString="#listPrepend(admin.processQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#",
 						class="btn btn-default hibachi-ajax-submit"
 					};
 					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiProcessCaller.cfm", attributeCollection=attributes);

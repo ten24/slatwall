@@ -59,6 +59,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	// Persistent Properties
 	property name="promotionRewardID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="amount" ormType="big_decimal" hb_formatType="custom";
+	property name="currencyCode" ormtype="string" length="3";
 	property name="amountType" ormType="string" hb_formatType="rbKey";
 	property name="rewardType" ormType="string" hb_formatType="rbKey";
 	property name="applicableTerm" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
@@ -69,7 +70,10 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	property name="roundingRule" cfc="RoundingRule" fieldtype="many-to-one" fkcolumn="roundingRuleID" hb_optionsNullRBKey="define.none";
-	
+
+	// Related Object Properties (one-to-many)
+	property name="promotionRewardCurrencies" singularname="promotionRewardCurrency" cfc="PromotionRewardCurrency" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
+
 	// Related Object Properties (many-to-many - owner)
 	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";
 	
@@ -102,6 +106,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	property name="amountTypeOptions" persistent="false";
 	property name="applicableTermOptions" persistent="false";
 	property name="rewards" type="string" persistent="false";
+	property name="currencyCodeOptions" persistent="false";
 	
 	public string function getSimpleRepresentation() {
 		return "#rbKey('entity.promotionReward')# - #getFormattedValue('rewardType')#";
@@ -132,6 +137,40 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 	}
 	
+	public array function getCurrencyCodeOptions() {
+		if(!structKeyExists(variables, "currencyCodeOptions")) {
+			variables.currencyCodeOptions = getService("currencyService").getCurrencyOptions();
+		}
+		return variables.currencyCodeOptions;
+	}
+
+	public string function getCurrencyCode() {
+		if(!structKeyExists(variables, "currencyCode")) {
+			variables.currencyCode=setting('skuCurrency');		
+		}
+		return variables.currencyCode;
+	}
+
+
+	public numeric function getAmountByCurrencyCode(required string currencyCode){
+		if(arguments.currencyCode neq getCurrencyCode()){
+			//Check for explicity defined promotion reward currencies
+			for(var i=1;i<=arraylen(variables.promotionRewardCurrencies);i++){
+				if(variables.promotionRewardCurrencies[i].getCurrencyCode() eq arguments.currencyCode){
+					return variables.promotionRewardCurrencies[i].getAmount();
+				}
+			}
+			//Check for defined conversion rate 
+			var currencyRate = getService("currencyService").getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=getCurrencyCode(), convertToCurrencyCode=arguments.currencyCode, conversionDateTime=now());
+			if(!isNull(currencyRate)) {
+				return precisionEvaluate(currencyRate.getConversionRate()*getAmount());
+			}
+		
+		}
+		//Either no conversion was needed, or we couldn't find a conversion rate.
+		return getAmount();
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================

@@ -54,6 +54,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		variables.entityService = request.slatwallScope.getService("collectionService");
 		variables.entity = variables.entityService.newCollection();
+		variables.entity.setCollectionObject('Account');
+		
 	}
 	
 //	tests need default data inserted before asserting
@@ -84,7 +86,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(pageRecords);
 //	}
 
+	
+
 	public void function addDisplayAggregateTest(){
+
+		
 
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.setDisplayProperties('product.productName,price');
@@ -158,8 +164,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('product','count','productCountTotal');
 
 		var pageRecords = myCollection.getPageRecords();
-
-		assertEquals(2,pageRecords[1]['productCountTotal']);	
+		assertEquals(2,pageRecords[1]['productCountTotal']);
+		
+		myCollection = variables.entityService.getContentCollectionList();
+		myCollection.setDisplayProperties('site.siteName,title');
+		myCollection.addFilter('parentContent','NULL','IS');
+		myCollection.addDisplayAggregate('childContents','count','childContentsCountTotal');
+		
+		pageRecords = myCollection.getPageRecords();
+		
 	}
 
 		
@@ -185,7 +198,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			aggregateFunction = "count",
 			aggregateAlias = "Account_firstName"
 		};
-		
+		request.debug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
 		assertFalse(Compare("COUNT(Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
@@ -359,24 +372,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
+					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"Account_orders"
+							"propertyIdentifier":"_account_orders"
 						},
 						{
-							"propertyIdentifier":"Account.firstName"
+							"propertyIdentifier":"_account.firstName"
 						}
 					],
 					"joins":[
 						{
 							"associationName":"orders",
-							"alias":"Account_orders"
+							"alias":"_account_orders"
 						}
 					],
 					"orderBy":[
 						{
-							"propertyIdentifier":"Account.firstName",
+							"propertyIdentifier":"_account.firstName",
 							"direction":"DESC"
 						}
 					],
@@ -389,7 +402,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						{
 							"filterGroup":[
 								{
-									"propertyIdentifier":"Account.firstName",
+									"propertyIdentifier":"_account.firstName",
 									"comparisonOperator":"=",
 									"value":"Ryan"
 								}
@@ -410,25 +423,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
+					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"Account.orders"
+							"propertyIdentifier":"_account.orders"
 						}
 					],
 					"joins":[
 						{
 							"associationName":"orders",
-							"alias":"Account_orders"
+							"alias":"_account_orders"
 						}
 					],
 					"orderBy":[
 						{
-							"propertyIdentifier":"Account.lastName",
+							"propertyIdentifier":"_account.lastName",
 							"direction":"DESC"
 						},
 						{
-							"propertyIdentifier":"Account.firstName",
+							"propertyIdentifier":"_account.firstName",
 							"direction":"DESC"
 						}
 					],
@@ -441,7 +454,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						{
 							"filterGroup":[
 								{
-									"propertyIdentifier":"Account.firstName",
+									"propertyIdentifier":"_account.firstName",
 									"comparisonOperator":"=",
 									"value":"Ryan"
 								}
@@ -1142,7 +1155,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  			{
 								"propertyIdentifier":"_account.firstName",
 								"comparisonOperator":"=",
-								"value":"Ryan"				  				
+								"value":"Ryan"
 				  			}
 				  		]
 				  	}
@@ -1157,7 +1170,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		collectionEntity.setKeywords('Ryan Marchand');
 		//request.debug(collectionEntity.getHQL());
-		//request.debug(collectionEntity.getRecords());
+		request.debug(collectionEntity.getRecords());
 	}
 	
 	public void function getHQLTest_keywords_without_filterGroup(){
@@ -1199,9 +1212,75 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		//collectionEntity.setKeywords('Ryan Marchand');
+		collectionEntity.setKeywords('Ryan Marchand');
 		request.debug(collectionEntity.getHQL());
 	}
+
+	public void function getHQLTest_keywords_without_defaultColumns(){
+
+		//acount data
+
+		var collectionEntityData = {
+		collectionid = '12',
+		collectionCode = 'keywordAccount',
+		collectionObject = 'account',
+
+		collectionConfig = '
+						{
+						  "baseEntityName": "SlatwallAccount",
+						  "baseEntityAlias": "_account",
+						  "columns": []
+						}
+					'
+		};
+
+
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.setKeywords('Miguel Targa');
+		request.debug(collectionEntity.getHQL());
+	}
+
+	public void function getHQLTest_keywords_without_ormtype(){
+
+		//acount data
+
+		var collectionEntityData = {
+		collectionid = '12',
+		collectionCode = 'keywordAccount',
+		collectionObject = 'account',
+
+		collectionConfig = '
+						{
+						  "baseEntityName": "SlatwallAccount",
+						  "baseEntityAlias": "_account",
+						  "columns": [
+							{
+								"propertyIdentifier":"_account.firstName",
+								"isSearchable":true
+							},
+							{
+								"propertyIdentifier":"_account.lastName",
+								"isSearchable":true
+							},
+							{
+								"propertyIdentifier":"_account.accountEmailAddresses",
+								"isSearchable":true,
+								"aggregate":{
+									"aggregateFunction":"count",
+									"aggregateAlias":"emailcount"
+								}
+							}
+						  ]
+						}
+					'
+		};
+
+
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.setKeywords('Ryan Marchand');
+		request.debug(collectionEntity.getHQL());
+	}
+
 	
 	public void function getHQLTest_notpersistent(){
 	
@@ -1711,28 +1790,112 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//request.debug(collectionEntity.getPageRecords());
 	}
 	
-	public void function getHQLForCollectionFilterTest(){
-		var collectionBestAcountEmailAddressesData = {
+	public void function getHQLForCollectionFilterSkuTest(){
+		var collectionBestSkuData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
-			collectionObject="Account",
+			collectionCode = 'BestSku#createUUID()#',
+			collectionObject="Sku",
 			collectionConfig = '
 				{
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"_account",
-					
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"_account.firstName",
-									"comparisonOperator":"like",
-									"value":"Ryan%"
-								}
-							]
-							
-						}
-					]
+					"baseEntityName":"SlatwallSku",
+					"baseEntityAlias":"_sku"
+				}
+			'
+		};
+		var collectionBestSkuData = createPersistedTestEntity('collection',collectionBestSkuData);
+		
+		
+		var filter = {
+						propertyIdentifier="_orderItem.sku.product.skus",
+						collectionID=collectionBestSkuData.getCollectionID(),
+						criteria="One"
+					};
+					var propertyIdentifier = 'sku.product.skus';
+		var test = request.slatwallScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier('OrderItem',propertyIdentifier);
+		var property = request.slatwallScope.getService('hibachiService').getPropertyByEntityNameAndPropertyName(test,listlast(propertyIdentifier,'.'));
+		request.debug(test);
+		request.debug(property);
+		variables.entity = variables.entityService.newCollection();
+		MakePublic(variables.entity,'getHQLForCollectionFilter');
+		variables.entity.setCollectionObject('OrderItem');
+		var HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+	}
+	
+	public void function testest(){
+		var test = ormexecuteQuery("SELECT new Map( _order.orderID as orderID, _order.orderNumber as orderNumber, _order.currencyCode as currencyCode, _order.orderOpenDateTime as orderOpenDateTime, _order.orderOpenIPAddress as orderOpenIPAddress, _order.orderCloseDateTime as orderCloseDateTime, _order.referencedOrderType as referencedOrderType, _order.estimatedDeliveryDateTime as estimatedDeliveryDateTime, _order.estimatedFulfillmentDateTime as estimatedFulfillmentDateTime, _order.calculatedTotal as calculatedTotal) 
+		FROM SlatwallOrder as _order 
+		left join _order.promotionCodes as _order_promotionCodes
+		where ( 
+			EXISTS ( 
+				FROM SlatwallPromotionCode as __promotioncode 
+				where ( __promotioncode.promotionCode = 'testlove2'  ) 
+				AND __promotioncode.id = _order_promotionCodes.id ) 
+			) ORDER BY _order.createdDateTime desc");
+		request.debug(test);
+	}
+	
+	public void function getHQLForCollectionFilterManyToManyTest(){
+		var collectionPromotionRewardData = {
+			collectionid = '',
+			collectionCode = 'promotionReward#createUUID()#',
+			collectionObject="PromotionReward",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallPromotionReward",
+					"baseEntityAlias":"_promotionreward"
+				}
+			'
+		};
+		var collectionPromotionReward = createPersistedTestEntity('collection',collectionPromotionRewardData);
+		variables.entity = variables.entityService.newCollection();
+		variables.entity.setCollectionObject('PromotionReward');
+		
+		var filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="One"
+					};
+						
+		MakePublic(variables.entity,'getHQLForCollectionFilter');
+		var HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="NONE"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+	}
+	
+	public void function getHQLForCollectionFilterOneToManyTest(){
+		
+		var collectionBestAcountEmailAddressesData = {
+			collectionid = '',
+			collectionCode = 'BestAccountEmailAddresses#createUUID()#',
+			collectionObject="AccountEmailAddress",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccountEmailAddress",
+					"baseEntityAlias":"_accountemailaddress"
 					
 				}
 			'
@@ -1747,9 +1910,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					};
 						
 		MakePublic(variables.entity,'getHQLForCollectionFilter');
-		
 		var HQL = variables.entity.getHQLForCollectionFilter(filter);
-		//request.debug(HQL);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="NONE"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
 	}
 	
 	/*public void function getCollectionObjectParentChildTest(){

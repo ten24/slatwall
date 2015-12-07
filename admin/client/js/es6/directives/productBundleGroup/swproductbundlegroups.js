@@ -25,7 +25,7 @@ angular.module('slatwalladmin')
                         productBundleService.decorateProductBundleGroup(obj);
                         obj.data.$$editing = false;
                     });
-                    this.removeProductBundleGroup = function (index) {
+                    $scope.removeProductBundleGroup = function (index) {
                         $scope.productBundleGroups.splice(index, 1);
                         $log.debug("Deleting PBG #" + index);
                         $log.debug($scope.productBundleGroups);

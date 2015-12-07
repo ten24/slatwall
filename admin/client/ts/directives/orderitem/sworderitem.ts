@@ -21,7 +21,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 		scope:{
 			orderItem:"=",
 			orderId:"@",
-			attributes:"="
+			attributes:"=" 
 		},
 		templateUrl:partialsPath+"orderitem.html",
 		link : function(scope, element, attr) {

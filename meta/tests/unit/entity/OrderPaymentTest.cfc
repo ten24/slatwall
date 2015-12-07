@@ -184,6 +184,29 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals( '123 Main Street', variables.entity.getBillingAddress().getStreetAddress() );
 		
 	}
+	
+	public void function test_gift_card_transaction_relation(){ 
+		var orderPaymentData = { 
+			orderPaymentID="",
+			amount="100.00"
+		};
+		
+		var giftCardTransactionData = { 
+			giftCardTransactionID="",
+			credit="100.00"
+		};
+		
+		var orderPayment = createPersistedTestEntity('orderPayment', orderPaymentData); 
+		var giftCardTransaction = createPersistedTestEntity('giftCardTransaction', giftCardTransactionData);
+		
+		orderPayment.addGiftCardTransaction(giftCardTransaction); 
+		
+		assertTrue(orderPayment.hasGiftCardTransaction(giftCardTransaction)); 
+		
+		orderPayment.removeGiftCardTransaction(giftCardTransaction); 
+		
+		assertFalse(orderPayment.hasGiftCardTransaction(giftCardTransaction)); 
+	}
 }
 
 

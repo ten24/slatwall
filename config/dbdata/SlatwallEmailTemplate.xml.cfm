@@ -7,6 +7,7 @@
 		<column name="emailTemplateFile" update="false" />
 		<column name="emailBodyHTML" update="false" />
 		<column name="emailBodyText" update="false" />
+		<column name="logEmailFlag" datatype="bit" update="false" />
 	</Columns>
 	<Records>
 		<Record emailTemplateID="dbb327e506090fde08cc4855fa14448d" emailTemplateName="Order Confirmation" emailTemplateObject="Order" emailTemplateFile="confirmation.cfm" />
@@ -17,5 +18,7 @@
 		<Record emailTemplateID="dbb327eae59c2605eba6ac9a735007b5" emailTemplateName="Subscription Renewal Reminder" emailTemplateObject="SubscriptionUsage" emailBodyHTML="Your subscription needs to be renewed for: ${simpleRepresentation}" />
 		<Record emailTemplateID="dbb327e9ac9051b06c902de4bf83eaa8" emailTemplateName="Task Failure Notification" emailTemplateObject="Task" emailBodyHTML="The task '${taskName}' failed to complete successfully.  Please login to your Slatwall administrator to view the task history details." />
 		<Record emailTemplateID="dbb327e89546f9916ed8316f4fcc70e1" emailTemplateName="Task Success Notification" emailTemplateObject="Task" emailBodyHTML="The task '${taskName}' completed successfully." />
+		<Record emailTemplateID="4028288b4ed11133014ee4950c6a04db" emailTemplateName="Gift Card Credited" emailTemplateObject="GiftCard" emailBodyHTML="Your Gift Card has been credited!${orderItemGiftRecipient.giftMessage} Code: ${giftCardCode} Balance: ${balanceAmount}" emailBodyText="Your Gift Card has been credited! ${orderItemGiftRecipient.giftMessage} Code: ${giftCardCode}Balance: ${balanceAmount}" logEmailFlag="1" />
+		<Record emailTemplateID="402828d1501506f901501f4eec180174" emailTemplateName="Failed Gift Card Recipient" emailTemplateObject="GiftCard" emailBodyHTML="A Gift Card Sent To ${orderItemGiftRecipient.EmailAddress} Has Failed. Below are the details of the gift card that failed to send. Code: ${giftCardCode} Balance: ${balanceAmount}" emailBodyText="${orderItemGiftRecipient.EmailAddress} Has Failed Below are the details of the gift card that failed to send. Code: ${giftCardCode} Balance: ${balanceAmount}" logEmailFlag="1" />
 	</Records>
 </Table>

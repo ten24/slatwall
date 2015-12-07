@@ -2,52 +2,52 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
 
 */
 component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" {
-	
+
 	// Persistent Properties
 	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
@@ -59,30 +59,31 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="sortOrder" ormtype="integer";
 	property name="purchaseStartDateTime" ormtype="timestamp";
 	property name="purchaseEndDateTime" ormtype="timestamp";
-	
+
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal";
 	property name="calculatedQATS" ormtype="integer";
 	property name="calculatedAllowBackorderFlag" ormtype="boolean";
 	property name="calculatedTitle" ormtype="string";
-	
+
 	// Related Object Properties (many-to-one)
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
-	
+	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
+
 	// Related Object Properties (one-to-many)
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
-	
+
 	// Related Object Properties (many-to-many - owner)
 	property name="listingPages" singularname="listingPage" cfc="Content" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="productID" inversejoincolumn="contentID";
 	property name="categories" singularname="category" cfc="Category" fieldtype="many-to-many" linktable="SwProductCategory" fkcolumn="productID" inversejoincolumn="categoryID";
 	property name="relatedProducts" singularname="relatedProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwRelatedProduct" fkcolumn="productID" inversejoincolumn="relatedProductID";
-	
+
 	// Related Object Properties (many-to-many - inverse)
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" fieldtype="many-to-many" linktable="SwPromoRewardProduct" fkcolumn="productID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclProduct" fkcolumn="productID" inversejoincolumn="promotionRewardID" inverse="true";
@@ -95,16 +96,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateProduct" fkcolumn="productID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="vendors" singularname="vendor" cfc="Vendor" type="array" fieldtype="many-to-many" linktable="SwVendorProduct" fkcolumn="productID" inversejoincolumn="vendorID" inverse="true";
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProduct" fkcolumn="productID" inversejoincolumn="physicalID" inverse="true";
-	
+
 	// Remote Properties
 	property name="remoteID" ormtype="string";
-	
+
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
+
 	// Non-Persistent Properties
 	property name="allowBackorderFlag" type="boolean" persistent="false";
 	property name="availableForPurchaseFlag" type="boolean" persistent="false";
@@ -112,6 +113,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
+	property name="redemptionAmountTypeOptions" type="array" persistent="false";
 	property name="bundleSkusSmartList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
@@ -126,24 +128,24 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="unusedProductOptions" type="array" persistent="false";
 	property name="unusedProductOptionGroups" type="array" persistent="false";
 	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
-	
+
 	// Non-Persistent Properties - Delegated to default sku
 	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
+	property name="renewalMethodOptions" type="array" persistent="false";
 	property name="renewalPrice" hb_formatType="currency" persistent="false";
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
 	property name="schedulingOptions" hb_formatType="array" persistent="false";
-	
-	
+
 	public any function getAvailableForPurchaseFlag() {
 		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
 			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
-			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) ) 
-				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) ) 
+			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) )
+				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) )
 			{
 				variables.availableToPurchaseFlag = true;
 			} else {
@@ -152,21 +154,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.availableToPurchaseFlag;
 	}
-	
+
 	public any function getProductTypeOptions( string baseProductType ) {
 		if(!structKeyExists(variables, "productTypeOptions")) {
 			if(!structKeyExists(arguments, "baseProductType")) {
 				arguments.baseProductType = getProductType().getBaseProductType();
 			}
-			
+
 			var smartList = getPropertyOptionsSmartList( "productType" );
 			smartList.addLikeFilter( "productTypeIDPath", "#getService('productService').getProductTypeBySystemCode( arguments.baseProductType ).getProductTypeID()#%" );
 			smartList.addWhereCondition( "NOT EXISTS( SELECT pt FROM SlatwallProductType pt WHERE pt.parentProductType.productTypeID = aslatwallproducttype.productTypeID)");
-			
+
 			var records = smartList.getRecords();
-			
+
 			variables.productTypeOptions = [];
-			
+
 			for(var i=1; i<=arrayLen(records); i++) {
 				var recordStruct = {};
 				recordStruct['name'] = records[i].getSimpleRepresentation();
@@ -174,11 +176,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				arrayAppend(variables.productTypeOptions, recordStruct);
 			}
 		}
-		
+
 		return variables.productTypeOptions;
 	}
-	
-    
+
+
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
 			var smartList = getService("contentService").getContentSmartList();
@@ -188,14 +190,24 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.listingPagesOptionsSmartList;
     }
-    
+
+    public any function getSubscriptionSkuSmartList(){
+    	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
+    		var smartList = getService("ProductService").getSkuSmartList();
+    		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is null");
+    		variables.subscriptionSkuSmartList = smartList;
+    	}
+    	return variables.subscriptionSkuSmartList;
+    }
+
 	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
         if(!arguments.sorted && !arguments.fetchOptions) {
         	return variables.skus;
         }
         return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions);
     }
-	
+
 	public any function getSkuByID(required string skuID) {
 		var skus = getSkus();
 		for(var i = 1; i <= arrayLen(skus); i++) {
@@ -204,55 +216,60 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		}
 	}
-	
+
 	public any function getTemplateOptions() {
 		if(!isDefined("variables.templateOptions")){
 			variables.templateOptions = getService("ProductService").getProductTemplates();
 		}
 		return variables.templateOptions;
 	}
-	
+
 	public any function getImages() {
 		return variables.productImages;
 	}
-	
-	public struct function getSkuSalePriceDetails( required any skuID ) {
+
+	public struct function getSkuSalePriceDetails( required any skuID) {
 		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
 			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
 	}
-	
+	public struct function getSkuSalePriceDetailsByCurrencyCode( required any skuID, string currencyCode='') {
+		if(structKeyExists(getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode), arguments.skuID)) {
+			return getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode)[ arguments.skuID ];
+		}
+		return {};
+	}
 	// Non-Persistent Helpers
-	
+
 	public boolean function getAllowAddOptionGroupFlag() {
  		return arrayLen(getSkus()) eq 1 || getOptionGroupCount() gt 0;
  	}
-	
-	public string function getPageIDs() { 
+
+	public string function getPageIDs() {
 		var pageIDs = "";
 		for( var i=1; i<= arrayLen(getPages()); i++ ) {
 			pageIDs = listAppend(pageIDs,getPages()[i].getPageID());
 		}
 		return pageIDs;
 	}
-	
-	public string function getCategoryIDs() { 
+
+	public string function getCategoryIDs() {
 		var categoryIDs = "";
 		for( var i=1; i<= arrayLen(getCategories()); i++ ) {
-			categoryIDs = listAppend(categoryIDs,getCategories()[i].getCategoryID());	
+			categoryIDs = listAppend(categoryIDs,getCategories()[i].getCategoryID());
 		}
 		return categoryIDs;
 	}
-	
+
 	public string function getProductURL() {
 		return "/#setting('globalURLKeyProduct')#/#getURLTitle()#/";
 	}
-	
+
 	public string function getListingProductURL() {
 		return "#setting('globalURLKeyProduct')#/#getURLTitle()#/";
 	}
-	
+
 	public string function getTemplate() {
 		if(!structKeyExists(variables, "template") || variables.template == "") {
 			return setting('productDisplayTemplate');
@@ -260,21 +277,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return variables.template;
 		}
 	}
-	
+
 	public string function getAlternateImageDirectory() {
     	return getURLFromPath(setting('globalAssetsImageFolderPath')) & '/product/';
     }
-    
+
     public numeric function getProductRating() {
     	var averageRating = 0;
-    	
+
     	if(this.getProductReviewsCount()) {
     		averageRating = getService('productService').getProductRating(this);
     	}
-    	
+
     	return averageRating;
     }
-	
+
 	public struct function getOptionGroupsStruct() {
 		if( !structKeyExists(variables, "optionGroupsStruct") ) {
 			variables.optionGroupsStruct = {};
@@ -284,7 +301,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.optionGroupsStruct;
 	}
-	
+
 	public array function getOptionGroups() {
 		if( !structKeyExists(variables, "optionGroups") ) {
 			variables.optionGroups = [];
@@ -296,15 +313,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.optionGroups;
 	}
-	
+
+	public any function getOptionGroupsAsList(){
+		var list = [];
+		for(var optionGroup in this.getOptionGroups()){
+			ArrayAppend(list, optionGroup.getOptionGroupID());
+		}
+		return ArrayToList(list);
+	}
+
 	public numeric function getOptionGroupCount() {
 		return arrayLen(getOptionGroups());
 	}
-	
+
 	public array function getImageGalleryArray(array resizeSizes=[{size='s'},{size='m'},{size='l'}]) {
 		var imageGalleryArray = [];
 		var filenames = "";
-		
+
 		// Add all skus's default images
 		for(var i=1; i<=arrayLen(getSkus()); i++) {
 			if( !listFind(filenames, getSkus()[i].getImageFile()) ) {
@@ -323,7 +348,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				arrayAppend(imageGalleryArray, thisImage);
 			}
 		}
-		
+
 		// Add all alternate image paths
 		for(var i=1; i<=arrayLen(getImages()); i++) {
 			if( !listFind(filenames, getImages()[i].getImageID()) ) {
@@ -349,46 +374,46 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				arrayAppend(imageGalleryArray, thisImage);
 			}
 		}
-		
+
 		return imageGalleryArray;
 	}
-	
+
 	// Start: Functions that delegate to the default sku
     public string function getImageDirectory() {
     	if(isNull(getDefaultSku())){
 			return getService('skuService').newSku().getImageDirectory();
 		}
-    	return getDefaultSku().getImageDirectory();	
+    	return getDefaultSku().getImageDirectory();
     }
-    
+
 	public string function getImagePath() {
 		if(isNull(getDefaultSku())){
 			return getService('skuService').newSku().getImagePath();
 		}
 		return getDefaultSku().getImagePath();
 	}
-	
+
 	public string function getImage() {
 		if(isNull(getDefaultSku())){
 			return getService('skuService').newSku().getImage();
 		}
 		return getDefaultSku().getImage(argumentCollection = arguments);
 	}
-	
+
 	public string function getResizedImagePath() {
 		if(isNull(getDefaultSku())){
 			return getService('skuService').newSku().getResizedImagePath();
 		}
 		return getDefaultSku().getResizedImagePath(argumentCollection = arguments);
 	}
-	
+
 	public boolean function getImageExistsFlag() {
 		if(isNull(getDefaultSku())){
 			return getService('skuService').newSku().getImageExistsFlag();
 		}
 		return getDefaultSku().getImageExistsFlag();
 	}
-	
+
 	public array function getOptionsByOptionGroup(required string optionGroupID) {
 		var smartList = getService("optionService").getOptionSmartList();
 		smartList.setSelectDistinctFlag(1);
@@ -396,6 +421,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		smartList.addFilter("skus.product.productID",this.getProductID());
 		smartList.addOrder("sortOrder|ASC");
 		return smartList.getRecords();
+	}
+
+	public array function getRenewalMethodOptions(){
+		if(!structKeyExists(variables, "renewalMethodOptions")){
+			variables.renewalMethodOptions = [];
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectRenewalSku'), value="renewalsku"});
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectCustomRenewal'), value="custom"});
+		}
+		return variables.renewalMethodOptions;
 	}
 
 	public any function getSkuBySelectedOptions(string selectedOptions="") {
@@ -414,23 +448,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			throw("You must submit a comma seperated list of selectOptions to find an indvidual sku in this product");
 		}
 	}
-	
+
 	public any function getSkusBySelectedOptions(string selectedOptions="") {
 		return getService("productService").getProductSkusBySelectedOptions(arguments.selectedOptions,this.getProductID());
 	}
-	
+
 	public any function getSkuOptionDetails(string selectedOptionIDList="") {
-		
+
 		// Setup return structure
 		var skuOptionDetials = {};
-		
+
 		// Get all the skus for this product with options fetched
 		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
-		
-		
+
+
 		// Get the selected options by optionGroup
 		var selectedOptionGroupsByOptionID = {};
-		
+
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
 			for(var sku in skus) {
@@ -444,18 +478,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				}
 			}
 		}
-		
+
 		// Loop over the skus
 		for(var sku in skus) {
-			
+
 			var skuOptionIDArray = [];
 			for(var option in sku.getOptions()) {
 				arrayAppend(skuOptionIDArray, option.getOptionID());
 			}
-			
+
 			// Loop over the options for this sku
 			for(var option in sku.getOptions()) {
-				
+
 				var allSelectedInSku = true;
 				for(var selected in listToArray(arguments.selectedOptionIDList)) {
 					if(selectedOptionGroupsByOptionID[ selected ] != option.getOptionGroup().getOptionGroupID() && !arrayFindNoCase(skuOptionIDArray, selected)) {
@@ -463,10 +497,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 						break;
 					}
 				}
-				
+
 				// Created Shortended Variables
 				var ogCode = option.getOptionGroup().getOptionGroupCode();
-				
+
 				// Create a struct for this optionGroup if it doesn't exist
 				if(!structKeyExists(skuOptionDetials, ogCode)) {
 					skuOptionDetials[ ogCode ] = {};
@@ -476,14 +510,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					skuOptionDetials[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
 					skuOptionDetials[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
 				}
-				
+
 				// Create a struct for this option if one doesn't exist
 				var existingOptionFound = false;
 				for(var existingOption in skuOptionDetials[ ogCode ][ "options" ]) {
 					if( existingOption.optionID == option.getOptionID() ) {
 						existingOption['totalQATS'] += sku.getQuantity("QATS");
 						if(allSelectedInSku) {
-							existingOption['selectedQATS'] += sku.getQuantity("QATS");	
+							existingOption['selectedQATS'] += sku.getQuantity("QATS");
 						}
 						existingOptionFound = true;
 						break;
@@ -499,21 +533,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					newOption['totalQATS'] = sku.getQuantity("QATS");
 					newOption['selectedQATS'] = 0;
 					if(allSelectedInSku) {
-						newOption['selectedQATS'] = sku.getQuantity("QATS");	
+						newOption['selectedQATS'] = sku.getQuantity("QATS");
 					}
 					arrayAppend(skuOptionDetials[ ogCode ].options, newOption);
 				}
 			}
-			
+
 		}
-		
+
 		return skuOptionDetials;
 	}
-	
+
 	public struct function getCrumbData(required string path, required string siteID, required array baseCrumbArray) {
 		var productFilename = replace(arguments.path, "/#arguments.siteID#/", "", "all");
 		productFilename = left(productFilename, len(productFilename)-1);
-		
+
 		var productCrumbData = {
 			contentHistID = "",
 			contentID = "",
@@ -534,10 +568,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			template = "",
 			type = "Page"
 		};
-		
+
 		return productCrumbData;
 	}
-	
+
 	// Availability
 	public struct function getEstimatedReceivalDetails() {
 		if(!structKeyExists(variables, "estimatedReceivalDetails")) {
@@ -545,14 +579,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.estimatedReceivalDetails;
 	}
-	
+
 	public array function getEstimatedReceivalDates(string skuID, string locationID, string stockID) {
 		var details = getEstimatedReceivalDetails();
-		
+
 		// If stockID was passed in
 		if(structKeyExists(arguments, "stockID")) {
 			if(structKeyExists(details.stocks, arguments.stockID)) {
-				return details.stocks[ arguments.stockID ];	
+				return details.stocks[ arguments.stockID ];
 			}
 		// If skuID and locationID were passed in
 		} else if (structKeyExists(arguments, "skuID") && structKeyExists(arguments, "locationID") ) {
@@ -565,21 +599,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		} else if ( structKeyExists(arguments, "locationID") ) {
 			if( structKeyExists(details.locations, arguments.locationID) ) {
-				return details.locations[ arguments.locationID ];	
+				return details.locations[ arguments.locationID ];
 			}
 		} else {
 			return details.estimatedReceivals;
 		}
-		
+
 		return [];
 	}
-	
+
 	// Quantity
 	public numeric function getQuantity(required string quantityType, string skuID, string locationID, string stockID) {
-		
+
 		// First we check to see if that quantityType is defined, if not we need to go out an get the specific struct, or value and cache it
 		if(!structKeyExists(variables, arguments.quantityType)) {
-			
+
 			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
 				variables[ arguments.quantityType] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {productID=getProductID(), productRemoteID=getRemoteID()});
 			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
@@ -587,14 +621,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			} else {
 				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
 			}
-			
+
 		}
-		
+
 		// If this is a calculated quantity, then we can just return it
 		if( listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType) ) {
-			return variables[ arguments.quantityType ];	
+			return variables[ arguments.quantityType ];
 		}
-		
+
 		// If we have a stockID
 		if( structKeyExists( arguments, "stockID" ) ) {
 			if( structKeyExists(variables[ quantityType ].stocks, arguments.stockID) ) {
@@ -602,7 +636,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 			return 0;
 		}
-		
+
 		// If we have a skuID & locationID
 		if( structKeyExists( arguments, "skuID" ) && structKeyExists(arguments, "locationID") ) {
 			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) && structKeyExists(variables[ quantityType ].skus[ arguments.skuID ].locations, arguments.locationID) ) {
@@ -610,7 +644,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 			return 0;
 		}
-		
+
 		// If we have a skuID
 		if( structKeyExists( arguments, "skuID") ) {
 			if( structKeyExists(variables[ arguments.quantityType ].skus, arguments.skuID) ) {
@@ -618,7 +652,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 			return 0;
 		}
-		
+
 		// If we have a locationID
 		if( structKeyExists( arguments, "locationID") ) {
 			if( structKeyExists(variables[ arguments.quantityType ].locations, arguments.locationID) ) {
@@ -626,17 +660,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 			return 0;
 		}
-		
+
 		// If we don't have anything, then just return for the entire product
 		return variables[ arguments.quantityType ][ arguments.quantityType ];
 	}
-	
+
 	// ============ START: Non-Persistent Property Methods =================
-	
+
 	public any function getBaseProductType() {
 		return getProductType().getBaseProductType();
 	}
-	
+
 	public any function getBundleSkusSmartList() {
 		if(!structKeyExists(variables,"bundleSkusSmartList")) {
 			variables.bundleSkusSmartList = getService("skuService").getSkuSmartList();
@@ -645,34 +679,41 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.bundleSkusSmartList;
 	}
-	
+
 	public array function getDefaultProductImageFiles() {
 		if(!structKeyExists(variables, "defaultProductImageFiles")) {
 			variables.defaultProductImageFiles = [];
-			
+
 			var sl = getService("skuService").getSkuSmartList();
 			sl.addFilter('product.productID', getProductID());
 			sl.addSelect('imageFile', 'imageFile');
 			sl.setSelectDistinctFlag( true );
-			
+
 			var records = sl.getRecords();
-			
+
 			for(var record in records) {
 				if(structKeyExists(record, "imageFile")) {
-					arrayAppend(variables.defaultProductImageFiles, record["imageFile"]);	
+					arrayAppend(variables.defaultProductImageFiles, record["imageFile"]);
 				}
-			} 
+			}
 		}
 		return variables.defaultProductImageFiles;
 	}
-	
+
 	public struct function getSalePriceDetailsForSkus() {
 		if(!structKeyExists(variables, "salePriceDetailsForSkus")) {
 			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID());
 		}
 		return variables.salePriceDetailsForSkus;
 	}
-	
+
+	public struct function getSalePriceDetailsForSkusByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#")) {
+			variables["getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#"] = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID(),currencyCode=arguments.currencyCode);
+		}
+		return variables["getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#"];
+	}
+
 	public string function getBrandName() {
 		if(!structKeyExists(variables, "brandName")) {
 			variables.brandName = "";
@@ -682,16 +723,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.brandName;
 	}
-	
+
 	public array function getBrandOptions() {
 		var options = getPropertyOptions( "brand" );
 		options[1]['name'] = rbKey('define.none');
 		return options;
 	}
-	
+
 	public string function getNextSkuCodeCount() {
 		var highestResult = 0;
-		
+
 		for(var sku in getSkus()) {
 			if(!isNull(sku.getSkuCode())) {
 				var thisCount = listLast(sku.getSkuCode(),"-");
@@ -700,31 +741,31 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				}
 			}
 		}
-		
+
 		return highestResult+1;
 	}
-	
+
 	public string function getTitle() {
 		if(!structKeyExists(variables, "title")) {
 			variables.title = trim(getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this));
 		}
 		return variables.title;
 	}
-	
+
 	public numeric function getQATS() {
 		return getQuantity("QATS");
 	}
-	
+
 	public numeric function getAllowBackorderFlag() {
 		return setting("skuAllowBackorderFlag");
 	}
-	
+
 	public any function getCurrencyCode() {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getCurrencyCode();
 		}
 	}
-	
+
 	public any function getEventConflictExistsFlag() {
 		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
 			return variables.eventConflictExistsFlag;
@@ -739,42 +780,73 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.eventConflictExistsFlag;
 	}
-	
+
 	public any function getPrice() {
 		if( structKeyExists(variables, "price") ) {
 			return variables.price;
 		} else if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getPrice();
-		} 
-		
-		// Product without a sku 
+		}
+
+		// Product without a sku
 		return 0;
 	}
-	
+
+	public any function getPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables, "defaultSku") ) {
+			return getDefaultSku().getPriceByCurrencyCode(arguments.currencyCode);
+		}
+		// Product without a sku
+		return 0;
+	}
+
 	public any function getRenewalPrice() {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getRenewalPrice();
 		}
 	}
-	
+
+	public any function getRenewalPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables, "defaultSku") ) {
+			return getDefaultSku().getRenewalPriceByCurrencyCode(arguments.currencyCode);
+		}
+	}
+
 	public any function getListPrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getListPrice();
 		}
 	}
-	
+
+	public any function getListPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getListPriceByCurrencyCode(arguments.currencyCode);
+		}
+	}
+
 	public any function getLivePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePrice();
 		}
 	}
-	
+	public any function getLivePriceByCurrencyCode(required string currencyCode){
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
+	 	}
+	}
+
 	public any function getCurrentAccountPrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getCurrentAccountPrice();
 		}
 	}
-	
+
+	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getCurrentAccountPriceByCurrencyCode(arguments.currencyCode);
+		}
+	}
+
 	public any function getSalePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePrice();
@@ -783,8 +855,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return 0;
 	}
-	
-	
+
+
+	public any function getSalePriceByCurrencyCode() {
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getSalePriceByCurrencyCode(arguments.currencyCode);
+		} else if (arrayLen(getSkus())) {
+			getSkus()[1].getSalePriceByCurrencyCode(arguments.currencyCode);
+		}
+		return 0;
+	}
+
 	public any function getSalePriceDiscountType() {
 		if(!structKeyExists(variables, "salePriceDiscountType")) {
 			variables.salePriceDiscountType = "none";
@@ -794,7 +875,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.salePriceDiscountType;
 	}
-	
+
 	public date function getSalePriceExpirationDateTime() {
 		if(!structKeyExists(variables, "salePriceExpirationDateTime")) {
 			variables.salePriceExpirationDateTime = now();
@@ -804,39 +885,65 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.salePriceExpirationDateTime;
 	}
-	
+
 	public boolean function getTransactionExistsFlag() {
 		if(!structKeyExists(variables, "transactionExistsFlag")) {
 			variables.transactionExistsFlag = getService("skuService").getTransactionExistsFlag( productID=this.getProductID() );
 		}
 		return variables.transactionExistsFlag;
 	}
-	
+
 	public array function getProductOptionsByGroup(){
 		return getService('productService').getProductOptionsByGroup( this );
 	}
-	
-	public array function getUnusedProductOptions() {
-		if( !structKeyExists(variables, "unusedProductOptions") ) {
-			variables.unusedProductOptions = getService('optionService').getUnusedProductOptions( getProductID(), structKeyList(getOptionGroupsStruct()) );
-		}
-		return variables.unusedProductOptions;
+
+	public boolean function hasUnusedProductOptionCombinations(){
+
+		var optionGroups = [];
+		var usedOptions = [];
+
+		return this.getNumberOfUnusedProductOptionCombinations() > 0;
 	}
-	
+
+	public any function getNumberOfUnusedProductOptionCombinations(){
+
+		var optionGroups = [];
+		var unusedOptions = [];
+		var first = true;
+
+		var optionGroupIDs = getDAO("OptionDAO").getAllUsedProductOptionGroupIDs(this.getProductID());
+		var numberOfUsedProductOptions = getDAO("OptionDAO").getNumberOfUsedProductOptions(this.getProductID());
+
+		if(ArrayLen(optionGroupIDs) > 0){
+			var usedCombinations = numberOfUsedProductOptions / ArrayLen(optionGroupIDs);
+		} else {
+			var usedCombinations = 1;
+		}
+
+		var possibilities = 1;
+
+		for(var optionGroupID in optionGroupIDs){
+			possibilities = possibilities * getDAO("OptionDAO").getNumberOfOptionsForOptionGroup(OptionGroupID);
+
+		}
+
+		return possibilities - usedCombinations;
+	}
+
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
-			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( structKeyList(getOptionGroupsStruct()) );
+			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
 		}
 		return variables.unusedProductOptionGroups;
 	}
-	
+
 	public array function getUnusedProductSubscriptionTerms() {
 		if( !structKeyExists(variables, "unusedProductSubscriptionTerms") ) {
 			variables.unusedProductSubscriptionTerms = getService('subscriptionService').getUnusedProductSubscriptionTerms( getProductID() );
 		}
 		return variables.unusedProductSubscriptionTerms;
 	}
-	
+
 	public any function getPlacedOrderItemsSmartList() {
 		if(!structKeyExists(variables, "placedOrderItemsSmartList")) {
 			variables.placedOrderItemsSmartList = getService("OrderService").getOrderItemSmartList();
@@ -846,7 +953,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 		return variables.placedOrderItemsSmartList;
 	}
-	
+
 	public any function getEventRegistrationsSmartList() {
 		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
 			variables.eventRegistrationsSmartList = getService("EventRegistrationService").getEventRegistrationSmartList();
@@ -858,7 +965,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
-		
+
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Brand (many-to-one)
@@ -878,7 +985,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		structDelete(variables, "brand");
 	}
-	
+
 	// Attribute Values (one-to-many)
 	public void function addAttributeValue(required any attributeValue) {
 		arguments.attributeValue.setProduct( this );
@@ -886,7 +993,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeProduct( this );
 	}
-	
+
 	// Product Images (one-to-many)
 	public void function addProductImage(required any productImage) {
 		arguments.productImage.setProduct( this );
@@ -894,7 +1001,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeProductImage(required any productImage) {
 		arguments.productImage.removeProduct( this );
 	}
-	
+
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
 		arguments.sku.setProduct( this );
@@ -902,7 +1009,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeSku(required any sku) {
 		arguments.sku.removeProduct( this );
 	}
-	
+
 	// Product Reviews (one-to-many)
 	public void function addProductReview(required any productReview) {
 		arguments.productReview.setProduct( this );
@@ -910,43 +1017,43 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeProductReview(required any productReview) {
 		arguments.productReview.removeProduct( this );
 	}
-	
-	// Listing Pages (many-to-many - owner)    
-	public void function addListingPage(required any listingPage) {    
-		if(isNew() or !hasListingPage(arguments.listingPage)) {    
-			arrayAppend(variables.listingPages, arguments.listingPage);    
-		}    
-		if(arguments.listingPage.isNew() or !arguments.listingPage.hasListingProduct( this )) {    
-			arrayAppend(arguments.listingPage.getListingProducts(), this);    
-		}    
-	}    
-	public void function removeListingPage(required any listingPage) {    
-		var thisIndex = arrayFind(variables.listingPages, arguments.listingPage);    
-		if(thisIndex > 0) {    
-			arrayDeleteAt(variables.listingPages, thisIndex);    
-		}    
-		var thatIndex = arrayFind(arguments.listingPage.getListingProducts(), this);    
-		if(thatIndex > 0) {    
+
+	// Listing Pages (many-to-many - owner)
+	public void function addListingPage(required any listingPage) {
+		if(isNew() or !hasListingPage(arguments.listingPage)) {
+			arrayAppend(variables.listingPages, arguments.listingPage);
+		}
+		if(arguments.listingPage.isNew() or !arguments.listingPage.hasListingProduct( this )) {
+			arrayAppend(arguments.listingPage.getListingProducts(), this);
+		}
+	}
+	public void function removeListingPage(required any listingPage) {
+		var thisIndex = arrayFind(variables.listingPages, arguments.listingPage);
+		if(thisIndex > 0) {
+			arrayDeleteAt(variables.listingPages, thisIndex);
+		}
+		var thatIndex = arrayFind(arguments.listingPage.getListingProducts(), this);
+		if(thatIndex > 0) {
 			arrayDeleteAt(arguments.listingPage.getListingProducts(), thatIndex);
 		}
 	}
-	
-	// Promotion Rewards (many-to-many - inverse)    
-	public void function addPromotionReward(required any promotionReward) {    
-		arguments.promotionReward.addProduct( this );    
-	}    
-	public void function removePromotionReward(required any promotionReward) {    
-		arguments.promotionReward.removeProduct( this );    
+
+	// Promotion Rewards (many-to-many - inverse)
+	public void function addPromotionReward(required any promotionReward) {
+		arguments.promotionReward.addProduct( this );
 	}
-	
-	// Promotion Reward Exclusions (many-to-many - inverse)    
+	public void function removePromotionReward(required any promotionReward) {
+		arguments.promotionReward.removeProduct( this );
+	}
+
+	// Promotion Reward Exclusions (many-to-many - inverse)
 	public void function addPromotionRewardExclusion(required any promotionReward) {
-		arguments.promotionReward.addExcludedProduct( this );    
+		arguments.promotionReward.addExcludedProduct( this );
 	}
-	public void function removePromotionRewardExclusion(required any promotionReward) {    
-		arguments.promotionReward.removeExcludedProduct( this );    
+	public void function removePromotionRewardExclusion(required any promotionReward) {
+		arguments.promotionReward.removeExcludedProduct( this );
 	}
-	
+
 	// Promotion Qualifiers (many-to-many - inverse)
 	public void function addPromotionQualifier(required any promotionQualifier) {
 		arguments.promotionQualifier.addProduct( this );
@@ -954,15 +1061,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removePromotionQualifier(required any promotionQualifier) {
 		arguments.promotionQualifier.removeProduct( this );
 	}
-	
-	// Promotion Qualifier Exclusions (many-to-many - inverse)    
-	public void function addPromotionQualifierExclusion(required any promotionQualifier) {    
-		arguments.promotionQualifier.addExcludedProduct( this );    
-	}    
-	public void function removePromotionQualifierExclusion(required any promotionQualifier) {    
-		arguments.promotionQualifier.removeExcludedProduct( this );    
+
+	// Promotion Qualifier Exclusions (many-to-many - inverse)
+	public void function addPromotionQualifierExclusion(required any promotionQualifier) {
+		arguments.promotionQualifier.addExcludedProduct( this );
 	}
-	
+	public void function removePromotionQualifierExclusion(required any promotionQualifier) {
+		arguments.promotionQualifier.removeExcludedProduct( this );
+	}
+
 	// Price Group Rates (many-to-many - inverse)
 	public void function addPriceGroupRate(required any priceGroupRate) {
 		arguments.priceGroupRate.addProduct( this );
@@ -970,7 +1077,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removePriceGroupRate(required any priceGroupRate) {
 		arguments.priceGroupRate.removeProduct( this );
 	}
-	
+
 	// Vendors (many-to-many - inverse)
 	public void function addVendor(required any vendor) {
 		arguments.vendor.addProduct( this );
@@ -978,7 +1085,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeVendor(required any vendor) {
 		arguments.vendor.removeProduct( this );
 	}
-	
+
 	// Physicals (many-to-many - inverse)
 	public void function addPhysical(required any physical) {
 		arguments.physical.addProduct( this );
@@ -986,7 +1093,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removePhysical(required any physical) {
 		arguments.physical.removeProduct( this );
 	}
-	
+
 	// Loyalty Program Accruements (many-to-many - inverse)
 	public void function addLoyaltyAccruement(required any loyaltyAccruement) {
 		arguments.loyaltyAccruement.addProduct( this );
@@ -994,7 +1101,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeloyaltyAccruement(required any loyaltyAccruement) {
 		arguments.loyaltyAccruement.removeProduct( this );
 	}
-	
+
 	// Loyalty Program Accruements Exclusions (many-to-many - inverse)
 	public void function addLoyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
 		arguments.loyaltyAccruementExclusion.addProduct( this );
@@ -1002,7 +1109,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeloyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
 		arguments.loyaltyAccruementExclusion.removeProduct( this );
 	}
-	
+
 	// Loyalty Redemptions (many-to-many - inverse)
 	public void function addLoyaltyRedemption(required any loyaltyRedemption) {
 		arguments.loyaltyRedemption.addProduct( this );
@@ -1010,7 +1117,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeLoyaltyRedemption(required any loyaltyRedemption) {
 		arguments.loyaltyRedemption.removeProduct( this );
 	}
-	
+
 	// Loyalty Redemption Exclusions (many-to-many - inverse)
 	public void function addLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
 		arguments.loyaltyRedemptionExclusion.addProduct( this );
@@ -1018,55 +1125,55 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public void function removeLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
 		arguments.loyaltyRedemptionExclusion.removeProduct( this );
 	}
-	
-	
+
+
 	// =============  END:  Bidirectional Helper Methods ===================
-	
+
 	// ================== START: Overridden Methods ========================
-	
+
 	public string function getSimpleRepresentationPropertyName() {
 		return "productName";
 	}
 
 	public any function getAssignedAttributeSetSmartList(){
 		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
-			
+
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
-			
+
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'Product');
-			
+
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "brands", "left");
-			
+
 			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
-			
+
 			var wc = "(";
 			wc &= " aslatwallattributeset.globalFlag = 1";
 			if(!isNull(getProductType())) {
-				wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProductType().getProductTypeIDPath(),",","','","all")#')";	
+				wc &= " OR aslatwallproducttype.productTypeID IN ('#replace(getProductType().getProductTypeIDPath(),",","','","all")#')";
 			}
 			wc &= " OR aslatwallproduct.productID = '#getProductID()#'";
 			if(!isNull(getBrand())) {
-				wc &= " OR aslatwallbrand.brandID = '#getBrand().getBrandID()#'";	
+				wc &= " OR aslatwallbrand.brandID = '#getBrand().getBrandID()#'";
 			}
 			wc &= ")";
-			
+
 			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
 		}
-		
+
 		return variables.assignedAttributeSetSmartList;
 	}
-	
+
 	// ==================  END:  Overridden Methods ========================
-	
+
 	// =================== START: ORM Event Hooks  =========================
-	
+
 	// ===================  END:  ORM Event Hooks  =========================
-	
+
 	// ================== START: Deprecated Methods ========================
-	
+
 	public array function getAttributeSets(array attributeSetTypeCode=[]){
 		var smartList = getAssignedAttributeSetSmartList();
 		if(arrayFind(arguments.attributeSetTypeCode, "astProductCustomization") || arrayFind(arguments.attributeSetTypeCode, "astOrderItem")) {
@@ -1074,6 +1181,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return smartList.getRecords();
 	}
-	
+
 	// ==================  END:  Deprecated Methods ========================
 }

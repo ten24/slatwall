@@ -30,7 +30,7 @@ component {
 	}
 	
 	public function updateTestData(){
-		variables.slatwallApplication.getBeanFactory().getBean("dataService").loadDataFromXMLDirectory(xmlDirectory = expandPath("/Slatwall/meta/tests/config/testdbdata"), ignorePreviouslyInserted=false);
+		variables.slatwallApplication.getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = expandPath("/Slatwall/meta/tests/config/testdbdata"), ignorePreviouslyInserted=false);
 	}
 	
 }

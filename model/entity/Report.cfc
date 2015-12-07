@@ -61,6 +61,9 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 	property name="dynamicDateRangeType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="dynamicDateRangeEndType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="dynamicDateRangeInterval" ormtype="integer";
+	property name="reportType" ormtype="string";
+	property name="limitResults" ormtype="integer";
+	property name="showReport" ormtype="boolean" default="false";
 	
 	// Calculated Properties
 

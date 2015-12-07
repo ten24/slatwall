@@ -78,6 +78,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="priceGroupRateExclusions" singularname="priceGroupRateExclusion" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGrpRateExclProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProductType" fkcolumn="productTypeID" inversejoincolumn="attributeSetID" inverse="true";
+	property name="optionGroups" singularname="optionGroup" cfc="OptionGroup" type="array" fieldtype="many-to-many" linktable="SwOptionGroupProductType" fkcolumn="productTypeID" inversejoincolumn="optionGroupID" inverse="true";
 	property name="physicals" singularname="physical" cfc="Physical" type="array" fieldtype="many-to-many" linktable="SwPhysicalProductType" fkcolumn="productTypeID" inversejoincolumn="physicalID" inverse="true";
 	
 	// Remote properties
@@ -229,6 +230,14 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	}
 	public void function removeAttributeSet(required any attributeSet) {
 		arguments.attributeSet.removeProductType( this );
+	}
+	
+	// Attribute Sets (many-to-many - inverse)
+	public void function addOptionGroup(required any optionGroup) {
+		arguments.optionGroup.addProductType( this );
+	}
+	public void function removeOptionGroup(required any attributeSet) {
+		arguments.optionGroup.removeProductType( this );
 	}
 	
 	// Attribute Values (one-to-many)

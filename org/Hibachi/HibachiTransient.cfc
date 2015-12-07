@@ -430,15 +430,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public struct function getValidations( string context="" ) {
 		return getService("hibachiValidationService").getValidationsByContext( object=this, context=arguments.context);
 	}
-
+	
 	// @hint pubic method to validate this object
 	public any function validate( string context="" ) {
-
+		
 		getService("hibachiValidationService").validate(object=this, context=arguments.context);
-
+		
 		// If there were sub properties that have been populated, then we should validate each of those
 		if(structKeyExists(variables, "populatedSubProperties")) {
-
+			
 			// Loop ove each property that was populated
 			for(var propertyName in variables.populatedSubProperties) {
 

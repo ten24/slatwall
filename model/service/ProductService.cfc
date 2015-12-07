@@ -53,7 +53,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
 
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
 	property name="hibachiEventService" type="any";
@@ -66,11 +66,11 @@ component extends="HibachiService" accessors="true" {
 	property name="typeService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-	
+
 	public numeric function getProductRating(required any product){
 		return getDao('productDao').getProductRating(arguments.product);
 	}
-	
+
 	public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 		getHibachiTagService().cfSetting(requesttimeout="3600");
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
@@ -430,36 +430,21 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 
-		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-
 		return arguments.product;
 	}
 
 	public any function processProduct_addOption(required any product, required any processObject) {
 
-		var newOption = getOptionService().getOption(arguments.processObject.getOption());
 		var newOptionsData = {
-			options = newOption.getOptionID(),
+			options = arguments.processObject.getOptions(),
 			price = arguments.product.getDefaultSku().getPrice()
 		};
+
 		if(!isNull(arguments.product.getDefaultSku().getListPrice())) {
 			newOptionsData.listPrice = arguments.product.getDefaultSku().getListPrice();
 		}
 
-		// Loop over each of the existing skus
-		for(var s=1; s<=arrayLen(arguments.product.getSkus()); s++) {
-			// Loop over each of the existing options for those skus
-			for(var o=1; o<=arrayLen(arguments.product.getSkus()[s].getOptions()); o++) {
-				// If this option is not of the same option group, and it isn't already in the list, then we can add it to the list
-				if(arguments.product.getSkus()[s].getOptions()[o].getOptionGroup().getOptionGroupID() != newOption.getOptionGroup().getOptionGroupID() && !listFindNoCase(newOptionsData.options, arguments.product.getSkus()[s].getOptions()[o].getOptionID())) {
-					newOptionsData.options = listAppend(newOptionsData.options, arguments.product.getSkus()[s].getOptions()[o].getOptionID());
-				}
-			}
-		}
-
 		getSkuService().createSkus(arguments.product, newOptionsData);
-
-		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 
 		return arguments.product;
 	}
@@ -640,13 +625,13 @@ component extends="HibachiService" accessors="true" {
 
 
 	public any function processProduct_addSku(required any product, required any processObject, any data) {
-		getSkuService().saveSku(arguments.processObject.getNewSku());
+		var sku = getSkuService().saveSku(arguments.processObject.getNewSku());
+
+		sku.setImageFile(sku.generateImageFileName());
 
 		if (arguments.processObject.getNewSku().hasErrors()) {
 			arguments.product.addErrors(arguments.processObject.getNewSku().getErrors());
 		}
-
-		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 
 		return arguments.product;
 	}
@@ -655,6 +640,7 @@ component extends="HibachiService" accessors="true" {
 
 		var newSubscriptionTerm = getSubscriptionService().getSubscriptionTerm( arguments.processObject.getSubscriptionTermID() );
 		var newSku = getSkuService().newSku();
+
 
 		newSku.setPrice( arguments.processObject.getPrice() );
 		newSku.setRenewalPrice( arguments.processObject.getRenewalPrice() );
@@ -670,9 +656,38 @@ component extends="HibachiService" accessors="true" {
 			newSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 		}
 		newSku.setProduct( arguments.product );
+		newSku.setRenewalSku( arguments.processObject.getRenewalSku());
+		newSku.setImageFile( newSku.generateImageFileName() );
 
-		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		return arguments.product;
+	}
 
+	public any function createSingleSku(required any product, required any processObject){
+
+		var thisSku = this.newSku();
+
+		thisSku.setProduct(arguments.product);
+		thisSku.setPrice(arguments.processObject.getPrice());
+		thisSku.setImageFile(thisSku.generateImageFileName());
+
+		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+			thisSku.setListPrice(arguments.product.getlistPrice());
+		}
+
+		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+		arguments.product.setDefaultSku( thisSku );
+		return arguments.product;
+	}
+
+	public any function createGiftCardProduct(required any product, required any processObject){
+
+		arguments.product = createSingleSku(arguments.product,arguments.processObject);
+		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
+		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
+			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
+			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);
+		}
 		return arguments.product;
 	}
 
@@ -688,6 +703,8 @@ component extends="HibachiService" accessors="true" {
 				newSku.setPrice(arguments.processObject.getPrice());
 				newSku.setSkuCode(arguments.product.getProductCode() & "-1");
 				newSku.setProduct(arguments.product);
+				newSku.setImageFile(newSku.generateImageFileName());
+
 				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 				}
@@ -701,6 +718,8 @@ component extends="HibachiService" accessors="true" {
 					newSku.setPrice(arguments.processObject.getPrice());
 					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
 					newSku.setProduct(arguments.product);
+					newSku.setImageFile(newSku.generateImageFileName());
+
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 					if(c==1) {
 						arguments.product.setDefaultSku(newSku);
@@ -760,6 +779,8 @@ component extends="HibachiService" accessors="true" {
 						arguments.product.setDefaultSku(newSku);
 					}
 
+					newSku.setImageFile(newSku.generateImageFileName());
+
 					// Add each of the options
 					for(var key in optionGroups) {
 						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);
@@ -782,14 +803,7 @@ component extends="HibachiService" accessors="true" {
 			// If no options were passed in we will just create a single sku
 			} else {
 
-				var thisSku = this.newSku();
-				thisSku.setProduct(arguments.product);
-				thisSku.setPrice(arguments.processObject.getPrice());
-				if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-					thisSku.setListPrice(arguments.product.getlistPrice());
-				}
-				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
-				arguments.product.setDefaultSku( thisSku );
+				arguments.product = createSingleSku(arguments.product, arguments.processObject);
 
 			}
 
@@ -800,9 +814,12 @@ component extends="HibachiService" accessors="true" {
 				var thisSku = this.newSku();
 				thisSku.setProduct(arguments.product);
 				thisSku.setPrice(arguments.processObject.getPrice());
-				thisSku.setRenewalPrice(arguments.processObject.getPrice());
+				if(!isNull(arguments.processObject.getRenewalPrice())){
+					thisSku.setRenewalPrice(arguments.processObject.getRenewalPrice());
+				}
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
 				thisSku.setSkuCode(product.getProductCode() & "-#i#");
+				thisSku.setRenewalSku(arguments.processObject.getRenewalSku());
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}
@@ -810,21 +827,24 @@ component extends="HibachiService" accessors="true" {
 					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 				}
 				if(i==1) {
-					product.setDefaultSku( thisSku );
+					arguments.product.setDefaultSku( thisSku );
+					arguments.product.setRenewalSku( arguments.processObject.getRenewalSku() );
+
 				}
+				thisSku.setImageFile(thisSku.generateImageFileName());
 			}
+		//GENERATE - GIFT SKUS
+		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
+			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
 		}
 
-
 		// Generate the URL Title
-		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-		// Generate Image Files
-		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
@@ -836,16 +856,18 @@ component extends="HibachiService" accessors="true" {
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
 		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
+
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
-		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 
-		// Generate Image Files
-		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
+		arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+
+		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
 		arguments.product = this.saveProduct(arguments.product);
+
 
 		return arguments.product;
 	}
@@ -861,8 +883,22 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_updateDefaultImageFileNames( required any product ) {
+
 		for(var sku in arguments.product.getSkus()) {
-			sku.setImageFile( sku.generateImageFileName() );
+				var name = sku.generateImageFileName();
+				var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
+				var fullFilePath = "#uploadDirectory#/#sku.getImageFile()#";
+				var newPath = "#uploadDirectory#/#name#";
+
+				if(!directoryExists(uploadDirectory)) {
+					directoryCreate(uploadDirectory);
+				}
+
+				if(fileExists(fullFilePath) && !fileExists(newPath)){
+					fileMove(fullFilePath, newPath);
+				}
+
+				sku.setImageFile(name);
 		}
 
 		return arguments.product;
@@ -871,8 +907,9 @@ component extends="HibachiService" accessors="true" {
 	public any function processProduct_updateSkus(required any product, required any processObject) {
 
 		var skus = 	arguments.product.getSkus();
+		var skuCurrencyFound=false;
 		if(arrayLen(skus)){
-			for(i=1; i <= arrayLen(skus); i++){
+			for(var i=1; i <= arrayLen(skus); i++){
 				// Update Price
 				if(arguments.processObject.getUpdatePriceFlag()) {
 					skus[i].setPrice(arguments.processObject.getPrice());
@@ -881,6 +918,46 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());
 				}
+
+				//Update currencies
+				for(var processSkuCurrency in processObject.getSkuCurrencies()){
+					skuCurrencyFound=false;
+					skuCurrenciesToRemove=[];
+
+					for(var skuCurrency in skus[i].getSkuCurrencies()){
+						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
+							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+								skuCurrency.setPrice(processSkuCurrency.price);
+							}
+							if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
+								skuCurrency.setListPrice(processSkuCurrency.listPrice);
+							}
+
+							if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+								arrayAppend(skuCurrenciesToRemove,skuCurrency);
+							}
+
+						 skuCurrencyFound=true;
+						}
+					}
+					for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
+						skuCurrenciesToRemove[j].removeSku(skus[i]);
+					}
+					if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
+						var newSkuCurrency=this.newSkuCurrency();
+						newSkuCurrency.setCurrency(getService('currencyService').getCurrencyByCurrencyCode(processSkuCurrency.currencyCode));
+						if(arguments.processObject.getUpdatePriceFlag()) {
+							newSkuCurrency.setPrice(processSkuCurrency.price);
+						}
+						if(arguments.processObject.getUpdateListPriceFlag()) {
+							newSkuCurrency.setPrice(processSkuCurrency.listPrice);
+						}
+						newSkuCurrency.setSku(skus[i]);
+						save(newSkuCurrency);
+
+					}
+				}
+
 			}
 		}
 
@@ -920,9 +997,9 @@ component extends="HibachiService" accessors="true" {
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
 			} else if (!isNull(arguments.product.getProductName()) && len(arguments.product.getProductName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
 
@@ -933,7 +1010,7 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
 		}
 		if(isNull(arguments.product.getURLTitle())){
-			arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+			arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		}
 		// Generate Image Files
 		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
@@ -945,9 +1022,9 @@ component extends="HibachiService" accessors="true" {
 	public any function saveProductType(required any productType, struct data={}) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productTypeName") && len(arguments.data.productTypeName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");
 			} else if (!isNull(arguments.productType.getProductTypeName()) && len(arguments.productType.getProductTypeName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
 

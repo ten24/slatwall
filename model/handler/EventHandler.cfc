@@ -2,7 +2,6 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 
 	public void function onEvent( required any eventName, required struct eventData={} ) {
 		
-		
 		// =============== WORKFLOW ==================
 		
 		// Make sure that there is an entity for this event
@@ -18,7 +17,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		if(structKeyExists(eventTriggerEvents, arguments.eventName)) {
 			
 			// Loop over each of the eventTriggers for this event
-			for(eventTriggerDetails in eventTriggerEvents[ arguments.eventName ]) {
+			for(var eventTriggerDetails in eventTriggerEvents[ arguments.eventName ]) {
 				
 				// Event Trigger - Email
 				if(eventTriggerDetails.eventTriggerType eq 'email' && structKeyExists(eventTriggerDetails,'emailTemplateID')) {

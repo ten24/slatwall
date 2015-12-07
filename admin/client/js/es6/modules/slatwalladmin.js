@@ -1,10 +1,9 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-var slatwallAdmin;
-(function (slatwallAdmin) {
-    angular.module('slatwalladmin', ['ngSlatwall', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor']).
-        config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
-        function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
+(() => {
+    var app = angular.module('slatwalladmin', ['hibachi', 'ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngSanitize', 'ngCkeditor']);
+    app.config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
+            ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) => {
             datepickerConfig.showWeeks = false;
             datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
             datepickerPopupConfig.toggleWeeksText = null;
@@ -82,7 +81,7 @@ var slatwallAdmin;
                 //controller:'otherwiseController'        
                 templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
             });
-        }]).run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService) {
+        }]).run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', 'observerService', 'utilityService', ($rootScope, $filter, $anchorScroll, $slatwall, dialogService, observerService, utilityService) => {
             $anchorScroll.yOffset = 100;
             $rootScope.openPageDialog = function (partial) {
                 dialogService.addPageDialog(partial);
@@ -92,6 +91,8 @@ var slatwallAdmin;
             };
             $rootScope.loadedResourceBundle = false;
             $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
+            $rootScope.buildUrl = $slatwall.buildUrl;
+            $rootScope.createID = utilityService.createID;
             var rbListener = $rootScope.$watch('loadedResourceBundle', function (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     $rootScope.$broadcast('hasResourceBundle');
@@ -106,7 +107,41 @@ var slatwallAdmin;
                     return text;
                 }
             };
+        }]).filter('swcurrency', ['$slatwall', '$sce', '$log', ($slatwall, $sce, $log) => {
+            var data = null, serviceInvoked = false;
+            function realFilter(value, decimalPlace) {
+                // REAL FILTER LOGIC, DISREGARDING PROMISES
+                if (!angular.isDefined(data)) {
+                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+                    data = "$";
+                }
+                if (angular.isDefined(value)) {
+                    if (angular.isDefined(decimalPlace)) {
+                        value = parseFloat(value.toString()).toFixed(decimalPlace);
+                    }
+                    else {
+                        value = parseFloat(value.toString()).toFixed(2);
+                    }
+                }
+                return data + value;
+            }
+            filterStub.$stateful = true;
+            function filterStub(value, currencyCode, decimalPlace) {
+                if (data === null) {
+                    if (!serviceInvoked) {
+                        serviceInvoked = true;
+                        $slatwall.getCurrencies().then((currencies) => {
+                            var result = currencies.data;
+                            data = result[currencyCode];
+                        });
+                    }
+                    return "-";
+                }
+                else
+                    return realFilter(value, decimalPlace);
+            }
+            return filterStub;
         }]);
-})(slatwallAdmin || (slatwallAdmin = {}));
+})();
 
 //# sourceMappingURL=slatwalladmin.js.map

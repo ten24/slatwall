@@ -1,0 +1,9 @@
+{
+	
+	"properties":{
+	    "giftCardCode":	               [{"contexts":"save","required":true},
+					        			{"contexts":"edit,delete", "method":"canEditOrDelete"}],
+		"ownerAccount":		       	   [{"contexts":"updateEmailAddress","null":true}], 
+        "ownerEmailAddress":           [{"contexts":"save","required":true}]
+	}
+}
