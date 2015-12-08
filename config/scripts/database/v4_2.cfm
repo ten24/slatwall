@@ -51,12 +51,12 @@ Notes:
 
 <cftry>
 
-	<cfquery name="local.updateautofulfilltrue" dbtype="query">
-		update SwFulfillmentMethod set autoFulfillFlag=1 where fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> or fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"> and autoFulfillFlag is null
+	<cfquery name="local.updateautofulfilltrue">
+		update SwFulfillmentMethod set autoFulfillFlag=1 where fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"/> or fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"/> and autoFulfillFlag is null
 	</cfquery>
 
-	<cfquery name="local.updateautofulfillfalse" dbtype="query">
-		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"> and autoFulfillFlag is null
+	<cfquery name="local.updateautofulfillfalse">
+		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"/> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"/> and autoFulfillFlag is null
 	</cfquery>
 
 	<cfcatch>
@@ -69,15 +69,15 @@ Notes:
 
 <cftry>
 
-	<cfquery name="local.updatereporttype" dbtype="query">
-		update SwReport set reportType=<cfqueryparam cfsqltype="cf_sql_varchar" value="line"> where reportType is null
+	<cfquery name="local.updatereporttype">
+		update SwReport set reportType=<cfqueryparam cfsqltype="cf_sql_varchar" value="line"/> where reportType is null
 	</cfquery>
 
-	<cfquery name="local.updatereportlimitresults" dbtype="query">
+	<cfquery name="local.updatereportlimitresults">
 		update SwReport set limitResults=5 where limitResults is null
 	</cfquery>
 
-	<cfquery name="local.updatereportlimitresults" dbtype="query">
+	<cfquery name="local.updatereportlimitresults">
 		update SwReport set showReport=1 where showReport is null
 	</cfquery>
 
@@ -91,7 +91,7 @@ Notes:
 
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_2 had errors when running">
-	<cfthrow detail="Part of Script v4_1 had errors when running">
+	<cfthrow detail="Part of Script v4_2 had errors when running">
 <cfelse>
 	<cflog file="Slatwall" text="General Log - Script v4_2 has run with no errors">
 </cfif>
