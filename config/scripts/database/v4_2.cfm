@@ -49,7 +49,6 @@ Notes:
 
 <cfset local.scriptHasErrors = false />
 
-<!--- Update SwContent create materialized paths for title called titlePath based on existing title --->
 <cftry>
 
 	<cfquery name="local.updateautofulfilltrue" dbtype="query">
@@ -65,6 +64,27 @@ Notes:
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 
+
+</cftry>
+
+<cftry>
+
+	<cfquery name="local.updatereporttype" dbtype="query">
+		update SwReport set reportType=<cfqueryparam cfsqltype="cf_sql_varchar" value="line"> where reportType is null
+	</cfquery>
+
+	<cfquery name="local.updatereportlimitresults" dbtype="query">
+		update SwReport set limitResults=5 where limitResults is null
+	</cfquery>
+
+	<cfquery name="local.updatereportlimitresults" dbtype="query">
+		update SwReport set showReport=1 where showReport is null
+	</cfquery>
+
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Report">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
 
 </cftry>
 
