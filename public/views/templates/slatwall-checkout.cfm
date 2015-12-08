@@ -732,6 +732,8 @@ Notes:
 											
 											<cfset apmFirst = false />
 										</cfloop>
+
+										<sw:ErrorDisplay object="#order#" errorName="order" />
 										
 										<!--- This button will just add the order payment, but not actually process the order --->
 										<button type="submit" class="btn" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.addOrderPayment');">Apply Payment Method & Review</button>
@@ -877,6 +879,8 @@ Notes:
 													
 											</cfif>
 											
+											<sw:ErrorDisplay object="#$.slatwall.cart()#" />
+
 											<div class="control-group pull-right">
 												<div class="controls">
 													<!--- This button will just add the order payment, but not actually process the order --->
@@ -1067,6 +1071,8 @@ Notes:
 									</cfloop>
 								</div>
 							</div>
+
+							<sw:ErrorDisplay object="#$.slatwall.cart()#" />
 						
 							<div class="control-group pull-right">
 								<div class="controls">
