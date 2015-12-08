@@ -7,6 +7,7 @@ angular.module('slatwalladmin')
 '$log',
 '$filter',
 '$slatwall',
+'$timeout',
 'collectionPartialsPath',
 'collectionService',
 'metadataService',
@@ -17,6 +18,7 @@ angular.module('slatwalladmin')
 	$log,
 	$filter,
 	$slatwall,
+	$timeout,
 	collectionPartialsPath,
 	collectionService,
 	metadataService
@@ -167,6 +169,7 @@ angular.module('slatwalladmin')
 			};
 			
 			scope.addFilterItem = function(){
+				console.log("adding filter item")
 				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
 			};
 			
@@ -328,7 +331,10 @@ angular.module('slatwalladmin')
 					
 					$log.debug(selectedFilterProperty);
 					$log.debug(filterItem);
-					callback();
+					$timeout(function(){
+						callback();
+					});
+					
 					$log.debug('saveFilter end');
 				}
 			};
