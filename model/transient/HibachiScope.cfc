@@ -59,6 +59,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// Slatwall specific request smartList properties
 	property name="productSmartList" type="any";
+	// Slatwall specific request collectin properties
+	property name="productCollectionList" type="any";
 	
 	// Slatwall Specific queue properties
 	property name="emailQueue" type="array";
@@ -167,6 +169,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			}
 		}
 		return variables.productSmartList;
+	}
+	
+	// Product Collection List
+	public any function getProductCollectionList() {
+		if(!structKeyExists(variables, "productCollectionList")) {
+			variables.productCollectionList = getService("productService").getProductCollectionList(data=url);
+//			variables.productSmartList = getService("productService").getProductSmartList(data=url);
+//			variables.productSmartList.setSelectDistinctFlag( 1 );
+//			variables.productSmartList.addFilter('activeFlag', 1);
+//			variables.productSmartList.addFilter('publishedFlag', 1);
+//			variables.productSmartList.addRange('calculatedQATS', '1^');
+//			if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag() && isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) && getContent().setting('contentIncludeChildContentProductsFlag')) {
+//				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingProducts slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.productID = aslatwallproduct.productID) ");
+//			} else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()) {
+//				variables.productSmartList.addFilter('listingPages.contentID',getContent().getContentID());
+//			}
+		}
+		return variables.productCollectionList;
 	}
 	
 	// ================= Queue Helper Methods =====================

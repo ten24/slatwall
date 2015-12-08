@@ -1081,6 +1081,27 @@ component extends="HibachiService" accessors="true" {
 
 		return smartList;
 	}
+	
+	public any function getProductCollectionList(struct data={}, currentURL="") {
+		
+		arguments.entityName = "SlatwallProduct";
+		var collectionList = getHibachiDAO().getCollectionList(argumentCollection=arguments);
+		return collectionList;
+		//var collectionList = getService('')
+//		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+//
+//		smartList.joinRelatedProperty("SlatwallProduct", "productType");
+//		smartList.joinRelatedProperty("SlatwallProduct", "defaultSku");
+//		smartList.joinRelatedProperty("SlatwallProduct", "brand", "left");
+//
+//		smartList.addKeywordProperty(propertyIdentifier="calculatedTitle", weight=1);
+//		smartList.addKeywordProperty(propertyIdentifier="brand.brandName", weight=1);
+//		smartList.addKeywordProperty(propertyIdentifier="productName", weight=1);
+//		smartList.addKeywordProperty(propertyIdentifier="productCode", weight=1);
+//		smartList.addKeywordProperty(propertyIdentifier="productType.productTypeName", weight=1);
+//
+//		return smartList;
+	}
 
 	// ====================  END: Smart List Overrides ========================
 
