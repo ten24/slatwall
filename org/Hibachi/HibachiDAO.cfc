@@ -122,6 +122,15 @@
 			return smartList;
 		}
 		
+		public any function getCollectionList(required string entityName,struct data={}){
+			if(left(arguments.entityName,len(getApplicationKey()) ) != getApplicationKey()){
+				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
+			}
+			var collectionList = getService('CollectionService').newCollection();
+			collectionList.setCollectionObject(arguments.entityName);
+			return collectionList;
+		}
+		
 		public any function getExportQuery(required string tableName) {
 			var qry = new query();
 			qry.setName("exportQry");

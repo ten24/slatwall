@@ -160,7 +160,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			propertyIdentifier=arguments.propertyIdentifier
 		);
 		//if so then add attribute details
-		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.displayProperty) && hasAttribute){
+		if(!getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(getCollectionObject(),arguments.propertyIdentifier) && hasAttribute){
 			filterGroup['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
 			filterGroup['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
 				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),

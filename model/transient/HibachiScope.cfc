@@ -175,16 +175,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	public any function getProductCollectionList() {
 		if(!structKeyExists(variables, "productCollectionList")) {
 			variables.productCollectionList = getService("productService").getProductCollectionList(data=url);
-//			variables.productSmartList = getService("productService").getProductSmartList(data=url);
-//			variables.productSmartList.setSelectDistinctFlag( 1 );
-//			variables.productSmartList.addFilter('activeFlag', 1);
-//			variables.productSmartList.addFilter('publishedFlag', 1);
-//			variables.productSmartList.addRange('calculatedQATS', '1^');
-//			if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag() && isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) && getContent().setting('contentIncludeChildContentProductsFlag')) {
-//				variables.productSmartList.addWhereCondition(" EXISTS(SELECT sc.contentID FROM SlatwallContent sc INNER JOIN sc.listingProducts slp WHERE sc.contentIDPath LIKE '%#getContent().getContentID()#%' AND slp.productID = aslatwallproduct.productID) ");
-//			} else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()) {
-//				variables.productSmartList.addFilter('listingPages.contentID',getContent().getContentID());
-//			}
+			variables.productCollectionList.addFilter('activeFlag',1);
+			variables.productCollectionList.addFilter('publishedFlag',1);
+			variables.productCollectionList.addFilter('calculatedQATS','1','>');
+			if(
+				isBoolean(getContent().getProductListingPageFlag()) 
+				&& getContent().getProductListingPageFlag() 
+				&& isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) 
+				&& getContent().setting('contentIncludeChildContentProductsFlag')
+			){
+				//exists in another collection
+				//variables.productCollectionList.
+			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
+				variables.productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
+			}
 		}
 		return variables.productCollectionList;
 	}
