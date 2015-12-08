@@ -291,6 +291,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
+                    //check the fulfillment and display errors if needed.
+                    if (orderFulfillment.hasErrors()){
+                        arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
+                    }
 
 				} else {
 
