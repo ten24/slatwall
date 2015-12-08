@@ -58,7 +58,7 @@ Notes:
 						  recordEditQueryString="redirectAction=admin:entity.editstockadjustment"
 						  recordEditModal="true">
 						   	   
-	<cfif listFindNoCase("satLocationTransfer,satManualOut", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
+	<cfif listFindNoCase("satLocationTransfer,satManualOut,satPhysicalCount", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromstock.sku.skucode" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
@@ -67,11 +67,6 @@ Notes:
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
 			<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
 		</cfif>
-	<cfelseif listFindNoCase("satPhysicalCount", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skucode" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" sort="false" />
 	<cfelse>
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="tostock.sku.skucode" />
 		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.product.brand.brandName" />
