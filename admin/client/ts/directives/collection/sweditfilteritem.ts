@@ -169,7 +169,6 @@ angular.module('slatwalladmin')
 			};
 			
 			scope.addFilterItem = function(){
-				console.log("adding filter item")
 				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
 			};
 			
