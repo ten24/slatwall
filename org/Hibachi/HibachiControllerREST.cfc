@@ -516,7 +516,10 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
-			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
+			if(!structKeyExists(arguments.rc'validationContext')){
+				arguments.rc.validationContext = arguments.rc.context;
+			}
+			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.validationContext});
 		// DELETE
 		} else if (arguments.rc.context eq 'delete') {
 			var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
