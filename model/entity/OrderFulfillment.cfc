@@ -651,6 +651,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 	// ==================  END:  Overridden Methods ========================
 
+    // ==================  START: Validation Methods  ======================
+    public boolean function hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity() {
+        var settingVal = getService("settingService").getSettingValue(settingName='globalMaximumFulfillmentsPerOrder');
+        if (!isNull(settingVal) && !isNull(getOrder().getOrderFulfillments())){
+           return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);  
+        }
+        return false;
+    } 
+    // ==================  END: Validation Methods  ========================
+
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preUpdate(Struct oldData){
