@@ -60,6 +60,18 @@ Notes:
 		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"> and autoFulfillFlag is null
 	</cfquery>
 
+	<cfquery name="local.updatereporttype" dbtype="query">
+		update SwReport set reportType=<cfqueryparam cfsqltype="cf_sql_varchar" value="line"> where reportType is null
+	</cfquery>
+
+	<cfquery name="local.updatereportlimitresults" dbtype="query">
+		update SwReport set limitResults=5 where limitResults is null
+	</cfquery>
+
+	<cfquery name="local.updatereportlimitresults" dbtype="query">
+		update SwReport set showReport=1 where showReport is null
+	</cfquery>
+
 	<cfcatch>
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update autofulfillflag for fulfillment methods">
 		<cfset local.scriptHasErrors = true />
