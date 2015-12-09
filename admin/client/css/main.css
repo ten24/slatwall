@@ -286,10 +286,25 @@ body.s-login-screen {
   background-size: cover;
   height: 100vh;
 }
+body.s-login-screen .form-group {
+  display: inline-block;
+  width: 100%;
+}
 @media only screen and (max-width: 992px) {
   body {
     padding: 0px /*Remove for responsive*/;
   }
+}
+.no-records-found {
+  font-style: italic;
+  text-align: center;
+  background: #F4F9FB;
+  color: #31708f;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.no-records-found:hover > td {
+  background-color: #F4F9FB !important;
 }
 .s-strong {
   font-weight: 600;
@@ -360,6 +375,16 @@ a:hover {
 }
 .table-responsive .s-table-input-element input {
   font-size: 12px;
+}
+.table-responsive .s-table-input-element textarea {
+  width: auto;
+  margin-top: 5px;
+}
+.table-responsive .s-table-input-element .s-message-count {
+  text-align: right;
+}
+.table-responsive .s-table-input-element .s-message-count {
+  text-align: right;
 }
 .table-responsive .s-table-select a i {
   margin: 0px;
@@ -460,7 +485,6 @@ label {
   transition: all 0.5s ease-in-out;
 }
 .modal-body {
-  max-height: 400px;
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -995,6 +1019,7 @@ select.error {
 }
 .form-horizontal .control-label {
   margin-bottom: 4px;
+  text-align: left;
 }
 .btn-group {
   float: right;
@@ -1234,8 +1259,6 @@ table tr th .glyphicon {
 }
 .form-group {
   margin-bottom: 10px;
-  display: inline-block;
-  width: 100%;
 }
 .form-group .s-optional {
   color: #b3b3b3;
@@ -2380,6 +2403,7 @@ tabel .s-table-header {
 }
 .s-table-header-nav .s-select-list-wrapper {
   max-width: 200px;
+  position: relative;
 }
 .s-filter-options .selectboxit {
   min-width: 120px;
@@ -3326,7 +3350,6 @@ tabel .s-table-header {
 .s-bundle-group-dropdown-content .s-options .radio {
   display: inline-block;
   margin-right: 10px;
-  padding-left: 22px;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {
   width: 32px;
@@ -3963,7 +3986,7 @@ tabel .s-table-header {
   border-radius: 0px;
   border: 0px;
 }
-.s-search-filter .btn-primary {
+.s-search-filter .s-results > .btn-primary {
   width: 100%;
   text-align: left;
   border-radius: 0px;
@@ -3997,8 +4020,8 @@ tabel .s-table-header {
   border-color: #cccccc;
   -webkit-border-bottom-right-radius: 2px;
   -webkit-border-bottom-left-radius: 2px;
-  -moz-border-radius-bottomright: 2px;
-  -moz-border-radius-bottomleft: 2px;
+  -moz-border-radius-bottom-right: 2px;
+  -moz-border-radius-bottom-left: 2px;
   border-bottom-right-radius: 2px;
   border-bottom-left-radius: 2px;
   overflow: hidden;
@@ -4034,7 +4057,7 @@ tabel .s-table-header {
 }
 .s-search-filter .s-add-content {
   border: 1px solid #cccccc;
-  padding: 15px 0px 15px 0px;
+  padding: 15px;
   border-top: 0px;
   margin-top: -2px;
   background: #ffffff;
@@ -4050,11 +4073,7 @@ tabel .s-table-header {
 .s-search-filter .s-add-content hr {
   border-color: #cccccc;
 }
-.s-search-filter .s-add-content .btn {
-  margin: 15px;
-}
 .s-search-filter .dropdown-menu {
-  top: 30px;
   left: 0px;
 }
 .s-search-filter .dropdown-menu .s-photo {
@@ -4079,6 +4098,10 @@ tabel .s-table-header {
   background-color: #FBFBFB;
   display: inline-block;
   width: 100%;
+}
+.s-search-filter .s-add-info-dropdown .s-add-info-dropdown-inner .form-group {
+  margin-right: 0px;
+  margin-left: 0px;
 }
 .s-search-filter .s-add-info-dropdown h5 {
   border-bottom: 1px solid #ddd;
@@ -4140,6 +4163,11 @@ tabel .s-table-header {
   z-index: 2000;
   color: #AAA;
   font-size: 15px;
+}
+.s-search-filter.s-gift-card .s-results {
+  position: relative;
+  display: block;
+  width: 100%;
 }
 .s-gift-card-table .admin {
   text-align: right !important;
@@ -4704,9 +4732,8 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-select-list-wrapper .s-input-btn span,
 .s-select-list-wrapper .s-input-btn i {
   position: absolute;
-  right: 10px;
-  top: 29px;
-  bottom: 0;
+  top: 8px;
+  right: 8px;
   height: 14px;
   margin: auto;
   font-size: 14px;

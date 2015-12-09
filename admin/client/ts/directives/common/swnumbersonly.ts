@@ -2,7 +2,6 @@
 /// <reference path='../../../../../client/typings/tsd.d.ts' />
 module slatwalladmin {
     
-    
     export class SWNumbersOnly implements ng.IDirective{
         public restrict = "A";
         public require = "ngModel";
@@ -14,7 +13,7 @@ module slatwalladmin {
         
         public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
 
-            modelCtrl.$parsers.push((inputValue) =>{
+            modelCtrl.$parsers.unshift((inputValue) =>{
                 var modelValue = modelCtrl.$modelValue;
                 if(inputValue != "" && !isNaN(Number(inputValue))){ 
                     if(angular.isDefined($scope.minNumber)){
@@ -31,9 +30,9 @@ module slatwalladmin {
                             modelCtrl.$setValidity("maxNumber", false);
                         }
                     }
-                
+
                     if(modelCtrl.$valid){
-                        modelValue = Number(inputValue);
+                        modelValue = Number(inputValue);  
                     } else { 
                         modelValue = $scope.minNumber;
                     }
@@ -41,6 +40,8 @@ module slatwalladmin {
 
                 return modelValue;
             });
+            
+            
 		}
     }
     

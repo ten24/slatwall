@@ -2,58 +2,18 @@
 <div class="s-table-header-nav s-listing-head-margin">
 	<div class="col-xs-6 s-no-padding-left" ng-if="swListingDisplay.title">
 		<ul class="list-inline list-unstyled">
-			<li>{{swListingDisplay.paginator
+			<li>
 				<h4 class="s-table-title" ng-bind="swListingDisplay.title"></h4>
 			</li>
 		</ul>
 	</div>
 	<!-- search begin -->
-	<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
-		<!--<ul class="list-inline list-unstyled">
-			<li class="s-table-header-search">
-				<cfif not thistag.expandable>
-					<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
-				</cfif>
-			</li>
-			<li>
-				<div class="btn-group navbar-left dropdown">
-
-					<button type="button" class="btn btn-sm s-btn-dgrey dropdown-toggle"><i class="fa fa-cog"></i></button>
-
-						<ul class="dropdown-menu pull-right" role="menu">
-							<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-						</ul>
-						<!--- Listing: Button Groups 
-						<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
-							<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
-								<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-									<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
-											#buttonGroup.generatedContent#
-									<cfelse>
-										<div class="btn-group">
-											#buttonGroup.generatedContent#
-										</div>
-									</cfif>
-								</cfif>
-							</cfloop>
-						</cfif>
-
-						<!--- Listing: Create 
-						<cfif len(attributes.createAction)>
-							<div class="btn-group">
-								<cfif attributes.createModal>
-									<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
-								<cfelse>
-									<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
-								</cfif>
-							</div>
-						</cfif>
-
-				</div>
-			</li>
-		</ul>-->
-
-	</div>
+	<sw-listing-global-search
+		ng-if="swListingDislay.hasSearch && swListingDislay.hasSearch === true"
+		data-get-collection="swListingDisplay.getCollection"
+		data-search-text="swListingDisplay.collectionConfig.keywords"
+		data-searching="swListingDisplay.searching">
+	</sw-listing-global-search> 
 </div><!--- reyjay's class --->
 
 
@@ -68,6 +28,7 @@
 	data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
 	data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" {{this.tableattributes}}>
 -->
+
 	<table  ng-class="swListingDisplay.tableclass" 
 			ng-attr-id="{{swListingDisplay.tableID}}"
 			data-norecordstext="{{swListingDisplay.norecordstext}}" 
@@ -153,7 +114,7 @@
 			</tr>
 		</thead>
 		<tbody ng-class="{'sortable':swListingDisplay.sortable}" ng-if="swListingDisplay.collectionData.pageRecords">
-			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-show="pageRecord.dataIsVisible !== false">
+			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-if="pageRecord.dataIsVisible !== false">
 				<!--Selectable-->
 				<td ng-if="swListingDisplay.selectable" class="s-table-select">
 					<a href="##" class="table-action-select{{swListingDisplay.edit ? '' : 'disabled'}}" data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
@@ -207,7 +168,8 @@
 					<span ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" style="margin-left:{{24+(pageRecord.depth*15)||0}}px" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]">
 					</span>
 					<span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
-				</td>
+                    <span ng-if="column.aggregate" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"></span>
+                </td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
 					<!--- Detail -->
@@ -268,9 +230,10 @@
 				</td>
 			</tr>
 			
-			<tr ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
-				<td colspan="#thistag.columnCount#" style="text-align:center;">
-					no records
+			<!--- Show message if no records are found --->
+			<tr class="no-records-found" ng-if="(swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length) || (swListingDisplay.collectionData.records && !swListingDisplay.collectionData.records.length)">
+				<td colspan="{{swListingDisplay.collectionConfig.columns.length}}" style="text-align:center;">
+					No <span sw-rbkey="'entity.'+swListingDisplay.collectionObject+'_plural'"></span>
 				</td>
 			</tr>
 			<!--<cfif !arrayLen(attributes.smartList.getPageRecords())>
@@ -283,10 +246,8 @@
 	</div><!--- table-responsive --->
 
 	<sw-pagination-bar
-		ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable"
+        ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable && swListingDisplay.collectionData.recordsCount"
 		data-paginator="swListingDisplay.paginator"
 		>
 	</sw-pagination-bar>
-	}}
-
-
+	

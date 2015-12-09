@@ -1,6 +1,6 @@
 <div class="form-group" >
-			<label class="col-md-3 control-label" for=""><span sw-rbkey="'admin.productBundle.bundleGroupType'"></span>:</label>
-			<div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
+			<label class="control-label" for=""><span sw-rbkey="'admin.productBundle.bundleGroupType'"></span>:</label>
+			<div class="s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
 			
 				<div class="input-group" >
 					<input  type="text"
@@ -32,7 +32,7 @@
 						
 
 							<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
-								<sw-form name="form.addProductBundleGroupType"
+								<sw-form ng-attr-name="form.addProductBundleGroupType"
 									data-object="productBundleGroup.data.productBundleGroupType"
 									data-context="save"
 									ng-if="productBundleGroup.data.productBundleGroupType"
@@ -79,14 +79,12 @@
 											data-is-dirty="true"
 										></sw-property-display> 
 						        </sw-form>
-								<div class="form-group">
 									<button type="button"
 											class="btn btn-xs s-btn-ten24"
 											ng-click="saveProductBundleGroupType()"
 									>
 										<i class="fa fa-plus"></i> Add Group Type
 									</button>
-								</div>
 							</span>
 						</form>
 					</div>

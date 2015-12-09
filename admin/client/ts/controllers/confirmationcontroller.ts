@@ -6,10 +6,10 @@ angular.module('slatwalladmin').controller("confirmationController", ["$scope", 
     $log.debug($scope.entity);
     this.close();
   };
-  $scope.fireCallback = function (callbackFunction:Function) {
-      callbackFunction();
-      this.close();
-    }
+ $scope.fireCallback = function (callbackFunction:Function) {
+     callbackFunction(); 
+     this.close();
+  }
   /**
    * Closes the modal window
    */

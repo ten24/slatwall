@@ -77,7 +77,6 @@ class CollectionController{
 				//Set current page here so that the pagination does not break when getting collection
 				$scope.paginator.setCurrentPage(1);
 				$scope.loadingCollection = true;
-				//$scope.getCollection();
 			}, 500);
 		};
 
@@ -199,7 +198,6 @@ class CollectionController{
 						$scope.errorMessage = {};
 						//Set current page here so that the pagination does not break when getting collection
 						$scope.paginator.setCurrentPage( 1);
-						//$scope.getCollection();
 						$scope.collectionDetails.isOpen = false;
 					}, function(reason){
 						//revert to original
