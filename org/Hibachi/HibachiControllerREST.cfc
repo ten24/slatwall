@@ -516,7 +516,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
-			if(!structKeyExists(arguments.rc'validationContext')){
+			if(!structKeyExists(arguments.rc,'validationContext')){
 				arguments.rc.validationContext = arguments.rc.context;
 			}
 			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.validationContext});
