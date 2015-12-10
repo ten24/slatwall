@@ -175,6 +175,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	public any function getProductCollectionList() {
 		if(!structKeyExists(variables, "productCollectionList")) {
 			variables.productCollectionList = getService("productService").getProductCollectionList(data=url);
+			variables.productCollectionList.setDistinct(true);
 			variables.productCollectionList.addFilter('activeFlag',1);
 			variables.productCollectionList.addFilter('publishedFlag',1);
 			variables.productCollectionList.addFilter('calculatedQATS','1','>');
@@ -184,8 +185,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 				&& isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) 
 				&& getContent().setting('contentIncludeChildContentProductsFlag')
 			){
-				//exists in another collection
-				//variables.productCollectionList.
+				variables.productCollectionList.addFilter('listingPages.contentIDPath',getContent().getContentIDPath()&"%",'like');
 			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
 				variables.productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
 			}

@@ -123,11 +123,8 @@
 		}
 		
 		public any function getCollectionList(required string entityName,struct data={}){
-			if(left(arguments.entityName,len(getApplicationKey()) ) != getApplicationKey()){
-				arguments.entityName = "#getApplicationKey()##arguments.entityName#";
-			}
 			var collectionList = getService('CollectionService').newCollection();
-			collectionList.setCollectionObject(arguments.entityName);
+			collectionList.setup(argumentCollection=arguments);
 			return collectionList;
 		}
 		
