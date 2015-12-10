@@ -1081,6 +1081,12 @@ component extends="HibachiService" accessors="true" {
 
 		return smartList;
 	}
+	
+	public any function getProductCollectionList(struct data={}, currentURL="") {
+		arguments.entityName = "Product";
+		var collectionList = getHibachiDAO().getCollectionList(argumentCollection=arguments);
+		return collectionList;
+	}
 
 	// ====================  END: Smart List Overrides ========================
 
