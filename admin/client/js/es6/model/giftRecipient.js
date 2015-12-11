@@ -4,11 +4,11 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class GiftRecipient {
-        constructor(firstName, lastName, email, giftMessage, quantity, account, editing) {
+        constructor(firstName, lastName, emailAddress, giftMessage, quantity, account, editing) {
             this.reset = () => {
                 this.firstName = null;
                 this.lastName = null;
-                this.email = null;
+                this.emailAddress = null;
                 this.account = null;
                 this.editing = false;
                 this.quantity = 1;

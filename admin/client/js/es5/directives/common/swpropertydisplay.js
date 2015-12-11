@@ -9,6 +9,7 @@ angular.module('slatwalladmin')
             restrict: 'AE',
             scope: {
                 object: "=",
+                options: "=?",
                 property: "@",
                 editable: "=",
                 editing: "=",
@@ -36,6 +37,7 @@ angular.module('slatwalladmin')
                  */
                 scope.propertyDisplay = {
                     object: scope.object,
+                    options: scope.options,
                     property: scope.property,
                     errors: {},
                     editing: scope.editing,
