@@ -126,7 +126,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var collectionPropertyIdentifier = 'Account.firstName';
 		var hibachiPropertyIdentifier = variables.service.getHibachiPropertyIdentifierByCollectionPropertyIdentifier(collectionPropertyIdentifier);
 		
-		request.debug(hibachiPropertyIdentifier);
 	}
 	
 	public void function getCapitalCaseTest(){
@@ -179,7 +178,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(listLen(propertyIdentifiersList));
 		
 		var test = request.slatwallScope.getService('hibachiValidationService').getValidationsByContext(variables.service.newCollection(),'delete');
-		request.debug(test);
 	}
 	
 //	public void function getEntityNameColumnProperties_returns_valid_array() {

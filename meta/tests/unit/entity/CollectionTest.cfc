@@ -199,9 +199,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			aggregateFunction = "count",
 			aggregateAlias = "Account_firstName"
 		};
-		request.debug(lcase(replace(createUUID(),'-','')));
+		//request.debug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
-		request.debug(aggregateHQL);
+		//request.debug(aggregateHQL);
 		assertFalse(Compare("COUNT(DISTINCT Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
 	
