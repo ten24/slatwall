@@ -21,7 +21,7 @@ angular.module('slatwalladmin')
 				filterPropertiesList:"=",
 				saveCollection:"&",
 				filterGroup:"=",
-				comparisonType:"@"
+				comparisonType:"="
 			},
 			templateUrl:collectionPartialsPath+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
