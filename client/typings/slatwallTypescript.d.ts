@@ -1,4 +1,5 @@
 //{
+/// <reference path="../../admin/client/ts/filters/percentage.ts" />
 /// <reference path="../../admin/client/ts/controllers/alertcontroller.ts" />
 /// <reference path="../../admin/client/ts/controllers/collections.ts" />
 /// <reference path="../../admin/client/ts/controllers/collectionstabcontroller.ts" />
@@ -12,7 +13,6 @@
 /// <reference path="../../admin/client/ts/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
 /// <reference path="../../admin/client/ts/controllers/preprocessproduct_create.ts" />
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
-/// <reference path="../../admin/client/ts/filters/percentage.ts" />
 /// <reference path="../../admin/client/ts/model/alert.ts" />
 /// <reference path="../../admin/client/ts/model/giftCard.ts" />
 /// <reference path="../../admin/client/ts/model/giftRecipient.ts" />

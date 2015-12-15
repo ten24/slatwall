@@ -93,6 +93,7 @@ var slatwalladmin;
                     columnsConfig.unshift(column);
                 }
                 else {
+                    _this.collectionConfig.setKeywords(_this.keywords);
                     _this.isSearching = true;
                     var filterGroupsConfig = [
                         {
@@ -153,29 +154,27 @@ var slatwalladmin;
                 });
                 _this.collectionListingPromise = _this.collectionConfig.getEntity();
                 _this.collectionListingPromise.then(function (value) {
-                    _this.collection = value;
-                    _this.collection.collectionConfig = _this.collectionConfig;
-                    _this.firstLoad = true;
-                    _this.loadingCollection = false;
+                    _this.$timeout(function () {
+                        _this.collection = value;
+                        _this.collection.collectionConfig = _this.collectionConfig;
+                        _this.firstLoad = true;
+                        _this.loadingCollection = false;
+                    });
                 });
-                _this.collectionListingPromise;
+                return _this.collectionListingPromise;
             };
             //this.getCollection(false);
-            this.keywords = "";
             this.loadingCollection = false;
-            var searchPromise;
             this.searchCollection = function () {
-                if (searchPromise) {
-                    _this.$timeout.cancel(searchPromise);
-                }
-                searchPromise = $timeout(function () {
-                    $log.debug('search with keywords');
-                    $log.debug(_this.keywords);
-                    $('.childNode').remove();
-                    //Set current page here so that the pagination does not break when getting collection
-                    _this.loadingCollection = true;
-                    _this.getCollection(true);
-                }, 500);
+                $log.debug('search with keywords');
+                $log.debug(_this.keywords);
+                $('.childNode').remove();
+                //Set current page here so that the pagination does not break when getting collection
+                _this.loadingCollection = true;
+                var promise = _this.getCollection(true);
+                promise.then(function () {
+                    _this.collection.collectionConfig = _this.collectionConfig;
+                });
             };
             var siteChanged = function (selectedSiteOption) {
                 _this.selectedSite = selectedSiteOption;
