@@ -1207,8 +1207,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
             newRecipient.setOrderItem(newOrderItem);
         }
-        for(var j=1; j<arrayLen(orderItemToDuplicate.getChildOrderItems()); j++){
-			var newChildOrderItem = this.copyToNewOrderItem(orderItemToDuplicate.getChildOrderItems()[j]);
+        for(var j=1; j<arrayLen(orderItem.getChildOrderItems()); j++){
+			var newChildOrderItem = this.copyToNewOrderItem(orderItem.getChildOrderItems()[j]);
 			newOrderItem.addChildOrderItem(newChildOrderItem);
 
 		}
