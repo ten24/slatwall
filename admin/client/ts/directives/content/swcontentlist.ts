@@ -45,7 +45,6 @@ module slatwalladmin {
                var orderByConfig;
                
 	        	this.getCollection = (isSearching)=>{
-                  
                    this.collectionConfig = collectionConfigService.newCollectionConfig('Content');
                    
                    
@@ -92,6 +91,7 @@ module slatwalladmin {
                    };
                    var column = {};
                    if(!isSearching || this.keywords === ''){
+                      
                        this.isSearching = false;
                         var filterGroupsConfig =[
                            {
@@ -113,6 +113,7 @@ module slatwalladmin {
                        };
                        columnsConfig.unshift(column);
                    }else{
+                       this.collectionConfig.setKeywords(this.keywords);
                        this.isSearching = true;
                        var filterGroupsConfig =[
                            {
@@ -187,32 +188,33 @@ module slatwalladmin {
                    
                    this.collectionListingPromise = this.collectionConfig.getEntity();
 	        		this.collectionListingPromise.then((value)=>{
-                        this.collection = value;
-	        		    this.collection.collectionConfig = this.collectionConfig;
-                        this.firstLoad = true;
-                        this.loadingCollection = false;
+                        this.$timeout(()=>{
+                            this.collection = value;
+                            this.collection.collectionConfig = this.collectionConfig;
+                            
+                            this.firstLoad = true;
+                            this.loadingCollection = false;
+                        });
+                        
 	        		});
-                   this.collectionListingPromise;
+                    return this.collectionListingPromise;
 	        	};
 	        	//this.getCollection(false);
                
-               this.keywords = "";
+               
                this.loadingCollection = false;
-               var searchPromise;
                this.searchCollection = ()=>{
-                   
-                   if(searchPromise) {
-                       this.$timeout.cancel(searchPromise);
-                   }
-                   
-                   searchPromise = $timeout(()=>{
-                       $log.debug('search with keywords');
-                       $log.debug(this.keywords);
-                       $('.childNode').remove();
-                       //Set current page here so that the pagination does not break when getting collection
-                       this.loadingCollection = true;
-                       this.getCollection(true);
-                   }, 500);
+                  
+                   $log.debug('search with keywords');
+                   $log.debug(this.keywords);
+                   $('.childNode').remove();
+                   //Set current page here so that the pagination does not break when getting collection
+                  this.loadingCollection = true;
+                   var promise = this.getCollection(true);
+                   promise.then(()=>{
+                       this.collection.collectionConfig = this.collectionConfig;
+                        
+                   });
                };
               
                
