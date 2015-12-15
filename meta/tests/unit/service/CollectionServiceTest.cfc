@@ -51,7 +51,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.service = request.slatwallScope.getBean("collectionService");
+		variables.service = request.slatwallScope.getBean("hibachiCollectionService");
 		variables.defaultCollectionOptions = setUpCollectionOptions({});
 	}
 	
@@ -178,7 +178,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var propertyIdentifiersList = variables.service.getPropertyIdentifiersList(entityProperties);
 		assertTrue(listLen(propertyIdentifiersList));
 		
-		var test = request.slatwallScope.getService('hibachiValidationService').getValidationsByContext(request.slatwallScope.getService('collectionService').newCollection(),'delete');
+		var test = request.slatwallScope.getService('hibachiValidationService').getValidationsByContext(variables.service.newCollection(),'delete');
 		request.debug(test);
 	}
 	
