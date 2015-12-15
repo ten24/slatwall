@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiCollectionService" {
 	
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -722,7 +722,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var collectionFilterHQL = '';
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
 		collectionFilterHQL &= ' #filterCriteria# (';
-		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
+		var collectionEntity = getService('hibachiCollectionService').getCollectionByCollectionID(arguments.filter.collectionID);
 		var mainCollectionAlias = arguments.filter.propertyIdentifier;
 
 		//defaults befor processing criteria
@@ -849,53 +849,60 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	// Paging Methods
-	public array function getPageRecords(boolean refresh=false) {
-		try{
-			var HQL = '';
-			var HQLParams = {};
-			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
-				saveState();
-				if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
-					//prepare page records and possible process objects
-					variables.pageRecords = [];
-					variables.processObjects = [];
-					HQL = getHQL();
-					HQLParams = getHQLParams();
-					var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
-					var columns = getCollectionConfigStruct()["columns"];
-
-					for(var entity in entities){
-						var pageRecord = {};
-						for(var column in columns){
-							var listRest = ListRest(column.propertyIdentifier,'.');
-							if(structKeyExists(column,'setting') && column.setting == true){
+	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
+		
+		if(arguments.formatRecords){
+			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{}).pageRecords;
+			
+			variables.pageRecords =	formattedRecords;
+		}else{
+			//try{
+				var HQL = '';
+				var HQLParams = {};
+				if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
+					saveState();
+					if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
+						//prepare page records and possible process objects
+						variables.pageRecords = [];
+						variables.processObjects = [];
+						HQL = getHQL();
+						HQLParams = getHQLParams();
+						var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+						var columns = getCollectionConfigStruct()["columns"];
+	
+						for(var entity in entities){
+							var pageRecord = {};
+							for(var column in columns){
 								var listRest = ListRest(column.propertyIdentifier,'.');
-								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
-							}else{
-								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+								if(structKeyExists(column,'setting') && column.setting == true){
+									var listRest = ListRest(column.propertyIdentifier,'.');
+									pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+								}else{
+									pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+								}
 							}
+							arrayAppend(variables.pageRecords,pageRecord);
+	
+							if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
+								var processObject = entity.getProcessObject(this.getProcessContext());
+								arrayAppend(variables.processObjects,processObject);
+							}
+	
 						}
-						arrayAppend(variables.pageRecords,pageRecord);
-
-						if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
-							var processObject = entity.getProcessObject(this.getProcessContext());
-							arrayAppend(variables.processObjects,processObject);
-						}
-
+					}else{
+						HQL = getHQL();
+						HQLParams = getHQLParams();
+						variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 					}
-				}else{
-					HQL = getHQL();
-					HQLParams = getHQLParams();
-					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
-			}
+	//		}
+	//		catch(any e){
+	//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+	//			writelog(file="collection",text="Error:#e.message#");
+	//			writelog(file="collection",text="HQL:#HQL#");
+	//		}
+		
 		}
-		catch(any e){
-			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection",text="Error:#e.message#");
-			writelog(file="collection",text="HQL:#HQL#");
-		}
-
 		return variables.pageRecords;
 	}
 
@@ -914,46 +921,51 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 
-	public array function getRecords(boolean refresh=false, boolean forExport=false) {
-
-		try{
-			//If we are returning only the exportable records, then check and pass through.
-			var HQL = '';
-			var HQLParams = {};
-			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
-				if(this.getNonPersistentColumn()){
-					variables.records = [];
-					HQL = getHQL(forExport=arguments.forExport);
-					HQLParams = getHQLParams();
-					var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-					var columns = getCollectionConfigStruct()["columns"];
-					for(var entity in entities){
-						var record = {};
-
-						for(var column in columns){
-
-							var listRest = ListRest(column.propertyIdentifier,'.');
-							if(structKeyExists(column,'setting') && column.setting == true){
+	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
+		if(arguments.formatRecords){
+			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{allRecords=true}).records;
+			
+			variables.records =	formattedRecords;
+		}else{
+			try{
+				//If we are returning only the exportable records, then check and pass through.
+				var HQL = '';
+				var HQLParams = {};
+				if( !structKeyExists(variables, "records") || arguments.refresh == true) {
+					if(this.getNonPersistentColumn()){
+						variables.records = [];
+						HQL = getHQL(forExport=arguments.forExport);
+						HQLParams = getHQLParams();
+						var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+						var columns = getCollectionConfigStruct()["columns"];
+						for(var entity in entities){
+							var record = {};
+	
+							for(var column in columns){
+	
 								var listRest = ListRest(column.propertyIdentifier,'.');
-								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
-							}else{
-								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
-							}//<--end if
-
-						}//<--end for
-						arrayAppend(variables.records,record);
-					}//<--end entity
-				}else{
-					HQL = getHQL(forExport=arguments.forExport);
-					HQLParams = getHQLParams();
-					variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+								if(structKeyExists(column,'setting') && column.setting == true){
+									var listRest = ListRest(column.propertyIdentifier,'.');
+									record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+								}else{
+									record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+								}//<--end if
+	
+							}//<--end for
+							arrayAppend(variables.records,record);
+						}//<--end entity
+					}else{
+						HQL = getHQL(forExport=arguments.forExport);
+						HQLParams = getHQLParams();
+						variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+					}
 				}
 			}
-		}
-		catch(any e){
-			variables.records = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection",text="Error:#e.message#");
-			writelog(file="collection",text="HQL:#HQL#");
+			catch(any e){
+				variables.records = [{'failedCollection'='failedCollection'}];
+				writelog(file="collection",text="Error:#e.message#");
+				writelog(file="collection",text="HQL:#HQL#");
+			}
 		}
 
 		return variables.records;

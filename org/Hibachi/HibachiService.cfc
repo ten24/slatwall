@@ -44,7 +44,7 @@
 		}
 		
 		public any function getCollectionList(string entityName, struct data={}){
-			var collection = getService('collectionService').newCollection(argumentcollection=arguments);
+			var collection = getService('hibachiCollectionService').newCollection(argumentcollection=arguments);
 			collection.setCollectionObject(arguments.entityName);
 			return collection;
 		}
