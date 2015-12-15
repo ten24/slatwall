@@ -132,9 +132,13 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 		return "";
 	}
-	
+
 	public string function getPropertyTitle(){
-		return getAttribute().getAttributeSet().getAttributeSetName() & ': ' & getAttribute().getAttributeName();
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeSet())){
+			return getAttribute().getAttributeSet().getAttributeSetName() & ': ' & getAttribute().getAttributeName();
+		} else {
+			return '';
+		}
 	}
 
 	public array function getAttributeValueOptions() {
@@ -433,7 +437,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "orderDelivery");
 	}
-	
+
 	// Content (many-to-one)
 	public void function setContent(required any content){
 		variables.content = arguments.content;
@@ -450,7 +454,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.content.getAttributeValues(),index);
 		}
 		structDelete(variables,'content');
-	}	
+	}
 
 	// Option Group (many-to-one)
 	public void function setOptionGroup(required any optionGroup) {
@@ -707,7 +711,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 	// ================== START: Overridden Methods ========================
 
-	
+
 	public boolean function regexMatches(){
 		if(isNull(getAttribute().getValidationRegex())){
 			return true;
