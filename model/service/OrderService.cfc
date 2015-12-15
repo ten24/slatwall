@@ -1107,12 +1107,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var newOrderItem = this.copyToNewOrderItem(orderItemToDuplicate);
 
-			for(var j=1; j<arrayLen(orderItemToDuplicate.getChildOrderItems()); j++){
-				var newChildOrderItem = this.copyToNewOrderItem(orderItemToDuplicate.getChildOrderItems()[j]);
-				newOrderItem.addChildOrderItem(newChildOrderItem);
-
-			}
-
 			var orderFulfillmentFound = false;
 
 			// check if there is a fulfillment method of this type in the order
@@ -1213,6 +1207,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             }
             newRecipient.setOrderItem(newOrderItem);
         }
+        for(var j=1; j<arrayLen(orderItemToDuplicate.getChildOrderItems()); j++){
+			var newChildOrderItem = this.copyToNewOrderItem(orderItemToDuplicate.getChildOrderItems()[j]);
+			newOrderItem.addChildOrderItem(newChildOrderItem);
+
+		}
 
         return newOrderItem;
 	}
