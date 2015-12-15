@@ -292,9 +292,37 @@ var slatwalladmin;
                 //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
                 if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
                     logicalOperator = 'AND';
+                if (propertyIdentifier.split('.').length < 2) {
+                    var join = false;
+                }
+                else {
+                    var join = true;
+                }
                 //create filter group
-                var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, true), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
+                var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
                 _this.filterGroups[0].filterGroup.push(filter);
+            };
+            this.removeFilter = function (propertyIdentifier, value, comparisonOperator) {
+                if (comparisonOperator === void 0) { comparisonOperator = '='; }
+                _this.removeFilterHelper(_this.filterGroups, propertyIdentifier, value, comparisonOperator);
+            };
+            this.removeFilterHelper = function (filter, propertyIdentifier, value, comparisonOperator, currentGroup) {
+                if (angular.isUndefined(currentGroup)) {
+                    currentGroup = filter;
+                }
+                if (angular.isArray(filter)) {
+                    angular.forEach(filter, function (key) {
+                        _this.removeFilterHelper(key, propertyIdentifier, value, comparisonOperator, filter);
+                    });
+                }
+                else if (angular.isArray(filter.filterGroup)) {
+                    _this.removeFilterHelper(filter.filterGroup, propertyIdentifier, value, comparisonOperator, filter.filterGroup);
+                }
+                else {
+                    if (filter.propertyIdentifier == propertyIdentifier && filter.value == value && filter.comparisonOperator == comparisonOperator) {
+                        currentGroup.splice(currentGroup.indexOf(filter), 1);
+                    }
+                }
             };
             this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
                 if (criteria === void 0) { criteria = 'One'; }

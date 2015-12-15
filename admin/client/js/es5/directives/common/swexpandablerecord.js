@@ -13,49 +13,51 @@ var slatwalladmin;
             this.childrenOpen = false;
             this.children = [];
             this.toggleChild = function () {
-                _this.$timeout(function () {
-                    _this.childrenOpen = !_this.childrenOpen;
-                    if (!_this.childrenLoaded) {
-                        var childCollectionConfig = _this.collectionConfigService.newCollectionConfig(_this.entity.metaData.className);
-                        //set up parent
-                        var parentName = _this.entity.metaData.hb_parentPropertyName;
-                        var parentCFC = _this.entity.metaData[parentName].cfc;
-                        var parentIDName = _this.$slatwall.getEntityExample(parentCFC).$$getIDName();
-                        //set up child
-                        var childName = _this.entity.metaData.hb_childPropertyName;
-                        var childCFC = _this.entity.metaData[childName].cfc;
-                        var childIDName = _this.$slatwall.getEntityExample(childCFC).$$getIDName();
-                        childCollectionConfig.clearFilterGroups();
-                        childCollectionConfig.collection = _this.entity;
-                        childCollectionConfig.addFilter(parentName + '.' + parentIDName, _this.parentId);
-                        childCollectionConfig.setAllRecords(true);
-                        angular.forEach(_this.collectionConfig.columns, function (column) {
-                            childCollectionConfig.addColumn(column.propertyIdentifier, column.tilte, column);
+                if (!_this.collectionPromise || _this.collectionPromise && _this.collectionPromise.$$state.status !== 0) {
+                    _this.$timeout(function () {
+                        _this.childrenOpen = !_this.childrenOpen;
+                        if (!_this.childrenLoaded) {
+                            var childCollectionConfig = _this.collectionConfigService.newCollectionConfig(_this.entity.metaData.className);
+                            //set up parent
+                            var parentName = _this.entity.metaData.hb_parentPropertyName;
+                            var parentCFC = _this.entity.metaData[parentName].cfc;
+                            var parentIDName = _this.$slatwall.getEntityExample(parentCFC).$$getIDName();
+                            //set up child
+                            var childName = _this.entity.metaData.hb_childPropertyName;
+                            var childCFC = _this.entity.metaData[childName].cfc;
+                            var childIDName = _this.$slatwall.getEntityExample(childCFC).$$getIDName();
+                            childCollectionConfig.clearFilterGroups();
+                            childCollectionConfig.collection = _this.entity;
+                            childCollectionConfig.addFilter(parentName + '.' + parentIDName, _this.parentId);
+                            childCollectionConfig.setAllRecords(true);
+                            angular.forEach(_this.collectionConfig.columns, function (column) {
+                                childCollectionConfig.addColumn(column.propertyIdentifier, column.tilte, column);
+                            });
+                            angular.forEach(_this.collectionConfig.joins, function (join) {
+                                childCollectionConfig.addJoin(join);
+                            });
+                            childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
+                            _this.collectionPromise = childCollectionConfig.getEntity();
+                            _this.collectionPromise.then(function (data) {
+                                _this.collectionData = data;
+                                _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
+                                if (_this.collectionData.pageRecords.length) {
+                                    angular.forEach(_this.collectionData.pageRecords, function (pageRecord) {
+                                        pageRecord.dataparentID = _this.recordID;
+                                        pageRecord.depth = _this.recordDepth || 0;
+                                        pageRecord.depth++;
+                                        _this.children.push(pageRecord);
+                                        _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
+                                    });
+                                }
+                                _this.childrenLoaded = true;
+                            });
+                        }
+                        angular.forEach(_this.children, function (child) {
+                            child.dataIsVisible = _this.childrenOpen;
                         });
-                        angular.forEach(_this.collectionConfig.joins, function (join) {
-                            childCollectionConfig.addJoin(join);
-                        });
-                        childCollectionConfig.groupBys = _this.collectionConfig.groupBys;
-                        _this.collectionPromise = childCollectionConfig.getEntity();
-                        _this.collectionPromise.then(function (data) {
-                            _this.collectionData = data;
-                            _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
-                            if (_this.collectionData.pageRecords.length) {
-                                angular.forEach(_this.collectionData.pageRecords, function (pageRecord) {
-                                    pageRecord.dataparentID = _this.recordID;
-                                    pageRecord.depth = _this.recordDepth || 0;
-                                    pageRecord.depth++;
-                                    _this.children.push(pageRecord);
-                                    _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
-                                });
-                            }
-                            _this.childrenLoaded = true;
-                        });
-                    }
-                    angular.forEach(_this.children, function (child) {
-                        child.dataIsVisible = _this.childrenOpen;
                     });
-                });
+                }
             };
             this.$timeout = $timeout;
             this.$slatwall = $slatwall;
