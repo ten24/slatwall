@@ -32,6 +32,7 @@
 										placeholder="Search"
 										name="srch-term"
 										ng-model="swContentList.keywords"
+										ng-model-options='{ debounce: 500 }'
 										ng-change="swContentList.searchCollection()"
 										/>
 									<i ng-show="swContentList.loadingCollection" class="fa fa-refresh fa-spin"></i>
