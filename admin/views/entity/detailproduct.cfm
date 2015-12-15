@@ -48,9 +48,6 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-<cfset productCollection = $.slatwall.getService('hibachiService').getSkuCollectionList()>
-
-<cfdump var="#productCollection.getRecords()#" top=2><cfabort>
 
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
