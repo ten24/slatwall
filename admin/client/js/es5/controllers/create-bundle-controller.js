@@ -81,6 +81,8 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
                 if (saveAndNew) {
                     $rootScope.openPageDialog('productbundle/createproductbundle');
                 }
+            }, function () {
+                $scope.newSaving = false;
             });
         };
     }
