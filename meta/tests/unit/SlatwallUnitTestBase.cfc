@@ -89,10 +89,12 @@ component extends="mxunit.framework.TestCase" output="false" {
 			flushRequired = true;
 			entityDelete( variables.persistentEntities[i] );
 		}
-
-		if(flushRequired) {
-			ormFlush();
-
+		try{
+			if(flushRequired) {
+					ormFlush();
+			}
+		} catch(any e) {
+			debug("Could Not Flush: " & e);
 		}
 
 		variables.persistentEntities = [];

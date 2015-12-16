@@ -266,33 +266,51 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function duplicate_order_with_child_order_items(){
 		//set up order
 		var orderData = {
-			orderid="",
+			orderid=CreateUUID(),
 			activeflag=1,
 			currencycode="USD"
 		};
 		accountData={
 			accountID=""
 		};
-		var account = createTestEntity('Account', accountData);
-		var order = createTestEntity('Order', orderData);
+		var account = createPersistedTestEntity('Account', accountData);
+		var order = createPersistedTestEntity('Order', orderData);
 		order.setAccount(account);
-
+		var skudata = {
+			skuID=CreateUUID(),
+			skuPrice=10,
+			product={
+				productID=CreateUUID()
+			}
+		};
+		var sku = createPersistedTestentity('Sku', skudata);
 		var orderItemData1 = {
-			orderItemID=""
+			orderItemID=CreateUUID(),
+			price=10,
+			skuprice=10,
+			currencyCode="USD",
+			quantity=1,
+			orderItemTypeID=""
 		};
 		var orderItemData2 = {
-			orderItemID=""
+			orderItemID=CreateUUID()
 		};
 		var orderItemData3 = {
-			orderItemID=""
+			orderItemID=CreateUUID()
 		};
-		var orderItem1 = createTestEntity('OrderItem', orderItemData1);
-		var orderItem2 = createTestEntity('OrderItem', orderItemData2);
-		var orderItem3 = createTestEntity('OrderItem', orderItemData3);
+		var orderItem1 = createPersistedTestEntity('OrderItem', orderItemData1);
+		var orderItem2 = createPersistedTestEntity('OrderItem', orderItemData2);
+		var orderItem3 = createPersistedTestEntity('OrderItem', orderItemData3);
+
+		orderItem1.setSku(sku);
+		orderItem2.setSku(sku);
+		orderItem3.setSku(sku);
 
 		orderItem1.addChildOrderItem(orderItem2);
 		orderItem1.addChildOrderItem(orderItem3);
 		order.addOrderItem(orderItem1);
+		orderItem2.setOrder(order);
+		orderItem3.setOrder(order);
 
 		var data = {
 			saveNewFlag=true,
@@ -302,11 +320,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		//request.debug(order);
 
-		var order = variables.service.processOrder_duplicateOrder(order,data);
+		var duplicateorderitem = variables.service.copyToNewOrderItem(orderItem1);
 
 		//request.debug(order);
 
-		assertEquals(1, ArrayLen(order.getRootOrderItems()));
+		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
 
 	}
 }
