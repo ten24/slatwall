@@ -1,6 +1,6 @@
 <cfcomponent output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController">
 	<cfproperty name="fw" type="any">
-	<cfproperty name="collectionService" type="any">
+	<cfproperty name="hibachiCollectionService" type="any">
 	<cfproperty name="hibachiService" type="any">
 	<cfproperty name="hibachiUtilityService" type="any">
 	<cfscript>
