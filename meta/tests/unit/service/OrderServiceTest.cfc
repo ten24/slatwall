@@ -205,7 +205,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var term = createPersistedTestEntity('term', termData);
 
 		product.getSkus()[1].setGiftCardExpirationTerm(term);
-		
+
 		assertTrue(product.getSkus()[1].isGiftCardSku());
 
 		//set up order
@@ -243,26 +243,72 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItemsAdded = orderReturn.getOrderItems();
 
 		assertEquals(1, arraylen(orderItemsAdded));
-		
-		var orderItemGiftRecipientData = { 
+
+		var orderItemGiftRecipientData = {
 			orderItemGiftRecipientID="",
 			firstName="Bobby",
 			lastName="Bot"
-		}; 
-		
-		var recipient1 = createPersistedTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData); 
-		
+		};
+
+		var recipient1 = createTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData);
+
 		var numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
-		
-		assertEquals(1, numOfUnassignedGiftCards); 
-		
-		orderItemsAdded[1].addOrderItemGiftRecipient(recipient1); 
-		
+
+		assertEquals(1, numOfUnassignedGiftCards);
+
+		orderItemsAdded[1].addOrderItemGiftRecipient(recipient1);
+
 		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
-		 
-		assertEquals(0, numOfUnassignedGiftCards); 
+
+		assertEquals(0, numOfUnassignedGiftCards);
 	}
 
+	public void function duplicate_order_with_child_order_items(){
+		//set up order
+		var orderData = {
+			orderid="",
+			activeflag=1,
+			currencycode="USD"
+		};
+		accountData={
+			accountID=""
+		};
+		var account = createTestEntity('Account', accountData);
+		var order = createTestEntity('Order', orderData);
+		order.setAccount(account);
+
+		var orderItemData1 = {
+			orderItemID=""
+		};
+		var orderItemData2 = {
+			orderItemID=""
+		};
+		var orderItemData3 = {
+			orderItemID=""
+		};
+		var orderItem1 = createTestEntity('OrderItem', orderItemData1);
+		var orderItem2 = createTestEntity('OrderItem', orderItemData2);
+		var orderItem3 = createTestEntity('OrderItem', orderItemData3);
+
+		orderItem1.addChildOrderItem(orderItem2);
+		orderItem1.addChildOrderItem(orderItem3);
+		order.addOrderItem(orderItem1);
+
+		var data = {
+			saveNewFlag=true,
+			copyPersonalDataFlag=true,
+			referencedOrderFlag=false
+		};
+
+		//request.debug(order);
+
+		var order = variables.service.processOrder_duplicateOrder(order,data);
+
+		//request.debug(order);
+
+		assertEquals(1, ArrayLen(order.getRootOrderItems()));
+
+	}
 }
 
 
