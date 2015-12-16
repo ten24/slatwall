@@ -68,9 +68,6 @@ module slatwalladmin {
                         var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
                         
                         this.$scope.preprocessproduct_createCtrl.options = [];
-                        if(productTypeOptions > 1){
-                                this.$scope.preprocessproduct_createCtrl.options.push({label:this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'),value:""})
-                        }
                         
                         angular.forEach(productTypeOptions,(jQueryOption)=>{
                                 var option = {
@@ -79,6 +76,11 @@ module slatwalladmin {
                                 }
                                 this.$scope.preprocessproduct_createCtrl.options.push(option); 
                         });
+                        
+                        if(this.$scope.preprocessproduct_createCtrl.options.length > 1){
+                            this.$scope.preprocessproduct_createCtrl.options.splice(0,0,{label:this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'),value:""});
+                        }
+                        
                         this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.options[0]);
                 }
         
