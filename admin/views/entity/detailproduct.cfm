@@ -97,7 +97,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/saleshistory" />
 
 			<!--- Images --->
-			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/images" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/images" count="#rc.product.getTotalImageCount()#" />
 
 			<!--- Files --->
 			<swa:SlatwallAdminTabFiles object="#rc.product#" />

@@ -118,6 +118,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
+	property name="imageCount" type="numeric" persistent="false";
 	property name="nextSkuCodeCount" persistent="false";
 	property name="optionGroupCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
@@ -226,6 +227,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public any function getImages() {
 		return variables.productImages;
+	}
+
+	public numeric function getTotalImageCount(){
+		return ArrayLen(this.getImages()) + ArrayLen(this.getDefaultProductImageFiles());
 	}
 
 	public struct function getSkuSalePriceDetails( required any skuID) {
