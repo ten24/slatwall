@@ -123,7 +123,7 @@
 		}
 		
 		public any function getCollectionList(required string entityName,struct data={}){
-			var collectionList = getService('CollectionService').newCollection();
+			var collectionList = getService('HibachiCollectionService').newCollection();
 			collectionList.setup(argumentCollection=arguments);
 			return collectionList;
 		}
