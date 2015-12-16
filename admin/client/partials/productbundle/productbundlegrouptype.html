@@ -80,10 +80,10 @@
 										></sw-property-display> 
 						        </sw-form>
 								<button type="button"
-										class="btn btn-xs s-btn-ten24"
+								        class="btn btn-xs s-btn-ten24"
 										ng-click="saveProductBundleGroupType()"
 								>
-									<i class="fa fa-plus"></i> Add Group Type
+									<i  ng-class="{'fa fa-plus s-loading': productBundleGroupTypeSaving === true, 'fa fa-plus': productBundleGroupTypeSaving === false}"></i> Add Group Type
 								</button>
 							</span>
 						</form>
