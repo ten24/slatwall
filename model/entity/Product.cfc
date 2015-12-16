@@ -120,6 +120,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="eventRegistrations" type="array" persistent="false";
 	property name="nextSkuCodeCount" persistent="false";
 	property name="optionGroupCount" type="numeric" persistent="false";
+	property name="productBundleGroupsCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
@@ -190,6 +191,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.listingPagesOptionsSmartList;
     }
+
+	public numeric function getProductBundleGroupsCount(){
+		var count=0;
+		for(var sku in this.getSkus()){
+			count = count + ArrayLen(sku.getProductBundleGroups());
+		}
+		return count;
+	}
 
     public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){

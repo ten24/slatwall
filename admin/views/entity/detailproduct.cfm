@@ -82,7 +82,7 @@ Notes:
 
 			<cfif rc.product.getBaseProductType() eq "productBundle">
 				<!--- Bundle Groups --->
-				<hb:HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" count="#rc.product.getProductBundleGroupsCount()#" />
 			<cfelse>
 				<!--- Skus --->
 				<hb:HibachiEntityDetailItem property="skus" count="#rc.product.getSkusCount()#"/>
