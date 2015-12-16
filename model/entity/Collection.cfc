@@ -980,11 +980,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						HQLParams = getHQLParams();
 						variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 					}
-				}else{
-					HQL = getHQL();
-					
-					HQLParams = getHQLParams();
-					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
 			catch(any e){
