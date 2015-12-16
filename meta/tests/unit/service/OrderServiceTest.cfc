@@ -250,7 +250,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			lastName="Bot"
 		};
 
-		var recipient1 = createTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData);
+		var recipient1 = createPersistedTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData);
 
 		var numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
 
