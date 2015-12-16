@@ -17,7 +17,7 @@
 </div><!--- reyjay's class --->
 
 
-<div class="table-responsive s-listing-display-table-wrapper" >
+<div class="table-responsive s-listing-display-table-wrapper" ng-if="swListingDisplay.collectionPromise.$$state.status !== 0">
 	<!--<table 
 	id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" 
 	ng-class="swListingDisplay.tableclass" 
@@ -243,10 +243,10 @@
 		</tbody>
 	</table>
 
-	</div><!--- table-responsive --->
+</div><!--- table-responsive --->
 
-	<sw-pagination-bar
-        ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable && swListingDisplay.collectionData.recordsCount"
-		data-paginator="swListingDisplay.paginator"
-		>
-	</sw-pagination-bar>
+<sw-pagination-bar
+    ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
+	data-paginator="swListingDisplay.paginator"
+	>
+</sw-pagination-bar>
