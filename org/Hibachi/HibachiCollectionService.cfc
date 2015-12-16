@@ -501,9 +501,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		return response;
 	}
 	
-	public any function getAPIResponseForCollection(required any collectionEntity, required struct collectionOptions){
+	public any function getAPIResponseForCollection(required any collectionEntity, required struct collectionOptions, boolean enforceAuthorization=true){
 		var response = {};
-		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
+		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity) || !arguments.enforceAuthorization){
 			if(structkeyExists(arguments.collectionOptions,'currentPage')){
 				collectionEntity.setCurrentPageDeclaration(arguments.collectionOptions.currentPage);
 			}
@@ -579,7 +579,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 			
-			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray);
+			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,enforceAuthorization);
 			
 			var collectionStruct = {};
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
@@ -593,11 +593,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		return response;
 	}
 	
-	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[]){
+	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], boolean enforeAuthorization=true){
 		var authorizedProperties = [];
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(
 				getHibachiScope().authenticateCollectionPropertyIdentifier('read', arguments.collectionEntity,collectionPropertyIdentifier) 
+				|| !arguments.enforeAuthorization
 			){
 				arrayAppend(authorizedProperties,collectionPropertyIdentifier);
 			}

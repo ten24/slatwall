@@ -852,7 +852,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getPageRecords(boolean refresh=false, formatRecords=true) {
 		
 		if(arguments.formatRecords){
-			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{}).pageRecords;
+			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{},false).pageRecords;
 			
 			variables.pageRecords =	formattedRecords;
 		}else{
@@ -923,7 +923,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	public array function getRecords(boolean refresh=false, boolean forExport=false, boolean formatRecords=true) {
 		if(arguments.formatRecords){
-			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{allRecords=true}).records;
+			var formattedRecords = getService('hibachiCollectionService').getAPIResponseForCollection(this,{allRecords=true},false).records;
 			
 			variables.records =	formattedRecords;
 		}else{
