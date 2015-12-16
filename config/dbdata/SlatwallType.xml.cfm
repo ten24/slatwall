@@ -51,7 +51,7 @@
 		<Record typeID="b88616959d221ab71e82321fdd8f1fc9" typeIDPath="bb6fd9cff5afa5112ad66560b6a887dd,b88616959d221ab71e82321fdd8f1fc9" parentTypeID="bb6fd9cff5afa5112ad66560b6a887dd" typeName="Waitlisted" systemCode="erstWaitlisted" sortOrder="7" />
 
 		<Record typeID="444df2ce9c74fa886435c08706d343db" typeIDPath="444df2ce9c74fa886435c08706d343db" parentTypeID="NULL" typeName="Image Types" systemCode="imageType" />
-		<Record typeID="4028289a51a7450a0151ab186c740189" typeIDPath="444df2ce9c74fa886435c08706d343db,4028289a51a7450a0151ab186c740189" parentTypeID="444df2ce9c74fa886435c08706d343db" typeName="Default Image Type" systemCode="defaultImageType" sortOrder="1">
+		<Record typeID="4028289a51a7450a0151ab186c740189" typeIDPath="444df2ce9c74fa886435c08706d343db,4028289a51a7450a0151ab186c740189" parentTypeID="444df2ce9c74fa886435c08706d343db" typeName="Default Image Type" systemCode="defaultImageType" sortOrder="1" />
 
 		<Record typeID="444df2deab6476cb2c429946d6538436" typeIDPath="444df2deab6476cb2c429946d6538436" parentTypeID="NULL" typeName="Order Types" systemCode="orderType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2df9f923d6c6fd0942a466e84cc" typeIDPath="444df2deab6476cb2c429946d6538436,444df2df9f923d6c6fd0942a466e84cc" parentTypeID="444df2deab6476cb2c429946d6538436" typeName="Sales Order" systemCode="otSalesOrder" sortOrder="1" />
