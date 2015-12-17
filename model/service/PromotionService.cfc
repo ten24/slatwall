@@ -396,6 +396,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over all Potential Discounts that require qualifications
 			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 			var orderRewards = false;
+			
 			for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 				var reward = promotionRewards[pr];
 				// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
@@ -581,7 +582,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var thisQualifierDetails = getQualifierQualificationDetails(qualifier, arguments.order);
 				
 				// As long as there is a qualification count that is > 0 we can append the details
-				if(thisQualifierDetails.qualificationCount) {
+				if(thisQualifierDetails.qualificationCount || arraylen(thisQualifierDetails.qualifiedOrderItemDetails)) {
 					
 					// If this was a fulfillment qualifier, then we can define it as an explicily qualified fulfillment
 					if(qualifier.getQualifierType() == "fulfillment") {
@@ -722,6 +723,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
 			}
 		}
+		
 	}
 	
 	private struct function getQualifierQualificationDetails(required any qualifier, required any order) {
@@ -731,6 +733,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			qualifiedFulfillmentIDs = [],
 			qualifiedOrderItemDetails = []
 		};
+		
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 			
