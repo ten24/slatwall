@@ -329,12 +329,11 @@ Notes:
 		</cfif>
 		
 		<!--- get allDiscounts at the sku level --->
-		
 		<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
 		
 		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
-		
+
 		<!--- query to find the lowest salesPrice --->
 		<cfquery name="skuPrice" dbtype="query">
 			SELECT
@@ -857,6 +856,7 @@ Notes:
 				noQualifierCurrentActivePromotionPeriodsQuery, allDiscountsQuery
 			WHERE
 				allDiscountsQuery.promotionPeriodID = noQualifierCurrentActivePromotionPeriodsQuery.promotionPeriodID
+				
 		</cfquery>
 		
 		<cfreturn noQualifierDiscountsQuery >
