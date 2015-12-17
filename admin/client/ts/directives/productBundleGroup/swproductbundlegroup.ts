@@ -158,7 +158,8 @@ module slatwalladmin {
 				this.removeProductBundleGroupFilter(type);
 			}else{
 				this.removeProductBundleGroup(this.index);	
-				this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
+				this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];g
+				
 			}
 		};			
 
@@ -320,10 +321,8 @@ module slatwalladmin {
 			this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.push(collectionFilterItem);
 			
 			//Removes the filter item from the left hand search result
-			//this.productBundleGroupFilters.value.splice(index,1);
+			this.productBundleGroupFilters.value.splice(index,1);
 			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-			
-			this.getFiltersByTerm(this.keyword, this.filterTerm);
 		}
 				
 		public removeProductBundleGroupFilter = (index) =>{
@@ -354,9 +353,8 @@ module slatwalladmin {
 				}
 			}
 			
+			this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
 			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-			
-			this.getFiltersByTerm(this.keyword, this.filterTerm);
 		};		
 	}
 	
