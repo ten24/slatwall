@@ -69,8 +69,8 @@ module slatwalladmin{
             private currentPage:number = 1,
             private pageShow:number = 10,
             private keywords:string = '',
-            private allRecords:boolean = false
-
+            private allRecords:boolean = false,
+            private isDistinct:boolean = false
         ){
             if(angular.isDefined(this.baseEntityName)){
                 this.collection = this.$slatwall.getEntityExample(this.baseEntityName);
@@ -80,15 +80,16 @@ module slatwalladmin{
             }
         }
 
-        public clearFilterGroups=():void=>{
+        public clearFilterGroups=():CollectionConfig=>{
             this.filterGroups = [{filterGroup: []}];
+            return this;
         };
 
         public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
             return new CollectionConfig(this.$slatwall, this.utilityService, baseEntityName, baseEntityAlias);
         };
 
-        public loadJson= (jsonCollection):void =>{
+        public loadJson= (jsonCollection):any =>{
             //if json then make a javascript object else use the javascript object
             if(angular.isString(jsonCollection)){
                 jsonCollection = angular.fromJson(jsonCollection);
@@ -106,14 +107,18 @@ module slatwalladmin{
             this.groupBys = jsonCollection.groupBys;
             this.pageShow = jsonCollection.pageShow;
             this.allRecords = jsonCollection.allRecords;
+            this.isDistinct = jsonCollection.isDistinct;
+            return this;
         };
 
-        public loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]):void =>{
+        public loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]):any =>{
             this.filterGroups = filterGroupsConfig;
+            return this;
         };
 
-        public loadColumns= (columns:Column[]):void =>{
+        public loadColumns= (columns:Column[]):any =>{
             this.columns = columns;
+            return this;
         };
 
         public getCollectionConfig= ():Object =>{
@@ -129,6 +134,7 @@ module slatwalladmin{
                 keywords: this.keywords,
                 defaultColumns: (!this.columns || !this.columns.length),
                 allRecords: this.allRecords,
+                isDistinct: this.isDistinct
             };
         };
 
@@ -144,10 +150,12 @@ module slatwalladmin{
                 orderByConfig:angular.toJson(this.orderBy),
                 groupBysConfig: angular.toJson(this.groupBys),
                 currentPage: this.currentPage,
+                isDistinct: this.isDistinct,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
                 defaultColumns: (!this.columns || !this.columns.length),
                 allRecords: this.allRecords
+
             };
             if(angular.isDefined(this.id)){
                 options['id'] = this.id;
@@ -174,7 +182,7 @@ module slatwalladmin{
             var _propertyIdentifier = '',
                 propertyIdentifierParts = propertyIdentifier.split('.'),
                 current_collection = this.collection;
-                
+
             for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
                 if ('cfc' in current_collection.metaData[propertyIdentifierParts[i]]) {
@@ -192,7 +200,7 @@ module slatwalladmin{
         };
 
 
-        private addJoin= (join:Join):void =>{
+        private addJoin= (join:Join):any =>{
             if(!this.joins){
                 this.joins = [];
             }
@@ -206,6 +214,7 @@ module slatwalladmin{
             if(!joinFound){
                 this.joins.push(join);
             }
+            return this;
         };
 
         private addAlias= (propertyIdentifier:string):string =>{
@@ -216,7 +225,7 @@ module slatwalladmin{
             return propertyIdentifier;
         };
 
-        public addColumn= (column: string, title: string = '', options:Object = {}):void =>{
+        public addColumn= (column: string, title: string = '', options:Object = {}):CollectionConfig =>{
             if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
                 var isVisible = true,
                     isDeletable = true,
@@ -245,14 +254,15 @@ module slatwalladmin{
                 if(angular.isUndefined(options['isExportable']) && !isVisible){
                     isExportable = false;
                 }
+
                 if(!angular.isUndefined(options['ormtype'])){
                     ormtype = options['ormtype'];
                 }else if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
                     ormtype = lastEntity.metaData[lastProperty].ormtype;
                 }
 
-                if(angular.isDefined(lastEntity[lastProperty])){
-                    persistent = lastEntity[lastProperty].persistent;
+                if(angular.isDefined(lastEntity.metaData[lastProperty])){
+                    persistent = lastEntity.metaData[lastProperty].persistent;
                 }
 
                 var columnObject = new Column(
@@ -281,14 +291,16 @@ module slatwalladmin{
 
                 this.columns.push(columnObject);
             }
+            return this;
         };
 
 
-        public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:Object = {}):void =>{
+        public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:Object = {}):CollectionConfig =>{
             this.addDisplayProperty(propertyIdentifier, title, options);
+            return this;
         };
 
-        public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?):void=>{
+        public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?):CollectionConfig=>{
             var column = {
                 propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier, true),
                 title : this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+propertyIdentifier),
@@ -301,16 +313,18 @@ module slatwalladmin{
             angular.extend(column,options);
             //Add columns
             this.addColumn(column.propertyIdentifier,undefined,column);
+            return this;
         };
 
-        public addGroupBy = (groupByAlias):void=>{
+        public addGroupBy = (groupByAlias):CollectionConfig=>{
             if(!this.groupBys){
                 this.groupBys = '';
             }
             this.groupBys = this.utilityService.listAppend(this.groupBys,groupByAlias);
+            return this;
         };
 
-        public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:Object = {}):void =>{
+        public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:Object = {}):CollectionConfig =>{
             var _DividedColumns = propertyIdentifier.trim().split(',');
             var _DividedTitles = title.trim().split(',');
             _DividedColumns.forEach((column:string, index)  => {
@@ -322,9 +336,10 @@ module slatwalladmin{
                 }
                 this.addColumn(this.formatPropertyIdentifier(column),title, options);
             });
+            return this;
         };
 
-        public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string):void =>{
+        public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string):CollectionConfig =>{
 
             //if filterGroups does not exists then set a default
             if(!this.filterGroups){
@@ -335,8 +350,8 @@ module slatwalladmin{
             if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
               if(propertyIdentifier.split('.').length < 2){
-                var join = false; 
-              } else { 
+                var join = false;
+              } else {
                 var join = true;
               }
 
@@ -351,13 +366,15 @@ module slatwalladmin{
             );
 
             this.filterGroups[0].filterGroup.push(filter);
+            return this;
         };
-        
-        public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
+
+        public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '='):CollectionConfig=>{
             this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
+            return this;
         }
-        
-        public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?)=>{
+
+        public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?):CollectionConfig=>{
             if(angular.isUndefined(currentGroup)){
                 currentGroup = filter;
             }
@@ -372,11 +389,12 @@ module slatwalladmin{
                     currentGroup.splice(currentGroup.indexOf(filter), 1);
                 }
             }
+            return this;
         };
 
         public addCollectionFilter= (propertyIdentifier: string, displayPropertyIdentifier:string, displayValue:string,
                                      collectionID: string, criteria:string='One', fieldtype?:string, readOnly:boolean=false
-        ):void =>{
+        ):CollectionConfig =>{
             this.filterGroups[0].filterGroup.push(
                 new CollectionFilter(
                     this.formatPropertyIdentifier(propertyIdentifier),
@@ -388,17 +406,18 @@ module slatwalladmin{
                     readOnly
                 )
             );
-
+            return this;
         };
         //orderByList in this form: "property|direction" concrete: "skuName|ASC"
-        public setOrderBy = (orderByList):void=>{
+        public setOrderBy = (orderByList):CollectionConfig=>{
             var orderBys = orderByList.split(',');
             angular.forEach(orderBys,(orderBy)=>{
                 this.addOrderBy(orderBy);
             });
+            return this;
         };
 
-        public addOrderBy = (orderByString):void=>{
+        public addOrderBy = (orderByString):CollectionConfig=>{
             if(!this.orderBy){
                 this.orderBy = [];
             }
@@ -412,38 +431,50 @@ module slatwalladmin{
             };
 
             this.orderBy.push(orderBy);
+            return this;
         };
 
-        public setCurrentPage= (pageNumber):void =>{
+        public setCurrentPage= (pageNumber):CollectionConfig =>{
             this.currentPage = pageNumber;
+            return this;
         };
 
-        public setPageShow= (NumberOfPages):void =>{
+        public setPageShow= (NumberOfPages):CollectionConfig =>{
             this.pageShow = NumberOfPages;
+            return this;
         };
 
         public getPageShow=():number=>{
             return this.pageShow;
         };
 
-        public setAllRecords= (allFlag:boolean=false):void =>{
+        public setAllRecords= (allFlag:boolean=false):CollectionConfig =>{
             this.allRecords = allFlag;
+            return this;
         };
 
-        public setKeywords= (keyword):void =>{
+        public setKeywords= (keyword):CollectionConfig =>{
             this.keywords = keyword;
+            return this;
         };
 
-        private setId=(id):void=>{
+        private setId=(id):CollectionConfig=>{
             this.id = id;
+            return this;
         };
 
         public hasFilters=():boolean=>{
             return (this.filterGroups.length && this.filterGroups[0].filterGroup.length);
         };
 
-        public clearFilters=():void=>{
+        public setDistinct=(distinctFlag:boolean):CollectionConfig=>{
+            this.isDistinct = distinctFlag;
+            return this;
+        }
+
+        public clearFilters=():CollectionConfig=>{
             this.filterGroups = [{filterGroup:[]}];
+            return this;
         };
 
         public getEntity=(id?)=>{
