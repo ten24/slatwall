@@ -23,6 +23,7 @@ module slatwalladmin {
 		public $id;
 		public showAdvanced; 
 		public productBundleGroup; 
+		public productBundleGroups;
 		public maxRecords;
 		public recordsCount;
 		public pageRecordsStart; 
@@ -153,7 +154,7 @@ module slatwalladmin {
 			if (angular.isNumber(type)){
 				this.removeProductBundleGroupFilter(type);
 			}else{
-				this.removeProductBundleGroup(this.index);		
+				this.removeProductBundleGroup()(this.index);				
 			}
 		};			
 
@@ -356,6 +357,7 @@ module slatwalladmin {
 		public scope = {}	
 		
 		public bindToController = {
+			productBundleGroups:"=",
 			productBundleGroup:"=",
 			index:"=",
 			addProductBundleGroup:"&",
