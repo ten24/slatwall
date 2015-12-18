@@ -319,12 +319,15 @@ module slatwalladmin {
 			
 			//Adds filter item to designated filtergroup
 			this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.push(collectionFilterItem);
-			
-			//Removes the filter item from the left hand search result
-			this.productBundleGroupFilters.value.splice(index,1);
-			this.pageRecordsEnd = this.pageRecordsEnd - 1; 
-			this.recordsCount = this.recordsCount - 1;
 			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
+			
+			//reload the list to correct pagination show all takes too long for this to be graceful
+			if(!this.showAll){
+				this.getFiltersByTerm(this.keyword, this.filterTerm);
+			} else { 
+				//Removes the filter item from the left hand search result
+				this.productBundleGroupFilters.value.splice(index,1);
+			}
 		}
 				
 		public removeProductBundleGroupFilter = (index) =>{
@@ -354,12 +357,13 @@ module slatwalladmin {
 						break;
 				}
 			}
-			
-			this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
-			this.pageRecordsEnd = this.pageRecordsEnd + 1; 
-			this.recordsCount = this.recordsCount + 1;
+			if(!this.showAll){
+				this.getFiltersByTerm(this.keyword, this.filterTerm);
+			} else { 
+				this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
+			}
 			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-		};		
+		}		
 	}
 	
 	export class SWProductBundleGroup implements ng.IDirective{
