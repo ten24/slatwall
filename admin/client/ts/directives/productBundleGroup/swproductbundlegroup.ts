@@ -322,6 +322,8 @@ module slatwalladmin {
 			
 			//Removes the filter item from the left hand search result
 			this.productBundleGroupFilters.value.splice(index,1);
+			this.pageRecordsEnd = this.pageRecordsEnd - 1; 
+			this.recordsCount = this.recordsCount - 1;
 			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
 		}
 				
@@ -354,6 +356,8 @@ module slatwalladmin {
 			}
 			
 			this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
+			this.pageRecordsEnd = this.pageRecordsEnd + 1; 
+			this.recordsCount = this.recordsCount + 1;
 			this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
 		};		
 	}
