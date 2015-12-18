@@ -158,7 +158,7 @@ module slatwalladmin {
 				this.removeProductBundleGroupFilter(type);
 			}else{
 				this.removeProductBundleGroup(this.index);	
-				this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];g
+				this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
 				
 			}
 		};			
