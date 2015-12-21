@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /**
  * @ngdoc service
  * @name sdt.models:ObserverService
@@ -49,7 +49,7 @@ class ObserverService extends BaseService{
 
         this.observers[event][id].push(callback);
     }
-    
+
     /**
      * @ngdoc method
      * @name ObserverService#detachById

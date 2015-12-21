@@ -1,23 +1,23 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
-    
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+
 class SWListingColumnController{
     public editable:boolean;
-    
+
     constructor(
-        
+
     ){
         this.init();
-    } 
-    
+    }
+
     public init = () =>{
         this.editable = this.editable || false;
     }
 }
-    
+
 class SWListingColumn implements ng.IDirective{
     public restrict:string = 'EA';
-    public scope=true; 
+    public scope=true;
     public bindToController={
         propertyIdentifier:"@",
         processObjectProperty:"@",
@@ -33,7 +33,7 @@ class SWListingColumn implements ng.IDirective{
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
     public static $inject = ['utilityService'];
-    
+
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             utilityService
@@ -46,11 +46,11 @@ class SWListingColumn implements ng.IDirective{
         return directive;
     }
     constructor(private utilityService){
-        
+
     }
-    
+
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        
+
         var column = {
             propertyIdentifier:scope.swListingColumn.propertyIdentifier,
             processObjectProperty:scope.swListingColumn.processObjectProperty,

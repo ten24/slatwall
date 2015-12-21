@@ -1,3 +1,6 @@
+
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWWorkflowTrigger{
 	public static Factory(){
 		var directive = (
@@ -39,7 +42,7 @@ class SWWorkflowTrigger{
 			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflow trigger init');
-				
+
 				/**
 				 * Selects the current workflow trigger.
 				 */
@@ -49,7 +52,7 @@ class SWWorkflowTrigger{
 					$log.debug(workflowTrigger);
 					scope.finished = false;
 					scope.workflowTriggers.selectedTrigger = undefined;
-					
+
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
@@ -62,7 +65,7 @@ class SWWorkflowTrigger{
 						scope.workflowTriggers.selectedTrigger = workflowTrigger;
 					});
 				};
-				
+
 				/**
 				 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 				 */
@@ -71,7 +74,7 @@ class SWWorkflowTrigger{
 					$log.debug(entity);
 					scope.deleteTrigger(entity);
 				};
-				
+
 				/**
 				 * Hard deletes a workflow trigger
 				 */
@@ -82,7 +85,7 @@ class SWWorkflowTrigger{
 						scope.workflowTriggers.splice(workflowTrigger.$$index,1);
 					});
 				};
-				
+
 				/**
 				 * Sets the editing state to show/hide the edit screen.
 				 */
@@ -94,8 +97,8 @@ class SWWorkflowTrigger{
 						trigger.hidden = !trigger.hidden;
 					}
 				};
-				
-				
+
+
 			}
 		};
 	}

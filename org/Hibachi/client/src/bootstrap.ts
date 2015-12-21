@@ -3,7 +3,7 @@
 
 require('./vendor.ts')();
 import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
-import {loggermodule} from "./hibachi/logger/logger.module"; 
+import {loggermodule} from "./logger/logger.module"; 
 
 declare var slatwallAngular:any;
 

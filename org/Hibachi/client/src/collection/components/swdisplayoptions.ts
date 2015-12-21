@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWDisplayOptions{
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
@@ -11,7 +11,7 @@ class SWDisplayOptions{
 			collectionService,
 			pathBuilderConfig,
 			collectionPartialsPath
-			
+
 		) => new SWDisplayOptions(
 			$http,
 			$compile,
@@ -34,7 +34,7 @@ class SWDisplayOptions{
 		];
 		return directive;
 	}
-	
+
 	//@ngInject
 	constructor(
 		$http,
@@ -46,7 +46,7 @@ class SWDisplayOptions{
 		pathBuilderConfig,
 		collectionPartialsPath
 	){
-		
+
 		return{
 			restrict: 'E',
 			transclude:true,
@@ -61,31 +61,31 @@ class SWDisplayOptions{
 			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
 			controller: ['$scope','$element','$attrs',function($scope,$element,$attrs){
 				$log.debug('display options initialize');
-				
+
 				this.removeColumn = function(columnIndex){
 					$log.debug('parent remove column');
 					$log.debug($scope.columns);
 					if($scope.columns.length){
 						$scope.columns.splice(columnIndex, 1);
 					}
-					
+
 				};
-				
+
 				this.getPropertiesList = function(){
 					return $scope.propertiesList;
 				};
-				
+
 				$scope.addDisplayDialog = {
 					isOpen:false,
 					toggleDisplayDialog:function(){
-						$scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen; 
+						$scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen;
 					}
 				};
-				
-				
+
+
 				var getTitleFromPropertyIdentifier = function(propertyIdentifier){
-					var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1); 
-					
+					var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1);
+
 					var title = '';
 					var propertyIdentifierArray = propertyIdentifier.split('.');
 					var currentEntity;
@@ -108,11 +108,11 @@ class SWDisplayOptions{
 							}
 						}
 					});
-					
-					
+
+
 					return title;
 				};
-				
+
 				$scope.addColumn = function(selectedProperty, closeDialog){
 					$log.debug('add Column');
 					$log.debug(selectedProperty);
@@ -143,15 +143,15 @@ class SWDisplayOptions{
 						}
 					}
 				};
-				
+
 				$scope.selectBreadCrumb = function(breadCrumbIndex){
 					//splice out array items above index
 					var removeCount = $scope.breadCrumbs.length - 1 - breadCrumbIndex;
 					$scope.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
 					$scope.selectedPropertyChanged(null);
-					
+
 				};
-	
+
 				var unbindBaseEntityAlias = $scope.$watch('baseEntityAlias',function(newValue,oldValue){
 					if(newValue !== oldValue){
 						$scope.breadCrumbs = [ {
@@ -162,17 +162,17 @@ class SWDisplayOptions{
 						unbindBaseEntityAlias();
 					}
 				});
-				
+
 				$scope.selectedPropertyChanged = function(selectedProperty){
 					// drill down or select field?
 					$log.debug('selectedPropertyChanged');
 					$log.debug(selectedProperty);
 					$scope.selectedProperty = selectedProperty;
 				};
-				
-				
+
+
 				jQuery(function($) {
-					
+
 				      var panelList:any = angular.element($element).children('ul');
 				      panelList.sortable({
 				          // Only make the .panel-heading child elements support dragging.
@@ -192,7 +192,7 @@ class SWDisplayOptions{
 				          }
 				      });
 				  });
-				
+
 				/*var unbindBaseEntityAlaisWatchListener = scope.$watch('baseEntityAlias',function(){
 		       		 $("select").selectBoxIt();
 		       		 unbindBaseEntityAlaisWatchListener();
@@ -206,5 +206,5 @@ export{
 }
 
 
-	
-	
+
+

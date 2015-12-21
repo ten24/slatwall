@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 
 import {BaseService} from "./baseservice";
@@ -7,7 +7,7 @@ import {BaseService} from "./baseservice";
 class SelectionService extends BaseService{
     private _selection ={};
     constructor(){
-        super();   
+        super();
     }
     radioSelection=(selectionid:string,selection:any):void =>{
         this._selection[selectionid] = [];
@@ -15,7 +15,7 @@ class SelectionService extends BaseService{
     };
     addSelection=(selectionid:string,selection:any):void =>{
         if(angular.isUndefined(this._selection[selectionid])){
-            this._selection[selectionid] = [];    
+            this._selection[selectionid] = [];
         }
         this._selection[selectionid].push(selection);
     };
@@ -24,7 +24,7 @@ class SelectionService extends BaseService{
     };
     removeSelection=(selection:any,selectionid?:string):void =>{
         if(angular.isUndefined(this._selection[selectionid])){
-            this._selection[selectionid] = [];    
+            this._selection[selectionid] = [];
         }
         var index = this._selection[selectionid].indexOf(selection);
         if (index > -1) {
@@ -33,18 +33,18 @@ class SelectionService extends BaseService{
     };
     hasSelection=(selectionid:string,selection:any):boolean =>{
         if(angular.isUndefined(this._selection[selectionid])){
-            return false;    
+            return false;
         }
         var index = this._selection[selectionid].indexOf(selection);
         if (index > -1) {
-            return true;   
+            return true;
         }
     };
     getSelections=(selectionid:string):any =>{
-        return this._selection[selectionid];    
+        return this._selection[selectionid];
     };
     clearSelection=(selectionid):void=>{
-        this._selection[selectionid] = [];  
+        this._selection[selectionid] = [];
     };
 }
 export {

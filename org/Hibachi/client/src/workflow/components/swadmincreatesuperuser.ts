@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWAdminCreateSuperUser{
 	public static Factory(){
 		var directive = (
@@ -32,7 +34,7 @@ class SWAdminCreateSuperUser{
 			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"admincreatesuperuser.html",
 			link: function(scope, element,attrs){
                 scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
-			} 
+			}
 		};
 	}
 }

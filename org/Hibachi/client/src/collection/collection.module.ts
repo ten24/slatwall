@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
 //modules
 import {coremodule} from '../core/core.module';
 //services
@@ -23,7 +23,7 @@ import {SWCriteriaBoolean} from "./components/swcriteriaboolean";
 import {SWCriteriaManyToMany} from "./components/swcriteriamanytomany";
 import {SWCriteriaManyToOne} from "./components/swcriteriamanytoone";
 import {SWCriteriaNumber} from "./components/swcriterianumber";
-import {SWCriteriaOneToMany} from "./components/swcriteriaonetomany"; 
+import {SWCriteriaOneToMany} from "./components/swcriteriaonetomany";
 import {SWCriteriaString} from "./components/swcriteriastring";
 import {SWEditFilterItem} from "./components/sweditfilteritem";
 import {SWFilterGroups} from "./components/swfiltergroups";
@@ -31,9 +31,9 @@ import {SWFilterItem} from "./components/swfilteritem";
 
 var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .config([()=>{
-	
+
 }]).run([()=>{
-	
+
 }])
 //constants
 .constant('collectionPartialsPath','collection/components/')
@@ -63,9 +63,9 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swFilterGroups',SWFilterGroups.Factory())
 .directive('swFilterItem',SWFilterItem.Factory())
 
-//filters  
+//filters
 
-;  
+;
 export{
 	collectionmodule
 }

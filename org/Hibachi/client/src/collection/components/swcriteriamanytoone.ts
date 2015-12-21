@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWCriteriaManyToOne{
 	public static Factory(){
 		var directive = (
@@ -64,25 +64,25 @@ class SWCriteriaManyToOne{
 				$log.debug('many-to-one');
 				$log.debug(scope.selectedFilterProperty);
 				$log.debug(scope.filterPropertiesList);
-				
+
 				scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
 					if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
 						var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
 						filterPropertiesPromise.then(function(value){
 							scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
 							metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
-							
+
 						}, function(reason){
-							
+
 						});
 					}
-				
+
 					scope.selectedCriteriaChanged = function(selectedCriteria){
 						$log.debug(selectedCriteria);
 						$log.debug('changed');
 						//update breadcrumbs as array of filterpropertylist keys
 						$log.debug(scope.selectedFilterProperty);
-						
+
 						var breadCrumb = {
 								entityAlias:scope.selectedFilterProperty.name,
 								cfc:scope.selectedFilterProperty.cfc,
@@ -93,12 +93,12 @@ class SWCriteriaManyToOne{
 						$log.debug(breadCrumb);
 						$log.debug(scope.filterItem.breadCrumbs);
 						scope.filterItem.breadCrumbs.push(breadCrumb);
-						
+
 						//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
 						scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
 						//update criteria to display the condition of the new critera we have selected
 						$log.debug(scope.selectedFilterProperty);
-						
+
 					};
 				});
 			}
@@ -125,7 +125,7 @@ export{
 // 		collectionService,
 // 		metadataService
 // 	){
-	    
+
 // 		return {
 // 			restrict: 'E',
 // 			templateUrl:collectionPartialsPath+'criteriamanytoone.html',
@@ -151,25 +151,25 @@ export{
 // 				$log.debug('many-to-one');
 // 				$log.debug(scope.selectedFilterProperty);
 // 				$log.debug(scope.filterPropertiesList);
-				
+
 // 				scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
 // 					if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
 // 						var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
 // 						filterPropertiesPromise.then(function(value){
 // 							scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
 // 							metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
-							
+
 // 						}, function(reason){
-							
+
 // 						});
 // 					}
-				
+
 // 					scope.selectedCriteriaChanged = function(selectedCriteria){
 // 						$log.debug(selectedCriteria);
 // 						$log.debug('changed');
 // 						//update breadcrumbs as array of filterpropertylist keys
 // 						$log.debug(scope.selectedFilterProperty);
-						
+
 // 						var breadCrumb = {
 // 								entityAlias:scope.selectedFilterProperty.name,
 // 								cfc:scope.selectedFilterProperty.cfc,
@@ -180,16 +180,16 @@ export{
 // 						$log.debug(breadCrumb);
 // 						$log.debug(scope.filterItem.breadCrumbs);
 // 						scope.filterItem.breadCrumbs.push(breadCrumb);
-						
+
 // 						//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
 // 						scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
 // 						//update criteria to display the condition of the new critera we have selected
 // 						$log.debug(scope.selectedFilterProperty);
-						
+
 // 					};
 // 				});
 // 			}
 // 		};
 // 	}
 // ]);
-	
+

@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWCollection{
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
@@ -10,7 +10,7 @@ class SWCollection{
 			collectionPartialsPath,
 			collectionService
 			) => new SWCollection(
-			
+
 				$http,
 				$compile,
 				$log,
@@ -19,7 +19,7 @@ class SWCollection{
 				collectionService
 			);
         directive.$inject = [
-			
+
             '$http',
 			'$compile',
 			'$log',
@@ -27,7 +27,7 @@ class SWCollection{
 			'collectionPartialsPath',
 			'collectionService'
         ];
-        return directive;    
+        return directive;
     }
 	//@ngInject
 	constructor(
@@ -41,7 +41,7 @@ class SWCollection{
 			restrict: 'A',
 			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"collection.html",
 			link: function(scope,$element,$attrs){
-				
+
 				scope.tabsUniqueID = Math.floor(Math.random()*999);
 				scope.toggleCogOpen = $attrs.toggleoption;
 				//Toggles open/close of filters and display options
@@ -52,7 +52,7 @@ class SWCollection{
 						scope.toggleCogOpen = false;
 					}
 				};
-                
+
 			}
 		};
 	}

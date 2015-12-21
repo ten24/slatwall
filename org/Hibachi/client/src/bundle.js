@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(151);
+	var logger_module_1 = __webpack_require__(154);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -653,21 +653,32 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(145);
-	var ngslatwall_module_1 = __webpack_require__(146);
-	var ngslatwallmodel_module_1 = __webpack_require__(148);
+	var slatwallinterceptor_1 = __webpack_require__(111);
+	var ngslatwall_module_1 = __webpack_require__(112);
+	var ngslatwallmodel_module_1 = __webpack_require__(114);
+	var content_module_1 = __webpack_require__(115);
+	var orderitem_module_1 = __webpack_require__(120);
+	var product_module_1 = __webpack_require__(126);
+	var productbundle_module_1 = __webpack_require__(128);
+	var workflow_module_1 = __webpack_require__(134);
+	var entity_module_1 = __webpack_require__(146);
 	//filters
-	var entityrbkey_1 = __webpack_require__(149);
-	var swcurrency_1 = __webpack_require__(150);
+	var entityrbkey_1 = __webpack_require__(152);
+	var swcurrency_1 = __webpack_require__(153);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
-	    'ngRoute',
 	    'ngSanitize',
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
 	    ngslatwall_module_1.ngslatwallmodule.name,
 	    ngslatwallmodel_module_1.ngslatwallmodelmodule.name,
+	    entity_module_1.entitymodule.name,
+	    content_module_1.contentmodule.name,
+	    orderitem_module_1.orderitemmodule.name,
+	    product_module_1.productmodule.name,
+	    productbundle_module_1.productbundlemodule.name,
+	    workflow_module_1.workflowmodule.name,
 	    //3rdParty modules
 	    'ui.bootstrap'
 	])
@@ -676,7 +687,7 @@
 	    function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig, pathBuilderConfig) {
 	        //configure partials path properties
 	        pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-	        pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/hibachi/');
+	        pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/');
 	        datepickerConfig.showWeeks = false;
 	        datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
 	        datepickerPopupConfig.toggleWeeksText = null;
@@ -730,32 +741,6 @@
 	        console.log($httpProvider.interceptors);
 	        console.log(hibachi_module_1.hibachimodule);
 	        // route provider configuration
-	        $routeProvider.when('/entity/:entityName/', {
-	            template: function (params) {
-	                var entityDirectiveExists = $injector.has('sw' + params.entityName + 'ListDirective');
-	                if (entityDirectiveExists) {
-	                    return '<sw-' + params.entityName.toLowerCase() + '-list>';
-	                }
-	                else {
-	                    return '<sw-list></sw-list>';
-	                }
-	            },
-	            controller: 'routerController'
-	        }).when('/entity/:entityName/:entityID', {
-	            template: function (params) {
-	                var entityDirectiveExists = $injector.has('sw' + params.entityName + 'DetailDirective');
-	                if (entityDirectiveExists) {
-	                    return '<sw-' + params.entityName.toLowerCase() + '-detail>';
-	                }
-	                else {
-	                    return '<sw-detail></sw-detail>';
-	                }
-	            },
-	            controller: 'routerController'
-	        }).otherwise({
-	            //controller:'otherwiseController'
-	            templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html'
-	        });
 	    }])
 	    .run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', 'observerService', 'utilityService', 'pathBuilderConfig', function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService, observerService, utilityService, pathBuilderConfig) {
 	        $anchorScroll.yOffset = 100;
@@ -889,25 +874,19 @@
 	//import alertmodule = require('./alert/alert.module');
 	var alert_module_1 = __webpack_require__(11);
 	var collection_module_1 = __webpack_require__(15);
-	var content_module_1 = __webpack_require__(108);
 	var core_module_1 = __webpack_require__(16);
-	var dialog_module_1 = __webpack_require__(113);
-	var orderitem_module_1 = __webpack_require__(116);
-	var pagination_module_1 = __webpack_require__(122);
-	var product_module_1 = __webpack_require__(125);
-	var productbundle_module_1 = __webpack_require__(127);
-	var workflow_module_1 = __webpack_require__(133);
+	var dialog_module_1 = __webpack_require__(74);
+	var pagination_module_1 = __webpack_require__(77);
+	var form_module_1 = __webpack_require__(80);
+	var validation_module_1 = __webpack_require__(95);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
 	    collection_module_1.collectionmodule.name,
-	    content_module_1.contentmodule.name,
 	    dialog_module_1.dialogmodule.name,
-	    orderitem_module_1.orderitemmodule.name,
 	    pagination_module_1.paginationmodule.name,
-	    product_module_1.productmodule.name,
-	    productbundle_module_1.productbundlemodule.name,
-	    workflow_module_1.workflowmodule.name
+	    form_module_1.formmodule.name,
+	    validation_module_1.validationmodule.name
 	]);
 	exports.hibachimodule = hibachimodule;
 
@@ -916,8 +895,8 @@
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
 	//controllers
 	var alertcontroller_1 = __webpack_require__(12);
 	//services
@@ -932,8 +911,8 @@
 /* 12 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var AlertController = (function () {
 	    //@ngInject
 	    function AlertController($scope, alertService) {
@@ -949,8 +928,8 @@
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	//import Alert = require('../model/alert');
 	var alert_1 = __webpack_require__(14);
 	var AlertService = (function () {
@@ -1023,8 +1002,8 @@
 /* 14 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	//model
 	var Alert = (function () {
 	    function Alert(msg, type) {
@@ -1040,35 +1019,35 @@
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(86);
-	var collectionservice_1 = __webpack_require__(87);
+	var collectionconfigservice_1 = __webpack_require__(52);
+	var collectionservice_1 = __webpack_require__(53);
 	//controllers
-	var collections_1 = __webpack_require__(88);
-	var createcollection_1 = __webpack_require__(89);
-	var confirmationcontroller_1 = __webpack_require__(90);
+	var collections_1 = __webpack_require__(54);
+	var createcollection_1 = __webpack_require__(55);
+	var confirmationcontroller_1 = __webpack_require__(56);
 	//directives
-	var swcollection_1 = __webpack_require__(91);
-	var swaddfilterbuttons_1 = __webpack_require__(92);
-	var swdisplayoptions_1 = __webpack_require__(93);
-	var swdisplayitem_1 = __webpack_require__(94);
-	var swcollectiontable_1 = __webpack_require__(95);
-	var swcolumnitem_1 = __webpack_require__(96);
-	var swconditioncriteria_1 = __webpack_require__(97);
-	var swcriteria_1 = __webpack_require__(98);
-	var swcriteriaboolean_1 = __webpack_require__(99);
-	var swcriteriamanytomany_1 = __webpack_require__(100);
-	var swcriteriamanytoone_1 = __webpack_require__(101);
-	var swcriterianumber_1 = __webpack_require__(102);
-	var swcriteriaonetomany_1 = __webpack_require__(103);
-	var swcriteriastring_1 = __webpack_require__(104);
-	var sweditfilteritem_1 = __webpack_require__(105);
-	var swfiltergroups_1 = __webpack_require__(106);
-	var swfilteritem_1 = __webpack_require__(107);
+	var swcollection_1 = __webpack_require__(57);
+	var swaddfilterbuttons_1 = __webpack_require__(58);
+	var swdisplayoptions_1 = __webpack_require__(59);
+	var swdisplayitem_1 = __webpack_require__(60);
+	var swcollectiontable_1 = __webpack_require__(61);
+	var swcolumnitem_1 = __webpack_require__(62);
+	var swconditioncriteria_1 = __webpack_require__(63);
+	var swcriteria_1 = __webpack_require__(64);
+	var swcriteriaboolean_1 = __webpack_require__(65);
+	var swcriteriamanytomany_1 = __webpack_require__(66);
+	var swcriteriamanytoone_1 = __webpack_require__(67);
+	var swcriterianumber_1 = __webpack_require__(68);
+	var swcriteriaonetomany_1 = __webpack_require__(69);
+	var swcriteriastring_1 = __webpack_require__(70);
+	var sweditfilteritem_1 = __webpack_require__(71);
+	var swfiltergroups_1 = __webpack_require__(72);
+	var swfilteritem_1 = __webpack_require__(73);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -1103,8 +1082,8 @@
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
 	//services
 	var accountservice_1 = __webpack_require__(17);
 	var cartservice_1 = __webpack_require__(18);
@@ -1115,72 +1094,35 @@
 	var metadataservice_1 = __webpack_require__(24);
 	//controllers
 	var globalsearch_1 = __webpack_require__(25);
-	var otherwisecontroller_1 = __webpack_require__(26);
-	var routercontroller_1 = __webpack_require__(27);
 	//filters
-	var percentage_1 = __webpack_require__(28);
+	var percentage_1 = __webpack_require__(26);
 	//directives
 	//  components
-	var swactioncaller_1 = __webpack_require__(29);
-	var swtypeaheadsearch_1 = __webpack_require__(30);
-	var swactioncallerdropdown_1 = __webpack_require__(31);
-	var swcolumnsorter_1 = __webpack_require__(32);
-	var swconfirm_1 = __webpack_require__(33);
-	var swentityactionbar_1 = __webpack_require__(34);
-	var swentityactionbarbuttongroup_1 = __webpack_require__(35);
-	var swexpandablerecord_1 = __webpack_require__(36);
-	var swlistingdisplay_1 = __webpack_require__(37);
-	var swlistingcolumn_1 = __webpack_require__(38);
-	var swlogin_1 = __webpack_require__(39);
-	var swnumbersonly_1 = __webpack_require__(40);
-	var swloading_1 = __webpack_require__(41);
-	var swscrolltrigger_1 = __webpack_require__(42);
-	var swrbkey_1 = __webpack_require__(43);
-	var swoptions_1 = __webpack_require__(44);
-	var swselection_1 = __webpack_require__(45);
-	var swclickoutside_1 = __webpack_require__(46);
-	var swdirective_1 = __webpack_require__(47);
-	var swexportaction_1 = __webpack_require__(48);
-	var swhref_1 = __webpack_require__(49);
-	var swprocesscaller_1 = __webpack_require__(50);
-	var swresizedimage_1 = __webpack_require__(51);
-	var swsortable_1 = __webpack_require__(52);
-	var swlistingglobalsearch_1 = __webpack_require__(53);
-	//  entity
-	var swdetailtabs_1 = __webpack_require__(54);
-	var swdetail_1 = __webpack_require__(55);
-	var swlist_1 = __webpack_require__(56);
-	//form
-	var swinput_1 = __webpack_require__(57);
-	var swfformfield_1 = __webpack_require__(58);
-	var swform_1 = __webpack_require__(59);
-	var swformfield_1 = __webpack_require__(60);
-	var swformfieldjson_1 = __webpack_require__(61);
-	var swformfieldnumber_1 = __webpack_require__(62);
-	var swformfieldpassword_1 = __webpack_require__(63);
-	var swformfieldradio_1 = __webpack_require__(64);
-	var swformfieldsearchselect_1 = __webpack_require__(65);
-	var swformfieldselect_1 = __webpack_require__(66);
-	var swformfieldtext_1 = __webpack_require__(67);
-	var swformregistrar_1 = __webpack_require__(68);
-	var swfpropertydisplay_1 = __webpack_require__(69);
-	var swpropertydisplay_1 = __webpack_require__(70);
-	//  validation
-	var swvalidate_1 = __webpack_require__(71);
-	var swvalidationminlength_1 = __webpack_require__(72);
-	var swvalidationdatatype_1 = __webpack_require__(73);
-	var swvalidationeq_1 = __webpack_require__(74);
-	var swvalidationgte_1 = __webpack_require__(75);
-	var swvalidationlte_1 = __webpack_require__(76);
-	var swvalidationmaxlength_1 = __webpack_require__(77);
-	var swvalidationmaxvalue_1 = __webpack_require__(78);
-	var swvalidationminvalue_1 = __webpack_require__(79);
-	var swvalidationneq_1 = __webpack_require__(80);
-	var swvalidationnumeric_1 = __webpack_require__(81);
-	var swvalidationregex_1 = __webpack_require__(82);
-	var swvalidationrequired_1 = __webpack_require__(83);
-	var swvalidationunique_1 = __webpack_require__(84);
-	var swvalidationuniqueornull_1 = __webpack_require__(85);
+	var swactioncaller_1 = __webpack_require__(27);
+	var swtypeaheadsearch_1 = __webpack_require__(28);
+	var swactioncallerdropdown_1 = __webpack_require__(29);
+	var swcolumnsorter_1 = __webpack_require__(30);
+	var swconfirm_1 = __webpack_require__(31);
+	var swentityactionbar_1 = __webpack_require__(32);
+	var swentityactionbarbuttongroup_1 = __webpack_require__(33);
+	var swexpandablerecord_1 = __webpack_require__(34);
+	var swlistingdisplay_1 = __webpack_require__(35);
+	var swlistingcolumn_1 = __webpack_require__(36);
+	var swlogin_1 = __webpack_require__(37);
+	var swnumbersonly_1 = __webpack_require__(38);
+	var swloading_1 = __webpack_require__(39);
+	var swscrolltrigger_1 = __webpack_require__(40);
+	var swrbkey_1 = __webpack_require__(41);
+	var swoptions_1 = __webpack_require__(42);
+	var swselection_1 = __webpack_require__(43);
+	var swclickoutside_1 = __webpack_require__(44);
+	var swdirective_1 = __webpack_require__(45);
+	var swexportaction_1 = __webpack_require__(46);
+	var swhref_1 = __webpack_require__(47);
+	var swprocesscaller_1 = __webpack_require__(48);
+	var swresizedimage_1 = __webpack_require__(49);
+	var swsortable_1 = __webpack_require__(50);
+	var swlistingglobalsearch_1 = __webpack_require__(51);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1204,9 +1146,6 @@
 	var coremodule = angular.module('hibachi.core', []).config(function () {
 	}).constant('pathBuilderConfig', new PathBuilderConfig())
 	    .constant('corePartialsPath', 'core/components/')
-	    .constant('coreEntityPartialsPath', 'core/entity/')
-	    .constant('coreFormPartialsPath', 'core/form/')
-	    .constant('coreValidationPartialsPath', 'core/validation/')
 	    .service('accountService', accountservice_1.AccountService)
 	    .service('cartService', cartservice_1.CartService)
 	    .service('utilityService', utilityservice_1.UtilityService)
@@ -1215,8 +1154,6 @@
 	    .service('formService', formservice_1.FormService)
 	    .service('metadataService', metadataservice_1.MetaDataService)
 	    .controller('globalSearch', globalsearch_1.GlobalSearchController)
-	    .controller('otherwiseController', otherwisecontroller_1.OtherWiseController)
-	    .controller('routerController', routercontroller_1.RouterController)
 	    .filter('percentage', [percentage_1.PercentageFilter.Factory])
 	    .directive('swTypeahedSearch', swtypeaheadsearch_1.SWTypeaheadSearch.Factory())
 	    .directive('swActionCaller', swactioncaller_1.SWActionCaller.Factory())
@@ -1242,39 +1179,7 @@
 	    .directive('swProcessCaller', swprocesscaller_1.SWProcessCaller.Factory())
 	    .directive('swresizedimage', swresizedimage_1.SWResizedImage.Factory())
 	    .directive('sw:sortable', swsortable_1.SWSortable.Factory())
-	    .directive('swListingGlobalSearch', swlistingglobalsearch_1.SWListingGlobalSearch.Factory())
-	    .directive('swDetail', swdetail_1.SWDetail.Factory())
-	    .directive('swDetailTabs', swdetailtabs_1.SWDetailTabs.Factory())
-	    .directive('swList', swlist_1.SWList.Factory())
-	    .directive('swInput', swinput_1.SWInput.Factory())
-	    .directive('swfFormField', swfformfield_1.SWFFormField.Factory())
-	    .directive('swForm', swform_1.SWForm.Factory())
-	    .directive('swFormField', swformfield_1.SWFormField.Factory())
-	    .directive('swFormFieldJson', swformfieldjson_1.SWFormFieldJson.Factory())
-	    .directive('swFormFieldNumber', swformfieldnumber_1.SWFormFieldNumber.Factory())
-	    .directive('swFormFieldPassword', swformfieldpassword_1.SWFormFieldPassword.Factory())
-	    .directive('swFormFieldRadio', swformfieldradio_1.SWFormFieldRadio.Factory())
-	    .directive('swFormFieldSearchSelect', swformfieldsearchselect_1.SWFormFieldSearchSelect.Factory())
-	    .directive('swFormFieldSelect', swformfieldselect_1.SWFormFieldSelect.Factory())
-	    .directive('swFormFieldText', swformfieldtext_1.SWFormFieldText.Factory())
-	    .directive('swFormRegistrar', swformregistrar_1.SWFormRegistrar.Factory())
-	    .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory())
-	    .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory())
-	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
-	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory())
-	    .directive('swvalidationdatatype', swvalidationdatatype_1.SWValidationDataType.Factory())
-	    .directive('swvalidationeq', swvalidationeq_1.SWValidationEq.Factory())
-	    .directive("swvalidationgte", swvalidationgte_1.SWValidationGte.Factory())
-	    .directive("swvalidationlte", swvalidationlte_1.SWValidationLte.Factory())
-	    .directive('swvalidationmaxlength', swvalidationmaxlength_1.SWValidationMaxLength.Factory())
-	    .directive("swvalidationmaxvalue", swvalidationmaxvalue_1.SWValidationMaxValue.Factory())
-	    .directive("swvalidationminvalue", swvalidationminvalue_1.SWValidationMinValue.Factory())
-	    .directive("swvalidationneq", swvalidationneq_1.SWValidationNeq.Factory())
-	    .directive("swvalidationnumeric", swvalidationnumeric_1.SWValidationNumeric.Factory())
-	    .directive("swvalidationregex", swvalidationregex_1.SWValidationRegex.Factory())
-	    .directive("swvalidationrequired", swvalidationrequired_1.SWValidationRequired.Factory())
-	    .directive("swvalidationunique", swvalidationunique_1.SWValidationUnique.Factory())
-	    .directive("swvalidationuniqueornull", swvalidationuniqueornull_1.SWValidationUniqueOrNull.Factory());
+	    .directive('swListingGlobalSearch', swlistingglobalsearch_1.SWListingGlobalSearch.Factory());
 	exports.coremodule = coremodule;
 
 
@@ -1282,8 +1187,8 @@
 /* 17 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var AccountService = (function () {
 	    function AccountService($http) {
 	        var _this = this;
@@ -1389,8 +1294,8 @@
 /* 18 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var CartService = (function () {
 	    function CartService($http) {
 	        var _this = this;
@@ -1481,8 +1386,8 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
 	var baseservice_1 = __webpack_require__(20);
 	var UtilityService = (function (_super) {
@@ -1491,7 +1396,7 @@
 	        var _this = this;
 	        _super.call(this);
 	        this.getQueryParamsFromUrl = function (url) {
-	            // This function is anonymous, is executed immediately and 
+	            // This function is anonymous, is executed immediately and
 	            // the return value is assigned to QueryString!
 	            var query_string = {};
 	            if (url && url.split) {
@@ -1725,8 +1630,8 @@
 /* 20 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var BaseService = (function () {
 	    function BaseService() {
 	    }
@@ -1739,8 +1644,8 @@
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
 	var __extends = (this && this.__extends) || function (d, b) {
 	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1801,8 +1706,8 @@
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/**
 	 * @ngdoc service
 	 * @name sdt.models:ObserverService
@@ -1917,8 +1822,8 @@
 /* 23 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var Form = (function () {
 	    function Form(name, object, editing) {
 	        this.$addControl = function (control) { };
@@ -2022,19 +1927,19 @@
 	        };
 	        this.formatPropertiesList = function (propertiesList, propertyIdentifier) {
 	            var simpleGroup = {
-	                $$group: 'simple'
+	                $$group: 'simple',
 	            };
 	            propertiesList.data.push(simpleGroup);
 	            var drillDownGroup = {
-	                $$group: 'drilldown'
+	                $$group: 'drilldown',
 	            };
 	            propertiesList.data.push(drillDownGroup);
 	            var compareCollections = {
-	                $$group: 'compareCollections'
+	                $$group: 'compareCollections',
 	            };
 	            propertiesList.data.push(compareCollections);
 	            var attributeCollections = {
-	                $$group: 'attribute'
+	                $$group: 'attribute',
 	            };
 	            propertiesList.data.push(attributeCollections);
 	            for (var i in propertiesList.data) {
@@ -2177,7 +2082,7 @@
 	                                for (var i in data.pageRecords) {
 	                                    $scope.searchResults[entityName].results.push({
 	                                        'name': $scope.searchResults[entityName].resultNameFilter(data.pageRecords[i]),
-	                                        'link': '?slatAction=entity.detail' + entityName + '&' + entityName + 'ID=' + $scope.searchResults[entityName].id(data.pageRecords[i])
+	                                        'link': '?slatAction=entity.detail' + entityName + '&' + entityName + 'ID=' + $scope.searchResults[entityName].id(data.pageRecords[i]),
 	                                    });
 	                                }
 	                                // Increment Down The Loading Count
@@ -2233,48 +2138,8 @@
 /* 26 */
 /***/ function(module, exports) {
 
-	var OtherWiseController = (function () {
-	    //@ngInject
-	    function OtherWiseController($scope) {
-	        $scope.$id = "otherwiseController";
-	    }
-	    return OtherWiseController;
-	})();
-	exports.OtherWiseController = OtherWiseController;
-
-
-/***/ },
-/* 27 */
-/***/ function(module, exports) {
-
-	var RouterController = (function () {
-	    //@ngInject
-	    function RouterController($scope, $routeParams, $location, $log, partialsPath, baseURL) {
-	        $scope.$id = "routerController";
-	        $scope.partialRoute = '';
-	        $log.debug($routeParams);
-	        $log.debug($location);
-	        var path = $location.path();
-	        $scope.controllerType = path.split('/')[1];
-	        var type;
-	        if ($scope.controllerType === 'entity') {
-	            $scope.entityName = $routeParams.entityName;
-	            if (angular.isDefined($routeParams.entityID)) {
-	                $scope.entityID = $routeParams.entityID || '';
-	            }
-	        }
-	    }
-	    return RouterController;
-	})();
-	exports.RouterController = RouterController;
-
-
-/***/ },
-/* 28 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var PercentageFilter = (function () {
 	    function PercentageFilter() {
 	    }
@@ -2294,11 +2159,11 @@
 
 
 /***/ },
-/* 29 */
+/* 27 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWActionCallerController = (function () {
 	    //@ngInject
 	    function SWActionCallerController($scope, $element, $templateRequest, $compile, corePartialsPath, utilityService, $slatwall, pathBuilderConfig) {
@@ -2549,11 +2414,11 @@
 
 
 /***/ },
-/* 30 */
+/* 28 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWTypeaheadSearchController = (function () {
 	    function SWTypeaheadSearchController($slatwall, $timeout, collectionConfigService) {
 	        var _this = this;
@@ -2695,11 +2560,11 @@
 
 
 /***/ },
-/* 31 */
+/* 29 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWActionCallerDropdownController = (function () {
 	    function SWActionCallerDropdownController() {
 	        this.title = this.title || '';
@@ -2743,22 +2608,22 @@
 
 
 /***/ },
-/* 32 */
+/* 30 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWColumnSorter = (function () {
 	    function SWColumnSorter($log, observerService, corePartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'AE',
 	            scope: {
-	                column: "="
+	                column: "=",
 	            },
 	            templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + "columnsorter.html",
 	            link: function (scope, element, attrs) {
 	                var orderBy = {
-	                    "propertyIdentifier": scope.column.propertyIdentifier
+	                    "propertyIdentifier": scope.column.propertyIdentifier,
 	                };
 	                scope.sortAsc = function () {
 	                    orderBy.direction = 'Asc';
@@ -2789,11 +2654,11 @@
 
 
 /***/ },
-/* 33 */
+/* 31 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/**
 	 * <------------------------------------------------------------------------------------------------------------------------------------>
 	 *   This directive can be used to prompt the user with a confirmation dialog.
@@ -2940,11 +2805,11 @@
 
 
 /***/ },
-/* 34 */
+/* 32 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWEntityActionBarController = (function () {
 	    function SWEntityActionBarController() {
 	        this.init = function () {
@@ -3004,11 +2869,11 @@
 
 
 /***/ },
-/* 35 */
+/* 33 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../..//typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWEntityActionBarButtonGroupController = (function () {
 	    function SWEntityActionBarButtonGroupController() {
 	    }
@@ -3041,11 +2906,11 @@
 
 
 /***/ },
-/* 36 */
+/* 34 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWExpandableRecordController = (function () {
 	    function SWExpandableRecordController($timeout, utilityService, $slatwall, collectionConfigService) {
 	        var _this = this;
@@ -3194,11 +3059,11 @@
 
 
 /***/ },
-/* 37 */
+/* 35 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWListingDisplayController = (function () {
 	    //@ngInject
 	    function SWListingDisplayController($scope, $element, $transclude, $timeout, $q, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService, selectionService, observerService) {
@@ -3684,11 +3549,11 @@
 
 
 /***/ },
-/* 38 */
+/* 36 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWListingColumnController = (function () {
 	    function SWListingColumnController() {
 	        var _this = this;
@@ -3753,11 +3618,11 @@
 
 
 /***/ },
-/* 39 */
+/* 37 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWLoginController = (function () {
 	    function SWLoginController($route, $log, $window, corePartialsPath, $slatwall, dialogService) {
 	        var _this = this;
@@ -3822,11 +3687,11 @@
 
 
 /***/ },
-/* 40 */
+/* 38 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWNumbersOnly = (function () {
 	    function SWNumbersOnly() {
 	        this.restrict = "A";
@@ -3878,7 +3743,7 @@
 
 
 /***/ },
-/* 41 */
+/* 39 */
 /***/ function(module, exports) {
 
 	var SWLoading = (function () {
@@ -3911,7 +3776,7 @@
 
 
 /***/ },
-/* 42 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var SWScrollTrigger = (function () {
@@ -4000,7 +3865,7 @@
 
 
 /***/ },
-/* 43 */
+/* 41 */
 /***/ function(module, exports) {
 
 	var SWRbKey = (function () {
@@ -4045,11 +3910,11 @@
 
 
 /***/ },
-/* 44 */
+/* 42 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWOptions = (function () {
 	    function SWOptions($log, $slatwall, observerService, corePartialsPath, pathBuilderConfig) {
 	        return {
@@ -4110,7 +3975,7 @@
 
 
 /***/ },
-/* 45 */
+/* 43 */
 /***/ function(module, exports) {
 
 	var SWSelection = (function () {
@@ -4168,9 +4033,11 @@
 
 
 /***/ },
-/* 46 */
+/* 44 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWClickOutside = (function () {
 	    function SWClickOutside($document, $timeout) {
 	        return {
@@ -4219,7 +4086,7 @@
 
 
 /***/ },
-/* 47 */
+/* 45 */
 /***/ function(module, exports) {
 
 	var SWDirective = (function () {
@@ -4260,7 +4127,7 @@
 
 
 /***/ },
-/* 48 */
+/* 46 */
 /***/ function(module, exports) {
 
 	var SWExportAction = (function () {
@@ -4290,7 +4157,7 @@
 
 
 /***/ },
-/* 49 */
+/* 47 */
 /***/ function(module, exports) {
 
 	var SWHref = (function () {
@@ -4321,11 +4188,11 @@
 
 
 /***/ },
-/* 50 */
+/* 48 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../../client/typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWProcessCallerController = (function () {
 	    function SWProcessCallerController($templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, pathBuilderConfig) {
 	        var _this = this;
@@ -4401,17 +4268,17 @@
 
 
 /***/ },
-/* 51 */
+/* 49 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../../client/typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWResizedImage = (function () {
 	    function SWResizedImage($http, $log, $q, $slatwall, corePartialsPath, pathBuilderConfig) {
 	        return {
 	            restrict: 'E',
 	            scope: {
-	                orderItem: "="
+	                orderItem: "=",
 	            },
 	            templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + "orderitem-image.html",
 	            link: function (scope, element, attrs) {
@@ -4444,7 +4311,7 @@
 
 
 /***/ },
-/* 52 */
+/* 50 */
 /***/ function(module, exports) {
 
 	var SWSortable = (function () {
@@ -4496,11 +4363,11 @@
 
 
 /***/ },
-/* 53 */
+/* 51 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var SWListingGlobalSearchController = (function () {
 	    //@ngInject
 	    function SWListingGlobalSearchController($timeout) {
@@ -4557,2527 +4424,11 @@
 
 
 /***/ },
-/* 54 */
+/* 52 */
 /***/ function(module, exports) {
 
-	var SWDetailTabs = (function () {
-	    function SWDetailTabs($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + 'detailtabs.html',
-	            link: function (scope, element, attr) {
-	            }
-	        };
-	    }
-	    SWDetailTabs.Factory = function () {
-	        var directive = function ($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
-	            return new SWDetailTabs($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$location',
-	            '$log',
-	            '$slatwall',
-	            'coreEntityPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWDetailTabs;
-	})();
-	exports.SWDetailTabs = SWDetailTabs;
-
-
-/***/ },
-/* 55 */
-/***/ function(module, exports) {
-
-	var SWDetail = (function () {
-	    function SWDetail($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/detail.html',
-	            link: function (scope, element, attr) {
-	                scope.$id = "slatwallDetailController";
-	                $log.debug('slatwallDetailController');
-	                /*Sets the view dirty on save*/
-	                scope.setDirty = function (entity) {
-	                    angular.forEach(entity.forms, function (form) {
-	                        form.$setSubmitted();
-	                    });
-	                };
-	                var setupMetaData = function () {
-	                    scope[scope.entityName.toLowerCase()] = scope.entity;
-	                    scope.entity.metaData.$$getDetailTabs().then(function (value) {
-	                        scope.detailTabs = value.data;
-	                        $log.debug('detailtabs');
-	                        $log.debug(scope.detailTabs);
-	                    });
-	                };
-	                var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
-	                scope.tabPartialPath = pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath);
-	                scope.getEntity = function () {
-	                    if (scope.entityID === 'null') {
-	                        scope.entity = $slatwall['new' + propertyCasedEntityName]();
-	                        setupMetaData();
-	                    }
-	                    else {
-	                        var entityPromise = $slatwall['get' + propertyCasedEntityName]({ id: scope.entityID });
-	                        entityPromise.promise.then(function () {
-	                            scope.entity = entityPromise.value;
-	                            setupMetaData();
-	                        });
-	                    }
-	                };
-	                scope.getEntity();
-	                scope.deleteEntity = function () {
-	                    var deletePromise = scope.entity.$$delete();
-	                    deletePromise.then(function () {
-	                        $location.path('/entity/' + propertyCasedEntityName + '/');
-	                    });
-	                };
-	                scope.allTabsOpen = false;
-	            }
-	        };
-	    }
-	    SWDetail.Factory = function () {
-	        var directive = function ($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
-	            return new SWDetail($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$location',
-	            '$log',
-	            '$slatwall',
-	            'coreEntityPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWDetail;
-	})();
-	exports.SWDetail = SWDetail;
-
-
-/***/ },
-/* 56 */
-/***/ function(module, exports) {
-
-	var SWList = (function () {
-	    function SWList($log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/list.html',
-	            link: function (scope, element, attr) {
-	                $log.debug('slatwallList init');
-	                scope.getCollection = function () {
-	                    var pageShow = 50;
-	                    if (scope.pageShow !== 'Auto') {
-	                        pageShow = scope.pageShow;
-	                    }
-	                    scope.entityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
-	                    var collectionListingPromise = $slatwall.getEntity(scope.entityName, { currentPage: scope.currentPage, pageShow: pageShow, keywords: scope.keywords });
-	                    collectionListingPromise.then(function (value) {
-	                        scope.collection = value;
-	                        scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
-	                    });
-	                };
-	                scope.getCollection();
-	            }
-	        };
-	    }
-	    SWList.Factory = function () {
-	        var directive = function ($log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
-	            return new SWList($log, $slatwall, coreEntityPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$slatwall',
-	            'coreEntityPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWList;
-	})();
-	exports.SWList = SWList;
-
-
-/***/ },
-/* 57 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
-	 * validate based on that context as defined in the validation properties object.
-	 */
-	var SWInput = (function () {
-	    function SWInput($log, $compile, utilityService) {
-	        var getValidationDirectives = function (propertyDisplay) {
-	            var spaceDelimitedList = '';
-	            var name = propertyDisplay.property;
-	            var form = propertyDisplay.form.$$swFormInfo;
-	            $log.debug("Name is:" + name + " and form is: " + form);
-	            var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
-	            $log.debug("Validations: ");
-	            var validationsForContext = [];
-	            //get the form context and the form name.
-	            var formContext = propertyDisplay.form.$$swFormInfo.context;
-	            var formName = propertyDisplay.form.$$swFormInfo.name;
-	            $log.debug("Form context is: ");
-	            $log.debug(formContext);
-	            $log.debug("Form Name: ");
-	            $log.debug(formName);
-	            //get the validations for the current element.
-	            var propertyValidations = propertyDisplay.object.validations.properties[name];
-	            /*
-	            * Investigating why number inputs are not working.
-	            * */
-	            //check if the contexts match.
-	            if (angular.isObject(propertyValidations)) {
-	                //if this is a procesobject validation then the context is implied
-	                if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
-	                    propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
-	                }
-	                if (propertyValidations[0].contexts === formContext) {
-	                    $log.debug("Matched");
-	                    for (var prop in propertyValidations[0]) {
-	                        if (prop != "contexts" && prop !== "conditions") {
-	                            spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
-	                        }
-	                    }
-	                }
-	                $log.debug(spaceDelimitedList);
-	            }
-	            //loop over validations that are required and create the space delimited list
-	            $log.debug(validations);
-	            //get all validations related to the form context;
-	            $log.debug(form);
-	            $log.debug(propertyDisplay);
-	            angular.forEach(validations, function (validation, key) {
-	                if (utilityService.listFind(validation.contexts.toLowerCase(), form.context.toLowerCase()) !== -1) {
-	                    $log.debug("Validations for context");
-	                    $log.debug(validation);
-	                    validationsForContext.push(validation);
-	                }
-	            });
-	            //now that we have all related validations for the specific form context that we are working with collection the directives we need
-	            //getValidationDirectiveByType();
-	            return spaceDelimitedList;
-	        };
-	        var getTemplate = function (propertyDisplay) {
-	            var template = '';
-	            var validations = '';
-	            if (!propertyDisplay.noValidate) {
-	                validations = getValidationDirectives(propertyDisplay);
-	            }
-	            if (propertyDisplay.fieldType === 'text') {
-	                template = '<input type="text" class="form-control" ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
-	                    validations +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
-	            }
-	            else if (propertyDisplay.fieldType === 'password') {
-	                template = '<input type="password" class="form-control" ' +
-	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
-	                    'ng-disabled="!propertyDisplay.editable" ' +
-	                    'ng-show="propertyDisplay.editing" ' +
-	                    'name="' + propertyDisplay.property + '" ' +
-	                    validations +
-	                    'id="swinput' + utilityService.createID(26) + '"' +
-	                    ' />';
-	            }
-	            return template;
-	        };
-	        return {
-	            require: '^form',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            restrict: "E",
-	            //adding model and form controller
-	            link: function (scope, element, attr, formController) {
-	                //renders the template and compiles it
-	                element.html(getTemplate(scope.propertyDisplay));
-	                $compile(element.contents())(scope);
-	            }
-	        };
-	    }
-	    SWInput.Factory = function () {
-	        var directive = function ($log, $compile, utilityService) {
-	            return new SWInput($log, $compile, utilityService);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$compile',
-	            'utilityService'
-	        ];
-	        return directive;
-	    };
-	    return SWInput;
-	})();
-	exports.SWInput = SWInput;
-
-
-/***/ },
-/* 58 */
-/***/ function(module, exports) {
-
-	/**********************************************************************************************
-	 **********************************************************************************************
-	 **********************************************************************************************
-	 **		___________________________________________
-	 ** 	Form Field - type have the following options (This is for the frontend so it can be modified):
-	 **
-	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
-	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		file				|	No value can be passed in
-	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		password			|	No Value can be passed in
-	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		text				|	Simple Text Field
-	 **		textarea			|	Simple Textarea
-	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
-	 **		submit				|	submit button to post these properties back to the server.
-	 **		------------------------------------------------------------------------------------------------------
-	 **
-	 **		attr.valueObject" type="any" default="" />
-	 **		attr.valueObjectProperty" type="string" default="" />
-	 **
-	 **		General Settings that end up getting applied to the value object
-	 **		attr.type" type="string" default="text"
-	 **		attr.name" type="string" default=""
-	 **		attr.class" type="string" default=""
-	 **		attr.value" type="any" default=""
-	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
-	 **		attr.fieldAttributes" type="string" default=""
-	 **
-	 *********************************************************************************************
-	 *********************************************************************************************
-	 *********************************************************************************************
-	 */
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	    * Property Display Controller handles the logic for this directive.
-	    */
-	var SWFFormFieldController = (function () {
-	    function SWFFormFieldController($scope) {
-	        this.$scope = $scope;
-	        var vm = this;
-	        vm.propertyDisplay = this.propertyDisplay;
-	    }
-	    /**
-	        * Handles the logic for the frontend version of the property display.
-	        */
-	    SWFFormFieldController.$inject = ['$scope'];
-	    return SWFFormFieldController;
-	})();
-	/**
-	    * This class handles configuring formFields for use in process forms on the front end.
-	    */
-	var SWFFormField = (function () {
-	    function SWFFormField(coreFormPartialsPath, pathBuilderConfig) {
-	        this.restrict = "E";
-	        this.require = "^swfPropertyDisplay";
-	        this.controller = SWFFormFieldController;
-	        this.controllerAs = "swfFormField";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "=?"
-	        };
-	        this.link = function (scope, element, attrs, formController, transcludeFn) {
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfformfield.html';
-	    }
-	    /**
-	        * Handles injecting the partials path into this class
-	        */
-	    SWFFormField.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFFormField(coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFFormField;
-	})();
-	exports.SWFFormField = SWFFormField;
-
-
-/***/ },
-/* 59 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	    * Form Controller handles the logic for this directive.
-	    */
-	var SWFormController = (function () {
-	    /**
-	        * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
-	        */
-	    //@ngInject
-	    function SWFormController($scope, $element, $slatwall, accountService, cartService, $http, $timeout, observerService) {
-	        /** only use if the developer has specified these features with isProcessForm */
-	        this.$scope = $scope;
-	        this.$element = $element;
-	        this.$slatwall = $slatwall;
-	        this.accountService = accountService;
-	        this.cartService = cartService;
-	        this.$http = $http;
-	        this.$timeout = $timeout;
-	        this.observerService = observerService;
-	        this.isProcessForm = this.isProcessForm || "false";
-	        if (this.isProcessForm == "true") {
-	            this.handleSelfInspection(this);
-	        }
-	    }
-	    /**
-	        * Iterates through the form elements and checks if the names of any of them match
-	        * the meta data that comes back from the processObject call. Supplies a generic submit
-	        * method that can be called by any subclasses that inject formCtrl. On submit,
-	        * this class will attach any errors to the correspnding form element.
-	        */
-	    SWFormController.prototype.handleSelfInspection = function (context) {
-	        var _this = this;
-	        /** local variables */
-	        this.processObject = this.object || "";
-	        var vm = context;
-	        vm.hiddenFields = this.hiddenFields;
-	        vm.entityName = this.entityName || "Account";
-	        vm.processObject = this.processObject;
-	        vm.action = this.action;
-	        vm.actions = this.actions;
-	        vm.$timeout = this.$timeout;
-	        vm.postOnly = false;
-	        var observerService = this.observerService;
-	        /** parse the name */
-	        var entityName = this.processObject.split("_")[0];
-	        var processObject = this.processObject.split("_")[1];
-	        /** try to grab the meta data from the process entity in slatwall in a process exists
-	            *  otherwise, just use the service method to access it.
-	            */
-	        /** Cart is an alias for an Order */
-	        if (entityName == "Order") {
-	            entityName = "Cart";
-	        }
-	        ;
-	        /** find the form scope */
-	        this.$scope.$on('anchor', function (event, data) {
-	            if (data.anchorType == "form" && data.scope !== undefined) {
-	                vm["formCtrl"] = data.scope;
-	            }
-	        });
-	        /** make sure we have our data using new logic and $slatwall*/
-	        if (this.processObject == undefined || this.entityName == undefined) {
-	            throw ("ProcessObject Undefined Exception");
-	        }
-	        try {
-	            vm.actionFn = this.$slatwall.newEntity(vm.processObject);
-	        }
-	        catch (e) {
-	            vm.postOnly = true;
-	        }
-	        /** We use these for our models */
-	        vm.formData = {};
-	        /** returns all the data from the form by iterating the form elements */
-	        vm.getFormData = function () {
-	            var _this = this;
-	            angular.forEach(vm["formCtrl"][vm.processObject], function (val, key) {
-	                /** Check for form elements that have a name that doesn't start with $ */
-	                if (key.toString().indexOf('$') == -1) {
-	                    _this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
-	                }
-	            });
-	            return vm.formData || "";
-	        };
-	        /****
-	            * Handle parsing through the server errors and injecting the error text for that field
-	            * If the form only has a submit, then simply call that function and set errors.
-	            ***/
-	        vm.parseErrors = function (result) {
-	            var _this = this;
-	            if (angular.isDefined(result.errors) && result.errors.length != 0) {
-	                angular.forEach(result.errors, function (val, key) {
-	                    if (angular.isDefined(vm["formCtrl"][vm.processObject][key])) {
-	                        var primaryElement = _this.$element.find("[error-for='" + key + "']");
-	                        vm.$timeout(function () {
-	                            primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
-	                        }, 0);
-	                        vm["formCtrl"][vm.processObject][key].$setValidity(key, false); //set field invalid
-	                    }
-	                }, this);
-	            }
-	        };
-	        vm.eventsObj = [];
-	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
-	        vm.parseEventString = function (evntStr, evntType) {
-	            vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
-	        };
-	        vm.eventsHandler = function (params) {
-	            for (var e in params.events) {
-	                if (angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()) {
-	                    if (params.events[e].name == "hide") {
-	                        vm.hide(params.events[e].value);
-	                    }
-	                    if (params.events[e].name == "show") {
-	                        vm.show(params.events[e].value);
-	                    }
-	                    if (params.events[e].name == "update") {
-	                        vm.update(params.events[e].value);
-	                    }
-	                    if (params.events[e].name == "refresh") {
-	                        vm.refresh(params.events[e].value);
-	                    }
-	                    ;
-	                }
-	            }
-	        };
-	        /** hides this directive on event */
-	        vm.hide = function (param) {
-	            if (vm.processObject.toLowerCase() == param) {
-	                _this.$element.hide();
-	            }
-	        };
-	        /** shows this directive on event */
-	        vm.show = function (param) {
-	            if (vm.processObject.toLowerCase() == param) {
-	                _this.$element.show();
-	            }
-	        };
-	        /** refreshes this directive on event */
-	        vm.refresh = function (params) {
-	            //stub
-	        };
-	        /** updates this directive on event */
-	        vm.update = function (params) {
-	            //stub
-	        };
-	        vm.parseEvents = function (str, evntType) {
-	            if (str == undefined)
-	                return;
-	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
-	            var eventsObj = {
-	                "events": []
-	            }; //will hold events
-	            for (var token in strTokens) {
-	                var t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
-	                var u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
-	                if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
-	                    if (u == "this") {
-	                        u == vm.processObject.toLowerCase();
-	                    } //<--replaces the alias this with the name of this form.
-	                    var event_1 = { "name": t, "value": u };
-	                    eventsObj.events.push(event_1);
-	                }
-	            }
-	            if (eventsObj.events.length) {
-	                observerService.attach(vm.eventsHandler, "onSuccess");
-	            }
-	            return eventsObj;
-	        };
-	        /** find and clear all errors on form */
-	        vm.clearErrors = function () {
-	            var errorElements = _this.$element.find("[error-for]");
-	            errorElements.empty();
-	        };
-	        /** sets the correct factory to use for submission */
-	        vm.setFactoryIterator = function (fn) {
-	            var account = _this.accountService.GetInstance();
-	            var cart = _this.cartService.GetInstance();
-	            var factories = [account, cart];
-	            var factoryFound = false;
-	            for (var _i = 0; _i < factories.length; _i++) {
-	                var factory = factories[_i];
-	                if (!factoryFound) {
-	                    angular.forEach(factory, function (val, key) {
-	                        if (!factoryFound) {
-	                            if (key == fn) {
-	                                vm.factoryIterator = factory;
-	                                factoryFound = true;
-	                            }
-	                        }
-	                    });
-	                }
-	            }
-	        };
-	        /** sets the type of the form to submit */
-	        vm.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
-	        vm.toFormParams = function (data) {
-	            return data = $.param(data) || "";
-	        };
-	        /** iterates through the factory submitting data */
-	        vm.iterateFactory = function (submitFunction) {
-	            vm.setFactoryIterator(submitFunction);
-	            var factoryIterator = vm.factoryIterator;
-	            if (factoryIterator != undefined) {
-	                var submitFn = factoryIterator[submitFunction];
-	                vm.formData = vm.formData || {};
-	                submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
-	                    if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
-	                        vm.parseErrors(result.data);
-	                        observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events });
-	                    }
-	                    else {
-	                        observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events });
-	                    }
-	                }, angular.noop);
-	            }
-	            else {
-	                throw ("Action does not exist in Account or Cart Exception  *" + vm.action);
-	            }
-	        };
-	        /** does either a single or multiple actions */
-	        vm.doAction = function (actionObject) {
-	            if (angular.isArray(actionObject)) {
-	                for (var _i = 0; _i < actionObject.length; _i++) {
-	                    var submitFunction = actionObject[_i];
-	                    vm.iterateFactory(submitFunction);
-	                }
-	            }
-	            else if (angular.isString(actionObject)) {
-	                vm.iterateFactory(actionObject);
-	            }
-	            else {
-	                throw ("Unknown type of action exception");
-	            }
-	        };
-	        /** create the generic submit function */
-	        vm.submit = function (Action) {
-	            var action = Action; //vm.action || vm.actions;
-	            vm.clearErrors();
-	            vm.formData = vm.getFormData() || "";
-	            vm.doAction(action);
-	        };
-	        /* give children access to the process
-	        */
-	        vm.getProcessObject = function () {
-	            return vm.processEntity;
-	        };
-	        /* handle events
-	        */
-	        if (this.onSuccess != undefined) {
-	            vm.parseEventString(this.onSuccess, "onSuccess");
-	            observerService.attach(vm.eventsHandler, "onSuccess");
-	        }
-	        else if (this.onError != undefined) {
-	            vm.parseEventString(this.onError, "onError");
-	        }
-	    };
-	    return SWFormController;
-	})();
-	var SWForm = (function () {
-	    function SWForm(coreFormPartialsPath, pathBuilderConfig) {
-	        this.coreFormPartialsPath = coreFormPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.templateUrl = "";
-	        this.transclude = true;
-	        this.restrict = "E";
-	        this.replace = true;
-	        this.controller = SWFormController;
-	        this.controllerAs = "swFormController";
-	        this.scope = {
-	            object: "=",
-	            context: "@",
-	            name: "@"
-	        };
-	        /**
-	            * Binds all of our variables to the controller so we can access using this
-	            */
-	        this.bindToController = {
-	            entityName: "@?",
-	            processObject: "@?",
-	            hiddenFields: "=?",
-	            action: "@?",
-	            actions: "@?",
-	            formClass: "@?",
-	            formData: "=?",
-	            object: "@?",
-	            onSuccess: "@?",
-	            onError: "@?",
-	            hideUntil: "@?",
-	            isProcessForm: "@"
-	        };
-	        /**
-	            * Sets the context of this form
-	            */
-	        this.link = function (scope, element, attrs, controller, transclude) {
-	            scope.context = scope.context || 'save';
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
-	    }
-	    /**
-	        * Handles injecting the partials path into this class
-	        */
-	    SWForm.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWForm(coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
-	        return directive;
-	    };
-	    return SWForm;
-	})();
-	exports.SWForm = SWForm;
-
-
-/***/ },
-/* 60 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormField = (function () {
-	    function SWFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
-	        return {
-	            require: "^form",
-	            restrict: 'AE',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'formfield.html',
-	            link: function (scope, element, attrs, formController) {
-	                if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
-	                    scope.propertyDisplay.isDirty = true;
-	                }
-	                if (angular.isDefined(formController[scope.propertyDisplay.property])) {
-	                    scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
-	                    formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
-	                }
-	            }
-	        };
-	    }
-	    SWFormField.Factory = function () {
-	        var directive = function ($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$templateCache',
-	            '$window',
-	            '$slatwall',
-	            'formService',
-	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFormField;
-	})();
-	exports.SWFormField = SWFormField;
-	//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$slatwall', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath)]);
-
-
-/***/ },
-/* 61 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormFieldJsonController = (function () {
-	    //@ngInject
-	    function SWFormFieldJsonController(formService) {
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	    }
-	    return SWFormFieldJsonController;
-	})();
-	var SWFormFieldJson = (function () {
-	    function SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.scope = true;
-	        this.controller = SWFormFieldJsonController;
-	        this.bindToController = {
-	            propertyDisplay: "=?"
-	        };
-	        this.controllerAs = "ctrl";
-	        this.templateUrl = "";
-	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "json.html";
-	    }
-	    SWFormFieldJson.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldJson;
-	})();
-	exports.SWFormFieldJson = SWFormFieldJson;
-
-
-/***/ },
-/* 62 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormFieldNumberController = (function () {
-	    function SWFormFieldNumberController() {
-	        if (this.propertyDisplay.isDirty == undefined)
-	            this.propertyDisplay.isDirty = false;
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	    }
-	    return SWFormFieldNumberController;
-	})();
-	var SWFormFieldNumber = (function () {
-	    function SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "=?"
-	        };
-	        this.templateUrl = "";
-	        this.controller = SWFormFieldNumberController;
-	        this.controllerAs = "ctrl";
-	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "number.html";
-	    }
-	    SWFormFieldNumber.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
-	        return directive;
-	    };
-	    return SWFormFieldNumber;
-	})();
-	exports.SWFormFieldNumber = SWFormFieldNumber;
-
-
-/***/ },
-/* 63 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var swFormFieldPasswordController = (function () {
-	    //@ngInject
-	    function swFormFieldPasswordController() {
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	    }
-	    return swFormFieldPasswordController;
-	})();
-	var SWFormFieldPassword = (function () {
-	    //@ngInject
-	    function SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "=?"
-	        };
-	        this.controller = swFormFieldPasswordController;
-	        this.controllerAs = "ctrl";
-	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "password.html";
-	    }
-	    SWFormFieldPassword.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
-	        return directive;
-	    };
-	    return SWFormFieldPassword;
-	})();
-	exports.SWFormFieldPassword = SWFormFieldPassword;
-
-
-/***/ },
-/* 64 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormFieldRadio = (function () {
-	    //@ngInject
-	    function SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
-	        return {
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'radio.html',
-	            require: "^form",
-	            restrict: 'E',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            link: function (scope, element, attr, formController) {
-	                console.log('radio');
-	                var makeRandomID = function makeid(count) {
-	                    var text = "";
-	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	                    for (var i = 0; i < count; i++)
-	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
-	                    return text;
-	                };
-	                if (scope.propertyDisplay.fieldType === 'yesno') {
-	                    //format value
-	                    scope.selectedRadioFormName = makeRandomID(26);
-	                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
-	                    scope.formFieldChanged = function (option) {
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
-	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-	                        scope.propertyDisplay.form['selected' + scope.propertyDisplay.object.metaData.className + scope.propertyDisplay.property + scope.selectedRadioFormName].$dirty = false;
-	                    };
-	                    scope.propertyDisplay.options = [
-	                        {
-	                            name: 'Yes',
-	                            value: 1
-	                        },
-	                        {
-	                            name: 'No',
-	                            value: 0
-	                        }
-	                    ];
-	                    if (angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
-	                        for (var i in scope.propertyDisplay.options) {
-	                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
-	                                scope.selected = scope.propertyDisplay.options[i];
-	                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
-	                            }
-	                        }
-	                    }
-	                    else {
-	                        scope.selected = scope.propertyDisplay.options[0];
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
-	                    }
-	                    $timeout(function () {
-	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-	                    });
-	                }
-	            }
-	        };
-	    }
-	    SWFormFieldRadio.Factory = function () {
-	        var directive = function ($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log', '$timeout', 'coreFormPartialsPath', 'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldRadio;
-	})();
-	exports.SWFormFieldRadio = SWFormFieldRadio;
-
-
-/***/ },
-/* 65 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormFieldSearchSelect = (function () {
-	    function SWFormFieldSearchSelect($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
-	        return {
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
-	            require: "^form",
-	            restrict: 'E',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            link: function (scope, element, attr, formController) {
-	                //set up selectionOptions
-	                scope.selectionOptions = {
-	                    value: [],
-	                    $$adding: false
-	                };
-	                //match in matches track by
-	                //function to set state of adding new item
-	                scope.setAdding = function (isAdding) {
-	                    scope.isAdding = isAdding;
-	                    scope.showAddBtn = false;
-	                };
-	                scope.selectedOption = {};
-	                scope.showAddBtn = false;
-	                var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
-	                //create basic
-	                var object = $slatwall.newEntity(propertyMetaData.cfc);
-	                //				scope.propertyDisplay.template = '';
-	                //				//check for a template
-	                //				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
-	                //				var templatePath = coreFormPartialsPath + 'formfields/searchselecttemplates/';
-	                //				if(angular.isUndefined(scope.propertyDisplay.template)){
-	                //					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
-	                //						$log.debug('template');
-	                //						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
-	                //					},function(){
-	                //						scope.propertyDisplay.template = templatePath+'index.html';
-	                //						$log.debug('template');
-	                //						$log.debug(scope.propertyDisplay.template);
-	                //					});
-	                //				}
-	                //set up query function for finding related object
-	                scope.cfcProperCase = propertyMetaData.cfcProperCase;
-	                scope.selectionOptions.getOptionsByKeyword = function (keyword) {
-	                    var filterGroupsConfig = '[' +
-	                        ' {  ' +
-	                        '"filterGroup":[  ' +
-	                        '{' +
-	                        ' "propertyIdentifier":"_' + scope.cfcProperCase.toLowerCase() + '.' + scope.cfcProperCase + 'Name",' +
-	                        ' "comparisonOperator":"like",' +
-	                        ' "ormtype":"string",' +
-	                        ' "value":"%' + keyword + '%"' +
-	                        '  }' +
-	                        ' ]' +
-	                        ' }' +
-	                        ']';
-	                    return $slatwall.getEntity(propertyMetaData.cfc, { filterGroupsConfig: filterGroupsConfig.trim() })
-	                        .then(function (value) {
-	                        $log.debug('typesByKeyword');
-	                        $log.debug(value);
-	                        scope.selectionOptions.value = value.pageRecords;
-	                        var myLength = keyword.length;
-	                        if (myLength > 0) {
-	                            scope.showAddBtn = true;
-	                        }
-	                        else {
-	                            scope.showAddBtn = false;
-	                        }
-	                        return scope.selectionOptions.value;
-	                    });
-	                };
-	                var propertyPromise = scope.propertyDisplay.object['$$get' + propertyMetaData.nameCapitalCase]();
-	                propertyPromise.then(function (data) {
-	                });
-	                //set up behavior when selecting an item
-	                scope.selectItem = function ($item, $model, $label) {
-	                    scope.$item = $item;
-	                    scope.$model = $model;
-	                    scope.$label = $label;
-	                    scope.showAddBtn = false; //turns off the add btn on select
-	                    //angular.extend(inflatedObject.data,$item);
-	                    object.$$init($item);
-	                    $log.debug('select item');
-	                    $log.debug(object);
-	                    scope.propertyDisplay.object['$$set' + propertyMetaData.nameCapitalCase](object);
-	                };
-	                //				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
-	                //					$log.debug('getmeta');
-	                //					$log.debug(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
-	                //
-	                //					//scope.propertyDipslay.object['$$get'+]
-	                //				}
-	                //
-	                //				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
-	            }
-	        };
-	    }
-	    SWFormFieldSearchSelect.Factory = function () {
-	        var directive = function ($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldSearchSelect($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$http',
-	            '$log',
-	            '$slatwall',
-	            'formService',
-	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldSearchSelect;
-	})();
-	exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
-
-
-/***/ },
-/* 66 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormFieldSelect = (function () {
-	    //@ngInject
-	    function SWFormFieldSelect($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
-	        return {
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'select.html',
-	            require: "^form",
-	            restrict: 'E',
-	            scope: {
-	                propertyDisplay: "="
-	            },
-	            link: function (scope, element, attr, formController) {
-	                var selectType;
-	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
-	                    selectType = 'object';
-	                    $log.debug('selectType:object');
-	                }
-	                else {
-	                    selectType = 'string';
-	                    $log.debug('selectType:string');
-	                }
-	                scope.formFieldChanged = function (option) {
-	                    $log.debug('formfieldchanged');
-	                    $log.debug(option);
-	                    if (selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
-	                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
-	                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
-	                        }
-	                    }
-	                    else if (selectType === 'string') {
-	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
-	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-	                    }
-	                };
-	                scope.getOptions = function () {
-	                    if (angular.isUndefined(scope.propertyDisplay.options)) {
-	                        var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
-	                        optionsPromise.then(function (value) {
-	                            scope.propertyDisplay.options = value.data;
-	                            if (selectType === 'object') {
-	                                if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
-	                                }
-	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === '') {
-	                                    $log.debug('no ID');
-	                                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
-	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
-	                                }
-	                                else {
-	                                    var found = false;
-	                                    for (var i in scope.propertyDisplay.options) {
-	                                        if (angular.isObject(scope.propertyDisplay.options[i].value)) {
-	                                            $log.debug('isObject');
-	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
-	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
-	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
-	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
-	                                                found = true;
-	                                                break;
-	                                            }
-	                                        }
-	                                        else {
-	                                            $log.debug('notisObject');
-	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
-	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()) {
-	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
-	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
-	                                                found = true;
-	                                                break;
-	                                            }
-	                                        }
-	                                        if (!found) {
-	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-	                                        }
-	                                    }
-	                                }
-	                            }
-	                            else if (selectType === 'string') {
-	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null) {
-	                                    for (var i in scope.propertyDisplay.options) {
-	                                        if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
-	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
-	                                            scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
-	                                        }
-	                                    }
-	                                }
-	                                else {
-	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
-	                                }
-	                            }
-	                        });
-	                    }
-	                };
-	                if (scope.propertyDisplay.eagerLoadOptions == true) {
-	                    scope.getOptions();
-	                }
-	                //formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
-	                if (selectType === 'object') {
-	                    formController[scope.propertyDisplay.property + 'ID'].$dirty = scope.propertyDisplay.isDirty;
-	                }
-	                else if (selectType === 'string') {
-	                    formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-	                }
-	            }
-	        }; //<--end return
-	    }
-	    SWFormFieldSelect.Factory = function () {
-	        var directive = function ($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
-	            return new SWFormFieldSelect($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$slatwall',
-	            'formService',
-	            'coreFormPartialsPath',
-	            'utilityService',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldSelect;
-	})();
-	exports.SWFormFieldSelect = SWFormFieldSelect;
-
-
-/***/ },
-/* 67 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormFieldTextController = (function () {
-	    //@ngInject
-	    function SWFormFieldTextController(formService) {
-	        this.formService = formService;
-	        if (this.propertyDisplay.isDirty == undefined)
-	            this.propertyDisplay.isDirty = false;
-	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
-	        this.formService.setPristinePropertyValue(this.propertyDisplay.property, this.propertyDisplay.object.data[this.propertyDisplay.property]);
-	    }
-	    return SWFormFieldTextController;
-	})();
-	var SWFormFieldText = (function () {
-	    function SWFormFieldText(coreFormPartialsPath, pathBuilderConfig) {
-	        this.restrict = 'E';
-	        this.require = "^form";
-	        this.controller = SWFormFieldTextController;
-	        this.controllerAs = "ctrl";
-	        this.scope = true;
-	        this.bindToController = {
-	            propertyDisplay: "="
-	        };
-	        //@ngInject
-	        this.link = function (scope, element, attr, formController) {
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "text.html";
-	    }
-	    SWFormFieldText.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldText(coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFormFieldText;
-	})();
-	exports.SWFormFieldText = SWFormFieldText;
-	//     angular.module('slatwalladmin').directive('swFormFieldText', ['$log','$slatwall','formService','partialsPath', ($log, $slatwall, formService, partialsPath) => new SWFormFieldText($log, $slatwall, formService, partialsPath)]);
-	// }
-
-
-/***/ },
-/* 68 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWFormRegistrar = (function () {
-	    //@ngInject
-	    function SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            require: "^form",
-	            link: function (scope, element, attrs, formController) {
-	                /*add form info at the form level*/
-	                formController.$$swFormInfo = {
-	                    object: scope.object,
-	                    context: scope.context || 'save',
-	                    name: scope.name
-	                };
-	                var makeRandomID = function makeid(count) {
-	                    var text = "";
-	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	                    for (var i = 0; i < count; i++)
-	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
-	                    return text;
-	                };
-	                scope.form = formController;
-	                /*register form with service*/
-	                formController.name = scope.name;
-	                formService.setForm(formController);
-	                /*register form at object level*/
-	                if (!angular.isDefined(scope.object.forms)) {
-	                    scope.object.forms = {};
-	                }
-	                scope.object.forms[scope.name] = formController;
-	            }
-	        };
-	    }
-	    SWFormRegistrar.Factory = function () {
-	        var directive = function (formService, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'formService',
-	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWFormRegistrar;
-	})();
-	exports.SWFormRegistrar = SWFormRegistrar;
-	// 	angular.module('slatwalladmin').directive('swFormRegistrar',[ 'formService', 'partialsPath', (formService, partialsPath) => new swFormRegistrar(formService, partialsPath)]);
-	// } 
-
-
-/***/ },
-/* 69 */
-/***/ function(module, exports) {
-
-	/**********************************************************************************************
-	 **********************************************************************************************
-	 **********************************************************************************************
-	 **		Property Display (This one is specifically for the frontend so that it can be modified)
-	 **		isHidden
-	 **		requiredFlag
-	 **		title
-	 **		hint
-	 **		editting
-	 **		object
-	 **		class
-	 **		___________________________________________
-	 ** 	attr.type have the following options:
-	 **
-	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
-	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		file				|	No value can be passed in
-	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		password			|	No Value can be passed in
-	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
-	 **		text				|	Simple Text Field
-	 **		textarea			|	Simple Textarea
-	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
-	 **		submit				|	submit button to post these properties back to the server.
-	 **		------------------------------------------------------------------------------------------------------
-	 **
-	 **		attr.valueObject" type="any" default="" />
-	 **		attr.valueObjectProperty" type="string" default="" />
-	 **
-	 **		General Settings that end up getting applied to the value object
-	 **		attr.type" type="string" default="text"
-	 **		attr.name" type="string" default=""
-	 **		attr.class" type="string" default=""
-	 **		attr.value" type="any" default=""
-	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
-	 **		attr.fieldAttributes" type="string" default=""
-	 **
-	 *********************************************************************************************
-	 *********************************************************************************************
-	 *********************************************************************************************
-	 */
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	    * Property Display Controller handles the logic for this directive.
-	    */
-	var SWFPropertyDisplayController = (function () {
-	    /**
-	        * Handles the logic for the frontend version of the property display.
-	        */
-	    //@ngInject
-	    function SWFPropertyDisplayController($scope) {
-	        this.$scope = $scope;
-	        var vm = this;
-	        vm.processObject = {};
-	        vm.valueObjectProperty = this.valueObjectProperty;
-	        vm.type = this.type || "text";
-	        vm.class = this.class || "formControl";
-	        vm.valueObject = this.valueObject;
-	        vm.fieldAttributes = this.fieldAttributes || "";
-	        vm.label = this.label || "true";
-	        vm.labelText = this.labelText || "";
-	        vm.labelClass = this.labelClass || "";
-	        vm.name = this.name || "unnamed";
-	        vm.options = this.options;
-	        vm.optionValues = this.optionValues;
-	        vm.errorClass = this.errorClass;
-	        vm.errorText = this.errorText;
-	        vm.formCtrl = {};
-	        vm.object = this.object; //this is the process object
-	        vm.propertyIdentifier = this.propertyIdentifier; //this is the property
-	        vm.loader = this.loader;
-	        vm.noValidate = this.noValidate;
-	        /** in order to attach the correct controller to local vm, we need a watch to bind */
-	        /** handle options */
-	        if (vm.options && angular.isString(vm.options)) {
-	            var optionsArray = [];
-	            optionsArray = vm.options.toString().split(",");
-	            angular.forEach(optionsArray, function (o) {
-	                var newOption = {
-	                    name: "",
-	                    value: ""
-	                };
-	                newOption.name = o.name;
-	                newOption.value = o.value;
-	                vm.optionValues.push(newOption);
-	            }, vm);
-	        }
-	        /** handle turning the options into an array of objects */
-	        /** handle setting the default value for the yes / no element  */
-	        if (this.type == "yesno" && (this.value && angular.isString(this.value))) {
-	            vm.selected == this.value;
-	        }
-	        this.propertyDisplay = {
-	            type: vm.type,
-	            name: vm.name,
-	            class: vm.class,
-	            loader: vm.loader,
-	            errorClass: vm.errorClass,
-	            option: vm.options,
-	            valueObject: vm.valueObject,
-	            object: vm.object,
-	            label: vm.label,
-	            labelText: vm.labelText,
-	            labelClass: vm.labelClass,
-	            optionValues: vm.optionValues,
-	            edit: vm.editting,
-	            title: vm.title,
-	            value: vm.value,
-	            errorText: vm.errorText
-	        };
-	    }
-	    return SWFPropertyDisplayController;
-	})();
-	/**
-	    * This class handles configuring formFields for use in process forms on the front end.
-	    */
-	var SWFPropertyDisplay = (function () {
-	    //@ngInject
-	    function SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig) {
-	        this.restrict = "E";
-	        this.require = "?^swForm";
-	        this.transclude = true;
-	        this.templateUrl = "";
-	        this.controller = SWFPropertyDisplayController;
-	        this.controllerAs = "swfPropertyDisplayController";
-	        this.scope = {};
-	        this.bindToController = {
-	            type: "@?",
-	            name: "@?",
-	            class: "@?",
-	            edit: "@?",
-	            title: "@?",
-	            hint: "@?",
-	            valueObject: "=?",
-	            valueObjectProperty: "=?",
-	            options: "@?",
-	            fieldAttributes: "@?",
-	            object: "=",
-	            label: "@?",
-	            labelText: "@?",
-	            labelClass: "@?",
-	            errorText: "@?",
-	            errorClass: "@?",
-	            formTemplate: "@?"
-	        };
-	        this.link = function (scope, element, attrs, formController, transcludeFn) {
-	            scope.frmController = formController;
-	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
-	    }
-	    SWFPropertyDisplay.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
-	        return directive;
-	    };
-	    return SWFPropertyDisplay;
-	})();
-	exports.SWFPropertyDisplay = SWFPropertyDisplay;
-
-
-/***/ },
-/* 70 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWPropertyDisplay = (function () {
-	    function SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
-	        return {
-	            require: '^form',
-	            restrict: 'AE',
-	            scope: {
-	                object: "=",
-	                property: "@",
-	                editable: "=",
-	                editing: "=",
-	                isHidden: "=",
-	                title: "=",
-	                hint: "@",
-	                optionsArguments: "=",
-	                eagerLoadOptions: "=",
-	                isDirty: "=",
-	                onChange: "=",
-	                fieldType: "@",
-	                noValidate: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "propertydisplay.html",
-	            link: function (scope, element, attrs, formController) {
-	                //if the item is new, then all fields at the object level are dirty
-	                $log.debug('editingproper');
-	                $log.debug(scope.property);
-	                $log.debug(scope.title);
-	                if (!angular.isDefined(scope.object)) {
-	                    scope.object = formController.$$swFormInfo.object;
-	                }
-	                /**
-	                 * Configuration for property display object.
-	                 */
-	                scope.propertyDisplay = {
-	                    object: scope.object,
-	                    property: scope.property,
-	                    errors: {},
-	                    editing: scope.editing,
-	                    editable: scope.editable,
-	                    isHidden: scope.isHidden,
-	                    fieldType: scope.fieldType || scope.object.metaData.$$getPropertyFieldType(scope.property),
-	                    title: scope.title,
-	                    hint: scope.hint || scope.object.metaData.$$getPropertyHint(scope.property),
-	                    optionsArguments: scope.optionsArguments || {},
-	                    eagerLoadOptions: scope.eagerLoadOptions || true,
-	                    isDirty: scope.isDirty,
-	                    onChange: scope.onChange,
-	                    noValidate: scope.noValidate
-	                };
-	                if (angular.isUndefined(scope.propertyDisplay.noValidate)) {
-	                    scope.propertyDisplay.noValidate = false;
-	                }
-	                if (angular.isUndefined(scope.propertyDisplay.editable)) {
-	                    scope.propertyDisplay.editable = true;
-	                }
-	                if (angular.isUndefined(scope.editing)) {
-	                    scope.propertyDisplay.editing = false;
-	                }
-	                if (angular.isUndefined(scope.propertyDisplay.isHidden)) {
-	                    scope.propertyDisplay.isHidden = false;
-	                }
-	                scope.applyFilter = function (model, filter) {
-	                    try {
-	                        return $filter(filter)(model);
-	                    }
-	                    catch (e) {
-	                        return model;
-	                    }
-	                };
-	                scope.$id = 'propertyDisplay:' + scope.property;
-	                /* register form that the propertyDisplay belongs to*/
-	                scope.propertyDisplay.form = formController;
-	                $log.debug(scope.propertyDisplay);
-	                $log.debug('propertyDisplay');
-	                $log.debug(scope.propertyDisplay);
-	            }
-	        };
-	    }
-	    SWPropertyDisplay.Factory = function () {
-	        var directive = function ($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$filter',
-	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWPropertyDisplay;
-	})();
-	exports.SWPropertyDisplay = SWPropertyDisplay;
-
-
-/***/ },
-/* 71 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
-	 * validate based on that context as defined in the validation properties object.
-	 */
-	// 'use strict';
-	// angular.module('slatwalladmin').directive('swValidate',
-	// [ '$log','$slatwall', function($log, $slatwall) {
-	var SWValidate = (function () {
-	    function SWValidate($log, $slatwall) {
-	        return {
-	            restrict: "A",
-	            require: '^ngModel',
-	            link: function (scope, elem, attr, ngModel) {
-	                //Define our contexts and validation property enums.
-	                var ContextsEnum = {
-	                    SAVE: { name: "save", value: 0 },
-	                    DELETE: { name: "delete", value: 1 },
-	                    EDIT: { name: "edit", value: 2 }
-	                };
-	                var ValidationPropertiesEnum = {
-	                    REGEX: { name: "regex", value: 0 },
-	                    MIN_VALUE: { name: "minValue", value: 1 },
-	                    MAX_VALUE: { name: "maxValue", value: 2 },
-	                    EQ: { name: "eq", value: 3 },
-	                    NEQ: { name: "neq", value: 4 },
-	                    UNIQUE: { name: "unique", value: 5 },
-	                    LTE: { name: "lte", value: 6 },
-	                    GTE: { name: "gte", value: 7 },
-	                    MIN_LENGTH: { name: "minLength", value: 8 },
-	                    MAX_LENGTH: { name: "maxLength", value: 9 },
-	                    DATA_TYPE: { name: "dataType", value: 10 },
-	                    REQUIRED: { name: "required", value: 11 }
-	                };
-	                scope.validationPropertiesEnum = ValidationPropertiesEnum;
-	                scope.contextsEnum = ContextsEnum;
-	                var myCurrentContext = scope.contextsEnum.SAVE; //We are only checking the save context right now.
-	                var contextNamesArray = getNamesFromObject(ContextsEnum); //Convert for higher order functions.
-	                var validationPropertiesArray = getNamesFromObject(ValidationPropertiesEnum); //Convert for higher order functions.
-	                var validationObject = scope.propertyDisplay.object.validations.properties; //Get the scope validation object.
-	                var errors = scope.propertyDisplay.errors;
-	                var errorMessages = [];
-	                var failFlag = 0;
-	                /**
-	                * Iterates over the validation object looking for the current elements validations, maps that to a validation function list
-	                * and calls those validate functions. When a validation fails, an error is set, the elements border turns red.
-	                */
-	                function validate(name, context, elementValue) {
-	                    var validationResults = {};
-	                    validationResults = { "name": "name", "context": "context", "required": "required", "error": "none", "errorkey": "none" };
-	                    for (var key in validationObject) {
-	                        // Look for the current attribute in the
-	                        // validation parameters.
-	                        if (key === name || key === name + "Flag") {
-	                            // Now that we have found the current
-	                            // validation parameters, iterate
-	                            // through them looking for
-	                            // the required parameters that match
-	                            // the current page context (save,
-	                            // delete, etc.)
-	                            for (var inner in validationObject[key]) {
-	                                var required = validationObject[key][inner].required || "false"; // Get
-	                                // the
-	                                // required
-	                                // value
-	                                var context = validationObject[key][inner].contexts || "none"; // Get
-	                                // the
-	                                // element
-	                                // context
-	                                //Setup the validation results object to pass back to caller.
-	                                validationResults = { "name": key, "context": context, "required": required, "error": "none", "errorkey": "none" };
-	                                var elementValidationArr = map(checkHasValidationType, validationPropertiesArray, validationObject[key][inner]);
-	                                //Iterate over the array and call the validate function if it has that property.
-	                                for (var i = 0; i < elementValidationArr.length; i++) {
-	                                    if (elementValidationArr[i] == true) {
-	                                        if (validationPropertiesArray[i] === "regex" && elementValue !== "") {
-	                                            //Get the regex string to match and send to validation function.
-	                                            var re = validationObject[key][inner].regex;
-	                                            var result = validate_RegExp(elementValue, re); //true if pattern match, fail otherwise.
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Invalid input");
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            else {
-	                                                errorMessages
-	                                                    .push("Valid input");
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
-	                                                validationResults.fail = false;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "minValue") {
-	                                            var validationMinValue = validationObject[key][inner].minValue;
-	                                            $log.debug(validationMinValue);
-	                                            var result = validate_MinValue(elementValue, validationMinValue);
-	                                            $log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Minimum value is: "
-	                                                    + validationMinValue);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            else {
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
-	                                                validationResults.fail = false;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "maxValue") {
-	                                            var validationMaxValue = validationObject[key][inner].maxValue;
-	                                            var result = validate_MaxValue(elementValue, validationMaxValue);
-	                                            $log.debug("Max Value result is: " + result);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Maximum value is: "
-	                                                    + validationMaxValue);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_VALUE"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "minLength") {
-	                                            var validationMinLength = validationObject[key][inner].minLength;
-	                                            var result = validate_MinLength(elementValue, validationMinLength);
-	                                            $log.debug("Min Length result is: " + result);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Minimum length must be: "
-	                                                    + validationMinLength);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_LENGTH"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "maxLength") {
-	                                            var validationMaxLength = validationObject[key][inner].maxLength;
-	                                            var result = validate_MaxLength(elementValue, validationMaxLength);
-	                                            $log.debug("Max Length result is: " + result);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Maximum length is: "
-	                                                    + validationMaxLength);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_LENGTH"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "eq") {
-	                                            var validationEq = validationObject[key][inner].eq;
-	                                            var result = validate_Eq(elementValue, validationEq);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Must equal "
-	                                                    + validationEq);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["EQ"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "neq") {
-	                                            var validationNeq = validationObject[key][inner].neq;
-	                                            var result = validate_Neq(elementValue, validationNeq);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Must not equal: "
-	                                                    + validationNeq);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["NEQ"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "lte") {
-	                                            var validationLte = validationObject[key][inner].lte;
-	                                            var result = validate_Lte(elementValue, validationLte);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Must be less than "
-	                                                    + validationLte);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["LTE"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "gte") {
-	                                            var validationGte = validationObject[key][inner].gte;
-	                                            var result = validate_Gte(elementValue, validationGte);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Must be greater than: "
-	                                                    + validationGte);
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["GTE"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                        if (validationPropertiesArray[i] === "required") {
-	                                            var validationRequire = validationObject[key][inner].require;
-	                                            var result = validate_Required(elementValue, validationRequire);
-	                                            if (result != true) {
-	                                                errorMessages
-	                                                    .push("Required");
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
-	                                                validationResults.fail = true;
-	                                            }
-	                                            else {
-	                                                errorMessages
-	                                                    .push("Required");
-	                                                validationResults.error = errorMessages[errorMessages.length - 1];
-	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
-	                                                validationResults.fail = false;
-	                                            }
-	                                            return validationResults;
-	                                        }
-	                                    }
-	                                }
-	                            }
-	                        }
-	                    } //<---end validate.			
-	                }
-	                /**
-	                * Function to map if we need a validation on this element.
-	                */
-	                function checkHasValidationType(validationProp, validationType) {
-	                    if (validationProp[validationType] != undefined) {
-	                        return true;
-	                    }
-	                    else {
-	                        return false;
-	                    }
-	                }
-	                /**
-	                * Iterates over the properties object finding which types of validation are needed.
-	                */
-	                function map(func, array, obj) {
-	                    var result = [];
-	                    forEach(array, function (element) {
-	                        result.push(func(obj, element));
-	                    });
-	                    return result;
-	                }
-	                /**
-	                * Array iteration helper.
-	                */
-	                function forEach(array, action) {
-	                    for (var i = 0; i < array.length; i++)
-	                        action(array[i]);
-	                }
-	                /**
-	                * Helper function to read all the names in our enums into an array that the higher order functions can use.
-	                */
-	                function getNamesFromObject(obj) {
-	                    var result = [];
-	                    for (var i in obj) {
-	                        var name = obj[i].name || "stub";
-	                        result.push(name);
-	                    }
-	                    return result;
-	                }
-	                /**
-	                * Tests the value for a RegExp match given by the pattern string.
-	                * Validates true if pattern match, false otherwise.
-	                */
-	                function validate_RegExp(value, pattern) {
-	                    var regex = new RegExp(pattern);
-	                    if (regex.test(value)) {
-	                        return true;
-	                    }
-	                    return false;
-	                }
-	                /**
-	                * Validates true if userValue >= minValue (inclusive)
-	                */
-	                function validate_MinValue(userValue, minValue) {
-	                    return (userValue >= minValue);
-	                }
-	                /**
-	                * Validates true if userValue <= maxValue (inclusive)
-	                */
-	                function validate_MaxValue(userValue, maxValue) {
-	                    return (userValue <= maxValue) ? true : false;
-	                }
-	                /**
-	                * Validates true if length of the userValue >= minLength (inclusive)
-	                */
-	                function validate_MinLength(userValue, minLength) {
-	                    return (userValue.length >= minLength) ? true : false;
-	                }
-	                /**
-	                * Validates true if length of the userValue <= maxLength (inclusive)
-	                */
-	                function validate_MaxLength(userValue, maxLength) {
-	                    return (userValue.length <= maxLength) ? true : false;
-	                }
-	                /**
-	                * Validates true if the userValue == eqValue
-	                */
-	                function validate_Eq(userValue, eqValue) {
-	                    return (userValue == eqValue) ? true : false;
-	                }
-	                /**
-	                * Validates true if the userValue != neqValue
-	                */
-	                function validate_Neq(userValue, neqValue) {
-	                    return (userValue != neqValue) ? true : false;
-	                }
-	                /**
-	                * Validates true if the userValue < decisionValue (exclusive)
-	                */
-	                function validate_Lte(userValue, decisionValue) {
-	                    return (userValue < decisionValue) ? true : false;
-	                }
-	                /**
-	                * Validates true if the userValue > decisionValue (exclusive)
-	                */
-	                function validate_Gte(userValue, decisionValue) {
-	                    return (userValue > decisionValue) ? true : false;
-	                }
-	                /**
-	                * Validates true if the userValue === property
-	                */
-	                function validate_EqProperty(userValue, property) {
-	                    return (userValue === property) ? true : false;
-	                }
-	                /**
-	                * Validates true if the given value is !NaN (Negate, Not a Number).
-	                */
-	                function validate_IsNumeric(value) {
-	                    return !isNaN(value) ? true : false;
-	                }
-	                /**
-	                * Validates true if the given userValue is empty and the field is required.
-	                */
-	                function validate_Required(property, userValue) {
-	                    return (userValue == "" && property == true) ? true : false;
-	                }
-	                /**
-	                * Handles the 'eager' validation on every key press.
-	                */
-	                ngModel.$parsers.unshift(function (value) {
-	                    var name = elem.context.name; //Get the element name for the validate function.
-	                    var currentValue = elem.val(); //Get the current element value to check validations against.
-	                    var val = validate(name, myCurrentContext, currentValue) || {};
-	                    //Check if field is required.				
-	                    $log.debug(scope);
-	                    $log.debug(val);
-	                    ngModel.$setValidity(val.errorkey, !val.fail);
-	                    return true;
-	                }); //<---end $parsers
-	                /**
-	                * This handles 'lazy' validation on blur.
-	                */
-	                elem.bind('blur', function (e) {
-	                });
-	            }
-	        };
-	    }
-	    SWValidate.Factory = function () {
-	        var directive = function ($log, $slatwall) { return new SWValidate($log, $slatwall); };
-	        directive.$inject = ['$log', '$slatwall'];
-	        return directive;
-	    };
-	    return SWValidate;
-	})();
-	exports.SWValidate = SWValidate;
-
-
-/***/ },
-/* 72 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the min length.
-	 */
-	/**
-	 * Returns true if the user value is greater than the minimum value.
-	 */
-	var SWValidationMinLength = (function () {
-	    function SWValidationMinLength($log) {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationminlength =
-	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationminlength;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        $log.debug('invalid min length');
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationMinLength.Factory = function () {
-	        var directive = function ($log) { return new SWValidationMinLength($log); };
-	        directive.$inject = ['$log'];
-	        return directive;
-	    };
-	    return SWValidationMinLength;
-	})();
-	exports.SWValidationMinLength = SWValidationMinLength;
-
-
-/***/ },
-/* 73 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * True if the data type matches the given data type.
-	 */
-	/**
-	 * Validates true if the model value is a numeric value.
-	 */
-	var SWValidationDataType = (function () {
-	    function SWValidationDataType() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                var MY_EMAIL_REGEXP = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
-	                ngModel.$validators.swvalidationdatatype =
-	                    function (modelValue) {
-	                        if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string") {
-	                            return true;
-	                        }
-	                        if (angular.isNumber(parseInt(modelValue)) && attributes.swvalidationdatatype === "numeric") {
-	                            return true;
-	                        }
-	                        if (angular.isArray(modelValue) && attributes.swvalidationdatatype === "array") {
-	                            return true;
-	                        }
-	                        if (angular.isDate(modelValue) && attributes.swvalidationdatatype === "date") {
-	                            return true;
-	                        }
-	                        if (angular.isObject(modelValue) && attributes.swvalidationdatatype === "object") {
-	                            return true;
-	                        }
-	                        if (attributes.swvalidationdatatype === 'email') {
-	                            return MY_EMAIL_REGEXP.test(modelValue);
-	                        }
-	                        if (angular.isUndefined(modelValue && attributes.swvalidationdatatype === "undefined")) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationDataType.Factory = function () {
-	        var directive = function () {
-	            return new SWValidationDataType();
-	        };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationDataType;
-	})();
-	exports.SWValidationDataType = SWValidationDataType;
-
-
-/***/ },
-/* 74 */
-/***/ function(module, exports) {
-
-	/**
-	 * SwValidationEQ: Validates true if the user value == the constraint value.
-	 * @usage <input type='text' swvalidationgte='5' /> will validate false if the user enters
-	 * value other than 5.
-	 */
-	var SWValidationEq = (function () {
-	    function SWValidationEq() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationeq =
-	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationeq;
-	                        if (modelValue === constraintValue) {
-	                            return true;
-	                        }
-	                        else {
-	                            return false;
-	                        }
-	                    }; //<--end function
-	            } //<--end link
-	        };
-	    }
-	    SWValidationEq.Factory = function () {
-	        var directive = function () {
-	            return new SWValidationEq();
-	        };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationEq;
-	})();
-	exports.SWValidationEq = SWValidationEq;
-
-
-/***/ },
-/* 75 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * SwValidationGTE: Validates true if the user value >= to the constraint value.
-	 * @usage <input type='text' swvalidationGte='5' /> will validate false if the user enters
-	 * value less than OR equal to 5.
-	 */
-	var SWValidationGte = (function () {
-	    function SWValidationGte() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationGte =
-	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationGte || 0;
-	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
-	                            return true; //Passes the validation
-	                        }
-	                        return false;
-	                    }; //<--end function
-	            } //<--end link
-	        };
-	    }
-	    SWValidationGte.Factory = function () {
-	        var directive = function () { return new SWValidationGte(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationGte;
-	})();
-	exports.SWValidationGte = SWValidationGte;
-
-
-/***/ },
-/* 76 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * SwValidationLTE: Validates true if the user value <= to the constraint value.
-	 * @usage <input type='number' swvalidationlte='5000' /> will validate false if the user enters
-	 * value greater than OR equal to 5,000.
-	 */
-	var SWValidationLte = (function () {
-	    function SWValidationLte() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationlte =
-	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationlte;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationLte.Factory = function () {
-	        var directive = function () { return new SWValidationLte(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationLte;
-	})();
-	exports.SWValidationLte = SWValidationLte;
-
-
-/***/ },
-/* 77 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the max length.
-	 */
-	var SWValidationMaxLength = (function () {
-	    function SWValidationMaxLength() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationmaxlength =
-	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationmaxlength;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationMaxLength.Factory = function () {
-	        var directive = function () { return new SWValidationMaxLength(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationMaxLength;
-	})();
-	exports.SWValidationMaxLength = SWValidationMaxLength;
-
-
-/***/ },
-/* 78 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the min value.
-	 */
-	var SWValidationMaxValue = (function () {
-	    function SWValidationMaxValue() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationmaxvalue =
-	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationmaxvalue;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationMaxValue.Factory = function () {
-	        var directive = function () { return new SWValidationMaxValue(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationMaxValue;
-	})();
-	exports.SWValidationMaxValue = SWValidationMaxValue;
-
-
-/***/ },
-/* 79 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the user value is greater than the minimum value.
-	 */
-	var SWValidationMinValue = (function () {
-	    function SWValidationMinValue() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationminvalue =
-	                    function (modelValue, viewValue) {
-	                        var constraintValue = attributes.swvalidationminvalue;
-	                        var userValue = viewValue || 0;
-	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationMinValue.Factory = function () {
-	        var directive = function () { return new SWValidationMinValue(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationMinValue;
-	})();
-	exports.SWValidationMinValue = SWValidationMinValue;
-
-
-/***/ },
-/* 80 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 *  Validates true if the user value != the property value.
-	 */
-	var SWValidationNeq = (function () {
-	    function SWValidationNeq() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationneq =
-	                    function (modelValue) {
-	                        if (modelValue != attributes.swvalidationneq) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationNeq.Factory = function () {
-	        var directive = function () { return new SWValidationNeq(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationNeq;
-	})();
-	exports.SWValidationNeq = SWValidationNeq;
-
-
-/***/ },
-/* 81 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the model value (user value) is a numeric value.
-	 * @event This event fires on every change to an input.
-	 */
-	var SWValidationNumeric = (function () {
-	    function SWValidationNumeric() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationnumeric =
-	                    function (modelValue, viewValue) {
-	                        //Returns true if this is not a number.
-	                        if (!isNaN(viewValue)) {
-	                            return true;
-	                        }
-	                        else {
-	                            return false;
-	                        }
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationNumeric.Factory = function () {
-	        var directive = function () { return new SWValidationNumeric(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationNumeric;
-	})();
-	exports.SWValidationNumeric = SWValidationNumeric;
-
-
-/***/ },
-/* 82 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the model value matches a regex string.
-	 */
-	var SWValidationRegex = (function () {
-	    function SWValidationRegex() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationregex =
-	                    function (modelValue) {
-	                        //Returns true if this user value (model value) does match the pattern
-	                        var pattern = attributes.swvalidationregex;
-	                        var regex = new RegExp(pattern);
-	                        if (regex.test(modelValue)) {
-	                            return true;
-	                        }
-	                        else {
-	                            return false;
-	                        }
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationRegex.Factory = function () {
-	        var directive = function () { return new SWValidationRegex(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationRegex;
-	})();
-	exports.SWValidationRegex = SWValidationRegex;
-
-
-/***/ },
-/* 83 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Returns true if the uservalue is empty and false otherwise
-	 */
-	var SWValidationRequired = (function () {
-	    function SWValidationRequired() {
-	        return {
-	            restrict: "A",
-	            require: "^ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$validators.swvalidationrequired =
-	                    function (modelValue, viewValue) {
-	                        var value = modelValue || viewValue;
-	                        if (value) {
-	                            return true;
-	                        }
-	                        return false;
-	                    };
-	            }
-	        };
-	    }
-	    SWValidationRequired.Factory = function () {
-	        var directive = function () { return new SWValidationRequired(); };
-	        directive.$inject = [];
-	        return directive;
-	    };
-	    return SWValidationRequired;
-	})();
-	exports.SWValidationRequired = SWValidationRequired;
-
-
-/***/ },
-/* 84 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the given object is 'unique' and false otherwise.
-	 */
-	var SWValidationUnique = (function () {
-	    function SWValidationUnique($http, $q, $slatwall, $log) {
-	        return {
-	            restrict: "A",
-	            require: "ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$asyncValidators.swvalidationunique = function (modelValue, viewValue) {
-	                    $log.debug('asyc');
-	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
-	                    //First time the asyncValidators function is loaded the
-	                    //key won't be set  so ensure that we have
-	                    //key and propertyName before checking with the server
-	                    if (key && property) {
-	                        $slatwall.checkUniqueValue(key, property, currentValue)
-	                            .then(function (unique) {
-	                            $log.debug('uniquetest');
-	                            $log.debug(unique);
-	                            if (unique) {
-	                                deferred.resolve(); //It's unique
-	                            }
-	                            else {
-	                                deferred.reject(); //Add unique to $errors
-	                            }
-	                        });
-	                    }
-	                    else {
-	                        deferred.resolve(); //Ensure promise is resolved if we hit this
-	                    }
-	                    return deferred.promise;
-	                };
-	            }
-	        };
-	    }
-	    SWValidationUnique.Factory = function () {
-	        var directive = function ($http, $q, $slatwall, $log) { return new SWValidationUnique($http, $q, $slatwall, $log); };
-	        directive.$inject = ['$http', '$q', '$slatwall', '$log'];
-	        return directive;
-	    };
-	    return SWValidationUnique;
-	})();
-	exports.SWValidationUnique = SWValidationUnique;
-
-
-/***/ },
-/* 85 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	/**
-	 * Validates true if the given object is 'unique' and false otherwise.
-	 */
-	var SWValidationUniqueOrNull = (function () {
-	    function SWValidationUniqueOrNull($http, $q, $slatwall, $log) {
-	        return {
-	            restrict: "A",
-	            require: "ngModel",
-	            link: function (scope, element, attributes, ngModel) {
-	                ngModel.$asyncValidators.swvalidationuniqueornull = function (modelValue, viewValue) {
-	                    $log.debug('async');
-	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
-	                    //First time the asyncValidators function is loaded the
-	                    //key won't be set  so ensure that we have
-	                    //key and propertyName before checking with the server
-	                    if (key && property) {
-	                        $slatwall.checkUniqueOrNullValue(key, property, currentValue)
-	                            .then(function (unique) {
-	                            $log.debug('uniquetest');
-	                            $log.debug(unique);
-	                            if (unique) {
-	                                deferred.resolve(); //It's unique
-	                            }
-	                            else {
-	                                deferred.reject(); //Add unique to $errors
-	                            }
-	                        });
-	                    }
-	                    else {
-	                        deferred.resolve(); //Ensure promise is resolved if we hit this
-	                    }
-	                    return deferred.promise;
-	                };
-	            }
-	        };
-	    }
-	    SWValidationUniqueOrNull.Factory = function () {
-	        var directive = function ($http, $q, $slatwall, $log) { return new SWValidationUniqueOrNull($http, $q, $slatwall, $log); };
-	        directive.$inject = ['$http', '$q', '$slatwall', '$log'];
-	        return directive;
-	    };
-	    return SWValidationUniqueOrNull;
-	})();
-	exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
-
-
-/***/ },
-/* 86 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var Column = (function () {
 	    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
 	        if (isVisible === void 0) { isVisible = true; }
@@ -7205,7 +4556,7 @@
 	                pageShow: _this.pageShow,
 	                keywords: _this.keywords,
 	                defaultColumns: (!_this.columns || !_this.columns.length),
-	                allRecords: _this.allRecords
+	                allRecords: _this.allRecords,
 	            };
 	        };
 	        this.getEntityName = function () {
@@ -7447,7 +4798,7 @@
 
 
 /***/ },
-/* 87 */
+/* 53 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -7648,11 +4999,11 @@
 
 
 /***/ },
-/* 88 */
+/* 54 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var CollectionController = (function () {
 	    //@ngInject
 	    function CollectionController($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService, collectionConfigService) {
@@ -7908,11 +5259,11 @@
 
 
 /***/ },
-/* 89 */
+/* 55 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var CreateCollection = (function () {
 	    //@ngInject
 	    function CreateCollection($scope, $log, $timeout, $slatwall, collectionService, formService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService) {
@@ -8090,11 +5441,11 @@
 
 
 /***/ },
-/* 90 */
+/* 56 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var ConfirmationController = (function () {
 	    //@ngInject
 	    function ConfirmationController($scope, $log, $modalInstance) {
@@ -8126,11 +5477,11 @@
 
 
 /***/ },
-/* 91 */
+/* 57 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCollection = (function () {
 	    //@ngInject
 	    function SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
@@ -8172,11 +5523,11 @@
 
 
 /***/ },
-/* 92 */
+/* 58 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddFilterButtons = (function () {
 	    //@ngInject
 	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
@@ -8218,11 +5569,11 @@
 
 
 /***/ },
-/* 93 */
+/* 59 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayOptions = (function () {
 	    //@ngInject
 	    function SWDisplayOptions($http, $compile, $templateCache, $log, $slatwall, collectionService, pathBuilderConfig, collectionPartialsPath) {
@@ -8384,11 +5735,11 @@
 
 
 /***/ },
-/* 94 */
+/* 60 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayItem = (function () {
 	    //@ngInject
 	    function SWDisplayItem($http, $compile, $templateCache, $log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
@@ -8464,11 +5815,11 @@
 
 
 /***/ },
-/* 95 */
+/* 61 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCollectionTable = (function () {
 	    //ngInject
 	    function SWCollectionTable($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $slatwall) {
@@ -8531,11 +5882,11 @@
 
 
 /***/ },
-/* 96 */
+/* 62 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWColumnItem = (function () {
 	    function SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath) {
 	        return {
@@ -8731,11 +6082,11 @@
 
 
 /***/ },
-/* 97 */
+/* 63 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWConditionCriteria = (function () {
 	    function SWConditionCriteria($http, $compile, $templateCache, $log, $slatwall, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        /* Template info begin*/
@@ -8913,7 +6264,7 @@
 	                        display: "Date",
 	                        comparisonOperator: "between",
 	                        dateInfo: {
-	                            type: 'exactDate'
+	                            type: 'exactDate',
 	                        }
 	                    },
 	                    {
@@ -9621,11 +6972,11 @@
 
 
 /***/ },
-/* 98 */
+/* 64 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteria = (function () {
 	    function SWCriteria($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        return {
@@ -9663,11 +7014,11 @@
 
 
 /***/ },
-/* 99 */
+/* 65 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaBoolean = (function () {
 	    function SWCriteriaBoolean($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        return {
@@ -9763,11 +7114,11 @@
 
 
 /***/ },
-/* 100 */
+/* 66 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaManyToMany = (function () {
 	    function SWCriteriaManyToMany($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig) {
 	        return {
@@ -9902,11 +7253,11 @@
 
 
 /***/ },
-/* 101 */
+/* 67 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaManyToOne = (function () {
 	    function SWCriteriaManyToOne($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        return {
@@ -10064,11 +7415,11 @@
 
 
 /***/ },
-/* 102 */
+/* 68 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaNumber = (function () {
 	    function SWCriteriaNumber($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        return {
@@ -10229,11 +7580,11 @@
 
 
 /***/ },
-/* 103 */
+/* 69 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaOneToMany = (function () {
 	    function SWCriteriaOneToMany($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig) {
 	        return {
@@ -10364,11 +7715,11 @@
 
 
 /***/ },
-/* 104 */
+/* 70 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaString = (function () {
 	    function SWCriteriaString($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        return {
@@ -10546,11 +7897,11 @@
 
 
 /***/ },
-/* 105 */
+/* 71 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWEditFilterItem = (function () {
 	    function SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $slatwall, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
 	        return {
@@ -10819,7 +8170,7 @@
 	                        if (filterItem.$$prepareForFilterGroup === true) {
 	                            collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.getFilterGroupItem(), filterItem);
 	                        }
-	                        //persist Config and 
+	                        //persist Config and
 	                        scope.saveCollection();
 	                        $log.debug(selectedFilterProperty);
 	                        $log.debug(filterItem);
@@ -10827,7 +8178,7 @@
 	                        $log.debug('saveFilter end');
 	                    }
 	                };
-	            }
+	            },
 	        };
 	    }
 	    SWEditFilterItem.Factory = function () {
@@ -10854,11 +8205,11 @@
 
 
 /***/ },
-/* 106 */
+/* 72 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterGroups = (function () {
 	    function SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig) {
 	        return {
@@ -10953,11 +8304,11 @@
 
 
 /***/ },
-/* 107 */
+/* 73 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterItem = (function () {
 	    function SWFilterItem($log, collectionService, collectionPartialsPath, pathBuilderConfig) {
 	        return {
@@ -11019,547 +8370,15 @@
 
 
 /***/ },
-/* 108 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	//filters
-	//directives
-	var swcontentbasic_1 = __webpack_require__(109);
-	var swcontenteditor_1 = __webpack_require__(110);
-	var swcontentlist_1 = __webpack_require__(111);
-	var swcontentnode_1 = __webpack_require__(112);
-	var contentmodule = angular.module('hibachi.content', []).config(function () {
-	})
-	    .constant('contentPartialsPath', 'content/components/')
-	    .directive('swContentBasic', swcontentbasic_1.SWContentBasic.Factory())
-	    .directive('swContentEditor', swcontenteditor_1.SWContentEditor.Factory())
-	    .directive('swContentList', swcontentlist_1.SWContentList.Factory())
-	    .directive('swContentNode', swcontentnode_1.SWContentNode.Factory());
-	exports.contentmodule = contentmodule;
-
-
-/***/ },
-/* 109 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWContentBasic = (function () {
-	    function SWContentBasic($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'EA',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contentbasic.html",
-	            link: function (scope, element, attrs) {
-	                if (!scope.content.$$isPersisted()) {
-	                    if (angular.isDefined($routeParams.siteID)) {
-	                        var sitePromise;
-	                        var options = {
-	                            id: $routeParams.siteID
-	                        };
-	                        sitePromise = $slatwall.getSite(options);
-	                        sitePromise.promise.then(function () {
-	                            var site = sitePromise.value;
-	                            scope.content.$$setSite(site);
-	                        });
-	                    }
-	                    else {
-	                        var site = $slatwall.newSite();
-	                        scope.content.$$setSite(site);
-	                    }
-	                    var parentContent;
-	                    if (angular.isDefined($routeParams.parentContentID)) {
-	                        var parentContentPromise;
-	                        var options = {
-	                            id: $routeParams.parentContentID
-	                        };
-	                        parentContentPromise = $slatwall.getContent(options);
-	                        parentContentPromise.promise.then(function () {
-	                            var parentContent = parentContentPromise.value;
-	                            scope.content.$$setParentContent(parentContent);
-	                            $log.debug('contenttest');
-	                            $log.debug(scope.content);
-	                        });
-	                    }
-	                    else {
-	                        var parentContent = $slatwall.newContent();
-	                        scope.content.$$setParentContent(parentContent);
-	                    }
-	                    var contentTemplateType = $slatwall.newType();
-	                    scope.content.$$setContentTemplateType(contentTemplateType);
-	                }
-	                else {
-	                    scope.content.$$getSite();
-	                    scope.content.$$getParentContent();
-	                    scope.content.$$getContentTemplateType();
-	                }
-	            }
-	        };
-	    }
-	    SWContentBasic.Factory = function () {
-	        var directive = function ($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
-	            return new SWContentBasic($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$routeParams',
-	            '$slatwall',
-	            'formService',
-	            'contentPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWContentBasic;
-	})();
-	exports.SWContentBasic = SWContentBasic;
-
-
-/***/ },
-/* 110 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWContentEditor = (function () {
-	    function SWContentEditor($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'EA',
-	            scope: {
-	                content: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contenteditor.html",
-	            link: function (scope, element, attrs) {
-	                scope.editorOptions = CKEDITOR.editorConfig;
-	                scope.onContentChange = function () {
-	                    var form = formService.getForm('contentEditor');
-	                    form.contentBody.$setDirty();
-	                };
-	                //                scope.saveContent = function(){
-	                //                   var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';
-	                //                   var params = {
-	                //                        entityID:scope.content.contentID,
-	                //                        templateHTML:scope.content.templateHTML,
-	                //                        context:'saveTemplateHTML',
-	                //                        entityName:'content'   
-	                //                   }
-	                //                   $http.post(urlString,
-	                //                        {
-	                //                            params:params
-	                //                        }
-	                //                    )
-	                //                    .success(function(data){
-	                //                    }).error(function(reason){
-	                //                    });
-	                //                }
-	            }
-	        };
-	    }
-	    SWContentEditor.Factory = function () {
-	        var directive = function ($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
-	            return new SWContentEditor($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$http',
-	            '$slatwall',
-	            'formService',
-	            'contentPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWContentEditor;
-	})();
-	exports.SWContentEditor = SWContentEditor;
-
-
-/***/ },
-/* 111 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWContentListController = (function () {
-	    //@ngInject
-	    function SWContentListController($scope, $log, $timeout, $slatwall, paginationService, observerService, collectionConfigService) {
-	        var _this = this;
-	        this.$scope = $scope;
-	        this.$log = $log;
-	        this.$timeout = $timeout;
-	        this.$slatwall = $slatwall;
-	        this.paginationService = paginationService;
-	        this.observerService = observerService;
-	        this.collectionConfigService = collectionConfigService;
-	        this.openRoot = true;
-	        this.$log.debug('slatwallcontentList init');
-	        var pageShow = 50;
-	        if (this.pageShow !== 'Auto') {
-	            pageShow = this.pageShow;
-	        }
-	        this.pageShowOptions = [
-	            { display: 10, value: 10 },
-	            { display: 20, value: 20 },
-	            { display: 50, value: 50 },
-	            { display: 250, value: 250 }
-	        ];
-	        this.loadingCollection = false;
-	        this.selectedSite;
-	        this.orderBy;
-	        var orderByConfig;
-	        this.getCollection = function (isSearching) {
-	            _this.collectionConfig = collectionConfigService.newCollectionConfig('Content');
-	            var columnsConfig = [
-	                //{"propertyIdentifier":"_content_childContents","title":"","isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","aggregate":{"aggregateFunction":"COUNT","aggregateAlias":"childContentsCount"}},
-	                {
-	                    propertyIdentifier: '_content.contentID',
-	                    isVisible: false,
-	                    ormtype: 'id',
-	                    isSearchable: true
-	                },
-	                {
-	                    propertyIdentifier: '_content.urlTitlePath',
-	                    isVisible: false,
-	                    isSearchable: true
-	                },
-	                //need to get template via settings
-	                {
-	                    propertyIdentifier: '_content.allowPurchaseFlag',
-	                    isVisible: true,
-	                    ormtype: 'boolean',
-	                    isSearchable: false
-	                },
-	                {
-	                    propertyIdentifier: '_content.productListingPageFlag',
-	                    isVisible: true,
-	                    ormtype: 'boolean',
-	                    isSearchable: false
-	                },
-	                {
-	                    propertyIdentifier: '_content.activeFlag',
-	                    isVisible: true,
-	                    ormtype: 'boolean',
-	                    isSearchable: false
-	                }
-	            ];
-	            var options = {
-	                currentPage: '1',
-	                pageShow: '1',
-	                keywords: _this.keywords
-	            };
-	            var column = {};
-	            if (!isSearching || _this.keywords === '') {
-	                _this.isSearching = false;
-	                var filterGroupsConfig = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "parentContent",
-	                                "comparisonOperator": "is",
-	                                "value": 'null'
-	                            }
-	                        ]
-	                    }
-	                ];
-	                column = {
-	                    propertyIdentifier: '_content.title',
-	                    isVisible: true,
-	                    ormtype: 'string',
-	                    isSearchable: true,
-	                    tdclass: 'primary'
-	                };
-	                columnsConfig.unshift(column);
-	            }
-	            else {
-	                _this.isSearching = true;
-	                var filterGroupsConfig = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "excludeFromSearch",
-	                                "comparisonOperator": "!=",
-	                                "value": true
-	                            }
-	                        ]
-	                    }
-	                ];
-	                column = {
-	                    propertyIdentifier: '_content.title',
-	                    isVisible: false,
-	                    ormtype: 'string',
-	                    isSearchable: true
-	                };
-	                columnsConfig.unshift(column);
-	                var titlePathColumn = {
-	                    propertyIdentifier: '_content.titlePath',
-	                    isVisible: true,
-	                    ormtype: 'string',
-	                    isSearchable: false
-	                };
-	                columnsConfig.unshift(titlePathColumn);
-	            }
-	            //if we have a selected Site add the filter
-	            if (angular.isDefined(_this.selectedSite)) {
-	                var selectedSiteFilter = {
-	                    logicalOperator: "AND",
-	                    propertyIdentifier: "site.siteID",
-	                    comparisonOperator: "=",
-	                    value: _this.selectedSite.siteID
-	                };
-	                filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
-	            }
-	            if (angular.isDefined(_this.orderBy)) {
-	                var orderByConfig = [];
-	                orderByConfig.push(_this.orderBy);
-	                options.orderByConfig = angular.toJson(orderByConfig);
-	            }
-	            angular.forEach(columnsConfig, function (column) {
-	                _this.collectionConfig.addColumn(column.propertyIdentifier, column.title, column);
-	            });
-	            _this.collectionConfig.addDisplayAggregate('childContents', 'COUNT', 'childContentsCount', { isVisible: false, isSearchable: false, title: 'test' });
-	            _this.collectionConfig.addDisplayProperty('site.siteID', undefined, {
-	                isVisible: false,
-	                ormtype: 'id',
-	                isSearchable: false
-	            });
-	            _this.collectionConfig.addDisplayProperty('site.domainNames', undefined, {
-	                isVisible: false,
-	                isSearchable: true
-	            });
-	            angular.forEach(filterGroupsConfig[0].filterGroup, function (filter) {
-	                _this.collectionConfig.addFilter(filter.propertyIdentifier, filter.value, filter.comparisonOperator, filter.logicalOperator);
-	            });
-	            _this.collectionListingPromise = _this.collectionConfig.getEntity();
-	            _this.collectionListingPromise.then(function (value) {
-	                _this.collection = value;
-	                _this.collection.collectionConfig = _this.collectionConfig;
-	                _this.firstLoad = true;
-	                _this.loadingCollection = false;
-	            });
-	            _this.collectionListingPromise;
-	        };
-	        //this.getCollection(false);
-	        this.keywords = "";
-	        this.loadingCollection = false;
-	        var searchPromise;
-	        this.searchCollection = function () {
-	            if (searchPromise) {
-	                _this.$timeout.cancel(searchPromise);
-	            }
-	            searchPromise = $timeout(function () {
-	                $log.debug('search with keywords');
-	                $log.debug(_this.keywords);
-	                $('.childNode').remove();
-	                //Set current page here so that the pagination does not break when getting collection
-	                _this.loadingCollection = true;
-	                _this.getCollection(true);
-	            }, 500);
-	        };
-	        var siteChanged = function (selectedSiteOption) {
-	            _this.selectedSite = selectedSiteOption;
-	            _this.openRoot = true;
-	            _this.getCollection();
-	        };
-	        this.observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
-	        var sortChanged = function (orderBy) {
-	            _this.orderBy = orderBy;
-	            _this.getCollection();
-	        };
-	        this.observerService.attach(sortChanged, 'sortByColumn', 'siteSorting');
-	        var optionsLoaded = function () {
-	            _this.observerService.notify('selectFirstOption');
-	        };
-	        this.observerService.attach(optionsLoaded, 'optionsLoaded', 'siteOptionsLoaded');
-	    }
-	    return SWContentListController;
-	})();
-	var SWContentList = (function () {
-	    //@ngInject
-	    function SWContentList(contentPartialsPath, observerService, pathBuilderConfig) {
-	        this.restrict = 'E';
-	        //public bindToController=true;
-	        this.controller = SWContentListController;
-	        this.controllerAs = "swContentList";
-	        this.link = function (scope, element, attrs, controller, transclude) {
-	            scope.$on('$destroy', function handler() {
-	                this.observerService.detachByEvent('optionsChanged');
-	                this.observerService.detachByEvent('sortByColumn');
-	            });
-	        };
-	        this.observerService = observerService;
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentlist.html';
-	    }
-	    SWContentList.Factory = function () {
-	        var directive = function (contentPartialsPath, observerService, pathBuilderConfig) {
-	            return new SWContentList(contentPartialsPath, observerService, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            'contentPartialsPath',
-	            'observerService',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWContentList;
-	})();
-	exports.SWContentList = SWContentList;
-
-
-/***/ },
-/* 112 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWContentNode = (function () {
-	    function SWContentNode($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'A',
-	            scope: {
-	                contentData: '=',
-	                loadChildren: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentnode.html',
-	            link: function (scope, element, attr) {
-	                if (angular.isUndefined(scope.depth)) {
-	                    scope.depth = 0;
-	                }
-	                if (angular.isDefined(scope.$parent.depth)) {
-	                    scope.depth = scope.$parent.depth + 1;
-	                }
-	                var childContentColumnsConfig = [{
-	                        propertyIdentifier: '_content.contentID',
-	                        isVisible: false,
-	                        isSearchable: false
-	                    },
-	                    {
-	                        propertyIdentifier: '_content.title',
-	                        isVisible: true,
-	                        isSearchable: true
-	                    },
-	                    {
-	                        propertyIdentifier: '_content.urlTitlePath',
-	                        isVisible: true,
-	                        isSearchable: true
-	                    },
-	                    {
-	                        propertyIdentifier: '_content.site.siteID',
-	                        isVisible: false,
-	                        isSearchable: false
-	                    },
-	                    {
-	                        propertyIdentifier: '_content.site.siteName',
-	                        isVisible: true,
-	                        isSearchable: true
-	                    },
-	                    {
-	                        propertyIdentifier: '_content.site.domainNames',
-	                        isVisible: true,
-	                        isSearchable: true
-	                    },
-	                    //                            {
-	                    //                                propertyIdentifier: '_content.contentTemplateFile',
-	                    //                                persistent: false,
-	                    //                                setting: true,
-	                    //                                isVisible: true
-	                    //                            },
-	                    //need to get template via settings
-	                    {
-	                        propertyIdentifier: '_content.allowPurchaseFlag',
-	                        isVisible: true,
-	                        isSearchable: true
-	                    }, {
-	                        propertyIdentifier: '_content.productListingPageFlag',
-	                        isVisible: true,
-	                        isSearchable: true
-	                    }, {
-	                        propertyIdentifier: '_content.activeFlag',
-	                        isVisible: true,
-	                        isSearchable: true
-	                    }
-	                ];
-	                var childContentOrderBy = [
-	                    {
-	                        "propertyIdentifier": "_content.sortOrder",
-	                        "direction": "DESC"
-	                    }
-	                ];
-	                scope.toggleChildContent = function (parentContentRecord) {
-	                    if (angular.isUndefined(scope.childOpen) || scope.childOpen === false) {
-	                        scope.childOpen = true;
-	                        if (!scope.childrenLoaded) {
-	                            scope.getChildContent(parentContentRecord);
-	                        }
-	                    }
-	                    else {
-	                        scope.childOpen = false;
-	                    }
-	                };
-	                scope.getChildContent = function (parentContentRecord) {
-	                    var childContentfilterGroupsConfig = [{
-	                            "filterGroup": [{
-	                                    "propertyIdentifier": "_content.parentContent.contentID",
-	                                    "comparisonOperator": "=",
-	                                    "value": parentContentRecord.contentID
-	                                }]
-	                        }];
-	                    var collectionListingPromise = $slatwall.getEntity('Content', {
-	                        columnsConfig: angular.toJson(childContentColumnsConfig),
-	                        filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
-	                        orderByConfig: angular.toJson(childContentOrderBy),
-	                        allRecords: true
-	                    });
-	                    collectionListingPromise.then(function (value) {
-	                        parentContentRecord.children = value.records;
-	                        var index = 0;
-	                        angular.forEach(parentContentRecord.children, function (child) {
-	                            child.site_domainNames = child.site_domainNames.split(",")[0];
-	                            scope['child' + index] = child;
-	                            element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px" ng-if="childOpen"  sw-content-node data-content-data="child' + index + '"></tr>')(scope));
-	                            index++;
-	                        });
-	                        scope.childrenLoaded = true;
-	                    });
-	                };
-	                scope.childrenLoaded = false;
-	                //if the children have never been loaded and we are not in search mode based on the title received
-	                if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)) {
-	                    scope.toggleChildContent(scope.contentData);
-	                }
-	            }
-	        };
-	    }
-	    SWContentNode.Factory = function () {
-	        var directive = function ($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig) {
-	            return new SWContentNode($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$compile',
-	            '$slatwall',
-	            'contentPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWContentNode;
-	})();
-	exports.SWContentNode = SWContentNode;
-
-
-/***/ },
-/* 113 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	//services
-	var dialogservice_1 = __webpack_require__(114);
+	var dialogservice_1 = __webpack_require__(75);
 	//controllers
-	var pagedialog_1 = __webpack_require__(115);
+	var pagedialog_1 = __webpack_require__(76);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -11569,7 +8388,7 @@
 
 
 /***/ },
-/* 114 */
+/* 75 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -11610,9 +8429,11 @@
 
 
 /***/ },
-/* 115 */
+/* 76 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	var PageDialogController = (function () {
 	    //@ngInject
 	    function PageDialogController($scope, $location, $log, $anchorScroll, $slatwall, dialogService) {
@@ -11631,1277 +8452,14 @@
 
 
 /***/ },
-/* 116 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path="../../../typings/tsd.d.ts" />
-	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
-	var core_module_1 = __webpack_require__(16);
-	//directives
-	var swchildorderitem_1 = __webpack_require__(117);
-	var sworderitem_1 = __webpack_require__(118);
-	var swoishippinglabelstamp_1 = __webpack_require__(119);
-	var sworderitemdetailstamp_1 = __webpack_require__(120);
-	var sworderitems_1 = __webpack_require__(121);
-	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
-	    .run([function () {
-	    }])
-	    .directive('swChildOrderItem', swchildorderitem_1.SWChildOrderItem.Factory())
-	    .directive('swOrderItem', sworderitem_1.SWOrderItem.Factory())
-	    .directive('swoishippinglabelstamp', swoishippinglabelstamp_1.SWOiShippingLabelStamp.Factory())
-	    .directive('swOrderItemDetailStamp', sworderitemdetailstamp_1.SWOrderItemDetailStamp.Factory())
-	    .directive('swOrderItems', sworderitems_1.SWOrderItems.Factory())
-	    .constant('orderItemPartialsPath', 'orderitem/components/');
-	exports.orderitemmodule = orderitemmodule;
-
-
-/***/ },
-/* 117 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWChildOrderItem = (function () {
-	    function SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: "A",
-	            scope: {
-	                orderItem: "=",
-	                orderId: "@",
-	                childOrderItems: "=",
-	                attributes: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "childorderitem.html",
-	            link: function (scope, element, attr) {
-	                var columnsConfig = [
-	                    {
-	                        "isDeletable": false,
-	                        "isExportable": true,
-	                        "propertyIdentifier": "_orderitem.orderItemID",
-	                        "ormtype": "id",
-	                        "isVisible": true,
-	                        "isSearchable": true,
-	                        "title": "Order Item ID"
-	                    },
-	                    {
-	                        "title": "Order Item Type",
-	                        "propertyIdentifier": "_orderitem.orderItemType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Order Item Price",
-	                        "propertyIdentifier": "_orderitem.price",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Name",
-	                        "propertyIdentifier": "_orderitem.sku.skuName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Price",
-	                        "propertyIdentifier": "_orderitem.skuPrice",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku ID",
-	                        "propertyIdentifier": "_orderitem.sku.skuID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "SKU Code",
-	                        "propertyIdentifier": "_orderitem.sku.skuCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product ID",
-	                        "propertyIdentifier": "_orderitem.sku.product.productID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Name",
-	                        "propertyIdentifier": "_orderitem.sku.product.productName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Description",
-	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Image File Name",
-	                        "propertyIdentifier": "_orderitem.sku.imageFile",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
-	                        "ormtype": "string"
-	                    },
-	                    {
-	                        "title": "Product Type",
-	                        "propertyIdentifier": "_orderitem.sku.product.productType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Qty.",
-	                        "propertyIdentifier": "_orderitem.quantity",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Name",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment ID",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Type",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address 2",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Postal Code",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "City",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "State",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Country",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Total",
-	                        "propertyIdentifier": "_orderitem.itemTotal",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Discount Amount",
-	                        "propertyIdentifier": "_orderitem.discountAmount",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.extendedPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount"
-	                    },
-	                    {
-	                        "title": "Product Bundle Group",
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundlePrice",
-	                        "persistent": false
-	                    }
-	                ];
-	                //add attributes to the column config
-	                angular.forEach(scope.attributes, function (attribute) {
-	                    var attributeColumn = {
-	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
-	                        attributeID: attribute.attributeID,
-	                        attributeSetObject: "orderItem"
-	                    };
-	                    columnsConfig.push(attributeColumn);
-	                });
-	                var filterGroupsConfig = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
-	                                "comparisonOperator": "=",
-	                                "value": scope.orderItem.$$getID()
-	                            }
-	                        ]
-	                    }
-	                ];
-	                var options = {
-	                    columnsConfig: angular.toJson(columnsConfig),
-	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
-	                    allRecords: true
-	                };
-	                //hide the children on click
-	                scope.hideChildren = function (orderItem) {
-	                    //Set all child order items to clicked = false.
-	                    angular.forEach(scope.childOrderItems, function (child) {
-	                        console.dir(child);
-	                        child.hide = !child.hide;
-	                        scope.orderItem.clicked = !scope.orderItem.clicked;
-	                    });
-	                };
-	                /**
-	                * Returns a list of child order items.
-	                */
-	                scope.getChildOrderItems = function (orderItem) {
-	                    orderItem.clicked = true;
-	                    if (!scope.orderItem.childItemsRetrieved) {
-	                        scope.orderItem.childItemsRetrieved = true;
-	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-	                        orderItemsPromise.then(function (value) {
-	                            var collectionConfig = {};
-	                            collectionConfig.columns = columnsConfig;
-	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
-	                            collectionConfig.baseEntityAlias = '_orderitem';
-	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
-	                            angular.forEach(childOrderItems, function (childOrderItem) {
-	                                childOrderItem.hide = false;
-	                                childOrderItem.depth = orderItem.depth + 1;
-	                                childOrderItem.data.parentOrderItem = orderItem;
-	                                childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
-	                                scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem) + 1, 0, childOrderItem);
-	                                childOrderItem.data.productBundleGroupPercentage = 1;
-	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                            });
-	                        });
-	                    }
-	                };
-	            }
-	        };
-	    }
-	    SWChildOrderItem.Factory = function () {
-	        var directive = function ($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$http',
-	            '$compile',
-	            '$templateCache',
-	            '$slatwall',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWChildOrderItem;
-	})();
-	exports.SWChildOrderItem = SWChildOrderItem;
-
-
-/***/ },
-/* 118 */
-/***/ function(module, exports) {
-
-	var SWOrderItem = (function () {
-	    function SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: "A",
-	            scope: {
-	                orderItem: "=",
-	                orderId: "@",
-	                attributes: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem.html",
-	            link: function (scope, element, attr) {
-	                $log.debug('order item init');
-	                $log.debug(scope.orderItem);
-	                scope.orderItem.clicked = false; //Never been clicked
-	                scope.orderItem.details = [];
-	                scope.orderItem.events = [];
-	                scope.orderItem.queuePosition;
-	                scope.orderItem.onWaitlist = false;
-	                scope.orderItem.isPending = false;
-	                scope.orderItem.isRegistered = false;
-	                var foundPosition = false;
-	                if (scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event') {
-	                    var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
-	                    eventRegistrationPromise.then(function () {
-	                        angular.forEach(scope.orderItem.data.eventRegistrations, function (eventRegistration) {
-	                            $log.debug(eventRegistration);
-	                            var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
-	                            eventRegistrationPromise.then(function (rec) {
-	                                $log.debug(rec);
-	                                angular.forEach(rec.records, function (record) {
-	                                    $log.debug("Records");
-	                                    $log.debug(record.eventRegistrationStatusType);
-	                                    angular.forEach(record.eventRegistrationStatusType, function (statusType) {
-	                                        if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstWaitlisted") {
-	                                            scope.orderItem.onWaitlist = true;
-	                                            $log.debug("Found + " + statusType.systemCode);
-	                                            //Because the customer is waitlisted, we need to get the number of customers ahead of them in the queue.
-	                                            var position = getPositionInQueueFor(scope.orderItem);
-	                                            scope.orderItem.queuePosition = position;
-	                                        }
-	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstRegistered") {
-	                                            scope.orderItem.isRegistered = true;
-	                                            $log.debug("Found + " + statusType.systemCode);
-	                                        }
-	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstPendingApproval") {
-	                                            scope.orderItem.isPending = true;
-	                                            $log.debug("Found + " + statusType.systemCode);
-	                                        }
-	                                        else {
-	                                            $log.error("Couldn't resolve a status type for: " + statusType.systemCode);
-	                                        }
-	                                    });
-	                                });
-	                            });
-	                        });
-	                    });
-	                }
-	                /**
-	                * Returns the current position in the queue for an orderItem that's on the waiting list.
-	                */
-	                var getPositionInQueueFor = function (orderItem) {
-	                    $log.debug("Retrieving position in Queue: ");
-	                    var queueConfig = [
-	                        {
-	                            "propertyIdentifier": "_eventregistration.waitlistQueuePositionStruct",
-	                            "isVisible": true,
-	                            "persistent": false,
-	                            "title": "Event Registrations"
-	                        }];
-	                    var queueGroupsConfig = [
-	                        {
-	                            "filterGroup": [
-	                                {
-	                                    "propertyIdentifier": "_eventregistration.orderItem.orderItemID",
-	                                    "comparisonOperator": "=",
-	                                    "value": orderItem.$$getID()
-	                                }
-	                            ]
-	                        }
-	                    ];
-	                    var queueOptions = {
-	                        columnsConfig: angular.toJson(queueConfig),
-	                        filterGroupsConfig: angular.toJson(queueGroupsConfig),
-	                        allRecords: true
-	                    };
-	                    var positionPromise = $slatwall.getEntity('EventRegistration', queueOptions);
-	                    $log.debug(positionPromise);
-	                    positionPromise.then(function (value) {
-	                        angular.forEach(value.records, function (position) {
-	                            $log.debug("Position: " + position.waitlistQueuePositionStruct);
-	                            if (position.waitlistQueuePositionStruct !== -1) {
-	                                scope.orderItem.queuePosition = position.waitlistQueuePositionStruct; //Use the value.
-	                                return position.waitlistQueuePositionStruct;
-	                            }
-	                        });
-	                    });
-	                };
-	                //define how we get child order items
-	                var columnsConfig = [
-	                    {
-	                        "isDeletable": false,
-	                        "isExportable": true,
-	                        "propertyIdentifier": "_orderitem.orderItemID",
-	                        "ormtype": "id",
-	                        "isVisible": true,
-	                        "isSearchable": true,
-	                        "title": "Order Item ID"
-	                    },
-	                    {
-	                        "title": "Order Item Type",
-	                        "propertyIdentifier": "_orderitem.orderItemType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Order Item Price",
-	                        "propertyIdentifier": "_orderitem.price",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Name",
-	                        "propertyIdentifier": "_orderitem.sku.skuName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku Price",
-	                        "propertyIdentifier": "_orderitem.skuPrice",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Sku ID",
-	                        "propertyIdentifier": "_orderitem.sku.skuID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "SKU Code",
-	                        "propertyIdentifier": "_orderitem.sku.skuCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Bundle Group",
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product ID",
-	                        "propertyIdentifier": "_orderitem.sku.product.productID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Name",
-	                        "propertyIdentifier": "_orderitem.sku.product.productName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Type",
-	                        "propertyIdentifier": "_orderitem.sku.product.productType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Description",
-	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Event Start Date",
-	                        "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Product Description",
-	                        "propertyIdentifier": "_orderitem.sku.options",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
-	                        "ormtype": "string"
-	                    },
-	                    {
-	                        "title": "Image File Name",
-	                        "propertyIdentifier": "_orderitem.sku.imageFile",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Qty.",
-	                        "propertyIdentifier": "_orderitem.quantity",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Name",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment ID",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Fulfillment Method Type",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Street Address 2",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Postal Code",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "City",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "State",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Country",
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                        "isVisible": true,
-	                        "isDeletable": true
-	                    },
-	                    {
-	                        "title": "Total",
-	                        "propertyIdentifier": "_orderitem.itemTotal",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Discount Amount",
-	                        "propertyIdentifier": "_orderitem.discountAmount",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "title": "Tax Amount",
-	                        "propertyIdentifier": "_orderitem.taxAmount",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.extendedPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount",
-	                        "ormtype": "big_decimal"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType",
-	                        "ormtype": "string"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
-	                        "persistent": false
-	                    },
-	                    {
-	                        "propertyIdentifier": "_orderitem.productBundlePrice",
-	                        "persistent": false
-	                    }
-	                ];
-	                //Add attributes to the column configuration
-	                angular.forEach(scope.attributes, function (attribute) {
-	                    var attributeColumn = {
-	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
-	                        attributeID: attribute.attributeID,
-	                        attributeSetObject: "orderItem"
-	                    };
-	                    columnsConfig.push(attributeColumn);
-	                });
-	                var filterGroupsConfig = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
-	                                "comparisonOperator": "=",
-	                                "value": scope.orderItem.$$getID()
-	                            }
-	                        ]
-	                    }
-	                ];
-	                var options = {
-	                    columnsConfig: angular.toJson(columnsConfig),
-	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
-	                    allRecords: true
-	                };
-	                //Create a list of order items.
-	                scope.childOrderItems = [];
-	                scope.orderItem.depth = 1;
-	                /**
-	                * Hide orderItem children on clicking the details link.
-	                */
-	                scope.hideChildren = function (orderItem) {
-	                    //Set all child order items to clicked = false.
-	                    angular.forEach(scope.childOrderItems, function (child) {
-	                        $log.debug("hideing");
-	                        child.hide = !child.hide;
-	                        scope.orderItem.clicked = !scope.orderItem.clicked;
-	                    });
-	                };
-	                //Delete orderItem
-	                scope.deleteEntity = function () {
-	                    $log.debug("Deleting");
-	                    $log.debug(scope.orderItem);
-	                    var deletePromise = scope.orderItem.$$delete();
-	                    deletePromise.then(function () {
-	                        delete scope.orderItem;
-	                    });
-	                };
-	                /**
-	                * Gets a list of child order items if they exist.
-	                */
-	                scope.getChildOrderItems = function () {
-	                    if (!scope.orderItem.childItemsRetrieved) {
-	                        scope.orderItem.clicked = !scope.orderItem.clicked;
-	                        scope.orderItem.hide = !scope.orderItem.hide;
-	                        scope.orderItem.childItemsRetrieved = true;
-	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-	                        orderItemsPromise.then(function (value) {
-	                            var collectionConfig = {};
-	                            collectionConfig.columns = columnsConfig;
-	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
-	                            collectionConfig.baseEntityAlias = '_orderitem';
-	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
-	                            angular.forEach(childOrderItems, function (childOrderItem) {
-	                                childOrderItem.depth = scope.orderItem.depth + 1;
-	                                scope.childOrderItems.push(childOrderItem);
-	                                childOrderItem.data.productBundleGroupPercentage = 1;
-	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
-	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
-	                                }
-	                            });
-	                        });
-	                    }
-	                    else {
-	                        //We already have the items so we just need to show them.
-	                        angular.forEach(scope.childOrderItems, function (child) {
-	                            child.hide = !child.hide;
-	                            scope.orderItem.clicked = !scope.orderItem.clicked;
-	                        });
-	                    }
-	                };
-	            }
-	        };
-	    }
-	    SWOrderItem.Factory = function () {
-	        var directive = function ($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$compile',
-	            '$http',
-	            '$templateCache',
-	            '$slatwall',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWOrderItem;
-	})();
-	exports.SWOrderItem = SWOrderItem;
-
-
-/***/ },
-/* 119 */
-/***/ function(module, exports) {
-
-	/**
-	 * Displays a shipping label in the order items row.
-	 * @module slatwalladmin
-	 * @class swOrderItemsShippingLabelStamp
-	 */
-	var SWOiShippingLabelStamp = (function () {
-	    function SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                orderFulfillment: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderfulfillment-shippinglabel.html",
-	            link: function (scope, element, attrs) {
-	                //Get the template.
-	                $log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");
-	                $log.debug(scope.orderFulfillment);
-	                $log.debug(scope.orderFulfillment.data.fulfillmentMethodType);
-	            }
-	        };
-	    }
-	    SWOiShippingLabelStamp.Factory = function () {
-	        var directive = function ($log, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWOiShippingLabelStamp;
-	})();
-	exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
-
-
-/***/ },
-/* 120 */
-/***/ function(module, exports) {
-
-	/**
-	 * Displays a shipping label in the order items row.
-	 * @module slatwalladmin
-	 * @class swOrderItemsShippingLabelStamp
-	 */
-	var SWOrderItemDetailStamp = (function () {
-	    function SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'A',
-	            scope: {
-	                systemCode: "=",
-	                orderItemId: "=",
-	                skuId: "=",
-	                orderItem: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem-detaillabel.html",
-	            link: function (scope, element, attrs) {
-	                scope.details = [];
-	                scope.orderItem.detailsName = [];
-	                var results;
-	                $log.debug("Detail stamp");
-	                $log.debug(scope.systemCode);
-	                $log.debug(scope.orderItemId);
-	                $log.debug(scope.skuId);
-	                $log.debug(scope.orderItem);
-	                /**
-	                 * For each type of orderItem, get the appropriate detail information.
-	                 *
-	                 * Merchandise: Option Group Name and Option
-	                 * Event: Event Date, Event Location
-	                 * Subscription: Subscription Term, Subscription Benefits
-	                 */
-	                var getMerchandiseDetails = function (orderItem) {
-	                    //Get option and option groups
-	                    for (var i = 0; i <= orderItem.data.sku.data.options.length - 1; i++) {
-	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionCode);
-	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
-	                    }
-	                };
-	                var getSubscriptionDetails = function (orderItem) {
-	                    //get Subscription Term and Subscription Benefits
-	                    var name = orderItem.data.sku.data.subscriptionTerm.data.subscriptionTermName || "";
-	                    orderItem.detailsName.push("Subscription Term:");
-	                    orderItem.details.push(name);
-	                    //Maybe multiple benefits so show them all.
-	                    for (var i = 0; i <= orderItem.data.sku.data.subscriptionBenefits.length - 1; i++) {
-	                        var benefitName = orderItem.data.sku.data.subscriptionBenefits[i].subscriptionBenefitName || "";
-	                        orderItem.detailsName.push("Subscription Benefit:");
-	                        orderItem.details.push(benefitName);
-	                    }
-	                };
-	                var getEventDetails = function (orderItem) {
-	                    //get event date, and event location
-	                    orderItem.detailsName.push("Event Date: ");
-	                    orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);
-	                    //Need to iterate this.
-	                    for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++) {
-	                        orderItem.detailsName.push("Location: ");
-	                        orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
-	                    }
-	                };
-	                if (angular.isDefined(scope.orderItem.details)) {
-	                    switch (scope.systemCode) {
-	                        case "merchandise":
-	                            results = getMerchandiseDetails(scope.orderItem);
-	                            break;
-	                        case "subscription":
-	                            results = getSubscriptionDetails(scope.orderItem);
-	                            break;
-	                        case "event":
-	                            results = getEventDetails(scope.orderItem);
-	                            break;
-	                    }
-	                    scope.orderItem.details.push(results);
-	                }
-	            }
-	        };
-	    }
-	    SWOrderItemDetailStamp.Factory = function () {
-	        var directive = function ($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$slatwall',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWOrderItemDetailStamp;
-	})();
-	exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
-
-
-/***/ },
-/* 121 */
-/***/ function(module, exports) {
-
-	var SWOrderItems = (function () {
-	    function SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                orderId: "@"
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
-	            link: function (scope, element, attrs) {
-	                var options = {};
-	                scope.keywords = "";
-	                scope.loadingCollection = false;
-	                var searchPromise;
-	                scope.searchCollection = function () {
-	                    if (searchPromise) {
-	                        $timeout.cancel(searchPromise);
-	                    }
-	                    searchPromise = $timeout(function () {
-	                        $log.debug('search with keywords');
-	                        $log.debug(scope.keywords);
-	                        //Set current page here so that the pagination does not break when getting collection
-	                        scope.paginator.setCurrentPage(1);
-	                        scope.loadingCollection = true;
-	                        scope.getCollection();
-	                    }, 500);
-	                };
-	                $log.debug('Init Order Item');
-	                $log.debug(scope.orderId);
-	                //Setup the data needed for each order item object.
-	                scope.getCollection = function () {
-	                    if (scope.pageShow === 'Auto') {
-	                        scope.pageShow = 50;
-	                    }
-	                    var columnsConfig = [
-	                        {
-	                            "isDeletable": false,
-	                            "isExportable": true,
-	                            "propertyIdentifier": "_orderitem.orderItemID",
-	                            "ormtype": "id",
-	                            "isVisible": true,
-	                            "title": "Order Item ID",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "isVisible": false,
-	                            "ormtype": "string",
-	                            "propertyIdentifier": "_orderitem.currencyCode"
-	                        },
-	                        {
-	                            "title": "Order Item Type",
-	                            "propertyIdentifier": "_orderitem.orderItemType",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Order Item Price",
-	                            "propertyIdentifier": "_orderitem.price",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Sku Name",
-	                            "propertyIdentifier": "_orderitem.sku.skuName",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Sku Price",
-	                            "propertyIdentifier": "_orderitem.skuPrice",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Sku ID",
-	                            "propertyIdentifier": "_orderitem.sku.skuID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "SKU Code",
-	                            "propertyIdentifier": "_orderitem.sku.skuCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Product Bundle Group",
-	                            "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product ID",
-	                            "propertyIdentifier": "_orderitem.sku.product.productID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product Name",
-	                            "propertyIdentifier": "_orderitem.sku.product.productName",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product Type",
-	                            "propertyIdentifier": "_orderitem.sku.product.productType",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.sku.baseProductType",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Product Description",
-	                            "propertyIdentifier": "_orderitem.sku.product.productDescription",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Event Start Date Time",
-	                            "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Product Description",
-	                            "propertyIdentifier": "_orderitem.sku.options",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Sku Location",
-	                            "propertyIdentifier": "_orderitem.sku.locations",
-	                            "isVisible": true,
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Subscription Term",
-	                            "propertyIdentifier": "_orderitem.sku.subscriptionTerm.subscriptionTermName",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Subscription Benefits",
-	                            "propertyIdentifier": "_orderitem.sku.subscriptionBenefits",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Qty.",
-	                            "propertyIdentifier": "_orderitem.quantity",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Fulfillment Method Name",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Fulfillment ID",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Fulfillment Method Type",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Street Address",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Street Address",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Street Address 2",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Postal Code",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "City",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "State",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Country",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Image File Name",
-	                            "propertyIdentifier": "_orderitem.sku.imageFile",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "title": "Total",
-	                            "propertyIdentifier": "_orderitem.itemTotal",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Discount Amount",
-	                            "propertyIdentifier": "_orderitem.discountAmount",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Tax Amount",
-	                            "propertyIdentifier": "_orderitem.taxAmount",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.extendedPrice",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.productBundlePrice",
-	                            "persistent": false
-	                        }
-	                    ];
-	                    //add attributes to the column config
-	                    angular.forEach(scope.attributes, function (attribute) {
-	                        var attributeColumn = {
-	                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
-	                            attributeID: attribute.attributeID,
-	                            attributeSetObject: "orderItem"
-	                        };
-	                        columnsConfig.push(attributeColumn);
-	                    });
-	                    var filterGroupsConfig = [
-	                        {
-	                            "filterGroup": [
-	                                {
-	                                    "propertyIdentifier": "_orderitem.order.orderID",
-	                                    "comparisonOperator": "=",
-	                                    "value": scope.orderId
-	                                },
-	                                {
-	                                    "logicalOperator": "AND",
-	                                    "propertyIdentifier": "_orderitem.parentOrderItem",
-	                                    "comparisonOperator": "is",
-	                                    "value": "null"
-	                                }
-	                            ]
-	                        }
-	                    ];
-	                    options = {
-	                        columnsConfig: angular.toJson(columnsConfig),
-	                        filterGroupsConfig: angular.toJson(filterGroupsConfig),
-	                        currentPage: scope.paginator.getCurrentPage(),
-	                        pageShow: scope.paginator.getPageShow(),
-	                        keywords: scope.keywords
-	                    };
-	                    //Create a list of order items.
-	                    //scope.orderItems = [];
-	                    scope.orderAttributes = [];
-	                    scope.attributeValues = [];
-	                    var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-	                    orderItemsPromise.then(function (value) {
-	                        scope.collection = value;
-	                        var collectionConfig = {};
-	                        collectionConfig.columns = columnsConfig;
-	                        collectionConfig.baseEntityName = 'SlatwallOrderItem';
-	                        collectionConfig.baseEntityAlias = '_orderitem';
-	                        scope.orderItems = $slatwall.populateCollection(value.pageRecords, collectionConfig);
-	                        for (var orderItem in scope.orderItems) {
-	                            $log.debug("OrderItem Product Type");
-	                            $log.debug(scope.orderItems);
-	                        }
-	                        scope.paginator.setPageRecordsInfo(scope.collection);
-	                        scope.loadingCollection = false;
-	                    }, function (value) {
-	                        scope.orderItems = [];
-	                    });
-	                };
-	                //get all possible attributes
-	                var attributesConfig = [
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeID",
-	                        "ormtype": "id",
-	                        "title": "attributeID"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeCode",
-	                        "ormtype": "string",
-	                        "title": "Attribute Code"
-	                    },
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeName",
-	                        "ormtype": "string",
-	                        "title": "Attribute Name"
-	                    }
-	                ];
-	                var attributesFilters = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "_attribute.displayOnOrderDetailFlag",
-	                                "comparisonOperator": "=",
-	                                "value": true
-	                            },
-	                            {
-	                                "logicalOperator": "AND",
-	                                "propertyIdentifier": "_attribute.activeFlag",
-	                                "comparisonOperator": "=",
-	                                "value": true
-	                            }
-	                        ]
-	                    }
-	                ];
-	                var attributeOptions = {
-	                    columnsConfig: angular.toJson(attributesConfig),
-	                    filterGroupsConfig: angular.toJson(attributesFilters),
-	                    allRecords: true
-	                };
-	                var attItemsPromise = $slatwall.getEntity('attribute', attributeOptions);
-	                attItemsPromise.then(function (value) {
-	                    scope.attributes = [];
-	                    angular.forEach(value.records, function (attributeItemData) {
-	                        //Use that custom attribute name to get the value.
-	                        scope.attributes.push(attributeItemData);
-	                    });
-	                    scope.getCollection();
-	                });
-	                //Add claim function and cancel function
-	                scope.appendToCollection = function () {
-	                    if (scope.pageShow === 'Auto') {
-	                        $log.debug('AppendToCollection');
-	                        if (scope.paginator.autoScrollPage < scope.collection.totalPages) {
-	                            scope.paginator.autoScrollDisabled = true;
-	                            scope.paginator.autoScrollPage++;
-	                            var appendOptions = {};
-	                            angular.extend(appendOptions, options);
-	                            appendOptions.pageShow = 50;
-	                            appendOptions.currentPage = scope.paginator.autoScrollPage;
-	                            var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
-	                            collectionListingPromise.then(function (value) {
-	                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
-	                                scope.autoScrollDisabled = false;
-	                            }, function (reason) {
-	                                scope.collection.pageRecords = [];
-	                            });
-	                        }
-	                    }
-	                };
-	                scope.paginator = paginationService.createPagination();
-	                scope.paginator.collection = scope.collection;
-	                scope.paginator.getCollection = scope.getCollection;
-	            } //<--End link
-	        };
-	    }
-	    SWOrderItems.Factory = function () {
-	        var directive = function ($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
-	            return new SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$timeout',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'orderItemPartialsPath',
-	            'pathBuilderConfig',
-	            'paginationService'
-	        ];
-	        return directive;
-	    };
-	    return SWOrderItems;
-	})();
-	exports.SWOrderItems = SWOrderItems;
-
-
-/***/ },
-/* 122 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path="../../../typings/tsd.d.ts" />
-	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(123);
-	var swpaginationbar_1 = __webpack_require__(124);
+	var paginationservice_1 = __webpack_require__(78);
+	var swpaginationbar_1 = __webpack_require__(79);
 	var core_module_1 = __webpack_require__(16);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -12913,11 +8471,11 @@
 
 
 /***/ },
-/* 123 */
+/* 78 */
 /***/ function(module, exports) {
 
-	/// <reference path="../../../../typings/tsd.d.ts" />
-	/// <reference path="../../../../typings/slatwallTypeScript.d.ts" />
+	/// <reference path="../../../typings/tsd.d.ts" />
+	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 	/*collection service is used to maintain the state of the ui*/
 	var Pagination = (function () {
 	    //@ngInject
@@ -13091,11 +8649,11 @@
 
 
 /***/ },
-/* 124 */
+/* 79 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	//import pagination = require('../services/paginationservice');
 	//var PaginationService = pagination.PaginationService;
 	//'use strict';
@@ -13137,11 +8695,11 @@
 	//            var directive = <any>classType;
 	//            return new directive(args);
 	//        }
-	//        
+	//
 	//        factory.$inject = classType.$inject;
 	//        return factory;
-	//        // var directive: ng.IDirectiveFactory = 
-	//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService); 
+	//        // var directive: ng.IDirectiveFactory =
+	//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService);
 	//        // directive.$inject = ['$log','$timeout','partialsPath','paginationService'];
 	//        // return directive;
 	//    }
@@ -13150,1857 +8708,2471 @@
 
 
 /***/ },
-/* 125 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	//modules
-	var core_module_1 = __webpack_require__(16);
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(126);
-	//filters
+	// import {AccountService} from "./services/accountservice";
+	// import {CartService} from "./services/cartservice";
+	// import {UtilityService} from "./services/utilityservice";
+	// import {SelectionService} from "./services/selectionservice";
+	// import {ObserverService} from "./services/observerservice";
+	// import {FormService} from "./services/formservice";
+	// import {MetaDataService} from "./services/metadataservice";
 	//directives
-	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
+	//  components
+	//form
+	var swinput_1 = __webpack_require__(81);
+	var swfformfield_1 = __webpack_require__(82);
+	var swform_1 = __webpack_require__(83);
+	var swformfield_1 = __webpack_require__(84);
+	var swformfieldjson_1 = __webpack_require__(85);
+	var swformfieldnumber_1 = __webpack_require__(86);
+	var swformfieldpassword_1 = __webpack_require__(87);
+	var swformfieldradio_1 = __webpack_require__(88);
+	var swformfieldsearchselect_1 = __webpack_require__(89);
+	var swformfieldselect_1 = __webpack_require__(90);
+	var swformfieldtext_1 = __webpack_require__(91);
+	var swformregistrar_1 = __webpack_require__(92);
+	var swfpropertydisplay_1 = __webpack_require__(93);
+	var swpropertydisplay_1 = __webpack_require__(94);
+	var formmodule = angular.module('hibachi.form', []).config(function () {
 	})
-	    .constant('productPartialsPath', 'product/components/')
-	    .controller('preprocessproduct_create', preprocessproduct_create_1.ProductCreateController);
-	exports.productmodule = productmodule;
+	    .constant('coreFormPartialsPath', 'form/components/')
+	    .directive('swInput', swinput_1.SWInput.Factory())
+	    .directive('swfFormField', swfformfield_1.SWFFormField.Factory())
+	    .directive('swForm', swform_1.SWForm.Factory())
+	    .directive('swFormField', swformfield_1.SWFormField.Factory())
+	    .directive('swFormFieldJson', swformfieldjson_1.SWFormFieldJson.Factory())
+	    .directive('swFormFieldNumber', swformfieldnumber_1.SWFormFieldNumber.Factory())
+	    .directive('swFormFieldPassword', swformfieldpassword_1.SWFormFieldPassword.Factory())
+	    .directive('swFormFieldRadio', swformfieldradio_1.SWFormFieldRadio.Factory())
+	    .directive('swFormFieldSearchSelect', swformfieldsearchselect_1.SWFormFieldSearchSelect.Factory())
+	    .directive('swFormFieldSelect', swformfieldselect_1.SWFormFieldSelect.Factory())
+	    .directive('swFormFieldText', swformfieldtext_1.SWFormFieldText.Factory())
+	    .directive('swFormRegistrar', swformregistrar_1.SWFormRegistrar.Factory())
+	    .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory())
+	    .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory());
+	exports.formmodule = formmodule;
 
 
 /***/ },
-/* 126 */
+/* 81 */
 /***/ function(module, exports) {
 
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var ProductCreateController = (function () {
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
+	 * validate based on that context as defined in the validation properties object.
+	 */
+	var SWInput = (function () {
+	    function SWInput($log, $compile, utilityService) {
+	        var getValidationDirectives = function (propertyDisplay) {
+	            var spaceDelimitedList = '';
+	            var name = propertyDisplay.property;
+	            var form = propertyDisplay.form.$$swFormInfo;
+	            $log.debug("Name is:" + name + " and form is: " + form);
+	            var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+	            $log.debug("Validations: ");
+	            var validationsForContext = [];
+	            //get the form context and the form name.
+	            var formContext = propertyDisplay.form.$$swFormInfo.context;
+	            var formName = propertyDisplay.form.$$swFormInfo.name;
+	            $log.debug("Form context is: ");
+	            $log.debug(formContext);
+	            $log.debug("Form Name: ");
+	            $log.debug(formName);
+	            //get the validations for the current element.
+	            var propertyValidations = propertyDisplay.object.validations.properties[name];
+	            /*
+	            * Investigating why number inputs are not working.
+	            * */
+	            //check if the contexts match.
+	            if (angular.isObject(propertyValidations)) {
+	                //if this is a procesobject validation then the context is implied
+	                if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
+	                    propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+	                }
+	                if (propertyValidations[0].contexts === formContext) {
+	                    $log.debug("Matched");
+	                    for (var prop in propertyValidations[0]) {
+	                        if (prop != "contexts" && prop !== "conditions") {
+	                            spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+	                        }
+	                    }
+	                }
+	                $log.debug(spaceDelimitedList);
+	            }
+	            //loop over validations that are required and create the space delimited list
+	            $log.debug(validations);
+	            //get all validations related to the form context;
+	            $log.debug(form);
+	            $log.debug(propertyDisplay);
+	            angular.forEach(validations, function (validation, key) {
+	                if (utilityService.listFind(validation.contexts.toLowerCase(), form.context.toLowerCase()) !== -1) {
+	                    $log.debug("Validations for context");
+	                    $log.debug(validation);
+	                    validationsForContext.push(validation);
+	                }
+	            });
+	            //now that we have all related validations for the specific form context that we are working with collection the directives we need
+	            //getValidationDirectiveByType();
+	            return spaceDelimitedList;
+	        };
+	        var getTemplate = function (propertyDisplay) {
+	            var template = '';
+	            var validations = '';
+	            if (!propertyDisplay.noValidate) {
+	                validations = getValidationDirectives(propertyDisplay);
+	            }
+	            if (propertyDisplay.fieldType === 'text') {
+	                template = '<input type="text" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            else if (propertyDisplay.fieldType === 'password') {
+	                template = '<input type="password" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            return template;
+	        };
+	        return {
+	            require: '^form',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            restrict: "E",
+	            //adding model and form controller
+	            link: function (scope, element, attr, formController) {
+	                //renders the template and compiles it
+	                element.html(getTemplate(scope.propertyDisplay));
+	                $compile(element.contents())(scope);
+	            }
+	        };
+	    }
+	    SWInput.Factory = function () {
+	        var directive = function ($log, $compile, utilityService) {
+	            return new SWInput($log, $compile, utilityService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$compile',
+	            'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWInput;
+	})();
+	exports.SWInput = SWInput;
+
+
+/***/ },
+/* 82 */
+/***/ function(module, exports) {
+
+	/**********************************************************************************************
+	 **********************************************************************************************
+	 **********************************************************************************************
+	 **		___________________________________________
+	 ** 	Form Field - type have the following options (This is for the frontend so it can be modified):
+	 **
+	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
+	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		file				|	No value can be passed in
+	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		password			|	No Value can be passed in
+	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		text				|	Simple Text Field
+	 **		textarea			|	Simple Textarea
+	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
+	 **		submit				|	submit button to post these properties back to the server.
+	 **		------------------------------------------------------------------------------------------------------
+	 **
+	 **		attr.valueObject" type="any" default="" />
+	 **		attr.valueObjectProperty" type="string" default="" />
+	 **
+	 **		General Settings that end up getting applied to the value object
+	 **		attr.type" type="string" default="text"
+	 **		attr.name" type="string" default=""
+	 **		attr.class" type="string" default=""
+	 **		attr.value" type="any" default=""
+	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
+	 **		attr.fieldAttributes" type="string" default=""
+	 **
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 */
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	    * Property Display Controller handles the logic for this directive.
+	    */
+	var SWFFormFieldController = (function () {
+	    function SWFFormFieldController($scope) {
+	        this.$scope = $scope;
+	        var vm = this;
+	        vm.propertyDisplay = this.propertyDisplay;
+	    }
+	    /**
+	        * Handles the logic for the frontend version of the property display.
+	        */
+	    SWFFormFieldController.$inject = ['$scope'];
+	    return SWFFormFieldController;
+	})();
+	/**
+	    * This class handles configuring formFields for use in process forms on the front end.
+	    */
+	var SWFFormField = (function () {
+	    function SWFFormField(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = "E";
+	        this.require = "^swfPropertyDisplay";
+	        this.controller = SWFFormFieldController;
+	        this.controllerAs = "swfFormField";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.link = function (scope, element, attrs, formController, transcludeFn) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfformfield.html';
+	    }
+	    /**
+	        * Handles injecting the partials path into this class
+	        */
+	    SWFFormField.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFFormField(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFFormField;
+	})();
+	exports.SWFFormField = SWFFormField;
+
+
+/***/ },
+/* 83 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	    * Form Controller handles the logic for this directive.
+	    */
+	var SWFormController = (function () {
+	    /**
+	        * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
+	        */
 	    //@ngInject
-	    function ProductCreateController($scope, $element, $log, $slatwall, collectionConfigService, selectionService) {
-	        var _this = this;
+	    function SWFormController($scope, $element, $slatwall, accountService, cartService, $http, $timeout, observerService) {
+	        /** only use if the developer has specified these features with isProcessForm */
 	        this.$scope = $scope;
 	        this.$element = $element;
-	        this.$log = $log;
 	        this.$slatwall = $slatwall;
-	        this.collectionConfigService = collectionConfigService;
-	        this.selectionService = selectionService;
-	        this.$log.debug('init product_create controller');
-	        //on select change get collection
-	        this.$scope.preprocessproduct_createCtrl.productTypeChanged = function (selectedOption) {
-	            _this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
-	            _this.$scope.preprocessproduct_createCtrl.getCollection();
-	            _this.selectionService.clearSelection('ListingDisplay');
-	        };
-	        this.$scope.preprocessproduct_createCtrl.getCollection = function () {
-	            _this.collectionConfig = _this.collectionConfigService.newCollectionConfig('Option');
-	            _this.collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName', undefined, { isVisible: true });
-	            _this.collectionConfig.setDisplayProperties('optionID', undefined, { isVisible: false });
-	            //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
-	            _this.collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
-	            _this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID', _this.$scope.preprocessproduct_createCtrl.selectedOption.value, '=', 'OR');
-	            _this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
-	            _this.$scope.preprocessproduct_createCtrl.collectionListingPromise = _this.collectionConfig.getEntity();
-	            _this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then(function (data) {
-	                _this.$scope.preprocessproduct_createCtrl.collection = data;
-	                _this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = _this.collectionConfig;
-	            });
-	        };
-	        var renewalMethodOptions = $("select[name='renewalMethod']")[0];
-	        this.$scope.preprocessproduct_createCtrl.renewalMethodOptions = [];
-	        angular.forEach(renewalMethodOptions, function (option) {
-	            var optionToAdd = {
-	                label: option.label,
-	                value: option.value
-	            };
-	            _this.$scope.preprocessproduct_createCtrl.renewalMethodOptions.push(optionToAdd);
-	        });
-	        this.$scope.preprocessproduct_createCtrl.renewalSkuChoice = this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[1];
-	        var jQueryOptionsRedemptionAmountType = $("select[name='redemptionAmountType'")[0];
-	        this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions = [];
-	        angular.forEach(jQueryOptionsRedemptionAmountType, function (jQueryOption) {
-	            var option = {
-	                label: jQueryOption.label,
-	                value: jQueryOption.value
-	            };
-	            _this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option);
-	        });
-	        this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
-	        var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
-	        this.$scope.preprocessproduct_createCtrl.options = [];
-	        if (productTypeOptions > 1) {
-	            this.$scope.preprocessproduct_createCtrl.options.push({ label: this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'), value: "" });
+	        this.accountService = accountService;
+	        this.cartService = cartService;
+	        this.$http = $http;
+	        this.$timeout = $timeout;
+	        this.observerService = observerService;
+	        this.isProcessForm = this.isProcessForm || "false";
+	        if (this.isProcessForm == "true") {
+	            this.handleSelfInspection(this);
 	        }
-	        angular.forEach(productTypeOptions, function (jQueryOption) {
-	            var option = {
-	                label: jQueryOption.label,
-	                value: jQueryOption.value
-	            };
-	            _this.$scope.preprocessproduct_createCtrl.options.push(option);
-	        });
-	        this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.options[0]);
 	    }
-	    return ProductCreateController;
-	})();
-	exports.ProductCreateController = ProductCreateController;
-
-
-/***/ },
-/* 127 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	//modules
-	var core_module_1 = __webpack_require__(16);
-	//services
-	var productbundleservice_1 = __webpack_require__(128);
-	//controllers
-	var create_bundle_controller_1 = __webpack_require__(129);
-	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(130);
-	var swproductbundlegroups_1 = __webpack_require__(131);
-	var swproductbundlegroup_1 = __webpack_require__(132);
-	//filters
-	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
-	})
-	    .constant('productBundlePartialsPath', 'productbundle/components/')
-	    .service('productBundleService', productbundleservice_1.ProductBundleService)
-	    .controller('create-bundle-controller', create_bundle_controller_1.CreateBundleController)
-	    .directive('swProductBundleGroupType', swproductbundlegrouptype_1.SWProductBundleGroupType.Factory())
-	    .directive('swProductBundleGroups', swproductbundlegroups_1.SWProductBundleGroups.Factory())
-	    .directive('swProductBundleGroup', swproductbundlegroup_1.SWProductBundleGroup.Factory());
-	exports.productbundlemodule = productbundlemodule;
-
-
-/***/ },
-/* 128 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var ProductBundleService = (function () {
-	    function ProductBundleService($log, $slatwall, utilityService) {
+	    /**
+	        * Iterates through the form elements and checks if the names of any of them match
+	        * the meta data that comes back from the processObject call. Supplies a generic submit
+	        * method that can be called by any subclasses that inject formCtrl. On submit,
+	        * this class will attach any errors to the correspnding form element.
+	        */
+	    SWFormController.prototype.handleSelfInspection = function (context) {
 	        var _this = this;
-	        this.$log = $log;
-	        this.$slatwall = $slatwall;
-	        this.utilityService = utilityService;
-	        this.decorateProductBundleGroup = function (productBundleGroup) {
-	            productBundleGroup.data.$$editing = true;
-	            var prototype = {
-	                $$setMinimumQuantity: function (quantity) {
-	                    if (quantity < 0 || quantity === null) {
-	                        this.minimumQuantity = 0;
+	        /** local variables */
+	        this.processObject = this.object || "";
+	        var vm = context;
+	        vm.hiddenFields = this.hiddenFields;
+	        vm.entityName = this.entityName || "Account";
+	        vm.processObject = this.processObject;
+	        vm.action = this.action;
+	        vm.actions = this.actions;
+	        vm.$timeout = this.$timeout;
+	        vm.postOnly = false;
+	        var observerService = this.observerService;
+	        /** parse the name */
+	        var entityName = this.processObject.split("_")[0];
+	        var processObject = this.processObject.split("_")[1];
+	        /** try to grab the meta data from the process entity in slatwall in a process exists
+	            *  otherwise, just use the service method to access it.
+	            */
+	        /** Cart is an alias for an Order */
+	        if (entityName == "Order") {
+	            entityName = "Cart";
+	        }
+	        ;
+	        /** find the form scope */
+	        this.$scope.$on('anchor', function (event, data) {
+	            if (data.anchorType == "form" && data.scope !== undefined) {
+	                vm["formCtrl"] = data.scope;
+	            }
+	        });
+	        /** make sure we have our data using new logic and $slatwall*/
+	        if (this.processObject == undefined || this.entityName == undefined) {
+	            throw ("ProcessObject Undefined Exception");
+	        }
+	        try {
+	            vm.actionFn = this.$slatwall.newEntity(vm.processObject);
+	        }
+	        catch (e) {
+	            vm.postOnly = true;
+	        }
+	        /** We use these for our models */
+	        vm.formData = {};
+	        /** returns all the data from the form by iterating the form elements */
+	        vm.getFormData = function () {
+	            var _this = this;
+	            angular.forEach(vm["formCtrl"][vm.processObject], function (val, key) {
+	                /** Check for form elements that have a name that doesn't start with $ */
+	                if (key.toString().indexOf('$') == -1) {
+	                    _this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
+	                }
+	            });
+	            return vm.formData || "";
+	        };
+	        /****
+	            * Handle parsing through the server errors and injecting the error text for that field
+	            * If the form only has a submit, then simply call that function and set errors.
+	            ***/
+	        vm.parseErrors = function (result) {
+	            var _this = this;
+	            if (angular.isDefined(result.errors) && result.errors.length != 0) {
+	                angular.forEach(result.errors, function (val, key) {
+	                    if (angular.isDefined(vm["formCtrl"][vm.processObject][key])) {
+	                        var primaryElement = _this.$element.find("[error-for='" + key + "']");
+	                        vm.$timeout(function () {
+	                            primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+	                        }, 0);
+	                        vm["formCtrl"][vm.processObject][key].$setValidity(key, false); //set field invalid
 	                    }
-	                    if (quantity > this.maximumQuantity) {
-	                        this.maximumQuantity = quantity;
+	                }, this);
+	            }
+	        };
+	        vm.eventsObj = [];
+	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
+	        vm.parseEventString = function (evntStr, evntType) {
+	            vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+	        };
+	        vm.eventsHandler = function (params) {
+	            for (var e in params.events) {
+	                if (angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()) {
+	                    if (params.events[e].name == "hide") {
+	                        vm.hide(params.events[e].value);
 	                    }
-	                },
-	                $$setMaximumQuantity: function (quantity) {
-	                    if (quantity < 1 || quantity === null) {
-	                        this.maximumQuantity = 1;
+	                    if (params.events[e].name == "show") {
+	                        vm.show(params.events[e].value);
 	                    }
-	                    if (this.maximumQuantity < this.minimumQuantity) {
-	                        this.minimumQuantity = this.maximumQuantity;
+	                    if (params.events[e].name == "update") {
+	                        vm.update(params.events[e].value);
 	                    }
-	                },
-	                $$setActive: function (value) {
-	                    this.active = value;
-	                },
-	                $$toggleEdit: function () {
-	                    if (angular.isUndefined(this.$$editing) || this.$$editing === false) {
-	                        this.$$editing = true;
+	                    if (params.events[e].name == "refresh") {
+	                        vm.refresh(params.events[e].value);
+	                    }
+	                    ;
+	                }
+	            }
+	        };
+	        /** hides this directive on event */
+	        vm.hide = function (param) {
+	            if (vm.processObject.toLowerCase() == param) {
+	                _this.$element.hide();
+	            }
+	        };
+	        /** shows this directive on event */
+	        vm.show = function (param) {
+	            if (vm.processObject.toLowerCase() == param) {
+	                _this.$element.show();
+	            }
+	        };
+	        /** refreshes this directive on event */
+	        vm.refresh = function (params) {
+	            //stub
+	        };
+	        /** updates this directive on event */
+	        vm.update = function (params) {
+	            //stub
+	        };
+	        vm.parseEvents = function (str, evntType) {
+	            if (str == undefined)
+	                return;
+	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
+	            var eventsObj = {
+	                "events": []
+	            }; //will hold events
+	            for (var token in strTokens) {
+	                var t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
+	                var u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+	                if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
+	                    if (u == "this") {
+	                        u == vm.processObject.toLowerCase();
+	                    } //<--replaces the alias this with the name of this form.
+	                    var event_1 = { "name": t, "value": u };
+	                    eventsObj.events.push(event_1);
+	                }
+	            }
+	            if (eventsObj.events.length) {
+	                observerService.attach(vm.eventsHandler, "onSuccess");
+	            }
+	            return eventsObj;
+	        };
+	        /** find and clear all errors on form */
+	        vm.clearErrors = function () {
+	            var errorElements = _this.$element.find("[error-for]");
+	            errorElements.empty();
+	        };
+	        /** sets the correct factory to use for submission */
+	        vm.setFactoryIterator = function (fn) {
+	            var account = _this.accountService.GetInstance();
+	            var cart = _this.cartService.GetInstance();
+	            var factories = [account, cart];
+	            var factoryFound = false;
+	            for (var _i = 0; _i < factories.length; _i++) {
+	                var factory = factories[_i];
+	                if (!factoryFound) {
+	                    angular.forEach(factory, function (val, key) {
+	                        if (!factoryFound) {
+	                            if (key == fn) {
+	                                vm.factoryIterator = factory;
+	                                factoryFound = true;
+	                            }
+	                        }
+	                    });
+	                }
+	            }
+	        };
+	        /** sets the type of the form to submit */
+	        vm.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
+	        vm.toFormParams = function (data) {
+	            return data = $.param(data) || "";
+	        };
+	        /** iterates through the factory submitting data */
+	        vm.iterateFactory = function (submitFunction) {
+	            vm.setFactoryIterator(submitFunction);
+	            var factoryIterator = vm.factoryIterator;
+	            if (factoryIterator != undefined) {
+	                var submitFn = factoryIterator[submitFunction];
+	                vm.formData = vm.formData || {};
+	                submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
+	                    if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
+	                        vm.parseErrors(result.data);
+	                        observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events });
 	                    }
 	                    else {
-	                        this.$$editing = false;
+	                        observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events });
 	                    }
-	                }
-	            };
-	            angular.extend(productBundleGroup.data, prototype);
-	        };
-	        this.formatProductBundleGroupFilters = function (productBundleGroupFilters, filterTerm) {
-	            _this.$log.debug('FORMATTING PRODUCT BUNDLE FILTERs');
-	            _this.$log.debug(productBundleGroupFilters);
-	            _this.$log.debug(filterTerm);
-	            if (filterTerm.value === 'sku') {
-	                for (var i in productBundleGroupFilters) {
-	                    productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Code'];
-	                    productBundleGroupFilters[i].type = filterTerm.name;
-	                    productBundleGroupFilters[i].entityType = filterTerm.value;
-	                    productBundleGroupFilters[i].propertyIdentifier = '_sku.skuID';
-	                }
+	                }, angular.noop);
 	            }
 	            else {
-	                for (var i in productBundleGroupFilters) {
-	                    productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Name'];
-	                    productBundleGroupFilters[i].type = filterTerm.name;
-	                    productBundleGroupFilters[i].entityType = filterTerm.value;
-	                    if (filterTerm.value === 'brand' || filterTerm.value === 'productType') {
-	                        productBundleGroupFilters[i].propertyIdentifier = '_sku.product.' + filterTerm.value + '.' + filterTerm.value + 'ID';
-	                    }
-	                    else {
-	                        productBundleGroupFilters[i].propertyIdentifier = '_sku.' + filterTerm.value + '.' + filterTerm.value + 'ID';
-	                    }
+	                throw ("Action does not exist in Account or Cart Exception  *" + vm.action);
+	            }
+	        };
+	        /** does either a single or multiple actions */
+	        vm.doAction = function (actionObject) {
+	            if (angular.isArray(actionObject)) {
+	                for (var _i = 0; _i < actionObject.length; _i++) {
+	                    var submitFunction = actionObject[_i];
+	                    vm.iterateFactory(submitFunction);
 	                }
 	            }
-	            _this.$log.debug(productBundleGroupFilters);
-	            return productBundleGroupFilters;
-	        };
-	        this.$log = $log;
-	        this.$slatwall = $slatwall;
-	        this.utilityService = utilityService;
-	    }
-	    ProductBundleService.$inject = [
-	        '$log', '$slatwall', 'utilityService'
-	    ];
-	    return ProductBundleService;
-	})();
-	exports.ProductBundleService = ProductBundleService;
-
-
-/***/ },
-/* 129 */
-/***/ function(module, exports) {
-
-	var CreateBundleController = (function () {
-	    //@ngInject
-	    function CreateBundleController($scope, $location, $log, $rootScope, $window, $slatwall, dialogService, alertService, productBundleService, formService, productBundlePartialsPath) {
-	        $scope.productBundlePartialsPath = productBundlePartialsPath;
-	        var getParameterByName = function (name) {
-	            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-	            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
-	            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-	        };
-	        $scope.$id = "create-bundle-controller";
-	        //if this view is part of the dialog section, call the inherited function
-	        if (angular.isDefined($scope.scrollToTopOfDialog)) {
-	            $scope.scrollToTopOfDialog();
-	        }
-	        var productID = getParameterByName('productID');
-	        var productBundleConstructor = function () {
-	            $log.debug($scope);
-	            if (angular.isDefined($scope.product)) {
-	                for (var form in $scope.product.forms) {
-	                    formService.resetForm($scope.product.forms[form]);
-	                }
-	                if (angular.isDefined($scope.product.data.skus[0])) {
-	                    for (var form in $scope.product.data.skus[0].forms) {
-	                        formService.resetForm($scope.product.data.skus[0].forms[form]);
-	                    }
-	                }
-	                if (angular.isDefined($scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup)) {
-	                    for (var form in $scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms) {
-	                        formService.resetForm($scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms[form]);
-	                    }
-	                }
+	            else if (angular.isString(actionObject)) {
+	                vm.iterateFactory(actionObject);
 	            }
-	            $scope.product = $slatwall.newProduct();
-	            var brand = $slatwall.newBrand();
-	            var productType = $slatwall.newProductType();
-	            $scope.product.$$setBrand(brand);
-	            $scope.product.$$setProductType(productType);
-	            $scope.product.$$addSku();
-	            $scope.product.data.skus[0].data.productBundleGroups = [];
+	            else {
+	                throw ("Unknown type of action exception");
+	            }
 	        };
-	        $scope.productBundleGroup;
-	        if (angular.isDefined(productID) && productID !== '') {
-	            var productPromise = $slatwall.getProduct({ id: productID });
-	            productPromise.promise.then(function () {
-	                $log.debug(productPromise.value);
-	                productPromise.value.$$getSkus().then(function () {
-	                    productPromise.value.data.skus[0].$$getProductBundleGroups().then(function () {
-	                        $scope.product = productPromise.value;
-	                        angular.forEach($scope.product.data.skus[0].data.productBundleGroups, function (productBundleGroup) {
-	                            productBundleGroup.$$getProductBundleGroupType();
-	                            productBundleService.decorateProductBundleGroup(productBundleGroup);
-	                            productBundleGroup.data.$$editing = false;
-	                        });
-	                    });
-	                });
-	            }, productBundleConstructor());
+	        /** create the generic submit function */
+	        vm.submit = function (Action) {
+	            var action = Action; //vm.action || vm.actions;
+	            vm.clearErrors();
+	            vm.formData = vm.getFormData() || "";
+	            vm.doAction(action);
+	        };
+	        /* give children access to the process
+	        */
+	        vm.getProcessObject = function () {
+	            return vm.processEntity;
+	        };
+	        /* handle events
+	        */
+	        if (this.onSuccess != undefined) {
+	            vm.parseEventString(this.onSuccess, "onSuccess");
+	            observerService.attach(vm.eventsHandler, "onSuccess");
 	        }
-	        else {
-	            productBundleConstructor();
+	        else if (this.onError != undefined) {
+	            vm.parseEventString(this.onError, "onError");
 	        }
-	        $scope.saveProductBundle = function (closeDialogIndex, saveAndNew) {
-	            $scope.newSaving = true;
-	            $log.debug($scope.newSaving);
-	            $scope.dIndex = closeDialogIndex;
-	            $scope.product.$$save().then(function () {
-	                $log.debug("Turn off the loader after saving.");
-	                $scope.newSaving = false;
-	                $scope.closeSaving = true;
-	                $rootScope.closePageDialog($scope.dIndex);
-	                if (saveAndNew) {
-	                    $rootScope.openPageDialog('productbundle/createproductbundle');
-	                }
-	            });
-	        };
-	    }
-	    return CreateBundleController;
-	})();
-	exports.CreateBundleController = CreateBundleController;
-
-
-/***/ },
-/* 130 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWProductBundleGroupType = (function () {
-	    function SWProductBundleGroupType($http, $log, $slatwall, formService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
-	        return {
-	            restrict: 'A',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegrouptype.html",
-	            scope: {
-	                productBundleGroup: "="
-	            },
-	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
-	                    $log.debug('productBundleGrouptype');
-	                    $log.debug($scope.productBundleGroup);
-	                    $scope.productBundleGroupTypes = {};
-	                    $scope.$$id = "productBundleGroupType";
-	                    $scope.productBundleGroupTypes.value = [];
-	                    $scope.productBundleGroupTypes.$$adding = false;
-	                    $scope.productBundleGroupType = {};
-	                    if (angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)) {
-	                        var productBundleGroupType = $slatwall.newType();
-	                        var parentType = $slatwall.newType();
-	                        parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-	                        productBundleGroupType.$$setParentType(parentType);
-	                        $scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
-	                    }
-	                    /**
-	                     * Sets the state to adding and sets the initial data.
-	                     */
-	                    $scope.productBundleGroupTypes.setAdding = function (isAdding) {
-	                        $scope.productBundleGroupTypes.$$adding = isAdding;
-	                        var productBundleGroupType = $slatwall.newType();
-	                        var parentType = $slatwall.newType();
-	                        parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-	                        productBundleGroupType.$$setParentType(parentType);
-	                        productBundleGroupType.data.typeName = $scope.productBundleGroup.data.productBundleGroupType.data.typeName;
-	                        productBundleGroupType.data.typeDescription = '';
-	                        productBundleGroupType.data.typeNameCode = '';
-	                        angular.extend($scope.productBundleGroup.data.productBundleGroupType, productBundleGroupType);
-	                        formService.getForm('form.addProductBundleGroupType').$setDirty();
-	                    };
-	                    $scope.showAddProductBundleGroupTypeBtn = false;
-	                    /**
-	                     * Handles looking up the keyword and populating the dropdown as a user types.
-	                     */
-	                    $scope.productBundleGroupTypes.getTypesByKeyword = function (keyword) {
-	                        $log.debug('getTypesByKeyword');
-	                        var filterGroupsConfig = '[' +
-	                            ' {  ' +
-	                            '"filterGroup":[  ' +
-	                            ' {  ' +
-	                            ' "propertyIdentifier":"_type.parentType.systemCode",' +
-	                            ' "comparisonOperator":"=",' +
-	                            ' "value":"productBundleGroupType",' +
-	                            ' "ormtype":"string",' +
-	                            ' "conditionDisplay":"Equals"' +
-	                            '},' +
-	                            '{' +
-	                            '"logicalOperator":"AND",' +
-	                            ' "propertyIdentifier":"_type.typeName",' +
-	                            ' "comparisonOperator":"like",' +
-	                            ' "ormtype":"string",' +
-	                            ' "value":"%' + keyword + '%"' +
-	                            '  }' +
-	                            ' ]' +
-	                            ' }' +
-	                            ']';
-	                        return $slatwall.getEntity('type', { filterGroupsConfig: filterGroupsConfig.trim() })
-	                            .then(function (value) {
-	                            $log.debug('typesByKeyword');
-	                            $log.debug(value);
-	                            $scope.productBundleGroupTypes.value = value.pageRecords;
-	                            var myLength = keyword.length;
-	                            if (myLength > 0) {
-	                                $scope.showAddProductBundleGroupTypeBtn = true;
-	                            }
-	                            else {
-	                                $scope.showAddProductBundleGroupTypeBtn = false;
-	                            }
-	                            return $scope.productBundleGroupTypes.value;
-	                        });
-	                    };
-	                    /**
-	                     * Handles user selection of the dropdown.
-	                     */
-	                    $scope.selectProductBundleGroupType = function ($item, $model, $label) {
-	                        $scope.$item = $item;
-	                        $scope.$model = $model;
-	                        $scope.$label = $label;
-	                        angular.extend($scope.productBundleGroup.data.productBundleGroupType.data, $item);
-	                        var parentType = $slatwall.newType();
-	                        parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-	                        $scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
-	                        $scope.showAddProductBundleGroupTypeBtn = false;
-	                    };
-	                    /**
-	                     * Closes the add screen
-	                     */
-	                    $scope.closeAddScreen = function () {
-	                        $scope.productBundleGroupTypes.$$adding = false;
-	                        $scope.showAddProductBundleGroupTypeBtn = false;
-	                    };
-	                    /**
-	                     * Clears the type name
-	                     */
-	                    $scope.clearTypeName = function () {
-	                        if (angular.isDefined($scope.productBundleGroup.data.productBundleGroupType)) {
-	                            $scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
-	                        }
-	                    };
-	                    /**
-	                     * Saves product bundle group type
-	                     */
-	                    $scope.saveProductBundleGroupType = function () {
-	                        //Gets the promise from save
-	                        var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
-	                        promise.then(function (response) {
-	                            //Calls close function
-	                            if (promise.valid) {
-	                                $scope.closeAddScreen();
-	                            }
-	                        });
-	                    };
-	                    //Sets up clickOutside Directive call back arguments
-	                    $scope.clickOutsideArgs = {
-	                        callBackActions: [$scope.closeAddScreen, $scope.clearTypeName]
-	                    };
-	                    /**
-	                     * Works with swclickoutside directive to close dialog
-	                     */
-	                    $scope.closeThis = function (clickOutsideArgs) {
-	                        //Check against the object state
-	                        if (!$scope.productBundleGroup.data.productBundleGroupType.$$isPersisted()) {
-	                            //Perform all callback actions
-	                            for (var callBackAction in clickOutsideArgs.callBackActions) {
-	                                clickOutsideArgs.callBackActions[callBackAction]();
-	                            }
-	                        }
-	                    };
-	                }]
-	        };
-	    }
-	    SWProductBundleGroupType.Factory = function () {
-	        var directive = function ($http, $log, $slatwall, formService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
-	            return new SWProductBundleGroupType($http, $log, $slatwall, formService, productBundlePartialsPath, productBundleService, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$http',
-	            '$log',
-	            '$slatwall',
-	            'formService',
-	            'productBundlePartialsPath',
-	            'productBundleService',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
 	    };
-	    return SWProductBundleGroupType;
+	    return SWFormController;
 	})();
-	exports.SWProductBundleGroupType = SWProductBundleGroupType;
-
-
-/***/ },
-/* 131 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var SWProductBundleGroups = (function () {
-	    function SWProductBundleGroups($http, $log, $slatwall, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
-	        return {
-	            restrict: 'EA',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html",
-	            scope: {
-	                sku: "=",
-	                productBundleGroups: "=",
-	                addProductBundleGroup: "&"
-	            },
-	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
-	                    $scope.$id = 'productBundleGroups';
-	                    $log.debug('productBundleGroups');
-	                    $log.debug($scope.productBundleGroups);
-	                    $scope.editing = $scope.editing || true;
-	                    angular.forEach($scope.productBundleGroups, function (obj) {
-	                        productBundleService.decorateProductBundleGroup(obj);
-	                        obj.data.$$editing = false;
-	                    });
-	                    $scope.removeProductBundleGroup = function (index) {
-	                        $scope.productBundleGroups.splice(index, 1);
-	                        $log.debug("Deleting PBG #" + index);
-	                        $log.debug($scope.productBundleGroups);
-	                    };
-	                    $scope.addProductBundleGroup = function () {
-	                        var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-	                        productBundleService.decorateProductBundleGroup(productBundleGroup);
-	                        $scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
-	                    };
-	                }]
+	var SWForm = (function () {
+	    function SWForm(coreFormPartialsPath, pathBuilderConfig) {
+	        this.coreFormPartialsPath = coreFormPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.templateUrl = "";
+	        this.transclude = true;
+	        this.restrict = "E";
+	        this.replace = true;
+	        this.controller = SWFormController;
+	        this.controllerAs = "swFormController";
+	        this.scope = {
+	            object: "=",
+	            context: "@",
+	            name: "@"
 	        };
-	    }
-	    SWProductBundleGroups.Factory = function () {
-	        var directive = function ($http, $log, $slatwall, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
-	            return new SWProductBundleGroups($http, $log, $slatwall, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$http',
-	            '$log',
-	            '$slatwall',
-	            'metadataService',
-	            'productBundlePartialsPath',
-	            'productBundleService',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWProductBundleGroups;
-	})();
-	exports.SWProductBundleGroups = SWProductBundleGroups;
-
-
-/***/ },
-/* 132 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var CollectionFilterItem = (function () {
-	    function CollectionFilterItem(name, type, displayPropertyIdentifier, propertyIdentifier, displayValue, value, comparisonOperator, logicalOperator) {
-	        this.name = name;
-	        this.type = type;
-	        this.displayPropertyIdentifier = displayPropertyIdentifier;
-	        this.propertyIdentifier = propertyIdentifier;
-	        this.displayValue = displayValue;
-	        this.value = value;
-	        this.comparisonOperator = comparisonOperator;
-	        this.logicalOperator = logicalOperator;
-	    }
-	    return CollectionFilterItem;
-	})();
-	var SWProductBundleGroupController = (function () {
-	    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $slatwall, productBundlePartialsPath) {
-	        var _this = this;
-	        this.$log = $log;
-	        this.$timeout = $timeout;
-	        this.collectionConfigService = collectionConfigService;
-	        this.productBundleService = productBundleService;
-	        this.metadataservice = metadataservice;
-	        this.utilityservice = utilityservice;
-	        this.$slatwall = $slatwall;
-	        this.productBundlePartialsPath = productBundlePartialsPath;
-	        this.openCloseAndRefresh = function () {
-	            _this.showAdvanced = !_this.showAdvanced;
-	            if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.length) {
-	                _this.getCollection();
-	            }
-	        };
-	        this.deleteEntity = function (type) {
-	            if (angular.isNumber(type)) {
-	                _this.removeProductBundleGroupFilter(type);
-	            }
-	            else {
-	                _this.removeProductBundleGroup(_this.index);
-	            }
-	        };
-	        this.getCollection = function () {
-	            _this.collectionConfig.getEntity().then(function (response) {
-	                _this.collection = response;
-	            });
-	        };
-	        this.increaseCurrentCount = function () {
-	            if (angular.isDefined(_this.totalPages) && _this.totalPages != _this.currentPage) {
-	                _this.currentPage++;
-	            }
-	            else {
-	                _this.currentPage = 1;
-	            }
-	        };
-	        this.resetCurrentCount = function () {
-	            _this.currentPage = 1;
-	        };
-	        this.getFiltersByTerm = function (keyword, filterTerm) {
-	            _this.loading = true;
-	            _this.showAll = true;
-	            var _loadingCount;
-	            if (_this.timeoutPromise) {
-	                _this.$timeout.cancel(_this.timeoutPromise);
-	            }
-	            _this.timeoutPromise = _this.$timeout(function () {
-	                if (filterTerm.value === 'All') {
-	                    _this.showAll = true;
-	                    _this.productBundleGroupFilters.value = [];
-	                    _loadingCount = _this.searchOptions.options.length - 1;
-	                    for (var i in _this.searchOptions.options) {
-	                        _this.$log.debug("INT");
-	                        _this.$log.debug(i);
-	                        if (i > 0) {
-	                            var option = _this.searchOptions.options[i];
-	                            (function (keyword, option) {
-	                                var searchAllCollectionConfig = _this.collectionConfigService.newCollectionConfig(_this.searchOptions.options[i].value);
-	                                searchAllCollectionConfig.setKeywords(keyword);
-	                                searchAllCollectionConfig.setCurrentPage(_this.currentPage);
-	                                searchAllCollectionConfig.setPageShow(_this.pageShow);
-	                                //searchAllCollectionConfig.setAllRecords(true);
-	                                searchAllCollectionConfig.getEntity().then(function (value) {
-	                                    _this.recordsCount = value.recordsCount;
-	                                    _this.pageRecordsStart = value.pageRecordsStart;
-	                                    _this.pageRecordsEnd = value.pageRecordsEnd;
-	                                    _this.totalPages = value.totalPages;
-	                                    var formattedProductBundleGroupFilters = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, option);
-	                                    for (var j in formattedProductBundleGroupFilters) {
-	                                        if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1) {
-	                                            _this.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
-	                                            _this.$log.debug(formattedProductBundleGroupFilters[j]);
-	                                        }
-	                                    }
-	                                    // Increment Down The Loading Count
-	                                    _loadingCount--;
-	                                    // If the loadingCount drops to 0, then we can update scope
-	                                    if (_loadingCount == 0) {
-	                                        //This sorts the array of objects by the objects' "type" property alphabetically
-	                                        _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
-	                                        _this.$log.debug(_this.productBundleGroupFilters.value);
-	                                    }
-	                                    _this.loading = false;
-	                                });
-	                            })(keyword, option);
-	                        }
-	                    }
-	                }
-	                else {
-	                    _this.showAll = false;
-	                    _this.searchCollectionConfig = _this.collectionConfigService.newCollectionConfig(filterTerm.value);
-	                    _this.searchCollectionConfig.setKeywords(keyword);
-	                    _this.searchCollectionConfig.setCurrentPage(_this.currentPage);
-	                    _this.searchCollectionConfig.setPageShow(_this.pageShow);
-	                    _this.searchCollectionConfig.getEntity().then(function (value) {
-	                        _this.recordsCount = value.recordsCount;
-	                        _this.pageRecordsStart = value.pageRecordsStart;
-	                        _this.pageRecordsEnd = value.pageRecordsEnd;
-	                        _this.totalPages = value.totalPages;
-	                        _this.$log.debug('getFiltersByTerm');
-	                        _this.$log.debug(value);
-	                        _this.productBundleGroupFilters.value = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, filterTerm) || [];
-	                        _this.loading = false;
-	                    });
-	                }
-	            }, 500);
-	        };
-	        this.addFilterToProductBundle = function (filterItem, include, index) {
-	            var collectionFilterItem = new CollectionFilterItem(filterItem.name, filterItem.type, filterItem.type, filterItem.propertyIdentifier, filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1) + 'ID'], filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1) + 'ID']);
-	            if (include === false) {
-	                collectionFilterItem.comparisonOperator = '!=';
-	            }
-	            else {
-	                collectionFilterItem.comparisonOperator = '=';
-	            }
-	            if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.length > 0) {
-	                collectionFilterItem.logicalOperator = 'OR';
-	            }
-	            //Adds filter item to designated filtergroup
-	            _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.push(collectionFilterItem);
-	            //Removes the filter item from the left hand search result
-	            _this.productBundleGroupFilters.value.splice(index, 1);
-	            _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
-	        };
-	        this.removeProductBundleGroupFilter = function (index) {
-	            //Pushes item back into array
-	            _this.productBundleGroupFilters.value.push(_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup[index]);
-	            //Sorts Array
-	            _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
-	            //Removes the filter item from the filtergroup
-	            _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.splice(index, 1);
-	            _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
-	        };
-	        this.$id = 'productBundleGroup';
-	        this.maxRecords = 10;
-	        this.recordsCount = 0;
-	        this.pageRecordsStart = 0;
-	        this.pageRecordsEnd = 0;
-	        this.showAll = false;
-	        this.showAdvanced = false;
-	        this.currentPage = 1;
-	        this.pageShow = 10;
-	        /*this.skuCollectionConfig = {
-	            baseEntityName:"Sku",
-	            baseEntityAlias:"_sku",
-	            collectionConfig:this.productBundleGroup.data.skuCollectionConfig,
-	            collectionObject:'Sku'
-	        };*/
-	        this.searchOptions = {
-	            options: [
-	                {
-	                    name: "All",
-	                    value: "All"
-	                },
-	                {
-	                    name: "Product Type",
-	                    value: "productType"
-	                },
-	                {
-	                    name: "Brand",
-	                    value: "brand"
-	                },
-	                {
-	                    name: "Products",
-	                    value: "product"
-	                },
-	                {
-	                    name: "Skus",
-	                    value: "sku"
-	                }
-	            ],
-	            selected: {
-	                name: "All",
-	                value: "All"
-	            },
-	            setSelected: function (searchOption) {
-	                _this.searchOptions.selected = searchOption;
-	                _this.getFiltersByTerm(_this.productBundleGroupFilters.keyword, searchOption);
-	            }
-	        };
-	        this.navigation = {
-	            value: 'Basic',
-	            setValue: function (value) {
-	                _this.value = value;
-	            }
-	        };
-	        this.filterTemplatePath = this.productBundlePartialsPath + "productbundlefilter.html";
-	        this.productBundleGroupFilters = {};
-	        this.productBundleGroupFilters.value = [];
-	        if (angular.isUndefined(this.productBundleGroup.productBundleGroupFilters)) {
-	            this.productBundleGroup.productBundleGroupFilters = [];
-	        }
-	        if (!angular.isDefined(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index])) {
-	            this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index] = {};
-	            this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
-	        }
-	        var options = {
-	            filterGroupsConfig: this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup,
-	            columnsConfig: this.productBundleGroup.data.skuCollectionConfig.columns
-	        };
-	        this.collectionConfig = collectionConfigService.newCollectionConfig('Sku');
-	        this.collectionConfig.loadFilterGroups(options.filterGroupsConfig);
-	        this.collectionConfig.loadColumns(options.columnsConfig);
-	        this.collectionConfig.setAllRecords(true);
-	        this.getCollection();
-	    }
-	    SWProductBundleGroupController.$inject = ["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
-	    return SWProductBundleGroupController;
-	})();
-	var SWProductBundleGroup = (function () {
-	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $slatwall, productBundlePartialsPath, pathBuilderConfig) {
-	        this.$log = $log;
-	        this.$timeout = $timeout;
-	        this.collectionConfigService = collectionConfigService;
-	        this.productBundleService = productBundleService;
-	        this.metadataservice = metadataservice;
-	        this.utilityservice = utilityservice;
-	        this.$slatwall = $slatwall;
-	        this.productBundlePartialsPath = productBundlePartialsPath;
-	        this.restrict = "EA";
-	        this.scope = {};
+	        /**
+	            * Binds all of our variables to the controller so we can access using this
+	            */
 	        this.bindToController = {
-	            productBundleGroup: "=",
-	            index: "=",
-	            addProductBundleGroup: "&",
-	            removeProductBundleGroup: "&",
-	            formName: "@"
+	            entityName: "@?",
+	            processObject: "@?",
+	            hiddenFields: "=?",
+	            action: "@?",
+	            actions: "@?",
+	            formClass: "@?",
+	            formData: "=?",
+	            object: "@?",
+	            onSuccess: "@?",
+	            onError: "@?",
+	            hideUntil: "@?",
+	            isProcessForm: "@"
 	        };
-	        this.controller = SWProductBundleGroupController;
-	        this.controllerAs = "swProductBundleGroup";
-	        this.link = function ($scope, element, attrs) {
+	        /**
+	            * Sets the context of this form
+	            */
+	        this.link = function (scope, element, attrs, controller, transclude) {
+	            scope.context = scope.context || 'save';
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
 	    }
-	    SWProductBundleGroup.Factory = function () {
-	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath, pathBuilderConfig) {
-	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath, pathBuilderConfig);
+	    /**
+	        * Handles injecting the partials path into this class
+	        */
+	    SWForm.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWForm(coreFormPartialsPath, pathBuilderConfig);
 	        };
-	        directive.$inject = [
-	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath",
-	            "pathBuilderConfig"
-	        ];
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
 	        return directive;
 	    };
-	    SWProductBundleGroup.$inject = ["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
-	    return SWProductBundleGroup;
+	    return SWForm;
 	})();
-	exports.SWProductBundleGroup = SWProductBundleGroup;
+	exports.SWForm = SWForm;
 
 
 /***/ },
-/* 133 */
-/***/ function(module, exports, __webpack_require__) {
+/* 84 */
+/***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	//services
-	var workflowconditionservice_1 = __webpack_require__(134);
-	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(135);
-	var swworkflowbasic_1 = __webpack_require__(136);
-	var swworkflowcondition_1 = __webpack_require__(137);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(138);
-	var swworkflowconditiongroups_1 = __webpack_require__(139);
-	var swworkflowtask_1 = __webpack_require__(140);
-	var swworkflowtaskactions_1 = __webpack_require__(141);
-	var swworkflowtasks_1 = __webpack_require__(142);
-	var swworkflowtrigger_1 = __webpack_require__(143);
-	var swworkflowtriggers_1 = __webpack_require__(144);
-	//filters
-	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
-	})
-	    .constant('workflowPartialsPath', 'workflow/components/')
-	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)
-	    .directive('swAdminCreateSuperUser', swadmincreatesuperuser_1.SWAdminCreateSuperUser.Factory())
-	    .directive('swWorkflowBasic', swworkflowbasic_1.SWWorkflowBasic.Factory())
-	    .directive('swWorkflowCondition', swworkflowcondition_1.SWWorkflowCondition.Factory())
-	    .directive('swWorkflowConditionGroupItem', swworkflowconditiongroupitem_1.SWWorkflowConditionGroupItem.Factory())
-	    .directive('swWorkflowConditionGroups', swworkflowconditiongroups_1.SWWorkflowConditionGroups.Factory())
-	    .directive('swWorkflowTask', swworkflowtask_1.SWWorkflowTask.Factory())
-	    .directive('swWorkflowTaskActions', swworkflowtaskactions_1.SWWorkflowTaskActions.Factory())
-	    .directive('swWorkflowTasks', swworkflowtasks_1.SWWorkflowTasks.Factory())
-	    .directive('swWorkflowTrigger', swworkflowtrigger_1.SWWorkflowTrigger.Factory())
-	    .directive('swWorkflowTriggers', swworkflowtriggers_1.SWWorkflowTriggers.Factory());
-	exports.workflowmodule = workflowmodule;
-
-
-/***/ },
-/* 134 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../../typings/tsd.d.ts' />
-	var WorkflowCondition = (function () {
-	    function WorkflowCondition() {
-	        this.propertyIdentifer = "";
-	        this.comparisonOperator = "";
-	        this.value = "";
-	        this.displayPropertyIdentifier = "";
-	        this.$$disabled = false;
-	        this.$$isClosed = true;
-	        this.$$isNew = true;
-	    }
-	    return WorkflowCondition;
-	})();
-	exports.WorkflowCondition = WorkflowCondition;
-	var WorkflowConditionGroupItem = (function () {
-	    function WorkflowConditionGroupItem() {
-	        this.workflowConditionGroup = [];
-	    }
-	    return WorkflowConditionGroupItem;
-	})();
-	exports.WorkflowConditionGroupItem = WorkflowConditionGroupItem;
-	var WorkflowConditionService = (function () {
-	    function WorkflowConditionService($log, $slatwall, alertService) {
-	        var _this = this;
-	        this.$log = $log;
-	        this.newWorkflowCondition = function () {
-	            return new WorkflowCondition;
-	        };
-	        this.addWorkflowCondition = function (groupItem, condition) {
-	            _this.$log.debug('addWorkflowCondition');
-	            _this.$log.debug(groupItem);
-	            _this.$log.debug(condition);
-	            if (groupItem.length >= 1) {
-	                condition.logicalOperator = 'AND';
-	            }
-	            groupItem.push(condition);
-	        };
-	        this.newWorkflowConditionGroupItem = function () {
-	            return new WorkflowConditionGroupItem;
-	        };
-	        this.addWorkflowConditionGroupItem = function (group, groupItem) {
-	            group.push(groupItem);
-	        };
-	    }
-	    WorkflowConditionService.$inject = ["$log", "$slatwall", "alertService"];
-	    return WorkflowConditionService;
-	})();
-	exports.WorkflowConditionService = WorkflowConditionService;
-
-
-/***/ },
-/* 135 */
-/***/ function(module, exports) {
-
-	var SWAdminCreateSuperUser = (function () {
-	    function SWAdminCreateSuperUser($log, $slatwall, workflowPartialsPath, pathBuilderConfig) {
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormField = (function () {
+	    function SWFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
 	        return {
-	            restrict: 'E',
-	            scope: {},
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "admincreatesuperuser.html",
-	            link: function (scope, element, attrs) {
-	                scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
-	            }
-	        };
-	    }
-	    SWAdminCreateSuperUser.Factory = function () {
-	        var directive = function ($log, $slatwall, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWAdminCreateSuperUser($log, $slatwall, workflowPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$slatwall',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWAdminCreateSuperUser;
-	})();
-	exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
-
-
-/***/ },
-/* 136 */
-/***/ function(module, exports) {
-
-	var SWWorkflowBasic = (function () {
-	    function SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'A',
-	            scope: {
-	                workflow: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath)
-	                + "workflowbasic.html",
-	            link: function (scope, element, attrs) {
-	                console.log('workflowtest');
-	                console.log(scope.workflow);
-	            }
-	        };
-	    }
-	    SWWorkflowBasic.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowBasic;
-	})();
-	exports.SWWorkflowBasic = SWWorkflowBasic;
-
-
-/***/ },
-/* 137 */
-/***/ function(module, exports) {
-
-	var SWWorkflowCondition = (function () {
-	    function SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                workflowCondition: "=",
-	                workflowConditionIndex: "=",
-	                workflow: "=",
-	                filterPropertiesList: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowcondition.html",
-	            link: function (scope, element, attrs) {
-	                $log.debug('workflowCondition init');
-	                $log.debug(scope);
-	                scope.selectBreadCrumb = function (breadCrumbIndex) {
-	                    //splice out array items above index
-	                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
-	                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
-	                    scope.selectedFilterPropertyChanged(null);
-	                };
-	                scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
-	                    $log.debug('selectedFilterProperty');
-	                    $log.debug(selectedFilterProperty);
-	                    scope.selectedFilterProperty = selectedFilterProperty;
-	                };
-	                if (angular.isUndefined(scope.workflowCondition.breadCrumbs)) {
-	                    scope.workflowCondition.breadCrumbs = [];
-	                    if (scope.workflowCondition.propertyIdentifier === "") {
-	                        scope.workflowCondition.breadCrumbs = [
-	                            {
-	                                entityAlias: scope.workflow.data.workflowObject,
-	                                cfc: scope.workflow.data.workflowObject,
-	                                propertyIdentifier: scope.workflow.data.workflowObject
-	                            }
-	                        ];
-	                    }
-	                    else {
-	                        var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
-	                        entityAliasArrayFromString.pop();
-	                        for (var i in entityAliasArrayFromString) {
-	                            var breadCrumb = {
-	                                entityAlias: entityAliasArrayFromString[i],
-	                                cfc: entityAliasArrayFromString[i],
-	                                propertyIdentifier: entityAliasArrayFromString[i]
-	                            };
-	                            scope.workflowCondition.breadCrumbs.push(breadCrumb);
-	                        }
-	                    }
-	                }
-	                else {
-	                    angular.forEach(scope.workflowCondition.breadCrumbs, function (breadCrumb, key) {
-	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
-	                            var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
-	                            filterPropertiesPromise.then(function (value) {
-	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
-	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
-	                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier], breadCrumb.propertyIdentifier);
-	                                var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
-	                                entityAliasArrayFromString.pop();
-	                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
-	                                if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
-	                                    for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
-	                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
-	                                        if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
-	                                            //selectItem from drop down
-	                                            scope.selectedFilterProperty = filterProperty;
-	                                            //decorate with value and comparison Operator so we can use it in the Condition section
-	                                            scope.selectedFilterProperty.value = scope.workflowCondition.value;
-	                                            scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
-	                                        }
-	                                    }
-	                                }
-	                            });
-	                        }
-	                        else {
-	                            var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
-	                            entityAliasArrayFromString.pop();
-	                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
-	                            if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
-	                                for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
-	                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
-	                                    if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
-	                                        //selectItem from drop down
-	                                        scope.selectedFilterProperty = filterProperty;
-	                                        //decorate with value and comparison Operator so we can use it in the Condition section
-	                                        scope.selectedFilterProperty.value = scope.workflowCondition.value;
-	                                        scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
-	                                    }
-	                                }
-	                            }
-	                        }
-	                    });
-	                }
-	            }
-	        };
-	    }
-	    SWWorkflowCondition.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'metadataService',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowCondition;
-	})();
-	exports.SWWorkflowCondition = SWWorkflowCondition;
-
-
-/***/ },
-/* 138 */
-/***/ function(module, exports) {
-
-	var SWWorkflowConditionGroupItem = (function () {
-	    function SWWorkflowConditionGroupItem($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroupitem.html",
-	            link: function (scope, element, attrs) {
-	            }
-	        };
-	    }
-	    SWWorkflowConditionGroupItem.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
-	            return new ($log,
-	                $location,
-	                $slatwall,
-	                formService,
-	                workflowPartialsPath,
-	                pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'formService',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowConditionGroupItem;
-	})();
-	exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
-
-
-/***/ },
-/* 139 */
-/***/ function(module, exports) {
-
-	var SWWorkflowConditionGroups = (function () {
-	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                workflowConditionGroupItem: "=",
-	                workflowConditionGroup: "=",
-	                workflow: "=",
-	                filterPropertiesList: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroups.html",
-	            link: function (scope, element, attrs) {
-	                $log.debug('workflowconditiongroups init');
-	                scope.addWorkflowCondition = function () {
-	                    $log.debug('addWorkflowCondition');
-	                    var workflowCondition = workflowConditionService.newWorkflowCondition();
-	                    workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem, workflowCondition);
-	                };
-	                scope.addWorkflowGroupItem = function () {
-	                    $log.debug('addWorkflowGrouptItem');
-	                    var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
-	                    workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem, workflowConditionGroupItem);
-	                };
-	            }
-	        };
-	    }
-	    SWWorkflowConditionGroups.Factory = function () {
-	        var directive = function ($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            'workflowConditionService',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowConditionGroups;
-	})();
-	exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
-
-
-/***/ },
-/* 140 */
-/***/ function(module, exports) {
-
-	var SWWorkflowTask = (function () {
-	    function SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	        return {
-	            restrict: 'E',
-	            scope: {
-	                workflowTask: "=",
-	                workflowTasks: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtask.html",
-	            link: function (scope, element, attrs) {
-	                scope.removeWorkflowTask = function (workflowTask) {
-	                    var deletePromise = workflowTask.$$delete();
-	                    deletePromise.then(function () {
-	                        if (workflowTask === scope.workflowTasks.selectedTask) {
-	                            delete scope.workflowTasks.selectedTask;
-	                        }
-	                        scope.workflowTasks.splice(workflowTask.$$index, 1);
-	                        for (var i in scope.workflowTasks) {
-	                            scope.workflowTasks[i].$$index = i;
-	                        }
-	                    });
-	                };
-	            }
-	        };
-	    }
-	    SWWorkflowTask.Factory = function () {
-	        var directive = function ($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$timeout',
-	            '$slatwall',
-	            'metadataService',
-	            'collectionService',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
-	        return directive;
-	    };
-	    return SWWorkflowTask;
-	})();
-	exports.SWWorkflowTask = SWWorkflowTask;
-
-
-/***/ },
-/* 141 */
-/***/ function(module, exports) {
-
-	var SWWorkflowTaskActions = (function () {
-	    function SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	        return {
+	            require: "^form",
 	            restrict: 'AE',
 	            scope: {
-	                workflowTask: "="
+	                propertyDisplay: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
-	            link: function (scope, element, attrs) {
-	                $log.debug('Workflow Task Actions Init');
-	                $log.debug(scope.workflowTask);
-	                scope.openActions = false;
-	                /**
-	                    * Returns the correct object based on the selected object type.
-	                    */
-	                var getObjectByActionType = function (workflowTaskAction) {
-	                    if (workflowTaskAction.data.actionType === 'email') {
-	                        workflowTaskAction.$$getEmailTemplate();
-	                    }
-	                    else if (workflowTaskAction.data.actionType === 'print') {
-	                        workflowTaskAction.$$getPrintTemplate();
-	                    }
-	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Returns workflow task action, and saves them to the scope variable workflowtaskactions
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.getWorkflowTaskActions = function () {
-	                    /***
-	                    Note:
-	                    This conditional is checking whether or not we need to be retrieving to
-	                    items all over again. If we already have them, we won't make another
-	                    trip to the database.
-	                    
-	                ***/
-	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
-	                        var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
-	                        workflowTaskPromise.then(function () {
-	                            scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
-	                            angular.forEach(scope.workflowTaskActions, function (workflowTaskAction) {
-	                                getObjectByActionType(workflowTaskAction);
-	                            });
-	                            $log.debug(scope.workflowTaskActions);
-	                        });
-	                    }
-	                    else {
-	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
-	                    }
-	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
-	                        scope.workflowTask.data.workflowTaskActions = [];
-	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
-	                    }
-	                };
-	                scope.getWorkflowTaskActions(); //Call get
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Saves the workflow task actions by calling the objects $$save method.
-	                    * @param taskAction
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.saveWorkflowTaskAction = function (taskAction, context) {
-	                    $log.debug("Context: " + context);
-	                    $log.debug("saving task action and parent task");
-	                    $log.debug(taskAction);
-	                    var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
-	                    savePromise.then(function () {
-	                        var taSavePromise = taskAction.$$save;
-	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
-	                        if (context == 'add') {
-	                            $log.debug("Save and New");
-	                            scope.addWorkflowTaskAction(taskAction);
-	                            scope.finished = false;
-	                        }
-	                        else if (context == "finish") {
-	                            scope.finished = true;
-	                        }
-	                    });
-	                }; //<--end save
-	                /**
-	                    * Sets the editing state to show/hide the edit screen.
-	                    */
-	                scope.setHidden = function (task) {
-	                    if (!angular.isObject(task)) {
-	                        task = {};
-	                    }
-	                    if (angular.isUndefined(task.hidden)) {
-	                        task.hidden = false;
-	                    }
-	                    else {
-	                        $log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
-	                        task.hidden = !task.hidden;
-	                    }
-	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
-	                    * and sets the result to scope.
-	                    * @param taskAction
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.addWorkflowTaskAction = function (taskAction) {
-	                    var workflowTaskAction = scope.workflowTask.$$addWorkflowTaskAction();
-	                    scope.selectWorkflowTaskAction(workflowTaskAction);
-	                    $log.debug(scope.workflow);
-	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Selects a new task action and populates the task action properties.
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.selectWorkflowTaskAction = function (workflowTaskAction) {
-	                    $log.debug("Selecting new task action for editing: ");
-	                    $log.debug(workflowTaskAction);
-	                    scope.finished = false;
-	                    scope.workflowTaskActions.selectedTaskAction = undefined;
-	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTask.data.workflow.data.workflowObject);
-	                    filterPropertiesPromise.then(function (value) {
-	                        scope.filterPropertiesList = {
-	                            baseEntityName: scope.workflowTask.data.workflow.data.workflowObject,
-	                            baseEntityAlias: "_" + scope.workflowTask.data.workflow.data.workflowObject
-	                        };
-	                        metadataService.setPropertiesList(value, scope.workflowTask.data.workflow.data.workflowObject);
-	                        scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTask.data.workflow.data.workflowObject);
-	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject], scope.workflowTask.data.workflow.data.workflowObject);
-	                        scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-	                    });
-	                };
-	                /**
-	                    * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
-	                    */
-	                scope.deleteEntity = function (entity) {
-	                    scope.removeWorkflowTaskAction(entity);
-	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Removes a workflow task action by calling the selected tasks $$delete method
-	                    * and reindexes the list.
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.removeWorkflowTaskAction = function (workflowTaskAction) {
-	                    var deletePromise = workflowTaskAction.$$delete();
-	                    deletePromise.then(function () {
-	                        if (workflowTaskAction === scope.workflowTaskActions.selectedTaskAction) {
-	                            delete scope.workflowTaskActions.selectedTaskAction;
-	                        }
-	                        $log.debug("removeWorkflowTaskAction");
-	                        $log.debug(workflowTaskAction);
-	                        scope.workflowTaskActions.splice(workflowTaskAction.$$actionIndex, 1);
-	                        for (var i in scope.workflowTaskActions) {
-	                            scope.workflowTaskActions[i].$$actionIndex = i;
-	                        }
-	                    });
-	                };
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'formfield.html',
+	            link: function (scope, element, attrs, formController) {
+	                if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
+	                    scope.propertyDisplay.isDirty = true;
+	                }
+	                if (angular.isDefined(formController[scope.propertyDisplay.property])) {
+	                    scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
+	                    formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
+	                }
 	            }
 	        };
 	    }
-	    SWWorkflowTaskActions.Factory = function () {
-	        var directive = function ($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	    SWFormField.Factory = function () {
+	        var directive = function ($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig);
 	        };
 	        directive.$inject = [
 	            '$log',
+	            '$templateCache',
+	            '$window',
 	            '$slatwall',
-	            'metadataService',
-	            'collectionService',
-	            'workflowPartialsPath',
+	            'formService',
+	            'coreFormPartialsPath',
 	            'pathBuilderConfig'
 	        ];
 	        return directive;
 	    };
-	    return SWWorkflowTaskActions;
+	    return SWFormField;
 	})();
-	exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
+	exports.SWFormField = SWFormField;
+	//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$slatwall', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath)]);
 
 
 /***/ },
-/* 142 */
+/* 85 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldJsonController = (function () {
+	    //@ngInject
+	    function SWFormFieldJsonController(formService) {
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return SWFormFieldJsonController;
+	})();
+	var SWFormFieldJson = (function () {
+	    function SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.controller = SWFormFieldJsonController;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.controllerAs = "ctrl";
+	        this.templateUrl = "";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "json.html";
+	    }
+	    SWFormFieldJson.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldJson;
+	})();
+	exports.SWFormFieldJson = SWFormFieldJson;
+
+
+/***/ },
+/* 86 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldNumberController = (function () {
+	    function SWFormFieldNumberController() {
+	        if (this.propertyDisplay.isDirty == undefined)
+	            this.propertyDisplay.isDirty = false;
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return SWFormFieldNumberController;
+	})();
+	var SWFormFieldNumber = (function () {
+	    function SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.templateUrl = "";
+	        this.controller = SWFormFieldNumberController;
+	        this.controllerAs = "ctrl";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "number.html";
+	    }
+	    SWFormFieldNumber.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFormFieldNumber;
+	})();
+	exports.SWFormFieldNumber = SWFormFieldNumber;
+
+
+/***/ },
+/* 87 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var swFormFieldPasswordController = (function () {
+	    //@ngInject
+	    function swFormFieldPasswordController() {
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return swFormFieldPasswordController;
+	})();
+	var SWFormFieldPassword = (function () {
+	    //@ngInject
+	    function SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.controller = swFormFieldPasswordController;
+	        this.controllerAs = "ctrl";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "password.html";
+	    }
+	    SWFormFieldPassword.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFormFieldPassword;
+	})();
+	exports.SWFormFieldPassword = SWFormFieldPassword;
+
+
+/***/ },
+/* 88 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldRadio = (function () {
+	    //@ngInject
+	    function SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'radio.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                console.log('radio');
+	                var makeRandomID = function makeid(count) {
+	                    var text = "";
+	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	                    for (var i = 0; i < count; i++)
+	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	                    return text;
+	                };
+	                if (scope.propertyDisplay.fieldType === 'yesno') {
+	                    //format value
+	                    scope.selectedRadioFormName = makeRandomID(26);
+	                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
+	                    scope.formFieldChanged = function (option) {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+	                        scope.propertyDisplay.form['selected' + scope.propertyDisplay.object.metaData.className + scope.propertyDisplay.property + scope.selectedRadioFormName].$dirty = false;
+	                    };
+	                    scope.propertyDisplay.options = [
+	                        {
+	                            name: 'Yes',
+	                            value: 1
+	                        },
+	                        {
+	                            name: 'No',
+	                            value: 0
+	                        }
+	                    ];
+	                    if (angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
+	                        for (var i in scope.propertyDisplay.options) {
+	                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                scope.selected = scope.propertyDisplay.options[i];
+	                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                            }
+	                        }
+	                    }
+	                    else {
+	                        scope.selected = scope.propertyDisplay.options[0];
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
+	                    }
+	                    $timeout(function () {
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
+	                    });
+	                }
+	            }
+	        };
+	    }
+	    SWFormFieldRadio.Factory = function () {
+	        var directive = function ($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log', '$timeout', 'coreFormPartialsPath', 'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldRadio;
+	})();
+	exports.SWFormFieldRadio = SWFormFieldRadio;
+
+
+/***/ },
+/* 89 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldSearchSelect = (function () {
+	    function SWFormFieldSearchSelect($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                //set up selectionOptions
+	                scope.selectionOptions = {
+	                    value: [],
+	                    $$adding: false
+	                };
+	                //match in matches track by
+	                //function to set state of adding new item
+	                scope.setAdding = function (isAdding) {
+	                    scope.isAdding = isAdding;
+	                    scope.showAddBtn = false;
+	                };
+	                scope.selectedOption = {};
+	                scope.showAddBtn = false;
+	                var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
+	                //create basic
+	                var object = $slatwall.newEntity(propertyMetaData.cfc);
+	                //				scope.propertyDisplay.template = '';
+	                //				//check for a template
+	                //				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
+	                //				var templatePath = coreFormPartialsPath + 'formfields/searchselecttemplates/';
+	                //				if(angular.isUndefined(scope.propertyDisplay.template)){
+	                //					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
+	                //						$log.debug('template');
+	                //						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
+	                //					},function(){
+	                //						scope.propertyDisplay.template = templatePath+'index.html';
+	                //						$log.debug('template');
+	                //						$log.debug(scope.propertyDisplay.template);
+	                //					});
+	                //				}
+	                //set up query function for finding related object
+	                scope.cfcProperCase = propertyMetaData.cfcProperCase;
+	                scope.selectionOptions.getOptionsByKeyword = function (keyword) {
+	                    var filterGroupsConfig = '[' +
+	                        ' {  ' +
+	                        '"filterGroup":[  ' +
+	                        '{' +
+	                        ' "propertyIdentifier":"_' + scope.cfcProperCase.toLowerCase() + '.' + scope.cfcProperCase + 'Name",' +
+	                        ' "comparisonOperator":"like",' +
+	                        ' "ormtype":"string",' +
+	                        ' "value":"%' + keyword + '%"' +
+	                        '  }' +
+	                        ' ]' +
+	                        ' }' +
+	                        ']';
+	                    return $slatwall.getEntity(propertyMetaData.cfc, { filterGroupsConfig: filterGroupsConfig.trim() })
+	                        .then(function (value) {
+	                        $log.debug('typesByKeyword');
+	                        $log.debug(value);
+	                        scope.selectionOptions.value = value.pageRecords;
+	                        var myLength = keyword.length;
+	                        if (myLength > 0) {
+	                            scope.showAddBtn = true;
+	                        }
+	                        else {
+	                            scope.showAddBtn = false;
+	                        }
+	                        return scope.selectionOptions.value;
+	                    });
+	                };
+	                var propertyPromise = scope.propertyDisplay.object['$$get' + propertyMetaData.nameCapitalCase]();
+	                propertyPromise.then(function (data) {
+	                });
+	                //set up behavior when selecting an item
+	                scope.selectItem = function ($item, $model, $label) {
+	                    scope.$item = $item;
+	                    scope.$model = $model;
+	                    scope.$label = $label;
+	                    scope.showAddBtn = false; //turns off the add btn on select
+	                    //angular.extend(inflatedObject.data,$item);
+	                    object.$$init($item);
+	                    $log.debug('select item');
+	                    $log.debug(object);
+	                    scope.propertyDisplay.object['$$set' + propertyMetaData.nameCapitalCase](object);
+	                };
+	                //				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
+	                //					$log.debug('getmeta');
+	                //					$log.debug(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+	                //
+	                //					//scope.propertyDipslay.object['$$get'+]
+	                //				}
+	                //
+	                //				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
+	            }
+	        };
+	    }
+	    SWFormFieldSearchSelect.Factory = function () {
+	        var directive = function ($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldSearchSelect($http, $log, $slatwall, formService, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$log',
+	            '$slatwall',
+	            'formService',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldSearchSelect;
+	})();
+	exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
+
+
+/***/ },
+/* 90 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldSelect = (function () {
+	    //@ngInject
+	    function SWFormFieldSelect($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'select.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                var selectType;
+	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
+	                    selectType = 'object';
+	                    $log.debug('selectType:object');
+	                }
+	                else {
+	                    selectType = 'string';
+	                    $log.debug('selectType:string');
+	                }
+	                scope.formFieldChanged = function (option) {
+	                    $log.debug('formfieldchanged');
+	                    $log.debug(option);
+	                    if (selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
+	                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
+	                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
+	                        }
+	                    }
+	                    else if (selectType === 'string') {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+	                    }
+	                };
+	                scope.getOptions = function () {
+	                    if (angular.isUndefined(scope.propertyDisplay.options)) {
+	                        var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
+	                        optionsPromise.then(function (value) {
+	                            scope.propertyDisplay.options = value.data;
+	                            if (selectType === 'object') {
+	                                if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+	                                }
+	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === '') {
+	                                    $log.debug('no ID');
+	                                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
+	                                }
+	                                else {
+	                                    var found = false;
+	                                    for (var i in scope.propertyDisplay.options) {
+	                                        if (angular.isObject(scope.propertyDisplay.options[i].value)) {
+	                                            $log.debug('isObject');
+	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                                                found = true;
+	                                                break;
+	                                            }
+	                                        }
+	                                        else {
+	                                            $log.debug('notisObject');
+	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()) {
+	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
+	                                                found = true;
+	                                                break;
+	                                            }
+	                                        }
+	                                        if (!found) {
+	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                        }
+	                                    }
+	                                }
+	                            }
+	                            else if (selectType === 'string') {
+	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null) {
+	                                    for (var i in scope.propertyDisplay.options) {
+	                                        if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                            scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                                        }
+	                                    }
+	                                }
+	                                else {
+	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
+	                                }
+	                            }
+	                        });
+	                    }
+	                };
+	                if (scope.propertyDisplay.eagerLoadOptions == true) {
+	                    scope.getOptions();
+	                }
+	                //formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
+	                if (selectType === 'object') {
+	                    formController[scope.propertyDisplay.property + 'ID'].$dirty = scope.propertyDisplay.isDirty;
+	                }
+	                else if (selectType === 'string') {
+	                    formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
+	                }
+	            }
+	        }; //<--end return
+	    }
+	    SWFormFieldSelect.Factory = function () {
+	        var directive = function ($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
+	            return new SWFormFieldSelect($log, $slatwall, formService, coreFormPartialsPath, utilityService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'formService',
+	            'coreFormPartialsPath',
+	            'utilityService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldSelect;
+	})();
+	exports.SWFormFieldSelect = SWFormFieldSelect;
+
+
+/***/ },
+/* 91 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldTextController = (function () {
+	    //@ngInject
+	    function SWFormFieldTextController(formService) {
+	        this.formService = formService;
+	        if (this.propertyDisplay.isDirty == undefined)
+	            this.propertyDisplay.isDirty = false;
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	        this.formService.setPristinePropertyValue(this.propertyDisplay.property, this.propertyDisplay.object.data[this.propertyDisplay.property]);
+	    }
+	    return SWFormFieldTextController;
+	})();
+	var SWFormFieldText = (function () {
+	    function SWFormFieldText(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.controller = SWFormFieldTextController;
+	        this.controllerAs = "ctrl";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "="
+	        };
+	        //@ngInject
+	        this.link = function (scope, element, attr, formController) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "text.html";
+	    }
+	    SWFormFieldText.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldText(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldText;
+	})();
+	exports.SWFormFieldText = SWFormFieldText;
+	//     angular.module('slatwalladmin').directive('swFormFieldText', ['$log','$slatwall','formService','partialsPath', ($log, $slatwall, formService, partialsPath) => new SWFormFieldText($log, $slatwall, formService, partialsPath)]);
+	// }
+
+
+/***/ },
+/* 92 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormRegistrar = (function () {
+	    //@ngInject
+	    function SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            require: "^form",
+	            link: function (scope, element, attrs, formController) {
+	                /*add form info at the form level*/
+	                formController.$$swFormInfo = {
+	                    object: scope.object,
+	                    context: scope.context || 'save',
+	                    name: scope.name
+	                };
+	                var makeRandomID = function makeid(count) {
+	                    var text = "";
+	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	                    for (var i = 0; i < count; i++)
+	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	                    return text;
+	                };
+	                scope.form = formController;
+	                /*register form with service*/
+	                formController.name = scope.name;
+	                formService.setForm(formController);
+	                /*register form at object level*/
+	                if (!angular.isDefined(scope.object.forms)) {
+	                    scope.object.forms = {};
+	                }
+	                scope.object.forms[scope.name] = formController;
+	            }
+	        };
+	    }
+	    SWFormRegistrar.Factory = function () {
+	        var directive = function (formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'formService',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormRegistrar;
+	})();
+	exports.SWFormRegistrar = SWFormRegistrar;
+	// 	angular.module('slatwalladmin').directive('swFormRegistrar',[ 'formService', 'partialsPath', (formService, partialsPath) => new swFormRegistrar(formService, partialsPath)]);
+	// } 
+
+
+/***/ },
+/* 93 */
+/***/ function(module, exports) {
+
+	/**********************************************************************************************
+	 **********************************************************************************************
+	 **********************************************************************************************
+	 **		Property Display (This one is specifically for the frontend so that it can be modified)
+	 **		isHidden
+	 **		requiredFlag
+	 **		title
+	 **		hint
+	 **		editting
+	 **		object
+	 **		class
+	 **		___________________________________________
+	 ** 	attr.type have the following options:
+	 **
+	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
+	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		file				|	No value can be passed in
+	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		password			|	No Value can be passed in
+	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		text				|	Simple Text Field
+	 **		textarea			|	Simple Textarea
+	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
+	 **		submit				|	submit button to post these properties back to the server.
+	 **		------------------------------------------------------------------------------------------------------
+	 **
+	 **		attr.valueObject" type="any" default="" />
+	 **		attr.valueObjectProperty" type="string" default="" />
+	 **
+	 **		General Settings that end up getting applied to the value object
+	 **		attr.type" type="string" default="text"
+	 **		attr.name" type="string" default=""
+	 **		attr.class" type="string" default=""
+	 **		attr.value" type="any" default=""
+	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
+	 **		attr.fieldAttributes" type="string" default=""
+	 **
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 */
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	    * Property Display Controller handles the logic for this directive.
+	    */
+	var SWFPropertyDisplayController = (function () {
+	    /**
+	        * Handles the logic for the frontend version of the property display.
+	        */
+	    //@ngInject
+	    function SWFPropertyDisplayController($scope) {
+	        this.$scope = $scope;
+	        var vm = this;
+	        vm.processObject = {};
+	        vm.valueObjectProperty = this.valueObjectProperty;
+	        vm.type = this.type || "text";
+	        vm.class = this.class || "formControl";
+	        vm.valueObject = this.valueObject;
+	        vm.fieldAttributes = this.fieldAttributes || "";
+	        vm.label = this.label || "true";
+	        vm.labelText = this.labelText || "";
+	        vm.labelClass = this.labelClass || "";
+	        vm.name = this.name || "unnamed";
+	        vm.options = this.options;
+	        vm.optionValues = this.optionValues;
+	        vm.errorClass = this.errorClass;
+	        vm.errorText = this.errorText;
+	        vm.formCtrl = {};
+	        vm.object = this.object; //this is the process object
+	        vm.propertyIdentifier = this.propertyIdentifier; //this is the property
+	        vm.loader = this.loader;
+	        vm.noValidate = this.noValidate;
+	        /** in order to attach the correct controller to local vm, we need a watch to bind */
+	        /** handle options */
+	        if (vm.options && angular.isString(vm.options)) {
+	            var optionsArray = [];
+	            optionsArray = vm.options.toString().split(",");
+	            angular.forEach(optionsArray, function (o) {
+	                var newOption = {
+	                    name: "",
+	                    value: ""
+	                };
+	                newOption.name = o.name;
+	                newOption.value = o.value;
+	                vm.optionValues.push(newOption);
+	            }, vm);
+	        }
+	        /** handle turning the options into an array of objects */
+	        /** handle setting the default value for the yes / no element  */
+	        if (this.type == "yesno" && (this.value && angular.isString(this.value))) {
+	            vm.selected == this.value;
+	        }
+	        this.propertyDisplay = {
+	            type: vm.type,
+	            name: vm.name,
+	            class: vm.class,
+	            loader: vm.loader,
+	            errorClass: vm.errorClass,
+	            option: vm.options,
+	            valueObject: vm.valueObject,
+	            object: vm.object,
+	            label: vm.label,
+	            labelText: vm.labelText,
+	            labelClass: vm.labelClass,
+	            optionValues: vm.optionValues,
+	            edit: vm.editting,
+	            title: vm.title,
+	            value: vm.value,
+	            errorText: vm.errorText,
+	        };
+	    }
+	    return SWFPropertyDisplayController;
+	})();
+	/**
+	    * This class handles configuring formFields for use in process forms on the front end.
+	    */
+	var SWFPropertyDisplay = (function () {
+	    //@ngInject
+	    function SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = "E";
+	        this.require = "?^swForm";
+	        this.transclude = true;
+	        this.templateUrl = "";
+	        this.controller = SWFPropertyDisplayController;
+	        this.controllerAs = "swfPropertyDisplayController";
+	        this.scope = {};
+	        this.bindToController = {
+	            type: "@?",
+	            name: "@?",
+	            class: "@?",
+	            edit: "@?",
+	            title: "@?",
+	            hint: "@?",
+	            valueObject: "=?",
+	            valueObjectProperty: "=?",
+	            options: "@?",
+	            fieldAttributes: "@?",
+	            object: "=",
+	            label: "@?",
+	            labelText: "@?",
+	            labelClass: "@?",
+	            errorText: "@?",
+	            errorClass: "@?",
+	            formTemplate: "@?"
+	        };
+	        this.link = function (scope, element, attrs, formController, transcludeFn) {
+	            scope.frmController = formController;
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
+	    }
+	    SWFPropertyDisplay.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFPropertyDisplay;
+	})();
+	exports.SWFPropertyDisplay = SWFPropertyDisplay;
+
+
+/***/ },
+/* 94 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWPropertyDisplay = (function () {
+	    function SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            require: '^form',
+	            restrict: 'AE',
+	            scope: {
+	                object: "=",
+	                property: "@",
+	                editable: "=",
+	                editing: "=",
+	                isHidden: "=",
+	                title: "=",
+	                hint: "@",
+	                optionsArguments: "=",
+	                eagerLoadOptions: "=",
+	                isDirty: "=",
+	                onChange: "=",
+	                fieldType: "@",
+	                noValidate: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "propertydisplay.html",
+	            link: function (scope, element, attrs, formController) {
+	                //if the item is new, then all fields at the object level are dirty
+	                $log.debug('editingproper');
+	                $log.debug(scope.property);
+	                $log.debug(scope.title);
+	                if (!angular.isDefined(scope.object)) {
+	                    scope.object = formController.$$swFormInfo.object;
+	                }
+	                /**
+	                 * Configuration for property display object.
+	                 */
+	                scope.propertyDisplay = {
+	                    object: scope.object,
+	                    property: scope.property,
+	                    errors: {},
+	                    editing: scope.editing,
+	                    editable: scope.editable,
+	                    isHidden: scope.isHidden,
+	                    fieldType: scope.fieldType || scope.object.metaData.$$getPropertyFieldType(scope.property),
+	                    title: scope.title,
+	                    hint: scope.hint || scope.object.metaData.$$getPropertyHint(scope.property),
+	                    optionsArguments: scope.optionsArguments || {},
+	                    eagerLoadOptions: scope.eagerLoadOptions || true,
+	                    isDirty: scope.isDirty,
+	                    onChange: scope.onChange,
+	                    noValidate: scope.noValidate
+	                };
+	                if (angular.isUndefined(scope.propertyDisplay.noValidate)) {
+	                    scope.propertyDisplay.noValidate = false;
+	                }
+	                if (angular.isUndefined(scope.propertyDisplay.editable)) {
+	                    scope.propertyDisplay.editable = true;
+	                }
+	                if (angular.isUndefined(scope.editing)) {
+	                    scope.propertyDisplay.editing = false;
+	                }
+	                if (angular.isUndefined(scope.propertyDisplay.isHidden)) {
+	                    scope.propertyDisplay.isHidden = false;
+	                }
+	                scope.applyFilter = function (model, filter) {
+	                    try {
+	                        return $filter(filter)(model);
+	                    }
+	                    catch (e) {
+	                        return model;
+	                    }
+	                };
+	                scope.$id = 'propertyDisplay:' + scope.property;
+	                /* register form that the propertyDisplay belongs to*/
+	                scope.propertyDisplay.form = formController;
+	                $log.debug(scope.propertyDisplay);
+	                $log.debug('propertyDisplay');
+	                $log.debug(scope.propertyDisplay);
+	            }
+	        };
+	    }
+	    SWPropertyDisplay.Factory = function () {
+	        var directive = function ($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$filter',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWPropertyDisplay;
+	})();
+	exports.SWPropertyDisplay = SWPropertyDisplay;
+
+
+/***/ },
+/* 95 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+	var swvalidate_1 = __webpack_require__(96);
+	var swvalidationminlength_1 = __webpack_require__(97);
+	var swvalidationdatatype_1 = __webpack_require__(98);
+	var swvalidationeq_1 = __webpack_require__(99);
+	var swvalidationgte_1 = __webpack_require__(100);
+	var swvalidationlte_1 = __webpack_require__(101);
+	var swvalidationmaxlength_1 = __webpack_require__(102);
+	var swvalidationmaxvalue_1 = __webpack_require__(103);
+	var swvalidationminvalue_1 = __webpack_require__(104);
+	var swvalidationneq_1 = __webpack_require__(105);
+	var swvalidationnumeric_1 = __webpack_require__(106);
+	var swvalidationregex_1 = __webpack_require__(107);
+	var swvalidationrequired_1 = __webpack_require__(108);
+	var swvalidationunique_1 = __webpack_require__(109);
+	var swvalidationuniqueornull_1 = __webpack_require__(110);
+	var validationmodule = angular.module('hibachi.validation', [])
+	    .run([function () {
+	    }])
+	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
+	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory())
+	    .directive('swvalidationdatatype', swvalidationdatatype_1.SWValidationDataType.Factory())
+	    .directive('swvalidationeq', swvalidationeq_1.SWValidationEq.Factory())
+	    .directive("swvalidationgte", swvalidationgte_1.SWValidationGte.Factory())
+	    .directive("swvalidationlte", swvalidationlte_1.SWValidationLte.Factory())
+	    .directive('swvalidationmaxlength', swvalidationmaxlength_1.SWValidationMaxLength.Factory())
+	    .directive("swvalidationmaxvalue", swvalidationmaxvalue_1.SWValidationMaxValue.Factory())
+	    .directive("swvalidationminvalue", swvalidationminvalue_1.SWValidationMinValue.Factory())
+	    .directive("swvalidationneq", swvalidationneq_1.SWValidationNeq.Factory())
+	    .directive("swvalidationnumeric", swvalidationnumeric_1.SWValidationNumeric.Factory())
+	    .directive("swvalidationregex", swvalidationregex_1.SWValidationRegex.Factory())
+	    .directive("swvalidationrequired", swvalidationrequired_1.SWValidationRequired.Factory())
+	    .directive("swvalidationunique", swvalidationunique_1.SWValidationUnique.Factory())
+	    .directive("swvalidationuniqueornull", swvalidationuniqueornull_1.SWValidationUniqueOrNull.Factory());
+	exports.validationmodule = validationmodule;
+
+
+/***/ },
+/* 96 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
+	 * validate based on that context as defined in the validation properties object.
+	 */
+	// 'use strict';
+	// angular.module('slatwalladmin').directive('swValidate',
+	// [ '$log','$slatwall', function($log, $slatwall) {
+	var SWValidate = (function () {
+	    function SWValidate($log, $slatwall) {
+	        return {
+	            restrict: "A",
+	            require: '^ngModel',
+	            link: function (scope, elem, attr, ngModel) {
+	                //Define our contexts and validation property enums.
+	                var ContextsEnum = {
+	                    SAVE: { name: "save", value: 0 },
+	                    DELETE: { name: "delete", value: 1 },
+	                    EDIT: { name: "edit", value: 2 }
+	                };
+	                var ValidationPropertiesEnum = {
+	                    REGEX: { name: "regex", value: 0 },
+	                    MIN_VALUE: { name: "minValue", value: 1 },
+	                    MAX_VALUE: { name: "maxValue", value: 2 },
+	                    EQ: { name: "eq", value: 3 },
+	                    NEQ: { name: "neq", value: 4 },
+	                    UNIQUE: { name: "unique", value: 5 },
+	                    LTE: { name: "lte", value: 6 },
+	                    GTE: { name: "gte", value: 7 },
+	                    MIN_LENGTH: { name: "minLength", value: 8 },
+	                    MAX_LENGTH: { name: "maxLength", value: 9 },
+	                    DATA_TYPE: { name: "dataType", value: 10 },
+	                    REQUIRED: { name: "required", value: 11 }
+	                };
+	                scope.validationPropertiesEnum = ValidationPropertiesEnum;
+	                scope.contextsEnum = ContextsEnum;
+	                var myCurrentContext = scope.contextsEnum.SAVE; //We are only checking the save context right now.
+	                var contextNamesArray = getNamesFromObject(ContextsEnum); //Convert for higher order functions.
+	                var validationPropertiesArray = getNamesFromObject(ValidationPropertiesEnum); //Convert for higher order functions.
+	                var validationObject = scope.propertyDisplay.object.validations.properties; //Get the scope validation object.
+	                var errors = scope.propertyDisplay.errors;
+	                var errorMessages = [];
+	                var failFlag = 0;
+	                /**
+	                * Iterates over the validation object looking for the current elements validations, maps that to a validation function list
+	                * and calls those validate functions. When a validation fails, an error is set, the elements border turns red.
+	                */
+	                function validate(name, context, elementValue) {
+	                    var validationResults = {};
+	                    validationResults = { "name": "name", "context": "context", "required": "required", "error": "none", "errorkey": "none" };
+	                    for (var key in validationObject) {
+	                        // Look for the current attribute in the
+	                        // validation parameters.
+	                        if (key === name || key === name + "Flag") {
+	                            // Now that we have found the current
+	                            // validation parameters, iterate
+	                            // through them looking for
+	                            // the required parameters that match
+	                            // the current page context (save,
+	                            // delete, etc.)
+	                            for (var inner in validationObject[key]) {
+	                                var required = validationObject[key][inner].required || "false"; // Get
+	                                // the
+	                                // required
+	                                // value
+	                                var context = validationObject[key][inner].contexts || "none"; // Get
+	                                // the
+	                                // element
+	                                // context
+	                                //Setup the validation results object to pass back to caller.
+	                                validationResults = { "name": key, "context": context, "required": required, "error": "none", "errorkey": "none" };
+	                                var elementValidationArr = map(checkHasValidationType, validationPropertiesArray, validationObject[key][inner]);
+	                                //Iterate over the array and call the validate function if it has that property.
+	                                for (var i = 0; i < elementValidationArr.length; i++) {
+	                                    if (elementValidationArr[i] == true) {
+	                                        if (validationPropertiesArray[i] === "regex" && elementValue !== "") {
+	                                            //Get the regex string to match and send to validation function.
+	                                            var re = validationObject[key][inner].regex;
+	                                            var result = validate_RegExp(elementValue, re); //true if pattern match, fail otherwise.
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Invalid input");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                errorMessages
+	                                                    .push("Valid input");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "minValue") {
+	                                            var validationMinValue = validationObject[key][inner].minValue;
+	                                            $log.debug(validationMinValue);
+	                                            var result = validate_MinValue(elementValue, validationMinValue);
+	                                            $log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Minimum value is: "
+	                                                    + validationMinValue);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "maxValue") {
+	                                            var validationMaxValue = validationObject[key][inner].maxValue;
+	                                            var result = validate_MaxValue(elementValue, validationMaxValue);
+	                                            $log.debug("Max Value result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Maximum value is: "
+	                                                    + validationMaxValue);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_VALUE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "minLength") {
+	                                            var validationMinLength = validationObject[key][inner].minLength;
+	                                            var result = validate_MinLength(elementValue, validationMinLength);
+	                                            $log.debug("Min Length result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Minimum length must be: "
+	                                                    + validationMinLength);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_LENGTH"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "maxLength") {
+	                                            var validationMaxLength = validationObject[key][inner].maxLength;
+	                                            var result = validate_MaxLength(elementValue, validationMaxLength);
+	                                            $log.debug("Max Length result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Maximum length is: "
+	                                                    + validationMaxLength);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_LENGTH"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "eq") {
+	                                            var validationEq = validationObject[key][inner].eq;
+	                                            var result = validate_Eq(elementValue, validationEq);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must equal "
+	                                                    + validationEq);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["EQ"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "neq") {
+	                                            var validationNeq = validationObject[key][inner].neq;
+	                                            var result = validate_Neq(elementValue, validationNeq);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must not equal: "
+	                                                    + validationNeq);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["NEQ"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "lte") {
+	                                            var validationLte = validationObject[key][inner].lte;
+	                                            var result = validate_Lte(elementValue, validationLte);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must be less than "
+	                                                    + validationLte);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["LTE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "gte") {
+	                                            var validationGte = validationObject[key][inner].gte;
+	                                            var result = validate_Gte(elementValue, validationGte);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must be greater than: "
+	                                                    + validationGte);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["GTE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "required") {
+	                                            var validationRequire = validationObject[key][inner].require;
+	                                            var result = validate_Required(elementValue, validationRequire);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Required");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                errorMessages
+	                                                    .push("Required");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    } //<---end validate.			
+	                }
+	                /**
+	                * Function to map if we need a validation on this element.
+	                */
+	                function checkHasValidationType(validationProp, validationType) {
+	                    if (validationProp[validationType] != undefined) {
+	                        return true;
+	                    }
+	                    else {
+	                        return false;
+	                    }
+	                }
+	                /**
+	                * Iterates over the properties object finding which types of validation are needed.
+	                */
+	                function map(func, array, obj) {
+	                    var result = [];
+	                    forEach(array, function (element) {
+	                        result.push(func(obj, element));
+	                    });
+	                    return result;
+	                }
+	                /**
+	                * Array iteration helper.
+	                */
+	                function forEach(array, action) {
+	                    for (var i = 0; i < array.length; i++)
+	                        action(array[i]);
+	                }
+	                /**
+	                * Helper function to read all the names in our enums into an array that the higher order functions can use.
+	                */
+	                function getNamesFromObject(obj) {
+	                    var result = [];
+	                    for (var i in obj) {
+	                        var name = obj[i].name || "stub";
+	                        result.push(name);
+	                    }
+	                    return result;
+	                }
+	                /**
+	                * Tests the value for a RegExp match given by the pattern string.
+	                * Validates true if pattern match, false otherwise.
+	                */
+	                function validate_RegExp(value, pattern) {
+	                    var regex = new RegExp(pattern);
+	                    if (regex.test(value)) {
+	                        return true;
+	                    }
+	                    return false;
+	                }
+	                /**
+	                * Validates true if userValue >= minValue (inclusive)
+	                */
+	                function validate_MinValue(userValue, minValue) {
+	                    return (userValue >= minValue);
+	                }
+	                /**
+	                * Validates true if userValue <= maxValue (inclusive)
+	                */
+	                function validate_MaxValue(userValue, maxValue) {
+	                    return (userValue <= maxValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if length of the userValue >= minLength (inclusive)
+	                */
+	                function validate_MinLength(userValue, minLength) {
+	                    return (userValue.length >= minLength) ? true : false;
+	                }
+	                /**
+	                * Validates true if length of the userValue <= maxLength (inclusive)
+	                */
+	                function validate_MaxLength(userValue, maxLength) {
+	                    return (userValue.length <= maxLength) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue == eqValue
+	                */
+	                function validate_Eq(userValue, eqValue) {
+	                    return (userValue == eqValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue != neqValue
+	                */
+	                function validate_Neq(userValue, neqValue) {
+	                    return (userValue != neqValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue < decisionValue (exclusive)
+	                */
+	                function validate_Lte(userValue, decisionValue) {
+	                    return (userValue < decisionValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue > decisionValue (exclusive)
+	                */
+	                function validate_Gte(userValue, decisionValue) {
+	                    return (userValue > decisionValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue === property
+	                */
+	                function validate_EqProperty(userValue, property) {
+	                    return (userValue === property) ? true : false;
+	                }
+	                /**
+	                * Validates true if the given value is !NaN (Negate, Not a Number).
+	                */
+	                function validate_IsNumeric(value) {
+	                    return !isNaN(value) ? true : false;
+	                }
+	                /**
+	                * Validates true if the given userValue is empty and the field is required.
+	                */
+	                function validate_Required(property, userValue) {
+	                    return (userValue == "" && property == true) ? true : false;
+	                }
+	                /**
+	                * Handles the 'eager' validation on every key press.
+	                */
+	                ngModel.$parsers.unshift(function (value) {
+	                    var name = elem.context.name; //Get the element name for the validate function.
+	                    var currentValue = elem.val(); //Get the current element value to check validations against.
+	                    var val = validate(name, myCurrentContext, currentValue) || {};
+	                    //Check if field is required.				
+	                    $log.debug(scope);
+	                    $log.debug(val);
+	                    ngModel.$setValidity(val.errorkey, !val.fail);
+	                    return true;
+	                }); //<---end $parsers
+	                /**
+	                * This handles 'lazy' validation on blur.
+	                */
+	                elem.bind('blur', function (e) {
+	                });
+	            }
+	        };
+	    }
+	    SWValidate.Factory = function () {
+	        var directive = function ($log, $slatwall) { return new SWValidate($log, $slatwall); };
+	        directive.$inject = ['$log', '$slatwall'];
+	        return directive;
+	    };
+	    return SWValidate;
+	})();
+	exports.SWValidate = SWValidate;
+
+
+/***/ },
+/* 97 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the min length.
+	 */
+	/**
+	 * Returns true if the user value is greater than the minimum value.
+	 */
+	var SWValidationMinLength = (function () {
+	    function SWValidationMinLength($log) {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationminlength =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationminlength;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        $log.debug('invalid min length');
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMinLength.Factory = function () {
+	        var directive = function ($log) { return new SWValidationMinLength($log); };
+	        directive.$inject = ['$log'];
+	        return directive;
+	    };
+	    return SWValidationMinLength;
+	})();
+	exports.SWValidationMinLength = SWValidationMinLength;
+
+
+/***/ },
+/* 98 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * True if the data type matches the given data type.
+	 */
+	/**
+	 * Validates true if the model value is a numeric value.
+	 */
+	var SWValidationDataType = (function () {
+	    function SWValidationDataType() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                var MY_EMAIL_REGEXP = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
+	                ngModel.$validators.swvalidationdatatype =
+	                    function (modelValue) {
+	                        if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string") {
+	                            return true;
+	                        }
+	                        if (angular.isNumber(parseInt(modelValue)) && attributes.swvalidationdatatype === "numeric") {
+	                            return true;
+	                        }
+	                        if (angular.isArray(modelValue) && attributes.swvalidationdatatype === "array") {
+	                            return true;
+	                        }
+	                        if (angular.isDate(modelValue) && attributes.swvalidationdatatype === "date") {
+	                            return true;
+	                        }
+	                        if (angular.isObject(modelValue) && attributes.swvalidationdatatype === "object") {
+	                            return true;
+	                        }
+	                        if (attributes.swvalidationdatatype === 'email') {
+	                            return MY_EMAIL_REGEXP.test(modelValue);
+	                        }
+	                        if (angular.isUndefined(modelValue && attributes.swvalidationdatatype === "undefined")) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationDataType.Factory = function () {
+	        var directive = function () {
+	            return new SWValidationDataType();
+	        };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationDataType;
+	})();
+	exports.SWValidationDataType = SWValidationDataType;
+
+
+/***/ },
+/* 99 */
 /***/ function(module, exports) {
 
 	/**
-	 * Handles adding, editing, and deleting Workflows Tasks.
+	 * SwValidationEQ: Validates true if the user value == the constraint value.
+	 * @usage <input type='text' swvalidationgte='5' /> will validate false if the user enters
+	 * value other than 5.
 	 */
-	var SWWorkflowTasks = (function () {
-	    function SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	var SWValidationEq = (function () {
+	    function SWValidationEq() {
 	        return {
-	            restrict: 'A',
-	            scope: {
-	                workflow: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtasks.html",
-	            link: function (scope, element, attrs) {
-	                scope.workflowPartialsPath = pathBuilderConfig.buildPartialsPath(workflowPartialsPath);
-	                scope.propertiesList = {};
-	                function logger(context, message) {
-	                    $log.debug("SwWorkflowTasks :" + context + " : " + message);
-	                }
-	                /**
-	                 * Sets workflowTasks on the scope by populating with $$getWorkflowTasks()
-	                 */
-	                scope.getWorkflowTasks = function () {
-	                    logger("getWorkflowTasks", "Retrieving items");
-	                    logger("getWorkflowTasks", "Workflow Tasks");
-	                    $log.debug(scope.workflowTasks);
-	                    /***
-	                       Note:
-	                       This conditional is checking whether or not we need to be retrieving to
-	                       items all over again. If we already have them, we won't make another
-	                       trip to the database.
-
-	                     ***/
-	                    if (angular.isUndefined(scope.workflow.data.workflowTasks)) {
-	                        var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
-	                        workflowTasksPromise.then(function () {
-	                            scope.workflowTasks = scope.workflow.data.workflowTasks;
-	                        });
-	                    }
-	                    else {
-	                        logger("getWorkflowTasks", "Retrieving cached Items");
-	                        scope.workflowTasks = scope.workflow.data.workflowTasks;
-	                    }
-	                    if (angular.isUndefined(scope.workflow.data.workflowTasks)) {
-	                        //Reset the workflowTasks.
-	                        logger("getWorkflowTasks", "workflowTasks is undefined.");
-	                        scope.workflow.data.workflowTasks = [];
-	                        scope.workflowTasks = scope.workflow.data.workflowTasks;
-	                    }
-	                };
-	                scope.getWorkflowTasks(); //call tasks
-	                /**
-	                 * Sets the editing state to show/hide the edit screen.
-	                 */
-	                scope.setHidden = function (task) {
-	                    if (!angular.isObject(task) || angular.isUndefined(task.hidden)) {
-	                        task.hidden = false;
-	                    }
-	                    else {
-	                        logger("setHidden()", "Setting Hide Value To " + !task.hidden);
-	                        task.hidden = !task.hidden;
-	                    }
-	                };
-	                /**
-	                 * Add a workflow task and logs the result.
-	                 */
-	                scope.addWorkflowTask = function () {
-	                    var newWorkflowTask = scope.workflow.$$addWorkflowTask();
-	                    logger("var newWorkflowTask", newWorkflowTask);
-	                    scope.selectWorkflowTask(newWorkflowTask);
-	                };
-	                /**
-	                  * Watches the select for changes.
-	                  */
-	                scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject', function (newValue, oldValue) {
-	                    logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue);
-	                    if ((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask))) {
-	                        logger("scope.$watch", "Change to " + newValue);
-	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
-	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
-	                    }
-	                });
-	                /**
-	                   * --------------------------------------------------------------------------------------------------------
-	                   * Saves the workflow task by calling the objects $$save method.
-	                   * @param task
-	                   * --------------------------------------------------------------------------------------------------------
-	                   */
-	                scope.saveWorkflowTask = function (task, context) {
-	                    scope.done = true;
-	                    $log.debug("Context: " + context);
-	                    $log.debug("saving task");
-	                    $log.debug(scope.workflowTasks.selectedTask);
-	                    var savePromise = scope.workflowTasks.selectedTask.$$save();
-	                    savePromise.then(function () {
-	                        if (context === 'add') {
-	                            logger("SaveWorkflowTask", "Save and New");
-	                            scope.addWorkflowTask();
-	                            //scope.setHidden(scope.workflowTasks.selectedTask);
-	                            scope.finished = true;
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationeq =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationeq;
+	                        if (modelValue === constraintValue) {
+	                            return true;
 	                        }
-	                        else if (context == "finish") {
-	                            scope.finished = false;
+	                        else {
+	                            return false;
 	                        }
-	                    });
-	                    scope.setHidden(scope.workflowTasks.selectedTask);
-	                }; //<--end save*/
-	                /**
-	                 * Select a workflow task.
-	                 */
-	                scope.selectWorkflowTask = function (workflowTask) {
-	                    scope.done = false;
-	                    logger("selectWorkflowTask", "selecting a workflow task");
-	                    $log.debug(workflowTask);
-	                    scope.finished = false;
-	                    scope.workflowTasks.selectedTask = undefined;
-	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
-	                    filterPropertiesPromise.then(function (value) {
-	                        scope.filterPropertiesList = {
-	                            baseEntityName: scope.workflow.data.workflowObject,
-	                            baseEntityAlias: "_" + scope.workflow.data.workflowObject
-	                        };
-	                        metadataService.setPropertiesList(value, scope.workflow.data.workflowObject);
-	                        scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
-	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject], scope.workflow.data.workflowObject);
-	                        scope.workflowTasks.selectedTask = workflowTask;
-	                    });
-	                };
-	                /* Does a delete of the property using delete */
-	                scope.softRemoveTask = function (workflowTask) {
-	                    logger("SoftRemoveTask", "calling delete");
-	                    if (workflowTask === scope.workflowTasks.selectedTask) {
-	                        delete scope.workflowTasks.selectedTask;
-	                    }
-	                    scope.removeIndexFromTasks(workflowTask.$$index);
-	                    scope.reindexTaskList();
-	                };
-	                /* Does an API call delete using $$delete */
-	                scope.hardRemoveTask = function (workflowTask) {
-	                    logger("HardRemoveTask", "$$delete");
-	                    var deletePromise = workflowTask.$$delete();
-	                    deletePromise.then(function () {
-	                        if (workflowTask === scope.workflowTasks.selectedTask) {
-	                            delete scope.workflowTasks.selectedTask;
-	                        }
-	                        scope.removeIndexFromTasks(workflowTask.$$index);
-	                        scope.reindexTaskList();
-	                    });
-	                };
-	                /*Override the delete entity in the confirmation controller*/
-	                scope.deleteEntity = function (entity) {
-	                    scope.hardRemoveTask(entity);
-	                };
-	                /* Re-indexes the task list */
-	                scope.reindexTaskList = function () {
-	                    for (var i in scope.workflowTasks) {
-	                        logger("ReIndexing the list", i);
-	                        scope.workflowTasks[i].$$index = i;
-	                    }
-	                };
-	                /* Removes the tasks index from the tasks array */
-	                scope.removeIndexFromTasks = function (index) {
-	                    logger("RemoveIndexFromTasks", index);
-	                    scope.workflowTasks.splice(index, 1);
-	                };
-	            }
+	                    }; //<--end function
+	            } //<--end link
 	        };
 	    }
-	    SWWorkflowTasks.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	    SWValidationEq.Factory = function () {
+	        var directive = function () {
+	            return new SWValidationEq();
 	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'metadataService',
-	            'collectionService',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
+	        directive.$inject = [];
 	        return directive;
 	    };
-	    return SWWorkflowTasks;
+	    return SWValidationEq;
 	})();
-	exports.SWWorkflowTasks = SWWorkflowTasks;
+	exports.SWValidationEq = SWValidationEq;
 
 
 /***/ },
-/* 143 */
+/* 100 */
 /***/ function(module, exports) {
 
-	var SWWorkflowTrigger = (function () {
-	    function SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * SwValidationGTE: Validates true if the user value >= to the constraint value.
+	 * @usage <input type='text' swvalidationGte='5' /> will validate false if the user enters
+	 * value less than OR equal to 5.
+	 */
+	var SWValidationGte = (function () {
+	    function SWValidationGte() {
 	        return {
-	            restrict: 'A',
-	            replace: true,
-	            scope: {
-	                workflowTrigger: "=",
-	                workflowTriggers: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
-	            link: function (scope, element, attrs) {
-	                $log.debug('workflow trigger init');
-	                /**
-	                 * Selects the current workflow trigger.
-	                 */
-	                scope.selectWorkflowTrigger = function (workflowTrigger) {
-	                    $log.debug('SelectWorkflowTriggers');
-	                    scope.done = false;
-	                    $log.debug(workflowTrigger);
-	                    scope.finished = false;
-	                    scope.workflowTriggers.selectedTrigger = undefined;
-	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
-	                    filterPropertiesPromise.then(function (value) {
-	                        scope.filterPropertiesList = {
-	                            baseEntityName: scope.workflowTrigger.data.workflow.data.workflowObject,
-	                            baseEntityAlias: "_" + scope.workflowTrigger.data.workflow.data.workflowObject
-	                        };
-	                        metadataService.setPropertiesList(value, scope.workflowTrigger.data.workflow.data.workflowObject);
-	                        scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTrigger.data.workflow.data.workflowObject);
-	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject], scope.workflowTrigger.data.workflow.data.workflowObject);
-	                        scope.workflowTriggers.selectedTrigger = workflowTrigger;
-	                    });
-	                };
-	                /**
-	                 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
-	                 */
-	                scope.deleteEntity = function (entity) {
-	                    $log.debug("Delete Called");
-	                    $log.debug(entity);
-	                    scope.deleteTrigger(entity);
-	                };
-	                /**
-	                 * Hard deletes a workflow trigger
-	                 */
-	                scope.deleteTrigger = function (workflowTrigger) {
-	                    var deleteTriggerPromise = $slatwall.saveEntity('WorkflowTrigger', workflowTrigger.data.workflowTriggerID, {}, 'Delete');
-	                    deleteTriggerPromise.then(function (value) {
-	                        $log.debug('deleteTrigger');
-	                        scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
-	                    });
-	                };
-	                /**
-	                 * Sets the editing state to show/hide the edit screen.
-	                 */
-	                scope.setHidden = function (trigger) {
-	                    if (!angular.isObject(trigger) || angular.isUndefined(trigger.hidden)) {
-	                        trigger.hidden = false;
-	                    }
-	                    else {
-	                        $log.debug("setHidden()", "Setting Hide Value To " + !trigger.hidden);
-	                        trigger.hidden = !trigger.hidden;
-	                    }
-	                };
-	            }
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationGte =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationGte || 0;
+	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
+	                            return true; //Passes the validation
+	                        }
+	                        return false;
+	                    }; //<--end function
+	            } //<--end link
 	        };
 	    }
-	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$slatwall',
-	            'metadataService',
-	            'workflowPartialsPath',
-	            'pathBuilderConfig'
-	        ];
+	    SWValidationGte.Factory = function () {
+	        var directive = function () { return new SWValidationGte(); };
+	        directive.$inject = [];
 	        return directive;
 	    };
-	    return SWWorkflowTrigger;
+	    return SWValidationGte;
 	})();
-	exports.SWWorkflowTrigger = SWWorkflowTrigger;
+	exports.SWValidationGte = SWValidationGte;
 
 
 /***/ },
-/* 144 */
+/* 101 */
 /***/ function(module, exports) {
 
-	var SWWorkflowTriggers = (function () {
-	    function SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig) {
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * SwValidationLTE: Validates true if the user value <= to the constraint value.
+	 * @usage <input type='number' swvalidationlte='5000' /> will validate false if the user enters
+	 * value greater than OR equal to 5,000.
+	 */
+	var SWValidationLte = (function () {
+	    function SWValidationLte() {
 	        return {
-	            restrict: 'E',
-	            scope: {
-	                workflow: "="
-	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
-	            link: function (scope, element, attrs, formController) {
-	                $log.debug('Workflow triggers init');
-	                scope.$id = 'swWorkflowTriggers';
-	                /**
-	                 * Retrieves the workflow triggers.
-	                 */
-	                scope.getWorkflowTriggers = function () {
-	                    /***
-	                       Note:
-	                       This conditional is checking whether or not we need to be retrieving to
-	                       items all over again. If we already have them, we won't make another
-	                       trip to the database.
-	                       
-	                    ***/
-	                    if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
-	                        var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
-	                        workflowTriggersPromise.then(function () {
-	                            scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-	                            $log.debug('workflowtriggers');
-	                            $log.debug(scope.workflowTriggers);
-	                            /* resets the workflow trigger */
-	                            if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
-	                                scope.workflow.data.workflowTriggers = [];
-	                                scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationlte =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationlte;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationLte.Factory = function () {
+	        var directive = function () { return new SWValidationLte(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationLte;
+	})();
+	exports.SWValidationLte = SWValidationLte;
+
+
+/***/ },
+/* 102 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the max length.
+	 */
+	var SWValidationMaxLength = (function () {
+	    function SWValidationMaxLength() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationmaxlength =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationmaxlength;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMaxLength.Factory = function () {
+	        var directive = function () { return new SWValidationMaxLength(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationMaxLength;
+	})();
+	exports.SWValidationMaxLength = SWValidationMaxLength;
+
+
+/***/ },
+/* 103 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the min value.
+	 */
+	var SWValidationMaxValue = (function () {
+	    function SWValidationMaxValue() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationmaxvalue =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationmaxvalue;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMaxValue.Factory = function () {
+	        var directive = function () { return new SWValidationMaxValue(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationMaxValue;
+	})();
+	exports.SWValidationMaxValue = SWValidationMaxValue;
+
+
+/***/ },
+/* 104 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the minimum value.
+	 */
+	var SWValidationMinValue = (function () {
+	    function SWValidationMinValue() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationminvalue =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationminvalue;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMinValue.Factory = function () {
+	        var directive = function () { return new SWValidationMinValue(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationMinValue;
+	})();
+	exports.SWValidationMinValue = SWValidationMinValue;
+
+
+/***/ },
+/* 105 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 *  Validates true if the user value != the property value.
+	 */
+	var SWValidationNeq = (function () {
+	    function SWValidationNeq() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationneq =
+	                    function (modelValue) {
+	                        if (modelValue != attributes.swvalidationneq) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationNeq.Factory = function () {
+	        var directive = function () { return new SWValidationNeq(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationNeq;
+	})();
+	exports.SWValidationNeq = SWValidationNeq;
+
+
+/***/ },
+/* 106 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the model value (user value) is a numeric value.
+	 * @event This event fires on every change to an input.
+	 */
+	var SWValidationNumeric = (function () {
+	    function SWValidationNumeric() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationnumeric =
+	                    function (modelValue, viewValue) {
+	                        //Returns true if this is not a number.
+	                        if (!isNaN(viewValue)) {
+	                            return true;
+	                        }
+	                        else {
+	                            return false;
+	                        }
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationNumeric.Factory = function () {
+	        var directive = function () { return new SWValidationNumeric(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationNumeric;
+	})();
+	exports.SWValidationNumeric = SWValidationNumeric;
+
+
+/***/ },
+/* 107 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the model value matches a regex string.
+	 */
+	var SWValidationRegex = (function () {
+	    function SWValidationRegex() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationregex =
+	                    function (modelValue) {
+	                        //Returns true if this user value (model value) does match the pattern
+	                        var pattern = attributes.swvalidationregex;
+	                        var regex = new RegExp(pattern);
+	                        if (regex.test(modelValue)) {
+	                            return true;
+	                        }
+	                        else {
+	                            return false;
+	                        }
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationRegex.Factory = function () {
+	        var directive = function () { return new SWValidationRegex(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationRegex;
+	})();
+	exports.SWValidationRegex = SWValidationRegex;
+
+
+/***/ },
+/* 108 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the uservalue is empty and false otherwise
+	 */
+	var SWValidationRequired = (function () {
+	    function SWValidationRequired() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationrequired =
+	                    function (modelValue, viewValue) {
+	                        var value = modelValue || viewValue;
+	                        if (value) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationRequired.Factory = function () {
+	        var directive = function () { return new SWValidationRequired(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationRequired;
+	})();
+	exports.SWValidationRequired = SWValidationRequired;
+
+
+/***/ },
+/* 109 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the given object is 'unique' and false otherwise.
+	 */
+	var SWValidationUnique = (function () {
+	    function SWValidationUnique($http, $q, $slatwall, $log) {
+	        return {
+	            restrict: "A",
+	            require: "ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$asyncValidators.swvalidationunique = function (modelValue, viewValue) {
+	                    $log.debug('asyc');
+	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
+	                    //First time the asyncValidators function is loaded the
+	                    //key won't be set  so ensure that we have
+	                    //key and propertyName before checking with the server
+	                    if (key && property) {
+	                        $slatwall.checkUniqueValue(key, property, currentValue)
+	                            .then(function (unique) {
+	                            $log.debug('uniquetest');
+	                            $log.debug(unique);
+	                            if (unique) {
+	                                deferred.resolve(); //It's unique
 	                            }
-	                            angular.forEach(scope.workflowTriggers, function (workflowTrigger, key) {
-	                                $log.debug('trigger');
-	                                $log.debug(workflowTrigger);
-	                                if (workflowTrigger.data.triggerType === 'Schedule') {
-	                                    workflowTrigger.$$getSchedule();
-	                                    workflowTrigger.$$getScheduleCollection();
-	                                } //<---end if
-	                            }); //<---end forEach
-	                        }); //<---end workflow triggers promise
-	                    }
-	                    else {
-	                        //Use the cached versions.
-	                        scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-	                    } //<---end else
-	                };
-	                scope.getWorkflowTriggers(); //call triggers
-	                scope.showCollections = false;
-	                scope.collections = [];
-	                scope.getCollectionByWorkflowObject = function () {
-	                    var filterGroupsConfig = '[' +
-	                        '{' +
-	                        '"filterGroup":[' +
-	                        '{' +
-	                        '"propertyIdentifier":"_collection.collectionObject",' +
-	                        '"comparisonOperator":"=",' +
-	                        '"value":"' + scope.workflow.data.workflowObject + '"' +
-	                        '}' +
-	                        ']' +
-	                        '}' +
-	                        ']';
-	                    var collectionsPromise = $slatwall.getEntity('Collection', { filterGroupsConfig: filterGroupsConfig });
-	                    collectionsPromise.then(function (value) {
-	                        $log.debug('getcollections');
-	                        scope.collections = value.pageRecords;
-	                        $log.debug(scope.collections);
-	                    });
-	                };
-	                scope.searchEvent = {
-	                    name: ''
-	                };
-	                /**
-	                 * Watches for changes in the event
-	                 */
-	                scope.showEventOptions = false;
-	                scope.eventOptions = [];
-	                scope.$watch('searchEvent.name', function (newValue, oldValue) {
-	                    if (newValue !== oldValue) {
-	                        scope.getEventOptions(scope.workflow.data.workflowObject);
-	                    }
-	                });
-	                /**
-	                 * Retrieves the event options for a workflow trigger item.
-	                 */
-	                scope.getEventOptions = function (objectName) {
-	                    if (!scope.eventOptions.length) {
-	                        var eventOptionsPromise = $slatwall.getEventOptions(objectName);
-	                        eventOptionsPromise.then(function (value) {
-	                            $log.debug('getEventOptions');
-	                            scope.eventOptions = value.data;
-	                            $log.debug(scope.eventOptions.name);
+	                            else {
+	                                deferred.reject(); //Add unique to $errors
+	                            }
 	                        });
 	                    }
-	                    scope.showEventOptions = !scope.showEventOptions;
-	                };
-	                /**
-	                 * Saves the workflow triggers.
-	                 */
-	                scope.saveWorkflowTrigger = function (context) {
-	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
-	                    saveWorkflowTriggerPromise.then(function () {
-	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
-	                        if (context == 'add') {
-	                            $log.debug("Save and New");
-	                            scope.addWorkflowTrigger();
-	                            scope.finished = false;
-	                        }
-	                        else if (context == "finish") {
-	                            scope.finished = true;
-	                        }
-	                    });
-	                };
-	                /**
-	                 * Changes the selected trigger value.
-	                 */
-	                scope.selectEvent = function (eventOption) {
-	                    $log.debug("SelectEvent");
-	                    $log.debug(eventOption);
-	                    //Needs to clear old and set new.
-	                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
-	                    if (eventOption.entityName == scope.workflow.data.workflowObject) {
-	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
-	                    }
 	                    else {
-	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+	                        deferred.resolve(); //Ensure promise is resolved if we hit this
 	                    }
-	                    scope.searchEvent.name = eventOption.name;
-	                    $log.debug(eventOption);
-	                    $log.debug(scope.workflowTriggers);
-	                };
-	                /**
-	                 * Selects a new collection.
-	                 */
-	                scope.selectCollection = function (collection) {
-	                    $log.debug('selectCollection');
-	                    scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
-	                    scope.showCollections = false;
-	                };
-	                /**
-	                 * Removes a workflow trigger
-	                 */
-	                scope.removeWorkflowTrigger = function (workflowTrigger) {
-	                    if (workflowTrigger === scope.workflowTriggers.selectedTrigger) {
-	                        delete scope.workflowTriggers.selectedTrigger;
-	                    }
-	                    scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
-	                };
-	                scope.setAsEvent = function (workflowTrigger) {
-	                    //add event,  clear schedule
-	                };
-	                scope.setAsSchedule = function (workflowTrigger) {
-	                };
-	                /**
-	                 * Adds a workflow trigger.
-	                 */
-	                scope.addWorkflowTrigger = function () {
-	                    $log.debug('addWorkflowTrigger');
-	                    var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
-	                    scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
-	                    $log.debug(scope.workflowTriggers);
+	                    return deferred.promise;
 	                };
 	            }
 	        };
 	    }
-	    SWWorkflowTriggers.Factory = function () {
-	        var directive = function ($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig) {
-	            return new SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig);
-	        };
-	        directive.$inject = [
-	            '$log',
-	            '$location',
-	            '$slatwall',
-	            'workflowPartialsPath',
-	            'formService',
-	            'pathBuilderConfig'
-	        ];
+	    SWValidationUnique.Factory = function () {
+	        var directive = function ($http, $q, $slatwall, $log) { return new SWValidationUnique($http, $q, $slatwall, $log); };
+	        directive.$inject = ['$http', '$q', '$slatwall', '$log'];
 	        return directive;
 	    };
-	    return SWWorkflowTriggers;
+	    return SWValidationUnique;
 	})();
-	exports.SWWorkflowTriggers = SWWorkflowTriggers;
+	exports.SWValidationUnique = SWValidationUnique;
 
 
 /***/ },
-/* 145 */
+/* 110 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the given object is 'unique' and false otherwise.
+	 */
+	var SWValidationUniqueOrNull = (function () {
+	    function SWValidationUniqueOrNull($http, $q, $slatwall, $log) {
+	        return {
+	            restrict: "A",
+	            require: "ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$asyncValidators.swvalidationuniqueornull = function (modelValue, viewValue) {
+	                    $log.debug('async');
+	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
+	                    //First time the asyncValidators function is loaded the
+	                    //key won't be set  so ensure that we have
+	                    //key and propertyName before checking with the server
+	                    if (key && property) {
+	                        $slatwall.checkUniqueOrNullValue(key, property, currentValue)
+	                            .then(function (unique) {
+	                            $log.debug('uniquetest');
+	                            $log.debug(unique);
+	                            if (unique) {
+	                                deferred.resolve(); //It's unique
+	                            }
+	                            else {
+	                                deferred.reject(); //Add unique to $errors
+	                            }
+	                        });
+	                    }
+	                    else {
+	                        deferred.resolve(); //Ensure promise is resolved if we hit this
+	                    }
+	                    return deferred.promise;
+	                };
+	            }
+	        };
+	    }
+	    SWValidationUniqueOrNull.Factory = function () {
+	        var directive = function ($http, $q, $slatwall, $log) { return new SWValidationUniqueOrNull($http, $q, $slatwall, $log); };
+	        directive.$inject = ['$http', '$q', '$slatwall', '$log'];
+	        return directive;
+	    };
+	    return SWValidationUniqueOrNull;
+	})();
+	exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
+
+
+/***/ },
+/* 111 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15141,20 +11313,20 @@
 
 
 /***/ },
-/* 146 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(147);
+	var slatwallservice_1 = __webpack_require__(113);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 147 */
+/* 113 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15744,12 +11916,12 @@
 
 
 /***/ },
-/* 148 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var ngslatwall_module_1 = __webpack_require__(146);
+	var ngslatwall_module_1 = __webpack_require__(112);
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngslatwallmodelmodule = angular.module('ngSlatwallModel', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name]).config(['$provide', function ($provide) {
 	        $provide.decorator('$slatwall', [
@@ -16671,7 +12843,3919 @@
 
 
 /***/ },
+/* 115 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//services
+	//filters
+	//directives
+	var swcontentbasic_1 = __webpack_require__(116);
+	var swcontenteditor_1 = __webpack_require__(117);
+	var swcontentlist_1 = __webpack_require__(118);
+	var swcontentnode_1 = __webpack_require__(119);
+	var contentmodule = angular.module('hibachi.content', []).config(function () {
+	})
+	    .constant('contentPartialsPath', 'content/components/')
+	    .directive('swContentBasic', swcontentbasic_1.SWContentBasic.Factory())
+	    .directive('swContentEditor', swcontenteditor_1.SWContentEditor.Factory())
+	    .directive('swContentList', swcontentlist_1.SWContentList.Factory())
+	    .directive('swContentNode', swcontentnode_1.SWContentNode.Factory());
+	exports.contentmodule = contentmodule;
+
+
+/***/ },
+/* 116 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWContentBasic = (function () {
+	    function SWContentBasic($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'EA',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contentbasic.html",
+	            link: function (scope, element, attrs) {
+	                if (!scope.content.$$isPersisted()) {
+	                    if (angular.isDefined($routeParams.siteID)) {
+	                        var sitePromise;
+	                        var options = {
+	                            id: $routeParams.siteID
+	                        };
+	                        sitePromise = $slatwall.getSite(options);
+	                        sitePromise.promise.then(function () {
+	                            var site = sitePromise.value;
+	                            scope.content.$$setSite(site);
+	                        });
+	                    }
+	                    else {
+	                        var site = $slatwall.newSite();
+	                        scope.content.$$setSite(site);
+	                    }
+	                    var parentContent;
+	                    if (angular.isDefined($routeParams.parentContentID)) {
+	                        var parentContentPromise;
+	                        var options = {
+	                            id: $routeParams.parentContentID
+	                        };
+	                        parentContentPromise = $slatwall.getContent(options);
+	                        parentContentPromise.promise.then(function () {
+	                            var parentContent = parentContentPromise.value;
+	                            scope.content.$$setParentContent(parentContent);
+	                            $log.debug('contenttest');
+	                            $log.debug(scope.content);
+	                        });
+	                    }
+	                    else {
+	                        var parentContent = $slatwall.newContent();
+	                        scope.content.$$setParentContent(parentContent);
+	                    }
+	                    var contentTemplateType = $slatwall.newType();
+	                    scope.content.$$setContentTemplateType(contentTemplateType);
+	                }
+	                else {
+	                    scope.content.$$getSite();
+	                    scope.content.$$getParentContent();
+	                    scope.content.$$getContentTemplateType();
+	                }
+	            }
+	        };
+	    }
+	    SWContentBasic.Factory = function () {
+	        var directive = function ($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	            return new SWContentBasic($log, $routeParams, $slatwall, formService, contentPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$routeParams',
+	            '$slatwall',
+	            'formService',
+	            'contentPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentBasic;
+	})();
+	exports.SWContentBasic = SWContentBasic;
+
+
+/***/ },
+/* 117 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWContentEditor = (function () {
+	    function SWContentEditor($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'EA',
+	            scope: {
+	                content: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contenteditor.html",
+	            link: function (scope, element, attrs) {
+	                scope.editorOptions = CKEDITOR.editorConfig;
+	                scope.onContentChange = function () {
+	                    var form = formService.getForm('contentEditor');
+	                    form.contentBody.$setDirty();
+	                };
+	                //                scope.saveContent = function(){
+	                //                   var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';
+	                //                   var params = {
+	                //                        entityID:scope.content.contentID,
+	                //                        templateHTML:scope.content.templateHTML,
+	                //                        context:'saveTemplateHTML',
+	                //                        entityName:'content'
+	                //                   }
+	                //                   $http.post(urlString,
+	                //                        {
+	                //                            params:params
+	                //                        }
+	                //                    )
+	                //                    .success(function(data){
+	                //                    }).error(function(reason){
+	                //                    });
+	                //                }
+	            }
+	        };
+	    }
+	    SWContentEditor.Factory = function () {
+	        var directive = function ($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig) {
+	            return new SWContentEditor($log, $location, $http, $slatwall, formService, contentPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$http',
+	            '$slatwall',
+	            'formService',
+	            'contentPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentEditor;
+	})();
+	exports.SWContentEditor = SWContentEditor;
+
+
+/***/ },
+/* 118 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWContentListController = (function () {
+	    //@ngInject
+	    function SWContentListController($scope, $log, $timeout, $slatwall, paginationService, observerService, collectionConfigService) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$log = $log;
+	        this.$timeout = $timeout;
+	        this.$slatwall = $slatwall;
+	        this.paginationService = paginationService;
+	        this.observerService = observerService;
+	        this.collectionConfigService = collectionConfigService;
+	        this.openRoot = true;
+	        this.$log.debug('slatwallcontentList init');
+	        var pageShow = 50;
+	        if (this.pageShow !== 'Auto') {
+	            pageShow = this.pageShow;
+	        }
+	        this.pageShowOptions = [
+	            { display: 10, value: 10 },
+	            { display: 20, value: 20 },
+	            { display: 50, value: 50 },
+	            { display: 250, value: 250 }
+	        ];
+	        this.loadingCollection = false;
+	        this.selectedSite;
+	        this.orderBy;
+	        var orderByConfig;
+	        this.getCollection = function (isSearching) {
+	            _this.collectionConfig = collectionConfigService.newCollectionConfig('Content');
+	            var columnsConfig = [
+	                //{"propertyIdentifier":"_content_childContents","title":"","isVisible":true,"isDeletable":true,"isSearchable":true,"isExportable":true,"ormtype":"string","aggregate":{"aggregateFunction":"COUNT","aggregateAlias":"childContentsCount"}},
+	                {
+	                    propertyIdentifier: '_content.contentID',
+	                    isVisible: false,
+	                    ormtype: 'id',
+	                    isSearchable: true
+	                },
+	                {
+	                    propertyIdentifier: '_content.urlTitlePath',
+	                    isVisible: false,
+	                    isSearchable: true
+	                },
+	                //need to get template via settings
+	                {
+	                    propertyIdentifier: '_content.allowPurchaseFlag',
+	                    isVisible: true,
+	                    ormtype: 'boolean',
+	                    isSearchable: false
+	                },
+	                {
+	                    propertyIdentifier: '_content.productListingPageFlag',
+	                    isVisible: true,
+	                    ormtype: 'boolean',
+	                    isSearchable: false
+	                },
+	                {
+	                    propertyIdentifier: '_content.activeFlag',
+	                    isVisible: true,
+	                    ormtype: 'boolean',
+	                    isSearchable: false
+	                }
+	            ];
+	            var options = {
+	                currentPage: '1',
+	                pageShow: '1',
+	                keywords: _this.keywords
+	            };
+	            var column = {};
+	            if (!isSearching || _this.keywords === '') {
+	                _this.isSearching = false;
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "parentContent",
+	                                "comparisonOperator": "is",
+	                                "value": 'null'
+	                            }
+	                        ]
+	                    }
+	                ];
+	                column = {
+	                    propertyIdentifier: '_content.title',
+	                    isVisible: true,
+	                    ormtype: 'string',
+	                    isSearchable: true,
+	                    tdclass: 'primary'
+	                };
+	                columnsConfig.unshift(column);
+	            }
+	            else {
+	                _this.isSearching = true;
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "excludeFromSearch",
+	                                "comparisonOperator": "!=",
+	                                "value": true
+	                            }
+	                        ]
+	                    }
+	                ];
+	                column = {
+	                    propertyIdentifier: '_content.title',
+	                    isVisible: false,
+	                    ormtype: 'string',
+	                    isSearchable: true
+	                };
+	                columnsConfig.unshift(column);
+	                var titlePathColumn = {
+	                    propertyIdentifier: '_content.titlePath',
+	                    isVisible: true,
+	                    ormtype: 'string',
+	                    isSearchable: false
+	                };
+	                columnsConfig.unshift(titlePathColumn);
+	            }
+	            //if we have a selected Site add the filter
+	            if (angular.isDefined(_this.selectedSite)) {
+	                var selectedSiteFilter = {
+	                    logicalOperator: "AND",
+	                    propertyIdentifier: "site.siteID",
+	                    comparisonOperator: "=",
+	                    value: _this.selectedSite.siteID
+	                };
+	                filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
+	            }
+	            if (angular.isDefined(_this.orderBy)) {
+	                var orderByConfig = [];
+	                orderByConfig.push(_this.orderBy);
+	                options.orderByConfig = angular.toJson(orderByConfig);
+	            }
+	            angular.forEach(columnsConfig, function (column) {
+	                _this.collectionConfig.addColumn(column.propertyIdentifier, column.title, column);
+	            });
+	            _this.collectionConfig.addDisplayAggregate('childContents', 'COUNT', 'childContentsCount', { isVisible: false, isSearchable: false, title: 'test' });
+	            _this.collectionConfig.addDisplayProperty('site.siteID', undefined, {
+	                isVisible: false,
+	                ormtype: 'id',
+	                isSearchable: false
+	            });
+	            _this.collectionConfig.addDisplayProperty('site.domainNames', undefined, {
+	                isVisible: false,
+	                isSearchable: true
+	            });
+	            angular.forEach(filterGroupsConfig[0].filterGroup, function (filter) {
+	                _this.collectionConfig.addFilter(filter.propertyIdentifier, filter.value, filter.comparisonOperator, filter.logicalOperator);
+	            });
+	            _this.collectionListingPromise = _this.collectionConfig.getEntity();
+	            _this.collectionListingPromise.then(function (value) {
+	                _this.collection = value;
+	                _this.collection.collectionConfig = _this.collectionConfig;
+	                _this.firstLoad = true;
+	                _this.loadingCollection = false;
+	            });
+	            _this.collectionListingPromise;
+	        };
+	        //this.getCollection(false);
+	        this.keywords = "";
+	        this.loadingCollection = false;
+	        var searchPromise;
+	        this.searchCollection = function () {
+	            if (searchPromise) {
+	                _this.$timeout.cancel(searchPromise);
+	            }
+	            searchPromise = $timeout(function () {
+	                $log.debug('search with keywords');
+	                $log.debug(_this.keywords);
+	                $('.childNode').remove();
+	                //Set current page here so that the pagination does not break when getting collection
+	                _this.loadingCollection = true;
+	                _this.getCollection(true);
+	            }, 500);
+	        };
+	        var siteChanged = function (selectedSiteOption) {
+	            _this.selectedSite = selectedSiteOption;
+	            _this.openRoot = true;
+	            _this.getCollection();
+	        };
+	        this.observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
+	        var sortChanged = function (orderBy) {
+	            _this.orderBy = orderBy;
+	            _this.getCollection();
+	        };
+	        this.observerService.attach(sortChanged, 'sortByColumn', 'siteSorting');
+	        var optionsLoaded = function () {
+	            _this.observerService.notify('selectFirstOption');
+	        };
+	        this.observerService.attach(optionsLoaded, 'optionsLoaded', 'siteOptionsLoaded');
+	    }
+	    return SWContentListController;
+	})();
+	var SWContentList = (function () {
+	    //@ngInject
+	    function SWContentList(contentPartialsPath, observerService, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        //public bindToController=true;
+	        this.controller = SWContentListController;
+	        this.controllerAs = "swContentList";
+	        this.link = function (scope, element, attrs, controller, transclude) {
+	            scope.$on('$destroy', function handler() {
+	                this.observerService.detachByEvent('optionsChanged');
+	                this.observerService.detachByEvent('sortByColumn');
+	            });
+	        };
+	        this.observerService = observerService;
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentlist.html';
+	    }
+	    SWContentList.Factory = function () {
+	        var directive = function (contentPartialsPath, observerService, pathBuilderConfig) {
+	            return new SWContentList(contentPartialsPath, observerService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'contentPartialsPath',
+	            'observerService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentList;
+	})();
+	exports.SWContentList = SWContentList;
+
+
+/***/ },
+/* 119 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWContentNode = (function () {
+	    function SWContentNode($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                contentData: '=',
+	                loadChildren: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentnode.html',
+	            link: function (scope, element, attr) {
+	                if (angular.isUndefined(scope.depth)) {
+	                    scope.depth = 0;
+	                }
+	                if (angular.isDefined(scope.$parent.depth)) {
+	                    scope.depth = scope.$parent.depth + 1;
+	                }
+	                var childContentColumnsConfig = [{
+	                        propertyIdentifier: '_content.contentID',
+	                        isVisible: false,
+	                        isSearchable: false
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.title',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.urlTitlePath',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.site.siteID',
+	                        isVisible: false,
+	                        isSearchable: false
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.site.siteName',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    {
+	                        propertyIdentifier: '_content.site.domainNames',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    },
+	                    //                            {
+	                    //                                propertyIdentifier: '_content.contentTemplateFile',
+	                    //                                persistent: false,
+	                    //                                setting: true,
+	                    //                                isVisible: true
+	                    //                            },
+	                    //need to get template via settings
+	                    {
+	                        propertyIdentifier: '_content.allowPurchaseFlag',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    }, {
+	                        propertyIdentifier: '_content.productListingPageFlag',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    }, {
+	                        propertyIdentifier: '_content.activeFlag',
+	                        isVisible: true,
+	                        isSearchable: true
+	                    }
+	                ];
+	                var childContentOrderBy = [
+	                    {
+	                        "propertyIdentifier": "_content.sortOrder",
+	                        "direction": "DESC"
+	                    }
+	                ];
+	                scope.toggleChildContent = function (parentContentRecord) {
+	                    if (angular.isUndefined(scope.childOpen) || scope.childOpen === false) {
+	                        scope.childOpen = true;
+	                        if (!scope.childrenLoaded) {
+	                            scope.getChildContent(parentContentRecord);
+	                        }
+	                    }
+	                    else {
+	                        scope.childOpen = false;
+	                    }
+	                };
+	                scope.getChildContent = function (parentContentRecord) {
+	                    var childContentfilterGroupsConfig = [{
+	                            "filterGroup": [{
+	                                    "propertyIdentifier": "_content.parentContent.contentID",
+	                                    "comparisonOperator": "=",
+	                                    "value": parentContentRecord.contentID
+	                                }]
+	                        }];
+	                    var collectionListingPromise = $slatwall.getEntity('Content', {
+	                        columnsConfig: angular.toJson(childContentColumnsConfig),
+	                        filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
+	                        orderByConfig: angular.toJson(childContentOrderBy),
+	                        allRecords: true
+	                    });
+	                    collectionListingPromise.then(function (value) {
+	                        parentContentRecord.children = value.records;
+	                        var index = 0;
+	                        angular.forEach(parentContentRecord.children, function (child) {
+	                            child.site_domainNames = child.site_domainNames.split(",")[0];
+	                            scope['child' + index] = child;
+	                            element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px" ng-if="childOpen"  sw-content-node data-content-data="child' + index + '"></tr>')(scope));
+	                            index++;
+	                        });
+	                        scope.childrenLoaded = true;
+	                    });
+	                };
+	                scope.childrenLoaded = false;
+	                //if the children have never been loaded and we are not in search mode based on the title received
+	                if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)) {
+	                    scope.toggleChildContent(scope.contentData);
+	                }
+	            }
+	        };
+	    }
+	    SWContentNode.Factory = function () {
+	        var directive = function ($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig) {
+	            return new SWContentNode($log, $compile, $slatwall, contentPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$compile',
+	            '$slatwall',
+	            'contentPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWContentNode;
+	})();
+	exports.SWContentNode = SWContentNode;
+
+
+/***/ },
+/* 120 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+	var core_module_1 = __webpack_require__(16);
+	//directives
+	var swchildorderitem_1 = __webpack_require__(121);
+	var sworderitem_1 = __webpack_require__(122);
+	var swoishippinglabelstamp_1 = __webpack_require__(123);
+	var sworderitemdetailstamp_1 = __webpack_require__(124);
+	var sworderitems_1 = __webpack_require__(125);
+	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
+	    .run([function () {
+	    }])
+	    .directive('swChildOrderItem', swchildorderitem_1.SWChildOrderItem.Factory())
+	    .directive('swOrderItem', sworderitem_1.SWOrderItem.Factory())
+	    .directive('swoishippinglabelstamp', swoishippinglabelstamp_1.SWOiShippingLabelStamp.Factory())
+	    .directive('swOrderItemDetailStamp', sworderitemdetailstamp_1.SWOrderItemDetailStamp.Factory())
+	    .directive('swOrderItems', sworderitems_1.SWOrderItems.Factory())
+	    .constant('orderItemPartialsPath', 'orderitem/components/');
+	exports.orderitemmodule = orderitemmodule;
+
+
+/***/ },
+/* 121 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWChildOrderItem = (function () {
+	    function SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: "A",
+	            scope: {
+	                orderItem: "=",
+	                orderId: "@",
+	                childOrderItems: "=",
+	                attributes: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "childorderitem.html",
+	            link: function (scope, element, attr) {
+	                var columnsConfig = [
+	                    {
+	                        "isDeletable": false,
+	                        "isExportable": true,
+	                        "propertyIdentifier": "_orderitem.orderItemID",
+	                        "ormtype": "id",
+	                        "isVisible": true,
+	                        "isSearchable": true,
+	                        "title": "Order Item ID"
+	                    },
+	                    {
+	                        "title": "Order Item Type",
+	                        "propertyIdentifier": "_orderitem.orderItemType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Order Item Price",
+	                        "propertyIdentifier": "_orderitem.price",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Name",
+	                        "propertyIdentifier": "_orderitem.sku.skuName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Price",
+	                        "propertyIdentifier": "_orderitem.skuPrice",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku ID",
+	                        "propertyIdentifier": "_orderitem.sku.skuID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "SKU Code",
+	                        "propertyIdentifier": "_orderitem.sku.skuCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product ID",
+	                        "propertyIdentifier": "_orderitem.sku.product.productID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Name",
+	                        "propertyIdentifier": "_orderitem.sku.product.productName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Description",
+	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Image File Name",
+	                        "propertyIdentifier": "_orderitem.sku.imageFile",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
+	                        "ormtype": "string"
+	                    },
+	                    {
+	                        "title": "Product Type",
+	                        "propertyIdentifier": "_orderitem.sku.product.productType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Qty.",
+	                        "propertyIdentifier": "_orderitem.quantity",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Name",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment ID",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Type",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address 2",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Postal Code",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "City",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "State",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Country",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Total",
+	                        "propertyIdentifier": "_orderitem.itemTotal",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Discount Amount",
+	                        "propertyIdentifier": "_orderitem.discountAmount",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.extendedPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount"
+	                    },
+	                    {
+	                        "title": "Product Bundle Group",
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundlePrice",
+	                        "persistent": false
+	                    }
+	                ];
+	                //add attributes to the column config
+	                angular.forEach(scope.attributes, function (attribute) {
+	                    var attributeColumn = {
+	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
+	                        attributeID: attribute.attributeID,
+	                        attributeSetObject: "orderItem"
+	                    };
+	                    columnsConfig.push(attributeColumn);
+	                });
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
+	                                "comparisonOperator": "=",
+	                                "value": scope.orderItem.$$getID(),
+	                            }
+	                        ]
+	                    }
+	                ];
+	                var options = {
+	                    columnsConfig: angular.toJson(columnsConfig),
+	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
+	                    allRecords: true
+	                };
+	                //hide the children on click
+	                scope.hideChildren = function (orderItem) {
+	                    //Set all child order items to clicked = false.
+	                    angular.forEach(scope.childOrderItems, function (child) {
+	                        console.dir(child);
+	                        child.hide = !child.hide;
+	                        scope.orderItem.clicked = !scope.orderItem.clicked;
+	                    });
+	                };
+	                /**
+	                * Returns a list of child order items.
+	                */
+	                scope.getChildOrderItems = function (orderItem) {
+	                    orderItem.clicked = true;
+	                    if (!scope.orderItem.childItemsRetrieved) {
+	                        scope.orderItem.childItemsRetrieved = true;
+	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+	                        orderItemsPromise.then(function (value) {
+	                            var collectionConfig = {};
+	                            collectionConfig.columns = columnsConfig;
+	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
+	                            collectionConfig.baseEntityAlias = '_orderitem';
+	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
+	                            angular.forEach(childOrderItems, function (childOrderItem) {
+	                                childOrderItem.hide = false;
+	                                childOrderItem.depth = orderItem.depth + 1;
+	                                childOrderItem.data.parentOrderItem = orderItem;
+	                                childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
+	                                scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem) + 1, 0, childOrderItem);
+	                                childOrderItem.data.productBundleGroupPercentage = 1;
+	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                            });
+	                        });
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWChildOrderItem.Factory = function () {
+	        var directive = function ($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWChildOrderItem($log, $http, $compile, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$slatwall',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWChildOrderItem;
+	})();
+	exports.SWChildOrderItem = SWChildOrderItem;
+
+
+/***/ },
+/* 122 */
+/***/ function(module, exports) {
+
+	var SWOrderItem = (function () {
+	    function SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: "A",
+	            scope: {
+	                orderItem: "=",
+	                orderId: "@",
+	                attributes: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem.html",
+	            link: function (scope, element, attr) {
+	                $log.debug('order item init');
+	                $log.debug(scope.orderItem);
+	                scope.orderItem.clicked = false; //Never been clicked
+	                scope.orderItem.details = [];
+	                scope.orderItem.events = [];
+	                scope.orderItem.queuePosition;
+	                scope.orderItem.onWaitlist = false;
+	                scope.orderItem.isPending = false;
+	                scope.orderItem.isRegistered = false;
+	                var foundPosition = false;
+	                if (scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event') {
+	                    var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
+	                    eventRegistrationPromise.then(function () {
+	                        angular.forEach(scope.orderItem.data.eventRegistrations, function (eventRegistration) {
+	                            $log.debug(eventRegistration);
+	                            var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
+	                            eventRegistrationPromise.then(function (rec) {
+	                                $log.debug(rec);
+	                                angular.forEach(rec.records, function (record) {
+	                                    $log.debug("Records");
+	                                    $log.debug(record.eventRegistrationStatusType);
+	                                    angular.forEach(record.eventRegistrationStatusType, function (statusType) {
+	                                        if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstWaitlisted") {
+	                                            scope.orderItem.onWaitlist = true;
+	                                            $log.debug("Found + " + statusType.systemCode);
+	                                            //Because the customer is waitlisted, we need to get the number of customers ahead of them in the queue.
+	                                            var position = getPositionInQueueFor(scope.orderItem);
+	                                            scope.orderItem.queuePosition = position;
+	                                        }
+	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstRegistered") {
+	                                            scope.orderItem.isRegistered = true;
+	                                            $log.debug("Found + " + statusType.systemCode);
+	                                        }
+	                                        else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstPendingApproval") {
+	                                            scope.orderItem.isPending = true;
+	                                            $log.debug("Found + " + statusType.systemCode);
+	                                        }
+	                                        else {
+	                                            $log.error("Couldn't resolve a status type for: " + statusType.systemCode);
+	                                        }
+	                                    });
+	                                });
+	                            });
+	                        });
+	                    });
+	                }
+	                /**
+	                * Returns the current position in the queue for an orderItem that's on the waiting list.
+	                */
+	                var getPositionInQueueFor = function (orderItem) {
+	                    $log.debug("Retrieving position in Queue: ");
+	                    var queueConfig = [
+	                        {
+	                            "propertyIdentifier": "_eventregistration.waitlistQueuePositionStruct",
+	                            "isVisible": true,
+	                            "persistent": false,
+	                            "title": "Event Registrations"
+	                        }];
+	                    var queueGroupsConfig = [
+	                        {
+	                            "filterGroup": [
+	                                {
+	                                    "propertyIdentifier": "_eventregistration.orderItem.orderItemID",
+	                                    "comparisonOperator": "=",
+	                                    "value": orderItem.$$getID(),
+	                                }
+	                            ]
+	                        }
+	                    ];
+	                    var queueOptions = {
+	                        columnsConfig: angular.toJson(queueConfig),
+	                        filterGroupsConfig: angular.toJson(queueGroupsConfig),
+	                        allRecords: true
+	                    };
+	                    var positionPromise = $slatwall.getEntity('EventRegistration', queueOptions);
+	                    $log.debug(positionPromise);
+	                    positionPromise.then(function (value) {
+	                        angular.forEach(value.records, function (position) {
+	                            $log.debug("Position: " + position.waitlistQueuePositionStruct);
+	                            if (position.waitlistQueuePositionStruct !== -1) {
+	                                scope.orderItem.queuePosition = position.waitlistQueuePositionStruct; //Use the value.
+	                                return position.waitlistQueuePositionStruct;
+	                            }
+	                        });
+	                    });
+	                };
+	                //define how we get child order items
+	                var columnsConfig = [
+	                    {
+	                        "isDeletable": false,
+	                        "isExportable": true,
+	                        "propertyIdentifier": "_orderitem.orderItemID",
+	                        "ormtype": "id",
+	                        "isVisible": true,
+	                        "isSearchable": true,
+	                        "title": "Order Item ID"
+	                    },
+	                    {
+	                        "title": "Order Item Type",
+	                        "propertyIdentifier": "_orderitem.orderItemType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Order Item Price",
+	                        "propertyIdentifier": "_orderitem.price",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Name",
+	                        "propertyIdentifier": "_orderitem.sku.skuName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku Price",
+	                        "propertyIdentifier": "_orderitem.skuPrice",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Sku ID",
+	                        "propertyIdentifier": "_orderitem.sku.skuID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "SKU Code",
+	                        "propertyIdentifier": "_orderitem.sku.skuCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Bundle Group",
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product ID",
+	                        "propertyIdentifier": "_orderitem.sku.product.productID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Name",
+	                        "propertyIdentifier": "_orderitem.sku.product.productName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Type",
+	                        "propertyIdentifier": "_orderitem.sku.product.productType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Description",
+	                        "propertyIdentifier": "_orderitem.sku.product.productDescription",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.baseProductType",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Event Start Date",
+	                        "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Product Description",
+	                        "propertyIdentifier": "_orderitem.sku.options",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.sku.skuPrice",
+	                        "ormtype": "string"
+	                    },
+	                    {
+	                        "title": "Image File Name",
+	                        "propertyIdentifier": "_orderitem.sku.imageFile",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Qty.",
+	                        "propertyIdentifier": "_orderitem.quantity",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Name",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment ID",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Fulfillment Method Type",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Street Address 2",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Postal Code",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "City",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "State",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Country",
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                        "isVisible": true,
+	                        "isDeletable": true
+	                    },
+	                    {
+	                        "title": "Total",
+	                        "propertyIdentifier": "_orderitem.itemTotal",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Discount Amount",
+	                        "propertyIdentifier": "_orderitem.discountAmount",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "title": "Tax Amount",
+	                        "propertyIdentifier": "_orderitem.taxAmount",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.extendedPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amount",
+	                        "ormtype": "big_decimal"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroup.amountType",
+	                        "ormtype": "string"
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundleGroupPrice",
+	                        "persistent": false
+	                    },
+	                    {
+	                        "propertyIdentifier": "_orderitem.productBundlePrice",
+	                        "persistent": false
+	                    }
+	                ];
+	                //Add attributes to the column configuration
+	                angular.forEach(scope.attributes, function (attribute) {
+	                    var attributeColumn = {
+	                        propertyIdentifier: "_orderitem." + attribute.attributeCode,
+	                        attributeID: attribute.attributeID,
+	                        attributeSetObject: "orderItem"
+	                    };
+	                    columnsConfig.push(attributeColumn);
+	                });
+	                var filterGroupsConfig = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "_orderitem.parentOrderItem.orderItemID",
+	                                "comparisonOperator": "=",
+	                                "value": scope.orderItem.$$getID(),
+	                            }
+	                        ]
+	                    }
+	                ];
+	                var options = {
+	                    columnsConfig: angular.toJson(columnsConfig),
+	                    filterGroupsConfig: angular.toJson(filterGroupsConfig),
+	                    allRecords: true
+	                };
+	                //Create a list of order items.
+	                scope.childOrderItems = [];
+	                scope.orderItem.depth = 1;
+	                /**
+	                * Hide orderItem children on clicking the details link.
+	                */
+	                scope.hideChildren = function (orderItem) {
+	                    //Set all child order items to clicked = false.
+	                    angular.forEach(scope.childOrderItems, function (child) {
+	                        $log.debug("hideing");
+	                        child.hide = !child.hide;
+	                        scope.orderItem.clicked = !scope.orderItem.clicked;
+	                    });
+	                };
+	                //Delete orderItem
+	                scope.deleteEntity = function () {
+	                    $log.debug("Deleting");
+	                    $log.debug(scope.orderItem);
+	                    var deletePromise = scope.orderItem.$$delete();
+	                    deletePromise.then(function () {
+	                        delete scope.orderItem;
+	                    });
+	                };
+	                /**
+	                * Gets a list of child order items if they exist.
+	                */
+	                scope.getChildOrderItems = function () {
+	                    if (!scope.orderItem.childItemsRetrieved) {
+	                        scope.orderItem.clicked = !scope.orderItem.clicked;
+	                        scope.orderItem.hide = !scope.orderItem.hide;
+	                        scope.orderItem.childItemsRetrieved = true;
+	                        var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+	                        orderItemsPromise.then(function (value) {
+	                            var collectionConfig = {};
+	                            collectionConfig.columns = columnsConfig;
+	                            collectionConfig.baseEntityName = 'SlatwallOrderItem';
+	                            collectionConfig.baseEntityAlias = '_orderitem';
+	                            var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
+	                            angular.forEach(childOrderItems, function (childOrderItem) {
+	                                childOrderItem.depth = scope.orderItem.depth + 1;
+	                                scope.childOrderItems.push(childOrderItem);
+	                                childOrderItem.data.productBundleGroupPercentage = 1;
+	                                if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                                else if (childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease') {
+	                                    childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount / 100;
+	                                }
+	                            });
+	                        });
+	                    }
+	                    else {
+	                        //We already have the items so we just need to show them.
+	                        angular.forEach(scope.childOrderItems, function (child) {
+	                            child.hide = !child.hide;
+	                            scope.orderItem.clicked = !scope.orderItem.clicked;
+	                        });
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWOrderItem.Factory = function () {
+	        var directive = function ($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWOrderItem($log, $compile, $http, $templateCache, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$compile',
+	            '$http',
+	            '$templateCache',
+	            '$slatwall',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOrderItem;
+	})();
+	exports.SWOrderItem = SWOrderItem;
+
+
+/***/ },
+/* 123 */
+/***/ function(module, exports) {
+
+	/**
+	 * Displays a shipping label in the order items row.
+	 * @module slatwalladmin
+	 * @class swOrderItemsShippingLabelStamp
+	 */
+	var SWOiShippingLabelStamp = (function () {
+	    function SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                orderFulfillment: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderfulfillment-shippinglabel.html",
+	            link: function (scope, element, attrs) {
+	                //Get the template.
+	                $log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");
+	                $log.debug(scope.orderFulfillment);
+	                $log.debug(scope.orderFulfillment.data.fulfillmentMethodType);
+	            }
+	        };
+	    }
+	    SWOiShippingLabelStamp.Factory = function () {
+	        var directive = function ($log, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOiShippingLabelStamp;
+	})();
+	exports.SWOiShippingLabelStamp = SWOiShippingLabelStamp;
+
+
+/***/ },
+/* 124 */
+/***/ function(module, exports) {
+
+	/**
+	 * Displays a shipping label in the order items row.
+	 * @module slatwalladmin
+	 * @class swOrderItemsShippingLabelStamp
+	 */
+	var SWOrderItemDetailStamp = (function () {
+	    function SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                systemCode: "=",
+	                orderItemId: "=",
+	                skuId: "=",
+	                orderItem: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem-detaillabel.html",
+	            link: function (scope, element, attrs) {
+	                scope.details = [];
+	                scope.orderItem.detailsName = [];
+	                var results;
+	                $log.debug("Detail stamp");
+	                $log.debug(scope.systemCode);
+	                $log.debug(scope.orderItemId);
+	                $log.debug(scope.skuId);
+	                $log.debug(scope.orderItem);
+	                /**
+	                 * For each type of orderItem, get the appropriate detail information.
+	                 *
+	                 * Merchandise: Option Group Name and Option
+	                 * Event: Event Date, Event Location
+	                 * Subscription: Subscription Term, Subscription Benefits
+	                 */
+	                var getMerchandiseDetails = function (orderItem) {
+	                    //Get option and option groups
+	                    for (var i = 0; i <= orderItem.data.sku.data.options.length - 1; i++) {
+	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionCode);
+	                        orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
+	                    }
+	                };
+	                var getSubscriptionDetails = function (orderItem) {
+	                    //get Subscription Term and Subscription Benefits
+	                    var name = orderItem.data.sku.data.subscriptionTerm.data.subscriptionTermName || "";
+	                    orderItem.detailsName.push("Subscription Term:");
+	                    orderItem.details.push(name);
+	                    //Maybe multiple benefits so show them all.
+	                    for (var i = 0; i <= orderItem.data.sku.data.subscriptionBenefits.length - 1; i++) {
+	                        var benefitName = orderItem.data.sku.data.subscriptionBenefits[i].subscriptionBenefitName || "";
+	                        orderItem.detailsName.push("Subscription Benefit:");
+	                        orderItem.details.push(benefitName);
+	                    }
+	                };
+	                var getEventDetails = function (orderItem) {
+	                    //get event date, and event location
+	                    orderItem.detailsName.push("Event Date: ");
+	                    orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);
+	                    //Need to iterate this.
+	                    for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++) {
+	                        orderItem.detailsName.push("Location: ");
+	                        orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
+	                    }
+	                };
+	                if (angular.isDefined(scope.orderItem.details)) {
+	                    switch (scope.systemCode) {
+	                        case "merchandise":
+	                            results = getMerchandiseDetails(scope.orderItem);
+	                            break;
+	                        case "subscription":
+	                            results = getSubscriptionDetails(scope.orderItem);
+	                            break;
+	                        case "event":
+	                            results = getEventDetails(scope.orderItem);
+	                            break;
+	                    }
+	                    scope.orderItem.details.push(results);
+	                }
+	            }
+	        };
+	    }
+	    SWOrderItemDetailStamp.Factory = function () {
+	        var directive = function ($log, $slatwall, orderItemPartialsPath, pathBuilderConfig) {
+	            return new SWOrderItemDetailStamp($log, $slatwall, orderItemPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOrderItemDetailStamp;
+	})();
+	exports.SWOrderItemDetailStamp = SWOrderItemDetailStamp;
+
+
+/***/ },
+/* 125 */
+/***/ function(module, exports) {
+
+	var SWOrderItems = (function () {
+	    function SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                orderId: "@"
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
+	            link: function (scope, element, attrs) {
+	                var options = {};
+	                scope.keywords = "";
+	                scope.loadingCollection = false;
+	                var searchPromise;
+	                scope.searchCollection = function () {
+	                    if (searchPromise) {
+	                        $timeout.cancel(searchPromise);
+	                    }
+	                    searchPromise = $timeout(function () {
+	                        $log.debug('search with keywords');
+	                        $log.debug(scope.keywords);
+	                        //Set current page here so that the pagination does not break when getting collection
+	                        scope.paginator.setCurrentPage(1);
+	                        scope.loadingCollection = true;
+	                        scope.getCollection();
+	                    }, 500);
+	                };
+	                $log.debug('Init Order Item');
+	                $log.debug(scope.orderId);
+	                //Setup the data needed for each order item object.
+	                scope.getCollection = function () {
+	                    if (scope.pageShow === 'Auto') {
+	                        scope.pageShow = 50;
+	                    }
+	                    var columnsConfig = [
+	                        {
+	                            "isDeletable": false,
+	                            "isExportable": true,
+	                            "propertyIdentifier": "_orderitem.orderItemID",
+	                            "ormtype": "id",
+	                            "isVisible": true,
+	                            "title": "Order Item ID",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "isVisible": false,
+	                            "ormtype": "string",
+	                            "propertyIdentifier": "_orderitem.currencyCode"
+	                        },
+	                        {
+	                            "title": "Order Item Type",
+	                            "propertyIdentifier": "_orderitem.orderItemType",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Order Item Price",
+	                            "propertyIdentifier": "_orderitem.price",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Sku Name",
+	                            "propertyIdentifier": "_orderitem.sku.skuName",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Sku Price",
+	                            "propertyIdentifier": "_orderitem.skuPrice",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Sku ID",
+	                            "propertyIdentifier": "_orderitem.sku.skuID",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "SKU Code",
+	                            "propertyIdentifier": "_orderitem.sku.skuCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Product Bundle Group",
+	                            "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Product ID",
+	                            "propertyIdentifier": "_orderitem.sku.product.productID",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Product Name",
+	                            "propertyIdentifier": "_orderitem.sku.product.productName",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Product Type",
+	                            "propertyIdentifier": "_orderitem.sku.product.productType",
+	                            "isVisible": true
+	                        },
+	                        {
+	                            "propertyIdentifier": "_orderitem.sku.baseProductType",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Product Description",
+	                            "propertyIdentifier": "_orderitem.sku.product.productDescription",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Event Start Date Time",
+	                            "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Product Description",
+	                            "propertyIdentifier": "_orderitem.sku.options",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Sku Location",
+	                            "propertyIdentifier": "_orderitem.sku.locations",
+	                            "isVisible": true,
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Subscription Term",
+	                            "propertyIdentifier": "_orderitem.sku.subscriptionTerm.subscriptionTermName",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Subscription Benefits",
+	                            "propertyIdentifier": "_orderitem.sku.subscriptionBenefits",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Qty.",
+	                            "propertyIdentifier": "_orderitem.quantity",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Fulfillment Method Name",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Fulfillment ID",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Fulfillment Method Type",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Street Address",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Street Address",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Street Address 2",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Postal Code",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "City",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "State",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Country",
+	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
+	                            "isVisible": true,
+	                            "ormtype": "string",
+	                            "isSearchable": true
+	                        },
+	                        {
+	                            "title": "Image File Name",
+	                            "propertyIdentifier": "_orderitem.sku.imageFile",
+	                            "isVisible": true,
+	                        },
+	                        {
+	                            "title": "Total",
+	                            "propertyIdentifier": "_orderitem.itemTotal",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Discount Amount",
+	                            "propertyIdentifier": "_orderitem.discountAmount",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "title": "Tax Amount",
+	                            "propertyIdentifier": "_orderitem.taxAmount",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "propertyIdentifier": "_orderitem.extendedPrice",
+	                            "persistent": false
+	                        },
+	                        {
+	                            "propertyIdentifier": "_orderitem.productBundlePrice",
+	                            "persistent": false
+	                        }
+	                    ];
+	                    //add attributes to the column config
+	                    angular.forEach(scope.attributes, function (attribute) {
+	                        var attributeColumn = {
+	                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
+	                            attributeID: attribute.attributeID,
+	                            attributeSetObject: "orderItem"
+	                        };
+	                        columnsConfig.push(attributeColumn);
+	                    });
+	                    var filterGroupsConfig = [
+	                        {
+	                            "filterGroup": [
+	                                {
+	                                    "propertyIdentifier": "_orderitem.order.orderID",
+	                                    "comparisonOperator": "=",
+	                                    "value": scope.orderId,
+	                                },
+	                                {
+	                                    "logicalOperator": "AND",
+	                                    "propertyIdentifier": "_orderitem.parentOrderItem",
+	                                    "comparisonOperator": "is",
+	                                    "value": "null",
+	                                }
+	                            ]
+	                        }
+	                    ];
+	                    options = {
+	                        columnsConfig: angular.toJson(columnsConfig),
+	                        filterGroupsConfig: angular.toJson(filterGroupsConfig),
+	                        currentPage: scope.paginator.getCurrentPage(),
+	                        pageShow: scope.paginator.getPageShow(),
+	                        keywords: scope.keywords
+	                    };
+	                    //Create a list of order items.
+	                    //scope.orderItems = [];
+	                    scope.orderAttributes = [];
+	                    scope.attributeValues = [];
+	                    var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+	                    orderItemsPromise.then(function (value) {
+	                        scope.collection = value;
+	                        var collectionConfig = {};
+	                        collectionConfig.columns = columnsConfig;
+	                        collectionConfig.baseEntityName = 'SlatwallOrderItem';
+	                        collectionConfig.baseEntityAlias = '_orderitem';
+	                        scope.orderItems = $slatwall.populateCollection(value.pageRecords, collectionConfig);
+	                        for (var orderItem in scope.orderItems) {
+	                            $log.debug("OrderItem Product Type");
+	                            $log.debug(scope.orderItems);
+	                        }
+	                        scope.paginator.setPageRecordsInfo(scope.collection);
+	                        scope.loadingCollection = false;
+	                    }, function (value) {
+	                        scope.orderItems = [];
+	                    });
+	                };
+	                //get all possible attributes
+	                var attributesConfig = [
+	                    {
+	                        "propertyIdentifier": "_attribute.attributeID",
+	                        "ormtype": "id",
+	                        "title": "attributeID",
+	                    },
+	                    {
+	                        "propertyIdentifier": "_attribute.attributeCode",
+	                        "ormtype": "string",
+	                        "title": "Attribute Code",
+	                    },
+	                    {
+	                        "propertyIdentifier": "_attribute.attributeName",
+	                        "ormtype": "string",
+	                        "title": "Attribute Name",
+	                    }
+	                ];
+	                var attributesFilters = [
+	                    {
+	                        "filterGroup": [
+	                            {
+	                                "propertyIdentifier": "_attribute.displayOnOrderDetailFlag",
+	                                "comparisonOperator": "=",
+	                                "value": true
+	                            },
+	                            {
+	                                "logicalOperator": "AND",
+	                                "propertyIdentifier": "_attribute.activeFlag",
+	                                "comparisonOperator": "=",
+	                                "value": true
+	                            }
+	                        ]
+	                    }
+	                ];
+	                var attributeOptions = {
+	                    columnsConfig: angular.toJson(attributesConfig),
+	                    filterGroupsConfig: angular.toJson(attributesFilters),
+	                    allRecords: true
+	                };
+	                var attItemsPromise = $slatwall.getEntity('attribute', attributeOptions);
+	                attItemsPromise.then(function (value) {
+	                    scope.attributes = [];
+	                    angular.forEach(value.records, function (attributeItemData) {
+	                        //Use that custom attribute name to get the value.
+	                        scope.attributes.push(attributeItemData);
+	                    });
+	                    scope.getCollection();
+	                });
+	                //Add claim function and cancel function
+	                scope.appendToCollection = function () {
+	                    if (scope.pageShow === 'Auto') {
+	                        $log.debug('AppendToCollection');
+	                        if (scope.paginator.autoScrollPage < scope.collection.totalPages) {
+	                            scope.paginator.autoScrollDisabled = true;
+	                            scope.paginator.autoScrollPage++;
+	                            var appendOptions = {};
+	                            angular.extend(appendOptions, options);
+	                            appendOptions.pageShow = 50;
+	                            appendOptions.currentPage = scope.paginator.autoScrollPage;
+	                            var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
+	                            collectionListingPromise.then(function (value) {
+	                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
+	                                scope.autoScrollDisabled = false;
+	                            }, function (reason) {
+	                                scope.collection.pageRecords = [];
+	                            });
+	                        }
+	                    }
+	                };
+	                scope.paginator = paginationService.createPagination();
+	                scope.paginator.collection = scope.collection;
+	                scope.paginator.getCollection = scope.getCollection;
+	            } //<--End link
+	        };
+	    }
+	    SWOrderItems.Factory = function () {
+	        var directive = function ($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
+	            return new SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$timeout',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'orderItemPartialsPath',
+	            'pathBuilderConfig',
+	            'paginationService'
+	        ];
+	        return directive;
+	    };
+	    return SWOrderItems;
+	})();
+	exports.SWOrderItems = SWOrderItems;
+
+
+/***/ },
+/* 126 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var core_module_1 = __webpack_require__(16);
+	//services
+	//controllers
+	var preprocessproduct_create_1 = __webpack_require__(127);
+	//filters
+	//directives
+	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
+	})
+	    .constant('productPartialsPath', 'product/components/')
+	    .controller('preprocessproduct_create', preprocessproduct_create_1.ProductCreateController);
+	exports.productmodule = productmodule;
+
+
+/***/ },
+/* 127 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var ProductCreateController = (function () {
+	    //@ngInject
+	    function ProductCreateController($scope, $element, $log, $slatwall, collectionConfigService, selectionService) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$log = $log;
+	        this.$slatwall = $slatwall;
+	        this.collectionConfigService = collectionConfigService;
+	        this.selectionService = selectionService;
+	        this.$log.debug('init product_create controller');
+	        //on select change get collection
+	        this.$scope.preprocessproduct_createCtrl.productTypeChanged = function (selectedOption) {
+	            _this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
+	            _this.$scope.preprocessproduct_createCtrl.getCollection();
+	            _this.selectionService.clearSelection('ListingDisplay');
+	        };
+	        this.$scope.preprocessproduct_createCtrl.getCollection = function () {
+	            _this.collectionConfig = _this.collectionConfigService.newCollectionConfig('Option');
+	            _this.collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName', undefined, { isVisible: true });
+	            _this.collectionConfig.setDisplayProperties('optionID', undefined, { isVisible: false });
+	            //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
+	            _this.collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
+	            _this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID', _this.$scope.preprocessproduct_createCtrl.selectedOption.value, '=', 'OR');
+	            _this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
+	            _this.$scope.preprocessproduct_createCtrl.collectionListingPromise = _this.collectionConfig.getEntity();
+	            _this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then(function (data) {
+	                _this.$scope.preprocessproduct_createCtrl.collection = data;
+	                _this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = _this.collectionConfig;
+	            });
+	        };
+	        var renewalMethodOptions = $("select[name='renewalMethod']")[0];
+	        this.$scope.preprocessproduct_createCtrl.renewalMethodOptions = [];
+	        angular.forEach(renewalMethodOptions, function (option) {
+	            var optionToAdd = {
+	                label: option.label,
+	                value: option.value
+	            };
+	            _this.$scope.preprocessproduct_createCtrl.renewalMethodOptions.push(optionToAdd);
+	        });
+	        this.$scope.preprocessproduct_createCtrl.renewalSkuChoice = this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[1];
+	        var jQueryOptionsRedemptionAmountType = $("select[name='redemptionAmountType'")[0];
+	        this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions = [];
+	        angular.forEach(jQueryOptionsRedemptionAmountType, function (jQueryOption) {
+	            var option = {
+	                label: jQueryOption.label,
+	                value: jQueryOption.value
+	            };
+	            _this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option);
+	        });
+	        this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
+	        var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
+	        this.$scope.preprocessproduct_createCtrl.options = [];
+	        if (productTypeOptions > 1) {
+	            this.$scope.preprocessproduct_createCtrl.options.push({ label: this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'), value: "" });
+	        }
+	        angular.forEach(productTypeOptions, function (jQueryOption) {
+	            var option = {
+	                label: jQueryOption.label,
+	                value: jQueryOption.value
+	            };
+	            _this.$scope.preprocessproduct_createCtrl.options.push(option);
+	        });
+	        this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.options[0]);
+	    }
+	    return ProductCreateController;
+	})();
+	exports.ProductCreateController = ProductCreateController;
+
+
+/***/ },
+/* 128 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var core_module_1 = __webpack_require__(16);
+	//services
+	var productbundleservice_1 = __webpack_require__(129);
+	//controllers
+	var create_bundle_controller_1 = __webpack_require__(130);
+	//directives
+	var swproductbundlegrouptype_1 = __webpack_require__(131);
+	var swproductbundlegroups_1 = __webpack_require__(132);
+	var swproductbundlegroup_1 = __webpack_require__(133);
+	//filters
+	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
+	})
+	    .constant('productBundlePartialsPath', 'productbundle/components/')
+	    .service('productBundleService', productbundleservice_1.ProductBundleService)
+	    .controller('create-bundle-controller', create_bundle_controller_1.CreateBundleController)
+	    .directive('swProductBundleGroupType', swproductbundlegrouptype_1.SWProductBundleGroupType.Factory())
+	    .directive('swProductBundleGroups', swproductbundlegroups_1.SWProductBundleGroups.Factory())
+	    .directive('swProductBundleGroup', swproductbundlegroup_1.SWProductBundleGroup.Factory());
+	exports.productbundlemodule = productbundlemodule;
+
+
+/***/ },
+/* 129 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var ProductBundleService = (function () {
+	    function ProductBundleService($log, $slatwall, utilityService) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.$slatwall = $slatwall;
+	        this.utilityService = utilityService;
+	        this.decorateProductBundleGroup = function (productBundleGroup) {
+	            productBundleGroup.data.$$editing = true;
+	            var prototype = {
+	                $$setMinimumQuantity: function (quantity) {
+	                    if (quantity < 0 || quantity === null) {
+	                        this.minimumQuantity = 0;
+	                    }
+	                    if (quantity > this.maximumQuantity) {
+	                        this.maximumQuantity = quantity;
+	                    }
+	                },
+	                $$setMaximumQuantity: function (quantity) {
+	                    if (quantity < 1 || quantity === null) {
+	                        this.maximumQuantity = 1;
+	                    }
+	                    if (this.maximumQuantity < this.minimumQuantity) {
+	                        this.minimumQuantity = this.maximumQuantity;
+	                    }
+	                },
+	                $$setActive: function (value) {
+	                    this.active = value;
+	                },
+	                $$toggleEdit: function () {
+	                    if (angular.isUndefined(this.$$editing) || this.$$editing === false) {
+	                        this.$$editing = true;
+	                    }
+	                    else {
+	                        this.$$editing = false;
+	                    }
+	                }
+	            };
+	            angular.extend(productBundleGroup.data, prototype);
+	        };
+	        this.formatProductBundleGroupFilters = function (productBundleGroupFilters, filterTerm) {
+	            _this.$log.debug('FORMATTING PRODUCT BUNDLE FILTERs');
+	            _this.$log.debug(productBundleGroupFilters);
+	            _this.$log.debug(filterTerm);
+	            if (filterTerm.value === 'sku') {
+	                for (var i in productBundleGroupFilters) {
+	                    productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Code'];
+	                    productBundleGroupFilters[i].type = filterTerm.name;
+	                    productBundleGroupFilters[i].entityType = filterTerm.value;
+	                    productBundleGroupFilters[i].propertyIdentifier = '_sku.skuID';
+	                }
+	            }
+	            else {
+	                for (var i in productBundleGroupFilters) {
+	                    productBundleGroupFilters[i].name = productBundleGroupFilters[i][filterTerm.value + 'Name'];
+	                    productBundleGroupFilters[i].type = filterTerm.name;
+	                    productBundleGroupFilters[i].entityType = filterTerm.value;
+	                    if (filterTerm.value === 'brand' || filterTerm.value === 'productType') {
+	                        productBundleGroupFilters[i].propertyIdentifier = '_sku.product.' + filterTerm.value + '.' + filterTerm.value + 'ID';
+	                    }
+	                    else {
+	                        productBundleGroupFilters[i].propertyIdentifier = '_sku.' + filterTerm.value + '.' + filterTerm.value + 'ID';
+	                    }
+	                }
+	            }
+	            _this.$log.debug(productBundleGroupFilters);
+	            return productBundleGroupFilters;
+	        };
+	        this.$log = $log;
+	        this.$slatwall = $slatwall;
+	        this.utilityService = utilityService;
+	    }
+	    ProductBundleService.$inject = [
+	        '$log', '$slatwall', 'utilityService'
+	    ];
+	    return ProductBundleService;
+	})();
+	exports.ProductBundleService = ProductBundleService;
+
+
+/***/ },
+/* 130 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var CreateBundleController = (function () {
+	    //@ngInject
+	    function CreateBundleController($scope, $location, $log, $rootScope, $window, $slatwall, dialogService, alertService, productBundleService, formService, productBundlePartialsPath) {
+	        $scope.productBundlePartialsPath = productBundlePartialsPath;
+	        var getParameterByName = function (name) {
+	            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+	            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	        };
+	        $scope.$id = "create-bundle-controller";
+	        //if this view is part of the dialog section, call the inherited function
+	        if (angular.isDefined($scope.scrollToTopOfDialog)) {
+	            $scope.scrollToTopOfDialog();
+	        }
+	        var productID = getParameterByName('productID');
+	        var productBundleConstructor = function () {
+	            $log.debug($scope);
+	            if (angular.isDefined($scope.product)) {
+	                for (var form in $scope.product.forms) {
+	                    formService.resetForm($scope.product.forms[form]);
+	                }
+	                if (angular.isDefined($scope.product.data.skus[0])) {
+	                    for (var form in $scope.product.data.skus[0].forms) {
+	                        formService.resetForm($scope.product.data.skus[0].forms[form]);
+	                    }
+	                }
+	                if (angular.isDefined($scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup)) {
+	                    for (var form in $scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms) {
+	                        formService.resetForm($scope.product.data.skus[0].data.productBundleGroups.selectedProductBundleGroup.forms[form]);
+	                    }
+	                }
+	            }
+	            $scope.product = $slatwall.newProduct();
+	            var brand = $slatwall.newBrand();
+	            var productType = $slatwall.newProductType();
+	            $scope.product.$$setBrand(brand);
+	            $scope.product.$$setProductType(productType);
+	            $scope.product.$$addSku();
+	            $scope.product.data.skus[0].data.productBundleGroups = [];
+	        };
+	        $scope.productBundleGroup;
+	        if (angular.isDefined(productID) && productID !== '') {
+	            var productPromise = $slatwall.getProduct({ id: productID });
+	            productPromise.promise.then(function () {
+	                $log.debug(productPromise.value);
+	                productPromise.value.$$getSkus().then(function () {
+	                    productPromise.value.data.skus[0].$$getProductBundleGroups().then(function () {
+	                        $scope.product = productPromise.value;
+	                        angular.forEach($scope.product.data.skus[0].data.productBundleGroups, function (productBundleGroup) {
+	                            productBundleGroup.$$getProductBundleGroupType();
+	                            productBundleService.decorateProductBundleGroup(productBundleGroup);
+	                            productBundleGroup.data.$$editing = false;
+	                        });
+	                    });
+	                });
+	            }, productBundleConstructor());
+	        }
+	        else {
+	            productBundleConstructor();
+	        }
+	        $scope.saveProductBundle = function (closeDialogIndex, saveAndNew) {
+	            $scope.newSaving = true;
+	            $log.debug($scope.newSaving);
+	            $scope.dIndex = closeDialogIndex;
+	            $scope.product.$$save().then(function () {
+	                $log.debug("Turn off the loader after saving.");
+	                $scope.newSaving = false;
+	                $scope.closeSaving = true;
+	                $rootScope.closePageDialog($scope.dIndex);
+	                if (saveAndNew) {
+	                    $rootScope.openPageDialog('productbundle/createproductbundle');
+	                }
+	            });
+	        };
+	    }
+	    return CreateBundleController;
+	})();
+	exports.CreateBundleController = CreateBundleController;
+
+
+/***/ },
+/* 131 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWProductBundleGroupType = (function () {
+	    function SWProductBundleGroupType($http, $log, $slatwall, formService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegrouptype.html",
+	            scope: {
+	                productBundleGroup: "="
+	            },
+	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+	                    $log.debug('productBundleGrouptype');
+	                    $log.debug($scope.productBundleGroup);
+	                    $scope.productBundleGroupTypes = {};
+	                    $scope.$$id = "productBundleGroupType";
+	                    $scope.productBundleGroupTypes.value = [];
+	                    $scope.productBundleGroupTypes.$$adding = false;
+	                    $scope.productBundleGroupType = {};
+	                    if (angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)) {
+	                        var productBundleGroupType = $slatwall.newType();
+	                        var parentType = $slatwall.newType();
+	                        parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+	                        productBundleGroupType.$$setParentType(parentType);
+	                        $scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
+	                    }
+	                    /**
+	                     * Sets the state to adding and sets the initial data.
+	                     */
+	                    $scope.productBundleGroupTypes.setAdding = function (isAdding) {
+	                        $scope.productBundleGroupTypes.$$adding = isAdding;
+	                        var productBundleGroupType = $slatwall.newType();
+	                        var parentType = $slatwall.newType();
+	                        parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+	                        productBundleGroupType.$$setParentType(parentType);
+	                        productBundleGroupType.data.typeName = $scope.productBundleGroup.data.productBundleGroupType.data.typeName;
+	                        productBundleGroupType.data.typeDescription = '';
+	                        productBundleGroupType.data.typeNameCode = '';
+	                        angular.extend($scope.productBundleGroup.data.productBundleGroupType, productBundleGroupType);
+	                        formService.getForm('form.addProductBundleGroupType').$setDirty();
+	                    };
+	                    $scope.showAddProductBundleGroupTypeBtn = false;
+	                    /**
+	                     * Handles looking up the keyword and populating the dropdown as a user types.
+	                     */
+	                    $scope.productBundleGroupTypes.getTypesByKeyword = function (keyword) {
+	                        $log.debug('getTypesByKeyword');
+	                        var filterGroupsConfig = '[' +
+	                            ' {  ' +
+	                            '"filterGroup":[  ' +
+	                            ' {  ' +
+	                            ' "propertyIdentifier":"_type.parentType.systemCode",' +
+	                            ' "comparisonOperator":"=",' +
+	                            ' "value":"productBundleGroupType",' +
+	                            ' "ormtype":"string",' +
+	                            ' "conditionDisplay":"Equals"' +
+	                            '},' +
+	                            '{' +
+	                            '"logicalOperator":"AND",' +
+	                            ' "propertyIdentifier":"_type.typeName",' +
+	                            ' "comparisonOperator":"like",' +
+	                            ' "ormtype":"string",' +
+	                            ' "value":"%' + keyword + '%"' +
+	                            '  }' +
+	                            ' ]' +
+	                            ' }' +
+	                            ']';
+	                        return $slatwall.getEntity('type', { filterGroupsConfig: filterGroupsConfig.trim() })
+	                            .then(function (value) {
+	                            $log.debug('typesByKeyword');
+	                            $log.debug(value);
+	                            $scope.productBundleGroupTypes.value = value.pageRecords;
+	                            var myLength = keyword.length;
+	                            if (myLength > 0) {
+	                                $scope.showAddProductBundleGroupTypeBtn = true;
+	                            }
+	                            else {
+	                                $scope.showAddProductBundleGroupTypeBtn = false;
+	                            }
+	                            return $scope.productBundleGroupTypes.value;
+	                        });
+	                    };
+	                    /**
+	                     * Handles user selection of the dropdown.
+	                     */
+	                    $scope.selectProductBundleGroupType = function ($item, $model, $label) {
+	                        $scope.$item = $item;
+	                        $scope.$model = $model;
+	                        $scope.$label = $label;
+	                        angular.extend($scope.productBundleGroup.data.productBundleGroupType.data, $item);
+	                        var parentType = $slatwall.newType();
+	                        parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+	                        $scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
+	                        $scope.showAddProductBundleGroupTypeBtn = false;
+	                    };
+	                    /**
+	                     * Closes the add screen
+	                     */
+	                    $scope.closeAddScreen = function () {
+	                        $scope.productBundleGroupTypes.$$adding = false;
+	                        $scope.showAddProductBundleGroupTypeBtn = false;
+	                    };
+	                    /**
+	                     * Clears the type name
+	                     */
+	                    $scope.clearTypeName = function () {
+	                        if (angular.isDefined($scope.productBundleGroup.data.productBundleGroupType)) {
+	                            $scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
+	                        }
+	                    };
+	                    /**
+	                     * Saves product bundle group type
+	                     */
+	                    $scope.saveProductBundleGroupType = function () {
+	                        //Gets the promise from save
+	                        var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
+	                        promise.then(function (response) {
+	                            //Calls close function
+	                            if (promise.valid) {
+	                                $scope.closeAddScreen();
+	                            }
+	                        });
+	                    };
+	                    //Sets up clickOutside Directive call back arguments
+	                    $scope.clickOutsideArgs = {
+	                        callBackActions: [$scope.closeAddScreen, $scope.clearTypeName]
+	                    };
+	                    /**
+	                     * Works with swclickoutside directive to close dialog
+	                     */
+	                    $scope.closeThis = function (clickOutsideArgs) {
+	                        //Check against the object state
+	                        if (!$scope.productBundleGroup.data.productBundleGroupType.$$isPersisted()) {
+	                            //Perform all callback actions
+	                            for (var callBackAction in clickOutsideArgs.callBackActions) {
+	                                clickOutsideArgs.callBackActions[callBackAction]();
+	                            }
+	                        }
+	                    };
+	                }]
+	        };
+	    }
+	    SWProductBundleGroupType.Factory = function () {
+	        var directive = function ($http, $log, $slatwall, formService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
+	            return new SWProductBundleGroupType($http, $log, $slatwall, formService, productBundlePartialsPath, productBundleService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$log',
+	            '$slatwall',
+	            'formService',
+	            'productBundlePartialsPath',
+	            'productBundleService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWProductBundleGroupType;
+	})();
+	exports.SWProductBundleGroupType = SWProductBundleGroupType;
+
+
+/***/ },
+/* 132 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWProductBundleGroups = (function () {
+	    function SWProductBundleGroups($http, $log, $slatwall, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
+	        return {
+	            restrict: 'EA',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html",
+	            scope: {
+	                sku: "=",
+	                productBundleGroups: "=",
+	                addProductBundleGroup: "&"
+	            },
+	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+	                    $scope.$id = 'productBundleGroups';
+	                    $log.debug('productBundleGroups');
+	                    $log.debug($scope.productBundleGroups);
+	                    $scope.editing = $scope.editing || true;
+	                    angular.forEach($scope.productBundleGroups, function (obj) {
+	                        productBundleService.decorateProductBundleGroup(obj);
+	                        obj.data.$$editing = false;
+	                    });
+	                    $scope.removeProductBundleGroup = function (index) {
+	                        $scope.productBundleGroups.splice(index, 1);
+	                        $log.debug("Deleting PBG #" + index);
+	                        $log.debug($scope.productBundleGroups);
+	                    };
+	                    $scope.addProductBundleGroup = function () {
+	                        var productBundleGroup = $scope.sku.$$addProductBundleGroup();
+	                        productBundleService.decorateProductBundleGroup(productBundleGroup);
+	                        $scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
+	                    };
+	                }]
+	        };
+	    }
+	    SWProductBundleGroups.Factory = function () {
+	        var directive = function ($http, $log, $slatwall, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
+	            return new SWProductBundleGroups($http, $log, $slatwall, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$log',
+	            '$slatwall',
+	            'metadataService',
+	            'productBundlePartialsPath',
+	            'productBundleService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWProductBundleGroups;
+	})();
+	exports.SWProductBundleGroups = SWProductBundleGroups;
+
+
+/***/ },
+/* 133 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var CollectionFilterItem = (function () {
+	    function CollectionFilterItem(name, type, displayPropertyIdentifier, propertyIdentifier, displayValue, value, comparisonOperator, logicalOperator) {
+	        this.name = name;
+	        this.type = type;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.displayValue = displayValue;
+	        this.value = value;
+	        this.comparisonOperator = comparisonOperator;
+	        this.logicalOperator = logicalOperator;
+	    }
+	    return CollectionFilterItem;
+	})();
+	var SWProductBundleGroupController = (function () {
+	    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $slatwall, productBundlePartialsPath) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.productBundleService = productBundleService;
+	        this.metadataservice = metadataservice;
+	        this.utilityservice = utilityservice;
+	        this.$slatwall = $slatwall;
+	        this.productBundlePartialsPath = productBundlePartialsPath;
+	        this.openCloseAndRefresh = function () {
+	            _this.showAdvanced = !_this.showAdvanced;
+	            if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.length) {
+	                _this.getCollection();
+	            }
+	        };
+	        this.deleteEntity = function (type) {
+	            if (angular.isNumber(type)) {
+	                _this.removeProductBundleGroupFilter(type);
+	            }
+	            else {
+	                _this.removeProductBundleGroup(_this.index);
+	            }
+	        };
+	        this.getCollection = function () {
+	            _this.collectionConfig.getEntity().then(function (response) {
+	                _this.collection = response;
+	            });
+	        };
+	        this.increaseCurrentCount = function () {
+	            if (angular.isDefined(_this.totalPages) && _this.totalPages != _this.currentPage) {
+	                _this.currentPage++;
+	            }
+	            else {
+	                _this.currentPage = 1;
+	            }
+	        };
+	        this.resetCurrentCount = function () {
+	            _this.currentPage = 1;
+	        };
+	        this.getFiltersByTerm = function (keyword, filterTerm) {
+	            _this.loading = true;
+	            _this.showAll = true;
+	            var _loadingCount;
+	            if (_this.timeoutPromise) {
+	                _this.$timeout.cancel(_this.timeoutPromise);
+	            }
+	            _this.timeoutPromise = _this.$timeout(function () {
+	                if (filterTerm.value === 'All') {
+	                    _this.showAll = true;
+	                    _this.productBundleGroupFilters.value = [];
+	                    _loadingCount = _this.searchOptions.options.length - 1;
+	                    for (var i in _this.searchOptions.options) {
+	                        _this.$log.debug("INT");
+	                        _this.$log.debug(i);
+	                        if (i > 0) {
+	                            var option = _this.searchOptions.options[i];
+	                            (function (keyword, option) {
+	                                var searchAllCollectionConfig = _this.collectionConfigService.newCollectionConfig(_this.searchOptions.options[i].value);
+	                                searchAllCollectionConfig.setKeywords(keyword);
+	                                searchAllCollectionConfig.setCurrentPage(_this.currentPage);
+	                                searchAllCollectionConfig.setPageShow(_this.pageShow);
+	                                //searchAllCollectionConfig.setAllRecords(true);
+	                                searchAllCollectionConfig.getEntity().then(function (value) {
+	                                    _this.recordsCount = value.recordsCount;
+	                                    _this.pageRecordsStart = value.pageRecordsStart;
+	                                    _this.pageRecordsEnd = value.pageRecordsEnd;
+	                                    _this.totalPages = value.totalPages;
+	                                    var formattedProductBundleGroupFilters = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, option);
+	                                    for (var j in formattedProductBundleGroupFilters) {
+	                                        if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1) {
+	                                            _this.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
+	                                            _this.$log.debug(formattedProductBundleGroupFilters[j]);
+	                                        }
+	                                    }
+	                                    // Increment Down The Loading Count
+	                                    _loadingCount--;
+	                                    // If the loadingCount drops to 0, then we can update scope
+	                                    if (_loadingCount == 0) {
+	                                        //This sorts the array of objects by the objects' "type" property alphabetically
+	                                        _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
+	                                        _this.$log.debug(_this.productBundleGroupFilters.value);
+	                                    }
+	                                    _this.loading = false;
+	                                });
+	                            })(keyword, option);
+	                        }
+	                    }
+	                }
+	                else {
+	                    _this.showAll = false;
+	                    _this.searchCollectionConfig = _this.collectionConfigService.newCollectionConfig(filterTerm.value);
+	                    _this.searchCollectionConfig.setKeywords(keyword);
+	                    _this.searchCollectionConfig.setCurrentPage(_this.currentPage);
+	                    _this.searchCollectionConfig.setPageShow(_this.pageShow);
+	                    _this.searchCollectionConfig.getEntity().then(function (value) {
+	                        _this.recordsCount = value.recordsCount;
+	                        _this.pageRecordsStart = value.pageRecordsStart;
+	                        _this.pageRecordsEnd = value.pageRecordsEnd;
+	                        _this.totalPages = value.totalPages;
+	                        _this.$log.debug('getFiltersByTerm');
+	                        _this.$log.debug(value);
+	                        _this.productBundleGroupFilters.value = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, filterTerm) || [];
+	                        _this.loading = false;
+	                    });
+	                }
+	            }, 500);
+	        };
+	        this.addFilterToProductBundle = function (filterItem, include, index) {
+	            var collectionFilterItem = new CollectionFilterItem(filterItem.name, filterItem.type, filterItem.type, filterItem.propertyIdentifier, filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1) + 'ID'], filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1) + 'ID']);
+	            if (include === false) {
+	                collectionFilterItem.comparisonOperator = '!=';
+	            }
+	            else {
+	                collectionFilterItem.comparisonOperator = '=';
+	            }
+	            if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.length > 0) {
+	                collectionFilterItem.logicalOperator = 'OR';
+	            }
+	            //Adds filter item to designated filtergroup
+	            _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.push(collectionFilterItem);
+	            //Removes the filter item from the left hand search result
+	            _this.productBundleGroupFilters.value.splice(index, 1);
+	            _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
+	        };
+	        this.removeProductBundleGroupFilter = function (index) {
+	            //Pushes item back into array
+	            _this.productBundleGroupFilters.value.push(_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup[index]);
+	            //Sorts Array
+	            _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
+	            //Removes the filter item from the filtergroup
+	            _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.splice(index, 1);
+	            _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
+	        };
+	        this.$id = 'productBundleGroup';
+	        this.maxRecords = 10;
+	        this.recordsCount = 0;
+	        this.pageRecordsStart = 0;
+	        this.pageRecordsEnd = 0;
+	        this.showAll = false;
+	        this.showAdvanced = false;
+	        this.currentPage = 1;
+	        this.pageShow = 10;
+	        /*this.skuCollectionConfig = {
+	            baseEntityName:"Sku",
+	            baseEntityAlias:"_sku",
+	            collectionConfig:this.productBundleGroup.data.skuCollectionConfig,
+	            collectionObject:'Sku'
+	        };*/
+	        this.searchOptions = {
+	            options: [
+	                {
+	                    name: "All",
+	                    value: "All"
+	                },
+	                {
+	                    name: "Product Type",
+	                    value: "productType"
+	                },
+	                {
+	                    name: "Brand",
+	                    value: "brand"
+	                },
+	                {
+	                    name: "Products",
+	                    value: "product"
+	                },
+	                {
+	                    name: "Skus",
+	                    value: "sku"
+	                }
+	            ],
+	            selected: {
+	                name: "All",
+	                value: "All"
+	            },
+	            setSelected: function (searchOption) {
+	                _this.searchOptions.selected = searchOption;
+	                _this.getFiltersByTerm(_this.productBundleGroupFilters.keyword, searchOption);
+	            }
+	        };
+	        this.navigation = {
+	            value: 'Basic',
+	            setValue: function (value) {
+	                _this.value = value;
+	            }
+	        };
+	        this.filterTemplatePath = this.productBundlePartialsPath + "productbundlefilter.html";
+	        this.productBundleGroupFilters = {};
+	        this.productBundleGroupFilters.value = [];
+	        if (angular.isUndefined(this.productBundleGroup.productBundleGroupFilters)) {
+	            this.productBundleGroup.productBundleGroupFilters = [];
+	        }
+	        if (!angular.isDefined(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index])) {
+	            this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index] = {};
+	            this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
+	        }
+	        var options = {
+	            filterGroupsConfig: this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup,
+	            columnsConfig: this.productBundleGroup.data.skuCollectionConfig.columns,
+	        };
+	        this.collectionConfig = collectionConfigService.newCollectionConfig('Sku');
+	        this.collectionConfig.loadFilterGroups(options.filterGroupsConfig);
+	        this.collectionConfig.loadColumns(options.columnsConfig);
+	        this.collectionConfig.setAllRecords(true);
+	        this.getCollection();
+	    }
+	    SWProductBundleGroupController.$inject = ["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
+	    return SWProductBundleGroupController;
+	})();
+	var SWProductBundleGroup = (function () {
+	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $slatwall, productBundlePartialsPath, pathBuilderConfig) {
+	        this.$log = $log;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.productBundleService = productBundleService;
+	        this.metadataservice = metadataservice;
+	        this.utilityservice = utilityservice;
+	        this.$slatwall = $slatwall;
+	        this.productBundlePartialsPath = productBundlePartialsPath;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            productBundleGroup: "=",
+	            index: "=",
+	            addProductBundleGroup: "&",
+	            removeProductBundleGroup: "&",
+	            formName: "@"
+	        };
+	        this.controller = SWProductBundleGroupController;
+	        this.controllerAs = "swProductBundleGroup";
+	        this.link = function ($scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
+	    }
+	    SWProductBundleGroup.Factory = function () {
+	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath, pathBuilderConfig) {
+	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath",
+	            "pathBuilderConfig"
+	        ];
+	        return directive;
+	    };
+	    SWProductBundleGroup.$inject = ["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
+	    return SWProductBundleGroup;
+	})();
+	exports.SWProductBundleGroup = SWProductBundleGroup;
+
+
+/***/ },
+/* 134 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//services
+	var workflowconditionservice_1 = __webpack_require__(135);
+	//directives
+	var swadmincreatesuperuser_1 = __webpack_require__(136);
+	var swworkflowbasic_1 = __webpack_require__(137);
+	var swworkflowcondition_1 = __webpack_require__(138);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(139);
+	var swworkflowconditiongroups_1 = __webpack_require__(140);
+	var swworkflowtask_1 = __webpack_require__(141);
+	var swworkflowtaskactions_1 = __webpack_require__(142);
+	var swworkflowtasks_1 = __webpack_require__(143);
+	var swworkflowtrigger_1 = __webpack_require__(144);
+	var swworkflowtriggers_1 = __webpack_require__(145);
+	//filters
+	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
+	})
+	    .constant('workflowPartialsPath', 'workflow/components/')
+	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)
+	    .directive('swAdminCreateSuperUser', swadmincreatesuperuser_1.SWAdminCreateSuperUser.Factory())
+	    .directive('swWorkflowBasic', swworkflowbasic_1.SWWorkflowBasic.Factory())
+	    .directive('swWorkflowCondition', swworkflowcondition_1.SWWorkflowCondition.Factory())
+	    .directive('swWorkflowConditionGroupItem', swworkflowconditiongroupitem_1.SWWorkflowConditionGroupItem.Factory())
+	    .directive('swWorkflowConditionGroups', swworkflowconditiongroups_1.SWWorkflowConditionGroups.Factory())
+	    .directive('swWorkflowTask', swworkflowtask_1.SWWorkflowTask.Factory())
+	    .directive('swWorkflowTaskActions', swworkflowtaskactions_1.SWWorkflowTaskActions.Factory())
+	    .directive('swWorkflowTasks', swworkflowtasks_1.SWWorkflowTasks.Factory())
+	    .directive('swWorkflowTrigger', swworkflowtrigger_1.SWWorkflowTrigger.Factory())
+	    .directive('swWorkflowTriggers', swworkflowtriggers_1.SWWorkflowTriggers.Factory());
+	exports.workflowmodule = workflowmodule;
+
+
+/***/ },
+/* 135 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var WorkflowCondition = (function () {
+	    function WorkflowCondition() {
+	        this.propertyIdentifer = "";
+	        this.comparisonOperator = "";
+	        this.value = "";
+	        this.displayPropertyIdentifier = "";
+	        this.$$disabled = false;
+	        this.$$isClosed = true;
+	        this.$$isNew = true;
+	    }
+	    return WorkflowCondition;
+	})();
+	exports.WorkflowCondition = WorkflowCondition;
+	var WorkflowConditionGroupItem = (function () {
+	    function WorkflowConditionGroupItem() {
+	        this.workflowConditionGroup = [];
+	    }
+	    return WorkflowConditionGroupItem;
+	})();
+	exports.WorkflowConditionGroupItem = WorkflowConditionGroupItem;
+	var WorkflowConditionService = (function () {
+	    function WorkflowConditionService($log, $slatwall, alertService) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.newWorkflowCondition = function () {
+	            return new WorkflowCondition;
+	        };
+	        this.addWorkflowCondition = function (groupItem, condition) {
+	            _this.$log.debug('addWorkflowCondition');
+	            _this.$log.debug(groupItem);
+	            _this.$log.debug(condition);
+	            if (groupItem.length >= 1) {
+	                condition.logicalOperator = 'AND';
+	            }
+	            groupItem.push(condition);
+	        };
+	        this.newWorkflowConditionGroupItem = function () {
+	            return new WorkflowConditionGroupItem;
+	        };
+	        this.addWorkflowConditionGroupItem = function (group, groupItem) {
+	            group.push(groupItem);
+	        };
+	    }
+	    WorkflowConditionService.$inject = ["$log", "$slatwall", "alertService"];
+	    return WorkflowConditionService;
+	})();
+	exports.WorkflowConditionService = WorkflowConditionService;
+
+
+/***/ },
+/* 136 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWAdminCreateSuperUser = (function () {
+	    function SWAdminCreateSuperUser($log, $slatwall, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {},
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "admincreatesuperuser.html",
+	            link: function (scope, element, attrs) {
+	                scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
+	            }
+	        };
+	    }
+	    SWAdminCreateSuperUser.Factory = function () {
+	        var directive = function ($log, $slatwall, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWAdminCreateSuperUser($log, $slatwall, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWAdminCreateSuperUser;
+	})();
+	exports.SWAdminCreateSuperUser = SWAdminCreateSuperUser;
+
+
+/***/ },
+/* 137 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowBasic = (function () {
+	    function SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath)
+	                + "workflowbasic.html",
+	            link: function (scope, element, attrs) {
+	                console.log('workflowtest');
+	                console.log(scope.workflow);
+	            }
+	        };
+	    }
+	    SWWorkflowBasic.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowBasic($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowBasic;
+	})();
+	exports.SWWorkflowBasic = SWWorkflowBasic;
+
+
+/***/ },
+/* 138 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowCondition = (function () {
+	    function SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowCondition: "=",
+	                workflowConditionIndex: "=",
+	                workflow: "=",
+	                filterPropertiesList: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowcondition.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflowCondition init');
+	                $log.debug(scope);
+	                scope.selectBreadCrumb = function (breadCrumbIndex) {
+	                    //splice out array items above index
+	                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+	                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
+	                    scope.selectedFilterPropertyChanged(null);
+	                };
+	                scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
+	                    $log.debug('selectedFilterProperty');
+	                    $log.debug(selectedFilterProperty);
+	                    scope.selectedFilterProperty = selectedFilterProperty;
+	                };
+	                if (angular.isUndefined(scope.workflowCondition.breadCrumbs)) {
+	                    scope.workflowCondition.breadCrumbs = [];
+	                    if (scope.workflowCondition.propertyIdentifier === "") {
+	                        scope.workflowCondition.breadCrumbs = [
+	                            {
+	                                entityAlias: scope.workflow.data.workflowObject,
+	                                cfc: scope.workflow.data.workflowObject,
+	                                propertyIdentifier: scope.workflow.data.workflowObject
+	                            }
+	                        ];
+	                    }
+	                    else {
+	                        var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                        entityAliasArrayFromString.pop();
+	                        for (var i in entityAliasArrayFromString) {
+	                            var breadCrumb = {
+	                                entityAlias: entityAliasArrayFromString[i],
+	                                cfc: entityAliasArrayFromString[i],
+	                                propertyIdentifier: entityAliasArrayFromString[i]
+	                            };
+	                            scope.workflowCondition.breadCrumbs.push(breadCrumb);
+	                        }
+	                    }
+	                }
+	                else {
+	                    angular.forEach(scope.workflowCondition.breadCrumbs, function (breadCrumb, key) {
+	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
+	                            var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+	                            filterPropertiesPromise.then(function (value) {
+	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
+	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+	                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier], breadCrumb.propertyIdentifier);
+	                                var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                                entityAliasArrayFromString.pop();
+	                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                                if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                    for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                        if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
+	                                            //selectItem from drop down
+	                                            scope.selectedFilterProperty = filterProperty;
+	                                            //decorate with value and comparison Operator so we can use it in the Condition section
+	                                            scope.selectedFilterProperty.value = scope.workflowCondition.value;
+	                                            scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
+	                                        }
+	                                    }
+	                                }
+	                            });
+	                        }
+	                        else {
+	                            var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
+	                            entityAliasArrayFromString.pop();
+	                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                            if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                    if (filterProperty.propertyIdentifier === scope.workflowCondition.propertyIdentifier) {
+	                                        //selectItem from drop down
+	                                        scope.selectedFilterProperty = filterProperty;
+	                                        //decorate with value and comparison Operator so we can use it in the Condition section
+	                                        scope.selectedFilterProperty.value = scope.workflowCondition.value;
+	                                        scope.selectedFilterProperty.comparisonOperator = scope.workflowCondition.comparisonOperator;
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    });
+	                }
+	            }
+	        };
+	    }
+	    SWWorkflowCondition.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowCondition($log, $location, $slatwall, formService, metadataService, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'metadataService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowCondition;
+	})();
+	exports.SWWorkflowCondition = SWWorkflowCondition;
+
+
+/***/ },
+/* 139 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowConditionGroupItem = (function () {
+	    function SWWorkflowConditionGroupItem($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroupitem.html",
+	            link: function (scope, element, attrs) {
+	            }
+	        };
+	    }
+	    SWWorkflowConditionGroupItem.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, formService, workflowPartialsPath, pathBuilderConfig) {
+	            return new ($log,
+	                $location,
+	                $slatwall,
+	                formService,
+	                workflowPartialsPath,
+	                pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'formService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowConditionGroupItem;
+	})();
+	exports.SWWorkflowConditionGroupItem = SWWorkflowConditionGroupItem;
+
+
+/***/ },
+/* 140 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowConditionGroups = (function () {
+	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowConditionGroupItem: "=",
+	                workflowConditionGroup: "=",
+	                workflow: "=",
+	                filterPropertiesList: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroups.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflowconditiongroups init');
+	                scope.addWorkflowCondition = function () {
+	                    $log.debug('addWorkflowCondition');
+	                    var workflowCondition = workflowConditionService.newWorkflowCondition();
+	                    workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem, workflowCondition);
+	                };
+	                scope.addWorkflowGroupItem = function () {
+	                    $log.debug('addWorkflowGrouptItem');
+	                    var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
+	                    workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem, workflowConditionGroupItem);
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowConditionGroups.Factory = function () {
+	        var directive = function ($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'workflowConditionService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowConditionGroups;
+	})();
+	exports.SWWorkflowConditionGroups = SWWorkflowConditionGroups;
+
+
+/***/ },
+/* 141 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowTask = (function () {
+	    function SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflowTask: "=",
+	                workflowTasks: "=",
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtask.html",
+	            link: function (scope, element, attrs) {
+	                scope.removeWorkflowTask = function (workflowTask) {
+	                    var deletePromise = workflowTask.$$delete();
+	                    deletePromise.then(function () {
+	                        if (workflowTask === scope.workflowTasks.selectedTask) {
+	                            delete scope.workflowTasks.selectedTask;
+	                        }
+	                        scope.workflowTasks.splice(workflowTask.$$index, 1);
+	                        for (var i in scope.workflowTasks) {
+	                            scope.workflowTasks[i].$$index = i;
+	                        }
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTask.Factory = function () {
+	        var directive = function ($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTask($log, $location, $timeout, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$timeout',
+	            '$slatwall',
+	            'metadataService',
+	            'collectionService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTask;
+	})();
+	exports.SWWorkflowTask = SWWorkflowTask;
+
+
+/***/ },
+/* 142 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowTaskActions = (function () {
+	    function SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'AE',
+	            scope: {
+	                workflowTask: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('Workflow Task Actions Init');
+	                $log.debug(scope.workflowTask);
+	                scope.openActions = false;
+	                /**
+	                    * Returns the correct object based on the selected object type.
+	                    */
+	                var getObjectByActionType = function (workflowTaskAction) {
+	                    if (workflowTaskAction.data.actionType === 'email') {
+	                        workflowTaskAction.$$getEmailTemplate();
+	                    }
+	                    else if (workflowTaskAction.data.actionType === 'print') {
+	                        workflowTaskAction.$$getPrintTemplate();
+	                    }
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Returns workflow task action, and saves them to the scope variable workflowtaskactions
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.getWorkflowTaskActions = function () {
+	                    /***
+	                    Note:
+	                    This conditional is checking whether or not we need to be retrieving to
+	                    items all over again. If we already have them, we won't make another
+	                    trip to the database.
+
+	                ***/
+	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
+	                        var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
+	                        workflowTaskPromise.then(function () {
+	                            scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+	                            angular.forEach(scope.workflowTaskActions, function (workflowTaskAction) {
+	                                getObjectByActionType(workflowTaskAction);
+	                            });
+	                            $log.debug(scope.workflowTaskActions);
+	                        });
+	                    }
+	                    else {
+	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+	                    }
+	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
+	                        scope.workflowTask.data.workflowTaskActions = [];
+	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+	                    }
+	                };
+	                scope.getWorkflowTaskActions(); //Call get
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Saves the workflow task actions by calling the objects $$save method.
+	                    * @param taskAction
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.saveWorkflowTaskAction = function (taskAction, context) {
+	                    $log.debug("Context: " + context);
+	                    $log.debug("saving task action and parent task");
+	                    $log.debug(taskAction);
+	                    var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
+	                    savePromise.then(function () {
+	                        var taSavePromise = taskAction.$$save;
+	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+	                        if (context == 'add') {
+	                            $log.debug("Save and New");
+	                            scope.addWorkflowTaskAction(taskAction);
+	                            scope.finished = false;
+	                        }
+	                        else if (context == "finish") {
+	                            scope.finished = true;
+	                        }
+	                    });
+	                }; //<--end save
+	                /**
+	                    * Sets the editing state to show/hide the edit screen.
+	                    */
+	                scope.setHidden = function (task) {
+	                    if (!angular.isObject(task)) {
+	                        task = {};
+	                    }
+	                    if (angular.isUndefined(task.hidden)) {
+	                        task.hidden = false;
+	                    }
+	                    else {
+	                        $log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
+	                        task.hidden = !task.hidden;
+	                    }
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
+	                    * and sets the result to scope.
+	                    * @param taskAction
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.addWorkflowTaskAction = function (taskAction) {
+	                    var workflowTaskAction = scope.workflowTask.$$addWorkflowTaskAction();
+	                    scope.selectWorkflowTaskAction(workflowTaskAction);
+	                    $log.debug(scope.workflow);
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Selects a new task action and populates the task action properties.
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.selectWorkflowTaskAction = function (workflowTaskAction) {
+	                    $log.debug("Selecting new task action for editing: ");
+	                    $log.debug(workflowTaskAction);
+	                    scope.finished = false;
+	                    scope.workflowTaskActions.selectedTaskAction = undefined;
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTask.data.workflow.data.workflowObject);
+	                    filterPropertiesPromise.then(function (value) {
+	                        scope.filterPropertiesList = {
+	                            baseEntityName: scope.workflowTask.data.workflow.data.workflowObject,
+	                            baseEntityAlias: "_" + scope.workflowTask.data.workflow.data.workflowObject
+	                        };
+	                        metadataService.setPropertiesList(value, scope.workflowTask.data.workflow.data.workflowObject);
+	                        scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTask.data.workflow.data.workflowObject);
+	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject], scope.workflowTask.data.workflow.data.workflowObject);
+	                        scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
+	                    });
+	                };
+	                /**
+	                    * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
+	                    */
+	                scope.deleteEntity = function (entity) {
+	                    scope.removeWorkflowTaskAction(entity);
+	                };
+	                /**
+	                    * --------------------------------------------------------------------------------------------------------
+	                    * Removes a workflow task action by calling the selected tasks $$delete method
+	                    * and reindexes the list.
+	                    * --------------------------------------------------------------------------------------------------------
+	                    */
+	                scope.removeWorkflowTaskAction = function (workflowTaskAction) {
+	                    var deletePromise = workflowTaskAction.$$delete();
+	                    deletePromise.then(function () {
+	                        if (workflowTaskAction === scope.workflowTaskActions.selectedTaskAction) {
+	                            delete scope.workflowTaskActions.selectedTaskAction;
+	                        }
+	                        $log.debug("removeWorkflowTaskAction");
+	                        $log.debug(workflowTaskAction);
+	                        scope.workflowTaskActions.splice(workflowTaskAction.$$actionIndex, 1);
+	                        for (var i in scope.workflowTaskActions) {
+	                            scope.workflowTaskActions[i].$$actionIndex = i;
+	                        }
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTaskActions.Factory = function () {
+	        var directive = function ($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTaskActions($log, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'metadataService',
+	            'collectionService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTaskActions;
+	})();
+	exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
+
+
+/***/ },
+/* 143 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Handles adding, editing, and deleting Workflows Tasks.
+	 */
+	var SWWorkflowTasks = (function () {
+	    function SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtasks.html",
+	            link: function (scope, element, attrs) {
+	                scope.workflowPartialsPath = pathBuilderConfig.buildPartialsPath(workflowPartialsPath);
+	                scope.propertiesList = {};
+	                function logger(context, message) {
+	                    $log.debug("SwWorkflowTasks :" + context + " : " + message);
+	                }
+	                /**
+	                 * Sets workflowTasks on the scope by populating with $$getWorkflowTasks()
+	                 */
+	                scope.getWorkflowTasks = function () {
+	                    logger("getWorkflowTasks", "Retrieving items");
+	                    logger("getWorkflowTasks", "Workflow Tasks");
+	                    $log.debug(scope.workflowTasks);
+	                    /***
+	                       Note:
+	                       This conditional is checking whether or not we need to be retrieving to
+	                       items all over again. If we already have them, we won't make another
+	                       trip to the database.
+
+	                     ***/
+	                    if (angular.isUndefined(scope.workflow.data.workflowTasks)) {
+	                        var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
+	                        workflowTasksPromise.then(function () {
+	                            scope.workflowTasks = scope.workflow.data.workflowTasks;
+	                        });
+	                    }
+	                    else {
+	                        logger("getWorkflowTasks", "Retrieving cached Items");
+	                        scope.workflowTasks = scope.workflow.data.workflowTasks;
+	                    }
+	                    if (angular.isUndefined(scope.workflow.data.workflowTasks)) {
+	                        //Reset the workflowTasks.
+	                        logger("getWorkflowTasks", "workflowTasks is undefined.");
+	                        scope.workflow.data.workflowTasks = [];
+	                        scope.workflowTasks = scope.workflow.data.workflowTasks;
+	                    }
+	                };
+	                scope.getWorkflowTasks(); //call tasks
+	                /**
+	                 * Sets the editing state to show/hide the edit screen.
+	                 */
+	                scope.setHidden = function (task) {
+	                    if (!angular.isObject(task) || angular.isUndefined(task.hidden)) {
+	                        task.hidden = false;
+	                    }
+	                    else {
+	                        logger("setHidden()", "Setting Hide Value To " + !task.hidden);
+	                        task.hidden = !task.hidden;
+	                    }
+	                };
+	                /**
+	                 * Add a workflow task and logs the result.
+	                 */
+	                scope.addWorkflowTask = function () {
+	                    var newWorkflowTask = scope.workflow.$$addWorkflowTask();
+	                    logger("var newWorkflowTask", newWorkflowTask);
+	                    scope.selectWorkflowTask(newWorkflowTask);
+	                };
+	                /**
+	                  * Watches the select for changes.
+	                  */
+	                scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject', function (newValue, oldValue) {
+	                    logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue);
+	                    if ((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask))) {
+	                        logger("scope.$watch", "Change to " + newValue);
+	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
+	                        scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
+	                    }
+	                });
+	                /**
+	                   * --------------------------------------------------------------------------------------------------------
+	                   * Saves the workflow task by calling the objects $$save method.
+	                   * @param task
+	                   * --------------------------------------------------------------------------------------------------------
+	                   */
+	                scope.saveWorkflowTask = function (task, context) {
+	                    scope.done = true;
+	                    $log.debug("Context: " + context);
+	                    $log.debug("saving task");
+	                    $log.debug(scope.workflowTasks.selectedTask);
+	                    var savePromise = scope.workflowTasks.selectedTask.$$save();
+	                    savePromise.then(function () {
+	                        if (context === 'add') {
+	                            logger("SaveWorkflowTask", "Save and New");
+	                            scope.addWorkflowTask();
+	                            //scope.setHidden(scope.workflowTasks.selectedTask);
+	                            scope.finished = true;
+	                        }
+	                        else if (context == "finish") {
+	                            scope.finished = false;
+	                        }
+	                    });
+	                    scope.setHidden(scope.workflowTasks.selectedTask);
+	                }; //<--end save*/
+	                /**
+	                 * Select a workflow task.
+	                 */
+	                scope.selectWorkflowTask = function (workflowTask) {
+	                    scope.done = false;
+	                    logger("selectWorkflowTask", "selecting a workflow task");
+	                    $log.debug(workflowTask);
+	                    scope.finished = false;
+	                    scope.workflowTasks.selectedTask = undefined;
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+	                    filterPropertiesPromise.then(function (value) {
+	                        scope.filterPropertiesList = {
+	                            baseEntityName: scope.workflow.data.workflowObject,
+	                            baseEntityAlias: "_" + scope.workflow.data.workflowObject
+	                        };
+	                        metadataService.setPropertiesList(value, scope.workflow.data.workflowObject);
+	                        scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
+	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject], scope.workflow.data.workflowObject);
+	                        scope.workflowTasks.selectedTask = workflowTask;
+	                    });
+	                };
+	                /* Does a delete of the property using delete */
+	                scope.softRemoveTask = function (workflowTask) {
+	                    logger("SoftRemoveTask", "calling delete");
+	                    if (workflowTask === scope.workflowTasks.selectedTask) {
+	                        delete scope.workflowTasks.selectedTask;
+	                    }
+	                    scope.removeIndexFromTasks(workflowTask.$$index);
+	                    scope.reindexTaskList();
+	                };
+	                /* Does an API call delete using $$delete */
+	                scope.hardRemoveTask = function (workflowTask) {
+	                    logger("HardRemoveTask", "$$delete");
+	                    var deletePromise = workflowTask.$$delete();
+	                    deletePromise.then(function () {
+	                        if (workflowTask === scope.workflowTasks.selectedTask) {
+	                            delete scope.workflowTasks.selectedTask;
+	                        }
+	                        scope.removeIndexFromTasks(workflowTask.$$index);
+	                        scope.reindexTaskList();
+	                    });
+	                };
+	                /*Override the delete entity in the confirmation controller*/
+	                scope.deleteEntity = function (entity) {
+	                    scope.hardRemoveTask(entity);
+	                };
+	                /* Re-indexes the task list */
+	                scope.reindexTaskList = function () {
+	                    for (var i in scope.workflowTasks) {
+	                        logger("ReIndexing the list", i);
+	                        scope.workflowTasks[i].$$index = i;
+	                    }
+	                };
+	                /* Removes the tasks index from the tasks array */
+	                scope.removeIndexFromTasks = function (index) {
+	                    logger("RemoveIndexFromTasks", index);
+	                    scope.workflowTasks.splice(index, 1);
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTasks.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTasks($log, $location, $slatwall, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'metadataService',
+	            'collectionService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTasks;
+	})();
+	exports.SWWorkflowTasks = SWWorkflowTasks;
+
+
+/***/ },
+/* 144 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowTrigger = (function () {
+	    function SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            replace: true,
+	            scope: {
+	                workflowTrigger: "=",
+	                workflowTriggers: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
+	            link: function (scope, element, attrs) {
+	                $log.debug('workflow trigger init');
+	                /**
+	                 * Selects the current workflow trigger.
+	                 */
+	                scope.selectWorkflowTrigger = function (workflowTrigger) {
+	                    $log.debug('SelectWorkflowTriggers');
+	                    scope.done = false;
+	                    $log.debug(workflowTrigger);
+	                    scope.finished = false;
+	                    scope.workflowTriggers.selectedTrigger = undefined;
+	                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
+	                    filterPropertiesPromise.then(function (value) {
+	                        scope.filterPropertiesList = {
+	                            baseEntityName: scope.workflowTrigger.data.workflow.data.workflowObject,
+	                            baseEntityAlias: "_" + scope.workflowTrigger.data.workflow.data.workflowObject
+	                        };
+	                        metadataService.setPropertiesList(value, scope.workflowTrigger.data.workflow.data.workflowObject);
+	                        scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTrigger.data.workflow.data.workflowObject);
+	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject], scope.workflowTrigger.data.workflow.data.workflowObject);
+	                        scope.workflowTriggers.selectedTrigger = workflowTrigger;
+	                    });
+	                };
+	                /**
+	                 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
+	                 */
+	                scope.deleteEntity = function (entity) {
+	                    $log.debug("Delete Called");
+	                    $log.debug(entity);
+	                    scope.deleteTrigger(entity);
+	                };
+	                /**
+	                 * Hard deletes a workflow trigger
+	                 */
+	                scope.deleteTrigger = function (workflowTrigger) {
+	                    var deleteTriggerPromise = $slatwall.saveEntity('WorkflowTrigger', workflowTrigger.data.workflowTriggerID, {}, 'Delete');
+	                    deleteTriggerPromise.then(function (value) {
+	                        $log.debug('deleteTrigger');
+	                        scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
+	                    });
+	                };
+	                /**
+	                 * Sets the editing state to show/hide the edit screen.
+	                 */
+	                scope.setHidden = function (trigger) {
+	                    if (!angular.isObject(trigger) || angular.isUndefined(trigger.hidden)) {
+	                        trigger.hidden = false;
+	                    }
+	                    else {
+	                        $log.debug("setHidden()", "Setting Hide Value To " + !trigger.hidden);
+	                        trigger.hidden = !trigger.hidden;
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTrigger.Factory = function () {
+	        var directive = function ($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	            return new SWWorkflowTrigger($log, $slatwall, metadataService, workflowPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'metadataService',
+	            'workflowPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTrigger;
+	})();
+	exports.SWWorkflowTrigger = SWWorkflowTrigger;
+
+
+/***/ },
+/* 145 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWWorkflowTriggers = (function () {
+	    function SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
+	            link: function (scope, element, attrs, formController) {
+	                $log.debug('Workflow triggers init');
+	                scope.$id = 'swWorkflowTriggers';
+	                /**
+	                 * Retrieves the workflow triggers.
+	                 */
+	                scope.getWorkflowTriggers = function () {
+	                    /***
+	                       Note:
+	                       This conditional is checking whether or not we need to be retrieving to
+	                       items all over again. If we already have them, we won't make another
+	                       trip to the database.
+
+	                    ***/
+	                    if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
+	                        var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
+	                        workflowTriggersPromise.then(function () {
+	                            scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+	                            $log.debug('workflowtriggers');
+	                            $log.debug(scope.workflowTriggers);
+	                            /* resets the workflow trigger */
+	                            if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
+	                                scope.workflow.data.workflowTriggers = [];
+	                                scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+	                            }
+	                            angular.forEach(scope.workflowTriggers, function (workflowTrigger, key) {
+	                                $log.debug('trigger');
+	                                $log.debug(workflowTrigger);
+	                                if (workflowTrigger.data.triggerType === 'Schedule') {
+	                                    workflowTrigger.$$getSchedule();
+	                                    workflowTrigger.$$getScheduleCollection();
+	                                } //<---end if
+	                            }); //<---end forEach
+	                        }); //<---end workflow triggers promise
+	                    }
+	                    else {
+	                        //Use the cached versions.
+	                        scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+	                    } //<---end else
+	                };
+	                scope.getWorkflowTriggers(); //call triggers
+	                scope.showCollections = false;
+	                scope.collections = [];
+	                scope.getCollectionByWorkflowObject = function () {
+	                    var filterGroupsConfig = '[' +
+	                        '{' +
+	                        '"filterGroup":[' +
+	                        '{' +
+	                        '"propertyIdentifier":"_collection.collectionObject",' +
+	                        '"comparisonOperator":"=",' +
+	                        '"value":"' + scope.workflow.data.workflowObject + '"' +
+	                        '}' +
+	                        ']' +
+	                        '}' +
+	                        ']';
+	                    var collectionsPromise = $slatwall.getEntity('Collection', { filterGroupsConfig: filterGroupsConfig });
+	                    collectionsPromise.then(function (value) {
+	                        $log.debug('getcollections');
+	                        scope.collections = value.pageRecords;
+	                        $log.debug(scope.collections);
+	                    });
+	                };
+	                scope.searchEvent = {
+	                    name: ''
+	                };
+	                /**
+	                 * Watches for changes in the event
+	                 */
+	                scope.showEventOptions = false;
+	                scope.eventOptions = [];
+	                scope.$watch('searchEvent.name', function (newValue, oldValue) {
+	                    if (newValue !== oldValue) {
+	                        scope.getEventOptions(scope.workflow.data.workflowObject);
+	                    }
+	                });
+	                /**
+	                 * Retrieves the event options for a workflow trigger item.
+	                 */
+	                scope.getEventOptions = function (objectName) {
+	                    if (!scope.eventOptions.length) {
+	                        var eventOptionsPromise = $slatwall.getEventOptions(objectName);
+	                        eventOptionsPromise.then(function (value) {
+	                            $log.debug('getEventOptions');
+	                            scope.eventOptions = value.data;
+	                            $log.debug(scope.eventOptions.name);
+	                        });
+	                    }
+	                    scope.showEventOptions = !scope.showEventOptions;
+	                };
+	                /**
+	                 * Saves the workflow triggers.
+	                 */
+	                scope.saveWorkflowTrigger = function (context) {
+	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
+	                    saveWorkflowTriggerPromise.then(function () {
+	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+	                        if (context == 'add') {
+	                            $log.debug("Save and New");
+	                            scope.addWorkflowTrigger();
+	                            scope.finished = false;
+	                        }
+	                        else if (context == "finish") {
+	                            scope.finished = true;
+	                        }
+	                    });
+	                };
+	                /**
+	                 * Changes the selected trigger value.
+	                 */
+	                scope.selectEvent = function (eventOption) {
+	                    $log.debug("SelectEvent");
+	                    $log.debug(eventOption);
+	                    //Needs to clear old and set new.
+	                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
+	                    if (eventOption.entityName == scope.workflow.data.workflowObject) {
+	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
+	                    }
+	                    else {
+	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+	                    }
+	                    scope.searchEvent.name = eventOption.name;
+	                    $log.debug(eventOption);
+	                    $log.debug(scope.workflowTriggers);
+	                };
+	                /**
+	                 * Selects a new collection.
+	                 */
+	                scope.selectCollection = function (collection) {
+	                    $log.debug('selectCollection');
+	                    scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
+	                    scope.showCollections = false;
+	                };
+	                /**
+	                 * Removes a workflow trigger
+	                 */
+	                scope.removeWorkflowTrigger = function (workflowTrigger) {
+	                    if (workflowTrigger === scope.workflowTriggers.selectedTrigger) {
+	                        delete scope.workflowTriggers.selectedTrigger;
+	                    }
+	                    scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
+	                };
+	                scope.setAsEvent = function (workflowTrigger) {
+	                    //add event,  clear schedule
+	                };
+	                scope.setAsSchedule = function (workflowTrigger) {
+	                };
+	                /**
+	                 * Adds a workflow trigger.
+	                 */
+	                scope.addWorkflowTrigger = function () {
+	                    $log.debug('addWorkflowTrigger');
+	                    var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
+	                    scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
+	                    $log.debug(scope.workflowTriggers);
+	                };
+	            }
+	        };
+	    }
+	    SWWorkflowTriggers.Factory = function () {
+	        var directive = function ($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig) {
+	            return new SWWorkflowTriggers($log, $location, $slatwall, workflowPartialsPath, formService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$slatwall',
+	            'workflowPartialsPath',
+	            'formService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTriggers;
+	})();
+	exports.SWWorkflowTriggers = SWWorkflowTriggers;
+
+
+/***/ },
+/* 146 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//services
+	// import {AccountService} from "./services/accountservice";
+	// import {CartService} from "./services/cartservice";
+	// import {UtilityService} from "./services/utilityservice";
+	// import {SelectionService} from "./services/selectionservice";
+	// import {ObserverService} from "./services/observerservice";
+	// import {FormService} from "./services/formservice";
+	// import {MetaDataService} from "./services/metadataservice";
+	//controllers
+	var otherwisecontroller_1 = __webpack_require__(147);
+	var routercontroller_1 = __webpack_require__(148);
+	//directives
+	var swdetailtabs_1 = __webpack_require__(149);
+	var swdetail_1 = __webpack_require__(150);
+	var swlist_1 = __webpack_require__(151);
+	var entitymodule = angular.module('hibachi.entity', ['ngRoute'])
+	    .config(['$routeProvider', '$injector',
+	    function ($routeProvider, $injector) {
+	        $routeProvider.when('/entity/:entityName/', {
+	            template: function (params) {
+	                var entityDirectiveExists = $injector.has('sw' + params.entityName + 'ListDirective');
+	                if (entityDirectiveExists) {
+	                    return '<sw-' + params.entityName.toLowerCase() + '-list>';
+	                }
+	                else {
+	                    return '<sw-list></sw-list>';
+	                }
+	            },
+	            controller: 'routerController'
+	        }).when('/entity/:entityName/:entityID', {
+	            template: function (params) {
+	                var entityDirectiveExists = $injector.has('sw' + params.entityName + 'DetailDirective');
+	                if (entityDirectiveExists) {
+	                    return '<sw-' + params.entityName.toLowerCase() + '-detail>';
+	                }
+	                else {
+	                    return '<sw-detail></sw-detail>';
+	                }
+	            },
+	            controller: 'routerController',
+	        }).otherwise({
+	            //controller:'otherwiseController'
+	            templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
+	        });
+	    }])
+	    .constant('coreEntityPartialsPath', 'entity/components/')
+	    .controller('otherwiseController', otherwisecontroller_1.OtherWiseController)
+	    .controller('routerController', routercontroller_1.RouterController)
+	    .directive('swDetail', swdetail_1.SWDetail.Factory())
+	    .directive('swDetailTabs', swdetailtabs_1.SWDetailTabs.Factory())
+	    .directive('swList', swlist_1.SWList.Factory());
+	exports.entitymodule = entitymodule;
+
+
+/***/ },
+/* 147 */
+/***/ function(module, exports) {
+
+	var OtherWiseController = (function () {
+	    //@ngInject
+	    function OtherWiseController($scope) {
+	        $scope.$id = "otherwiseController";
+	    }
+	    return OtherWiseController;
+	})();
+	exports.OtherWiseController = OtherWiseController;
+
+
+/***/ },
+/* 148 */
+/***/ function(module, exports) {
+
+	var RouterController = (function () {
+	    //@ngInject
+	    function RouterController($scope, $routeParams, $location, $log, partialsPath, baseURL) {
+	        $scope.$id = "routerController";
+	        $scope.partialRoute = '';
+	        $log.debug($routeParams);
+	        $log.debug($location);
+	        var path = $location.path();
+	        $scope.controllerType = path.split('/')[1];
+	        var type;
+	        if ($scope.controllerType === 'entity') {
+	            $scope.entityName = $routeParams.entityName;
+	            if (angular.isDefined($routeParams.entityID)) {
+	                $scope.entityID = $routeParams.entityID || '';
+	            }
+	        }
+	    }
+	    return RouterController;
+	})();
+	exports.RouterController = RouterController;
+
+
+/***/ },
 /* 149 */
+/***/ function(module, exports) {
+
+	var SWDetailTabs = (function () {
+	    function SWDetailTabs($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + 'detailtabs.html',
+	            link: function (scope, element, attr) {
+	            }
+	        };
+	    }
+	    SWDetailTabs.Factory = function () {
+	        var directive = function ($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
+	            return new SWDetailTabs($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$location',
+	            '$log',
+	            '$slatwall',
+	            'coreEntityPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWDetailTabs;
+	})();
+	exports.SWDetailTabs = SWDetailTabs;
+
+
+/***/ },
+/* 150 */
+/***/ function(module, exports) {
+
+	var SWDetail = (function () {
+	    function SWDetail($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/detail.html',
+	            link: function (scope, element, attr) {
+	                scope.$id = "slatwallDetailController";
+	                $log.debug('slatwallDetailController');
+	                /*Sets the view dirty on save*/
+	                scope.setDirty = function (entity) {
+	                    angular.forEach(entity.forms, function (form) {
+	                        form.$setSubmitted();
+	                    });
+	                };
+	                var setupMetaData = function () {
+	                    scope[scope.entityName.toLowerCase()] = scope.entity;
+	                    scope.entity.metaData.$$getDetailTabs().then(function (value) {
+	                        scope.detailTabs = value.data;
+	                        $log.debug('detailtabs');
+	                        $log.debug(scope.detailTabs);
+	                    });
+	                };
+	                var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
+	                scope.tabPartialPath = pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath);
+	                scope.getEntity = function () {
+	                    if (scope.entityID === 'null') {
+	                        scope.entity = $slatwall['new' + propertyCasedEntityName]();
+	                        setupMetaData();
+	                    }
+	                    else {
+	                        var entityPromise = $slatwall['get' + propertyCasedEntityName]({ id: scope.entityID });
+	                        entityPromise.promise.then(function () {
+	                            scope.entity = entityPromise.value;
+	                            setupMetaData();
+	                        });
+	                    }
+	                };
+	                scope.getEntity();
+	                scope.deleteEntity = function () {
+	                    var deletePromise = scope.entity.$$delete();
+	                    deletePromise.then(function () {
+	                        $location.path('/entity/' + propertyCasedEntityName + '/');
+	                    });
+	                };
+	                scope.allTabsOpen = false;
+	            }
+	        };
+	    }
+	    SWDetail.Factory = function () {
+	        var directive = function ($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
+	            return new SWDetail($location, $log, $slatwall, coreEntityPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$location',
+	            '$log',
+	            '$slatwall',
+	            'coreEntityPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWDetail;
+	})();
+	exports.SWDetail = SWDetail;
+
+
+/***/ },
+/* 151 */
+/***/ function(module, exports) {
+
+	var SWList = (function () {
+	    function SWList($log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/list.html',
+	            link: function (scope, element, attr) {
+	                $log.debug('slatwallList init');
+	                scope.getCollection = function () {
+	                    var pageShow = 50;
+	                    if (scope.pageShow !== 'Auto') {
+	                        pageShow = scope.pageShow;
+	                    }
+	                    scope.entityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
+	                    var collectionListingPromise = $slatwall.getEntity(scope.entityName, { currentPage: scope.currentPage, pageShow: pageShow, keywords: scope.keywords });
+	                    collectionListingPromise.then(function (value) {
+	                        scope.collection = value;
+	                        scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
+	                    });
+	                };
+	                scope.getCollection();
+	            }
+	        };
+	    }
+	    SWList.Factory = function () {
+	        var directive = function ($log, $slatwall, coreEntityPartialsPath, pathBuilderConfig) {
+	            return new SWList($log, $slatwall, coreEntityPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$slatwall',
+	            'coreEntityPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWList;
+	})();
+	exports.SWList = SWList;
+
+
+/***/ },
+/* 152 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16695,7 +16779,7 @@
 
 
 /***/ },
-/* 150 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16746,11 +16830,11 @@
 
 
 /***/ },
-/* 151 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/// <reference path="../../../typings/tsd.d.ts" />
-	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var alert_module_1 = __webpack_require__(11);
 	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
 	    .run([function () {

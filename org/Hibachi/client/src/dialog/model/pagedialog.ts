@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 //model
 class PageDialog {
@@ -7,7 +7,7 @@ class PageDialog {
     public path:string;
     constructor(
         path: string
-    ) { 
+    ) {
         this.path = this.partialFileName;
     }
 }

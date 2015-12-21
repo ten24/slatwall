@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 declare var Date:any;
 class SWCriteriaDate{
 	public static Factory(){
@@ -153,7 +153,7 @@ class SWCriteriaDate{
 				    				type:'calculation',
 				    				measureType:'w',
 				    				measureTypeDisplay:'Weeks'
-				    				
+
 				    			}
 				    		},
 				    		{
@@ -216,10 +216,10 @@ class SWCriteriaDate{
 							}
 				 		];
 				 	}
-			    	
+
 			    	return dateOptions;
 			    };
-			    
+
 			    scope.conditionOptions = getDateOptions(scope.comparisonType);
 				scope.today = function() {
 					if (angular.isDefined(scope.selectedFilterProperty)) {
@@ -253,10 +253,10 @@ class SWCriteriaDate{
 						'dd.MM.yyyy',
 						'shortDate' ];
 				scope.format = scope.formats[1];
-				
+
 				scope.selectedConditionChanged = function(selectedFilterProperty){
 					$log.debug('selectedConditionChanged Begin');
-					
+
 				  	var selectedCondition:any = selectedFilterProperty.selectedCriteriaType;
 				  	//check whether condition is checking for null values in date
 				  	if(angular.isDefined(selectedCondition.dateInfo)){
@@ -266,20 +266,20 @@ class SWCriteriaDate{
 				  			selectedCondition.showCriteriaEnd = true;
 				  			selectedCondition.disableCriteriaStart = true;
 				  			selectedCondition.disableCriteriaEnd = true;
-				  			
+
 				  			//if item is a calculation of an N number of measure display the measure and number input
-		  					
+
 		  					if(angular.isUndefined(selectedCondition.dateInfo.behavior)){
 				  				$log.debug('Not toDate');
-				  				selectedCondition.showNumberOf = true; 
+				  				selectedCondition.showNumberOf = true;
 				  				selectedCondition.conditionDisplay = 'Number of '+ selectedCondition.dateInfo.measureTypeDisplay + ' :';
-				  				
+
 		  					}else{
 		  						$log.debug('toDate');
 		  						var today = Date.parse('today');
 			  					var todayEOD = today.setHours(23,59,59,999);
 			  					selectedFilterProperty.criteriaRangeEnd = todayEOD;
-		  						
+
 		  						//get this Measure to date
 		  						switch(selectedCondition.dateInfo.measureType){
 		  							case 'd':
@@ -308,13 +308,13 @@ class SWCriteriaDate{
 		  								selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
 		  								break;
 		  						}
-		  						
+
 		  					}
 				  		}
 				  		if(selectedCondition.dateInfo.type === 'range'){
 				  			selectedCondition.showCriteriaStart = true;
 				  			selectedCondition.showCriteriaEnd = true;
-				  			
+
 				  			selectedCondition.disableCriteriaStart = false;
 				  			selectedCondition.disableCriteriaEnd = false;
 				  			selectedCondition.showNumberOf = false;
@@ -324,7 +324,7 @@ class SWCriteriaDate{
 				  			selectedCondition.showCriteriaEnd = false;
 				  			selectedCondition.disableCriteriaStart = false;
 				  			selectedCondition.disableCriteriaEnd = true;
-				  			selectedCondition.showNumberOf = false; 
+				  			selectedCondition.showNumberOf = false;
 				  			selectedCondition.conditionDisplay = '';
 				  			selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
 	  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
@@ -333,15 +333,15 @@ class SWCriteriaDate{
 				  		selectedCondition.showCriteriaStart = false;
 				  		selectedCondition.showCriteriaEnd = false;
 				  		selectedCondition.showNumberOf = false;
-				  		
+
 				  		selectedCondition.conditionDisplay = '';
 				  	}
 			  		$log.debug('selectedConditionChanged End');
 			  		$log.debug('selectedConditionChanged Result');
-			  		$log.debug(selectedCondition); 
+			  		$log.debug(selectedCondition);
 			  		$log.debug(selectedFilterProperty);
 				  };
-				  
+
 				  scope.criteriaRangeChanged = function(selectedFilterProperty){
 					  $log.debug('criteriaRangeChanged');
 					  $log.debug(selectedFilterProperty);
@@ -377,16 +377,16 @@ class SWCriteriaDate{
 			  					selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
 								break;
 							case 'q':
-								 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));	
+								 var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
 								 var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
 								 var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
 								 lastDayOfPreviousQuarter.setHours(23,59,59,999);
 								 selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
-								 
+
 								 var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
 							 	lastXQuartersAgo.add(-(measureCount * 3)).months();
 							 	selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
-								 
+
 								break;
 							case 'y':
 								var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
@@ -397,7 +397,7 @@ class SWCriteriaDate{
 								break;
 		  				}
 	  				}
-				  	
+
 	  				if(selectedCondition.dateInfo.type === 'exactDate' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)){
 	  					selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
 	  					selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
@@ -406,15 +406,15 @@ class SWCriteriaDate{
 	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart) ){
 	  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
 	  					}
-	  					
+
 	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeEnd) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)){
 	  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23,59,59,999);
 	  					}
-	  					
+
 	  				}
-				  	
+
 				  	$log.debug('criteriaRangeChanged');
-			  		$log.debug(selectedCondition); 
+			  		$log.debug(selectedCondition);
 			  		$log.debug(selectedFilterProperty);
 				  };
 				   if(angular.isUndefined(scope.filterItem.$$isNew) || scope.filterItem.$$isNew === false){
@@ -422,7 +422,7 @@ class SWCriteriaDate{
 							if(conditionOption.display == scope.filterItem.conditionDisplay ){
 								scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 								scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-								
+
 								if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
 								&& angular.isDefined(scope.filterItem.value)
 								&& scope.filterItem.value.length
@@ -431,7 +431,7 @@ class SWCriteriaDate{
 									scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
 									scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
 								}
-								
+
 								if(angular.isDefined(scope.selectedConditionChanged)){
 									scope.selectedConditionChanged(scope.selectedFilterProperty);
 								}
@@ -442,7 +442,7 @@ class SWCriteriaDate{
 					  scope.selectedFilterProperty.criteriaRangeStart = '';
 					  scope.selectedFilterProperty.criteriaRangeEnd = '';
 				  }
-				  
+
 			}
 		};
 	}

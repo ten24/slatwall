@@ -1,8 +1,8 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 class PercentageFilter{
-    
+
     public static Factory(){
         return (input, decimals, suffix)=> {
             decimals = angular.isNumber(decimals)? decimals :  3;
@@ -13,6 +13,6 @@ class PercentageFilter{
             return Math.round(input * Math.pow(10, decimals + 2))/Math.pow(10, decimals) + suffix;
         };
     }
-    
+
 }
 export {PercentageFilter};

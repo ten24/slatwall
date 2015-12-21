@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 class ProductCreateController{
         public collectionConfig;
@@ -61,7 +61,7 @@ class ProductCreateController{
                 }
                 this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option);
             });
-             
+
             this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
 
             var productTypeOptions:any = $("select[name='product.productType.productTypeID']")[0];

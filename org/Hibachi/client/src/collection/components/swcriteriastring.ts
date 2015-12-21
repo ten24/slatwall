@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWCriteriaString{
 	public static Factory(){
 		var directive = (
@@ -50,7 +50,7 @@ class SWCriteriaString{
 				 	var stringOptions = [];
 				 	if(type === 'filter'){
 				 		stringOptions = [
-						
+
 							{
 								display:"Equals",
 								comparisonOperator:"="
@@ -130,42 +130,42 @@ class SWCriteriaString{
 							}
 				 		];
 				 	}
-			    	
+
 					return stringOptions;
 			    };
 			    //initialize values
-			    
+
 			    scope.conditionOptions = getStringOptions(scope.comparisonType);
-			    
+
 			    scope.inListArray = [];
     			if(angular.isDefined(scope.filterItem.value)){
     				scope.inListArray = scope.filterItem.value.split(',');
     			}
-    			
+
     			scope.newListItem = '';
-    			
+
 			    //declare functions
 			    scope.addToValueInListFormat = function(inListItem){
 					// Adds item into array
 					scope.inListArray.push(inListItem);
-				
+
 					//set value field to the user generated list
 					scope.filterItem.value = scope.inListArray.toString();
 					scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
 					scope.newListItem = '';
 				};
-				
+
 				scope.removelistItem = function(argListIndex){
 					scope.inListArray.splice(argListIndex,1);
 					scope.filterItem.value = scope.inListArray.toString();
 					scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
 				};
-				
-				
+
+
 				scope.clearField = function(){
 					scope.newListItem = '';
 				};
-				
+
 				scope.selectedConditionChanged = function(selectedFilterProperty){
     				//scope.selectedFilterProperty.criteriaValue = '';
     				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
@@ -179,27 +179,27 @@ class SWCriteriaString{
     					}
     				}
     			};
-    			
+
     			scope.$watch('filterItem.value',function(criteriaValue){
     				//remove percents for like values
 		    		if(angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)){
 		    			scope.filterItem.value = scope.filterItem.value.replace('%','');
 		    		}
 		    	});
-			    
+
 			    scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 					if(angular.isDefined(selectedFilterProperty)){
-		    			
+
 		    			angular.forEach(scope.conditionOptions, function(conditionOption){
-							
+
 							if(conditionOption.display == scope.filterItem.conditionDisplay ){
 								scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 								scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-								
+
 								if(angular.isDefined(scope.selectedConditionChanged)){
 									scope.selectedConditionChanged(scope.selectedFilterProperty);
 								}
-								
+
 							}
 						});
 					}

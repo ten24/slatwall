@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 //import pagination = require('../services/paginationservice');
 //var PaginationService = pagination.PaginationService;
@@ -10,17 +10,17 @@ class SWPaginationBarController{
     //@ngInject
     constructor(paginationService){
         if(angular.isUndefined(this.paginator)){
-            this.paginator = paginationService.createPagination();    
+            this.paginator = paginationService.createPagination();
         }
     }
 }
 
  class SWPaginationBar implements ng.IDirective{
-    
+
     public restrict:string = 'E';
     public scope = {};
     public bindToController={
-        paginator:"="    
+        paginator:"="
     };
     public controller=SWPaginationBarController;
     public controllerAs="swPaginationBar";
@@ -28,19 +28,19 @@ class SWPaginationBarController{
     public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (pathBuilderConfig,partialsPath) => new SWPaginationBar(pathBuilderConfig,partialsPath);
         directive.$inject = ['pathBuilderConfig','partialsPath'];
-        return directive;    
+        return directive;
     }
-    
+
     //@ngInject
     constructor(pathBuilderConfig,partialsPath){
-        
-        
+
+
         this.templateUrl = pathBuilderConfig.buildPartialsPath(partialsPath)+'paginationbar.html';
     }
-    
-    
+
+
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-        
+
     }
 }
 
@@ -50,11 +50,11 @@ class SWPaginationBarController{
 //            var directive = <any>classType;
 //            return new directive(args);
 //        }
-//        
+//
 //        factory.$inject = classType.$inject;
 //        return factory;
-//        // var directive: ng.IDirectiveFactory = 
-//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService); 
+//        // var directive: ng.IDirectiveFactory =
+//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService);
 //        // directive.$inject = ['$log','$timeout','partialsPath','paginationService'];
 //        // return directive;
 //    }

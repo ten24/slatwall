@@ -1,5 +1,5 @@
-/// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../../client/typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWResizedImage{
 	public static Factory(){
 		var directive = (

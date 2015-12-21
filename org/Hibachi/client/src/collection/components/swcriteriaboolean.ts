@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWCriteriaBoolean{
 	public static Factory(){
 		var directive = (
@@ -97,16 +97,16 @@ class SWCriteriaBoolean{
 				 	}
 			    	return booleanOptions;
 			    };
-			    
+
 			    scope.conditionOptions = getBooleanOptions(scope.comparisonType);
-			    
+
 			    angular.forEach(scope.conditionOptions, function(conditionOption){
-					
+
 					if(conditionOption.display == scope.filterItem.conditionDisplay ){
 						scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 						scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-						
-						
+
+
 						if(angular.isDefined(scope.selectedConditionChanged)){
 							scope.selectedConditionChanged(scope.selectedFilterProperty);
 						}

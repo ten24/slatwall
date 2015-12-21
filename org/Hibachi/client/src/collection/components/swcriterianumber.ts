@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWCriteriaNumber{
 	public static Factory(){
 		var directive = (
@@ -127,14 +127,14 @@ class SWCriteriaNumber{
 				 	}
 			    	return numberOptions;
 			    };
-			    
+
     			 scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
  		    		if(angular.isDefined(criteriaValue)){
  		    			scope.selectedFilterProperty.criteriaValue = criteriaValue;
  		    			$log.debug(scope.selectedFilterProperty);
  		    		}
  		    	});
-    			 
+
     				scope.conditionOptions = getNumberOptions(scope.comparisonType);
 	    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 					  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
@@ -152,10 +152,10 @@ class SWCriteriaNumber{
 	    					selectedFilterProperty.showCriteriaValue = false;
 	    				}
 	    			};
-	    			
+
 	    			angular.forEach(scope.conditionOptions, function(conditionOption){
 	    				$log.debug('populate');
-	    				
+
 						if(conditionOption.display == scope.filterItem.conditionDisplay ){
 							scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 							$log.debug(scope.filterItem);
@@ -167,20 +167,20 @@ class SWCriteriaNumber{
 		    				}else{
 		    					scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
 		    				}
-							
-							
+
+
 							if(angular.isDefined(scope.filterItem.criteriaNumberOf)){
 								scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
 							}
-							
+
 							if(angular.isDefined(scope.selectedConditionChanged)){
 								scope.selectedConditionChanged(scope.selectedFilterProperty);
 							}
 						}
 					});
-    			
-    			
-				
+
+
+
 			}
 		};
 	}

@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 declare var CKEDITOR:any;
 class SWContentEditor{
     public static Factory(){
@@ -48,19 +48,19 @@ class SWContentEditor{
 			templateUrl:pathBuilderConfig.buildPartialsPath(contentPartialsPath)+"contenteditor.html",
 			link: function(scope, element,attrs){
                 scope.editorOptions = CKEDITOR.editorConfig;
-                
+
                 scope.onContentChange = function(){
-                    var form = formService.getForm('contentEditor');   
-                    form.contentBody.$setDirty(); 
+                    var form = formService.getForm('contentEditor');
+                    form.contentBody.$setDirty();
                 }
-                
+
 //                scope.saveContent = function(){
 //                   var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';
 //                   var params = {
 //                        entityID:scope.content.contentID,
 //                        templateHTML:scope.content.templateHTML,
 //                        context:'saveTemplateHTML',
-//                        entityName:'content'   
+//                        entityName:'content'
 //                   }
 //                   $http.post(urlString,
 //                        {

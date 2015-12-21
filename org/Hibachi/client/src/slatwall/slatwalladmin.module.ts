@@ -4,7 +4,12 @@ import {hibachimodule} from "../hibachi/hibachi.module";
 import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
 import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 import {ngslatwallmodelmodule} from "../ngslatwallmodel/ngslatwallmodel.module";
-
+import {contentmodule} from "../content/content.module";
+import {orderitemmodule} from "../orderitem/orderitem.module";
+import {productmodule} from "../product/product.module";
+import {productbundlemodule} from "../productbundle/productbundle.module";
+import {workflowmodule} from "../workflow/workflow.module";
+import {entitymodule} from "../entity/entity.module";
 //filters
 import {EntityRBKey} from "./filters/entityrbkey";
 import {SWCurrency} from "./filters/swcurrency";
@@ -13,18 +18,20 @@ import {SWCurrency} from "./filters/swcurrency";
 declare var slatwallAngular:any;
 declare var $:SlatwallJQueryStatic;
 
-
-
 var slatwalladminmodule = angular.module('slatwalladmin',[
   //Angular Modules
   'ngAnimate',
-  'ngRoute',
   'ngSanitize',
   //custom modules
   hibachimodule.name,
   ngslatwallmodule.name,
   ngslatwallmodelmodule.name,
-
+  entitymodule.name,
+  contentmodule.name,
+  orderitemmodule.name,
+  productmodule.name,
+  productbundlemodule.name,
+  workflowmodule.name,
   //3rdParty modules
   'ui.bootstrap'
 
@@ -35,7 +42,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   {
       //configure partials path properties
      pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-     pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/hibachi/');
+     pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/');
 
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
@@ -96,30 +103,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      console.log($httpProvider.interceptors);
     console.log(hibachimodule);
      // route provider configuration
-     $routeProvider.when('/entity/:entityName/', {
-         template: function(params){
-             var entityDirectiveExists = $injector.has('sw'+params.entityName+'ListDirective');
-             if(entityDirectiveExists){
-                 return '<sw-'+params.entityName.toLowerCase()+'-list>';
-             }else{
-                 return '<sw-list></sw-list>';
-             }
-         },
-         controller: 'routerController'
-     }).when('/entity/:entityName/:entityID', {
-         template: function(params){
-             var entityDirectiveExists = $injector.has('sw'+params.entityName+'DetailDirective');
-             if(entityDirectiveExists){
-                 return '<sw-'+params.entityName.toLowerCase()+'-detail>';
-             }else{
-                 return '<sw-detail></sw-detail>';
-             }
-         },
-         controller: 'routerController',
-     }).otherwise({
-         //controller:'otherwiseController'
-         templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
-     });
+
 
  }])
  .run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService','pathBuilderConfig', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService,pathBuilderConfig) => {

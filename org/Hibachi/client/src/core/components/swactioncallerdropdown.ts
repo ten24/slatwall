@@ -1,6 +1,6 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
-    
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+
 class SWActionCallerDropdownController{
     public title:string;
     public type:string;
@@ -19,7 +19,7 @@ class SWActionCallerDropdownController{
 }
 
 class SWActionCallerDropdown implements ng.IDirective{
-    
+
     public restrict:string = 'E';
     public scope = {};
     public transclude=true;
@@ -34,24 +34,24 @@ class SWActionCallerDropdown implements ng.IDirective{
     public controller=SWActionCallerDropdownController
     public controllerAs="swActionCallerDropdown";
     public templateUrl;
-    
+
     public static Factory(){
         var directive = (corePartialsPath,pathBuilderConfig) => new SWActionCallerDropdown(corePartialsPath,pathBuilderConfig);
         directive.$inject = ['corePartialsPath','pathBuilderConfig'];
         return directive;
     }
-    
+
     constructor(private corePartialsPath,pathBuilderConfig){
         this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'actioncallerdropdown.html';
     }
-    
+
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-        
+
     }
 }
 export{
     SWActionCallerDropdownController,
     SWActionCallerDropdown
-}  
+}
 
 

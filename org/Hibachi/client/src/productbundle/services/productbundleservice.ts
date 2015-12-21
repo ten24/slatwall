@@ -1,19 +1,19 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 
 class ProductBundleService{
     public static $inject = [
         '$log','$slatwall','utilityService'
     ];
-    
+
     constructor(private $log:ng.ILogService, private $slatwall, private utilityService){
-        
+
         this.$log = $log;
         this.$slatwall = $slatwall;
         this.utilityService = utilityService;
     }
-    
+
     public decorateProductBundleGroup = (productBundleGroup):void =>{
         productBundleGroup.data.$$editing = true;
         var prototype = {
@@ -21,11 +21,11 @@ class ProductBundleService{
                 if(quantity < 0 || quantity === null ){
                     this.minimumQuantity = 0;
                 }
-                
+
                 if(quantity > this.maximumQuantity){
                     this.maximumQuantity = quantity;
-                } 
-                
+                }
+
             },
             $$setMaximumQuantity:function(quantity){
                 if(quantity < 1 || quantity === null ){
@@ -33,7 +33,7 @@ class ProductBundleService{
                 }
                 if(this.maximumQuantity < this.minimumQuantity){
                     this.minimumQuantity = this.maximumQuantity;
-                    
+
                 }
             },
             $$setActive:function(value){
@@ -47,7 +47,7 @@ class ProductBundleService{
                 }
             }
         };
-        
+
         angular.extend(productBundleGroup.data,prototype);
     }
 
@@ -72,10 +72,10 @@ class ProductBundleService{
                 }else{
                     productBundleGroupFilters[i].propertyIdentifier='_sku.'+filterTerm.value+'.'+filterTerm.value+'ID';
                 }
-                
+
             }
         }
-        
+
         this.$log.debug(productBundleGroupFilters);
         return productBundleGroupFilters;
     }

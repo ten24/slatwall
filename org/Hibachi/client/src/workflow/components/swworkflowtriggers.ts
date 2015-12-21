@@ -1,3 +1,6 @@
+
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWWorkflowTriggers{
 	public static Factory(){
 		var directive = (
@@ -40,19 +43,19 @@ class SWWorkflowTriggers{
 			},
 			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtriggers.html",
 			link: function(scope, element,attrs,formController){
-				$log.debug('Workflow triggers init');	
+				$log.debug('Workflow triggers init');
 				scope.$id = 'swWorkflowTriggers';
 				/**
 				 * Retrieves the workflow triggers.
-				 */	
+				 */
 				scope.getWorkflowTriggers = function(){
 
 					/***
 					   Note:
 					   This conditional is checking whether or not we need to be retrieving to
 					   items all over again. If we already have them, we won't make another
-					   trip to the database. 
-					   
+					   trip to the database.
+
 					***/
 					if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
 						var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
@@ -60,13 +63,13 @@ class SWWorkflowTriggers{
 									scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 									$log.debug('workflowtriggers');
 									$log.debug(scope.workflowTriggers);
-								
+
 									/* resets the workflow trigger */
 									if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
 										scope.workflow.data.workflowTriggers = [];
 										scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 									}
-								
+
 								angular.forEach(scope.workflowTriggers, function(workflowTrigger,key){
 									$log.debug('trigger');
 									$log.debug(workflowTrigger);
@@ -82,34 +85,34 @@ class SWWorkflowTriggers{
 					}//<---end else
 				};
 				scope.getWorkflowTriggers();//call triggers
-				
+
 				scope.showCollections = false;
 				scope.collections = [];
 				scope.getCollectionByWorkflowObject = function(){
-					var filterGroupsConfig ='['+  
+					var filterGroupsConfig ='['+
 						'{'+
-		                 	'"filterGroup":['+  
+		                 	'"filterGroup":['+
 					            '{'+
 					               '"propertyIdentifier":"_collection.collectionObject",'+
 					               '"comparisonOperator":"=",'+
 					               '"value":"'+ scope.workflow.data.workflowObject +'"'+
-					           '}'+ 
+					           '}'+
 					         ']'+
 						'}'+
 					']';
 					var collectionsPromise = $slatwall.getEntity('Collection',{filterGroupsConfig:filterGroupsConfig});
-					
+
 					collectionsPromise.then(function(value){
 						$log.debug('getcollections');
 						scope.collections = value.pageRecords;
 						$log.debug(scope.collections);
-						
+
 					});
 				};
 				scope.searchEvent = {
-					name:''	
+					name:''
 				};
-				
+
 				/**
 				 * Watches for changes in the event
 				 */
@@ -126,17 +129,17 @@ class SWWorkflowTriggers{
 				scope.getEventOptions = function(objectName){
 					if(!scope.eventOptions.length){
 						var eventOptionsPromise = $slatwall.getEventOptions(objectName);
-						
+
 						eventOptionsPromise.then(function(value){
 							$log.debug('getEventOptions');
 							scope.eventOptions = value.data;
 							$log.debug(scope.eventOptions.name);
-							
+
 						});
 					}
 					scope.showEventOptions = !scope.showEventOptions;
 				};
-				
+
 				/**
 				 * Saves the workflow triggers.
 				 */
@@ -153,7 +156,7 @@ class SWWorkflowTriggers{
                         }
 					});
 				};
-				
+
 				/**
 				 * Changes the selected trigger value.
 				 */
@@ -167,12 +170,12 @@ class SWWorkflowTriggers{
 					}else{
 						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
 					}
-					
+
 					scope.searchEvent.name = eventOption.name;
 					$log.debug(eventOption);
 					$log.debug(scope.workflowTriggers);
 				};
-				
+
 				/**
 				 * Selects a new collection.
 				 */
@@ -181,7 +184,7 @@ class SWWorkflowTriggers{
 					scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
 					scope.showCollections = false;
 				};
-				
+
 				/**
 				 * Removes a workflow trigger
 				 */
@@ -191,13 +194,13 @@ class SWWorkflowTriggers{
 					}
 					scope.workflowTriggers.splice(workflowTrigger.$$index,1);
 				};
-				
+
 				scope.setAsEvent = function(workflowTrigger){
 					//add event,  clear schedule
 				};
-				
+
 				scope.setAsSchedule = function(workflowTrigger){
-				
+
 				};
 				/**
 				 * Adds a workflow trigger.

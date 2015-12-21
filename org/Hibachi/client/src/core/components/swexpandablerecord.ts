@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 class SWExpandableRecordController{
     public static $inject = ['$timeout','utilityService','$slatwall','collectionConfigService'];
@@ -152,7 +152,7 @@ class SWExpandableRecord implements ng.IDirective{
                     });
                 }
             }
- 
+
             this.$templateRequest(this.pathBuilderConfig.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
                 var template = angular.element(html);
 

@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWColumnItem{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
@@ -35,11 +35,11 @@ class SWColumnItem{
 		$templateCache,
 		$log,
 		$timeout,
-		pathBuilderConfig, 
+		pathBuilderConfig,
 		collectionService,
 		collectionPartialsPath
 	){
-		
+
 		return {
 			restrict: 'A',
 			require:"^swDisplayOptions",
@@ -54,7 +54,7 @@ class SWColumnItem{
 			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
                 scope.editingDisplayTitle=false;
-                
+
                 scope.editDisplayTitle = function(){
                     if(angular.isUndefined(scope.column.displayTitle)){
                         scope.column.displayTitle = scope.column.title;
@@ -73,7 +73,7 @@ class SWColumnItem{
                     scope.column.displayTitle = scope.previousDisplayTitle;
                     scope.editingDisplayTitle = false;
                 }
-                
+
 				$log.debug('displayOptionsController');
 				if(angular.isUndefined(scope.column.sorting)){
 					scope.column.sorting = {
@@ -82,7 +82,7 @@ class SWColumnItem{
 						priority:0
 					};
 				}
-				
+
 				scope.toggleVisible = function(column){
 					$log.debug('toggle visible');
 					if(angular.isUndefined(column.isVisible)){
@@ -91,7 +91,7 @@ class SWColumnItem{
 					column.isVisible = !column.isVisible;
 					scope.saveCollection();
 				};
-				
+
 				scope.toggleSearchable = function(column){
 					$log.debug('toggle searchable');
 					if(angular.isUndefined(column.isSearchable)){
@@ -100,7 +100,7 @@ class SWColumnItem{
 					column.isSearchable = !column.isSearchable;
 					scope.saveCollection();
 				};
-				
+
 				scope.toggleExportable = function(column){
 					$log.debug('toggle exporable');
 					if(angular.isUndefined(column.isExportable)){
@@ -109,7 +109,7 @@ class SWColumnItem{
 					column.isExportable = !column.isExportable;
 					scope.saveCollection();
 				};
-				
+
 				var compareByPriority = function(a,b){
 					if(angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)){
 						if(a.sorting.priority < b.sorting.priority){
@@ -121,13 +121,13 @@ class SWColumnItem{
 					}
 					return 0;
 				};
-				
+
 				var updateOrderBy = function(){
 					if(angular.isDefined(scope.columns)){
 						var columnsCopy = angular.copy(scope.columns);
 						columnsCopy.sort(compareByPriority);
 						scope.orderBy = [];
-						
+
 						angular.forEach(columnsCopy,function(column){
 							if(angular.isDefined(column.sorting) && column.sorting.active === true){
 								var orderBy = {
@@ -139,7 +139,7 @@ class SWColumnItem{
 						});
 					}
 				};
-				
+
 				scope.toggleSortable = function(column){
 					$log.debug('toggle sortable');
 					if(angular.isUndefined(column.sorting)){
@@ -149,14 +149,14 @@ class SWColumnItem{
 								priority:0
 						};
 					}
-					
+
 					if(column.sorting.active === true){
 						if(column.sorting.sortOrder === 'asc'){
 							column.sorting.sortOrder = 'desc';
 						}else{
 							removeSorting(column);
 							column.sorting.active = false;
-							
+
 						}
 					}else{
 						column.sorting.active = true;
@@ -165,9 +165,9 @@ class SWColumnItem{
 					}
 					updateOrderBy();
 					scope.saveCollection();
-					
+
 				};
-				
+
 				var removeSorting = (column,saving?)=>{
 					if(column.sorting.active === true){
 						for(var i in scope.columns){
@@ -177,17 +177,17 @@ class SWColumnItem{
 						}
 						column.sorting.priority = 0;
 					}
-					
+
 					if(!saving){
 						updateOrderBy();
 						scope.saveCollection();
 					}
-					
+
 				};
-				
+
 				scope.prioritize = function(column){
 					if(column.sorting.priority === 1){
-						
+
 						var activelySorting = getActivelySorting();
 						for(var i in scope.columns){
 							if(scope.columns[i].sorting.active === true){
@@ -195,21 +195,21 @@ class SWColumnItem{
 							}
 						}
 						column.sorting.priority = activelySorting.length;
-						
+
 					}else{
 						for(var i in scope.columns){
 							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority === column.sorting.priority - 1){
 								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority + 1;
 							}
 						}
-						
+
 						column.sorting.priority -= 1;
 					}
-					
+
 					updateOrderBy();
 					scope.saveCollection();
 				};
-				
+
 				var getActivelySorting = function(){
 					var activelySorting = [];
 					for(var i in scope.columns){
@@ -219,7 +219,7 @@ class SWColumnItem{
 					}
 					return activelySorting;
 				};
-				
+
 				scope.removeColumn = function(columnIndex){
 					$log.debug('remove column');
 					$log.debug(columnIndex);
@@ -231,7 +231,7 @@ class SWColumnItem{
 			}
 		};
 	}
-	
+
 }
 export{
 	SWColumnItem

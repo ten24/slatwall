@@ -1,19 +1,19 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 import {BaseService} from "./baseservice";
 class UtilityService extends BaseService{
-    
+
     constructor(){
         super();
-        
+
     }
-    
+
     public getQueryParamsFromUrl = (url) =>{
-      // This function is anonymous, is executed immediately and 
+      // This function is anonymous, is executed immediately and
       // the return value is assigned to QueryString!
       var query_string = {};
-      if(url && url.split){ 
+      if(url && url.split){
           var spliturl = url.split('?');
           if(spliturl.length){
               url = spliturl[1];
@@ -33,49 +33,49 @@ class UtilityService extends BaseService{
                         } else {
                           query_string[pair[0]].push(pair[1]);
                         }
-                      } 
+                      }
                   }
               }
           }
-          
+
         }
         return query_string;
     }
-    
+
     public ArrayFindByPropertyValue = (arr:any[],property:string,value:any):number =>{
         let currentIndex = -1;
         arr.forEach((arrItem,index)=>{
            if(arrItem[property] && arrItem[property] === value){
-               currentIndex = index;  
-           } 
-        }); 
-        return currentIndex;   
+               currentIndex = index;
+           }
+        });
+        return currentIndex;
     }
-    
+
     public listLast = (list:string='',delimiter:string=','):string =>{
-        
+
         var listArray = list.split(delimiter);
-       
+
 		return listArray[listArray.length-1];
     }
-    
+
     public listRest = (list:string='',delimiter:string=","):string =>{
-        var listArray = list.split(delimiter);   
+        var listArray = list.split(delimiter);
         if(listArray.length){
-            listArray.splice(0,1);    
+            listArray.splice(0,1);
         }
         return listArray.join(delimiter);
     }
-    
+
     public listFirst = (list:string='',delimiter:string=','):string =>{
-        
+
         var listArray = list.split(delimiter);
-       
+
         return listArray[0];
     }
-    
+
     public listPrepend = (list:string='', substring:string, delimiter:string=','):string =>{
-        
+
         var listArray = list.split(delimiter);
         if(listArray.length){
             return substring + delimiter + list;
@@ -83,25 +83,25 @@ class UtilityService extends BaseService{
             return substring
         }
     }
-    
+
     public listAppend = (list:string='', substring:string, delimiter:string=','):string =>{
-        
+
         var listArray = list.split(delimiter);
         if(listArray.length){
             return list + delimiter + substring;
         }else{
             return substring
         }
-        
+
     }
-    
-    
+
+
     public formatValue=(value,formatType,formatDetails,entityInstance)=>{
         if(angular.isUndefined(formatDetails)){
             formatDetails = {};
         }
         var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno"];
-        
+
         if(typeList.indexOf(formatType)){
             this['format_'+formatType](value,formatDetails,entityInstance);
         }
@@ -137,7 +137,7 @@ class UtilityService extends BaseService{
             return entityInstance.metaData.$$getRBKey("define.no");
         }
     }
-    
+
     public left = (stringItem:string,count:number):string =>{
         return stringItem.substring(0,count);
     }
@@ -149,35 +149,35 @@ class UtilityService extends BaseService{
         var end = start + count;
         return stringItem.substring(start,end);
     }
-    
+
     public replaceAll = (stringItem:string, find:string, replace:string):string => {
         return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
     }
-    
+
     public escapeRegExp = (stringItem:string) =>{
         return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     }
-    
+
     public createID = (count:number):string =>{
           var count = count || 26;
-          
+
           var text = "";
           var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      
+
           for( var i=0; i < count; i++ )
               text += possible.charAt(Math.floor(Math.random() * possible.length));
-      
+
           return text;
       }
       //list functions
       public arrayToList = (array:Array<any>, delimiter?:string) =>{
           if(delimiter != null){
-              return array.join(delimiter); 
-          } else { 
-              return array.join(); 
-          } 
+              return array.join(delimiter);
+          } else {
+              return array.join();
+          }
       }
-      
+
      public listFind = (list:string='',value:string,delimiter:string=','):number =>{
           var splitString = list.split(delimiter);
           var stringFound = -1;
@@ -190,7 +190,7 @@ class UtilityService extends BaseService{
          return stringFound;
       }
       public listLen = (list:string='',delimiter:string=','):number =>{
-          
+
           var splitString = list.split(delimiter);
           return splitString.length;
       }
@@ -199,15 +199,15 @@ class UtilityService extends BaseService{
           var arrayOfTypes = [],
                 returnArray = [],
                 firstKey = keysToSortBy[0];
-            
+
             if(angular.isDefined(keysToSortBy[1])){
                 var secondKey = keysToSortBy[1];
             }
 
-            for(var itemIndex in array){         
+            for(var itemIndex in array){
                 if(!(arrayOfTypes.indexOf(array[itemIndex][firstKey]) > -1)){
-                    arrayOfTypes.push(array[itemIndex][firstKey]);  
-                }  
+                    arrayOfTypes.push(array[itemIndex][firstKey]);
+                }
             }
             arrayOfTypes.sort(function(a, b){
                 if(a < b){
@@ -215,14 +215,14 @@ class UtilityService extends BaseService{
                 }else if(a > b){
                     return 1;
                 }else{
-                    return 0;   
+                    return 0;
                 }
             });
             for(var typeIndex in arrayOfTypes){
                 var tempArray = [];
                 for(var itemIndex in array){
                     if(array[itemIndex][firstKey] == arrayOfTypes[typeIndex]){
-                        tempArray.push(array[itemIndex]);  
+                        tempArray.push(array[itemIndex]);
                     }
                 }
                 if(keysToSortBy[1] != null){
@@ -232,15 +232,15 @@ class UtilityService extends BaseService{
                         }else if(a[secondKey] > b[secondKey]){
                             return 1;
                         }else{
-                            return 0;   
-                        } 
-                    }); 
+                            return 0;
+                        }
+                    });
                 }
 
                 for(var finalIndex in tempArray){
-                    returnArray.push(tempArray[finalIndex]);    
+                    returnArray.push(tempArray[finalIndex]);
                 }
-                
+
             }
             return returnArray;
       }
@@ -248,4 +248,4 @@ class UtilityService extends BaseService{
 export {
     UtilityService
 };
-      
+

@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 import {PageDialog} from "../model/pagedialog";
 
 interface IDialogService {
@@ -9,7 +9,7 @@ interface IDialogService {
 class DialogService{
     public static $inject = [
         'pathBuilderConfig'
-    ];    
+    ];
     private _pageDialogs;
     constructor(
          private pathBuilderConfig
@@ -17,11 +17,11 @@ class DialogService{
         this._pageDialogs = [];
         this.pathBuilderConfig = pathBuilderConfig;
     }
-    
+
     get = (): PageDialog[] =>{
         return this._pageDialogs || [];
     };
-    
+
     addPageDialog = ( name:PageDialog, params?:any ):void =>{
         var newDialog = {
             'path' : name + '.html',
@@ -29,15 +29,15 @@ class DialogService{
         };
         this._pageDialogs.push( newDialog );
     };
-    
+
     removePageDialog = ( index:number ):void =>{
         this._pageDialogs.splice(index, 1);
     };
-    
+
     getPageDialogs = ():any =>{
         return this._pageDialogs;
     };
-    
+
     removeCurrentDialog = ():void =>{
         this._pageDialogs.splice(this._pageDialogs.length -1, 1);
     };
@@ -48,5 +48,5 @@ class DialogService{
 }
 export {
     DialogService,
-    IDialogService   
+    IDialogService
 };

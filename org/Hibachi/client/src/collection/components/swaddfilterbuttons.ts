@@ -1,7 +1,7 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWAddFilterButtons{
-    
+
     public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
             $http,
@@ -26,7 +26,7 @@ class SWAddFilterButtons{
             'collectionPartialsPath',
             'pathBuilderConfig'
         ];
-        return directive;    
+        return directive;
     }
     //@ngInject
     constructor(
@@ -38,20 +38,20 @@ class SWAddFilterButtons{
         pathBuilderConfig
     ){
         return {
-          
+
           require:'^swFilterGroups',
           restrict: 'E',
           templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"addfilterbuttons.html",
           scope:{
-              itemInUse:"=" 
-          },   
+              itemInUse:"="
+          },
           link: function(scope, element,attrs,filterGroupsController){
               scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
-              
+
               scope.addFilterItem = function(){
                   collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
               };
-              
+
               scope.addFilterGroupItem = function(){
                   collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse,true);
               };
@@ -63,4 +63,4 @@ export{
     SWAddFilterButtons
 }
 
-	
+

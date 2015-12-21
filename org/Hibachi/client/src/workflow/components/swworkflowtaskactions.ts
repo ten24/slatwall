@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWWorkflowTaskActions{
     public static Factory(){
         var directive = (
@@ -43,7 +45,7 @@ class SWWorkflowTaskActions{
                 $log.debug('Workflow Task Actions Init');
                 $log.debug(scope.workflowTask);
                 scope.openActions = false;
-                
+
                 /**
                     * Returns the correct object based on the selected object type.
                     */
@@ -64,10 +66,10 @@ class SWWorkflowTaskActions{
                     Note:
                     This conditional is checking whether or not we need to be retrieving to
                     items all over again. If we already have them, we won't make another
-                    trip to the database. 
-                    
+                    trip to the database.
+
                 ***/
-                        if(angular.isUndefined(scope.workflowTask.data.workflowTaskActions)){   
+                        if(angular.isUndefined(scope.workflowTask.data.workflowTaskActions)){
                             var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
                                 workflowTaskPromise.then(function () {
                                     scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
@@ -85,7 +87,7 @@ class SWWorkflowTaskActions{
                     }
                 };
                 scope.getWorkflowTaskActions();//Call get
-                
+
 
                 /**
                     * --------------------------------------------------------------------------------------------------------
@@ -108,7 +110,7 @@ class SWWorkflowTaskActions{
                         }else if (context == "finish"){
                                 scope.finished = true;
                         }
-                    }); 
+                    });
                 }//<--end save
 
                 /**
@@ -116,7 +118,7 @@ class SWWorkflowTaskActions{
                     */
                     scope.setHidden = function(task){
                         if(!angular.isObject(task)){ task = {};}
-                        
+
                         if(angular.isUndefined(task.hidden)){
 
                             task.hidden=false;
@@ -125,7 +127,7 @@ class SWWorkflowTaskActions{
                             task.hidden = !task.hidden;
                         }
                     };
-                
+
                 /**
                     * --------------------------------------------------------------------------------------------------------
                     * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
@@ -138,7 +140,7 @@ class SWWorkflowTaskActions{
                     scope.selectWorkflowTaskAction(workflowTaskAction);
                     $log.debug(scope.workflow);
                 };
-                
+
                 /**
                     * --------------------------------------------------------------------------------------------------------
                     * Selects a new task action and populates the task action properties.
@@ -160,7 +162,7 @@ class SWWorkflowTaskActions{
                         metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject], scope.workflowTask.data.workflow.data.workflowObject);
                         scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
                     });
-                }; 
+                };
                 /**
                     * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
                     */

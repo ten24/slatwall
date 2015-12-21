@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWOptions{
     public static Factory(){
         var directive:ng.IDirectiveFactory = (
@@ -31,7 +31,7 @@ class SWOptions{
         corePartialsPath,
         pathBuilderConfig
     ){
-       
+
         return {
 			restrict: 'AE',
 			scope:{

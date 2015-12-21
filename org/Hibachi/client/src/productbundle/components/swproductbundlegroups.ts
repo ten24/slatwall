@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWProductBundleGroups{
     public static Factory(){
         var directive = (
@@ -41,7 +41,7 @@ class SWProductBundleGroups{
     ){
         return {
 			restrict: 'EA',
-			
+
 			templateUrl:pathBuilderConfig.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html",
 			scope:{
 				sku:"=",
@@ -57,22 +57,22 @@ class SWProductBundleGroups{
 					productBundleService.decorateProductBundleGroup(obj);
 					obj.data.$$editing = false;
 				});
-				
+
 				$scope.removeProductBundleGroup = function(index){
 					$scope.productBundleGroups.splice(index,1);
 					$log.debug("Deleting PBG #" + index);
 					$log.debug($scope.productBundleGroups);
-					
-					
+
+
 				};
 				$scope.addProductBundleGroup = function(){
-					
+
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-					
+
 					productBundleService.decorateProductBundleGroup(productBundleGroup);
-					
+
 					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
-				};		
+				};
 			}]
 		};
     }

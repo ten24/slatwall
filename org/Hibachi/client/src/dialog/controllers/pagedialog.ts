@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class PageDialogController{
 	//@ngInject
 	constructor(
@@ -9,7 +11,7 @@ class PageDialogController{
 		dialogService
 	){
 		$scope.$id = 'pageDialogController';
-			
+
 		//get url param to retrieve collection listing
 		$scope.pageDialogs = dialogService.getPageDialogs();
 		$scope.scrollToTopOfDialog = function(){

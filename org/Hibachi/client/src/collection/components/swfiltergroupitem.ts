@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWFilterGroupItem{
 	public static Factory(){
 		var directive = (
@@ -59,27 +59,27 @@ class SWFilterGroupItem{
 				}).then(function(response){
 					element.replaceWith($compile(element.html())(scope));
 				});
-				
+
 				//for(item in filterGroupItem){}
 				scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
 				scope.filterGroupItem.$$index = scope.filterGroupItemIndex;
-				
+
 				scope.removeFilterGroupItem = function(){
 					filterGroupsController.removeFilterGroupItem(scope.filterGroupItemIndex);
 				};
-				
+
 				scope.filterGroupItem.removeFilterGroupItem = scope.removeFilterGroupItem;
-				
+
 				scope.filterGroupItem.$$disabled = false;
 				if(angular.isUndefined(scope.filterGroupItem.$$isClosed)){
 					scope.filterGroupItem.$$isClosed = true;
 				}
-				
+
 				scope.filterGroupItem.$$siblingItems = scope.siblingItems;
 				scope.selectFilterGroupItem = function(filterGroupItem){
 					collectionService.selectFilterGroupItem(filterGroupItem);
 				};
-				
+
 				scope.logicalOperatorChanged = function(logicalOperatorValue){
 					$log.debug('logicalOperatorChanged');
 					$log.debug(logicalOperatorValue);

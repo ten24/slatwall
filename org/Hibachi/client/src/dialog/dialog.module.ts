@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
 
 //services
 import {DialogService} from "./services/dialogservice";
@@ -12,10 +12,10 @@ var dialogmodule = angular.module('hibachi.dialog',[]).config(()=>{
 .service('dialogService', DialogService)
 //controllers
 .controller('pageDialog',PageDialogController)
-//filters 
+//filters
 //constants
 .constant('dialogPartials','dialog/components/')
-;  
+;
 export{
 	dialogmodule
 }

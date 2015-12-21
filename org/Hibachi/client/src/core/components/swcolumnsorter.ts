@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWColumnSorter{
 	public static Factory(){
 		var directive = (
@@ -37,7 +37,7 @@ class SWColumnSorter{
                 var orderBy:any = {
                     "propertyIdentifier":scope.column.propertyIdentifier,
                 }
-                
+
                 scope.sortAsc = function(){
                     orderBy.direction = 'Asc';
                     this.observerService.notify('sortByColumn',orderBy);
@@ -46,7 +46,7 @@ class SWColumnSorter{
                     orderBy.direction = 'Desc';
                     observerService.notify('sortByColumn',orderBy);
                 }
-                
+
 			}
 		};
 	}

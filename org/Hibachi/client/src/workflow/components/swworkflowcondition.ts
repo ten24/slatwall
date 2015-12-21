@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWWorkflowCondition{
 	public static Factory(){
 		var directive = (
@@ -40,7 +42,7 @@ class SWWorkflowCondition{
 		return {
 			restrict: 'E',
 			scope:{
-				workflowCondition:"=", 
+				workflowCondition:"=",
 				workflowConditionIndex:"=",
 				workflow:"=",
 				filterPropertiesList:"="
@@ -49,26 +51,26 @@ class SWWorkflowCondition{
 			link: function(scope, element,attrs){
 				$log.debug('workflowCondition init');
 				$log.debug(scope);
-				
+
 				scope.selectBreadCrumb = function(breadCrumbIndex){
 					//splice out array items above index
 					var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
 					scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
 					scope.selectedFilterPropertyChanged(null);
-					
+
 				};
-				
+
 				scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 					$log.debug('selectedFilterProperty');
 					$log.debug(selectedFilterProperty);
-					
+
 					scope.selectedFilterProperty = selectedFilterProperty;
 				};
-				
+
 				if(angular.isUndefined(scope.workflowCondition.breadCrumbs)){
 					scope.workflowCondition.breadCrumbs = [];
 					if(scope.workflowCondition.propertyIdentifier === ""){
-						
+
 						scope.workflowCondition.breadCrumbs = [
 						                     	{
 						                     		entityAlias:scope.workflow.data.workflowObject,
@@ -98,7 +100,7 @@ class SWWorkflowCondition{
 								metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier],breadCrumb.propertyIdentifier);
 								var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
 								entityAliasArrayFromString.pop();
-								
+
 								entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
 								if(angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])){
 									for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
@@ -116,7 +118,7 @@ class SWWorkflowCondition{
 						}else{
 							var entityAliasArrayFromString = scope.workflowCondition.propertyIdentifier.split('.');
 							entityAliasArrayFromString.pop();
-							
+
 							entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
 							if(angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])){
 								for(var i in scope.filterPropertiesList[entityAliasArrayFromString].data){
@@ -130,7 +132,7 @@ class SWWorkflowCondition{
 									}
 								}
 							}
-							
+
 						}
 					});
 				}
@@ -143,4 +145,4 @@ export{
 }
 
 
-	
+

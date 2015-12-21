@@ -1,5 +1,5 @@
-/// <reference path="../../../typings/tsd.d.ts" />
-/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 import {coremodule} from '../core/core.module';
 //directives
 import {SWChildOrderItem} from "./components/swchildorderitem";

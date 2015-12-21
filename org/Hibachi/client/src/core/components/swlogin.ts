@@ -1,7 +1,7 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
-    
+
 class SWLoginController{
     public account_login;
     constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private corePartialsPath, private $slatwall, private dialogService){
@@ -23,7 +23,7 @@ class SWLoginController{
 }
 
 class SWLogin implements ng.IDirective{
-    
+
     public restrict:string = 'E';
     public scope = {};
     public bindToController={
@@ -31,48 +31,47 @@ class SWLogin implements ng.IDirective{
     public controller=SWLoginController
     public controllerAs="SwLogin";
     public templateUrl;
-    
+
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             $route,
-            $log:ng.ILogService,  
-            $window:ng.IWindowService, 
-            corePartialsPath, 
+            $log:ng.ILogService,
+            $window:ng.IWindowService,
+            corePartialsPath,
             $slatwall,
             dialogService,
 			pathBuilderConfig
         )=>new SWLogin(
             $route,
-            $log,  
-            $window, 
-            corePartialsPath, 
+            $log,
+            $window,
+            corePartialsPath,
             $slatwall,
             dialogService,
 			pathBuilderConfig
         );
         directive.$inject = [
             '$route',
-            '$log',  
-            '$window', 
-            'corePartialsPath', 
+            '$log',
+            '$window',
+            'corePartialsPath',
             '$slatwall',
             'dialogService',
 			'pathBuilderConfig'
         ]
         return directive;
     }
-    
+
     constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private corePartialsPath, private $slatwall, private dialogService,
 			pathBuilderConfig ){
         this.templateUrl = pathBuilderConfig.buildPartialsPath(this).corePartialsPath+'/login.html';
     }
-    
+
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-        
+
     }
 }
 export{
     SWLogin
 }
-    
-  
+

@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 class SWContentBasic{
     public static Factory(){
@@ -52,11 +52,11 @@ class SWContentBasic{
                             scope.content.$$setSite(site);
                         });
                     }else{
-                        var site = $slatwall.newSite();   
-                        scope.content.$$setSite(site); 
+                        var site = $slatwall.newSite();
+                        scope.content.$$setSite(site);
                     }
-                    
-                    
+
+
                    var parentContent;
                     if(angular.isDefined($routeParams.parentContentID)){
                         var parentContentPromise;
@@ -70,12 +70,12 @@ class SWContentBasic{
                             $log.debug('contenttest');
                             $log.debug(scope.content);
                         });
-                        
+
                     }else{
                          var parentContent = $slatwall.newContent();
                          scope.content.$$setParentContent(parentContent);
                     }
-                   
+
                     var contentTemplateType = $slatwall.newType();
                     scope.content.$$setContentTemplateType(contentTemplateType);
                 }else{

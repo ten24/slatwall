@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWDisplayItem{
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
@@ -39,7 +39,7 @@ class SWDisplayItem{
 		];
 		return directive
 	}
-	
+
 	//@ngInject
 	constructor(
 		$http,
@@ -61,14 +61,14 @@ class SWDisplayItem{
 				propertiesList:"=",
 				breadCrumbs:"=",
 				selectedPropertyChanged:"&"
-				
+
 			},
 			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"displayitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
 				scope.showDisplayItem = false;
-				
+
 				scope.selectedDisplayOptionChanged = function(selectedDisplayOption){
-					
+
 					var breadCrumb = {
 							entityAlias:scope.selectedProperty.name,
 							cfc:scope.selectedProperty.cfc,
@@ -77,19 +77,19 @@ class SWDisplayItem{
 					scope.breadCrumbs.push(breadCrumb);
 					scope.selectedPropertyChanged({selectedProperty:selectedDisplayOption});
 				};
-				
+
 				scope.$watch('selectedProperty', function(selectedProperty) {
 					if(angular.isDefined(selectedProperty)){
 						if(selectedProperty === null){
 							scope.showDisplayItem = false;
 							return;
 						}
-						
+
 						if(selectedProperty.$$group !== 'drilldown'){
 							scope.showDisplayItem = false;
 							return;
 						}
-						
+
 						if(selectedProperty.$$group === 'drilldown'){
 							if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])){
 								var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
@@ -98,12 +98,12 @@ class SWDisplayItem{
 									scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
 									metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier],selectedProperty.propertyIdentifier);
 								}, function(reason){
-									
+
 								});
 							}
 						}
 						scope.showDisplayItem = true;
-						
+
 					}
 				});
 			}
@@ -113,4 +113,4 @@ class SWDisplayItem{
 export{
 	SWDisplayItem
 }
-	
+

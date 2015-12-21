@@ -1,11 +1,10 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
-    
+
 class BaseService{
-    constructor(){ 
+    constructor(){
     }
 }
 export{BaseService};
 
- 

@@ -1,7 +1,7 @@
-/// <reference path='../../../../../client/typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../../client/typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
-    
+
 class SWProcessCallerController{
 	public utilityService;
 	public type:string;
@@ -28,7 +28,7 @@ class SWProcessCallerController{
 }
 
 class SWProcessCaller implements ng.IDirective{
-	
+
 	public restrict:string = 'E';
 	public scope = {};
 	public bindToController={
@@ -56,7 +56,7 @@ class SWProcessCaller implements ng.IDirective{
 		this.corePartialsPath = corePartialsPath;
 		this.utilityService = utilityService;
 	}
-	
+
 	public static Factory(){
 		var directive = (
 			corePartialsPath,utilityService
@@ -68,13 +68,13 @@ class SWProcessCaller implements ng.IDirective{
 		];
 		return directive;
 	}
-	
+
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 	}
 }
  export{
 	 SWProcessCaller
- }   
+ }
 
 
 

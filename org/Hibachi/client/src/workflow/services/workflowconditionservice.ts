@@ -1,6 +1,6 @@
 
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 
 class WorkflowCondition{
 	public propertyIdentifer:string = "";
@@ -14,13 +14,13 @@ class WorkflowCondition{
 
  class WorkflowConditionGroupItem{
 	public workflowConditionGroup = [];
-	
+
 }
 
  class WorkflowConditionService{
 	public static $inject = ["$log","$slatwall","alertService"];
 	public constructor(public $log:ng.ILogService,$slatwall,alertService){
-	
+
 	}
 	public newWorkflowCondition = () =>{
 		return new WorkflowCondition;
@@ -32,7 +32,7 @@ class WorkflowCondition{
 		if(groupItem.length >= 1){
 			condition.logicalOperator = 'AND';
 		}
-		
+
 		groupItem.push(condition);
 	}
 	public newWorkflowConditionGroupItem = () =>{

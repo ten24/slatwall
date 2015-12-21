@@ -1,5 +1,5 @@
-/// <reference path='../../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../../typings/tsd.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 declare var hibachiConfig:any;
 class CreateCollection{
     //@ngInject
@@ -70,7 +70,7 @@ class CreateCollection{
                 $scope.collectionInitial = angular.copy($scope.collection);
                 $scope.paginator.setRecordsCount( $scope.collection.recordsCount);
                 $scope.paginator.setPageRecordsInfo($scope.collection);
-            
+
                 if(angular.isUndefined($scope.myCollection.columns)){
                     var colConfig = angular.fromJson(value.collectionConfig)
                     colConfig.baseEntityName = colConfig.baseEntityName.replace(new RegExp('^'+hibachiConfig.applicationKey, 'i'), '');
@@ -97,7 +97,7 @@ class CreateCollection{
             });
             return collectionListingPromise;
         };
-        
+
         $scope.paginator.collection = $scope.newCollection;
         $scope.paginator.getCollection = $scope.getCollection;
 

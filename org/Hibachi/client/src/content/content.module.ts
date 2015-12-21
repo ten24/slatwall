@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/tsd.d.ts' />
+/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/tsd.d.ts' />
 //services
 
 //filters
@@ -11,19 +11,19 @@ import {SWContentList} from "./components/swcontentlist";
 import {SWContentNode} from "./components/swcontentnode";
 
 var contentmodule = angular.module('hibachi.content',[]).config(()=>{
-    
+
 })
 .constant('contentPartialsPath','content/components/')
 //services
 
-//filters 
+//filters
 
 //directives
 .directive('swContentBasic',SWContentBasic.Factory())
 .directive('swContentEditor',SWContentEditor.Factory())
 .directive('swContentList',SWContentList.Factory())
 .directive('swContentNode',SWContentNode.Factory())
-;  
+;
 export{
 	contentmodule
 }

@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 class SWWorkflowTask{
 	public static Factory(){
 		var directive = (
@@ -46,11 +48,11 @@ class SWWorkflowTask{
 			scope:{
 				workflowTask:"=",
 				workflowTasks:"=",
-				
+
 			},
 			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtask.html",
-			link: function(scope, element,attrs){ 
-     
+			link: function(scope, element,attrs){
+
 				scope.removeWorkflowTask = function(workflowTask){
 					var deletePromise = workflowTask.$$delete();
 		    		deletePromise.then(function(){
