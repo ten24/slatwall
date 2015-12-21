@@ -441,6 +441,9 @@ label {
   font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   font-weight: normal;
 }
+a > .fa.fa-question-circle {
+  color: #ccc;
+}
 .s-width-100 {
   width: 100%;
 }
@@ -463,6 +466,8 @@ label {
 }
 .tooltip {
   z-index: 3500;
+  font-weight: normal;
+  font-family: arial;
 }
 .s-not-active {
   color: #bbbbbb !important;
