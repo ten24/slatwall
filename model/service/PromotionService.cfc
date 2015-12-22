@@ -719,7 +719,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// As long as the above leaves this as still > 0
 		if(qualifiedItemsQuantity gt 0) {
 			// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) ) {
+			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) && arguments.qualifier.getMinimumItemQuantity() != 0) {
 				
 				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
 			}else if(isNull(arguments.qualifier.getMinimumItemQuantity()) || arguments.qualifier.getMinimumItemQuantity() == 0){
@@ -835,7 +835,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-				if( !isNull(qualifier.getMinimumItemQuantity()) ) {
+				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifier.getMinimumItemQuantity() != 0 ) {
 					qualifierCount = int(qualifierCount / qualifier.getMinimumItemQuantity() );
 				}
 				
