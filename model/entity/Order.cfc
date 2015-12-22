@@ -1223,9 +1223,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		//Check if there is subscription with autopay flag without order payment with account payment method.
 		var hasSubscriptionWithAutoPay = false;
 		var hasOrderPaymentWithAccountPaymentMethod = false;
+		
 		for (var orderItem in getOrderItems()){
-			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
+			if (orderItem.getSku().getBaseProductType() == "subscription" && !isNull(orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()) && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
 				hasSubscriptionWithAutoPay = true;
+				
 				for (orderPayment in getOrderPayments()){
 					if (!isNull(orderPayment.getAccountPaymentMethod())){
 						hasOrderPaymentWithAccountPaymentMethod = true;
@@ -1233,11 +1235,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				}
 			}
 		}
-		if (hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod){
-			return true;
-		}else{
-			return false;
-		}
+		
+		return hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod;
 	}
 
 	// =================== START: ORM Event Hooks  =========================

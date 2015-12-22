@@ -372,7 +372,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public any function getActiveEventRegistrations() {
 		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
 			variables.activeRegistrationsSmartList = getService('EventRegistrationService').getEventRegistrationSmartList();
-			variables.activeRegistrationsSmartList.addFilter('orderItemID', getOrderItemID());
+			variables.activeRegistrationsSmartList.addFilter('orderItem.orderItemID', getOrderItemID());
 			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
 		}
 
