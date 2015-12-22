@@ -25,7 +25,7 @@
 		</div>
 		<div class="s-body">
 			<span ng-show="swGiftCardOverview.giftCard.activeFlag">Active</span>
-			<span ng-show="!swGiftCardOverview.giftCard.activeFlag">Inactive</span> 
+			<span ng-show="!swGiftCardOverview.giftCard.activeFlag">Inactive</span>
 			<div class="dropdown s-action">
 				<a href="##" class="dropdown-toggle hide" id="dropdownMenu1" data-toggle="dropdown">
 					<i class="fa fa-ellipsis-h" title="actions"></i>
@@ -47,9 +47,9 @@
 	</div>
 	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
 		<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
-		<div class="s-title">
-			Expiration
-		</div>
+			<div class="s-title">
+				Expiration
+			</div>
 			<div class="s-body">
 				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length > 0" ng-bind="swGiftCardOverview.giftCard.expirationDate"></span>
 				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length == 0">Never</span>

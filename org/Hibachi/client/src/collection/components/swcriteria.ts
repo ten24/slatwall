@@ -47,7 +47,8 @@ class SWCriteria{
 		        selectedFilterProperty:"=",
 		        filterPropertiesList:"=",
 		        selectedFilterPropertyChanged:"&",
-		        comparisonType:"="
+		        comparisonType:"=",
+                collectionConfig: "="
 			},
 			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteria.html',
 			link: function(scope, element, attrs){

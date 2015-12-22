@@ -62,6 +62,7 @@ class SWCriteriaManyToMany{
                 scope.selectCollection = function(collection){
                     scope.toggleCollectionOptions();
                     scope.selectedFilterProperty.selectedCollection = collection;
+                    scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[2];
                 };
 
                 scope.cleanSelection = function(){
@@ -154,7 +155,8 @@ class SWCriteriaManyToMany{
                 scope.addNewCollection = function(){
                     dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
                         entityName: scope.selectedFilterProperty.cfc,
-                        collectionName: scope.data.collectionName
+                        collectionName: scope.data.collectionName,
+                        parentEntity: scope.collectionConfig.baseEntityName
                     });
                     scope.cleanSelection();
                 };
@@ -162,7 +164,8 @@ class SWCriteriaManyToMany{
                 scope.viewSelectedCollection = function(){
                     dialogService.addPageDialog('org/Hibachi/client/src/collection/components//criteriacreatecollection', {
                         entityName: 'collection',
-                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
+                        parentEntity: scope.collectionConfig.baseEntityName
                     });
                 };
             }

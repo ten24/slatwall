@@ -79,16 +79,15 @@
 											data-is-dirty="true"
 										></sw-property-display> 
 						        </sw-form>
-									<button type="button"
-											class="btn btn-xs s-btn-ten24"
-											ng-click="saveProductBundleGroupType()"
-									>
-										<i class="fa fa-plus"></i> Add Group Type
-									</button>
+								<button type="button"
+								        class="btn btn-xs s-btn-ten24"
+										ng-click="saveProductBundleGroupType()"
+								>
+									<i  ng-class="{'fa fa-plus s-loading': productBundleGroupTypeSaving === true, 'fa fa-plus': productBundleGroupTypeSaving === false}"></i> Add Group Type
+								</button>
 							</span>
 						</form>
 					</div>
 				</div>
 		</div>
 	</div>
-

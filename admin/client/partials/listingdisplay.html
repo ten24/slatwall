@@ -17,7 +17,7 @@
 </div><!--- reyjay's class --->
 
 
-<div class="table-responsive s-listing-display-table-wrapper" >
+<div class="table-responsive s-listing-display-table-wrapper" ng-if="swListingDisplay.collectionPromise.$$state.status !== 0">
 	<!--<table 
 	id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" 
 	ng-class="swListingDisplay.tableclass" 
@@ -28,6 +28,7 @@
 	data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
 	data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" {{this.tableattributes}}>
 -->
+
 	<table  ng-class="swListingDisplay.tableclass" 
 			ng-attr-id="{{swListingDisplay.tableID}}"
 			data-norecordstext="{{swListingDisplay.norecordstext}}" 
@@ -168,7 +169,8 @@
 					</span>
 					<span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
                     <span ng-if="column.aggregate" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"></span>
-				</td>
+                    <span ng-if="column.aggregate" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"></span>
+                </td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
 					<!--- Detail -->
@@ -242,7 +244,7 @@
 		</tbody>
 	</table>
 
-	</div><!--- table-responsive --->
+</div><!--- table-responsive --->
 
 	<sw-pagination-bar
 		ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable"

@@ -5275,15 +5275,27 @@
 	    function CreateCollection($scope, $log, $timeout, $slatwall, collectionService, formService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService) {
 	        $scope.params = dialogService.getCurrentDialog().params;
 	        $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
+	        $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
+	        if ($scope.params.entityName == 'Type' && !angular.isDefined($scope.params.entityId)) {
+	            var systemCode = $scope.params.parentEntity.charAt(0).toLowerCase() + $scope.params.parentEntity.slice(1) + 'Type';
+	            $scope.myCollection.addFilter('parentType.systemCode', systemCode);
+	        }
 	        $scope.keywords = '';
 	        $scope.paginator = paginationService.createPagination();
 	        //$scope.isRadio = true;
+	        $scope.hideEditView = true;
 	        //$scope.closeSaving = true;
+	        $scope.hasSelection = selectionService.getSelectionCount;
+	        $scope.idsSelected = selectionService.getSelections;
+	        $scope.unselectAll = function () {
+	            selectionService.clearSelections('collectionSelection');
+	            $scope.getCollection();
+	        };
 	        $scope.newCollection = $slatwall.newCollection();
 	        $scope.newCollection.data.collectionCode = $scope.params.entityName + "-" + new Date().valueOf();
 	        $scope.newCollection.data.collectionObject = $scope.params.entityName;
-	        if (angular.isDefined($scope.params.entityID)) {
-	            $scope.newCollection.data.collectionID = $scope.params.entityID;
+	        if (angular.isDefined($scope.params.entityId)) {
+	            $scope.newCollection.data.collectionID = $scope.params.entityId;
 	            $timeout(function () {
 	                $scope.newCollection.forms['form.createCollection'].$setDirty();
 	            });
@@ -5293,6 +5305,11 @@
 	            $timeout(function () {
 	                $scope.newCollection.forms['form.createCollection'].$setDirty();
 	            });
+	        }
+	        if (typeof String.prototype.startsWith != 'function') {
+	            String.prototype.startsWith = function (str) {
+	                return this.slice(0, str.length) == str;
+	            };
 	        }
 	        $scope.saveCollection = function () {
 	            $scope.myCollection.loadJson($scope.collectionConfig);
@@ -5304,9 +5321,9 @@
 	            $scope.myCollection.setCurrentPage($scope.paginator.getCurrentPage());
 	            $scope.myCollection.setKeywords($scope.keywords);
 	            var collectionOptions;
-	            if (angular.isDefined($scope.params.entityID)) {
+	            if (angular.isDefined($scope.params.entityId)) {
 	                collectionOptions = {
-	                    id: $scope.params.entityID,
+	                    id: $scope.params.entityId,
 	                    currentPage: $scope.paginator.getCurrentPage(),
 	                    pageShow: $scope.paginator.getPageShow(),
 	                    keywords: $scope.keywords
@@ -5318,6 +5335,9 @@
 	            $log.debug($scope.myCollection.getOptions());
 	            var collectionListingPromise = $slatwall.getEntity($scope.myCollection.getEntityName(), collectionOptions);
 	            collectionListingPromise.then(function (value) {
+	                if (angular.isDefined($scope.params.entityId)) {
+	                    $scope.newCollection.data.collectionName = value.collectionName;
+	                }
 	                $scope.collection = value;
 	                $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
 	                $scope.collectionInitial = angular.copy($scope.collection);
@@ -5329,7 +5349,9 @@
 	                    $scope.myCollection.loadJson(colConfig);
 	                }
 	                if (angular.isUndefined($scope.collectionConfig)) {
-	                    $scope.collectionConfig = $scope.myCollection.getCollectionConfig();
+	                    var tempCollectionConfig = collectionConfigService.newCollectionConfig();
+	                    tempCollectionConfig.loadJson(value.collectionConfig);
+	                    $scope.collectionConfig = tempCollectionConfig.getCollectionConfig();
 	                }
 	                if (angular.isUndefined($scope.collectionConfig.filterGroups) || !$scope.collectionConfig.filterGroups.length) {
 	                    $scope.collectionConfig.filterGroups = [
@@ -5404,7 +5426,7 @@
 	                //Set current page here so that the pagination does not break when getting collection
 	                $scope.paginator.setCurrentPage(1);
 	                $scope.loadingCollection = true;
-	                //$scope.getCollection();
+	                $scope.getCollection();
 	            }, 500);
 	        };
 	        $scope.filterCount = collectionService.getFilterCount;
@@ -5434,6 +5456,7 @@
 	                $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
 	            $scope.newCollection.$$save().then(function () {
 	                observerService.notify('addCollection', $scope.newCollection.data);
+	                selectionService.clearSelection('collectionSelection');
 	                dialogService.removePageDialog($index);
 	                $scope.closeSaving = false;
 	            }, function () {
@@ -6992,7 +7015,8 @@
 	                selectedFilterProperty: "=",
 	                filterPropertiesList: "=",
 	                selectedFilterPropertyChanged: "&",
-	                comparisonType: "="
+	                comparisonType: "=",
+	                collectionConfig: "="
 	            },
 	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteria.html',
 	            link: function (scope, element, attrs) {
@@ -7139,6 +7163,7 @@
 	                scope.selectCollection = function (collection) {
 	                    scope.toggleCollectionOptions();
 	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[2];
 	                };
 	                scope.cleanSelection = function () {
 	                    scope.toggleCollectionOptions(false);
@@ -7223,14 +7248,16 @@
 	                scope.addNewCollection = function () {
 	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
 	                        entityName: scope.selectedFilterProperty.cfc,
-	                        collectionName: scope.data.collectionName
+	                        collectionName: scope.data.collectionName,
+	                        parentEntity: scope.collectionConfig.baseEntityName
 	                    });
 	                    scope.cleanSelection();
 	                };
 	                scope.viewSelectedCollection = function () {
 	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components//criteriacreatecollection', {
 	                        entityName: 'collection',
-	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
+	                        parentEntity: scope.collectionConfig.baseEntityName
 	                    });
 	                };
 	            }
@@ -7605,6 +7632,7 @@
 	                scope.selectCollection = function (collection) {
 	                    scope.toggleCollectionOptions();
 	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[2];
 	                };
 	                scope.cleanSelection = function () {
 	                    scope.toggleCollectionOptions(false);
@@ -7684,7 +7712,8 @@
 	                scope.addNewCollection = function () {
 	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
 	                        entityName: scope.selectedFilterProperty.cfc,
-	                        collectionName: scope.data.collectionName
+	                        collectionName: scope.data.collectionName,
+	                        parentEntity: scope.collectionConfig.baseEntityName
 	                    });
 	                    scope.cleanSelection();
 	                };
@@ -7692,7 +7721,8 @@
 	                    scope.toggleCollectionOptions();
 	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
 	                        entityName: 'collection',
-	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
+	                        parentEntity: scope.collectionConfig.baseEntityName
 	                    });
 	                };
 	            }
@@ -12377,11 +12407,7 @@
 	                });
 	                $delegate.setJsEntityInstances(_jsEntityInstances);
 	                var _init = function (entityInstance, data) {
-	                    console.log('init here');
-	                    console.log(data);
-	                    console.log(entityInstance);
 	                    for (var key in data) {
-	                        console.log(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key]));
 	                        if (key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])) {
 	                            var propertyMetaData = entityInstance.metaData[key];
 	                            if (angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json') {
@@ -16760,8 +16786,6 @@
 	                    else {
 	                        var entityPromise = $slatwall['get' + propertyCasedEntityName]({ id: scope.entityID });
 	                        entityPromise.promise.then(function () {
-	                            console.log('entityprom');
-	                            console.log(entityPromise);
 	                            scope.entity = entityPromise.value;
 	                            setupMetaData();
 	                        });
