@@ -12377,8 +12377,12 @@
 	                });
 	                $delegate.setJsEntityInstances(_jsEntityInstances);
 	                var _init = function (entityInstance, data) {
+	                    console.log('init here');
+	                    console.log(data);
+	                    console.log(entityInstance);
 	                    for (var key in data) {
-	                        if (key.charAt(0) !== '$' && angular.isObject(data[key]) && angular.isDefined(entityInstance.metaData[key])) {
+	                        console.log(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key]));
+	                        if (key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])) {
 	                            var propertyMetaData = entityInstance.metaData[key];
 	                            if (angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json') {
 	                                if (data[key].trim() !== '') {
@@ -16756,6 +16760,8 @@
 	                    else {
 	                        var entityPromise = $slatwall['get' + propertyCasedEntityName]({ id: scope.entityID });
 	                        entityPromise.promise.then(function () {
+	                            console.log('entityprom');
+	                            console.log(entityPromise);
 	                            scope.entity = entityPromise.value;
 	                            setupMetaData();
 	                        });

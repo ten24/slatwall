@@ -465,11 +465,10 @@
 				$delegate.setJsEntityInstances(_jsEntityInstances);
 
 				var _init = function(entityInstance,data){
-
 	                for(var key in data) {
-	                    if(key.charAt(0) !== '$' && angular.isObject(data[key]) && angular.isDefined(entityInstance.metaData[key])){
+	                    if(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])){
+                            
 	                        var propertyMetaData = entityInstance.metaData[key];
-
 	                        if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
 	                            if(data[key].trim() !== ''){
 	                                entityInstance.data[key] = angular.fromJson(data[key]);

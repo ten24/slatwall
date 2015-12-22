@@ -58,6 +58,7 @@ class SWDetail{
 	        	scope.tabPartialPath = pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath);
 
 	        	scope.getEntity = function(){
+
 	        		if(scope.entityID === 'null'){
 	        			scope.entity = $slatwall['new'+propertyCasedEntityName]();
 	        			setupMetaData();
