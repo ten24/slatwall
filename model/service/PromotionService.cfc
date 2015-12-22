@@ -396,6 +396,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over all Potential Discounts that require qualifications
 			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 			var orderRewards = false;
+			
 			for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 				var reward = promotionRewards[pr];
 				// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
@@ -718,10 +719,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// As long as the above leaves this as still > 0
 		if(qualifiedItemsQuantity gt 0) {
 			// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) ) {
+			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) && arguments.qualifier.getMinimumItemQuantity() != 0) {
+				
 				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
+			}else if(isNull(arguments.qualifier.getMinimumItemQuantity()) || arguments.qualifier.getMinimumItemQuantity() == 0){
+				arguments.qualifierDetails.qualificationCount++;
 			}
 		}
+		
 	}
 	
 	private struct function getQualifierQualificationDetails(required any qualifier, required any order) {
@@ -731,6 +736,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			qualifiedFulfillmentIDs = [],
 			qualifiedOrderItemDetails = []
 		};
+		
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 			
@@ -829,7 +835,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-				if( !isNull(qualifier.getMinimumItemQuantity()) ) {
+				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifier.getMinimumItemQuantity() != 0 ) {
 					qualifierCount = int(qualifierCount / qualifier.getMinimumItemQuantity() );
 				}
 				
