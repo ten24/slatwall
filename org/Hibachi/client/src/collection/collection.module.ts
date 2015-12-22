@@ -28,6 +28,7 @@ import {SWCriteriaString} from "./components/swcriteriastring";
 import {SWEditFilterItem} from "./components/sweditfilteritem";
 import {SWFilterGroups} from "./components/swfiltergroups";
 import {SWFilterItem} from "./components/swfilteritem";
+import {SWFilterGroupItem} from "./components/swfiltergroupitem";
 
 var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .config([()=>{
@@ -62,6 +63,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swEditFilterItem',SWEditFilterItem.Factory())
 .directive('swFilterGroups',SWFilterGroups.Factory())
 .directive('swFilterItem',SWFilterItem.Factory())
+.directive('swFilterGroupItem',SWFilterGroupItem.Factory())
 
 //filters
 
