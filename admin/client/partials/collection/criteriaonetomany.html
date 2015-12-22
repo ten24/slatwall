@@ -4,7 +4,6 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select From Existing Collections:</label>
-
                     <!-- Start -->
                     <div class="s-search-filter">
                         <div class="input-group">
@@ -17,7 +16,7 @@
                                     >
                             <span class="s-current-selection-item" title="remove" ng-show="selectedFilterProperty.selectedCollection">
                                 <span>{{selectedFilterProperty.selectedCollection.collectionName}}</span>
-                                <a href="##" class="s-edit-options" title="View"> <i class="fa fa-eye"></i></a>
+                                <a href="##" class="s-edit-options" title="View" ng-click="viewSelectedCollection()"> <i class="fa fa-eye"></i></a>
                                 <a href="##" class="s-edit-options s-remove" title="remove" ng-click="cleanSelection()">
                                     <i class="fa fa-times"></i>
                                 </a>
