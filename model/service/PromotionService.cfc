@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	property name="promotionDAO" type="any";
@@ -396,6 +391,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over all Potential Discounts that require qualifications
 			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 			var orderRewards = false;
+			
 			for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 				var reward = promotionRewards[pr];
 				// Setup the promotionReward usage Details. This will be used for the maxUsePerQualification & and maxUsePerItem up front, and then later to remove discounts that violate max usage
@@ -718,10 +714,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// As long as the above leaves this as still > 0
 		if(qualifiedItemsQuantity gt 0) {
 			// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) ) {
+			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) && arguments.qualifier.getMinimumItemQuantity() != 0) {
+				
+				
 				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
+			}else if(isNull(arguments.qualifier.getMinimumItemQuantity()) || arguments.qualifier.getMinimumItemQuantity() == 0){
+				arguments.qualifierDetails.qualificationCount++;
 			}
 		}
+		
 	}
 	
 	private struct function getQualifierQualificationDetails(required any qualifier, required any order) {
@@ -731,6 +732,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			qualifiedFulfillmentIDs = [],
 			qualifiedOrderItemDetails = []
 		};
+		
 		// ORDER
 		if(arguments.qualifier.getQualifierType() == "order") {
 			
@@ -829,7 +831,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				
 				// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
-				if( !isNull(qualifier.getMinimumItemQuantity()) ) {
+				if( !isNull(qualifier.getMinimumItemQuantity()) && qualifier.getMinimumItemQuantity() != 0 ) {
 					qualifierCount = int(qualifierCount / qualifier.getMinimumItemQuantity() );
 				}
 				
@@ -1164,4 +1166,3 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ======================  END: Get Overrides =============================
 		
 }
-

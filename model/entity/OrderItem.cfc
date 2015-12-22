@@ -123,6 +123,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
+	public boolean function hasUnassignedGiftCards(){
+		return this.getNumberOfUnassignedGiftCards() > 0;
+	}
+
 	public boolean function hasAllGiftCardsAssigned(){
 		return this.getNumberOfUnassignedGiftCards() == 0;
 	}
@@ -162,19 +166,34 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return maxQTY;
 	}
 
-	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
-			return getQuantity() <= getMaximumOrderQuantity();
-		}
-		return true;
-	}
-
-	public boolean function hasQuantityWithinMinOrderQuantity() {
-		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
-			return getQuantity() >= getSku().setting('skuOrderMinimumQuantity');
-		}
-		return true;
-	}
+	//gets the quantity of orderItems that use the same sku on the order but excludes the current orderItem.
+    public any function getQuantityAlreadyOnOrder(){
+        var qtyAlreadyOnOrder = 0;
+        for (var orderItem in getOrder().getOrderItems()){
+            if (orderItem.getOrderItemID() != "" && !isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {    
+                qtyAlreadyOnOrder += orderItem.getQuantity();
+            }
+        }
+        return qtyAlreadyOnOrder;
+    }
+    
+    public any function getQuantityPlusQuantityAlreadyOnOrder(){ 
+        return getQuantity() + getQuantityAlreadyOnOrder();
+    }
+    
+    public boolean function hasQuantityWithinMaxOrderQuantity() {
+        if(getOrderItemType().getSystemCode() == 'oitSale') {
+            return getQuantityPlusQuantityAlreadyOnOrder() <= getMaximumOrderQuantity();    
+        }
+        return true;
+    }
+    
+    public boolean function hasQuantityWithinMinOrderQuantity() {
+        if(getOrderItemType().getSystemCode() == 'oitSale') {
+            return getQuantityPlusQuantityAlreadyOnOrder() >= getSku().setting('skuOrderMinimumQuantity');
+        }
+        return true;
+    }
 
 	public string function getOrderStatusCode(){
 		return getOrder().getStatusCode();
@@ -267,7 +286,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		//get bundle price
 		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			price = getProductBundlePrice();
-		}else{
+		}else if(!isNull(getPrice())){
 			price = getPrice();
 		}
 
@@ -353,7 +372,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public any function getActiveEventRegistrations() {
 		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
 			variables.activeRegistrationsSmartList = getService('EventRegistrationService').getEventRegistrationSmartList();
-			variables.activeRegistrationsSmartList.addFilter('orderItemID', getOrderItemID());
+			variables.activeRegistrationsSmartList.addFilter('orderItem.orderItemID', getOrderItemID());
 			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
 		}
 

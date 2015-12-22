@@ -70,6 +70,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
+	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
 
 	// Related Object Properties (one-to-many)
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -117,8 +118,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
+	property name="totalImageCount" type="numeric" persistent="false";
 	property name="nextSkuCodeCount" persistent="false";
 	property name="optionGroupCount" type="numeric" persistent="false";
+	property name="productBundleGroupsCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
@@ -133,6 +136,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
+	property name="renewalMethodOptions" type="array" persistent="false";
 	property name="renewalPrice" hb_formatType="currency" persistent="false";
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
@@ -189,6 +193,24 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.listingPagesOptionsSmartList;
     }
 
+	public numeric function getProductBundleGroupsCount(){
+		var count=0;
+		for(var sku in this.getSkus()){
+			count = count + ArrayLen(sku.getProductBundleGroups());
+		}
+		return count;
+	}
+
+    public any function getSubscriptionSkuSmartList(){
+    	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
+    		var smartList = getService("ProductService").getSkuSmartList();
+    		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is null");
+    		variables.subscriptionSkuSmartList = smartList;
+    	}
+    	return variables.subscriptionSkuSmartList;
+    }
+
 	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
         if(!arguments.sorted && !arguments.fetchOptions) {
         	return variables.skus;
@@ -214,6 +236,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public any function getImages() {
 		return variables.productImages;
+	}
+
+	public numeric function getTotalImageCount(){
+		return ArrayLen(this.getImages()) + ArrayLen(this.getDefaultProductImageFiles());
 	}
 
 	public struct function getSkuSalePriceDetails( required any skuID) {
@@ -409,6 +435,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		smartList.addFilter("skus.product.productID",this.getProductID());
 		smartList.addOrder("sortOrder|ASC");
 		return smartList.getRecords();
+	}
+
+	public array function getRenewalMethodOptions(){
+		if(!structKeyExists(variables, "renewalMethodOptions")){
+			variables.renewalMethodOptions = [];
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectRenewalSku'), value="renewalsku"});
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectCustomRenewal'), value="custom"});
+		}
+		return variables.renewalMethodOptions;
 	}
 
 	public any function getSkuBySelectedOptions(string selectedOptions="") {

@@ -205,7 +205,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var term = createPersistedTestEntity('term', termData);
 
 		product.getSkus()[1].setGiftCardExpirationTerm(term);
-		
+
 		assertTrue(product.getSkus()[1].isGiftCardSku());
 
 		//set up order
@@ -243,26 +243,90 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItemsAdded = orderReturn.getOrderItems();
 
 		assertEquals(1, arraylen(orderItemsAdded));
-		
-		var orderItemGiftRecipientData = { 
+
+		var orderItemGiftRecipientData = {
 			orderItemGiftRecipientID="",
 			firstName="Bobby",
 			lastName="Bot"
-		}; 
-		
-		var recipient1 = createPersistedTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData); 
-		
+		};
+
+		var recipient1 = createPersistedTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData);
+
 		var numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
-		
-		assertEquals(1, numOfUnassignedGiftCards); 
-		
-		orderItemsAdded[1].addOrderItemGiftRecipient(recipient1); 
-		
+
+		assertEquals(1, numOfUnassignedGiftCards);
+
+		orderItemsAdded[1].addOrderItemGiftRecipient(recipient1);
+
 		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
-		 
-		assertEquals(0, numOfUnassignedGiftCards); 
+
+		assertEquals(0, numOfUnassignedGiftCards);
 	}
 
+	public void function duplicate_order_with_child_order_items(){
+		//set up order
+		var orderData = {
+			orderid=CreateUUID(),
+			activeflag=1,
+			currencycode="USD"
+		};
+		accountData={
+			accountID=""
+		};
+		var account = createPersistedTestEntity('Account', accountData);
+		var order = createPersistedTestEntity('Order', orderData);
+		order.setAccount(account);
+		var skudata = {
+			skuID=CreateUUID(),
+			skuPrice=10,
+			product={
+				productID=CreateUUID()
+			}
+		};
+		var sku = createPersistedTestentity('Sku', skudata);
+		var orderItemData1 = {
+			orderItemID=CreateUUID(),
+			price=10,
+			skuprice=10,
+			currencyCode="USD",
+			quantity=1,
+			orderItemTypeID=""
+		};
+		var orderItemData2 = {
+			orderItemID=CreateUUID()
+		};
+		var orderItemData3 = {
+			orderItemID=CreateUUID()
+		};
+		var orderItem1 = createPersistedTestEntity('OrderItem', orderItemData1);
+		var orderItem2 = createPersistedTestEntity('OrderItem', orderItemData2);
+		var orderItem3 = createPersistedTestEntity('OrderItem', orderItemData3);
+
+		orderItem1.setSku(sku);
+		orderItem2.setSku(sku);
+		orderItem3.setSku(sku);
+
+		orderItem1.addChildOrderItem(orderItem2);
+		orderItem1.addChildOrderItem(orderItem3);
+		order.addOrderItem(orderItem1);
+		orderItem2.setOrder(order);
+		orderItem3.setOrder(order);
+
+		var data = {
+			saveNewFlag=true,
+			copyPersonalDataFlag=true,
+			referencedOrderFlag=false
+		};
+
+		//request.debug(order);
+
+		var duplicateorderitem = variables.service.copyToNewOrderItem(orderItem1);
+
+		//request.debug(order);
+
+		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
+
+	}
 }
 
 

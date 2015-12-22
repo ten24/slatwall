@@ -6,7 +6,8 @@
 	    "fulfillmentTypePickup":{
 	        "fulfillmentMethodType":	{"eq":"pickup"}
 	    },
-	    "fulfillmentTypeEmail":{
+	    "fulfillmentTypeEmailWithoutRecipients":{
+    		"emailAddress": 			{"method":"needsEmailForFulfillment"},
 	        "fulfillmentMethodType":	{"eq":"email"}
 	    },
 	    "fulfillmentTypeShippingNoAccountAddress":{
@@ -19,13 +20,13 @@
 	    }
 	},
 	"properties":{
-		"orderFulfillmentID":				[{"contexts":"delete","maxValue":0}],
+		"orderFulfillmentID":				[{"contexts":"delete","maxValue":0},{"contexts":"save","method":"hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity"}],
 		"order":							[{"contexts":"save","required":true}],
 		"fulfillmentCharge":				[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"fulfillmentMethod":				[{"contexts":"save","required":true,"method":"allOrderFulfillmentItemsAreEligibleForFulfillmentMethod"}],
 		"orderFulfillmentItems":			[{"contexts":"placeOrder,fulfillItems","minCollection":1}],
 		"quantityUndelivered":				[{"contexts":"fulfillItems","minValue":0}],
-		"emailAddress":						[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmail","required":true}],
+		"emailAddress":						[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmailWithoutRecipients","required":true}],
 		"pickupLocation":					[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],
 		"requiredShippingInfoExistsFlag":	[{"contexts":"placeOrder","conditions":"fulfillmentTypeShipping","eq":true}],
 		"shippingMethod":			[

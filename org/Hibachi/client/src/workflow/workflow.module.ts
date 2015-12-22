@@ -18,7 +18,7 @@ import {SWWorkflowTriggers} from "./components/swworkflowtriggers";
 //filters
 
 
-var workflowmodule = angular.module('hibachi.workflow',[]).config(()=>{
+var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).config(()=>{
 })
 //constants
 .constant('workflowPartialsPath','workflow/components/')

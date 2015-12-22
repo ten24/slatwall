@@ -7217,14 +7217,14 @@
 	                    //update criteria to display the condition of the new critera we have selected
 	                };
 	                scope.addNewCollection = function () {
-	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
 	                        entityName: scope.selectedFilterProperty.cfc,
 	                        collectionName: scope.data.collectionName
 	                    });
 	                    scope.cleanSelection();
 	                };
 	                scope.viewSelectedCollection = function () {
-	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components//criteriacreatecollection', {
 	                        entityName: 'collection',
 	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
 	                    });
@@ -7678,7 +7678,7 @@
 	                    //update criteria to display the condition of the new critera we have selected
 	                };
 	                scope.addNewCollection = function () {
-	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
 	                        entityName: scope.selectedFilterProperty.cfc,
 	                        collectionName: scope.data.collectionName
 	                    });
@@ -7686,7 +7686,7 @@
 	                };
 	                scope.viewSelectedCollection = function () {
 	                    scope.toggleCollectionOptions();
-	                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
 	                        entityName: 'collection',
 	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
 	                    });
@@ -12156,6 +12156,7 @@
 	                            }
 	                        },
 	                        $$init: function (data) {
+	                            console.log('test init');
 	                            _init(this, data);
 	                        },
 	                        $$save: function () {
@@ -12373,9 +12374,12 @@
 	                });
 	                $delegate.setJsEntityInstances(_jsEntityInstances);
 	                var _init = function (entityInstance, data) {
+	                    console.log('test init');
 	                    for (var key in data) {
 	                        if (key.charAt(0) !== '$' && angular.isObject(data[key]) && angular.isDefined(entityInstance.metaData[key])) {
 	                            var propertyMetaData = entityInstance.metaData[key];
+	                            console.log('propertyMetaData');
+	                            console.log(propertyMetaData);
 	                            if (angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json') {
 	                                if (data[key].trim() !== '') {
 	                                    entityInstance.data[key] = angular.fromJson(data[key]);
@@ -15520,7 +15524,7 @@
 	var swworkflowtrigger_1 = __webpack_require__(145);
 	var swworkflowtriggers_1 = __webpack_require__(146);
 	//filters
-	var workflowmodule = angular.module('hibachi.workflow', []).config(function () {
+	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
 	    .constant('workflowPartialsPath', 'workflow/components/')
 	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)

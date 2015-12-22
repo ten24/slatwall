@@ -119,6 +119,16 @@ Notes:
 			return false;
 		}
 
+		public array function getRootOrderItems(required string orderID){
+			var params = [arguments.orderID];
+			var hql = "SELECT oi
+					   FROM SlatwallOrderItem oi
+					   WHERE oi.parentOrderItem.orderItemID IS NULL
+					   AND oi.order.orderID = ? ";
+
+			return ormExecuteQuery(hql, params);
+		}
+
 	</cfscript>
 
 	<cffunction name="getGiftCardOrderPaymentAmount" access="public" returntype="numeric" output="false">

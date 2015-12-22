@@ -1,7 +1,7 @@
 component output="false" accessors="true" extends="HibachiController" {
 	
 	property name="fw" type="any";
-	property name="collectionService" type="any";
+	property name="hibachiCollectionService" type="any";
 	property name="hibachiService" type="any";
 	property name="hibachiUtilityService" type="any";
 	
@@ -63,7 +63,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public void function getCurrencies(required struct rc){
-		var currenciesCollection = getHibachiScope().getService('collectionService').getCurrencyCollectionList();
+		var currenciesCollection = getHibachiScope().getService('hibachiCollectionService').getCurrencyCollectionList();
 		currenciesCollection.setDisplayProperties('currencyCode,currencySymbol');
 		var currencyStruct = {};
 		for(var currency in currenciesCollection.getRecords()){
@@ -180,7 +180,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 	}
 	public any function getObjectOptions(required struct rc){
-		var data = getCollectionService().getObjectOptions();
+		var data = getHibachiCollectionService().getObjectOptions();
 		arguments.rc.apiResponse.content = {data=data};
 	}
 	
@@ -200,7 +200,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				defaultColumns=false
 			};
 		
-		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection',collectionOptions);
+		var collectionEntity = getHibachiCollectionService().getTransientCollectionByEntityName('collection',collectionOptions);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
 			{
@@ -232,8 +232,8 @@ component output="false" accessors="true" extends="HibachiController" {
 				direction="ASC"
 			}
 		];
-		var data = {data=collectionEntity.getRecords()};
-		arguments.rc.apiResponse.content['data'] = collectionEntity.getRecords();
+		//var data = {data=collectionEntity.getRecords()};
+		arguments.rc.apiResponse.content['data'] = collectionEntity.getRecords(formatRecords=false);
 	}
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
@@ -556,22 +556,22 @@ component output="false" accessors="true" extends="HibachiController" {
 			//considering using all url variables to create a transient collectionConfig for api response
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
-				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
+				var result = getHibachiCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
 																			collectionOptions);
 				
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
 				//figure out if we have a collection or a basic entity
-				var collectionEntity = getCollectionService().getCollectionByCollectionID(arguments.rc.entityID);
+				var collectionEntity = getHibachiCollectionService().getCollectionByCollectionID(arguments.rc.entityID);
 				if(isNull(collectionEntity)){
 					//should only be able to add selects (&propertyIdentifier=)
-					var result = getCollectionService().getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
+					var result = getHibachiCollectionService().getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
 																				collectionOptions);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}else{
 					//should be able to add select and where filters here
-					var result = getCollectionService().getAPIResponseForCollection(	collectionEntity,
+					var result = getHibachiCollectionService().getAPIResponseForCollection(	collectionEntity,
 																				collectionOptions);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}
@@ -642,7 +642,7 @@ component output="false" accessors="true" extends="HibachiController" {
 					if(arraylen(pageRecords)){
 						propertyIdentifiers = structKeyArray(pageRecords[1]);
 					}	
-					pageRecords = getService('collectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
+					pageRecords = getService('hibachiCollectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
 					arguments.rc.apiResponse.content['data'][propertyIdentifier] = pageRecords;
 				}else{*/
 					arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);

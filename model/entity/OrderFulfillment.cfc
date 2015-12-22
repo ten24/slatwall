@@ -177,6 +177,10 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return true;
 	}
 
+	public boolean function needsEmailForFulfillment(){
+		return !hasGiftCardRecipients();
+	}
+
 	public any function getNumberOfNeededGiftCardCodes(){
 		var count = 0;
 		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")){
@@ -646,6 +650,16 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
 
 	// ==================  END:  Overridden Methods ========================
+
+    // ==================  START: Validation Methods  ======================
+    public boolean function hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity() {
+        var settingVal = getService("settingService").getSettingValue(settingName='globalMaximumFulfillmentsPerOrder');
+        if (!isNull(settingVal) && !isNull(getOrder().getOrderFulfillments())){
+           return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);  
+        }
+        return false;
+    } 
+    // ==================  END: Validation Methods  ========================
 
 	// =================== START: ORM Event Hooks  =========================
 

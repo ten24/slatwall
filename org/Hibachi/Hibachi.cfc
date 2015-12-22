@@ -235,7 +235,7 @@ component extends="FW1.framework" {
 			onEveryRequest();
 		}
 		if(structKeyExists(request,'context')){
-			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
+			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete");
 		}
 	}
 	
@@ -320,7 +320,10 @@ component extends="FW1.framework" {
 			if(structKeyExists(url,'ng')){
 			}else if(getSubsystem(request.context[ getAction() ]) == 'api'){
 				var context = getPageContext().getResponse();
-				request.context.messages = [];
+				if(!structKeyExists(request.context,'messages')){
+					request.context.messages = [];
+				}
+				
 				var message = {};
 				var message['messageType'] = 'error';
 				if(structKeyExists(authorizationDetails,'forbidden') && authorizationDetails.forbidden == true){
@@ -473,6 +476,9 @@ component extends="FW1.framework" {
 					if(!coreBF.containsBean("hibachiCacheService")) {
 						coreBF.declareBean("hibachiCacheService", "#variables.framework.applicationKey#.org.Hibachi.HibachiCacheService", true);	
 					}
+					if(!coreBF.containsBean("hibachiDataService")) {
+						coreBF.declareBean("hibachiDataService", "#variables.framework.applicationKey#.org.Hibachi.HibachiDataService", true);	
+					}
 					if(!coreBF.containsBean("hibachiEventService")) {
 						coreBF.declareBean("hibachiEventService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEventService", true);	
 					}
@@ -615,8 +621,17 @@ component extends="FW1.framework" {
 		}
 		var responseString = '';
 		
-		if(structKeyExists(request.context, "messages") && !structKeyExists(request.context.apiResponse.content,'messages')) {
-			request.context.apiResponse.content["messages"] = request.context.messages;	
+		if(structKeyExists(request.context, "messages")) {
+			if(!structKeyExists(request.context.apiResponse.content,'messages')){
+				request.context.apiResponse.content["messages"] = request.context.messages;	
+			}else{
+				for(var message in request.context.messages){
+					request.context.apiResponse.content["messages"];	
+					arrayAppend(request.context.apiResponse.content["messages"],message);
+				}
+				
+			}
+			
 		}
 		
 		//leaving a note here in case we ever wish to support XML for api responses

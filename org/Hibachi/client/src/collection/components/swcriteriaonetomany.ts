@@ -162,7 +162,7 @@ class SWCriteriaOneToMany{
                 };
 
                 scope.addNewCollection = function(){
-                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
                         entityName: scope.selectedFilterProperty.cfc,
                         collectionName: scope.data.collectionName
                     });
@@ -171,7 +171,7 @@ class SWCriteriaOneToMany{
 
                 scope.viewSelectedCollection = function(){
                     scope.toggleCollectionOptions();
-                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
                         entityName: 'collection',
                         entityId: scope.selectedFilterProperty.selectedCollection.collectionID
                     });

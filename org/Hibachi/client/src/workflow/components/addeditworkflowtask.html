@@ -77,13 +77,14 @@
 									<!-- Start Filter Group -->
 									<div class="col-xs-12 s-filters-selected">
 										<div class="row">
+											{{workflowTasks.selectedTask.data.taskConditionsConfig}}
 											<sw-filter-groups
 													ng-if="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups.length"
 													data-collection-config="workflowTasks.selectedTask.data.taskConditionsConfig"
 													data-filter-group="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0]"
 							                		data-filter-group-item="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups[0].filterGroup"
 							                		data-filter-properties-list="filterPropertiesList"
-							                		data-comparison-type="condition"
+							                		data-comparison-type="'condition'"
 											></sw-filter-groups>
 										</div>
 									</div>
