@@ -1007,10 +1007,12 @@
 	//model
 	var Alert = (function () {
 	    function Alert(msg, type, fade, dismissable) {
-	        if (fade === void 0) { fade = true; }
-	        if (dismissable === void 0) { dismissable = true; }
+	        this.fade = false;
+	        this.dismissable = false;
 	        this.msg = msg;
 	        this.type = type;
+	        this.fade = fade;
+	        this.dismissable = dismissable;
 	    }
 	    return Alert;
 	})();
@@ -12158,7 +12160,6 @@
 	                            }
 	                        },
 	                        $$init: function (data) {
-	                            console.log('test init');
 	                            _init(this, data);
 	                        },
 	                        $$save: function () {
@@ -12376,12 +12377,9 @@
 	                });
 	                $delegate.setJsEntityInstances(_jsEntityInstances);
 	                var _init = function (entityInstance, data) {
-	                    console.log('test init');
 	                    for (var key in data) {
 	                        if (key.charAt(0) !== '$' && angular.isObject(data[key]) && angular.isDefined(entityInstance.metaData[key])) {
 	                            var propertyMetaData = entityInstance.metaData[key];
-	                            console.log('propertyMetaData');
-	                            console.log(propertyMetaData);
 	                            if (angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json') {
 	                                if (data[key].trim() !== '') {
 	                                    entityInstance.data[key] = angular.fromJson(data[key]);
@@ -15209,6 +15207,8 @@
 	                    };
 	                    $scope.addProductBundleGroup = function () {
 	                        var productBundleGroup = $scope.sku.$$addProductBundleGroup();
+	                        console.log('testpro');
+	                        console.log(productBundleGroup);
 	                        productBundleService.decorateProductBundleGroup(productBundleGroup);
 	                        $scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
 	                    };

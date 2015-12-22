@@ -35,7 +35,7 @@ class AlertService implements IAlertService{
         return this.alerts || [];
     }
 
-    addAlert = (alert:Alert):void =>{
+    addAlert = (alert:any):void =>{
 
         this.alerts.push(alert);
         this.$timeout((alert)=> {

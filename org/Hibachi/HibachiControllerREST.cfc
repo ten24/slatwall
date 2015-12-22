@@ -394,37 +394,47 @@ component output="false" accessors="true" extends="HibachiController" {
 				if(!isProcessObject){
 					try{
 						var defaultValue = entity.invokeMethod('get#property.name#');
-						
-						if (isNull(defaultValue)){
-							model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
-						}else{
-							model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
-						}
-							
 					}catch(any e){
+						defaultValue = javacast('null','');
+					}
+					if (isNull(local.defaultValue)){
+						model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
+					}else if (structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)){
+						model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+					}else if (structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)){
+						if(structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json"){
+							model.defaultValues[entity.getClassName()][property.name] = deserializeJson(defaultValue);
+						}else{
+							model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+						}
+					}else if(structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'){
+						model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+					}else{
+						model.defaultValues[entity.getClassName()][property.name] = defaultValue;
 					}
 				}else{
 					try{
 						var defaultValue = entity.invokeMethod('get#property.name#');
-						
-						if (isNull(defaultValue)){
-							if(isObject(defaultValue)){
-								model.defaultValues[entity.getClassName()][property.name] = '';
+					}catch(any e){
+						defaultValue = javacast('null','');
+					}
+					if (!isNull(defaultValue)){
+						if(isObject(defaultValue)){
+							model.defaultValues[entity.getClassName()][property.name] = '';
+						}else{
+							if(isStruct(defaultValue)){
+								model.defaultValues[entity.getClassName()][property.name] = defaultValue;
 							}else{
 								model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
 							}
-							
-						}else{
-							//model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
 						}
-							
-					}catch(any e){
+						
+					}else{
+						//model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
 					}
 				}
 			}
-				
 		}
-	
 	}
 	
 	public any function getModel(required struct rc){

@@ -8,9 +8,9 @@
 					<li class="active"><a href="/##j-basic-2" role="tab" data-toggle="tab">Basic</a></li>
 					<li><a href="/##j-conditions-2" role="tab" data-toggle="tab">Conditions</a></li>
 					<li>
-						<a 	href="/##j-actions-2" role="tab" 
-							data-toggle="tab" 
-							ng-init="taskActionsTabOpen=false" 
+						<a 	href="/##j-actions-2" role="tab"
+							data-toggle="tab"
+							ng-init="taskActionsTabOpen=false"
 							ng-click="taskActionsTabOpen=true"
 						>Actions</a>
 					</li>
@@ -22,35 +22,35 @@
 		<!-- Tab panes for menu options start-->
 		<div class="row s-options s-task-actions">
 			<div class="tab-content" id="j-property-box">
-				
+
 					<div class="tab-pane active" id="j-basic-2">
-						<sw-form name="selectedTask" 
-							data-object="workflowTasks.selectedTask"	
+						<sw-form name="selectedTask"
+							data-object="workflowTasks.selectedTask"
 							data-context="save"
 						>
 							<div class="row">
 								<div class="col-xs-3">
-		
+
 									<div class="s-create-obj-window">
-		
+
 										<div class="form-group">
 											<sw-property-display
 												data-object="workflowTasks.selectedTask"
 												data-property="taskName"
 												data-editable="true"
 												data-editing="true"
-												data-is-dirty="true"	
+												data-is-dirty="true"
 											>
 											</sw-property-display>
 										</div>
-		
+
 										<div class="form-group">
 											<sw-property-display
 												data-object="workflowTasks.selectedTask"
 												data-property="activeFlag"
 												data-editable="true"
-												data-editing="true"	
-												data-is-dirty="true"										
+												data-editing="true"
+												data-is-dirty="true"
 											>
 										</div>
 									</div>
@@ -65,19 +65,18 @@
 								</div>
 							</div>
 						</sw-form>
-						
+
 					</div>
 					<div class="tab-pane" id="j-conditions-2">
-						<sw-form name="selectedTaskConditions" 
-							data-object="workflowTasks.selectedTask"	
+						<sw-form name="selectedTaskConditions"
+							data-object="workflowTasks.selectedTask"
 						>
 							<div class="s-setting-options">
 								<div class="row s-setting-options-body">
-		
+
 									<!-- Start Filter Group -->
 									<div class="col-xs-12 s-filters-selected">
 										<div class="row">
-											{{workflowTasks.selectedTask.data.taskConditionsConfig}}
 											<sw-filter-groups
 													ng-if="workflowTasks.selectedTask.data.taskConditionsConfig.filterGroups.length"
 													data-collection-config="workflowTasks.selectedTask.data.taskConditionsConfig"
@@ -100,7 +99,7 @@
                             ></sw-property-display>
 						</sw-form>
 					</div>
-				
+
 				<div class="tab-pane" id="j-actions-2" ng-if="taskActionsTabOpen">
 					<sw-workflow-task-actions
 						data-workflow-task="workflowTasks.selectedTask"

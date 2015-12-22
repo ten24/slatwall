@@ -9,19 +9,28 @@ interface IAlert{
 }
 
 //model
-export class Alert implements IAlert {
-    msg:string;
+class Alert implements IAlert {
+    public msg:string;
     type:string;
+    fade:boolean=false;
+    dismissable:boolean=false;
 
     constructor(
         msg?: string,
         type?: string,
-        fade:boolean=true,
-        dismissable:boolean=true
+        fade?:boolean,
+        dismissable?:boolean
     ) {
         this.msg = msg;
         this.type = type;
+        this.fade = fade;
+        this.dismissable=dismissable;
     }
+}
+
+export{
+    Alert,
+    IAlert
 }
 
 

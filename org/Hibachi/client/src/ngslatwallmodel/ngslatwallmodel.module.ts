@@ -206,7 +206,7 @@
 							}
 						},
 						$$init:function( data ) {
-                            console.log('test init');
+
 							_init(this,data);
 						},
 						$$save:function(){
@@ -346,54 +346,51 @@
 
 									}else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
 
-
-
-
 										_jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
 
 
-										var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
-										var metaData = this.metaData;
+    										var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+    										var metaData = this.metaData;
 
-										if(metaData[property.name].fieldtype === 'one-to-many'){
-											entityInstance.data[metaData[property.name].fkcolumn.slice(0,-2)] = this;
+    										if(metaData[property.name].fieldtype === 'one-to-many'){
+    											entityInstance.data[metaData[property.name].fkcolumn.slice(0,-2)] = this;
 
-										}else if(metaData[property.name].fieldtype === 'many-to-many'){
+    										}else if(metaData[property.name].fieldtype === 'many-to-many'){
 
-											var manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
-											if(angular.isUndefined(entityInstance.data[manyToManyName])){
-												entityInstance.data[manyToManyName] = [];
-											}
-											entityInstance.data[manyToManyName].push(this);
-										}
+    											var manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
+    											if(angular.isUndefined(entityInstance.data[manyToManyName])){
+    												entityInstance.data[manyToManyName] = [];
+    											}
+    											entityInstance.data[manyToManyName].push(this);
+    										}
 
-										if(angular.isDefined(metaData[property.name])){
-											if(angular.isDefined(entityInstance.metaData[metaData[property.name].fkcolumn.slice(0,-2)])){
+    										if(angular.isDefined(metaData[property.name])){
+    											if(angular.isDefined(entityInstance.metaData[metaData[property.name].fkcolumn.slice(0,-2)])){
 
-												if(angular.isUndefined(entityInstance.parents)){
-													entityInstance.parents = [];
-												}
+    												if(angular.isUndefined(entityInstance.parents)){
+    													entityInstance.parents = [];
+    												}
 
-												entityInstance.parents.push(entityInstance.metaData[metaData[property.name].fkcolumn.slice(0,-2)]);
-											}
+    												entityInstance.parents.push(entityInstance.metaData[metaData[property.name].fkcolumn.slice(0,-2)]);
+    											}
 
-											if(angular.isUndefined(this.children)){
-												this.children = [];
-											}
+    											if(angular.isUndefined(this.children)){
+    												this.children = [];
+    											}
 
-											var child = metaData[property.name];
+    											var child = metaData[property.name];
 
-											if(this.children.indexOf(child) === -1){
-												this.children.push(child);
-											}
-										}
-										if(angular.isUndefined(this.data[property.name])){
-											this.data[property.name] = [];
-										}
+    											if(this.children.indexOf(child) === -1){
+    												this.children.push(child);
+    											}
+    										}
+    										if(angular.isUndefined(this.data[property.name])){
+    											this.data[property.name] = [];
+    										}
 
-										this.data[property.name].push(entityInstance);
-										return entityInstance;
-									};
+    										this.data[property.name].push(entityInstance);
+    										return entityInstance;
+    									};
 
 
 
@@ -468,12 +465,11 @@
 				$delegate.setJsEntityInstances(_jsEntityInstances);
 
 				var _init = function(entityInstance,data){
-                    console.log('test init');
+
 	                for(var key in data) {
 	                    if(key.charAt(0) !== '$' && angular.isObject(data[key]) && angular.isDefined(entityInstance.metaData[key])){
 	                        var propertyMetaData = entityInstance.metaData[key];
-                            console.log('propertyMetaData');
-                            console.log(propertyMetaData);
+
 	                        if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
 	                            if(data[key].trim() !== ''){
 	                                entityInstance.data[key] = angular.fromJson(data[key]);

@@ -1004,7 +1004,6 @@ component extends="HibachiService" accessors="true" {
 		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
-writedump(var=arguments.product.getSkus()[1].getHibachiErrors(),top=2);abort;
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);

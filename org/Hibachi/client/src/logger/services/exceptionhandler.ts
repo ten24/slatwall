@@ -1,6 +1,7 @@
 /// <reference path="../../../typings/tsd.d.ts" />
 /// <reference path="../../../typings/slatwallTypeScript.d.ts" />
 //depends on alert module
+import {Alert} from "../../alert/model/alert";
 import {AlertService} from "../../alert/service/alertservice";
 /*<------------------------------------------------------------------------
     This is out main class where we actually handle the exception by
@@ -21,7 +22,7 @@ class ExceptionHandler {
         return <any>ExceptionHandler.handle.bind(ExceptionHandler);
     }
 
-    private static handle(exception: any, cause: any) {
+    private static handle(exception: string, cause: any) {
         var alertService:AlertService;
         if(exception){
             exception = exception.toString();
