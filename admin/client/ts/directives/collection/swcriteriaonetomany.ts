@@ -35,6 +35,7 @@ angular.module('slatwalladmin')
                     scope.selectCollection = function(collection){
                         scope.toggleCollectionOptions();
                         scope.selectedFilterProperty.selectedCollection = collection;
+						scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[2];
                     };
 
                     scope.cleanSelection = function(){
@@ -137,7 +138,8 @@ angular.module('slatwalladmin')
                     scope.addNewCollection = function(){
                         dialogService.addPageDialog('collection/criteriacreatecollection', {
                             entityName: scope.selectedFilterProperty.cfc,
-                            collectionName: scope.data.collectionName
+							collectionName: scope.data.collectionName,
+							parentEntity: scope.collectionConfig.baseEntityName
                         });
                         scope.cleanSelection();
                     };
@@ -146,7 +148,8 @@ angular.module('slatwalladmin')
                         scope.toggleCollectionOptions();
                         dialogService.addPageDialog('collection/criteriacreatecollection', {
                             entityName: 'collection',
-                            entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+							entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
+							parentEntity: scope.collectionConfig.baseEntityName
                         });
                     };
                 }
