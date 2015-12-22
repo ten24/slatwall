@@ -136,6 +136,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public void function copyOrderItemInfo(required any orderItem) {
+		
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 		var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
 		setRenewalPrice( renewalPrice );
@@ -155,9 +156,11 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		var orderFulfillment = orderItem.getOrderFulfillment();
 		if (!isNull(orderFulfillment)){
 			setEmailAddress( orderFulfillment.getEmailAddress() );
-			setShippingAddress( orderFulfillment.getShippingAddress() );
 			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
 			setShippingMethod( orderFulfillment.getShippingMethod() );
+			if(!orderFulfillment.getShippingAddress().getNewFlag()) {
+				setShippingAddress( orderFulfillment.getShippingAddress().copyAddress() );
+			}
 		}
 	}
 
