@@ -967,7 +967,7 @@
 	            var alerts = [];
 	            if (messages) {
 	                for (var message in messages) {
-	                    var alert = new alert.Alert();
+	                    var alert = new alert_1.Alert();
 	                    alert.msg = messages[message].message;
 	                    alert.type = messages[message].messageType;
 	                    alerts.push(alert);
@@ -1006,7 +1006,9 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//model
 	var Alert = (function () {
-	    function Alert(msg, type) {
+	    function Alert(msg, type, fade, dismissable) {
+	        if (fade === void 0) { fade = true; }
+	        if (dismissable === void 0) { dismissable = true; }
 	        this.msg = msg;
 	        this.type = type;
 	    }
