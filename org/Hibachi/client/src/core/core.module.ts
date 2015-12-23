@@ -1,8 +1,7 @@
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
-import {AccountService} from "./services/accountservice";
-import {CartService} from "./services/cartservice";
+import {PublicService} from "./services/publicservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
@@ -70,8 +69,7 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 }).constant('pathBuilderConfig',new PathBuilderConfig())
 .constant('corePartialsPath','core/components/')
 //services
-.service('accountService',AccountService)
-.service('cartService',CartService)
+.service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)

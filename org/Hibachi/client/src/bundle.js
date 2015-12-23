@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(155);
+	var logger_module_1 = __webpack_require__(154);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -653,18 +653,18 @@
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
-	var slatwallinterceptor_1 = __webpack_require__(112);
-	var ngslatwall_module_1 = __webpack_require__(113);
-	var ngslatwallmodel_module_1 = __webpack_require__(115);
-	var content_module_1 = __webpack_require__(116);
-	var orderitem_module_1 = __webpack_require__(121);
-	var product_module_1 = __webpack_require__(127);
-	var productbundle_module_1 = __webpack_require__(129);
-	var workflow_module_1 = __webpack_require__(135);
-	var entity_module_1 = __webpack_require__(147);
+	var slatwallinterceptor_1 = __webpack_require__(111);
+	var ngslatwall_module_1 = __webpack_require__(112);
+	var ngslatwallmodel_module_1 = __webpack_require__(114);
+	var content_module_1 = __webpack_require__(115);
+	var orderitem_module_1 = __webpack_require__(120);
+	var product_module_1 = __webpack_require__(126);
+	var productbundle_module_1 = __webpack_require__(128);
+	var workflow_module_1 = __webpack_require__(134);
+	var entity_module_1 = __webpack_require__(146);
 	//filters
-	var entityrbkey_1 = __webpack_require__(153);
-	var swcurrency_1 = __webpack_require__(154);
+	var entityrbkey_1 = __webpack_require__(152);
+	var swcurrency_1 = __webpack_require__(153);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -875,10 +875,10 @@
 	var alert_module_1 = __webpack_require__(11);
 	var collection_module_1 = __webpack_require__(15);
 	var core_module_1 = __webpack_require__(16);
-	var dialog_module_1 = __webpack_require__(75);
-	var pagination_module_1 = __webpack_require__(78);
-	var form_module_1 = __webpack_require__(81);
-	var validation_module_1 = __webpack_require__(96);
+	var dialog_module_1 = __webpack_require__(74);
+	var pagination_module_1 = __webpack_require__(77);
+	var form_module_1 = __webpack_require__(80);
+	var validation_module_1 = __webpack_require__(95);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -1028,31 +1028,31 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(52);
-	var collectionservice_1 = __webpack_require__(53);
+	var collectionconfigservice_1 = __webpack_require__(51);
+	var collectionservice_1 = __webpack_require__(52);
 	//controllers
-	var collections_1 = __webpack_require__(54);
-	var createcollection_1 = __webpack_require__(55);
-	var confirmationcontroller_1 = __webpack_require__(56);
+	var collections_1 = __webpack_require__(53);
+	var createcollection_1 = __webpack_require__(54);
+	var confirmationcontroller_1 = __webpack_require__(55);
 	//directives
-	var swcollection_1 = __webpack_require__(57);
-	var swaddfilterbuttons_1 = __webpack_require__(58);
-	var swdisplayoptions_1 = __webpack_require__(59);
-	var swdisplayitem_1 = __webpack_require__(60);
-	var swcollectiontable_1 = __webpack_require__(61);
-	var swcolumnitem_1 = __webpack_require__(62);
-	var swconditioncriteria_1 = __webpack_require__(63);
-	var swcriteria_1 = __webpack_require__(64);
-	var swcriteriaboolean_1 = __webpack_require__(65);
-	var swcriteriamanytomany_1 = __webpack_require__(66);
-	var swcriteriamanytoone_1 = __webpack_require__(67);
-	var swcriterianumber_1 = __webpack_require__(68);
-	var swcriteriaonetomany_1 = __webpack_require__(69);
-	var swcriteriastring_1 = __webpack_require__(70);
-	var sweditfilteritem_1 = __webpack_require__(71);
-	var swfiltergroups_1 = __webpack_require__(72);
-	var swfilteritem_1 = __webpack_require__(73);
-	var swfiltergroupitem_1 = __webpack_require__(74);
+	var swcollection_1 = __webpack_require__(56);
+	var swaddfilterbuttons_1 = __webpack_require__(57);
+	var swdisplayoptions_1 = __webpack_require__(58);
+	var swdisplayitem_1 = __webpack_require__(59);
+	var swcollectiontable_1 = __webpack_require__(60);
+	var swcolumnitem_1 = __webpack_require__(61);
+	var swconditioncriteria_1 = __webpack_require__(62);
+	var swcriteria_1 = __webpack_require__(63);
+	var swcriteriaboolean_1 = __webpack_require__(64);
+	var swcriteriamanytomany_1 = __webpack_require__(65);
+	var swcriteriamanytoone_1 = __webpack_require__(66);
+	var swcriterianumber_1 = __webpack_require__(67);
+	var swcriteriaonetomany_1 = __webpack_require__(68);
+	var swcriteriastring_1 = __webpack_require__(69);
+	var sweditfilteritem_1 = __webpack_require__(70);
+	var swfiltergroups_1 = __webpack_require__(71);
+	var swfilteritem_1 = __webpack_require__(72);
+	var swfiltergroupitem_1 = __webpack_require__(73);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -1091,44 +1091,43 @@
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var accountservice_1 = __webpack_require__(17);
-	var cartservice_1 = __webpack_require__(18);
-	var utilityservice_1 = __webpack_require__(19);
-	var selectionservice_1 = __webpack_require__(21);
-	var observerservice_1 = __webpack_require__(22);
-	var formservice_1 = __webpack_require__(23);
-	var metadataservice_1 = __webpack_require__(24);
+	var publicservice_1 = __webpack_require__(17);
+	var utilityservice_1 = __webpack_require__(18);
+	var selectionservice_1 = __webpack_require__(20);
+	var observerservice_1 = __webpack_require__(21);
+	var formservice_1 = __webpack_require__(22);
+	var metadataservice_1 = __webpack_require__(23);
 	//controllers
-	var globalsearch_1 = __webpack_require__(25);
+	var globalsearch_1 = __webpack_require__(24);
 	//filters
-	var percentage_1 = __webpack_require__(26);
+	var percentage_1 = __webpack_require__(25);
 	//directives
 	//  components
-	var swactioncaller_1 = __webpack_require__(27);
-	var swtypeaheadsearch_1 = __webpack_require__(28);
-	var swactioncallerdropdown_1 = __webpack_require__(29);
-	var swcolumnsorter_1 = __webpack_require__(30);
-	var swconfirm_1 = __webpack_require__(31);
-	var swentityactionbar_1 = __webpack_require__(32);
-	var swentityactionbarbuttongroup_1 = __webpack_require__(33);
-	var swexpandablerecord_1 = __webpack_require__(34);
-	var swlistingdisplay_1 = __webpack_require__(35);
-	var swlistingcolumn_1 = __webpack_require__(36);
-	var swlogin_1 = __webpack_require__(37);
-	var swnumbersonly_1 = __webpack_require__(38);
-	var swloading_1 = __webpack_require__(39);
-	var swscrolltrigger_1 = __webpack_require__(40);
-	var swrbkey_1 = __webpack_require__(41);
-	var swoptions_1 = __webpack_require__(42);
-	var swselection_1 = __webpack_require__(43);
-	var swclickoutside_1 = __webpack_require__(44);
-	var swdirective_1 = __webpack_require__(45);
-	var swexportaction_1 = __webpack_require__(46);
-	var swhref_1 = __webpack_require__(47);
-	var swprocesscaller_1 = __webpack_require__(48);
-	var swresizedimage_1 = __webpack_require__(49);
-	var swsortable_1 = __webpack_require__(50);
-	var swlistingglobalsearch_1 = __webpack_require__(51);
+	var swactioncaller_1 = __webpack_require__(26);
+	var swtypeaheadsearch_1 = __webpack_require__(27);
+	var swactioncallerdropdown_1 = __webpack_require__(28);
+	var swcolumnsorter_1 = __webpack_require__(29);
+	var swconfirm_1 = __webpack_require__(30);
+	var swentityactionbar_1 = __webpack_require__(31);
+	var swentityactionbarbuttongroup_1 = __webpack_require__(32);
+	var swexpandablerecord_1 = __webpack_require__(33);
+	var swlistingdisplay_1 = __webpack_require__(34);
+	var swlistingcolumn_1 = __webpack_require__(35);
+	var swlogin_1 = __webpack_require__(36);
+	var swnumbersonly_1 = __webpack_require__(37);
+	var swloading_1 = __webpack_require__(38);
+	var swscrolltrigger_1 = __webpack_require__(39);
+	var swrbkey_1 = __webpack_require__(40);
+	var swoptions_1 = __webpack_require__(41);
+	var swselection_1 = __webpack_require__(42);
+	var swclickoutside_1 = __webpack_require__(43);
+	var swdirective_1 = __webpack_require__(44);
+	var swexportaction_1 = __webpack_require__(45);
+	var swhref_1 = __webpack_require__(46);
+	var swprocesscaller_1 = __webpack_require__(47);
+	var swresizedimage_1 = __webpack_require__(48);
+	var swsortable_1 = __webpack_require__(49);
+	var swlistingglobalsearch_1 = __webpack_require__(50);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1152,8 +1151,7 @@
 	var coremodule = angular.module('hibachi.core', []).config(function () {
 	}).constant('pathBuilderConfig', new PathBuilderConfig())
 	    .constant('corePartialsPath', 'core/components/')
-	    .service('accountService', accountservice_1.AccountService)
-	    .service('cartService', cartservice_1.CartService)
+	    .service('publicService', publicservice_1.PublicService)
 	    .service('utilityService', utilityservice_1.UtilityService)
 	    .service('selectionService', selectionservice_1.SelectionService)
 	    .service('observerService', observerservice_1.ObserverService)
@@ -1194,197 +1192,154 @@
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	var AccountService = (function () {
-	    function AccountService($http) {
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var PublicService = (function () {
+	    //@ngInject
+	    function PublicService($http, $q) {
 	        var _this = this;
 	        this.$http = $http;
+	        this.$q = $q;
 	        this.formType = { 'Content-Type': "application/x-www-form-urlencoded" };
+	        this.ajaxRequestParam = "?ajaxRequest=1";
 	        this.baseUrl = "";
-	        this.$getAccount = function () {
-	            var urlBase = _this.baseUrl + 'getAccount/?ajaxRequest=1';
-	            return _this.$http.get(urlBase);
+	        /** accessors for account */
+	        this.getAccount = function (refresh) {
+	            var urlBase = _this.baseUrl + 'getAccount/' + _this.ajaxRequestParam + "&returnJsonObject=cart,account";
+	            var deferred = _this.$q.defer();
+	            _this.$http.get(urlBase).success(function (result) {
+	                _this.account = result;
+	                console.log("Account:", _this.account);
+	                deferred.resolve(result);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
 	        };
-	        this.$updateAccount = function (data) {
-	            var urlBase = _this.baseUrl + 'updateAccount/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
+	        /** accessors for cart */
+	        this.getCart = function (refresh) {
+	            var urlBase = _this.baseUrl + 'getCart/' + _this.ajaxRequestParam;
+	            var deferred = _this.$q.defer();
+	            _this.$http.get(urlBase).success(function (result) {
+	                _this.cart = result;
+	                console.log("Cart:", _this.cart);
+	                deferred.resolve(result);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
 	        };
-	        this.$saveAccount = function (data) {
-	            var urlBase = _this.baseUrl + 'updateAccount/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
+	        /** this is the generic method used to call all server side actions.
+	            *  @param action {string} the name of the action (method) to call in the public service.
+	            *  @param data   {object} the params as key value pairs to pass in the post request.
+	            *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
+	            */
+	        this.doAction = function (action, data) {
+	            _this.hasErrors = false;
+	            _this.success = false;
+	            _this.errors = undefined;
+	            _this.header = { headers: _this.formType };
+	            var deferred = _this.$q.defer();
+	            if (!action) {
+	                throw "Action is required exception";
+	            }
+	            data.returnJsonObjects = "cart,account";
+	            var urlBase = _this.baseUrl + action + _this.ajaxRequestParam;
+	            var promise = _this.$http.post(urlBase, _this.toFormParams(data), _this.header).then(function (result) {
+	                /** update the account and the cart */
+	                _this.account = result.data.account;
+	                _this.cart = result.data.cart;
+	                //if the action that was called was successful, then success is true.
+	                if (result.data.successfulActions.length) {
+	                    _this.success = true;
+	                }
+	                if (result.data.failureActions.length) {
+	                    _this.hasErrors = true;
+	                    console.log("Errors:", result.data.errors);
+	                }
+	                deferred.resolve(result);
+	            }).catch(function (response) {
+	                console.log("There was an error making this http call", response.status, response.data);
+	                deferred.reject(response);
+	            });
+	            return deferred.promise;
 	        };
-	        this.$login = function (data) {
-	            var urlBase = _this.baseUrl + 'login/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$loginGuestAccount = function (data) {
-	            var urlBase = _this.baseUrl + 'loginGuestAccount/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$logout = function () {
-	            var urlBase = _this.baseUrl + 'logout/?ajaxRequest=1';
-	            var options = { headers: _this.formType };
-	            return _this.$http.get(urlBase, options);
-	        };
-	        this.$guestAccountCreatePassword = function (data) {
-	            var urlBase = _this.baseUrl + 'guestAccountCreatePassword/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$forgotPassword = function (data) {
-	            var urlBase = _this.baseUrl + 'forgotPassword/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$createAccount = function (data) {
-	            var urlBase = _this.baseUrl + 'createAccount/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$resetPassword = function (data) {
-	            var urlBase = _this.baseUrl + 'resetPassword/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$changePassword = function (data) {
-	            var urlBase = _this.baseUrl + 'changePassword/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$deleteAccountEmailAddress = function (data) {
-	            var urlBase = _this.baseUrl + 'deleteAccountEmailAddress/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$sendAccountEmailAddressVerificationEmail = function (data) {
-	            var urlBase = _this.baseUrl + 'sendAccountEmailAddressVerificationEmail/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$verifyAccountEmailAddress = function (data) {
-	            var urlBase = _this.baseUrl + 'verifyAccountEmailAddress/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$deletePhoneNumber = function (data) {
-	            var urlBase = _this.baseUrl + 'deletePhoneNumber/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$deleteAccountAddress = function (data) {
-	            var urlBase = _this.baseUrl + 'deleteAccountAddress/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$addAccountPaymentMethod = function (data) {
-	            var urlBase = _this.baseUrl + 'addAccountPaymentMethod/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$deleteAccountPaymentMethod = function (data) {
-	            var urlBase = _this.baseUrl + 'deleteAccountPaymentMethod/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$updateSubscription = function (data) {
-	            var urlBase = _this.baseUrl + 'updateSubscription/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$renewSubscription = function (data) {
-	            var urlBase = _this.baseUrl + 'renewSubscription/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
-	        this.$redeemGiftCard = function (data) {
-	            var urlBase = _this.baseUrl + 'redeemToAccount/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: data.formType });
-	        };
+	        /** used to turn data into a correct format for the post */
 	        this.toFormParams = function (data) {
 	            return data = $.param(data) || "";
 	        };
+	        /**
+	         * Helper methods so that everything in account and cart can be accessed using getters.
+	         */
+	        this.userIsLoggedIn = function () {
+	            if (_this.account !== undefined && _this.account.accountID !== '') {
+	                return true;
+	            }
+	            return false;
+	        };
+	        /**
+	         * Helper methods for getting errors from the cart
+	         */
+	        this.getErrors = function () {
+	            if (_this.errors !== undefined) {
+	                return _this.errors;
+	            }
+	            return {};
+	        };
+	        /**
+	         * Helper method to get orderitems
+	         */
+	        this.getOrderItems = function () {
+	            var orderItems = [];
+	            if (_this.cart.orderitems !== undefined && _this.cart.orderitems.length) {
+	                for (var item in _this.cart.orderitems) {
+	                    orderItems.push(item);
+	                }
+	            }
+	            return orderItems;
+	        };
+	        /**
+	         * Helper method to get order fulfillments
+	         */
+	        this.getOrderFulfillments = function () {
+	            var orderFulfillments = [];
+	            if (_this.cart.orderfulfillments !== undefined && _this.cart.orderfulfillments.length) {
+	                for (var item in _this.cart.orderfulfillments) {
+	                    orderFulfillments.push(item);
+	                }
+	            }
+	            return orderFulfillments;
+	        };
+	        /**
+	         * Helper method to get promotion codes
+	         */
+	        this.getPromotionCodeList = function () {
+	            if (_this.cart && _this.cart.promotionCodeList !== undefined) {
+	                return _this.cart.promotionCodeList;
+	            }
+	        };
+	        /**
+	         * Helper method to get promotion codes
+	         */
+	        this.getPromotionCodes = function () {
+	            var promoCodes = [];
+	            if (_this.cart && _this.cart.promotionCodes.length) {
+	                for (var p in _this.cart.promotionCodes) {
+	                    promoCodes.push(_this.cart.promotionCodes[p].promotionCode);
+	                }
+	                return promoCodes;
+	            }
+	        };
 	        this.baseUrl = "/index.cfm/api/scope/";
+	        this.$http = $http;
+	        this.$q = $q;
 	    }
-	    return AccountService;
+	    return PublicService;
 	})();
-	exports.AccountService = AccountService;
+	exports.PublicService = PublicService;
 
 
 /***/ },
 /* 18 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	var CartService = (function () {
-	    function CartService($http) {
-	        var _this = this;
-	        this.$http = $http;
-	        /**
-	            * DataFactory contains all endpoints available to the Account Object.
-	            */
-	        this.$getCart = function () {
-	            var urlBase = '/index.cfm/api/scope/getCart/?ajaxRequest=1';
-	            return _this.$http.get(urlBase);
-	        };
-	        this.$getOrder = function () {
-	            var urlBase = '/index.cfm/api/scope/getCart/?ajaxRequest=1';
-	            return _this.$http.get(urlBase);
-	        };
-	        this.$updateOrder = function (data) {
-	            var urlBase = '/index.cfm/api/scope/updateOrder/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$clearOrder = function (data) {
-	            var urlBase = '/index.cfm/api/scope/clearOrder/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$changeOrder = function (data) {
-	            var urlBase = '/index.cfm/api/scope/changeOrder/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$deleteOrder = function (data) {
-	            var urlBase = '/index.cfm/api/scope/deleteOrder/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$placeOrder = function (data) {
-	            var urlBase = '/index.cfm/api/scope/placeOrder/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$duplicateOrder = function (data) {
-	            var urlBase = '/index.cfm/api/scope/duplicateOrder/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$addOrderItem = function (data) {
-	            var urlBase = '/index.cfm/api/scope/addOrderItem/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$removeOrderItem = function (data) {
-	            var urlBase = '/index.cfm/api/scope/removeOrderItem/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$updateOrderFulfillment = function (data) {
-	            var urlBase = '/index.cfm/api/scope/updateOrderFulfillment/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$addPromotionCode = function (data) {
-	            var urlBase = '/index.cfm/api/scope/addPromotionCode/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$removePromotionCode = function (data) {
-	            var urlBase = '/index.cfm/api/scope/removePromotionCode/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$addOrderPayment = function (data) {
-	            var urlBase = '/index.cfm/api/scope/addOrderPayment/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$removeOrderPayment = function (data) {
-	            var urlBase = '/index.cfm/api/scope/removeOrderPayment/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.$addProductReview = function (data) {
-	            var urlBase = '/index.cfm/api/scope/addProductReview/?ajaxRequest=1';
-	            return _this.$http.post(urlBase, data.params, { headers: _this.formType });
-	        };
-	        this.toFormParams = function (data) {
-	            return data = $.param(data) || "";
-	        };
-	        this.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
-	    }
-	    return CartService;
-	})();
-	exports.CartService = CartService;
-
-
-/***/ },
-/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __extends = (this && this.__extends) || function (d, b) {
@@ -1395,7 +1350,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	var baseservice_1 = __webpack_require__(20);
+	var baseservice_1 = __webpack_require__(19);
 	var UtilityService = (function (_super) {
 	    __extends(UtilityService, _super);
 	    function UtilityService() {
@@ -1633,7 +1588,7 @@
 
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -1647,7 +1602,7 @@
 
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -1658,7 +1613,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(20);
+	var baseservice_1 = __webpack_require__(19);
 	var SelectionService = (function (_super) {
 	    __extends(SelectionService, _super);
 	    function SelectionService() {
@@ -1709,7 +1664,7 @@
 
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -1727,7 +1682,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(20);
+	var baseservice_1 = __webpack_require__(19);
 	var ObserverService = (function (_super) {
 	    __extends(ObserverService, _super);
 	    //@ngInject
@@ -1825,7 +1780,7 @@
 
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -1914,7 +1869,7 @@
 
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports) {
 
 	var MetaDataService = (function () {
@@ -2007,7 +1962,7 @@
 
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports) {
 
 	var GlobalSearchController = (function () {
@@ -2141,7 +2096,7 @@
 
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2165,7 +2120,7 @@
 
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2420,7 +2375,7 @@
 
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2566,7 +2521,7 @@
 
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2614,7 +2569,7 @@
 
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2660,7 +2615,7 @@
 
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2811,7 +2766,7 @@
 
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2875,7 +2830,7 @@
 
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2912,7 +2867,7 @@
 
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3065,7 +3020,7 @@
 
 
 /***/ },
-/* 35 */
+/* 34 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3555,7 +3510,7 @@
 
 
 /***/ },
-/* 36 */
+/* 35 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3624,7 +3579,7 @@
 
 
 /***/ },
-/* 37 */
+/* 36 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3693,7 +3648,7 @@
 
 
 /***/ },
-/* 38 */
+/* 37 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3749,7 +3704,7 @@
 
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports) {
 
 	var SWLoading = (function () {
@@ -3782,7 +3737,7 @@
 
 
 /***/ },
-/* 40 */
+/* 39 */
 /***/ function(module, exports) {
 
 	var SWScrollTrigger = (function () {
@@ -3871,7 +3826,7 @@
 
 
 /***/ },
-/* 41 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var SWRbKey = (function () {
@@ -3916,7 +3871,7 @@
 
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3981,7 +3936,7 @@
 
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports) {
 
 	var SWSelection = (function () {
@@ -4039,7 +3994,7 @@
 
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4092,7 +4047,7 @@
 
 
 /***/ },
-/* 45 */
+/* 44 */
 /***/ function(module, exports) {
 
 	var SWDirective = (function () {
@@ -4133,7 +4088,7 @@
 
 
 /***/ },
-/* 46 */
+/* 45 */
 /***/ function(module, exports) {
 
 	var SWExportAction = (function () {
@@ -4163,7 +4118,7 @@
 
 
 /***/ },
-/* 47 */
+/* 46 */
 /***/ function(module, exports) {
 
 	var SWHref = (function () {
@@ -4194,7 +4149,7 @@
 
 
 /***/ },
-/* 48 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4274,7 +4229,7 @@
 
 
 /***/ },
-/* 49 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4317,7 +4272,7 @@
 
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports) {
 
 	var SWSortable = (function () {
@@ -4369,7 +4324,7 @@
 
 
 /***/ },
-/* 51 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4430,7 +4385,7 @@
 
 
 /***/ },
-/* 52 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4804,7 +4759,7 @@
 
 
 /***/ },
-/* 53 */
+/* 52 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -5005,7 +4960,7 @@
 
 
 /***/ },
-/* 54 */
+/* 53 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5265,7 +5220,7 @@
 
 
 /***/ },
-/* 55 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5470,7 +5425,7 @@
 
 
 /***/ },
-/* 56 */
+/* 55 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5506,7 +5461,7 @@
 
 
 /***/ },
-/* 57 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5552,7 +5507,7 @@
 
 
 /***/ },
-/* 58 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5598,7 +5553,7 @@
 
 
 /***/ },
-/* 59 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5764,7 +5719,7 @@
 
 
 /***/ },
-/* 60 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5844,7 +5799,7 @@
 
 
 /***/ },
-/* 61 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5911,7 +5866,7 @@
 
 
 /***/ },
-/* 62 */
+/* 61 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6111,7 +6066,7 @@
 
 
 /***/ },
-/* 63 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7001,7 +6956,7 @@
 
 
 /***/ },
-/* 64 */
+/* 63 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7044,7 +6999,7 @@
 
 
 /***/ },
-/* 65 */
+/* 64 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7144,7 +7099,7 @@
 
 
 /***/ },
-/* 66 */
+/* 65 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7286,7 +7241,7 @@
 
 
 /***/ },
-/* 67 */
+/* 66 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7448,7 +7403,7 @@
 
 
 /***/ },
-/* 68 */
+/* 67 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7613,7 +7568,7 @@
 
 
 /***/ },
-/* 69 */
+/* 68 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7751,7 +7706,7 @@
 
 
 /***/ },
-/* 70 */
+/* 69 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7933,7 +7888,7 @@
 
 
 /***/ },
-/* 71 */
+/* 70 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8244,7 +8199,7 @@
 
 
 /***/ },
-/* 72 */
+/* 71 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8343,7 +8298,7 @@
 
 
 /***/ },
-/* 73 */
+/* 72 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8409,7 +8364,7 @@
 
 
 /***/ },
-/* 74 */
+/* 73 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8481,15 +8436,15 @@
 
 
 /***/ },
-/* 75 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(76);
+	var dialogservice_1 = __webpack_require__(75);
 	//controllers
-	var pagedialog_1 = __webpack_require__(77);
+	var pagedialog_1 = __webpack_require__(76);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -8499,7 +8454,7 @@
 
 
 /***/ },
-/* 76 */
+/* 75 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -8540,7 +8495,7 @@
 
 
 /***/ },
-/* 77 */
+/* 76 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8563,14 +8518,14 @@
 
 
 /***/ },
-/* 78 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(79);
-	var swpaginationbar_1 = __webpack_require__(80);
+	var paginationservice_1 = __webpack_require__(78);
+	var swpaginationbar_1 = __webpack_require__(79);
 	var core_module_1 = __webpack_require__(16);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -8582,7 +8537,7 @@
 
 
 /***/ },
-/* 79 */
+/* 78 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
@@ -8760,7 +8715,7 @@
 
 
 /***/ },
-/* 80 */
+/* 79 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8819,7 +8774,7 @@
 
 
 /***/ },
-/* 81 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -8835,20 +8790,20 @@
 	//directives
 	//  components
 	//form
-	var swinput_1 = __webpack_require__(82);
-	var swfformfield_1 = __webpack_require__(83);
-	var swform_1 = __webpack_require__(84);
-	var swformfield_1 = __webpack_require__(85);
-	var swformfieldjson_1 = __webpack_require__(86);
-	var swformfieldnumber_1 = __webpack_require__(87);
-	var swformfieldpassword_1 = __webpack_require__(88);
-	var swformfieldradio_1 = __webpack_require__(89);
-	var swformfieldsearchselect_1 = __webpack_require__(90);
-	var swformfieldselect_1 = __webpack_require__(91);
-	var swformfieldtext_1 = __webpack_require__(92);
-	var swformregistrar_1 = __webpack_require__(93);
-	var swfpropertydisplay_1 = __webpack_require__(94);
-	var swpropertydisplay_1 = __webpack_require__(95);
+	var swinput_1 = __webpack_require__(81);
+	var swfformfield_1 = __webpack_require__(82);
+	var swform_1 = __webpack_require__(83);
+	var swformfield_1 = __webpack_require__(84);
+	var swformfieldjson_1 = __webpack_require__(85);
+	var swformfieldnumber_1 = __webpack_require__(86);
+	var swformfieldpassword_1 = __webpack_require__(87);
+	var swformfieldradio_1 = __webpack_require__(88);
+	var swformfieldsearchselect_1 = __webpack_require__(89);
+	var swformfieldselect_1 = __webpack_require__(90);
+	var swformfieldtext_1 = __webpack_require__(91);
+	var swformregistrar_1 = __webpack_require__(92);
+	var swfpropertydisplay_1 = __webpack_require__(93);
+	var swpropertydisplay_1 = __webpack_require__(94);
 	var formmodule = angular.module('hibachi.form', []).config(function () {
 	})
 	    .constant('coreFormPartialsPath', 'form/components/')
@@ -8870,7 +8825,7 @@
 
 
 /***/ },
-/* 82 */
+/* 81 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8992,7 +8947,7 @@
 
 
 /***/ },
-/* 83 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/**********************************************************************************************
@@ -9082,7 +9037,7 @@
 
 
 /***/ },
-/* 84 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9400,7 +9355,7 @@
 
 
 /***/ },
-/* 85 */
+/* 84 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9447,7 +9402,7 @@
 
 
 /***/ },
-/* 86 */
+/* 85 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9489,7 +9444,7 @@
 
 
 /***/ },
-/* 87 */
+/* 86 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9529,7 +9484,7 @@
 
 
 /***/ },
-/* 88 */
+/* 87 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9568,7 +9523,7 @@
 
 
 /***/ },
-/* 89 */
+/* 88 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9645,7 +9600,7 @@
 
 
 /***/ },
-/* 90 */
+/* 89 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9766,7 +9721,7 @@
 
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9900,7 +9855,7 @@
 
 
 /***/ },
-/* 92 */
+/* 91 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9949,7 +9904,7 @@
 
 
 /***/ },
-/* 93 */
+/* 92 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10005,7 +9960,7 @@
 
 
 /***/ },
-/* 94 */
+/* 93 */
 /***/ function(module, exports) {
 
 	/**********************************************************************************************
@@ -10173,7 +10128,7 @@
 
 
 /***/ },
-/* 95 */
+/* 94 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10275,26 +10230,26 @@
 
 
 /***/ },
-/* 96 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var swvalidate_1 = __webpack_require__(97);
-	var swvalidationminlength_1 = __webpack_require__(98);
-	var swvalidationdatatype_1 = __webpack_require__(99);
-	var swvalidationeq_1 = __webpack_require__(100);
-	var swvalidationgte_1 = __webpack_require__(101);
-	var swvalidationlte_1 = __webpack_require__(102);
-	var swvalidationmaxlength_1 = __webpack_require__(103);
-	var swvalidationmaxvalue_1 = __webpack_require__(104);
-	var swvalidationminvalue_1 = __webpack_require__(105);
-	var swvalidationneq_1 = __webpack_require__(106);
-	var swvalidationnumeric_1 = __webpack_require__(107);
-	var swvalidationregex_1 = __webpack_require__(108);
-	var swvalidationrequired_1 = __webpack_require__(109);
-	var swvalidationunique_1 = __webpack_require__(110);
-	var swvalidationuniqueornull_1 = __webpack_require__(111);
+	var swvalidate_1 = __webpack_require__(96);
+	var swvalidationminlength_1 = __webpack_require__(97);
+	var swvalidationdatatype_1 = __webpack_require__(98);
+	var swvalidationeq_1 = __webpack_require__(99);
+	var swvalidationgte_1 = __webpack_require__(100);
+	var swvalidationlte_1 = __webpack_require__(101);
+	var swvalidationmaxlength_1 = __webpack_require__(102);
+	var swvalidationmaxvalue_1 = __webpack_require__(103);
+	var swvalidationminvalue_1 = __webpack_require__(104);
+	var swvalidationneq_1 = __webpack_require__(105);
+	var swvalidationnumeric_1 = __webpack_require__(106);
+	var swvalidationregex_1 = __webpack_require__(107);
+	var swvalidationrequired_1 = __webpack_require__(108);
+	var swvalidationunique_1 = __webpack_require__(109);
+	var swvalidationuniqueornull_1 = __webpack_require__(110);
 	var validationmodule = angular.module('hibachi.validation', [])
 	    .run([function () {
 	    }])
@@ -10317,7 +10272,7 @@
 
 
 /***/ },
-/* 97 */
+/* 96 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10703,7 +10658,7 @@
 
 
 /***/ },
-/* 98 */
+/* 97 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10744,7 +10699,7 @@
 
 
 /***/ },
-/* 99 */
+/* 98 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10803,7 +10758,7 @@
 
 
 /***/ },
-/* 100 */
+/* 99 */
 /***/ function(module, exports) {
 
 	/**
@@ -10843,7 +10798,7 @@
 
 
 /***/ },
-/* 101 */
+/* 100 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10881,7 +10836,7 @@
 
 
 /***/ },
-/* 102 */
+/* 101 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10920,7 +10875,7 @@
 
 
 /***/ },
-/* 103 */
+/* 102 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10957,7 +10912,7 @@
 
 
 /***/ },
-/* 104 */
+/* 103 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10994,7 +10949,7 @@
 
 
 /***/ },
-/* 105 */
+/* 104 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11031,7 +10986,7 @@
 
 
 /***/ },
-/* 106 */
+/* 105 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11066,7 +11021,7 @@
 
 
 /***/ },
-/* 107 */
+/* 106 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11105,7 +11060,7 @@
 
 
 /***/ },
-/* 108 */
+/* 107 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11145,7 +11100,7 @@
 
 
 /***/ },
-/* 109 */
+/* 108 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11181,7 +11136,7 @@
 
 
 /***/ },
-/* 110 */
+/* 109 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11233,7 +11188,7 @@
 
 
 /***/ },
-/* 111 */
+/* 110 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11285,7 +11240,7 @@
 
 
 /***/ },
-/* 112 */
+/* 111 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11426,20 +11381,20 @@
 
 
 /***/ },
-/* 113 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngSlatwall = angular.module('ngSlatwall', [hibachi_module_1.hibachimodule.name]);
-	var slatwallservice_1 = __webpack_require__(114);
+	var slatwallservice_1 = __webpack_require__(113);
 	var ngslatwallmodule = angular.module('ngSlatwall').provider('$slatwall', slatwallservice_1.$Slatwall);
 	exports.ngslatwallmodule = ngslatwallmodule;
 
 
 /***/ },
-/* 114 */
+/* 113 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12029,12 +11984,12 @@
 
 
 /***/ },
-/* 115 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var ngslatwall_module_1 = __webpack_require__(113);
+	var ngslatwall_module_1 = __webpack_require__(112);
 	var hibachi_module_1 = __webpack_require__(10);
 	var ngslatwallmodelmodule = angular.module('ngSlatwallModel', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name]).config(['$provide', function ($provide) {
 	        $provide.decorator('$slatwall', [
@@ -12956,7 +12911,7 @@
 
 
 /***/ },
-/* 116 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -12964,10 +12919,10 @@
 	//services
 	//filters
 	//directives
-	var swcontentbasic_1 = __webpack_require__(117);
-	var swcontenteditor_1 = __webpack_require__(118);
-	var swcontentlist_1 = __webpack_require__(119);
-	var swcontentnode_1 = __webpack_require__(120);
+	var swcontentbasic_1 = __webpack_require__(116);
+	var swcontenteditor_1 = __webpack_require__(117);
+	var swcontentlist_1 = __webpack_require__(118);
+	var swcontentnode_1 = __webpack_require__(119);
 	var contentmodule = angular.module('hibachi.content', []).config(function () {
 	})
 	    .constant('contentPartialsPath', 'content/components/')
@@ -12979,7 +12934,7 @@
 
 
 /***/ },
-/* 117 */
+/* 116 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13055,7 +13010,7 @@
 
 
 /***/ },
-/* 118 */
+/* 117 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13115,7 +13070,7 @@
 
 
 /***/ },
-/* 119 */
+/* 118 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13348,7 +13303,7 @@
 
 
 /***/ },
-/* 120 */
+/* 119 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13490,18 +13445,18 @@
 
 
 /***/ },
-/* 121 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var core_module_1 = __webpack_require__(16);
 	//directives
-	var swchildorderitem_1 = __webpack_require__(122);
-	var sworderitem_1 = __webpack_require__(123);
-	var swoishippinglabelstamp_1 = __webpack_require__(124);
-	var sworderitemdetailstamp_1 = __webpack_require__(125);
-	var sworderitems_1 = __webpack_require__(126);
+	var swchildorderitem_1 = __webpack_require__(121);
+	var sworderitem_1 = __webpack_require__(122);
+	var swoishippinglabelstamp_1 = __webpack_require__(123);
+	var sworderitemdetailstamp_1 = __webpack_require__(124);
+	var sworderitems_1 = __webpack_require__(125);
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -13515,7 +13470,7 @@
 
 
 /***/ },
-/* 122 */
+/* 121 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13805,7 +13760,7 @@
 
 
 /***/ },
-/* 123 */
+/* 122 */
 /***/ function(module, exports) {
 
 	var SWOrderItem = (function () {
@@ -14222,7 +14177,7 @@
 
 
 /***/ },
-/* 124 */
+/* 123 */
 /***/ function(module, exports) {
 
 	/**
@@ -14263,7 +14218,7 @@
 
 
 /***/ },
-/* 125 */
+/* 124 */
 /***/ function(module, exports) {
 
 	/**
@@ -14362,7 +14317,7 @@
 
 
 /***/ },
-/* 126 */
+/* 125 */
 /***/ function(module, exports) {
 
 	var SWOrderItems = (function () {
@@ -14753,7 +14708,7 @@
 
 
 /***/ },
-/* 127 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -14762,7 +14717,7 @@
 	var core_module_1 = __webpack_require__(16);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(128);
+	var preprocessproduct_create_1 = __webpack_require__(127);
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -14773,7 +14728,7 @@
 
 
 /***/ },
-/* 128 */
+/* 127 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14849,7 +14804,7 @@
 
 
 /***/ },
-/* 129 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -14857,13 +14812,13 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var productbundleservice_1 = __webpack_require__(130);
+	var productbundleservice_1 = __webpack_require__(129);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(131);
+	var create_bundle_controller_1 = __webpack_require__(130);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(132);
-	var swproductbundlegroups_1 = __webpack_require__(133);
-	var swproductbundlegroup_1 = __webpack_require__(134);
+	var swproductbundlegrouptype_1 = __webpack_require__(131);
+	var swproductbundlegroups_1 = __webpack_require__(132);
+	var swproductbundlegroup_1 = __webpack_require__(133);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -14877,7 +14832,7 @@
 
 
 /***/ },
-/* 130 */
+/* 129 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14962,7 +14917,7 @@
 
 
 /***/ },
-/* 131 */
+/* 130 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15050,7 +15005,7 @@
 
 
 /***/ },
-/* 132 */
+/* 131 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15220,7 +15175,7 @@
 
 
 /***/ },
-/* 133 */
+/* 132 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15280,7 +15235,7 @@
 
 
 /***/ },
-/* 134 */
+/* 133 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15625,24 +15580,24 @@
 
 
 /***/ },
-/* 135 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(136);
+	var workflowconditionservice_1 = __webpack_require__(135);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(137);
-	var swworkflowbasic_1 = __webpack_require__(138);
-	var swworkflowcondition_1 = __webpack_require__(139);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(140);
-	var swworkflowconditiongroups_1 = __webpack_require__(141);
-	var swworkflowtask_1 = __webpack_require__(142);
-	var swworkflowtaskactions_1 = __webpack_require__(143);
-	var swworkflowtasks_1 = __webpack_require__(144);
-	var swworkflowtrigger_1 = __webpack_require__(145);
-	var swworkflowtriggers_1 = __webpack_require__(146);
+	var swadmincreatesuperuser_1 = __webpack_require__(136);
+	var swworkflowbasic_1 = __webpack_require__(137);
+	var swworkflowcondition_1 = __webpack_require__(138);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(139);
+	var swworkflowconditiongroups_1 = __webpack_require__(140);
+	var swworkflowtask_1 = __webpack_require__(141);
+	var swworkflowtaskactions_1 = __webpack_require__(142);
+	var swworkflowtasks_1 = __webpack_require__(143);
+	var swworkflowtrigger_1 = __webpack_require__(144);
+	var swworkflowtriggers_1 = __webpack_require__(145);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
@@ -15662,7 +15617,7 @@
 
 
 /***/ },
-/* 136 */
+/* 135 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15717,7 +15672,7 @@
 
 
 /***/ },
-/* 137 */
+/* 136 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15751,7 +15706,7 @@
 
 
 /***/ },
-/* 138 */
+/* 137 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15791,7 +15746,7 @@
 
 
 /***/ },
-/* 139 */
+/* 138 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15913,7 +15868,7 @@
 
 
 /***/ },
-/* 140 */
+/* 139 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15952,7 +15907,7 @@
 
 
 /***/ },
-/* 141 */
+/* 140 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16001,7 +15956,7 @@
 
 
 /***/ },
-/* 142 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16053,7 +16008,7 @@
 
 
 /***/ },
-/* 143 */
+/* 142 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16235,7 +16190,7 @@
 
 
 /***/ },
-/* 144 */
+/* 143 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16427,7 +16382,7 @@
 
 
 /***/ },
-/* 145 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16517,7 +16472,7 @@
 
 
 /***/ },
-/* 146 */
+/* 145 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16708,7 +16663,7 @@
 
 
 /***/ },
-/* 147 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -16722,12 +16677,12 @@
 	// import {FormService} from "./services/formservice";
 	// import {MetaDataService} from "./services/metadataservice";
 	//controllers
-	var otherwisecontroller_1 = __webpack_require__(148);
-	var routercontroller_1 = __webpack_require__(149);
+	var otherwisecontroller_1 = __webpack_require__(147);
+	var routercontroller_1 = __webpack_require__(148);
 	//directives
-	var swdetailtabs_1 = __webpack_require__(150);
-	var swdetail_1 = __webpack_require__(151);
-	var swlist_1 = __webpack_require__(152);
+	var swdetailtabs_1 = __webpack_require__(149);
+	var swdetail_1 = __webpack_require__(150);
+	var swlist_1 = __webpack_require__(151);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute'])
 	    .config(['$routeProvider', '$injector',
 	    function ($routeProvider, $injector) {
@@ -16768,7 +16723,7 @@
 
 
 /***/ },
-/* 148 */
+/* 147 */
 /***/ function(module, exports) {
 
 	var OtherWiseController = (function () {
@@ -16782,7 +16737,7 @@
 
 
 /***/ },
-/* 149 */
+/* 148 */
 /***/ function(module, exports) {
 
 	var RouterController = (function () {
@@ -16808,7 +16763,7 @@
 
 
 /***/ },
-/* 150 */
+/* 149 */
 /***/ function(module, exports) {
 
 	var SWDetailTabs = (function () {
@@ -16839,7 +16794,7 @@
 
 
 /***/ },
-/* 151 */
+/* 150 */
 /***/ function(module, exports) {
 
 	var SWDetail = (function () {
@@ -16909,7 +16864,7 @@
 
 
 /***/ },
-/* 152 */
+/* 151 */
 /***/ function(module, exports) {
 
 	var SWList = (function () {
@@ -16953,7 +16908,7 @@
 
 
 /***/ },
-/* 153 */
+/* 152 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16977,7 +16932,7 @@
 
 
 /***/ },
-/* 154 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17028,7 +16983,7 @@
 
 
 /***/ },
-/* 155 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
