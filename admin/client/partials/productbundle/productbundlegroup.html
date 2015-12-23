@@ -252,7 +252,7 @@
 											</div>
 											<!-- //Selected filters -->
 											<!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
-											<div class="s-load-more" ng-hide="swProductBundleGroup.recordsCount <= 10" ng-click="swProductBundleGroup.increaseCurrentCount(); swProductBundleGroup.getFiltersByTerm(swProductBundleGroup.productBundleGroupFilters.keyword,swProductBundleGroup.searchOptions.selected);">
+											<div class="s-load-more" ng-hide="swProductBundleGroup.recordsCount <= swProductBundleGroup.recordsPerPage" ng-click="swProductBundleGroup.increaseCurrentCount(); swProductBundleGroup.getFiltersByTerm(swProductBundleGroup.productBundleGroupFilters.keyword,swProductBundleGroup.searchOptions.selected);">
 												<button class="{'btn s-btn-dgrey btn-sm disabled' : swProductBundleGroup.loading === true, 'btn s-btn-dgrey btn-sm' : swProductBundleGroup.loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="swProductBundleGroup.loading"></i><span ng-if="!swProductBundleGroup.showAll">(Showing {{swProductBundleGroup.pageRecordsStart}} to {{swProductBundleGroup.pageRecordsEnd}} of {{swProductBundleGroup.recordsCount}})</span></button>
 											</div>
 											<!-- //Load more button -->

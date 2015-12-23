@@ -42,6 +42,7 @@ module slatwalladmin {
 		public value;
 		public collection; 
 		public collectionConfig; 
+        public recordsPerPage; 
 		public selected; 
 		public searchCollectionConfig; 
 		public searchAllCollectionConfigs;
@@ -65,6 +66,7 @@ module slatwalladmin {
 			this.showAdvanced = false;
 			this.currentPage = 1;
 			this.pageShow = 10;
+            this.recordsPerPage = 10;
 			this.searchAllCollectionConfigs = [];
 			
 			if(angular.isUndefined(this.filterPropertiesList)){
