@@ -64,6 +64,7 @@ Notes:
 		data-multiselect-field-name="listingPages"
 		data-multiselect-id-paths="#selectedListingPageIDPaths#"
 		data-edit="#rc.edit#"
+		data-has-search="false"
 	>
 		<sw-listing-column data-property-identifier="title" tdclass="primary" />
 		<sw-listing-column data-property-identifier="site.siteName" />

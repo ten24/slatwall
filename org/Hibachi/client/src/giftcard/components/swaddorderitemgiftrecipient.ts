@@ -34,7 +34,7 @@ class SWAddOrderItemRecipientController {
         var giftRecipient = new GiftRecipient();
         giftRecipient.firstName = account.firstName; 
         giftRecipient.lastName = account.lastName; 
-        giftRecipient.email = account.primaryEmailAddress_emailAddress;
+        giftRecipient.emailAddress = account.primaryEmailAddress_emailAddress;
         giftRecipient.account = true; 
         this.orderItemGiftRecipients.push(giftRecipient); 
         this.searchText = "";   

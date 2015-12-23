@@ -70,6 +70,7 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.orderItemGiftRecipient#">
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemgiftrecipienttabs/basic" open="true">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemgiftrecipienttabs/giftcards" open="true">
 		</hb:HibachiEntityDetailGroup>
 
     </hb:HibachiEntityDetailForm>

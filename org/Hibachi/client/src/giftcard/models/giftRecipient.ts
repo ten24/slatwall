@@ -3,7 +3,7 @@
 class GiftRecipient {
     public firstName
     public lastName;
-    public email;
+    public emailAddress;
     public giftMessage;
     public quantity;
     public account;

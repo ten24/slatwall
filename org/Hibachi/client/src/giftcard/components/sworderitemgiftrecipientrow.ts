@@ -5,7 +5,7 @@ class SWOrderItemGiftRecipientRowController {
 	public recipient;
 	public quantity;
     public tableForm:any;
-    public showInvalidRecipientMessage:boolean;
+    public showInvalidRecipientMessage:boolean; 
 
 	constructor(){
 

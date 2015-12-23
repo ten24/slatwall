@@ -55,8 +55,8 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<span ng-controller="preprocessproduct_create as preprocessproduct_createCtrl">
-		<hb:HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
+	<span id="productCreate" ng-controller="preprocessproduct_create as preprocessproduct_createCtrl" ng-if="$root.loadedResourceBundle">
+		<hb:HibachiEntityProcessForm entity="#rc.processObject.getProduct()#"  edit="#rc.edit#">
 
 			<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></hb:HibachiEntityActionBar>
 
@@ -144,6 +144,10 @@ Notes:
 								<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
 							</hb:HibachiListingDisplay>
 
+						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
+						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
+						</hb:HibachiListingDisplay>
 
 					</cfif>
 
@@ -239,21 +243,33 @@ Notes:
 
 			<cfelseif rc.baseProductType eq "subscription">
 
-				<div class="row">
-					<div class="col-md-6">
-						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
-						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
-							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
-						</hb:HibachiListingDisplay>
-					</div>
-					<div class="col-md-6">
+			<hb:HibachiPropertyList divClass="col-md-6">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalMethod" edit="true" fieldAttributes="ng-model=""preprocessproduct_createCtrl.renewalSkuChoice"" ng-options=""option.label for option in preprocessproduct_createCtrl.renewalMethodOptions track by option.value""">
+			</hb:HibachiPropertyList>
+
+			<hb:HibachiPropertyList divClass="col-md-12">
+
+				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'custom'">
+						<hb:HibachiPropertyList divClass="col-md-6">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalPrice" fieldName="renewalPrice" edit="true" />
+						</hb:HibachiPropertyList>
 						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
 						<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
 							<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 						</hb:HibachiListingDisplay>
-					</div>
-
 				</div>
+
+				<div ng-if="preprocessproduct_createCtrl.renewalSkuChoice.value == 'renewalsku'">
+						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalSku" />
+						<hb:HibachiListingDisplay smartList="#rc.product.getSubscriptionSkuSmartList()#" selectFieldName="renewalSku" title="#$.slatwall.rbKey('define.renewalSku')#" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+							<hb:HibachiListingColumn propertyIdentifier="skuName" />
+							<hb:HibachiListingColumn propertyIdentifier="subscriptionTerm.subscriptionTermName" />
+							<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+						</hb:HibachiListingDisplay>
+				</div>
+
+			</hb:HibachiPropertyList>
 
 			<!--- Gift Card --->
 			<cfelseif rc.baseProductType eq 'gift-card'>
@@ -262,8 +278,10 @@ Notes:
 
 						<!--- Select Product Type --->
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTermID" edit="true">
-						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmountType" edit="true">
-						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmount" edit="true" value="0">
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmountType" edit="true" fieldAttributes="ng-model='redemptionType' ng-options=""option.label for option in preprocessproduct_createCtrl.redemptionAmountTypeOptions track by option.value""">
+						<div ng-if="redemptionType.value != 'sameAsPrice'">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmount" edit="true" value="0">
+						</div>
 
 					</hb:HibachiPropertyList>
 				</hb:HibachiPropertyRow>
@@ -271,3 +289,5 @@ Notes:
 		</hb:HibachiEntityProcessForm>
 	</span>
 </cfoutput>
+
+
