@@ -53,6 +53,7 @@ class SWProductBundleGroupType{
 				$scope.$$id="productBundleGroupType";
 				$scope.productBundleGroupTypes.value = [];
 				$scope.productBundleGroupTypes.$$adding = false;
+                $scope.productBundleGroupTypeSaving = false;
 				$scope.productBundleGroupType = {};
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $slatwall.newType();
@@ -157,14 +158,18 @@ class SWProductBundleGroupType{
 				 * Saves product bundle group type
 				 */
 				$scope.saveProductBundleGroupType = function(){
-						//Gets the promise from save
-						var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
-						promise.then(function(response){
-							//Calls close function
-							if (promise.valid){
-							$scope.closeAddScreen();
-							}
-						});
+					$scope.productBundleGroupTypeSaving = true;
+                    //Gets the promise from save
+                    var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
+                    promise.then(function(response){
+                        //Calls close function
+                        if (promise.$$state.status){
+                            $scope.productBundleGroupTypeSaving = false;
+                            $scope.closeAddScreen();
+                        }
+                    },()=>{
+                        $scope.productBundleGroupTypeSaving = false;
+                    });
 
 				};
 

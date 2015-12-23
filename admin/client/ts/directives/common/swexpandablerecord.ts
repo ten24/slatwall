@@ -17,6 +17,7 @@ class SWExpandableRecordController{
         this.collectionConfigService = collectionConfigService;
     }
     public toggleChild = ()=>{
+    	if(!this.collectionPromise || this.collectionPromise && this.collectionPromise.$$state.status !== 0){
         this.$timeout(()=>{
             this.childrenOpen = !this.childrenOpen;
             if(!this.childrenLoaded){
@@ -63,7 +64,8 @@ class SWExpandableRecordController{
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
             });
-        });   
+        });
+        }   
     }
 }
     

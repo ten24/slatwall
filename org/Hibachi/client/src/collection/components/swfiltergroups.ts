@@ -43,7 +43,7 @@ class SWFilterGroups{
 				filterPropertiesList:"=",
 				saveCollection:"&",
 				filterGroup:"=",
-				comparisonType:"@"
+				comparisonType:"="
 			},
 			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){

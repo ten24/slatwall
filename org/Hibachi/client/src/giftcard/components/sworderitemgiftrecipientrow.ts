@@ -4,6 +4,8 @@ class SWOrderItemGiftRecipientRowController {
 	public recipients;
 	public recipient;
 	public quantity;
+    public tableForm:any;
+    public showInvalidRecipientMessage:boolean;
 
 	constructor(){
 
@@ -24,7 +26,12 @@ class SWOrderItemGiftRecipientRowController {
 	}
 
 	public saveGiftRecipient = (recipient:any) =>{
-			recipient.editing = false;
+		if(this.tableForm.$valid){
+            this.showInvalidRecipientMessage = false; 
+            recipient.editing = false;  
+        } else { 
+            this.showInvalidRecipientMessage = true;
+        }
 	}
 
 
@@ -75,12 +82,17 @@ class SWOrderItemGiftRecipientRow implements ng.IDirective {
 				recipient:"=",
 				recipients:"=",
 				quantity:"=",
+                showInvalidRecipientMessage:"=",
+                tableForm:"=?",
 				index:"="
 			};
 			public bindToController={
 				recipient:"=",
 				recipients:"=",
-				quantity:"="
+				quantity:"=",
+                showInvalidRecipientMessage:"=",
+                tableForm:"=?",
+                index:"="
 			};
 			public controller= SWOrderItemGiftRecipientRowController;
 			public controllerAs= "giftRecipientRowControl";

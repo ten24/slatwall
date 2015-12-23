@@ -33,6 +33,7 @@ class SWPropertyDisplay{
 			restrict: 'AE',
 			scope:{
 				object:"=",
+                options:"=?",
 				property:"@",
 				editable:"=",
 				editing:"=",
@@ -63,6 +64,7 @@ class SWPropertyDisplay{
 				 */
 				scope.propertyDisplay = {
 					object:scope.object,
+                    options:scope.options,
 					property:scope.property,
 					errors:{},
 					editing:scope.editing,
@@ -103,7 +105,6 @@ class SWPropertyDisplay{
 
 				/* register form that the propertyDisplay belongs to*/
 				scope.propertyDisplay.form = formController;
-
 				$log.debug(scope.propertyDisplay);
 
 

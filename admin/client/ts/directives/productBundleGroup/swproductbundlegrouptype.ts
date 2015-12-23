@@ -24,13 +24,15 @@ angular.module('slatwalladmin')
 			scope:{
 				productBundleGroup:"="
 			},
-			controller: ['$scope','$element','$attrs',function($scope, $element, $attrs ){
+			controller: ['$scope','$element','$attrs',function($scope, $element, $attrs, ngModel ){
+                
 				$log.debug('productBundleGrouptype');
 				$log.debug($scope.productBundleGroup);
 				$scope.productBundleGroupTypes = {};
 				$scope.$$id="productBundleGroupType";
 				$scope.productBundleGroupTypes.value = [];
 				$scope.productBundleGroupTypes.$$adding = false;
+				$scope.productBundleGroupTypeSaving = false;
 				$scope.productBundleGroupType = {};
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $slatwall.newType();
@@ -135,13 +137,17 @@ angular.module('slatwalladmin')
 				 * Saves product bundle group type
 				 */
 				$scope.saveProductBundleGroupType = function(){
+						$scope.productBundleGroupTypeSaving = true;
 						//Gets the promise from save
 						var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
 						promise.then(function(response){
 							//Calls close function
-							if (promise.valid){
-							$scope.closeAddScreen();
+							if (promise.$$state.status){
+								$scope.productBundleGroupTypeSaving = false;
+								$scope.closeAddScreen();
 							}
+						},()=>{
+							$scope.productBundleGroupTypeSaving = false;
 						});
 					
 				};
