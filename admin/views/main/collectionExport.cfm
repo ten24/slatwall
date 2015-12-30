@@ -1,1 +1,1 @@
-<cfset $.slatwall.getService('collectionService').collectionsExport(rc) />
+<cfset $.slatwall.getService('hibachiCollectionService').collectionsExport(rc) />

@@ -51,47 +51,22 @@ Notes:
 
 <cftry>
 
-	<cfquery name="local.updateautofulfilltrue">
-		update SwFulfillmentMethod set autoFulfillFlag=1 where fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"/> or fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"/> and autoFulfillFlag is null
-	</cfquery>
-
-	<cfquery name="local.updateautofulfillfalse">
-		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"/> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"/> and autoFulfillFlag is null
+	<cfquery name="local.updatealtimagetype">
+		update SwImage set imageTypeID='4028289a51a7450a0151ab186c740189' where imageTypeID is null
 	</cfquery>
 
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update autofulfillflag for fulfillment methods">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update AltImageTypes">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 
-
-</cftry>
-
-<cftry>
-
-	<cfquery name="local.updatereporttype">
-		update SwReport set reportType=<cfqueryparam cfsqltype="cf_sql_varchar" value="line"/> where reportType is null
-	</cfquery>
-
-	<cfquery name="local.updatereportlimitresults">
-		update SwReport set limitResults=5 where limitResults is null
-	</cfquery>
-
-	<cfquery name="local.updatereportlimitresults">
-		update SwReport set showReport=1 where showReport is null
-	</cfquery>
-
-	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Report">
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
 
 </cftry>
 
 
 <cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_2 had errors when running">
-	<cfthrow detail="Part of Script v4_2 had errors when running">
+	<cflog file="Slatwall" text="General Log - Part of Script v4_3 had errors when running">
+	<cfthrow detail="Part of Script v4_3 had errors when running">
 <cfelse>
-	<cflog file="Slatwall" text="General Log - Script v4_2 has run with no errors">
+	<cflog file="Slatwall" text="General Log - Script v4_3 has run with no errors">
 </cfif>

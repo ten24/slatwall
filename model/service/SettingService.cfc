@@ -180,6 +180,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalEncryptionService = {fieldType="select",defaultValue="internal"},
             globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
 			globalLogMessages = {fieldType="select",defaultValue="General"},
+			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
 			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
 			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
 			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},

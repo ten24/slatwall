@@ -49,7 +49,6 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
 
@@ -83,7 +82,7 @@ Notes:
 
 			<cfif rc.product.getBaseProductType() eq "productBundle">
 				<!--- Bundle Groups --->
-				<hb:HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" count="#rc.product.getProductBundleGroupsCount()#" />
 			<cfelse>
 				<!--- Skus --->
 				<hb:HibachiEntityDetailItem property="skus" count="#rc.product.getSkusCount()#"/>
@@ -98,7 +97,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/saleshistory" />
 
 			<!--- Images --->
-			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/images" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/images" count="#rc.product.getTotalImageCount()#" />
 
 			<!--- Files --->
 			<swa:SlatwallAdminTabFiles object="#rc.product#" />

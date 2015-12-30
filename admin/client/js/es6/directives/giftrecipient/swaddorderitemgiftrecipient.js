@@ -6,6 +6,7 @@ var slatwalladmin;
     class SWAddOrderItemRecipientController {
         constructor($slatwall) {
             this.$slatwall = $slatwall;
+            this.unassignedCountArray = [];
             this.addGiftRecipientFromAccountList = (account) => {
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 giftRecipient.firstName = account.firstName;
@@ -16,35 +17,39 @@ var slatwalladmin;
                 this.searchText = "";
             };
             this.getUnassignedCountArray = () => {
-                var unassignedCountArray = new Array();
-                for (var i = 1; i <= this.getUnassignedCount(); i++) {
-                    unassignedCountArray.push(i);
+                if (this.getUnassignedCount() < this.unassignedCountArray.length) {
+                    this.unassignedCountArray.splice(this.getUnassignedCount(), this.unassignedCountArray.length);
                 }
-                return unassignedCountArray;
+                if (this.getUnassignedCount() > this.unassignedCountArray.length) {
+                    for (var i = this.unassignedCountArray.length + 1; i <= this.getUnassignedCount(); i++) {
+                        this.unassignedCountArray.push({ name: i, value: i });
+                    }
+                }
+                return this.unassignedCountArray;
             };
             this.getAssignedCount = () => {
-                var assignedCount = 0;
+                this.assignedCount = 0;
                 angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
-                    assignedCount += orderItemGiftRecipient.quantity;
+                    this.assignedCount += orderItemGiftRecipient.quantity;
                 });
-                return assignedCount;
+                return this.assignedCount;
             };
             this.getUnassignedCount = () => {
-                var unassignedCount = this.quantity;
+                this.unassignedCount = this.quantity;
                 angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
-                    unassignedCount -= orderItemGiftRecipient.quantity;
+                    this.unassignedCount -= orderItemGiftRecipient.quantity;
                 });
-                return unassignedCount;
+                return this.unassignedCount;
             };
             this.addGiftRecipient = () => {
-                if (this.recipientAddForm.$valid) {
+                if (this.currentGiftRecipient.forms.createRecipient.$valid) {
                     this.showInvalidAddFormMessage = true;
                     this.adding = false;
                     var giftRecipient = new slatwalladmin.GiftRecipient();
-                    angular.extend(giftRecipient, this.currentGiftRecipient);
+                    angular.extend(giftRecipient, this.currentGiftRecipient.data);
                     this.orderItemGiftRecipients.push(giftRecipient);
                     this.searchText = "";
-                    this.currentGiftRecipient.reset();
+                    this.currentGiftRecipient = this.$slatwall.newEntity("OrderItemGiftRecipient");
                 }
                 else {
                     this.showInvalidAddFormMessage = true;
@@ -58,8 +63,8 @@ var slatwalladmin;
             };
             this.startFormWithName = (searchString = this.searchText) => {
                 this.adding = true;
-                this.recipientAddForm.$setUntouched();
-                this.recipientAddForm.$setPristine();
+                this.currentGiftRecipient.forms.createRecipient.$setUntouched();
+                this.currentGiftRecipient.forms.createRecipient.$setPristine();
                 if (searchString != "") {
                     this.currentGiftRecipient.firstName = searchString;
                     this.searchText = "";
@@ -81,9 +86,10 @@ var slatwalladmin;
                 }
             };
             this.adding = false;
+            this.assignedCount = 0;
             this.searchText = "";
             var count = 1;
-            this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+            this.currentGiftRecipient = $slatwall.newEntity("OrderItemGiftRecipient");
             this.orderItemGiftRecipients = [];
             this.showInvalidAddFormMessage = false;
         }

@@ -184,7 +184,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Process Methods ===========================
 
 	// Process: Order
-	public any function processOrder_addOrderItem(required any order, required any processObject) {
+	public any function processOrder_addOrderItem(required any order, required any processObject){
 
 		// Setup a boolean to see if we were able to just add this order item to an existing one
 		var foundItem = false;
@@ -291,6 +291,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
+                    //check the fulfillment and display errors if needed.
+                    if (orderFulfillment.hasErrors()){
+                        arguments.order.addError('addOrderItem', orderFulfillment.getErrors());
+                    }
 
 				} else {
 
@@ -402,33 +406,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-        if(arguments.processObject.getSku().isGiftCardSku()){
-            //look for recipients
-            var totalQuantity = 0;
-            var count = 0;
-            if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= arguments.processObject.getQuantity()){
-                while(totalQuantity < arguments.processObject.getQuantity()){
-                    var currentRecipient = count & "recipient";
-                    if(!isNull(newOrderItem)){
-                        var recipientProcessObject = newOrderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
-                        recipientProcessObject.setOrderItem(newOrderItem);
-                    }
-                    if(structKeyExists(request.context, currentRecipient & "firstName")){
-                        recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                        recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
-                        recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
-                        recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                        recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                        arguments.order = this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
-                        totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
-                        count++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
+        var recipients = arguments.processObject.getRecipients();
+		if(!isNull(recipients) && arguments.processObject.getSku().isGiftCardSku()){
+	        for(var i=1; i<=ArrayLen(recipients);i++){
+				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
+				var recipient = this.newOrderItemGiftRecipient();
+				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
+				recipientProcessObject.setOrderItem(newOrderItem);
+				recipientProcessObject.setRecipient(recipient);
+				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+			}
 
+		}
 
 
 		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item.
@@ -590,39 +579,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
-		var totalQuantity = 0;
-        var count = 0;
-
-        if(!isNull(arguments.processObject.getAssignedGiftRecipientQuantity()) && arguments.processObject.getAssignedGiftRecipientQuantity() <= arguments.processObject.getQuantity()){
-            while(totalQuantity < arguments.processObject.getQuantity()){
-                var currentRecipient = count & "recipient";
-                if(!isNull(arguments.orderItem)){
-                    var recipientProcessObject = arguments.orderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
-                    recipientProcessObject.setOrderItem(arguments.orderItem);
-                }
-                if(structKeyExists(request.context, currentRecipient & "firstName")){
-                    recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                    recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
-                    recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
-                    recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                    recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                    var order = this.processOrder_addOrderItemGiftRecipient(arguments.orderItem.getOrder(), recipientProcessObject);
-                    totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        }
-
+		var recipients = arguments.processObject.getRecipients();
+		if(!isNull(recipients)){
+	        for(var i=1; i<=ArrayLen(recipients);i++){
+				var recipientProcessObject = arguments.orderitem.getOrder().getProcessObject("addOrderItemGiftRecipient");
+				var recipient = this.newOrderItemGiftRecipient();
+				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
+				recipientProcessObject.setOrderItem(arguments.orderitem);
+				recipientProcessObject.setRecipient(recipient);
+				this.processOrder_addOrderItemGiftRecipient(arguments.orderitem.getOrder(), recipientProcessObject);
+			}
+		}
         return arguments.orderItem;
 	}
 
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
 
 		var item = arguments.processObject.getOrderItem();
-		var recipient = this.newOrderItemGiftRecipient();
-        var test = this.newOrderItem();
+
+		if(isNull(arguments.processObject.getRecipient())){
+			var recipient = this.newOrderItemGiftRecipient();
+		} else {
+			var recipient = arguments.processObject.getRecipient();
+		}
 
 		if(!isNull(arguments.processObject.getFirstName())){
 			recipient.setFirstName(arguments.processObject.getFirstName());
@@ -648,7 +627,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			recipient.setGiftMessage(arguments.processObject.getGiftMessage());
 		}
 
-        recipient.setQuantity(processObject.getQuantity());
+		if(!isNull(processObject.getQuantity())){
+        	recipient.setQuantity(processObject.getQuantity());
+        }
+
         recipient = this.saveOrderItemGiftRecipient(recipient);
 
         recipient.setOrderItem(item);
@@ -1119,69 +1101,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		// Copy Order Items
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			var newOrderItem = this.newOrderItem();
+		for(var i=1; i<=arrayLen(arguments.order.getRootOrderItems()); i++) {
 
-			newOrderItem.setPrice( arguments.order.getOrderItems()[i].getPrice() );
-			newOrderItem.setSkuPrice( arguments.order.getOrderItems()[i].getSkuPrice() );
-			newOrderItem.setCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() );
-			newOrderItem.setQuantity( arguments.order.getOrderItems()[i].getQuantity() );
-			newOrderItem.setOrderItemType( arguments.order.getOrderItems()[i].getOrderItemType() );
-			newOrderItem.setOrderItemStatusType( arguments.order.getOrderItems()[i].getOrderItemStatusType() );
-			newOrderItem.setSku( arguments.order.getOrderItems()[i].getSku() );
-			if(!isNull(arguments.order.getOrderItems()[i].getStock())) {
-				newOrderItem.setStock( arguments.order.getOrderItems()[i].getStock() );
-			}
+			var orderItemToDuplicate = arguments.order.getRootOrderItems()[i];
 
-			// copy order item customization
-			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
-				newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
-			}
+			var newOrderItem = this.copyToNewOrderItem(orderItemToDuplicate);
 
 			var orderFulfillmentFound = false;
 
 			// check if there is a fulfillment method of this type in the order
 			for(var fulfillment in newOrder.getOrderFulfillments()) {
-				if(arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
+				if(orderItemToDuplicate.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
 					var newOrderFulfillment = fulfillment;
 					orderFulfillmentFound = true;
 					break;
 				}
 			}
 
-            for(var recipient in arguments.order.getOrderItems()[i].getOrderItemGiftRecipients()){
-                var newRecipient = this.newOrderItemGiftRecipient();
-                newRecipient.setFirstName(recipient.getFirstName());
-                newRecipient.setLastName(recipient.getLastName());
-                newRecipient.setEmailAddress(recipient.getEmailAddress());
-                newRecipient.setGiftMessage(recipient.getGiftMessage());
-                newRecipient.setQuantity(recipient.getQuantity());
-                if(!isNull(recipient.getAccount())){
-                    newRecipient.setAccount(recipient.getAccount());
-                }
-                newRecipient.setOrderItem(newOrderItem);
-            }
-
 			// Duplicate Order Fulfillment
-			if(!orderFulfillmentFound && !isNull(arguments.order.getOrderItems()[i].getOrderFulfillment())) {
+			if(!orderFulfillmentFound && !isNull(orderItemToDuplicate.getOrderFulfillment())) {
 				var newOrderFulfillment = this.newOrderFulfillment();
-				newOrderFulfillment.setFulfillmentMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
+				newOrderFulfillment.setFulfillmentMethod( orderItemToDuplicate.getOrderFulfillment().getFulfillmentMethod() );
 				newOrderFulfillment.setOrder( newOrder );
-				newOrderFulfillment.setCurrencyCode( arguments.order.getOrderItems()[i].getOrderFulfillment().getCurrencyCode() );
-				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod())) {
-					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );
+				newOrderFulfillment.setCurrencyCode( orderItemToDuplicate.getOrderFulfillment().getCurrencyCode() );
+				if(!isNull(orderItemToDuplicate.getOrderFulfillment().getShippingMethod())) {
+					newOrderFulfillment.setShippingMethod( orderItemToDuplicate.getOrderFulfillment().getShippingMethod() );
 				}
 
 				// Personal Info
 				if(copyPersonalDataFlag){
-					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
-						newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress( saveNewFlag ) );
+					if(!isNull(orderItemToDuplicate.getOrderFulfillment().getShippingAddress())) {
+						newOrderFulfillment.setShippingAddress( orderItemToDuplicate.getOrderFulfillment().getShippingAddress().copyAddress( saveNewFlag ) );
 					}
-					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
-						newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
+					if(!isNull(orderItemToDuplicate.getOrderFulfillment().getAccountAddress())) {
+						newOrderFulfillment.setAccountAddress( orderItemToDuplicate.getOrderFulfillment().getAccountAddress() );
 					}
-					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress())) {
-						newOrderFulfillment.setEmailAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress() );
+					if(!isNull(orderItemToDuplicate.getOrderFulfillment().getEmailAddress())) {
+						newOrderFulfillment.setEmailAddress( orderItemToDuplicate.getOrderFulfillment().getEmailAddress() );
 					}
 				}
 
@@ -1220,6 +1176,44 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		this.saveOrder( newOrder );
 
 		return newOrder;
+	}
+
+	public any function copyToNewOrderItem(required any orderItem){
+		var newOrderItem = this.newOrderItem();
+
+		newOrderItem.setPrice( arguments.orderItem.getPrice() );
+		newOrderItem.setSkuPrice( arguments.orderItem.getSkuPrice() );
+		newOrderItem.setCurrencyCode( arguments.orderItem.getCurrencyCode() );
+		newOrderItem.setQuantity(arguments.orderItem.getQuantity() );
+		newOrderItem.setOrderItemType( arguments.orderItem.getOrderItemType() );
+		newOrderItem.setOrderItemStatusType( arguments.orderItem.getOrderItemStatusType() );
+		newOrderItem.setSku( arguments.orderItem.getSku() );
+
+		if(!isNull(arguments.orderItem.getStock())) {
+			newOrderItem.setStock( arguments.orderItem.getStock() );
+		}
+		for(var attributeValue in arguments.orderItem.getAttributeValues()) {
+			newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
+		}
+		for(var recipient in arguments.orderItem.getOrderItemGiftRecipients()){
+            var newRecipient = this.newOrderItemGiftRecipient();
+            newRecipient.setFirstName(recipient.getFirstName());
+            newRecipient.setLastName(recipient.getLastName());
+            newRecipient.setEmailAddress(recipient.getEmailAddress());
+            newRecipient.setGiftMessage(recipient.getGiftMessage());
+            newRecipient.setQuantity(recipient.getQuantity());
+            if(!isNull(recipient.getAccount())){
+                newRecipient.setAccount(recipient.getAccount());
+            }
+            newRecipient.setOrderItem(newOrderItem);
+        }
+        for(var j=1; j<arrayLen(orderItem.getChildOrderItems()); j++){
+			var newChildOrderItem = this.copyToNewOrderItem(orderItem.getChildOrderItems()[j]);
+			newOrderItem.addChildOrderItem(newChildOrderItem);
+
+		}
+
+        return newOrderItem;
 	}
 
 	public any function processOrder_forceItemQuantityUpdate(required any order) {

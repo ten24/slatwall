@@ -2,6 +2,10 @@ var slatwalladmin;
 (function (slatwalladmin) {
     var Column = (function () {
         function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
+            if (isVisible === void 0) { isVisible = true; }
+            if (isDeletable === void 0) { isDeletable = true; }
+            if (isSearchable === void 0) { isSearchable = true; }
+            if (isExportable === void 0) { isExportable = true; }
             this.propertyIdentifier = propertyIdentifier;
             this.title = title;
             this.isVisible = isVisible;
@@ -146,32 +150,30 @@ var slatwalladmin;
             this.debug = function () {
                 return _this;
             };
-            /*TODO: CLEAN THIS FUNCTION */
-            this.formatCollectionName = function (propertyIdentifier, property) {
-                if (property === void 0) { property = true; }
-                var collection = '', parts = propertyIdentifier.split('.'), current_collection = _this.collection;
-                for (var i = 0; i < parts.length; i++) {
-                    if (typeof _this.$slatwall['new' + _this.capitalize(parts[i])] !== "function") {
-                        if (property)
-                            collection += ((i) ? '' : _this.baseEntityAlias) + '.' + parts[i];
-                        if (!angular.isObject(current_collection.metaData[parts[i]])) {
-                            break;
-                        }
-                        else if (current_collection.metaData[parts[i]].fkcolumn) {
-                            current_collection = _this.$slatwall['new' + current_collection.metaData[parts[i]].cfc]();
-                        }
+            this.formatPropertyIdentifier = function (propertyIdentifier, addJoin) {
+                if (addJoin === void 0) { addJoin = false; }
+                var _propertyIdentifier = _this.baseEntityAlias;
+                if (addJoin === true) {
+                    _propertyIdentifier += _this.processJoin(propertyIdentifier);
+                }
+                else {
+                    _propertyIdentifier += '.' + propertyIdentifier;
+                }
+                return _propertyIdentifier;
+            };
+            this.processJoin = function (propertyIdentifier) {
+                var _propertyIdentifier = '', propertyIdentifierParts = propertyIdentifier.split('.'), current_collection = _this.collection;
+                for (var i = 0; i < propertyIdentifierParts.length; i++) {
+                    if ('cfc' in current_collection.metaData[propertyIdentifierParts[i]]) {
+                        current_collection = _this.$slatwall.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+                        _propertyIdentifier += '_' + propertyIdentifierParts[i];
+                        _this.addJoin(new Join(_propertyIdentifier.replace(/_/g, '.').substring(1), _this.baseEntityAlias + _propertyIdentifier));
                     }
                     else {
-                        if (angular.isObject(current_collection.metaData[parts[i]])) {
-                            collection += ((i) ? '' : _this.baseEntityAlias) + '.' + parts[i];
-                            current_collection = _this.$slatwall['new' + _this.capitalize(parts[i])]();
-                        }
-                        else {
-                            collection += '_' + parts[i].toLowerCase();
-                        }
+                        _propertyIdentifier += '.' + propertyIdentifierParts[i];
                     }
                 }
-                return collection;
+                return _propertyIdentifier;
             };
             this.addJoin = function (join) {
                 if (!_this.joins) {
@@ -194,14 +196,6 @@ var slatwalladmin;
                 }
                 return propertyIdentifier;
             };
-            this.capitalize = function (s) {
-                return s && s[0].toUpperCase() + s.slice(1);
-            };
-            //        private addColumn=(column:Column)=>{
-            //            if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
-            //                this.addColumn(column.propertyIdentifier,column.title,column);
-            //            }
-            //        }
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
@@ -236,8 +230,9 @@ var slatwalladmin;
                         persistent = lastEntity[lastProperty].persistent;
                     }
                     var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
-                    if (options.aggregate) {
-                        columnObject.aggregate = options.aggregate;
+                    if (options['aggregate']) {
+                        columnObject['aggregate'] = options['aggregate'],
+                            columnObject['aggregateAlias'] = title;
                     }
                     //add any non-conventional options
                     for (var key in options) {
@@ -251,61 +246,20 @@ var slatwalladmin;
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                var _DividedColumns = propertyIdentifier.trim().split(',');
-                var _DividedTitles = title.trim().split(',');
-                _DividedColumns.forEach(function (column, index) {
-                    column = column.trim();
-                    //this.addJoin(column);
-                    if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
-                        title = _DividedTitles[index].trim();
-                    }
-                    else {
-                        title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
-                    }
-                    _this.addColumn(_this.formatCollectionName(column), title, options);
-                });
+                _this.addDisplayProperty(propertyIdentifier, title, options);
             };
             this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
-                var alias = _this.baseEntityAlias;
-                var doJoin = false;
-                var collection = propertyIdentifier;
-                var propertyKey = '';
-                if (propertyIdentifier.indexOf('.') !== -1) {
-                    collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
-                    propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
-                }
                 var column = {
-                    propertyIdentifier: alias + '.' + propertyIdentifier,
+                    propertyIdentifier: _this.formatPropertyIdentifier(propertyIdentifier, true),
+                    title: _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + propertyIdentifier),
                     aggregate: {
                         aggregateFunction: aggregateFunction,
                         aggregateAlias: aggregateAlias
                     }
                 };
-                var isObject = _this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
-                if (isObject) {
-                    //check if count is on a one-to-many
-                    var lastEntityName = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
-                    var propertyMetaData = _this.$slatwall.getEntityMetaData(lastEntityName)[_this.utilityService.listLast(propertyIdentifier, '.')];
-                    var isOneToMany = angular.isDefined(propertyMetaData['singularname']);
-                    //if is a one-to-many propertyKey then add a groupby
-                    //                if(isOneToMany){
-                    //                    this.addGroupBy(alias);
-                    //                }
-                    column.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
-                    var join = new Join(propertyIdentifier, column.propertyIdentifier);
-                    doJoin = true;
-                }
-                else {
-                    column.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
-                    var join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
-                    doJoin = true;
-                }
                 angular.extend(column, options);
                 //Add columns
                 _this.addColumn(column.propertyIdentifier, undefined, column);
-                if (doJoin) {
-                    _this.addJoin(join);
-                }
             };
             this.addGroupBy = function (groupByAlias) {
                 if (!_this.groupBys) {
@@ -320,61 +274,60 @@ var slatwalladmin;
                 var _DividedTitles = title.trim().split(',');
                 _DividedColumns.forEach(function (column, index) {
                     column = column.trim();
-                    //this.addJoin(column);
-                    if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+                    if (angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
                         title = _DividedTitles[index].trim();
                     }
                     else {
                         title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
                     }
-                    _this.addColumn(_this.formatCollectionName(column), title, options);
+                    _this.addColumn(_this.formatPropertyIdentifier(column), title, options);
                 });
             };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
-                var alias = _this.baseEntityAlias;
-                var join;
-                var doJoin = false;
                 //if filterGroups does not exists then set a default
                 if (!_this.filterGroups) {
                     _this.filterGroups = [{ filterGroup: [] }];
                 }
-                var collection = propertyIdentifier;
-                //if the propertyIdenfifier is a chain
-                var propertyKey = '';
-                if (propertyIdentifier.indexOf('.') !== -1) {
-                    collection = _this.utilityService.mid(propertyIdentifier, 0, propertyIdentifier.lastIndexOf('.'));
-                    propertyKey = '.' + _this.utilityService.listLast(propertyIdentifier, '.');
-                }
-                //create filter group
-                var filter = new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
-                var isObject = _this.$slatwall.getPropertyIsObjectByEntityNameAndPropertyIdentifier(_this.baseEntityName, propertyIdentifier);
-                if (isObject) {
-                    filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, propertyIdentifier);
-                    join = new Join(propertyIdentifier, _this.buildPropertyIdentifier(alias, propertyIdentifier));
-                    doJoin = true;
-                }
-                else if (propertyKey !== '') {
-                    filter.propertyIdentifier = _this.buildPropertyIdentifier(alias, collection) + propertyKey;
-                    join = new Join(collection, _this.buildPropertyIdentifier(alias, collection));
-                    doJoin = true;
-                }
                 //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
                 if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
                     logicalOperator = 'AND';
-                _this.filterGroups[0].filterGroup.push(filter);
-                if (doJoin) {
-                    _this.addJoin(join);
+                if (propertyIdentifier.split('.').length < 2) {
+                    var join = false;
                 }
+                else {
+                    var join = true;
+                }
+                //create filter group
+                var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
+                _this.filterGroups[0].filterGroup.push(filter);
             };
-            this.buildPropertyIdentifier = function (alias, propertyIdentifier, joinChar) {
-                if (joinChar === void 0) { joinChar = '_'; }
-                return alias + joinChar + _this.utilityService.replaceAll(propertyIdentifier, '.', '_');
+            this.removeFilter = function (propertyIdentifier, value, comparisonOperator) {
+                if (comparisonOperator === void 0) { comparisonOperator = '='; }
+                _this.removeFilterHelper(_this.filterGroups, propertyIdentifier, value, comparisonOperator);
+            };
+            this.removeFilterHelper = function (filter, propertyIdentifier, value, comparisonOperator, currentGroup) {
+                if (angular.isUndefined(currentGroup)) {
+                    currentGroup = filter;
+                }
+                if (angular.isArray(filter)) {
+                    angular.forEach(filter, function (key) {
+                        _this.removeFilterHelper(key, propertyIdentifier, value, comparisonOperator, filter);
+                    });
+                }
+                else if (angular.isArray(filter.filterGroup)) {
+                    _this.removeFilterHelper(filter.filterGroup, propertyIdentifier, value, comparisonOperator, filter.filterGroup);
+                }
+                else {
+                    if (filter.propertyIdentifier == propertyIdentifier && filter.value == value && filter.comparisonOperator == comparisonOperator) {
+                        currentGroup.splice(currentGroup.indexOf(filter), 1);
+                    }
+                }
             };
             this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
                 if (criteria === void 0) { criteria = 'One'; }
                 if (readOnly === void 0) { readOnly = false; }
-                _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatCollectionName(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
+                _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatPropertyIdentifier(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
             };
             //orderByList in this form: "property|direction" concrete: "skuName|ASC"
             this.setOrderBy = function (orderByList) {
@@ -390,7 +343,7 @@ var slatwalladmin;
                 var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
                 var direction = _this.utilityService.listLast(orderByString, '|');
                 var orderBy = {
-                    propertyIdentifier: _this.formatCollectionName(propertyIdentifier),
+                    propertyIdentifier: _this.formatPropertyIdentifier(propertyIdentifier),
                     direction: direction
                 };
                 _this.orderBy.push(orderBy);
@@ -400,6 +353,9 @@ var slatwalladmin;
             };
             this.setPageShow = function (NumberOfPages) {
                 _this.pageShow = NumberOfPages;
+            };
+            this.getPageShow = function () {
+                return _this.pageShow;
             };
             this.setAllRecords = function (allFlag) {
                 if (allFlag === void 0) { allFlag = false; }
@@ -411,6 +367,12 @@ var slatwalladmin;
             this.setId = function (id) {
                 _this.id = id;
             };
+            this.hasFilters = function () {
+                return (_this.filterGroups.length && _this.filterGroups[0].filterGroup.length);
+            };
+            this.clearFilters = function () {
+                _this.filterGroups = [{ filterGroup: [] }];
+            };
             this.getEntity = function (id) {
                 if (angular.isDefined(id)) {
                     _this.setId(id);
@@ -418,7 +380,7 @@ var slatwalladmin;
                 return _this.$slatwall.getEntity(_this.baseEntityName, _this.getOptions());
             };
             if (angular.isDefined(this.baseEntityName)) {
-                this.collection = this.$slatwall['new' + this.getEntityName()]();
+                this.collection = this.$slatwall.getEntityExample(this.baseEntityName);
                 if (angular.isUndefined(this.baseEntityAlias)) {
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
                 }

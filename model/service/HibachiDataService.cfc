@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,53 +45,61 @@
 
 Notes:
 
---->
+*/
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiDataService" {
 
-<cfset local.scriptHasErrors = false />
+	property name="dataDAO" type="any";
 
-<cftry>
+	public any function toBundle(required any bundle, required string tableList) {
+		getDataDAO().toBundle(argumentcollection=arguments);
+	}
 
-	<cfquery name="local.updateautofulfilltrue">
-		update SwFulfillmentMethod set autoFulfillFlag=1 where fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"/> or fulfillmentMethodType=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"/> and autoFulfillFlag is null
-	</cfquery>
+	public any function fromBundle(required any bundle, required string tableList) {
+		getDataDAO().toBundle(argumentcollection=arguments);
+	}
+	
+	public any function getAllAttributeStruct() {
+		var attributeStruct = { attributeCode = {attributeID = "", attributeValueType = ""}};
+		
+		var qry = new Query( sql="SELECT attributeID,attributeCode FROM SwAttribute" );
+		var attributes = qry.execute().getResult();
+		for(var i = 1; i <= attributes.recordCount; i++) {
+			attributeStruct[ attributes.attributeCode[i] ]["attributeID"] = attributes.attributeID[i];
+		}
 
-	<cfquery name="local.updateautofulfillfalse">
-		update SwFulfillmentMethod set autoFulfillFlag=0 where fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="email"/> and fulfillmentMethodType!=<cfqueryparam cfsqltype="cf_sql_varchar" value="auto"/> and autoFulfillFlag is null
-	</cfquery>
+		return attributeStruct;
+	}
+	
+	public string function getAttributeValueTableName(){
+		return "SwAttributeValue";
+	}
+	
+	// ===================== START: Logical Methods ===========================
 
-	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update autofulfillflag for fulfillment methods">
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
+	// =====================  END: Logical Methods ============================
 
+	// ===================== START: DAO Passthrough ===========================
 
-</cftry>
+	public string function getShortReferenceID() {
+		return getDataDAO().getShortReferenceID(argumentcollection=arguments);
+	}
 
-<cftry>
+	// ===================== START: DAO Passthrough ===========================
 
-	<cfquery name="local.updatereporttype">
-		update SwReport set reportType=<cfqueryparam cfsqltype="cf_sql_varchar" value="line"/> where reportType is null
-	</cfquery>
+	// ===================== START: Process Methods ===========================
 
-	<cfquery name="local.updatereportlimitresults">
-		update SwReport set limitResults=5 where limitResults is null
-	</cfquery>
+	// =====================  END: Process Methods ============================
 
-	<cfquery name="local.updatereportlimitresults">
-		update SwReport set showReport=1 where showReport is null
-	</cfquery>
+	// ====================== START: Save Overrides ===========================
 
-	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update Report">
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
+	// ======================  END: Save Overrides ============================
 
-</cftry>
+	// ==================== START: Smart List Overrides =======================
 
+	// ====================  END: Smart List Overrides ========================
 
-<cfif local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Part of Script v4_2 had errors when running">
-	<cfthrow detail="Part of Script v4_2 had errors when running">
-<cfelse>
-	<cflog file="Slatwall" text="General Log - Script v4_2 has run with no errors">
-</cfif>
+	// ====================== START: Get Overrides ============================
+
+	// ======================  END: Get Overrides =============================
+
+}

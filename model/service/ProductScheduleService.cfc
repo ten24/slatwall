@@ -49,7 +49,7 @@ Notes:
 
 component  extends="HibachiService" accessors="true" {
 
-	property name="dataService" type="any";  
+	property name="hibachiDataService" type="any";  
 	property name="contentService" type="any";
 	property name="optionService" type="any";
 	

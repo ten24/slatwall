@@ -40,10 +40,18 @@ var slatwalladmin;
                 }
                 else {
                     _this.removeProductBundleGroup(_this.index);
+                    _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup = [];
                 }
             };
             this.getCollection = function () {
-                _this.collectionConfig.getEntity().then(function (response) {
+                var options = {
+                    filterGroupsConfig: angular.toJson(_this.productBundleGroup.data.skuCollectionConfig.filterGroups),
+                    columnsConfig: angular.toJson(_this.productBundleGroup.data.skuCollectionConfig.columns),
+                    currentPage: 1,
+                    pageShow: 10
+                };
+                var collectionPromise = _this.$slatwall.getEntity('Sku', options);
+                collectionPromise.then(function (response) {
                     _this.collection = response;
                 });
             };
@@ -59,6 +67,9 @@ var slatwalladmin;
                 _this.currentPage = 1;
             };
             this.getFiltersByTerm = function (keyword, filterTerm) {
+                //save search 
+                _this.keyword = keyword;
+                _this.filterTerm = filterTerm;
                 _this.loading = true;
                 _this.showAll = true;
                 var _loadingCount;
@@ -76,17 +87,19 @@ var slatwalladmin;
                             if (i > 0) {
                                 var option = _this.searchOptions.options[i];
                                 (function (keyword, option) {
-                                    var searchAllCollectionConfig = _this.collectionConfigService.newCollectionConfig(_this.searchOptions.options[i].value);
-                                    searchAllCollectionConfig.setKeywords(keyword);
-                                    searchAllCollectionConfig.setCurrentPage(_this.currentPage);
-                                    searchAllCollectionConfig.setPageShow(_this.pageShow);
+                                    if (_this.searchAllCollectionConfigs.length < 4) {
+                                        _this.searchAllCollectionConfigs.push(_this.collectionConfigService.newCollectionConfig(_this.searchOptions.options[i].value));
+                                    }
+                                    _this.searchAllCollectionConfigs[i - 1].setKeywords(keyword);
+                                    _this.searchAllCollectionConfigs[i - 1].setCurrentPage(_this.currentPage);
+                                    _this.searchAllCollectionConfigs[i - 1].setPageShow(_this.pageShow);
                                     //searchAllCollectionConfig.setAllRecords(true);
-                                    searchAllCollectionConfig.getEntity().then(function (value) {
+                                    _this.searchAllCollectionConfigs[i - 1].getEntity().then(function (value) {
                                         _this.recordsCount = value.recordsCount;
                                         _this.pageRecordsStart = value.pageRecordsStart;
                                         _this.pageRecordsEnd = value.pageRecordsEnd;
                                         _this.totalPages = value.totalPages;
-                                        var formattedProductBundleGroupFilters = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, option);
+                                        var formattedProductBundleGroupFilters = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, option, _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup);
                                         for (var j in formattedProductBundleGroupFilters) {
                                             if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1) {
                                                 _this.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
@@ -100,6 +113,9 @@ var slatwalladmin;
                                             //This sorts the array of objects by the objects' "type" property alphabetically
                                             _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
                                             _this.$log.debug(_this.productBundleGroupFilters.value);
+                                            if (_this.productBundleGroupFilters.value.length == 0) {
+                                                _this.currentPage = 0;
+                                            }
                                         }
                                         _this.loading = false;
                                     });
@@ -109,7 +125,9 @@ var slatwalladmin;
                     }
                     else {
                         _this.showAll = false;
-                        _this.searchCollectionConfig = _this.collectionConfigService.newCollectionConfig(filterTerm.value);
+                        if (angular.isUndefined(_this.searchCollectionConfig) || filterTerm.value != _this.searchCollectionConfig.baseEntityName) {
+                            _this.searchCollectionConfig = _this.collectionConfigService.newCollectionConfig(filterTerm.value);
+                        }
                         _this.searchCollectionConfig.setKeywords(keyword);
                         _this.searchCollectionConfig.setCurrentPage(_this.currentPage);
                         _this.searchCollectionConfig.setPageShow(_this.pageShow);
@@ -120,7 +138,7 @@ var slatwalladmin;
                             _this.totalPages = value.totalPages;
                             _this.$log.debug('getFiltersByTerm');
                             _this.$log.debug(value);
-                            _this.productBundleGroupFilters.value = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, filterTerm) || [];
+                            _this.productBundleGroupFilters.value = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, filterTerm, _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup) || [];
                             _this.loading = false;
                         });
                     }
@@ -137,11 +155,36 @@ var slatwalladmin;
                 if (_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.length > 0) {
                     collectionFilterItem.logicalOperator = 'OR';
                 }
+                if (angular.isDefined(_this.searchCollectionConfig)) {
+                    _this.searchCollectionConfig.addFilter(_this.searchCollectionConfig.baseEntityName + "ID", collectionFilterItem.value, "!=");
+                }
+                if (_this.showAll) {
+                    switch (collectionFilterItem.type) {
+                        case 'Product Type':
+                            _this.searchAllCollectionConfigs[0].addFilter("productTypeID", collectionFilterItem.value, "!=");
+                            break;
+                        case 'Brand':
+                            _this.searchAllCollectionConfigs[1].addFilter("brandID", collectionFilterItem.value, "!=");
+                            break;
+                        case 'Products':
+                            _this.searchAllCollectionConfigs[2].addFilter("productID", collectionFilterItem.value, "!=");
+                            break;
+                        case 'Skus':
+                            _this.searchAllCollectionConfigs[3].addFilter("skuID", collectionFilterItem.value, "!=");
+                            break;
+                    }
+                }
                 //Adds filter item to designated filtergroup
                 _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.push(collectionFilterItem);
-                //Removes the filter item from the left hand search result
-                _this.productBundleGroupFilters.value.splice(index, 1);
                 _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
+                //reload the list to correct pagination show all takes too long for this to be graceful
+                if (!_this.showAll) {
+                    _this.getFiltersByTerm(_this.keyword, _this.filterTerm);
+                }
+                else {
+                    //Removes the filter item from the left hand search result
+                    _this.productBundleGroupFilters.value.splice(index, 1);
+                }
             };
             this.removeProductBundleGroupFilter = function (index) {
                 //Pushes item back into array
@@ -149,7 +192,32 @@ var slatwalladmin;
                 //Sorts Array
                 _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
                 //Removes the filter item from the filtergroup
-                _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.splice(index, 1);
+                var collectionFilterItem = _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.splice(index, 1)[0];
+                if (angular.isDefined(_this.searchCollectionConfig)) {
+                    _this.searchCollectionConfig.removeFilter(_this.searchCollectionConfig.baseEntityAlias + '.' + _this.searchCollectionConfig.baseEntityName + "ID", collectionFilterItem.value, "!=");
+                }
+                if (_this.showAll) {
+                    switch (collectionFilterItem.type) {
+                        case 'Product Type':
+                            _this.searchAllCollectionConfigs[0].removeFilter("_productType.productTypeID", collectionFilterItem.value, "!=");
+                            break;
+                        case 'Brand':
+                            _this.searchAllCollectionConfigs[1].removeFilter("_brand.brandID", collectionFilterItem.value, "!=");
+                            break;
+                        case 'Products':
+                            _this.searchAllCollectionConfigs[2].removeFilter("_product.productID", collectionFilterItem.value, "!=");
+                            break;
+                        case 'Skus':
+                            _this.searchAllCollectionConfigs[3].removeFilter("_sku.skuID", collectionFilterItem.value, "!=");
+                            break;
+                    }
+                }
+                if (!_this.showAll) {
+                    _this.getFiltersByTerm(_this.keyword, _this.filterTerm);
+                }
+                else {
+                    _this.productBundleGroupFilters.value.splice(index, 0, collectionFilterItem);
+                }
                 _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
             };
             this.$id = 'productBundleGroup';
@@ -161,12 +229,22 @@ var slatwalladmin;
             this.showAdvanced = false;
             this.currentPage = 1;
             this.pageShow = 10;
-            /*this.skuCollectionConfig = {
-                baseEntityName:"Sku",
-                baseEntityAlias:"_sku",
-                collectionConfig:this.productBundleGroup.data.skuCollectionConfig,
-                collectionObject:'Sku'
-            };*/
+            this.searchAllCollectionConfigs = [];
+            if (angular.isUndefined(this.filterPropertiesList)) {
+                this.filterPropertiesList = {};
+                var filterPropertiesPromise = this.$slatwall.getFilterPropertiesByBaseEntityName('_sku');
+                filterPropertiesPromise.then(function (value) {
+                    metadataservice.setPropertiesList(value, '_sku');
+                    _this.filterPropertiesList['_sku'] = metadataservice.getPropertiesListByBaseEntityAlias('_sku');
+                    metadataservice.formatPropertiesList(_this.filterPropertiesList['_sku'], '_sku');
+                });
+            }
+            this.skuCollectionConfig = {
+                baseEntityName: "Sku",
+                baseEntityAlias: "_sku",
+                collectionConfig: this.productBundleGroup.data.skuCollectionConfig,
+                collectionObject: 'Sku'
+            };
             this.searchOptions = {
                 options: [
                     {
@@ -219,10 +297,6 @@ var slatwalladmin;
                 filterGroupsConfig: this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup,
                 columnsConfig: this.productBundleGroup.data.skuCollectionConfig.columns,
             };
-            this.collectionConfig = collectionConfigService.newCollectionConfig('Sku');
-            this.collectionConfig.loadFilterGroups(options.filterGroupsConfig);
-            this.collectionConfig.loadColumns(options.columnsConfig);
-            this.collectionConfig.setAllRecords(true);
             this.getCollection();
         }
         SWProductBundleGroupController.$inject = ["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "partialsPath"];

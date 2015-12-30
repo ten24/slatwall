@@ -16,9 +16,7 @@
       <div class="btn-group">
        <span class="s-sort-num">
          <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" 
-         	data-toggle="tooltip" 
-         	data-placement="right" 
-         	data-original-title="Edit" 
+         	title="Edit" 
          	ng-show="column.sorting.active" 
          	ng-bind="column.sorting.priority"
          	ng-click="prioritize(column)"
@@ -27,8 +25,7 @@
        </span>
        <a 	data-no-drag 
        		class="btn btn-default s-sort j-tool-tip-item" 
-       		data-toggle="tooltip" data-placement="bottom" 
-       		data-original-title="Sort Order"
+       		title="Sort Order"
        		ng-click="toggleSortable(column)"
        	>
        		<i  
@@ -41,19 +38,19 @@
        			
        		></i>
        </a>
-        <a data-no-drag	class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible" 
+        <a data-no-drag	class="btn btn-default j-tool-tip-item" title="Visible" 
         	ng-class="{active:column.isVisible}"
         	ng-click="toggleVisible(column)"
         >
         	<i class="fa fa-eye"></i>
         </a>
-        <a data-no-drag	class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Search" 
+        <a data-no-drag	class="btn btn-default j-tool-tip-item" title="Search" 
         	ng-class="{active:column.isSearchable && column.ormtype !== 'boolean',disabled:column.ormtype === 'boolean'}"
         	ng-click="toggleSearchable(column)"	
         >
         	<i class="fa fa-search"></i>
         </a>
-        <a data-no-drag	class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Export" 
+        <a data-no-drag	class="btn btn-default j-tool-tip-item" title="Export" 
         	ng-class="{active:column.isExportable}"
         	ng-click="toggleExportable(column)"	
         >
@@ -62,9 +59,7 @@
         <a  ng-disabled="!column.isDeletable"
         	data-no-drag	
         	class="btn btn-default s-remove j-tool-tip-item" 
-        	data-toggle="tooltip" 
-        	data-placement="bottom" 
-        	data-original-title="Remove"
+        	title="Remove"
         	ng-click="removeColumn(columnIndex)"
         >
         	<i class="fa fa-times"></i>

@@ -4,12 +4,12 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var GiftRecipient = (function () {
-        function GiftRecipient(firstName, lastName, email, giftMessage, quantity, account, editing) {
+        function GiftRecipient(firstName, lastName, emailAddress, giftMessage, quantity, account, editing) {
             var _this = this;
             this.reset = function () {
                 _this.firstName = null;
                 _this.lastName = null;
-                _this.email = null;
+                _this.emailAddress = null;
                 _this.account = null;
                 _this.editing = false;
                 _this.quantity = 1;

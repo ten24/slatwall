@@ -106,6 +106,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="mostRecentOrder" persistant="false";
 	property name="totalNumberOfSubscriptionOrderItems" persistant="false";
 	property name="subscriptionOrderItemType" persistent="false";
+	property name="useRenewalSku" persistent="false" hb_formFieldType="yesno";
 
 	public boolean function isActive() {
 		if(!isNull(getCurrentStatus())) {
@@ -135,6 +136,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public void function copyOrderItemInfo(required any orderItem) {
+		
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 		var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
 		setRenewalPrice( renewalPrice );
@@ -154,9 +156,11 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		var orderFulfillment = orderItem.getOrderFulfillment();
 		if (!isNull(orderFulfillment)){
 			setEmailAddress( orderFulfillment.getEmailAddress() );
-			setShippingAddress( orderFulfillment.getShippingAddress() );
 			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
 			setShippingMethod( orderFulfillment.getShippingMethod() );
+			if(!orderFulfillment.getShippingAddress().getNewFlag()) {
+				setShippingAddress( orderFulfillment.getShippingAddress().copyAddress() );
+			}
 		}
 	}
 
@@ -174,10 +178,14 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public numeric function getRenewalPrice(){
-		if(!isNull(this.getRenewalSku())){
-			return this.getRenewalSku().getRenewalPrice();
+		if(!structKeyExists(variables, "renewalPrice") && !isNull(this.getRenewalSku())){
+			variables.renewalPrice = this.getRenewalSku().getRenewalPrice();
 		}
 		return variables.renewalPrice;
+	}
+
+	public boolean function getUseRenewalSku(){
+		return !isNull(this.getRenewalSku());
 	}
 
 	public string function getCurrentStatusType() {
@@ -263,7 +271,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		if( hasSubscriptionOrderItems() ){
 			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
 			subscriptionSmartList.addOrder("createdDateTime|DESC");
-			return subscriptionSmartList.getRecords();
+			return subscriptionSmartList.getRecords()[1];
 		}
 	}
 
@@ -314,6 +322,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
     		var smartList = getService("ProductService").getSkuSmartList();
     		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is null");
     		variables.subscriptionSkuSmartList = smartList;
     	}
     	return variables.subscriptionSkuSmartList;

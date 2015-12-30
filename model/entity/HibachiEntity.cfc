@@ -388,7 +388,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public string function getShortReferenceID( boolean createNewFlag=false ) {
 		if(len(getPrimaryIDValue())) {
-			return getService("dataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	
+			return getService("hibachiDataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	
 		}
 		return '';
 	}

@@ -7,10 +7,11 @@ angular.module('slatwalladmin')
     '$log',
     '$filter',
     '$slatwall',
+    '$timeout',
     'collectionPartialsPath',
     'collectionService',
     'metadataService',
-    function ($http, $compile, $templateCache, $log, $filter, $slatwall, collectionPartialsPath, collectionService, metadataService) {
+    function ($http, $compile, $templateCache, $log, $filter, $slatwall, $timeout, collectionPartialsPath, collectionService, metadataService) {
         return {
             require: '^swFilterGroups',
             restrict: 'E',
@@ -281,7 +282,9 @@ angular.module('slatwalladmin')
                         scope.saveCollection();
                         $log.debug(selectedFilterProperty);
                         $log.debug(filterItem);
-                        callback();
+                        $timeout(function () {
+                            callback();
+                        });
                         $log.debug('saveFilter end');
                     }
                 };
