@@ -3,7 +3,7 @@ slatwallweb:
   ports:
    - "80:8080"
   volumes:
-   - .:/var/www
+   - ../../../:/var/www
   links:
    - slatwalldb
   environment:
