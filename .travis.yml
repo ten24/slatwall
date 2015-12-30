@@ -12,6 +12,5 @@ before_install:
  - sudo mv docker-compose /usr/local/bin
 
 script:
-  - ls
   - docker-compose build
   - docker-compose run slatwallweb bash
