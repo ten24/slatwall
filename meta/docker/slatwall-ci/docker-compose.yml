@@ -1,5 +1,5 @@
 slatwallweb:
-  build: /meta/docker/slatwlal-ci
+  build: .
   ports:
    - "80:8080"
   volumes:
