@@ -5591,13 +5591,17 @@
 	                            $scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen;
 	                        }
 	                    };
-	                    var getTitleFromPropertyIdentifier = function (propertyIdentifier) {
+	                    var getTitleFromProperty = function (selectedProperty) {
 	                        var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall', '').charAt(0).toLowerCase() + $scope.baseEntityName.replace('Slatwall', '').slice(1);
+	                        var propertyIdentifier = selectedProperty.propertyIdentifier;
 	                        var title = '';
 	                        var propertyIdentifierArray = propertyIdentifier.split('.');
 	                        var currentEntity;
 	                        var currentEntityInstance;
 	                        var prefix = 'entity.';
+	                        if (selectedProperty.$$group == "attribute") {
+	                            return selectedProperty.displayPropertyIdentifier;
+	                        }
 	                        angular.forEach(propertyIdentifierArray, function (propertyIdentifierItem, key) {
 	                            //pass over the initial item
 	                            if (key !== 0) {
@@ -5625,7 +5629,7 @@
 	                            $log.debug($scope.columns);
 	                            if (angular.isDefined(selectedProperty)) {
 	                                var column = {
-	                                    title: getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier),
+	                                    title: getTitleFromProperty(selectedProperty.propertyIdentifier),
 	                                    propertyIdentifier: selectedProperty.propertyIdentifier,
 	                                    isVisible: true,
 	                                    isDeletable: true,
@@ -9043,56 +9047,57 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/**
-	    * Form Controller handles the logic for this directive.
-	    */
+	 * Form Controller handles the logic for this directive.
+	 */
 	var SWFormController = (function () {
 	    /**
-	        * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
-	        */
-	    //@ngInject
-	    function SWFormController($scope, $element, $slatwall, accountService, cartService, $http, $timeout, observerService) {
-	        /** only use if the developer has specified these features with isProcessForm */
+	     * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
+	     */
+	    // @ngInject
+	    function SWFormController($scope, $element, $slatwall, $http, $timeout, observerService, $rootScope) {
 	        this.$scope = $scope;
 	        this.$element = $element;
 	        this.$slatwall = $slatwall;
-	        this.accountService = accountService;
-	        this.cartService = cartService;
 	        this.$http = $http;
 	        this.$timeout = $timeout;
 	        this.observerService = observerService;
+	        this.$rootScope = $rootScope;
+	        /** only use if the developer has specified these features with isProcessForm */
 	        this.isProcessForm = this.isProcessForm || "false";
 	        if (this.isProcessForm == "true") {
 	            this.handleSelfInspection(this);
 	        }
 	    }
 	    /**
-	        * Iterates through the form elements and checks if the names of any of them match
-	        * the meta data that comes back from the processObject call. Supplies a generic submit
-	        * method that can be called by any subclasses that inject formCtrl. On submit,
-	        * this class will attach any errors to the correspnding form element.
-	        */
+	     * Iterates through the form elements and checks if the names of any of them match
+	     * the meta data that comes back from the processObject call. Supplies a generic submit
+	     * method that can be called by any subclasses that inject formCtrl. On submit,
+	     * this class will attach any errors to the correspnding form element.
+	     */
 	    SWFormController.prototype.handleSelfInspection = function (context) {
 	        var _this = this;
+	        console.log("Context", context);
 	        /** local variables */
 	        this.processObject = this.object || "";
 	        var vm = context;
 	        vm.hiddenFields = this.hiddenFields;
-	        vm.entityName = this.entityName || "Account";
+	        vm.entityName = this.entityName;
 	        vm.processObject = this.processObject;
 	        vm.action = this.action;
 	        vm.actions = this.actions;
 	        vm.$timeout = this.$timeout;
 	        vm.postOnly = false;
+	        vm.hibachiScope = this.$rootScope.hibachiScope;
 	        var observerService = this.observerService;
 	        /** parse the name */
-	        var entityName = this.processObject.split("_")[0];
+	        vm.entityName = this.processObject.split("_")[0];
 	        var processObject = this.processObject.split("_")[1];
 	        /** try to grab the meta data from the process entity in slatwall in a process exists
-	            *  otherwise, just use the service method to access it.
-	            */
+	         *  otherwise, just use the service method to access it.
+	         */
 	        /** Cart is an alias for an Order */
-	        if (entityName == "Order") {
-	            entityName = "Cart";
+	        if (vm.entityName == "Order") {
+	            vm.entityName = "Cart";
 	        }
 	        ;
 	        /** find the form scope */
@@ -9102,7 +9107,7 @@
 	            }
 	        });
 	        /** make sure we have our data using new logic and $slatwall*/
-	        if (this.processObject == undefined || this.entityName == undefined) {
+	        if (this.processObject == undefined || vm.entityName == undefined) {
 	            throw ("ProcessObject Undefined Exception");
 	        }
 	        try {
@@ -9125,9 +9130,9 @@
 	            return vm.formData || "";
 	        };
 	        /****
-	            * Handle parsing through the server errors and injecting the error text for that field
-	            * If the form only has a submit, then simply call that function and set errors.
-	            ***/
+	          * Handle parsing through the server errors and injecting the error text for that field
+	          * If the form only has a submit, then simply call that function and set errors.
+	          ***/
 	        vm.parseErrors = function (result) {
 	            var _this = this;
 	            if (angular.isDefined(result.errors) && result.errors.length != 0) {
@@ -9138,6 +9143,7 @@
 	                            primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
 	                        }, 0);
 	                        vm["formCtrl"][vm.processObject][key].$setValidity(key, false); //set field invalid
+	                        vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
 	                    }
 	                }, this);
 	            }
@@ -9211,54 +9217,31 @@
 	        };
 	        /** find and clear all errors on form */
 	        vm.clearErrors = function () {
-	            var errorElements = _this.$element.find("[error-for]");
-	            errorElements.empty();
-	        };
-	        /** sets the correct factory to use for submission */
-	        vm.setFactoryIterator = function (fn) {
-	            var account = _this.accountService.GetInstance();
-	            var cart = _this.cartService.GetInstance();
-	            var factories = [account, cart];
-	            var factoryFound = false;
-	            for (var _i = 0; _i < factories.length; _i++) {
-	                var factory = factories[_i];
-	                if (!factoryFound) {
-	                    angular.forEach(factory, function (val, key) {
-	                        if (!factoryFound) {
-	                            if (key == fn) {
-	                                vm.factoryIterator = factory;
-	                                factoryFound = true;
-	                            }
-	                        }
-	                    });
-	                }
-	            }
-	        };
-	        /** sets the type of the form to submit */
-	        vm.formType = { 'Content-Type': 'application/x-www-form-urlencoded' };
-	        vm.toFormParams = function (data) {
-	            return data = $.param(data) || "";
+	            /** clear all form errors on submit. */
+	            _this.$timeout(function () {
+	                var errorElements = _this.$element.find("[error-for]");
+	                errorElements.empty();
+	                vm["formCtrl"][vm.processObject].$setPristine(true);
+	            }, 0);
 	        };
 	        /** iterates through the factory submitting data */
 	        vm.iterateFactory = function (submitFunction) {
-	            vm.setFactoryIterator(submitFunction);
-	            var factoryIterator = vm.factoryIterator;
-	            if (factoryIterator != undefined) {
-	                var submitFn = factoryIterator[submitFunction];
-	                vm.formData = vm.formData || {};
-	                submitFn({ params: vm.toFormParams(vm.formData), formType: vm.formType }).then(function (result) {
-	                    if (result.data && result.data.failureActions && result.data.failureActions.length != 0) {
-	                        vm.parseErrors(result.data);
-	                        observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events });
-	                    }
-	                    else {
-	                        observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events });
-	                    }
-	                }, angular.noop);
+	            if (!submitFunction) {
+	                throw "Action not defined on form";
 	            }
-	            else {
-	                throw ("Action does not exist in Account or Cart Exception  *" + vm.action);
-	            }
+	            var submitFn = vm.hibachiScope.doAction;
+	            vm.formData = vm.formData || {};
+	            submitFn(submitFunction, vm.formData).then(function (result) {
+	                if (vm.hibachiScope.hasErrors) {
+	                    vm.parseErrors(result.data);
+	                    //trigger an onError event
+	                    observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events || "" });
+	                }
+	                else {
+	                    //trigger a on success event
+	                    observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events || "" });
+	                }
+	            }, angular.noop);
 	        };
 	        /** does either a single or multiple actions */
 	        vm.doAction = function (actionObject) {
@@ -9277,11 +9260,12 @@
 	        };
 	        /** create the generic submit function */
 	        vm.submit = function (Action) {
-	            var action = Action; //vm.action || vm.actions;
+	            var action = Action || _this.action;
 	            vm.clearErrors();
 	            vm.formData = vm.getFormData() || "";
 	            vm.doAction(action);
 	        };
+	        this.submit = vm.submit;
 	        /* give children access to the process
 	        */
 	        vm.getProcessObject = function () {
@@ -9289,35 +9273,34 @@
 	        };
 	        /* handle events
 	        */
-	        if (this.onSuccess != undefined) {
+	        if (this.onSuccess) {
 	            vm.parseEventString(this.onSuccess, "onSuccess");
 	            observerService.attach(vm.eventsHandler, "onSuccess");
 	        }
-	        else if (this.onError != undefined) {
+	        else if (this.onError) {
 	            vm.parseEventString(this.onError, "onError");
+	            observerService.attach(vm.eventsHandler, "onError"); //stub
 	        }
 	    };
 	    return SWFormController;
 	})();
 	var SWForm = (function () {
+	    // @ngInject
 	    function SWForm(coreFormPartialsPath, pathBuilderConfig) {
 	        this.coreFormPartialsPath = coreFormPartialsPath;
 	        this.pathBuilderConfig = pathBuilderConfig;
 	        this.templateUrl = "";
 	        this.transclude = true;
 	        this.restrict = "E";
-	        this.replace = true;
 	        this.controller = SWFormController;
-	        this.controllerAs = "swFormController";
-	        this.scope = {
-	            object: "=",
-	            context: "@",
-	            name: "@"
-	        };
+	        this.controllerAs = "swForm";
+	        this.scope = { object: "=?" };
 	        /**
-	            * Binds all of our variables to the controller so we can access using this
-	            */
+	         * Binds all of our variables to the controller so we can access using this
+	         */
 	        this.bindToController = {
+	            name: "@?",
+	            context: "@?",
 	            entityName: "@?",
 	            processObject: "@?",
 	            hiddenFields: "=?",
@@ -9329,19 +9312,19 @@
 	            onSuccess: "@?",
 	            onError: "@?",
 	            hideUntil: "@?",
-	            isProcessForm: "@"
+	            isProcessForm: "@?"
 	        };
 	        /**
 	            * Sets the context of this form
 	            */
-	        this.link = function (scope, element, attrs, controller, transclude) {
+	        this.link = function (scope, element, attrs, controller) {
 	            scope.context = scope.context || 'save';
 	        };
 	        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
 	    }
 	    /**
-	        * Handles injecting the partials path into this class
-	        */
+	     * Handles injecting the partials path into this class
+	     */
 	    SWForm.Factory = function () {
 	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
 	            return new SWForm(coreFormPartialsPath, pathBuilderConfig);
