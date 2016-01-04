@@ -1,5 +1,17 @@
 sudo: required
 
+language: node_js
+
+node_js:
+  - "4.1"
+  - "4.0"
+  - "0.12"
+  - "0.11"
+  - "0.10"
+  - "0.8"
+  - "0.6"
+  - "iojs"
+
 services:
   - docker
 
@@ -13,4 +25,5 @@ before_install:
 
 script:
   - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml build
-  - docker-compose up
+  - cd org/Hibachi/client
+  - npm install
