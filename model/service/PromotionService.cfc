@@ -716,7 +716,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Lastly if there was a minimumItemQuantity then we can make this qualification based on the quantity ordered divided by minimum
 			if( !isNull(arguments.qualifier.getMinimumItemQuantity()) && arguments.qualifier.getMinimumItemQuantity() != 0) {
 				
+<<<<<<< HEAD
 				
+=======
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 				arguments.qualifierDetails.qualificationCount = int(qualifiedItemsQuantity / qualifier.getMinimumItemQuantity() );
 			}else if(isNull(arguments.qualifier.getMinimumItemQuantity()) || arguments.qualifier.getMinimumItemQuantity() == 0){
 				arguments.qualifierDetails.qualificationCount++;

@@ -922,7 +922,11 @@ Notes:
 	            }
 
 	            var getObjectSaveLevel = function(entityInstance){
+<<<<<<< HEAD
 	                var objectLevel:any = entityInstance;
+=======
+	                var objectLevel = entityInstance;
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 
 	                var entityID = entityInstance.$$getID();
 
@@ -943,7 +947,11 @@ Notes:
 
 	            var validateObject = function(entityInstance){
 
+<<<<<<< HEAD
 	                var modifiedData:any = {};
+=======
+	                var modifiedData = {};
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	                var valid = true;
 
 	                var forms = entityInstance.forms;
@@ -1182,7 +1190,11 @@ Notes:
 				    	}
 
 				    	var getModifiedDataByInstance = function(entityInstance){
+<<<<<<< HEAD
 				    		var modifiedData:any = {};
+=======
+				    		var modifiedData = {};
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 
 				    		<!---get all forms at the objects level --->
 
@@ -1223,9 +1235,12 @@ Notes:
 				return $delegate;
 			}]);
 		 }]);
+<<<<<<< HEAD
 		 export{
 		 	ngslatwallmodelmodule
 		 };		
+=======
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 		</cfoutput>
 	</cfsavecontent>
 
@@ -1237,7 +1252,11 @@ Notes:
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngSlatwallModel')>
 </cfif>
 <cfscript>
+<<<<<<< HEAD
 	local.filePath = expandPath('/Slatwall/') & 'org/Hibachi/client/src/ngslatwallmodel/ngslatwallmodel.module.ts';
+=======
+	local.filePath = expandPath('/Slatwall/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	fileWrite(local.filePath,local.jsOutput);
 </cfscript>
 <!---
