@@ -1,0 +1,4 @@
+<div>
+    <ng-form ng-if="swFormController.isProcessForm == 'false' || swFormController.isProcessForm == undefined" ><sw-form-registrar ng-transclude></sw-form-registrar></ng-form>
+    <ng-form ng-if="swFormController.isProcessForm == 'true'" class='{{swFormController.formClass}}' name='{{swFormController.processObject}}' ng-transclude no-validate sw-anchor></ng-form>
+</div>

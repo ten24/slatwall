@@ -64,9 +64,13 @@ Notes:
 <cfif !request.slatwallScope.hasApplicationValue('ngSlatwallModel')>
 	<cfsavecontent variable="local.jsOutput">
 		<cfoutput>
-			/// <reference path="../../../../client/typings/tsd.d.ts" />
-			/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-			angular.module('ngSlatwallModel',['hibachi','ngSlatwall']).config(['$provide',function ($provide
+			/// <reference path="../../typings/tsd.d.ts" />
+			/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+			import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
+			import {hibachimodule} from "../hibachi/hibachi.module";
+			
+			declare var slatwallAngular:any;
+			var ngslatwallmodelmodule = angular.module('ngSlatwallModel',[hibachimodule.name,ngslatwallmodule.name]).config(['$provide',function ($provide
 			 ) {
 	    	<!--- js entity specific code here --->
 	    	$provide.decorator( '$slatwall', [
@@ -568,7 +572,7 @@ Notes:
 									};
 								}else{
 
-									if(['id'].indexOf(property.fieldtype >= 0)){
+									if(['id'].indexOf(property.fieldtype)>= 0){
 										_jsEntities[ entity.className ].prototype['$$getID']=function(){
 											//this should retreive id from the metadata
 											return this.data[this.$$getIDName()];
@@ -756,7 +760,8 @@ Notes:
 	                }
 
 	                if(formatType === "custom"){
-	                    return entityInstance['$$get'+propertyName+Formatted]();
+						//to be implemented
+	                    //return entityInstance['$$get'+propertyName+Formatted]();
 	                }else if(formatType === "rbkey"){
 	                    if(angular.isDefined(value)){
 	                        return entityInstance.$$getRBKey('entity.'+entityInstance.metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+'.'+value);
@@ -772,7 +777,7 @@ Notes:
 
 	                    return "";
 	                }else if (_isSimpleValue(value)){
-	                    var formatDetails = {};
+	                    var formatDetails:any = {};
 	                    if(angular.isDefined(entityInstance.data['currencyCode'])){
 	                        formatDetails.currencyCode = entityInstance.$$getCurrencyCode();
 	                    }
@@ -794,7 +799,7 @@ Notes:
 	                var a = path.split('.');
 	                var context = obj;
 	                var selector;
-	                var myregexp = /([a-zA-Z]+)(\[(\d)\])+/; // matches:  item[0]
+	                var myregexp:any = /([a-zA-Z]+)(\[(\d)\])+/; // matches:  item[0]
 	                var match = null;
 
 	                for (var i = 0; i < a.length - 1; i += 1) {
@@ -841,7 +846,7 @@ Notes:
 	                        }
 	                    }else if(angular.isObject(returnedIDs[key])){
 	                        for(var k in returnedIDs[key]){
-	                            addReturnedIDs(returnedIDs[key][k],entityInstance.data[key][k]);
+	                            _addReturnedIDs(returnedIDs[key][k],entityInstance.data[key][k]);
 	                        }
 	                    }else{
 	                        entityInstance.data[key] = returnedIDs[key];
@@ -858,12 +863,12 @@ Notes:
 
                         var entityID = entityInstance.$$getID();
 
-                        var modifiedData = _getModifiedData(entityInstance);
+                        var modifiedData:any = _getModifiedData(entityInstance);
                         //$log.debug('modifiedData complete');
                         //$log.debug(modifiedData);
                         //timeoutPromise.valid = modifiedData.valid;
                         if(modifiedData.valid){
-                            var params = {};
+                            var params:any = {};
                             params.serializedJsonData = angular.toJson(modifiedData.value);
                             //if we have a process object then the context is different from the standard save
                             var entityName = '';
@@ -911,13 +916,17 @@ Notes:
 	            }
 
 	            var _getModifiedData = function(entityInstance){
-	                var modifiedData = {};
+	                var modifiedData:any = {};
 	                modifiedData = getModifiedDataByInstance(entityInstance);
 	                return modifiedData;
 	            }
 
 	            var getObjectSaveLevel = function(entityInstance){
+<<<<<<< HEAD
+	                var objectLevel:any = entityInstance;
+=======
 	                var objectLevel = entityInstance;
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 
 	                var entityID = entityInstance.$$getID();
 
@@ -938,7 +947,11 @@ Notes:
 
 	            var validateObject = function(entityInstance){
 
+<<<<<<< HEAD
+	                var modifiedData:any = {};
+=======
 	                var modifiedData = {};
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	                var valid = true;
 
 	                var forms = entityInstance.forms;
@@ -1177,7 +1190,11 @@ Notes:
 				    	}
 
 				    	var getModifiedDataByInstance = function(entityInstance){
+<<<<<<< HEAD
+				    		var modifiedData:any = {};
+=======
 				    		var modifiedData = {};
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 
 				    		<!---get all forms at the objects level --->
 
@@ -1218,6 +1235,12 @@ Notes:
 				return $delegate;
 			}]);
 		 }]);
+<<<<<<< HEAD
+		 export{
+		 	ngslatwallmodelmodule
+		 };		
+=======
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 		</cfoutput>
 	</cfsavecontent>
 
@@ -1229,7 +1252,11 @@ Notes:
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngSlatwallModel')>
 </cfif>
 <cfscript>
+<<<<<<< HEAD
+	local.filePath = expandPath('/Slatwall/') & 'org/Hibachi/client/src/ngslatwallmodel/ngslatwallmodel.module.ts';
+=======
 	local.filePath = expandPath('/Slatwall/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	fileWrite(local.filePath,local.jsOutput);
 </cfscript>
 <!---

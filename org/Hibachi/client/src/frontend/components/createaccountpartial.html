@@ -1,0 +1,95 @@
+<!-- Example Login Form - need to use object and property instead of a grouping called object -->
+<sw-form
+    data-is-process-form="true"
+    data-form-class="cssform"
+    data-error-class="error"
+    data-object="Account_Create"
+    data-on-success="hide:Account_Create,show:Account_Logout"> 
+    
+    <!--- first name --->
+    <swf-property-display 
+        data-name="firstName"
+        data-type="text"
+        data-object="Account_create"
+        data-property-identifier="firstName" 
+        data-label-text="First Name:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- last name --->
+    <swf-property-display 
+        data-name="lastName"
+        data-type="text"
+        data-object="Account_create"
+        data-property-identifier="lastName" 
+        data-label-text="Last Name:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- last name --->
+    <swf-property-display 
+        data-name="phone"
+        data-type="text"
+        data-object="Account_create"
+        data-property-identifier="phone"  
+        data-label-text="Phone Number:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- email address --->
+    <swf-property-display 
+        data-name="emailAddress"
+        data-type="email"
+        data-object="Account_create"
+        data-property-identifier="emailAddress"  
+        data-label-text="Email Address:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- email address confirm --->
+    <swf-property-display 
+        data-name="emailAddressConfirm"
+        data-type="email"
+        data-object="Account_Create"
+        data-property-identifier="emailAddressConfirm"  
+        data-label-text="Email Address Confirm:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- password --->
+    <swf-property-display
+        data-name="password"
+        data-type="password"
+        data-object="Account_create"
+        data-property-identifier="password" 
+        data-label-text="Password:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- password confirm --->
+    <swf-property-display
+        data-name="passwordConfirm"
+        data-type="password"
+        data-object="Account_create"
+        data-property-identifier="passwordConfirm" 
+        data-label-text="Password Confirm:"
+        data-class="formControl"
+        data-editing="true">
+    </swf-property-display>
+    
+    <!--- create account --->
+    <sw-action-caller 
+        data-action="createAccount"
+        data-modal="false" 
+        data-type="button" 
+        data-class="btn"
+        data-text="Create Account">
+    </sw-action-caller>
+    
+</sw-form>
