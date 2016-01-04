@@ -83,14 +83,19 @@ class SWDisplayOptions{
 				};
 
 
-				var getTitleFromPropertyIdentifier = function(propertyIdentifier){
+				var getTitleFromProperty = function(selectedProperty){
 					var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1);
-
+                    var propertyIdentifier = selectedProperty.propertyIdentifier;
 					var title = '';
 					var propertyIdentifierArray = propertyIdentifier.split('.');
 					var currentEntity;
 					var currentEntityInstance;
 					var prefix = 'entity.';
+                    
+                    if(selectedProperty.$$group == "attribute"){
+                        return selectedProperty.displayPropertyIdentifier;
+                    }
+
 					angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key){
 						//pass over the initial item
 						if(key !== 0 ){
@@ -120,7 +125,7 @@ class SWDisplayOptions{
 						$log.debug($scope.columns);
 						if(angular.isDefined(selectedProperty)){
 							var column = {
-								title : getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier),
+								title : getTitleFromProperty(selectedProperty.propertyIdentifier),
 								propertyIdentifier : selectedProperty.propertyIdentifier,
 								isVisible : true,
 								isDeletable : true,
