@@ -1,0 +1,17 @@
+<!-- Example Logout Form - This will be used with login form through events -->
+<sw-form
+    data-is-process-form="true"
+    data-object="Account_Logout"
+    data-on-success="hide:Account_Logout,show:Account_Login"
+    data-form-class="cssform"
+    data-error-class="error">
+    
+    <sw-action-caller 
+        data-action="logout"
+        data-modal="false" 
+        data-type="button" 
+        data-class="btn" 
+        data-text="Logout">
+    </sw-action-caller>
+    
+</sw-form>

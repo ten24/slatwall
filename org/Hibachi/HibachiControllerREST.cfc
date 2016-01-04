@@ -28,6 +28,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.publicMethods=listAppend(this.publicMethods, 'login');
 	this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
 	this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
+	this.publicMethods=listAppend(this.publicMethods, 'getModel');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -113,7 +114,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	
 	public any function getDetailTabs(required struct rc){
 		var detailTabs = [];
-		var tabsDirectory = expandPath( '/' ) & 'admin/client/partials/entity/#lcase(rc.entityName)#/';
+		var tabsDirectory = expandPath( '/' ) & 'org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
 		var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
 		for(var tabFile in tabFilesList){
 			var tab = {};
@@ -366,6 +367,110 @@ component output="false" accessors="true" extends="HibachiController" {
 	public void function getEventOptionsByEntityName(required struct rc){
 		var eventNameOptions = getService('hibachiEventService').getEventNameOptionsForObject(rc.entityName);
 		arguments.rc.apiResponse.content['data'] = eventNameOptions;
+	}
+	
+	private void function formatEntity(required any entity, required any model){
+		
+		model.entities[entity.getClassName()] = entity.getPropertiesStruct();
+		model.entities[entity.getClassName()]['className'] = entity.getClassName();
+		
+		var metaData = getMetaData(entity);
+		var isProcessObject = Int(Find('_',entity.getClassName()) gt 0);
+		
+		if (structKeyExists(metaData,'hb_parentPropertyName')){
+			model.entities[entity.getClassName()]['hb_parentPropertyName'] = metaData.hb_parentPropertyName;
+		}
+		if(structKeyExists(metaData,'hb_childPropertyName')){
+			model.entities[entity.getClassName()]['hb_childPropertyName'] = metaData.hb_childPropertyName;
+		}
+		
+		model.validations[entity.getClassName()] = getHibachiScope().getService('hibachiValidationService').getValidationStruct(entity);
+		model.defaultValues[entity.getClassName()] = {};
+		
+		
+		for(var property in entity.getProperties()){
+			//<!--- Make sure that this property is a persistent one --->
+			if (!structKeyExists(property, "persistent") && ( !structKeyExists(property,"fieldtype") || listFindNoCase("column,id", property.fieldtype) )){
+				if(!isProcessObject){
+					try{
+						var defaultValue = entity.invokeMethod('get#property.name#');
+					}catch(any e){
+						defaultValue = javacast('null','');
+					}
+					if (isNull(local.defaultValue)){
+						model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
+					}else if (structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)){
+						model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+					}else if (structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)){
+						if(structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json"){
+							model.defaultValues[entity.getClassName()][property.name] = deserializeJson(defaultValue);
+						}else{
+							model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+						}
+					}else if(structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'){
+						model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+					}else{
+						model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+					}
+				}else{
+					try{
+						var defaultValue = entity.invokeMethod('get#property.name#');
+					}catch(any e){
+						defaultValue = javacast('null','');
+					}
+					if (!isNull(defaultValue)){
+						if(isObject(defaultValue)){
+							model.defaultValues[entity.getClassName()][property.name] = '';
+						}else{
+							if(isStruct(defaultValue)){
+								model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+							}else{
+								model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
+							}
+						}
+						
+					}else{
+						//model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
+					}
+				}
+			}
+		}
+	}
+	
+	public any function getModel(required struct rc){
+		var model = {};
+		if(!request.slatwallScope.hasApplicationValue('objectModel')){
+			var entities = [];
+			var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
+			var entitiesListArray = listToArray(structKeyList(rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesMetaData()));
+			
+			
+			model['entities'] = {};
+			model['validations'] = {};
+			model['defaultValues'] = {};
+			
+			for(var entityName in entitiesListArray) {
+				var entity = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntityObject(entityName);
+				
+				formatEntity(entity,model);
+				//add process objects to the entites array
+				if(structKeyExists(processContextsStruct,entityName)){
+					var processContexts = processContextsStruct[entityName];
+					for(var processContext in processContexts){
+						if(entity.hasProcessObject(processContext)){
+							
+							formatEntity(entity.getProcessObject(processContext),model);
+						}
+						
+					}
+				}
+			}
+			
+			ORMClearSession();
+			request.slatwallScope.setApplicationValue('objectModel',model);
+		}
+		model = request.slatwallScope.getApplicationValue('objectModel');
+		arguments.rc.apiResponse.content['data'] = model;
 	}
 	
 	public any function get( required struct rc ) {
@@ -654,3 +759,4 @@ component output="false" accessors="true" extends="HibachiController" {
 		*/
 	
 }
+

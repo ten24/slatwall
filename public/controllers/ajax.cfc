@@ -97,4 +97,16 @@ component output="false" accessors="true" {
 		}
 	}
 	
+	public void function productSkuSelected(required struct rc){
+		param name="arguments.rc.productID" type="string" default="";
+		param name="arguments.rc.selectedOptionIDList" type="string" default="";
+		var product = getProductService().getProduct( arguments.rc.productID );
+		try{
+			var sku = product.getSkuBySelectedOptions(arguments.rc.selectedOptionIDList);
+			rc.ajaxResponse['skuID'] = sku.getSkuID();
+		}catch(any e){
+			rc.ajaxResponse['skuID'] = '';
+		}
+	}
+	
 }
