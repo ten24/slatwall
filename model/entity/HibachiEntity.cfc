@@ -263,7 +263,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}else{
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
-				invokeMethod("get#arguments.attribute#", {1=arguments.value});
+				invokeMethod("set#arguments.attribute#", {1=arguments.value});
 				return '';
 				
 			}
