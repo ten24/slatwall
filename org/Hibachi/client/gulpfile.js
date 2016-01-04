@@ -5,7 +5,7 @@ Config = require('./gulpfile.config'),
 inject = require('gulp-inject'),
 chmod = require('gulp-chmod'),
 runSequence = require('run-sequence'),
-gutil = require('gutil'),
+gutil = require('gulp-util'),
 webpack = require('webpack'),
 webpackConfig = require('./webpack.config');
 
