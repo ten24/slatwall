@@ -229,6 +229,7 @@ var slatwalladmin;
             this.showAdvanced = false;
             this.currentPage = 1;
             this.pageShow = 10;
+            this.recordsPerPage = 10;
             this.searchAllCollectionConfigs = [];
             if (angular.isUndefined(this.filterPropertiesList)) {
                 this.filterPropertiesList = {};
