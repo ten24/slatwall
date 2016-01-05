@@ -46,38 +46,25 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.promotion" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cfif arrayLen(rc.promotion.getPromotionPeriods()) eq 1 and !arrayLen(rc.promotion.getPromotionPeriods()[1].getPromotionRewards())>
-	<cfset request.slatwallScope.showMessageKey('admin.pricing.detailpromotion.norewards_info') />
-</cfif>
-
-<cfif arrayLen(rc.promotion.getPromotionCodes()) gt 0 and rc.promotion.getCurrentPromotionPeriodFlag() and not rc.promotion.getCurrentPromotionCodeFlag()>
-	<cfset request.slatwallScope.showMessageKey('admin.entity.detailpromotion.currentPeriodWithNoCurrentPromoCode_info') />
-</cfif>
-
-
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.promotion#" edit="#rc.edit#" saveActionQueryString="promotionID=#rc.promotion.getPromotionID()#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.promotion#" edit="#rc.edit#" >
-			<hb:HibachiActionCaller action="admin:entity.createpromotioncode" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
-			<hb:HibachiActionCaller action="admin:entity.createpromotionperiod" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
-		</hb:HibachiEntityActionBar>
-
-		<hb:HibachiEntityDetailGroup object="#rc.promotion#">
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" />
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" />
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionorders" />
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
+	<hb:HibachiListingDisplay smartList="#rc.promotion.getOrdersSmartList()#"
+							   recordEditAction="admin:entity.editOrder"
+							   recorddetailaction="admin:entity.detailOrder">
+		<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
+			<hb:HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
+			<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
+			<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" sort=true title="#$.slatwall.rbKey('entity.order.orderType')#"/>
+			<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" sort=true/>
+			<hb:HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
+			<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
+	</hb:HibachiListingDisplay>
 </cfoutput>
-
