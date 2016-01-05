@@ -36,9 +36,6 @@ class SWFormRegistrar implements ng.IDirective {
             },
 			link: function(scope, element, attrs, formController){
 				/*add form info at the form level*/
-                console.log("HERE");
-                console.log(scope);
-                console.log(formController);
                 
 				formController.$$swFormInfo={
 					object:scope.object,
