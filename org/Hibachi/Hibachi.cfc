@@ -502,7 +502,7 @@ component extends="FW1.framework" {
 					}
 					if(!coreBF.containsBean("hibachiCollectionService")) {
                         coreBF.declareBean("hibachiCollectionService", "#variables.framework.applicationKey#.org.Hibachi.hibachiCollectionService", true);  
-                    }
+                    } 
 					// If the default transient beans were not found in the model, add a reference to the core one in hibachi
 					if(!coreBF.containsBean("hibachiScope")) {
 						coreBF.declareBean("hibachiScope", "#variables.framework.applicationKey#.org.Hibachi.HibachiScope", false);
