@@ -38,8 +38,9 @@ angular.module('slatwalladmin')
                             $scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen;
                         }
                     };
-                    var getTitleFromPropertyIdentifier = function (propertyIdentifier) {
+                    var getTitleFromProperty = function (selectedProperty) {
                         var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall', '').charAt(0).toLowerCase() + $scope.baseEntityName.replace('Slatwall', '').slice(1);
+                        var propertyIdentifier = selectedProperty.propertyIdentifier;
                         var title = '';
                         var propertyIdentifierArray = propertyIdentifier.split('.');
                         var currentEntity;
@@ -63,6 +64,9 @@ angular.module('slatwalladmin')
                                 }
                             }
                         });
+                        if (selectedProperty.$$group == "attribute") {
+                            return selectedProperty.displayPropertyIdentifier;
+                        }
                         return title;
                     };
                     $scope.addColumn = function (selectedProperty, closeDialog) {
@@ -72,7 +76,7 @@ angular.module('slatwalladmin')
                             $log.debug($scope.columns);
                             if (angular.isDefined(selectedProperty)) {
                                 var column = {
-                                    title: getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier),
+                                    title: getTitleFromProperty(selectedProperty),
                                     propertyIdentifier: selectedProperty.propertyIdentifier,
                                     isVisible: true,
                                     isDeletable: true,
