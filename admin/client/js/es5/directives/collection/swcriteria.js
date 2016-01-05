@@ -15,7 +15,8 @@ angular.module('slatwalladmin')
                 selectedFilterProperty: "=",
                 filterPropertiesList: "=",
                 selectedFilterPropertyChanged: "&",
-                comparisonType: "="
+                comparisonType: "=",
+                collectionConfig: "="
             },
             templateUrl: collectionPartialsPath + 'criteria.html',
             link: function (scope, element, attrs) {
