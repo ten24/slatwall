@@ -362,11 +362,16 @@ class CollectionConfig {
 
         //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
-
+        
+        if(propertyIdentifier.split('.').length < 2){
+            var join = false; 
+        } else { 
+            var join = true;
+        }
 
         //create filter group
         var filter = new Filter(
-            this.formatPropertyIdentifier(propertyIdentifier, true),
+            this.formatPropertyIdentifier(propertyIdentifier, join),
             value,
             comparisonOperator,
             logicalOperator,

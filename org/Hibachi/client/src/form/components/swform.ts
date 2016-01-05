@@ -8,6 +8,7 @@ interface ViewModel {
         //************************** Fields
         hiddenFields: any,
         entityName:string,
+        name:string,
         processObject:string,
         action:string,
         actionFn:Function,
@@ -64,6 +65,7 @@ interface ViewModel {
         public postOnly:boolean;
         public object:any;
         public events: any;
+        public name: string;
         public onSuccess:string;
         public onError:string;
         public submit:Function;
@@ -318,7 +320,7 @@ class SWForm implements ng.IDirective {
     public restrict         = "E";
     public controller       = SWFormController;
     public controllerAs     = "swForm";
-    public scope            = { object : "=?" };
+    public scope            = {};
 
    /**
     * Binds all of our variables to the controller so we can access using this
@@ -333,7 +335,7 @@ class SWForm implements ng.IDirective {
             actions: "@?",
             formClass: "@?",
             formData: "=?",
-            object: "@?",
+            object: "=?",
             onSuccess: "@?",
             onError: "@?",
             hideUntil: "@?",
