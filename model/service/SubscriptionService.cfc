@@ -563,7 +563,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 
 			// TODO: Add Retry Logic
-			arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#"><cfif not isNull(order.getOrderNumber())>#order.getOrderNumber()#<cfelse>#getHibachiScope().rbKey('define.notPlaced')#</cfif></a>');
+			arguments.subscriptionUsage.addError('renew', rbKey('validate.processSubscriptionUsage_renew.order.newFlag') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#"><cfif not isNull(order.getOrderNumber())> #getHibachiScope().rbKey('entity.Order')#: #order.getOrderNumber()# - #getHibachiScope().rbKey('define.notPlaced')#</cfif></a>');
 		}
 
 		return arguments.subscriptionUsage;
