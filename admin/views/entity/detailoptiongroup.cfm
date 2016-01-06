@@ -61,7 +61,7 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.optiongroup#">
 			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/options" count="#arrayLen(rc.optiongroup.getOptions())#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/options" count="#rc.optiongroup.getOptionsCount()#"/>
 			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/description" />
 			<cfif not rc.optiongroup.getGlobalFlag()>
 				<hb:HibachiEntityDetailItem property="producttypes" />
