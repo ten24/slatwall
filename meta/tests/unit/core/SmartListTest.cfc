@@ -79,6 +79,63 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assert(urlResponse eq '?f:productName=hello');
 	}
 	
+	public void function countTest(){
+		var productData = {
+			productID="",
+			productName="test",
+			productCode="test-#createUUID()#",
+			skus=[
+				{
+					skuID="",
+					skuName="test"
+				},
+				{
+					skuID="",
+					skuName="otherTest"
+				}
+			]
+		};
+		var product = createTestEntity('Product',productData);
+		assertEquals(product.getSkus()[1].getSkuCode(),product.getProductCode()&'-1');
+		assertEquals(product.getSkus()[2].getSkuCode(),product.getProductCode()&'-2');
+		
+		var productData2 = {
+			productID="",
+			productName="test",
+			productCode="test-#createUUID()#",
+			skus=[
+				{
+					skuID="",
+					skuName="test"
+				},
+				{
+					skuID="",
+					skuName="otherTest"
+				},
+				{
+					skuID="",
+					skuName="test3"
+				}
+			]
+		};
+		var product2 = createPersistedTestEntity('Product',productData2);
+		var skuData = {
+			skuID="",
+			skuName="test"
+		};
+		var sku = createTestEntity('Sku',skuData);
+		product2.addSku(sku);
+		var skuData2 = {
+			skuID="",
+			skuName="othertest"
+		};
+		var sku2 = createTestEntity('Sku',skuData2);
+		product2.addSku(sku2);
+		assertEquals(product2.getSkus()[1].getSkuCode(),product2.getProductCode()&'-1');
+		assertEquals(product2.getSkus()[2].getSkuCode(),product2.getProductCode()&'-2');
+		assertTrue(isNull(product2.getSkus()[4].getSkuCode()));
+	}
+	
 }
 
 

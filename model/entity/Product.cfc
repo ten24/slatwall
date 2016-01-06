@@ -1019,8 +1019,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
 		//if sku code is null then create one automatically
-		if(isNull(arguments.sku.getSkuCode())){
-			var skusCount = this.getSkusCount();
+		if(this.getNewFlag() && isNull(arguments.sku.getSkuCode())){
+			var skusCount = arraylen(this.getSkus());
 			var skuCode = this.getProductCode() & "-#skusCount + 1#";
 			arguments.sku.setSkuCode(skuCode);
 		}
