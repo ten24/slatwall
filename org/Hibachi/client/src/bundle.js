@@ -4686,8 +4686,14 @@
 	            //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
 	            if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
 	                logicalOperator = 'AND';
+	            if (propertyIdentifier.split('.').length < 2) {
+	                var join = false;
+	            }
+	            else {
+	                var join = true;
+	            }
 	            //create filter group
-	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, true), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
+	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
 	            _this.filterGroups[0].filterGroup.push(filter);
 	        };
 	        this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
@@ -9063,6 +9069,9 @@
 	        this.observerService = observerService;
 	        this.$rootScope = $rootScope;
 	        /** only use if the developer has specified these features with isProcessForm */
+	        if (angular.isUndefined(this.isDirty)) {
+	            this.isDirty = false;
+	        }
 	        this.isProcessForm = this.isProcessForm || "false";
 	        if (this.isProcessForm == "true") {
 	            this.handleSelfInspection(this);
@@ -9294,7 +9303,7 @@
 	        this.restrict = "E";
 	        this.controller = SWFormController;
 	        this.controllerAs = "swForm";
-	        this.scope = { object: "=?" };
+	        this.scope = {};
 	        /**
 	         * Binds all of our variables to the controller so we can access using this
 	         */
@@ -9308,11 +9317,12 @@
 	            actions: "@?",
 	            formClass: "@?",
 	            formData: "=?",
-	            object: "@?",
+	            object: "=?",
 	            onSuccess: "@?",
 	            onError: "@?",
 	            hideUntil: "@?",
-	            isProcessForm: "@?"
+	            isProcessForm: "@?",
+	            isDirty: "=?"
 	        };
 	        /**
 	            * Sets the context of this form
@@ -9898,6 +9908,12 @@
 	        return {
 	            restrict: 'E',
 	            require: "^form",
+	            scope: {
+	                object: "=",
+	                context: "@",
+	                name: "@",
+	                isDirty: "="
+	            },
 	            link: function (scope, element, attrs, formController) {
 	                /*add form info at the form level*/
 	                formController.$$swFormInfo = {
@@ -9912,9 +9928,13 @@
 	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
 	                    return text;
 	                };
+	                if (scope.isDirty) {
+	                    formController.autoDirty = true;
+	                }
 	                scope.form = formController;
 	                /*register form with service*/
 	                formController.name = scope.name;
+	                formController.$setDirty();
 	                formService.setForm(formController);
 	                /*register form at object level*/
 	                if (!angular.isDefined(scope.object.forms)) {
@@ -9939,7 +9959,7 @@
 	})();
 	exports.SWFormRegistrar = SWFormRegistrar;
 	// 	angular.module('slatwalladmin').directive('swFormRegistrar',[ 'formService', 'partialsPath', (formService, partialsPath) => new swFormRegistrar(formService, partialsPath)]);
-	// } 
+	// }
 
 
 /***/ },
@@ -12670,7 +12690,7 @@
 	                                //$log.debug('key:'+key);
 	                                if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                                    var inputField = form[key];
-	                                    if (angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true) {
+	                                    if (angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
 	                                        if (angular.isDefined(entityInstance.metaData[key])
 	                                            && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
 	                                            && entityInstance.metaData[key].hb_formfieldtype === 'json') {
@@ -12707,7 +12727,7 @@
 	                                    for (var key in form) {
 	                                        if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                                            var inputField = form[key];
-	                                            if (angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true) {
+	                                            if (angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
 	                                                if (angular.isDefined(parentInstance.metaData[key])
 	                                                    && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype)
 	                                                    && parentInstance.metaData[key].hb_formfieldtype === 'json') {
@@ -12785,7 +12805,7 @@
 	                    for (var key in form) {
 	                        if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                            var inputField = form[key];
-	                            if (angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true) {
+	                            if (angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
 	                                if (angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json') {
 	                                    data[key] = angular.toJson(form[key].$modelValue);
 	                                }

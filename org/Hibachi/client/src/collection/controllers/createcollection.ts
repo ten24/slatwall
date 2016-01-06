@@ -38,6 +38,7 @@ class CreateCollection{
             $scope.newCollection.data.collectionID = $scope.params.entityId;
             $timeout(function(){
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
+                
             });
         }
 
@@ -45,6 +46,7 @@ class CreateCollection{
             $scope.newCollection.data.collectionName = $scope.params.collectionName;
             $timeout(function(){
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
+               
             });
         }
 
