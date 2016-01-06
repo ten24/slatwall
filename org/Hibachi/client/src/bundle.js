@@ -4640,7 +4640,7 @@
 	        this.setDisplayProperties = function (propertyIdentifier, title, options) {
 	            if (title === void 0) { title = ''; }
 	            if (options === void 0) { options = {}; }
-	            _this.addDisplayProperty = (propertyIdentifier, title, options);
+	            _this.addDisplayProperty(propertyIdentifier, title, options);
 	        };
 	        this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
 	            var column = {
@@ -4695,6 +4695,28 @@
 	            //create filter group
 	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
 	            _this.filterGroups[0].filterGroup.push(filter);
+	        };
+	        this.removeFilter = function (propertyIdentifier, value, comparisonOperator) {
+	            if (comparisonOperator === void 0) { comparisonOperator = '='; }
+	            _this.removeFilterHelper(_this.filterGroups, propertyIdentifier, value, comparisonOperator);
+	        };
+	        this.removeFilterHelper = function (filter, propertyIdentifier, value, comparisonOperator, currentGroup) {
+	            if (angular.isUndefined(currentGroup)) {
+	                currentGroup = filter;
+	            }
+	            if (angular.isArray(filter)) {
+	                angular.forEach(filter, function (key) {
+	                    _this.removeFilterHelper(key, propertyIdentifier, value, comparisonOperator, filter);
+	                });
+	            }
+	            else if (angular.isArray(filter.filterGroup)) {
+	                _this.removeFilterHelper(filter.filterGroup, propertyIdentifier, value, comparisonOperator, filter.filterGroup);
+	            }
+	            else {
+	                if (filter.propertyIdentifier == propertyIdentifier && filter.value == value && filter.comparisonOperator == comparisonOperator) {
+	                    currentGroup.splice(currentGroup.indexOf(filter), 1);
+	                }
+	            }
 	        };
 	        this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
 	            if (criteria === void 0) { criteria = 'One'; }

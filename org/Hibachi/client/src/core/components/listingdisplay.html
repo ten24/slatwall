@@ -37,6 +37,7 @@
 			data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
 			data-propertyidentifiers="{{swListingDisplay.exampleEntity.$$getIDName()}},{{swListingDisplay.allpropertyidentifiers}}"
 			{{swListingDisplay.tableattributes}}>
+			
 		<thead>
 			<tr>
 				<!--- Selectable --->
@@ -169,7 +170,7 @@
 					</span>
 					<span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
                     <span ng-if="column.aggregate" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"></span>
-                    <span ng-if="column.aggregate" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"></span>
+                    
                 </td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
@@ -246,11 +247,8 @@
 
 </div><!--- table-responsive --->
 
-	<sw-pagination-bar
-		ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable"
-		data-paginator="swListingDisplay.paginator"
-		>
-	</sw-pagination-bar>
-	
-
-
+<sw-pagination-bar
+    ng-if="swListingDisplay.paginator && !swListingDisplay.multiselectable && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
+	data-paginator="swListingDisplay.paginator"
+	>
+</sw-pagination-bar>
