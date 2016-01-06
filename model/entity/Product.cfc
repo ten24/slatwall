@@ -1018,6 +1018,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
+		//if sku code is null then create one automatically
+		if(isNull(arguments.sku.getSkuCode())){
+			var skusCount = this.getSkusCount();
+			var skuCode = this.getProductCode() & "-#skusCount + 1#";
+			arguments.sku.setSkuCode(skuCode);
+		}
+		
 		arguments.sku.setProduct( this );
 	}
 	public void function removeSku(required any sku) {
