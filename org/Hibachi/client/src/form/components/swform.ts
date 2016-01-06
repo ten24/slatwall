@@ -69,12 +69,16 @@ interface ViewModel {
         public onSuccess:string;
         public onError:string;
         public submit:Function;
+        public isDirty:boolean;
         /**
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
         // @ngInject
         constructor(public $scope, public $element, public $slatwall, public $http, public $timeout, public observerService, public $rootScope){
             /** only use if the developer has specified these features with isProcessForm */
+            if(angular.isUndefined(this.isDirty)){
+                this.isDirty = false;    
+            } 
             this.isProcessForm = this.isProcessForm || "false";
             if (this.isProcessForm == "true") {
                 this.handleSelfInspection( this );
@@ -102,6 +106,7 @@ interface ViewModel {
             vm.$timeout         = this.$timeout;
             vm.postOnly         = false;
             vm.hibachiScope     = this.$rootScope.hibachiScope;
+            
             
             let observerService = this.observerService;
             /** parse the name */
@@ -339,7 +344,8 @@ class SWForm implements ng.IDirective {
             onSuccess: "@?",
             onError: "@?",
             hideUntil: "@?",
-            isProcessForm: "@?"
+            isProcessForm: "@?",
+            isDirty:"=?"
     };
 
     /**

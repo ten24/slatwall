@@ -32,10 +32,12 @@ class SWFormRegistrar implements ng.IDirective {
             scope: {
                 object:"=",
                 context:"@",
-                name:"@"
+                name:"@",
+                isDirty:"="
             },
 			link: function(scope, element, attrs, formController){
 				/*add form info at the form level*/
+                
                 
 				formController.$$swFormInfo={
 					object:scope.object,
@@ -52,17 +54,25 @@ class SWFormRegistrar implements ng.IDirective {
 
 					return text;
 				};
-
+                if(scope.isDirty){
+                    formController.autoDirty = true;
+                }
+                
 				scope.form = formController;
 				/*register form with service*/
 				formController.name = scope.name;
+                formController.$setDirty();
+                
 				formService.setForm(formController);
+                
+                
 
 				/*register form at object level*/
 				if(!angular.isDefined(scope.object.forms)){
 					scope.object.forms = {};
 				}
 				scope.object.forms[scope.name] = formController;
+                
 			}
 		};
 	}
