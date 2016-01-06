@@ -53,11 +53,11 @@ Notes:
 <cfparam name="rc.promotion" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cfif arrayLen(rc.promotion.getPromotionPeriods()) eq 1 and !arrayLen(rc.promotion.getPromotionPeriods()[1].getPromotionRewards())>
+<cfif rc.promotion.getPromotionPeriodsCount() eq 1 and !arrayLen(rc.promotion.getPromotionPeriods()[1].getPromotionRewards())>
 	<cfset request.slatwallScope.showMessageKey('admin.pricing.detailpromotion.norewards_info') />
 </cfif>
 
-<cfif arrayLen(rc.promotion.getPromotionCodes()) gt 0 and rc.promotion.getCurrentPromotionPeriodFlag() and not rc.promotion.getCurrentPromotionCodeFlag()>
+<cfif rc.promotion.getPromotionCodesCount() gt 0 and rc.promotion.getCurrentPromotionPeriodFlag() and not rc.promotion.getCurrentPromotionCodeFlag()>
 	<cfset request.slatwallScope.showMessageKey('admin.entity.detailpromotion.currentPeriodWithNoCurrentPromoCode_info') />
 </cfif>
 
@@ -71,8 +71,8 @@ Notes:
 
 		<hb:HibachiEntityDetailGroup object="#rc.promotion#">
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" count="#arrayLen(rc.promotion.getPromotionPeriods())#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" count="#arrayLen(rc.promotion.getPromotionCodes())#"/>
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" count="#rc.promotion.getPromotionPeriodsCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" count="#rc.promotion.getPromotionCodesCount()#"/>
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
 			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
 		</hb:HibachiEntityDetailGroup>
