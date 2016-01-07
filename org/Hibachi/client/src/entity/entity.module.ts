@@ -20,8 +20,18 @@ import {SlatwallJQueryStatic} from "../slatwall/services/slatwallinterceptor";
 declare var $:SlatwallJQueryStatic;
 
 var entitymodule = angular.module('hibachi.entity',['ngRoute'])
-.config(['$routeProvider','$injector',
-($routeProvider,$injector)=>{
+.config(['$routeProvider','$injector','$locationProvider',
+($routeProvider,$injector,$locationProvider)=>{
+     //detect if we are in hashbang mode
+     var vars:any = {};
+     var parts:any = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, (m:any,key:string,value:string)=> {
+        vars[key] = value;
+     });
+
+     if(vars.ng){
+         $locationProvider.html5Mode( false ).hashPrefix('!');
+     }
+
     $routeProvider.when('/entity/:entityName/', {
          template: function(params){
              var entityDirectiveExists = $injector.has('sw'+params.entityName+'ListDirective');

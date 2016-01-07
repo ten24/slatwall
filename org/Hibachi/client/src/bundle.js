@@ -696,19 +696,6 @@
 	        datepickerConfig.showWeeks = false;
 	        datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
 	        datepickerPopupConfig.toggleWeeksText = null;
-	        if (slatwallAngular.hashbang) {
-	            $locationProvider.html5Mode(false).hashPrefix('!');
-	        }
-	        //
-	        //$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
-	        //  var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
-	        //   $provide.constant("partialsPath", _partialsPath);
-	        //  $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-	        //  angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
-	        //      var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
-	        //      var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
-	        //      $provide.constant(constantKey, constantPartialsPath);
-	        //  });
 	        $logProvider.debugEnabled($.slatwall.getConfig().debugFlag);
 	        $filterProvider.register('likeFilter', function () {
 	            return function (text) {
@@ -17742,8 +17729,16 @@
 	var swdetail_1 = __webpack_require__(164);
 	var swlist_1 = __webpack_require__(165);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute'])
-	    .config(['$routeProvider', '$injector',
-	    function ($routeProvider, $injector) {
+	    .config(['$routeProvider', '$injector', '$locationProvider',
+	    function ($routeProvider, $injector, $locationProvider) {
+	        //detect if we are in hashbang mode
+	        var vars = {};
+	        var parts = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, function (m, key, value) {
+	            vars[key] = value;
+	        });
+	        if (vars.ng) {
+	            $locationProvider.html5Mode(false).hashPrefix('!');
+	        }
 	        $routeProvider.when('/entity/:entityName/', {
 	            template: function (params) {
 	                var entityDirectiveExists = $injector.has('sw' + params.entityName + 'ListDirective');
