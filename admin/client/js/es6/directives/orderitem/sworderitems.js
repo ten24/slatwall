@@ -48,26 +48,24 @@ angular.module('slatwalladmin')
                         ',orderFulfillment.pickupLocation.primaryAddress.address.streetAddress,orderFulfillment.pickupLocation.primaryAddress.address.street2Address' +
                         ',orderFulfillment.pickupLocation.primaryAddress.address.city,orderFulfillment.pickupLocation.primaryAddress.address.stateCode' +
                         ',orderFulfillment.pickupLocation.primaryAddress.address.postalCode' +
-                        ',itemTotal', 
-                    //',itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType'+
-                    //',sku.subscriptionBenefits.subscriptionBenefitName'
-                    //',sku.product.productType,sku.options,sku.locations'+
-                    ',sku.subscriptionTerm.subscriptionTermName' +
+                        ',itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType' +
+                        ',sku.subscriptionBenefits' +
+                        ',sku.product.productType.systemCode,sku.options,sku.locations' +
+                        ',sku.subscriptionTerm.subscriptionTermName' +
                         ',sku.imageFile' +
                         '')
                         .addFilter('order.orderID', scope.orderId)
                         .addFilter('parentOrderItem', 'null', 'IS')
                         .setKeywords(scope.keywords)
                         .setPageShow(scope.paginator.getPageShow());
-                    /*angular.forEach(scope.attributes,function(attribute){
-
+                    angular.forEach(scope.attributes, function (attribute) {
                         var attributeColumn = {
-                            propertyIdentifier:"_orderitem."+attribute.attributeCode,
-                            attributeID:attribute.attributeID,
-                             attributeSetObject:"orderItem"
+                            propertyIdentifier: "_orderitem." + attribute.attributeCode,
+                            attributeID: attribute.attributeID,
+                            attributeSetObject: "orderItem"
                         };
                         orderItemCollection.columns.push(attributeColumn);
-                    });*/
+                    });
                     var orderItemsPromise = orderItemCollection.getEntity();
                     orderItemsPromise.then(function (value) {
                         scope.collection = value;
