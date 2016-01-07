@@ -873,6 +873,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						for(var entity in entities){
 							
 							var pageRecord = {};
+							
 							for(var column in columns){
 								var listRestValue = ListRest(column.propertyIdentifier,'.');
 								if(structKeyExists(column,'setting') && column.setting == true){
@@ -882,7 +883,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								}
 							}
 							arrayAppend(variables.pageRecords,pageRecord);
-	
+							
 							if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
 								var processObject = entity.getProcessObject(this.getProcessContext());
 								arrayAppend(variables.processObjects,processObject);

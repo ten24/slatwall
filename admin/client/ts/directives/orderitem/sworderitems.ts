@@ -73,10 +73,8 @@ angular.module('slatwalladmin')
                      )
 					.addFilter('order.orderID',scope.orderId)
 					.addFilter('parentOrderItem','null','IS')
-
 					.setKeywords(scope.keywords)
 					.setPageShow(scope.paginator.getPageShow())
-
 					;
 					angular.forEach(scope.attributes,function(attribute){
 
