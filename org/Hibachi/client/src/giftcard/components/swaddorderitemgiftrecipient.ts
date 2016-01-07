@@ -170,7 +170,7 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
 	    private giftCardPartialsPath,
 		private pathBuilderConfig
 	){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "entity/OrderItemGiftRecipient/addorderitemgiftrecipient.html";
+		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/addorderitemgiftrecipient.html";
     }
 
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

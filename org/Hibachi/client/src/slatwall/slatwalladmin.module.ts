@@ -5,6 +5,8 @@ import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from
 import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 import {ngslatwallmodelmodule} from "../ngslatwallmodel/ngslatwallmodel.module";
 import {contentmodule} from "../content/content.module";
+import {giftcardmodule} from "../giftcard/giftcard.module";
+import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
@@ -28,6 +30,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   ngslatwallmodelmodule.name,
   entitymodule.name,
   contentmodule.name,
+  giftcardmodule.name, 
+  optiongroupmodule.name,
   orderitemmodule.name,
   productmodule.name,
   productbundlemodule.name,

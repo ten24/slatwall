@@ -90,7 +90,7 @@ Notes:
 		<script type="text/javascript">
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></script>
+
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></script>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
@@ -355,7 +355,7 @@ Notes:
 
 			<!---displays alerts to the user --->
 			<span ng-controller="alertController" >
-			
+
 				<span ng-repeat="alert in alerts">
 					<div style="z-index:11000" ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer fade in" role="alert" >
 						<!---only show a dismissable button if we are showing info or a warning --->
@@ -366,7 +366,7 @@ Notes:
 				</span>
 			</span>
 		</span>
-		
+
 		<script type="text/javascript">
 			var slatwallAngular = {};
 			slatwallAngular.slatwallConfig = $.slatwall.getConfig();
@@ -382,7 +382,7 @@ Notes:
 
 
 		<script type="text/javascript" src="/org/Hibachi/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
-
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></script>
 
 		<!---<script type="text/javascript">
 			//bootstrap logger

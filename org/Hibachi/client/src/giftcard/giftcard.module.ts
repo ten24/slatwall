@@ -2,7 +2,6 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
 import {hibachimodule} from '../hibachi/hibachi.module';
-import {slatwalladminmodule} from "../slatwall/slatwalladmin.module";
 import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 //controllers
 import {OrderItemGiftRecipientControl} from "./controllers/preprocessorderitem_addorderitemgiftrecipient"; 
@@ -19,14 +18,14 @@ import {SWOrderItemGiftRecipientRow} from "./components/sworderitemgiftrecipient
 import {GiftCard} from "./models/giftcard";
 import {GiftRecipient} from "./models/giftrecipient";
 
-var giftcardmodule = angular.module('giftcard',[hibachimodule.name, slatwalladminmodule.name, ngslatwallmodule.name])
+var giftcardmodule = angular.module('giftcard',[hibachimodule.name, ngslatwallmodule.name])
 .config([()=>{
 	
 }]).run([()=>{
 	
 }])
 //constants
-.constant('giftCardPartialsPath','giftcard/components')
+.constant('giftCardPartialsPath','giftcard/components/')
 //controllers
 .controller('preprocessorderitem_addorderitemgiftrecipient',OrderItemGiftRecipientControl)
 //directives
