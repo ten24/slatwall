@@ -37,14 +37,25 @@ angular.module('slatwalladmin')
                 //Setup the data needed for each order item object.
                 scope.getCollection = function () {
                     var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
-                    orderItemCollection.setDisplayProperties('orderItemID,currencyCode,orderItemType,price,sku.skuName,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID,sku.product.productID,' +
-                        'sku.product.productName,sku.product.productDescription,sku.eventStartDateTime,' +
-                        'quantity,orderFulfillment.fulfillmentMethod.fulfillmentMethodName,orderFulfillment.orderFulfillmentID,' +
-                        'orderFulfillment.shippingAddress.streetAddress,' +
-                        'orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode,' +
-                        'orderFulfillment.shippingAddress.countryCode,itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType')
+                    orderItemCollection.setDisplayProperties('orderItemID,currencyCode,sku.skuName' +
+                        ',price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID,sku.product.productID' +
+                        ',sku.product.productName,sku.product.productDescription,sku.eventStartDateTime' +
+                        ',quantity,orderFulfillment.fulfillmentMethod.fulfillmentMethodName,orderFulfillment.orderFulfillmentID' +
+                        ',orderFulfillment.shippingAddress.streetAddress' +
+                        ',orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode' +
+                        ',orderFulfillment.shippingAddress.countryCode' +
+                        ',orderItemType.systemCode,orderFulfillment.fulfillmentMethod.fulfillmentMethodType' +
+                        ',orderFulfillment.pickupLocation.primaryAddress.address.streetAddress,orderFulfillment.pickupLocation.primaryAddress.address.street2Address' +
+                        ',orderFulfillment.pickupLocation.primaryAddress.address.city,orderFulfillment.pickupLocation.primaryAddress.address.stateCode' +
+                        ',orderFulfillment.pickupLocation.primaryAddress.address.postalCode' +
+                        ',itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType' +
+                        ',sku.subscriptionBenefits' +
+                        ',sku.product.productType.systemCode,sku.options,sku.locations' +
+                        ',sku.subscriptionTerm.subscriptionTermName' +
+                        ',sku.imageFile' +
+                        '')
                         .addFilter('order.orderID', scope.orderId)
-                        .addFilter('order.parentOrderItem', 'null', 'IS')
+                        .addFilter('parentOrderItem', 'null', 'IS')
                         .setKeywords(scope.keywords)
                         .setPageShow(scope.paginator.getPageShow());
                     angular.forEach(scope.attributes, function (attribute) {

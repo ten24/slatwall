@@ -154,7 +154,11 @@ var slatwalladmin;
             this.processJoin = (propertyIdentifier) => {
                 var _propertyIdentifier = '', propertyIdentifierParts = propertyIdentifier.split('.'), current_collection = this.collection;
                 for (var i = 0; i < propertyIdentifierParts.length; i++) {
-                    if ('cfc' in current_collection.metaData[propertyIdentifierParts[i]]) {
+                    console.log('this here');
+                    console.log(current_collection);
+                    console.log(propertyIdentifierParts[i]);
+                    console.log(current_collection.metaData[propertyIdentifierParts[i]]);
+                    if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
                         current_collection = this.$slatwall.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                         _propertyIdentifier += '_' + propertyIdentifierParts[i];
                         this.addJoin(new Join(_propertyIdentifier.replace(/_/g, '.').substring(1), this.baseEntityAlias + _propertyIdentifier));
