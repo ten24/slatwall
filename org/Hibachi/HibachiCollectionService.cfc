@@ -561,6 +561,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			
 			var aggregatePropertyIdentifierArray = [];
+			var attributePropertyIdentifierArray = [];
 			//get default property identifiers for the records that the collection refers to
 			
 			
@@ -576,10 +577,14 @@ component output="false" accessors="true" extends="HibachiService" {
 					if(structKeyExists(column,'aggregate')){
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
+					//add all attributes by alias
+					if(structKeyExists(column,'attributeID')){
+						ArrayAppend(attributePropertyIdentifierArray,piAlias);
+					}
 				}
 			}
 			
-			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,enforceAuthorization);
+			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,enforceAuthorization);
 			
 			var collectionStruct = {};
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
@@ -593,7 +598,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return response;
 	}
 	
-	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], boolean enforeAuthorization=true){
+	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], any attributePropertyIdentifierArray=[], boolean enforeAuthorization=true){
 		var authorizedProperties = [];
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
 			if(
@@ -605,6 +610,9 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		for(var aggregatePropertyIdentifier in arguments.aggregatePropertyIdentifierArray){
 			arrayAppend(authorizedProperties,aggregatePropertyIdentifier);
+		}
+		for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
+			arrayAppend(authorizedProperties,attributePropertyIdentifier);
 		}
 		return authorizedProperties;
 	}

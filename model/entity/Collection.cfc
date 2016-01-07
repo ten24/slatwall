@@ -856,7 +856,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			variables.pageRecords =	formattedRecords;
 		}else{
-			try{
+			//try{
 				var HQL = '';
 				var HQLParams = {};
 				if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -865,24 +865,25 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//prepare page records and possible process objects
 						variables.pageRecords = [];
 						variables.processObjects = [];
-						HQL = getHQL();
+						HQL = 'SELECT _#lcase(this.getCollectionObject())# ' & getHQL();
 						HQLParams = getHQLParams();
 						var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 						var columns = getCollectionConfigStruct()["columns"];
-	
+						
 						for(var entity in entities){
+							
 							var pageRecord = {};
+							
 							for(var column in columns){
-								var listRest = ListRest(column.propertyIdentifier,'.');
+								var listRestValue = ListRest(column.propertyIdentifier,'.');
 								if(structKeyExists(column,'setting') && column.setting == true){
-									var listRest = ListRest(column.propertyIdentifier,'.');
-									pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+									pageRecord[Replace(listRestValue,'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRestValue,entity);
 								}else{
-									pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+									pageRecord[Replace(listRestValue,'.','_','all')] = entity.getValueByPropertyIdentifier(listRestValue);
 								}
 							}
 							arrayAppend(variables.pageRecords,pageRecord);
-	
+							
 							if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
 								var processObject = entity.getProcessObject(this.getProcessContext());
 								arrayAppend(variables.processObjects,processObject);
@@ -895,12 +896,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 					}
 				}
-			}
-			catch(any e){
-				variables.pageRecords = [{'failedCollection'='failedCollection'}];
-				writelog(file="collection",text="Error:#e.message#");
-				writelog(file="collection",text="HQL:#HQL#");
-			}
+//			}
+//			catch(any e){
+//				variables.pageRecords = [{'failedCollection'='failedCollection'}];
+//				writelog(file="collection",text="Error:#e.message#");
+//				writelog(file="collection",text="HQL:#HQL#");
+//			}
 		
 		}
 		return variables.pageRecords;
@@ -934,7 +935,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 					if(this.getNonPersistentColumn()){
 						variables.records = [];
-						HQL = getHQL(forExport=arguments.forExport);
+						HQL = 'SELECT _#lcase(this.getCollectionObject())# ' & getHQL(forExport=arguments.forExport);
 						HQLParams = getHQLParams();
 						var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 						var columns = getCollectionConfigStruct()["columns"];
