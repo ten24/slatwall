@@ -104,67 +104,7 @@ angular.module('slatwalladmin')
 					},function(value){
                          scope.orderItems = [];
                     });
- 				//   ];
 
-				// 	//add attributes to the column config
-				// 	angular.forEach(scope.attributes,function(attribute){
-				// 		var attributeColumn = {
-				// 			propertyIdentifier:"_orderitem."+attribute.attributeCode,
-				// 			attributeID:attribute.attributeID,
-				// 	         attributeSetObject:"orderItem"
-				// 		};
-				// 		columnsConfig.push(attributeColumn);
-				// 	});
-
-				// 	var filterGroupsConfig =[
-				// 	    {
-				// 	      "filterGroup": [
-				// 	        {
-				// 	          "propertyIdentifier": "_orderitem.order.orderID",
-				// 	          "comparisonOperator": "=",
-				// 	          "value": scope.orderId,
-				// 	        },
-				// 	        {
-				// 	        	"logicalOperator":"AND",
-				// 	          "propertyIdentifier": "_orderitem.parentOrderItem",
-				// 	          "comparisonOperator": "is",
-				// 	          "value": "null",
-				// 	        }
-				// 	      ]
-				// 	    }
-				// 	  ];
-
-				// 	var options = {
-				// 		columnsConfig:angular.toJson(columnsConfig),
-				// 		filterGroupsConfig:angular.toJson(filterGroupsConfig),
-				// 		currentPage:scope.paginator.getCurrentPage(),
-				// 		pageShow:scope.paginator.getPageShow(),
-				// 		keywords:scope.keywords
-				// 	};
-				// 	//Create a list of order items.
-				// 	//scope.orderItems = [];
-				// 	scope.orderAttributes = [];
-				// 	scope.attributeValues = [];
-				// 	var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-				// 	orderItemsPromise.then(function(value){
-				// 		scope.collection = value;
-				// 		var collectionConfig = {};
-				// 		collectionConfig.columns = columnsConfig;
-				// 		collectionConfig.baseEntityName = 'SlatwallOrderItem';
-				// 		collectionConfig.baseEntityAlias = '_orderitem';
-				// 		scope.orderItems = $slatwall.populateCollection(value.pageRecords,collectionConfig);
-                //          for (var orderItem in scope.orderItems){
-                //              $log.debug("OrderItem Product Type");
-                //              $log.debug(scope.orderItems);
-                //              //orderItem.productType = orderItem.data.sku.data.product.data.productType.$$getParentProductType();
-
-                //          }
-                //         scope.paginator.setPageRecordsInfo(scope.collection);
-
-				// 		scope.loadingCollection = false;
-				// 	},function(value){
-                //          scope.orderItems = [];
-                //     });
 				};
 				//get all possible attributes
 				var attributesCollection = collectionConfigService.newCollectionConfig('Attribute');
