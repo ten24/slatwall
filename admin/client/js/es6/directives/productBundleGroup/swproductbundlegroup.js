@@ -38,10 +38,18 @@ var slatwalladmin;
                 }
                 else {
                     this.removeProductBundleGroup(this.index);
+                    this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
                 }
             };
             this.getCollection = () => {
-                this.collectionConfig.getEntity().then((response) => {
+                var options = {
+                    filterGroupsConfig: angular.toJson(this.productBundleGroup.data.skuCollectionConfig.filterGroups),
+                    columnsConfig: angular.toJson(this.productBundleGroup.data.skuCollectionConfig.columns),
+                    currentPage: 1,
+                    pageShow: 10
+                };
+                var collectionPromise = this.$slatwall.getEntity('Sku', options);
+                collectionPromise.then((response) => {
                     this.collection = response;
                 });
             };
@@ -166,10 +174,15 @@ var slatwalladmin;
                 }
                 //Adds filter item to designated filtergroup
                 this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.push(collectionFilterItem);
-                //Removes the filter item from the left hand search result
-                //this.productBundleGroupFilters.value.splice(index,1);
                 this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-                this.getFiltersByTerm(this.keyword, this.filterTerm);
+                //reload the list to correct pagination show all takes too long for this to be graceful
+                if (!this.showAll) {
+                    this.getFiltersByTerm(this.keyword, this.filterTerm);
+                }
+                else {
+                    //Removes the filter item from the left hand search result
+                    this.productBundleGroupFilters.value.splice(index, 1);
+                }
             };
             this.removeProductBundleGroupFilter = (index) => {
                 //Pushes item back into array
@@ -197,8 +210,13 @@ var slatwalladmin;
                             break;
                     }
                 }
+                if (!this.showAll) {
+                    this.getFiltersByTerm(this.keyword, this.filterTerm);
+                }
+                else {
+                    this.productBundleGroupFilters.value.splice(index, 0, collectionFilterItem);
+                }
                 this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-                this.getFiltersByTerm(this.keyword, this.filterTerm);
             };
             this.$id = 'productBundleGroup';
             this.maxRecords = 10;
@@ -210,12 +228,21 @@ var slatwalladmin;
             this.currentPage = 1;
             this.pageShow = 10;
             this.searchAllCollectionConfigs = [];
-            /*this.skuCollectionConfig = {
-                baseEntityName:"Sku",
-                baseEntityAlias:"_sku",
-                collectionConfig:this.productBundleGroup.data.skuCollectionConfig,
-                collectionObject:'Sku'
-            };*/
+            if (angular.isUndefined(this.filterPropertiesList)) {
+                this.filterPropertiesList = {};
+                var filterPropertiesPromise = this.$slatwall.getFilterPropertiesByBaseEntityName('_sku');
+                filterPropertiesPromise.then((value) => {
+                    metadataservice.setPropertiesList(value, '_sku');
+                    this.filterPropertiesList['_sku'] = metadataservice.getPropertiesListByBaseEntityAlias('_sku');
+                    metadataservice.formatPropertiesList(this.filterPropertiesList['_sku'], '_sku');
+                });
+            }
+            this.skuCollectionConfig = {
+                baseEntityName: "Sku",
+                baseEntityAlias: "_sku",
+                collectionConfig: this.productBundleGroup.data.skuCollectionConfig,
+                collectionObject: 'Sku'
+            };
             this.searchOptions = {
                 options: [
                     {
@@ -268,10 +295,6 @@ var slatwalladmin;
                 filterGroupsConfig: this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup,
                 columnsConfig: this.productBundleGroup.data.skuCollectionConfig.columns,
             };
-            this.collectionConfig = collectionConfigService.newCollectionConfig('Sku');
-            this.collectionConfig.loadFilterGroups(options.filterGroupsConfig);
-            this.collectionConfig.loadColumns(options.columnsConfig);
-            this.collectionConfig.setAllRecords(true);
             this.getCollection();
         }
     }

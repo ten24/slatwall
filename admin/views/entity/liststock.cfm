@@ -57,7 +57,7 @@ Notes:
 	<hb:HibachiEntityActionBar type="listing" object="#rc.stockSmartList#" showCreate="false" />
 
 	<hb:HibachiListingDisplay smartList="#rc.stockSmartList#"
-			recordEditAction="admin:entity.editsku"
+			recordEditAction="admin:entity.editstock"
 			recorddetailaction="admin:entity.detailstock">
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />

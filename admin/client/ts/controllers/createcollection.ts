@@ -1,28 +1,42 @@
 'use strict';
+declare var hibachiConfig:any;
 angular.module('slatwalladmin')
     .controller('createCollection', [
         '$scope', '$log', '$timeout', '$slatwall', 'collectionService', 'formService',
-        'metadataService', 'paginationService','dialogService','observerService', 'selectionService',
+        'metadataService', 'paginationService','dialogService','observerService', 'selectionService','collectionConfigService',
         function ($scope, $log, $timeout, $slatwall, collectionService, formService,
-                  metadataService, paginationService, dialogService, observerService, selectionService) {
+                  metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService) {
 
 
             $scope.params = dialogService.getCurrentDialog().params;
-            $scope.myCollection = new slatwalladmin.CollectionConfig($slatwall, $scope.params.entityName);
+            $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
+            $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^'+hibachiConfig.applicationKey, 'i'), '');
+            if($scope.params.entityName == 'Type' && !angular.isDefined($scope.params.entityId)){
+                var systemCode = $scope.params.parentEntity.charAt(0).toLowerCase() + $scope.params.parentEntity.slice(1) + 'Type';
+                $scope.myCollection.addFilter('parentType.systemCode', systemCode);
+            }
 
             $scope.keywords = '';
             $scope.paginator = paginationService.createPagination();
 
             //$scope.isRadio = true;
-
+            $scope.hideEditView=true;
             //$scope.closeSaving = true;
+            $scope.hasSelection = selectionService.getSelectionCount;
+            $scope.idsSelected = selectionService.getSelections;
+            $scope.unselectAll = function () {
+                selectionService.clearSelections('collectionSelection');
+                $scope.getCollection();
+            };
 
             $scope.newCollection = $slatwall.newCollection();
             $scope.newCollection.data.collectionCode = $scope.params.entityName+"-"+new Date().valueOf();
             $scope.newCollection.data.collectionObject = $scope.params.entityName;
 
-            if(angular.isDefined($scope.params.entityID)){
-                $scope.newCollection.data.collectionID = $scope.params.entityID;
+
+
+            if(angular.isDefined($scope.params.entityId)){
+                $scope.newCollection.data.collectionID = $scope.params.entityId;
                 $timeout(function(){
                     $scope.newCollection.forms['form.createCollection'].$setDirty();
                 });
@@ -35,10 +49,16 @@ angular.module('slatwalladmin')
                 });
             }
 
+            if (typeof String.prototype.startsWith != 'function') {
+                String.prototype.startsWith = function (str){
+                    return this.slice(0, str.length) == str;
+                };
+            }
+
             $scope.saveCollection = function () {
                 $scope.myCollection.loadJson($scope.collectionConfig);
                 $scope.getCollection();
-            }
+            };
 
             $scope.getCollection = function () {
                 $scope.closeSaving = true;
@@ -48,9 +68,9 @@ angular.module('slatwalladmin')
 
                 var collectionOptions;
 
-                if(angular.isDefined($scope.params.entityID)){
+                if(angular.isDefined($scope.params.entityId)){
                     collectionOptions= {
-                        id:$scope.params.entityID,
+                        id:$scope.params.entityId,
                         currentPage:$scope.paginator.getCurrentPage(),
                         pageShow:$scope.paginator.getPageShow(),
                         keywords:$scope.keywords
@@ -64,7 +84,9 @@ angular.module('slatwalladmin')
                     $scope.myCollection.getEntityName(), collectionOptions
                 );
                 collectionListingPromise.then(function (value) {
-
+                    if(angular.isDefined($scope.params.entityId)){
+                        $scope.newCollection.data.collectionName = value.collectionName;
+                    }
                     $scope.collection = value;
                     $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
                     $scope.collectionInitial = angular.copy($scope.collection);
@@ -78,7 +100,9 @@ angular.module('slatwalladmin')
                     }
 
                     if (angular.isUndefined($scope.collectionConfig)) {
-                        $scope.collectionConfig = $scope.myCollection.getCollectionConfig();
+                        var tempCollectionConfig = collectionConfigService.newCollectionConfig();
+                        tempCollectionConfig.loadJson(value.collectionConfig);
+                        $scope.collectionConfig = tempCollectionConfig.getCollectionConfig();
                     }
                     if (angular.isUndefined($scope.collectionConfig.filterGroups) || !$scope.collectionConfig.filterGroups.length) {
                         $scope.collectionConfig.filterGroups = [
@@ -203,6 +227,7 @@ angular.module('slatwalladmin')
                 $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
                 $scope.newCollection.$$save().then(function () {
                     observerService.notify('addCollection', $scope.newCollection.data);
+                    selectionService.clearSelection('collectionSelection');
                     dialogService.removePageDialog($index);
                     $scope.closeSaving = false;
                 }, function(){
