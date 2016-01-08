@@ -10,11 +10,9 @@ class SWValidationNumeric{
             restrict: "A",
             require: "^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                console.log("SWVALIDATIONNUMERIC LINK")
                 ngModel.$validators.swvalidationnumeric = 
                     function(modelValue, viewValue) {
                         //Returns true if this is not a number.
-                        console.log(viewValue, !isNaN(viewValue), "CHECKING NAN")
                         if (!isNaN(viewValue)){
                             return true;
                         }else{

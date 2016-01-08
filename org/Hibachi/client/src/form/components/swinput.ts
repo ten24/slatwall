@@ -95,8 +95,6 @@ class SWInput{
 			if(!propertyDisplay.noValidate){
 				validations = getValidationDirectives(propertyDisplay);
 			}
-            console.log("PROP DISPLAY FIELD TYPE")
-            console.log(propertyDisplay.fieldType)
 			if(propertyDisplay.fieldType === 'text'){
 				template = '<input type="text" class="form-control" '+
 				'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
