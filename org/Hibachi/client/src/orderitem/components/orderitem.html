@@ -68,7 +68,12 @@
 	</td>
 	
 	<!-- Handle Custom Attributes Values -->
-	<td class="s-customization" ng-show="attributes.length"><span ng-repeat="attribute in attributes" ng-if="orderItem.data[attribute.attributeCode] !== ''"><span class="s-detail-title" >{{attribute.attributeName}}:</span><br><span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br></span></td>
+	<td class="s-customization" ng-show="attributes.length">
+ 		<span ng-repeat="attribute in attributes" ng-if="orderItem.data[attribute.attributeCode] && orderItem.data[attribute.attributeCode] !== ''">
+ 			<span class="s-detail-title" >{{attribute.attributeName}}:</span><br>
+ 			<span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br>
+ 		</span>
+ 	</td>
 	
 	<!-- Handle both cases of this 'price' being a Return Item -->
 	<td ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">

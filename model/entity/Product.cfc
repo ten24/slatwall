@@ -682,7 +682,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getBaseProductType() {
-		return getProductType().getBaseProductType();
+		if(!isNull(getProductType())){
+			return getProductType().getBaseProductType();
+		}
 	}
 
 	public any function getBundleSkusSmartList() {
@@ -1024,7 +1026,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var skuCode = this.getProductCode() & "-#skusCount + 1#";
 			arguments.sku.setSkuCode(skuCode);
 		}
-		
+
 		arguments.sku.setProduct( this );
 	}
 	public void function removeSku(required any sku) {
