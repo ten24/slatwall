@@ -3727,6 +3727,7 @@ tabel .s-table-header {
 .s-pannel-group .panel-default a {
   text-decoration: none;
   cursor: pointer;
+  color: #aaa;
 }
 .s-pannel-group .s-panel-header-info {
   display: inline-block;
