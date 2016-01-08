@@ -513,7 +513,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 		var object = invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
 		if(!isNull(object) && isObject(object)) {
-			return object.getLastObjectByPropertyIdentifier(listRest(arguments.propertyIdentifier, 1, "."));
+			return object.getLastObjectByPropertyIdentifier(listRest(arguments.propertyIdentifier, "."));
 		}
 	}
 
