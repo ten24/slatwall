@@ -942,7 +942,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			variables.pageRecords =	formattedRecords;
 		}else{
-			//try{
+			try{
 				var HQL = '';
 				var HQLParams = {};
 				if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -1045,12 +1045,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 					}
 				}
-			//}
-			//catch(any e){
-			//	variables.records = [{'failedCollection'='failedCollection'}];
-			//	writelog(file="collection",text="Error:#e.message#");
-			//	writelog(file="collection",text="HQL:#HQL#");
-			//}
+			}
+			catch(any e){
+				variables.records = [{'failedCollection'='failedCollection'}];
+				writelog(file="collection",text="Error:#e.message#");
+				writelog(file="collection",text="HQL:#HQL#");
+			}
 		}
 
 		return variables.records;
