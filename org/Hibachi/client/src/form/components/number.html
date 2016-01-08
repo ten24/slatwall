@@ -1,10 +1,4 @@
-<input type="number" class="form-control" 
-		    		 ng-model="ctrl.propertyDisplay.object.data[ctrl.propertyDisplay.property]"
-		    		 ng-disabled="!ctrl.propertyDisplay.editable"
-		    		 ng-show="ctrl.propertyDisplay.editing"
-		    		 ng-change="ctrl.propertyDisplay.onChange"
-		    		 name="{{ctrl.propertyDisplay.property}}"
-/>
+<sw-input data-property-display="ctrl.propertyDisplay"></sw-input>
 <!-- Error Messages --> 
 <span style="color:red"
 	ng-repeat="(key,value) in ctrl.propertyDisplay.errors"
