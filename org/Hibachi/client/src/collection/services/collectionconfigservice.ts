@@ -98,7 +98,8 @@ class CollectionConfig {
             private currentPage:number = 1,
             private pageShow:number = 10,
             private keywords:string = '',
-            private allRecords:boolean = false
+            private allRecords:boolean = false,
+            private isDistinct:boolean = false
 
         ){
             if(angular.isDefined(this.baseEntityName)){
@@ -109,15 +110,16 @@ class CollectionConfig {
             }
         }
 
-        public clearFilterGroups=():void=>{
+        public clearFilterGroups=():CollectionConfig=>{
             this.filterGroups = [{filterGroup: []}];
+            return this;
         };
 
         public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
             return new CollectionConfig(this.$slatwall, this.utilityService, baseEntityName, baseEntityAlias);
         };
 
-        public loadJson= (jsonCollection):void =>{
+        public loadJson= (jsonCollection):any =>{
             //if json then make a javascript object else use the javascript object
             if(angular.isString(jsonCollection)){
                 jsonCollection = angular.fromJson(jsonCollection);
@@ -135,14 +137,18 @@ class CollectionConfig {
             this.groupBys = jsonCollection.groupBys;
             this.pageShow = jsonCollection.pageShow;
             this.allRecords = jsonCollection.allRecords;
+            this.isDistinct = jsonCollection.isDistinct; 
+            return this;
         };
 
     public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):void =>{
             this.filterGroups = filterGroupsConfig;
+            return this;
         };
 
         public loadColumns= (columns:Column[]):void =>{
             this.columns = columns;
+            return this; 
         };
 
     public getCollectionConfig= ():any =>{
@@ -158,6 +164,7 @@ class CollectionConfig {
                 keywords: this.keywords,
                 defaultColumns: (!this.columns || !this.columns.length),
                 allRecords: this.allRecords,
+                isDistinct: this.isDistinct
             };
         };
 
@@ -176,7 +183,8 @@ class CollectionConfig {
                 pageShow: this.pageShow,
                 keywords: this.keywords,
                 defaultColumns: (!this.columns || !this.columns.length),
-                allRecords: this.allRecords
+                allRecords: this.allRecords,
+                isDistinct: this.isDistinct
             };
             if(angular.isDefined(this.id)){
                 options['id'] = this.id;
@@ -206,7 +214,7 @@ class CollectionConfig {
                 
             for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
-                if ('cfc' in current_collection.metaData[propertyIdentifierParts[i]]) {
+                if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
                     current_collection = this.$slatwall.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                     _propertyIdentifier += '_' + propertyIdentifierParts[i];
                     this.addJoin(new Join(
@@ -221,7 +229,7 @@ class CollectionConfig {
         };
 
 
-        private addJoin= (join:Join):void =>{
+        private addJoin= (join:Join):any =>{
             if(!this.joins){
                 this.joins = [];
             }
@@ -235,6 +243,8 @@ class CollectionConfig {
             if(!joinFound){
                 this.joins.push(join);
             }
+            
+            return this;
         };
 
         private addAlias= (propertyIdentifier:string):string =>{
@@ -245,7 +255,7 @@ class CollectionConfig {
             return propertyIdentifier;
         };
 
-    public addColumn= (column: string, title: string = '', options:any = {}):void =>{
+    public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
             if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
                 var isVisible = true,
                     isDeletable = true,
@@ -280,8 +290,8 @@ class CollectionConfig {
                     ormtype = lastEntity.metaData[lastProperty].ormtype;
                 }
 
-                if(angular.isDefined(lastEntity[lastProperty])){
-                    persistent = lastEntity[lastProperty].persistent;
+                if(angular.isDefined(lastEntity.metaData[lastProperty])){
+                    persistent = lastEntity.metaData[lastProperty].persistent;
                 }
 
                 var columnObject = new Column(
@@ -310,14 +320,16 @@ class CollectionConfig {
 
                 this.columns.push(columnObject);
             }
+            return this; 
         };
 
 
-        public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:any = {}):void =>{
+        public setDisplayProperties= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
             this.addDisplayProperty(propertyIdentifier, title, options);
+            return this; 
         };
 
-        public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?):void=>{
+        public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?):CollectionConfig=>{
             var column = {
                 propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier, true),
                 title : this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+propertyIdentifier),
@@ -330,16 +342,18 @@ class CollectionConfig {
             angular.extend(column,options);
             //Add columns
             this.addColumn(column.propertyIdentifier,undefined,column);
+            return this; 
         };
 
-        public addGroupBy = (groupByAlias):void=>{
+        public addGroupBy = (groupByAlias):CollectionConfig=>{
             if(!this.groupBys){
                 this.groupBys = '';
             }
             this.groupBys = this.utilityService.listAppend(this.groupBys,groupByAlias);
+            return this; 
         };
 
-        public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):void =>{
+        public addDisplayProperty= (propertyIdentifier: string, title: string = '', options:any = {}):CollectionConfig =>{
             var _DividedColumns = propertyIdentifier.trim().split(',');
             var _DividedTitles = title.trim().split(',');
             _DividedColumns.forEach((column:string, index)  => {
@@ -350,10 +364,11 @@ class CollectionConfig {
                     title = this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+column);
                 }
                 this.addColumn(this.formatPropertyIdentifier(column),title, options);
+                return this; 
             });
         };
 
-        public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string):void =>{
+        public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string):CollectionConfig =>{
 
             //if filterGroups does not exists then set a default
             if(!this.filterGroups){
@@ -380,10 +395,12 @@ class CollectionConfig {
             );
 
             this.filterGroups[0].filterGroup.push(filter);
+            return this; 
         };
         
         public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
             this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
+            return this; 
         }
         
         public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?)=>{
@@ -405,7 +422,7 @@ class CollectionConfig {
 
         public addCollectionFilter= (propertyIdentifier: string, displayPropertyIdentifier:string, displayValue:string,
                                      collectionID: string, criteria:string='One', fieldtype?:string, readOnly:boolean=false
-        ):void =>{
+        ):CollectionConfig =>{
             this.filterGroups[0].filterGroup.push(
                 new CollectionFilter(
                     this.formatPropertyIdentifier(propertyIdentifier),
@@ -417,14 +434,15 @@ class CollectionConfig {
                     readOnly
                 )
             );
-
+            return this; 
         };
         //orderByList in this form: "property|direction" concrete: "skuName|ASC"
-        public setOrderBy = (orderByList):void=>{
+        public setOrderBy = (orderByList):CollectionConfig=>{
             var orderBys = orderByList.split(',');
             angular.forEach(orderBys,(orderBy)=>{
                 this.addOrderBy(orderBy);
             });
+            return this; 
         };
 
         public addOrderBy = (orderByString):void=>{
@@ -443,36 +461,42 @@ class CollectionConfig {
             this.orderBy.push(orderBy);
         };
 
-        public setCurrentPage= (pageNumber):void =>{
+        public setCurrentPage= (pageNumber):CollectionConfig =>{
             this.currentPage = pageNumber;
+            return this; 
         };
 
-        public setPageShow= (NumberOfPages):void =>{
+        public setPageShow= (NumberOfPages):CollectionConfig =>{
             this.pageShow = NumberOfPages;
+            return this; 
         };
 
         public getPageShow=():number=>{
             return this.pageShow;
         };
 
-        public setAllRecords= (allFlag:boolean=false):void =>{
+        public setAllRecords= (allFlag:boolean=false):CollectionConfig =>{
             this.allRecords = allFlag;
+            return this; 
         };
 
-        public setKeywords= (keyword):void =>{
+        public setKeywords= (keyword):CollectionConfig =>{
             this.keywords = keyword;
+            return this; 
         };
 
-        private setId=(id):void=>{
+        private setId=(id):CollectionConfig=>{
             this.id = id;
+            return this; 
         };
 
         public hasFilters=():boolean=>{
             return (this.filterGroups.length && this.filterGroups[0].filterGroup.length);
         };
 
-        public clearFilters=():void=>{
+        public clearFilters=():CollectionConfig =>{
             this.filterGroups = [{filterGroup:[]}];
+            return this;
         };
 
         public getEntity=(id?)=>{
