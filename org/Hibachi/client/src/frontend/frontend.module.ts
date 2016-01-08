@@ -12,7 +12,6 @@ import {SWFLogin} 			from "./components/swflogin";
 import {SWFLogout} 			from "./components/swflogout";
 import {SWFPromo} 			from "./components/swfpromo";
 
-declare var slatwallAngular:any;
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
 var frontendmodule = angular.module('frontend', [ngslatwallmodelmodule.name])

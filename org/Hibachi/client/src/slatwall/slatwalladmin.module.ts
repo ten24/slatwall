@@ -17,7 +17,6 @@ import {EntityRBKey} from "./filters/entityrbkey";
 import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
-declare var slatwallAngular:any;
 declare var $:SlatwallJQueryStatic;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
@@ -123,8 +122,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 .filter('swcurrency',['$sce','$log','$slatwall',SWCurrency.Factory])
 ;
 export{
-    slatwalladminmodule,
-    slatwallAngular
+    slatwalladminmodule
 };
 // ((): void => {
 

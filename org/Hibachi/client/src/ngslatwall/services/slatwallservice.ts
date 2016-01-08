@@ -1,6 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-declare var slatwallAngular:any;
 declare var $:SlatwallJQueryStatic;
 declare var escape;
 import {SlatwallJQueryStatic} from "../../slatwall/services/slatwallinterceptor";
@@ -414,7 +413,8 @@ class SlatwallService{
 		if(!this._loadingResourceBundle && !this._loadedResourceBundle) {
 			this._loadingResourceBundle = true;
 			//$log.debug(this.getConfigValue('rbLocale').split('_'));
-			var localeListArray = this.getConfigValue('rbLocale').split('_');
+            var rbLocale = 'en_us';
+			var localeListArray = rbLocale;
 			var rbPromise;
 			var rbPromises = [];
 			rbPromise = this.getResourceBundle(this.getConfigValue('rbLocale'));
@@ -617,21 +617,10 @@ class $Slatwall implements ng.IServiceProvider{
 	public setJsEntities = (jsEntities):void =>{
 		this._jsEntities = jsEntities;
 	}
-
-	constructor(){
-
-		this._config = {
-			dateFormat : 'MM/DD/YYYY',
-			timeFormat : 'HH:MM',
-			rbLocale : '',
-			baseURL : '',
-			applicationKey : 'Slatwall',
-			debugFlag : true,
-			instantiationKey : '84552B2D-A049-4460-55F23F30FE7B26AD'
-		};
-		if(slatwallAngular.slatwallConfig){
-			angular.extend(this._config, slatwallAngular.slatwallConfig);
-		}
+    //@ngInject
+	constructor(appConfig){
+   
+		this._config = appConfig;
 
 		this.$get.$inject = [
 			'$window',
@@ -671,7 +660,7 @@ class $Slatwall implements ng.IServiceProvider{
 			$anchorScroll,
 			utilityService,
 			formService,
-			this.getConfig(),
+			this._config,
 			this._jsEntities,
 			this._jsEntityInstances
 		);

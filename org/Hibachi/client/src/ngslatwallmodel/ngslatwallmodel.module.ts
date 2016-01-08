@@ -4,10 +4,9 @@
 			import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
 			import {hibachimodule} from "../hibachi/hibachi.module";
 
-			declare var slatwallAngular:any;
 			var ngslatwallmodelmodule = angular.module('ngSlatwallModel',[hibachimodule.name,ngslatwallmodule.name]).config(['$provide',function ($provide
 			 ) {
-
+            
 	    	$provide.decorator( '$slatwall', [
 		    	"$delegate",
 		    	'$http',
@@ -19,6 +18,7 @@
 	            '$q',
 	            'utilityService',
 	            'formService',
+                'appConfig',
 	            function( $delegate,
 		            $http,
 		            $timeout,
@@ -28,30 +28,20 @@
 		            $anchorScroll,
 		            $q,
 		            utilityService,
-		            formService
+		            formService,
+                    appConfig
 		        )
 	            {
 
 	            var _deferred = {};
-			    var _config = {
-			        dateFormat : 'MM/DD/YYYY',
-			        timeFormat : 'HH:MM',
-			        rbLocale : '',
-			        baseURL : '/',
-			        applicationKey : 'Slatwall',
-			        debugFlag : true,
-			        instantiationKey : '84552B2D-A049-4460-55F23F30FE7B26AD'
-			    };
-
-			    if(slatwallAngular.slatwallConfig){
-			        angular.extend(_config, slatwallAngular.slatwallConfig);
-			    }
+                    console.log(appConfig);
+			    var _config = appConfig;
 
                 var _jsEntities = {};
 				var _jsEntityInstances = {};
-                var entities = slatwallAngular.modelConfig.entities,
-                    validations = slatwallAngular.modelConfig.validations,
-                    defaultValues = slatwallAngular.modelConfig.defaultValues;
+                var entities = appConfig.modelConfig.entities,
+                    validations = appConfig.modelConfig.validations,
+                    defaultValues = appConfig.modelConfig.defaultValues;
 
                 angular.forEach(entities,function(entity){
 

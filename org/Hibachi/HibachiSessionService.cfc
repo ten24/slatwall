@@ -7,6 +7,19 @@ component output="false" accessors="true" extends="HibachiService"  {
 	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
+	public struct function getConfig(){
+		var config = {};
+		config[ 'applicationKey' ] = getApplicationValue('applicationKey');
+		config[ 'baseURL' ] = getApplicationValue('baseURL');
+		config[ 'action' ] = getApplicationValue('action');
+		config[ 'dateFormat' ] = 'mmm dd, yyyy';
+		config[ 'timeFormat' ] = 'hh:mm tt';
+		config[ 'rbLocale' ] = '#getHibachiScope().getSession().getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
+		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
+		return config;
+	}
+	
 	public void function setPropperSession() {
 		var requestHeaders = getHTTPRequestData();
 		
