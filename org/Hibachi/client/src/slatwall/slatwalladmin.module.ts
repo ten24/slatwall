@@ -46,7 +46,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   {
       //configure partials path properties
      pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-     pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/');
+     pathBuilderConfig.setBasePartialsPath('/org/Hibachi/client/src/');
 
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';

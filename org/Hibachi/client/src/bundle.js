@@ -59,7 +59,7 @@
 	            var $http = initInjector.get("$http");
 	            var $q = initInjector.get("$q");
 	            var deferred = $q.defer();
-	            var urlString = '/index.cfm/?slatAction=api:main.getModel';
+	            var urlString = 'index.cfm/?slatAction=api:main.getModel';
 	            var params = {};
 	            $http.get(urlString, {
 	                params: params
@@ -691,7 +691,7 @@
 	    function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig, pathBuilderConfig) {
 	        //configure partials path properties
 	        pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-	        pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/');
+	        pathBuilderConfig.setBasePartialsPath('/org/Hibachi/client/src/');
 	        datepickerConfig.showWeeks = false;
 	        datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
 	        datepickerPopupConfig.toggleWeeksText = null;
