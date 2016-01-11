@@ -9,14 +9,23 @@ import {loggermodule} from "./logger/logger.module";
 class bootstrapper extends BaseBootStrapper{
     constructor(){
       super();
+        
+        
       this.bootstrapConfigPromise.then((response:any)=>{
           var config = response.data;
           this.myApplication.constant("appConfig",config);
           var initInjector = angular.injector(["ng",this.myApplication.name]);
-          this.bootstrapApplication();
+          console.log(initInjector.get('appConfig'));
+//          var rbkeyService = initInjector.get('rbkeyService');
+//          rbkeyService.getResourceBundles().then(()=>{
+            this.bootstrapApplication();    
+//          });
+          
       });
 
     }
+    
+    
 
     bootstrapApplication = ()=> {
         angular.element(document).ready(function() {

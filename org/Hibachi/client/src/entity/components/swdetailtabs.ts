@@ -4,20 +4,20 @@ class SWDetailTabs{
 		var directive = (
 			$location,
 			$log,
-			$slatwall,
+			$hibachi,
 			coreEntityPartialsPath,
 			pathBuilderConfig
 		)=> new SWDetailTabs(
 			$location,
 			$log,
-			$slatwall,
+			$hibachi,
 			coreEntityPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$location',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'coreEntityPartialsPath',
 			'pathBuilderConfig'
 		];
@@ -26,7 +26,7 @@ class SWDetailTabs{
 	constructor(
 		$location,
 		$log,
-		$slatwall,
+		$hibachi,
 		coreEntityPartialsPath,
 		pathBuilderConfig
 	){

@@ -13,7 +13,7 @@ interface IOrderItemGiftRecipientScope extends ng.IScope {
 class OrderItemGiftRecipientControl{
 
 
-        public static $inject=["$scope", "$slatwall"];
+        public static $inject=["$scope", "$hibachi"];
         public adding:boolean;
         public orderItemGiftRecipients;
         public quantity:number;
@@ -21,7 +21,7 @@ class OrderItemGiftRecipientControl{
         public currentGiftRecipient:GiftRecipient;
         public quantityForm;
 
-        constructor(private $scope: IOrderItemGiftRecipientScope,  private $slatwall){
+        constructor(private $scope: IOrderItemGiftRecipientScope,  private $hibachi){
                 this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                 $scope.collection = {};
                 this.adding = false;

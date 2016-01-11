@@ -8,7 +8,7 @@ class SWWorkflowTasks{
 		var directive = (
 			$log,
 			$location,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
@@ -16,7 +16,7 @@ class SWWorkflowTasks{
 		)=>new SWWorkflowTasks(
 			$log,
 			$location,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
@@ -25,7 +25,7 @@ class SWWorkflowTasks{
 		directive.$inject = [
 			'$log',
 			'$location',
-			'$slatwall',
+			'$hibachi',
 			'metadataService',
 			'collectionService',
 			'workflowPartialsPath',
@@ -36,7 +36,7 @@ class SWWorkflowTasks{
 	constructor(
 		$log,
 		$location,
-		$slatwall,
+		$hibachi,
 		metadataService,
 		collectionService,
 		workflowPartialsPath,
@@ -159,7 +159,7 @@ class SWWorkflowTasks{
 					scope.finished = false;
 					scope.workflowTasks.selectedTask = undefined;
 
-					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
 							baseEntityName:scope.workflow.data.workflowObject,

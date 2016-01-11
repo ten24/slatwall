@@ -11,7 +11,7 @@ class SWCollectionTable{
 			collectionPartialsPath,
 			paginationService,
 			selectionService,
-			$slatwall
+			$hibachi
 		) => new SWCollectionTable(
 			$http,
 			$compile,
@@ -20,7 +20,7 @@ class SWCollectionTable{
 			collectionPartialsPath,
 			paginationService,
 			selectionService,
-			$slatwall
+			$hibachi
 		);
 		directive.$inject = [
 			'$http',
@@ -30,7 +30,7 @@ class SWCollectionTable{
 			'collectionPartialsPath',
 			'paginationService',
 			'selectionService',
-			'$slatwall',
+			'$hibachi',
 		];
 		return directive;
 	}
@@ -43,7 +43,7 @@ class SWCollectionTable{
 		collectionPartialsPath,
 		paginationService,
 		selectionService,
-		$slatwall
+		$hibachi
 	){
 		return {
 			restrict: 'E',
@@ -62,8 +62,8 @@ class SWCollectionTable{
                 }
 				console.log('here');
                 console.log(scope.collection);
-				console.log($slatwall);
-                scope.collectionObject = $slatwall['new'+scope.collection.collectionObject]();
+				console.log($hibachi);
+                scope.collectionObject = $hibachi['new'+scope.collection.collectionObject]();
 
                 var escapeRegExp = function(str) {
                     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");

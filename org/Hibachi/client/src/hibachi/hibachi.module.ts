@@ -9,6 +9,7 @@ import {paginationmodule} from "../pagination/pagination.module";
 import {formmodule} from "../form/form.module";
 import {validationmodule} from "../validation/validation.module";
 
+
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
     coremodule.name,

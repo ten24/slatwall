@@ -4,40 +4,44 @@ class SWCriteriaManyToOne{
 	public static Factory(){
 		var directive = (
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			pathBuilderConfig,
+            rbkeyService
 		) => new SWCriteriaManyToOne(
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			pathBuilderConfig,
+            rbkeyService
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'$filter',
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'pathBuilderConfig',
+            'rbkeyService'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		$filter,
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		pathBuilderConfig,
+        rbkeyService
 	){
 		return {
 			restrict: 'E',
@@ -67,7 +71,7 @@ class SWCriteriaManyToOne{
 
 				scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
 					if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
-						var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
+						var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
 						filterPropertiesPromise.then(function(value){
 							scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
 							metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
@@ -87,7 +91,7 @@ class SWCriteriaManyToOne{
 								entityAlias:scope.selectedFilterProperty.name,
 								cfc:scope.selectedFilterProperty.cfc,
 								propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
-								rbKey:$slatwall.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
+								rbKey:rbkeyService.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
 						};
 						$log.debug('breadcrumb');
 						$log.debug(breadCrumb);
@@ -112,14 +116,14 @@ export{
 // angular.module('slatwalladmin')
 // .directive('swCriteriaManyToOne', [
 // 	'$log',
-// 	'$slatwall',
+// 	'$hibachi',
 // 	'$filter',
 // 	'collectionPartialsPath',
 // 	'collectionService',
 // 	'metadataService',
 // 	function(
 // 		$log,
-// 		$slatwall,
+// 		$hibachi,
 // 		$filter,
 // 		collectionPartialsPath,
 // 		collectionService,
@@ -154,7 +158,7 @@ export{
 
 // 				scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
 // 					if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
-// 						var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
+// 						var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
 // 						filterPropertiesPromise.then(function(value){
 // 							scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
 // 							metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
@@ -174,7 +178,7 @@ export{
 // 								entityAlias:scope.selectedFilterProperty.name,
 // 								cfc:scope.selectedFilterProperty.cfc,
 // 								propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
-// 								rbKey:$slatwall.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
+// 								rbKey:rbkeyService.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
 // 						};
 // 						$log.debug('breadcrumb');
 // 						$log.debug(breadCrumb);

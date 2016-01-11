@@ -3,20 +3,20 @@
 class SWResizedImage{
 	public static Factory(){
 		var directive = (
-			$http, $log, $q, $slatwall, corePartialsPath,
+			$http, $log, $q, $hibachi, corePartialsPath,
 			pathBuilderConfig
 		)=>new SWResizedImage(
-			$http, $log, $q, $slatwall, corePartialsPath,
+			$http, $log, $q, $hibachi, corePartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
-			'$http', '$log', '$q', '$slatwall', 'corePartialsPath',
+			'$http', '$log', '$q', '$hibachi', 'corePartialsPath',
 			'pathBuilderConfig'
 		];
 		return directive;
 	}
 	constructor(
-		$http, $log, $q, $slatwall, corePartialsPath,
+		$http, $log, $q, $hibachi, corePartialsPath,
 			pathBuilderConfig
 	){
 		return {
@@ -30,7 +30,7 @@ class SWResizedImage{
 				var skuID = scope.orderItem.data.sku.data.skuID;
 				//Get the template.
 				//Call slatwallService to get the path from the image.
-				$slatwall.getResizedImageByProfileName(profileName, skuID)
+				$hibachi.getResizedImageByProfileName(profileName, skuID)
                 .then(function (response) {
 					$log.debug('Get the image');
 					$log.debug(response.data.resizedImagePaths[0]);

@@ -1,33 +1,37 @@
 class SWRbKey{
 	public static Factory(){
 		var directive = (
-			$slatwall,
+			$hibachi,
 			observerService,
 			utilityService,
 			$rootScope,
-			$log
+			$log,
+            rbkeyService
 		)=> new SWRbKey(
-			$slatwall,
+			$hibachi,
 			observerService,
 			utilityService,
 			$rootScope,
-			$log
+			$log,
+            rbkeyService
 		);
 		directive.$inject = [
-			'$slatwall',
+			'$hibachi',
 			'observerService',
 			'utilityService',
 			'$rootScope',
 			'$log',
+            'rbkeyService'
 		];
 		return directive;
 	}
 	constructor(
-		$slatwall,
+		$hibachi,
 		observerService,
 		utilityService,
 		$rootScope,
-		$log
+		$log,
+        rbkeyService
 	){
 		return {
 			restrict: 'A',
@@ -37,17 +41,15 @@ class SWRbKey{
 			link: function(scope, element, attrs){
 				var rbKeyValue = scope.swRbkey;
 				
-				var bindRBKey = function(){
+				var bindRBKey = ()=>{
 					if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
-						element.text($slatwall.getRBKey(rbKeyValue));
+						element.text(rbkeyService.getRBKey(rbKeyValue));
 					}
 				}
 				
-				if(!$slatwall.getRBLoaded()){
-					observerService.attach(bindRBKey,'hasResourceBundle');
-				}else{
-					bindRBKey();
-				}
+				
+				bindRBKey();
+				
 			}
 		};
 	}

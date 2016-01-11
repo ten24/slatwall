@@ -24,15 +24,16 @@ class SWActionCallerController{
         private $compile:ng.ICompileService,
         private corePartialsPath,
         private utilityService,
-        private $slatwall,
+        private $hibachi,
+        private rbkeyService,
         pathBuilderConfig
     ){
         this.$scope = $scope;
         this.$element = $element;
         this.$templateRequest = $templateRequest;
         this.$compile = $compile;
-
-        this.$slatwall = $slatwall;
+        this.rbkeyService = rbkeyService;
+        this.$hibachi = $hibachi;
         this.utilityService = utilityService;
         this.pathBuilderConfig = pathBuilderConfig;
 
@@ -132,15 +133,15 @@ class SWActionCallerController{
     }
 
     private getTextByRBKeyByAction = (actionItemType:string, plural:boolean=false):string =>{
-        var navRBKey = this.$slatwall.getRBKey('admin.define.'+actionItemType+'_nav');
+        var navRBKey = this.rbkeyService.getRBKey('admin.define.'+actionItemType+'_nav');
 
         var entityRBKey = '';
         var replaceKey = '';
         if(plural){
-            entityRBKey = this.$slatwall.getRBKey('entity.'+this.actionItemEntityName+'_plural');
+            entityRBKey = this.rbkeyService.getRBKey('entity.'+this.actionItemEntityName+'_plural');
             replaceKey = '${itemEntityNamePlural}';
         }else{
-            entityRBKey = this.$slatwall.getRBKey('entity.'+this.actionItemEntityName);
+            entityRBKey = this.rbkeyService.getRBKey('entity.'+this.actionItemEntityName);
             replaceKey = '${itemEntityName}';
         }
 
@@ -150,7 +151,7 @@ class SWActionCallerController{
     public getText = ():string =>{
         //if we don't have text then make it up based on rbkeys
         if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && !this.text.length)){
-            this.text = this.$slatwall.getRBKey(this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
+            this.text = this.rbkeyService.getRBKey(this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
             var minus8letters = this.utilityService.right(this.text,8);
             //if rbkey is still missing. then can we infer it
             if(minus8letters === '_missing'){
@@ -175,7 +176,7 @@ class SWActionCallerController{
             }
 
             if(this.utilityService.right(this.text,8)){
-                this.text = this.$slatwall.getRBKey(this.utilityService.replaceAll(this.getAction(),":","."));
+                this.text = this.rbkeyService.getRBKey(this.utilityService.replaceAll(this.getAction(),":","."));
             }
 
         }
@@ -200,7 +201,7 @@ class SWActionCallerController{
             //and no disabled text specified
             if(angular.isUndefined(this.disabledtext) || !this.disabledtext.length ){
                 var disabledrbkey = this.utilityService.replaceAll(this.action,':','.')+'_disabled';
-                this.disabledtext = this.$slatwall.getRBKey(disabledrbkey);
+                this.disabledtext = this.rbkeyService.getRBKey(disabledrbkey);
             }
             //add disabled class
             this.class += " s-btn-disabled";
@@ -223,7 +224,7 @@ class SWActionCallerController{
         if(this.getConfirm() ){
             if(angular.isUndefined(this.confirmtext) && this.confirmtext.length){
                 var confirmrbkey = this.utilityService.replaceAll(this.action,':','.')+'_confirm';
-                this.confirmtext = this.$slatwall.getRBKey(confirmrbkey);
+                this.confirmtext = this.rbkeyService.getRBKey(confirmrbkey);
                 /*<cfif right(attributes.confirmtext, "8") eq "_missing">
                     <cfset attributes.confirmtext = replace(attributes.hibachiScope.rbKey("admin.define.delete_confirm"),'${itemEntityName}', attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
                 </cfif>*/
@@ -263,16 +264,16 @@ class SWActionCaller implements ng.IDirective{
         var directive:ng.IDirectiveFactory = (
             partialsPath,
             utiltiyService,
-            $slatwall
+            $hibachi
         ) => new SWActionCaller(
             partialsPath,
             utiltiyService,
-            $slatwall
+            $hibachi
         );
         directive.$inject = [
             'partialsPath',
             'utilityService',
-            '$slatwall'
+            '$hibachi'
         ];
         return directive;
     }
@@ -280,7 +281,7 @@ class SWActionCaller implements ng.IDirective{
     constructor(
         public partialsPath,
         public utiltiyService,
-        public $slatwall
+        public $hibachi
         ){
     }
 

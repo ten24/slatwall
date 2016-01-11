@@ -4,14 +4,14 @@
 
 
 class EntityRBKey{
-    public $slatwall;
+    public $hibachi;
     //@ngInject
     
-    public static Factory($slatwall){
+    public static Factory(rbkeyService){
         return (text:string)=>{
             if(angular.isDefined(text) && angular.isString(text)){
                 text = text.replace('_', '').toLowerCase();
-                text = $slatwall.getRBKey('entity.'+text);
+                text = rbkeyService.getRBKey('entity.'+text);
                 
             }
             return text;

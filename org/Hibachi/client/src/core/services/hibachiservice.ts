@@ -1,23 +1,17 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-declare var $:SlatwallJQueryStatic;
+
 declare var escape;
-import {SlatwallJQueryStatic} from "../../slatwall/services/slatwallinterceptor";
 
+// interface ISlatwallRootScopeService extends ng.IRootScopeService{
+//     loadedResourceBundle:boolean;
+// 	loadingResourceBundle:boolean;
+// }
 
-interface ISlatwallRootScopeService extends ng.IRootScopeService{
-    loadedResourceBundle:boolean;
-	loadingResourceBundle:boolean;
-}
+class HibachiService{
 
-class SlatwallService{
-	public _resourceBundle = {};
-	public _resourceBundleLastModified = '';
-	public _loadingResourceBundle = false;
-	public _loadedResourceBundle = false;
 	public _deferred = {};
-
-	public static $inject = ['$window','$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
+    public _resourceBundle = {};
 	//@ngInject
 	constructor(
 		private $window:ng.IWindowService,
@@ -25,35 +19,39 @@ class SlatwallService{
 		private $http:ng.IHttpService,
 		private $timeout:ng.ITimeoutService,
 		private $log:ng.ILogService,
-		private $rootScope:ISlatwallRootScopeService,
+		private $rootScope:ng.IRootScopeService,
 		private $location:ng.ILocationService,
 		private $anchorScroll:ng.IAnchorScrollService,
 		private utilityService,
 		private formService,
+        private rbkeyService,
+        private appConfig,
 		private _config:any,
 		public _jsEntities:any,
 		public _jsEntityInstances?:any
-		){
-		this.$window = $window;
-		this.$q = $q;
-		this.$http = $http;
-		this.$timeout = $timeout;
-		this.$log = $log;
-		this.$rootScope = $rootScope;
-		this.$location = $location;
-		this.$anchorScroll = $anchorScroll;
-		this.utilityService = utilityService;
-		this.formService = formService;
-		this._config = _config;
-		this._jsEntities = _jsEntities;
-		this._jsEntityInstances = _jsEntityInstances;
+	){
+        this.$window = $window;
+        this.$q = $q;
+        this.$http = $http;
+        this.$timeout = $timeout;
+        this.$log = $log;
+        this.$rootScope = $rootScope;
+        this.$location = $location;
+        this.$anchorScroll = $anchorScroll;
+        this.utilityService = utilityService;
+        this.formService = formService;
+        this.rbkeyService = rbkeyService;
+        this.appConfig = appConfig;
+        this._config = _config;
+        this._jsEntities = _jsEntities;
+        this._jsEntityInstances = _jsEntityInstances;
 	}
 
 
 	public buildUrl = (action:string,queryString:string):string =>{
 		//actionName example: slatAction. defined in FW1 and populated to config
-		var actionName = this.getConfigValue('action');
-		var baseUrl = this.getConfigValue('baseURL');
+		var actionName = this.appConfig.action;
+		var baseUrl = this.appConfig.baseURL;
 		queryString = queryString || '';
 		if(angular.isDefined(queryString) && queryString.length){
 			if(queryString.indexOf('&') !== 0){
@@ -130,10 +128,10 @@ class SlatwallService{
 		//create array to hold objects
 		var entities = [];
 		//loop over all collection data to create objects
-		var slatwallService = this;
+		var hibachiService = this;
 		angular.forEach(collectionData, function(collectionItemData, key){
 			//create base Entity
-			var entity = slatwallService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
+			var entity = hibachiService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
 			//populate entity with data based on the collectionConfig
 			angular.forEach(collectionConfig.columns, function(column, key){
 				//get objects base properties
@@ -145,12 +143,12 @@ class SlatwallService{
 					if(key === propertyIdentifierArray.length-1){
 						//if we are on the last item in the array
 						if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
-							var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+							var relatedEntity = hibachiService['new'+currentEntity.metaData[property].cfc]();
 							relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
 							currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
 						}else if(angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
 							angular.forEach(collectionItemData[propertyIdentifierKey],function(arrayItem,key){
-								var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+								var relatedEntity = hibachiService['new'+currentEntity.metaData[property].cfc]();
 								relatedEntity.$$init(arrayItem);
 								currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
 							});
@@ -163,7 +161,7 @@ class SlatwallService{
 							if(propertyMetaData.fieldtype === 'one-to-many'){
 								relatedEntity = [];
 							}else{
-								relatedEntity = slatwallService['new'+propertyMetaData.cfc]();
+								relatedEntity = hibachiService['new'+propertyMetaData.cfc]();
 							}
 						}else{
 							relatedEntity = currentEntity.data[property];
@@ -208,7 +206,8 @@ class SlatwallService{
 
 		var params:any= {};
 		if(typeof options === 'string') {
-			var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
+
+			var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
 		} else {
 			params['P:Current'] = options.currentPage || 1;
 			params['P:Show'] = options.pageShow || 10;
@@ -223,7 +222,9 @@ class SlatwallService{
 			params.allRecords = options.allRecords || '';
 			params.defaultColumns = options.defaultColumns || true;
 			params.processContext = options.processContext || '';
-			var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
+            console.log(this.appConfig);
+            console.log(this.appConfig);
+			var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 		}
 
 		var deferred = this.$q.defer();
@@ -281,7 +282,7 @@ class SlatwallService{
 	}
 	getResizedImageByProfileName = (profileName, skuIDs) => {
 		var deferred = this.$q.defer();
-		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -290,7 +291,7 @@ class SlatwallService{
 	}
 	getEventOptions= (entityName) => {
 		var deferred = this.$q.defer();
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
 
 		this.$http.get(urlString)
 		.success((data) => {
@@ -302,14 +303,14 @@ class SlatwallService{
 		return deferred.promise;
 	}
 	checkUniqueOrNullValue = (object, property, value) => {
-		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(
 	 (results:any):ng.IPromise<any> =>{
 		return results.data.uniqueStatus;
 		})
 	}
 	checkUniqueValue = (object, property, value) => {
-		return this.$http.get(this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
 			 (results:any):ng.IPromise<any> =>{
 				return results.data.uniqueStatus;
@@ -317,7 +318,7 @@ class SlatwallService{
 	}
 	getPropertyDisplayData = (entityName,options) => {
 		var deferred = this.$q.defer();
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
 		var params:any = {};
 		params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 		this.$http.get(urlString,{params:params})
@@ -331,7 +332,7 @@ class SlatwallService{
 	}
 	getPropertyDisplayOptions = (entityName,options) => {
 		var deferred = this.$q.defer();
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
 		var params:any = {};
 		params.property = options.property || '';
 		if(angular.isDefined(options.argument1))  {
@@ -352,7 +353,7 @@ class SlatwallService{
 		//$log.debug('save'+ entityName);
 		var deferred = this.$q.defer();
 
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.post';
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.post';
 
 		if(angular.isDefined(entityName))  {
 			params.entityName = entityName;
@@ -381,7 +382,7 @@ class SlatwallService{
 	}
 	getExistingCollectionsByBaseEntity= (entityName) => {
 		var deferred = this.$q.defer();
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
 
 		this.$http.get(urlString)
 		.success((data) => {
@@ -394,7 +395,7 @@ class SlatwallService{
 	}
 	getFilterPropertiesByBaseEntityName= (entityName) => {
 		var deferred = this.$q.defer();
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
 
 		this.$http.get(urlString)
 		.success((data) => {
@@ -404,49 +405,11 @@ class SlatwallService{
 		});
 		return deferred.promise;
 	}
-	getRBLoaded= () => {
-		return this._loadedResourceBundle;
-	}
-	hasResourceBundle= () => {
-		////$log.debug('hasResourceBundle');
-		////$log.debug(this._loadedResourceBundle);
-		if(!this._loadingResourceBundle && !this._loadedResourceBundle) {
-			this._loadingResourceBundle = true;
-			//$log.debug(this.getConfigValue('rbLocale').split('_'));
-            var rbLocale = 'en_us';
-			var localeListArray = rbLocale;
-			var rbPromise;
-			var rbPromises = [];
-			rbPromise = this.getResourceBundle(this.getConfigValue('rbLocale'));
-			rbPromises.push(rbPromise);
-			if(localeListArray.length === 2) {
-				//$log.debug('has two');
-				rbPromise = this.getResourceBundle(localeListArray[0]);
-				rbPromises.push(rbPromise);
-			}
-			if(localeListArray[0] !== 'en') {
-				//$log.debug('get english');
-				this.getResourceBundle('en_us');
-				this.getResourceBundle('en');
-			}
-			this.$q.all(rbPromises).then((data) => {
-				this.$rootScope.loadedResourceBundle = true;
-				this._loadingResourceBundle = false;
-				this._loadedResourceBundle = true;
 
-			},(error) =>{
-				this.$rootScope.loadedResourceBundle = true;
-				this._loadingResourceBundle = false;
-				this._loadedResourceBundle = true
-			});
-		}
-		return this._loadedResourceBundle;
-
-	}
 
 	login = (emailAddress,password) => {
 		var deferred = this.$q.defer();
-		var urlString = this.getConfig().baseURL+'/index.cfm/api/auth/login';
+		var urlString = this.appConfig.baseURL+'/index.cfm/api/auth/login';
 		var params:any= {
 			emailAddress:emailAddress,
 			password:password
@@ -460,13 +423,13 @@ class SlatwallService{
 
 	getResourceBundle= (locale) => {
 		var deferred = this.$q.defer();
-		var locale = locale || this.getConfig().rbLocale;
+		var locale = locale || this.appConfig.rbLocale;
 
 		if(this._resourceBundle[locale]) {
 			return this._resourceBundle[locale];
 		}
 
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.getConfig().instantiationKey+'&locale='+locale;
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
 
 		this.$http(
 			{
@@ -486,7 +449,7 @@ class SlatwallService{
 	getCurrencies = () =>{
 		var deferred = this.$q.defer();
 
-		var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey='+this.getConfig().instantiationKey;
+		var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
 		this.$http.get(urlString).success((response) => {
 			deferred.resolve(response);
 		}).error((response) => {
@@ -495,106 +458,8 @@ class SlatwallService{
 		return deferred.promise;
 	}
 
-	rbKey= (key,replaceStringData) => {
-		////$log.debug('rbkey');
-		////$log.debug(key);
-		////$log.debug(this.getConfig().rbLocale);
 
-		var keyValue = this.getRBKey(key,this.getConfig().rbLocale);
-		////$log.debug(keyValue);
-
-		return keyValue;
-	}
-	getRBKey= (key:string,locale?:string,checkedKeys?:string,originalKey?:string) => {
-		////$log.debug('getRBKey');
-		////$log.debug('loading:'+this._loadingResourceBundle);
-		////$log.debug('loaded'+this._loadedResourceBundle);
-
-		if(!this._loadingResourceBundle && this._loadedResourceBundle) {
-
-			key = key.toLowerCase();
-			checkedKeys = checkedKeys || "";
-			locale = locale || 'en_us';
-			////$log.debug('locale');
-			////$log.debug(locale);
-
-			var keyListArray = key.split(',');
-			////$log.debug('keylistAray');
-			////$log.debug(keyListArray);
-			if(keyListArray.length > 1) {
-				var keyValue:string = "";
-
-				for(var i=0; i<keyListArray.length; i++) {
-
-					keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-					//$log.debug('keyvalue:'+keyValue);
-
-					if(keyValue.slice(-8) != "_missing") {
-						break;
-					}
-				}
-
-				return keyValue;
-			}
-
-
-			var bundle = this.getResourceBundle(locale);
-			//$log.debug('bundle');
-			//$log.debug(bundle);
-			if(!bundle.then) {
-				if(angular.isDefined(bundle[key])) {
-					//$log.debug('rbkeyfound:'+bundle[key]);
-					return bundle[key];
-				}
-
-
-				var checkedKeysListArray = checkedKeys.split(',');
-				checkedKeysListArray.push(key+'_'+locale+'_missing');
-
-				checkedKeys = checkedKeysListArray.join(",");
-				if(angular.isUndefined(originalKey))  {
-					originalKey = key;
-				}
-				//$log.debug('originalKey:'+key);
-				//$log.debug(checkedKeysListArray);
-
-				var localeListArray = locale.split('_');
-				//$log.debug(localeListArray);
-				if(localeListArray.length === 2)  {
-
-					bundle = this.getResourceBundle(localeListArray[0]);
-					if(angular.isDefined(bundle[key])) {
-						//$log.debug('rbkey found:'+bundle[key]);
-						return bundle[key];
-					}
-
-					checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
-					checkedKeys = checkedKeysListArray.join(",");
-				}
-
-				var keyDotListArray = key.split('.');
-				if( keyDotListArray.length >= 3
-					&& keyDotListArray[keyDotListArray.length - 2] === 'define'
-				) {
-					var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
-					//$log.debug('newkey1:'+newKey);
-					return this.getRBKey(newKey,locale,checkedKeys,originalKey);
-				}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define')  {
-					var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
-					//$log.debug('newkey:'+newKey);
-					return this.getRBKey(newKey,locale,checkedKeys,originalKey);
-				}
-				//$log.debug(localeListArray);
-
-				if(localeListArray[0] !== "en")  {
-					return this.getRBKey(originalKey,'en',checkedKeys);
-				}
-				return checkedKeys;
-			}
-		}
-		return '';
-	}
-		getConfig= () => {
+    getConfig= () => {
 		return this._config;
 	}
 	getConfigValue= (key) => {
@@ -608,7 +473,7 @@ class SlatwallService{
 	}
 }
 
-class $Slatwall implements ng.IServiceProvider{
+class $Hibachi implements ng.IServiceProvider{
 
 	public _config = {};
 	private angular:ng.IAngularStatic = angular;
@@ -619,7 +484,7 @@ class $Slatwall implements ng.IServiceProvider{
 	}
     //@ngInject
 	constructor(appConfig){
-   
+
 		this._config = appConfig;
 
 		this.$get.$inject = [
@@ -632,7 +497,9 @@ class $Slatwall implements ng.IServiceProvider{
 			'$location',
 			'$anchorScroll',
 			'utilityService',
-			'formService'
+			'formService',
+            'rbkeyService',
+            'appConfig'
 		];
 	}
 
@@ -643,13 +510,15 @@ class $Slatwall implements ng.IServiceProvider{
 		$http:ng.IHttpService,
 		$timeout:ng.ITimeoutService,
 		$log:ng.ILogService,
-		$rootScope:ISlatwallRootScopeService,
+		$rootScope:ng.IRootScopeService,
 		$location:ng.ILocationService,
 		$anchorScroll:ng.IAnchorScrollService,
 		utilityService,
-		formService
+		formService,
+        rbkeyService,
+        appConfig
 	) {
-		return new SlatwallService(
+		return new HibachiService(
 			$window,
 			$q,
 			$http,
@@ -660,6 +529,8 @@ class $Slatwall implements ng.IServiceProvider{
 			$anchorScroll,
 			utilityService,
 			formService,
+            rbkeyService,
+            appConfig,
 			this._config,
 			this._jsEntities,
 			this._jsEntityInstances
@@ -681,6 +552,6 @@ class $Slatwall implements ng.IServiceProvider{
 }
 
 export{
-	SlatwallService,
-	$Slatwall
+	HibachiService,
+	$Hibachi
 }

@@ -14,7 +14,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
 		config[ 'timeFormat' ] = 'hh:mm tt';
-		config[ 'rbLocale' ] = '#getHibachiScope().getSession().getRBLocale()#';
+		var rbLocale = 'en_us';
+		if(!isNull(getHibachiScope().getSession().getRBLocale())){
+			rbLocale = '#getHibachiScope().getSession().getRBLocale()#';
+		}
+		config[ 'rbLocale' ] = rbLocale;
 		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		return config;

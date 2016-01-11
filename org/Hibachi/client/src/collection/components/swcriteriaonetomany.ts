@@ -4,48 +4,52 @@ class SWCriteriaOneToMany{
     public static Factory(){
         var directive = (
             $log,
-            $slatwall,
+            $hibachi,
             $filter,
             collectionPartialsPath,
             collectionService,
             metadataService,
             dialogService,
             observerService,
-			pathBuilderConfig
+			pathBuilderConfig,
+            rbkeyService
         )=> new SWCriteriaOneToMany(
             $log,
-            $slatwall,
+            $hibachi,
             $filter,
             collectionPartialsPath,
             collectionService,
             metadataService,
             dialogService,
             observerService,
-			pathBuilderConfig
+			pathBuilderConfig,
+            rbkeyService
         );
         directive.$inject = [
             '$log',
-            '$slatwall',
+            '$hibachi',
             '$filter',
             'collectionPartialsPath',
             'collectionService',
             'metadataService',
             'dialogService',
             'observerService',
-			'pathBuilderConfig'
+			'pathBuilderConfig',
+            'rbkeyService'
         ];
         return directive;
     }
     constructor(
         $log,
-        $slatwall,
+        $hibachi,
         $filter,
         collectionPartialsPath,
         collectionService,
         metadataService,
         dialogService,
         observerService,
-        pathBuilderConfig
+        pathBuilderConfig,
+            rbkeyService
     ){
         return {
             restrict: 'E',
@@ -116,7 +120,7 @@ class SWCriteriaOneToMany{
                 $log.debug(scope.selectedFilterProperty);
 
                 scope.oneToManyOptions = getOneToManyOptions(scope.comparisonType);
-                var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
+                var existingCollectionsPromise = $hibachi.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
                 existingCollectionsPromise.then(function(value){
                     scope.collectionOptions = value.data;
                     if(angular.isDefined(scope.filterItem.collectionID)){
@@ -149,7 +153,7 @@ class SWCriteriaOneToMany{
                         entityAlias:scope.selectedFilterProperty.name,
                         cfc:scope.selectedFilterProperty.cfc,
                         propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
-                        rbKey:$slatwall.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_','')),
+                        rbKey:rbkeyService.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_','')),
                         filterProperty:scope.selectedFilterProperty
                     };
                     scope.filterItem.breadCrumbs.push(breadCrumb);

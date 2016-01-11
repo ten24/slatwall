@@ -3,20 +3,20 @@ class SWDetail{
 		var directive = (
 			$location,
 			$log,
-			$slatwall,
+			$hibachi,
 			coreEntityPartialsPath,
 			pathBuilderConfig
 		)=> new SWDetail(
 			$location,
 			$log,
-			$slatwall,
+			$hibachi,
 			coreEntityPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$location',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'coreEntityPartialsPath',
 			'pathBuilderConfig'
 		];
@@ -25,7 +25,7 @@ class SWDetail{
 	constructor(
 		$location,
 		$log,
-		$slatwall,
+		$hibachi,
 		coreEntityPartialsPath,
 		pathBuilderConfig
 	){
@@ -60,10 +60,10 @@ class SWDetail{
 	        	scope.getEntity = function(){
 
 	        		if(scope.entityID === 'null'){
-	        			scope.entity = $slatwall['new'+propertyCasedEntityName]();
+	        			scope.entity = $hibachi['new'+propertyCasedEntityName]();
 	        			setupMetaData();
 	        		}else{
-	        			var entityPromise = $slatwall['get'+propertyCasedEntityName]({id:scope.entityID});
+	        			var entityPromise = $hibachi['get'+propertyCasedEntityName]({id:scope.entityID});
 	        			entityPromise.promise.then(function(){
 	        				scope.entity = entityPromise.value;
 	        				setupMetaData();
