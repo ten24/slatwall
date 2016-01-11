@@ -48,8 +48,8 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
-	variables.skeletonSitePath = expandPath('/integrationServices/slatwallcms/skeletonsite');
-	variables.sharedAssetsPath = '/custom/assets';
+	variables.skeletonSitePath = expandPath('/#getApplicationValue('applicationKey')#')&'/integrationServices/slatwallcms/skeletonsite';
+	variables.sharedAssetsPath = expandPath('/#getApplicationValue('applicationKey')#')&'/custom/assets';
 
 	// ===================== START: Logical Methods ===========================
 	public string function getSharedAssetsPath(){
