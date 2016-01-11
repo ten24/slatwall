@@ -47,8 +47,8 @@ Notes:
 
 */
 component extends="HibachiService" accessors="true" output="false" {
-	variables.appsPath = expandPath('/Slatwall/apps');
-	variables.skeletonAppPath = expandPath('/integrationServices/slatwallcms/skeletonapp');
+	variables.appsPath = expandPath('/Slatwall') & '/apps';
+	variables.skeletonAppPath = expandPath('/Slatwall') & '/integrationServices/slatwallcms/skeletonapp';
 	
 	// ===================== START: Logical Methods ===========================
 	
