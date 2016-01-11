@@ -59,13 +59,14 @@ var slatwalladmin;
         return OrderBy;
     })();
     var CollectionConfig = (function () {
-        function CollectionConfig($slatwall, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords) {
+        function CollectionConfig($slatwall, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, isDistinct) {
             var _this = this;
             if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
             if (currentPage === void 0) { currentPage = 1; }
             if (pageShow === void 0) { pageShow = 10; }
             if (keywords === void 0) { keywords = ''; }
             if (allRecords === void 0) { allRecords = false; }
+            if (isDistinct === void 0) { isDistinct = false; }
             this.$slatwall = $slatwall;
             this.utilityService = utilityService;
             this.baseEntityName = baseEntityName;
@@ -80,8 +81,10 @@ var slatwalladmin;
             this.pageShow = pageShow;
             this.keywords = keywords;
             this.allRecords = allRecords;
+            this.isDistinct = isDistinct;
             this.clearFilterGroups = function () {
                 _this.filterGroups = [{ filterGroup: [] }];
+                return _this;
             };
             this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
                 return new CollectionConfig(_this.$slatwall, _this.utilityService, baseEntityName, baseEntityAlias);
@@ -103,13 +106,17 @@ var slatwalladmin;
                 _this.groupBys = jsonCollection.groupBys;
                 _this.pageShow = jsonCollection.pageShow;
                 _this.allRecords = jsonCollection.allRecords;
+                _this.isDistinct = jsonCollection.isDistinct;
+                return _this;
             };
             this.loadFilterGroups = function (filterGroupsConfig) {
                 if (filterGroupsConfig === void 0) { filterGroupsConfig = [{ filterGroup: [] }]; }
                 _this.filterGroups = filterGroupsConfig;
+                return _this;
             };
             this.loadColumns = function (columns) {
                 _this.columns = columns;
+                return _this;
             };
             this.getCollectionConfig = function () {
                 return {
@@ -124,6 +131,7 @@ var slatwalladmin;
                     keywords: _this.keywords,
                     defaultColumns: (!_this.columns || !_this.columns.length),
                     allRecords: _this.allRecords,
+                    isDistinct: _this.isDistinct
                 };
             };
             this.getEntityName = function () {
@@ -137,6 +145,7 @@ var slatwalladmin;
                     orderByConfig: angular.toJson(_this.orderBy),
                     groupBysConfig: angular.toJson(_this.groupBys),
                     currentPage: _this.currentPage,
+                    isDistinct: _this.isDistinct,
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
                     defaultColumns: (!_this.columns || !_this.columns.length),
@@ -164,7 +173,7 @@ var slatwalladmin;
             this.processJoin = function (propertyIdentifier) {
                 var _propertyIdentifier = '', propertyIdentifierParts = propertyIdentifier.split('.'), current_collection = _this.collection;
                 for (var i = 0; i < propertyIdentifierParts.length; i++) {
-                    if ('cfc' in current_collection.metaData[propertyIdentifierParts[i]]) {
+                    if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
                         current_collection = _this.$slatwall.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                         _propertyIdentifier += '_' + propertyIdentifierParts[i];
                         _this.addJoin(new Join(_propertyIdentifier.replace(/_/g, '.').substring(1), _this.baseEntityAlias + _propertyIdentifier));
@@ -188,6 +197,7 @@ var slatwalladmin;
                 if (!joinFound) {
                     _this.joins.push(join);
                 }
+                return _this;
             };
             this.addAlias = function (propertyIdentifier) {
                 var parts = propertyIdentifier.split('.');
@@ -226,8 +236,8 @@ var slatwalladmin;
                     else if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
                         ormtype = lastEntity.metaData[lastProperty].ormtype;
                     }
-                    if (angular.isDefined(lastEntity[lastProperty])) {
-                        persistent = lastEntity[lastProperty].persistent;
+                    if (angular.isDefined(lastEntity.metaData[lastProperty])) {
+                        persistent = lastEntity.metaData[lastProperty].persistent;
                     }
                     var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
                     if (options['aggregate']) {
@@ -242,11 +252,13 @@ var slatwalladmin;
                     }
                     _this.columns.push(columnObject);
                 }
+                return _this;
             };
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
                 _this.addDisplayProperty(propertyIdentifier, title, options);
+                return _this;
             };
             this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
                 var column = {
@@ -260,12 +272,14 @@ var slatwalladmin;
                 angular.extend(column, options);
                 //Add columns
                 _this.addColumn(column.propertyIdentifier, undefined, column);
+                return _this;
             };
             this.addGroupBy = function (groupByAlias) {
                 if (!_this.groupBys) {
                     _this.groupBys = '';
                 }
                 _this.groupBys = _this.utilityService.listAppend(_this.groupBys, groupByAlias);
+                return _this;
             };
             this.addDisplayProperty = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
@@ -282,6 +296,7 @@ var slatwalladmin;
                     }
                     _this.addColumn(_this.formatPropertyIdentifier(column), title, options);
                 });
+                return _this;
             };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
@@ -301,10 +316,12 @@ var slatwalladmin;
                 //create filter group
                 var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
                 _this.filterGroups[0].filterGroup.push(filter);
+                return _this;
             };
             this.removeFilter = function (propertyIdentifier, value, comparisonOperator) {
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
                 _this.removeFilterHelper(_this.filterGroups, propertyIdentifier, value, comparisonOperator);
+                return _this;
             };
             this.removeFilterHelper = function (filter, propertyIdentifier, value, comparisonOperator, currentGroup) {
                 if (angular.isUndefined(currentGroup)) {
@@ -323,11 +340,13 @@ var slatwalladmin;
                         currentGroup.splice(currentGroup.indexOf(filter), 1);
                     }
                 }
+                return _this;
             };
             this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
                 if (criteria === void 0) { criteria = 'One'; }
                 if (readOnly === void 0) { readOnly = false; }
                 _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatPropertyIdentifier(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
+                return _this;
             };
             //orderByList in this form: "property|direction" concrete: "skuName|ASC"
             this.setOrderBy = function (orderByList) {
@@ -335,6 +354,7 @@ var slatwalladmin;
                 angular.forEach(orderBys, function (orderBy) {
                     _this.addOrderBy(orderBy);
                 });
+                return _this;
             };
             this.addOrderBy = function (orderByString) {
                 if (!_this.orderBy) {
@@ -347,12 +367,15 @@ var slatwalladmin;
                     direction: direction
                 };
                 _this.orderBy.push(orderBy);
+                return _this;
             };
             this.setCurrentPage = function (pageNumber) {
                 _this.currentPage = pageNumber;
+                return _this;
             };
             this.setPageShow = function (NumberOfPages) {
                 _this.pageShow = NumberOfPages;
+                return _this;
             };
             this.getPageShow = function () {
                 return _this.pageShow;
@@ -360,18 +383,26 @@ var slatwalladmin;
             this.setAllRecords = function (allFlag) {
                 if (allFlag === void 0) { allFlag = false; }
                 _this.allRecords = allFlag;
+                return _this;
             };
             this.setKeywords = function (keyword) {
                 _this.keywords = keyword;
+                return _this;
             };
             this.setId = function (id) {
                 _this.id = id;
+                return _this;
             };
             this.hasFilters = function () {
                 return (_this.filterGroups.length && _this.filterGroups[0].filterGroup.length);
             };
+            this.setDistinct = function (distinctFlag) {
+                _this.isDistinct = distinctFlag;
+                return _this;
+            };
             this.clearFilters = function () {
                 _this.filterGroups = [{ filterGroup: [] }];
+                return _this;
             };
             this.getEntity = function (id) {
                 if (angular.isDefined(id)) {

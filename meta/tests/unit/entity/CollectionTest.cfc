@@ -1825,15 +1825,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function testest(){
-		var test = ormexecuteQuery("SELECT new Map( _order.orderID as orderID, _order.orderNumber as orderNumber, _order.currencyCode as currencyCode, _order.orderOpenDateTime as orderOpenDateTime, _order.orderOpenIPAddress as orderOpenIPAddress, _order.orderCloseDateTime as orderCloseDateTime, _order.referencedOrderType as referencedOrderType, _order.estimatedDeliveryDateTime as estimatedDeliveryDateTime, _order.estimatedFulfillmentDateTime as estimatedFulfillmentDateTime, _order.calculatedTotal as calculatedTotal) 
-		FROM SlatwallOrder as _order 
-		left join _order.promotionCodes as _order_promotionCodes
-		where ( 
-			EXISTS ( 
-				FROM SlatwallPromotionCode as __promotioncode 
-				where ( __promotioncode.promotionCode = 'testlove2'  ) 
-				AND __promotioncode.id = _order_promotionCodes.id ) 
-			) ORDER BY _order.createdDateTime desc");
+		var test = ormexecuteQuery("SELECT _orderitem FROM SlatwallOrderItem as _orderitem left join _orderitem.order as _orderitem_order where (_orderitem_order.orderID = 'ff80808151a223aa0151a735438e014a') GROUP BY _orderitem ORDER BY _orderitem.createdDateTime desc",false,{maxresults=1});
+		request.debug('test');
 		request.debug(test);
 	}
 	
