@@ -98,7 +98,6 @@ class SWInput{
 			}
             if(propertyDisplay.object.metaData.$$getPropertyFormatType(propertyDisplay.property) == "currency"){
                 currency = 'sw-currency-formatter ';
-                console.log("WAM", propertyDisplay.object.data)
                 if(angular.isDefined(propertyDisplay.object.data.currencyCode)){
                     currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
                 }
