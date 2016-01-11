@@ -335,6 +335,21 @@ a:hover {
   color: #2a6496;
   text-decoration: none;
 }
+.badge {
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 5px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: #666;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: #ccc;
+  border-radius: 2px;
+  line-height: 9px;
+}
 .btn,
 .dropdown-menu {
   font-size: 12px;
