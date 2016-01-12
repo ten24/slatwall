@@ -39,11 +39,11 @@
 <div ng-if="addGiftRecipientControl.getUnassignedCount() > 0">
 	<div class="s-search-filter s-gift-card">
 
-		<div sw-typeahead-search entity="Account"
-				properties="accountID,firstName,lastName,primaryEmailAddress.emailAddress"
-				placeholder-text="Search or Add Recipient..."
-				add-function="addGiftRecipientControl.addGiftRecipientFromAccountList(item)"
-				add-button-function="addGiftRecipientControl.startFormWithName(searchString)">
+		<div sw-typeahead-search data-entity="Account"
+				data-properties="accountID,firstName,lastName,primaryEmailAddress.emailAddress"
+				data-placeholder-text="Search or Add Recipient..."
+				data-add-function="addGiftRecipientControl.addGiftRecipientFromAccountList(item)"
+				data-add-button-function="addGiftRecipientControl.startFormWithName(searchString)">
 		</div>
 		<sw-form data-object="addGiftRecipientControl.currentGiftRecipient" name="createRecipient" class="s-add-info-dropdown" ng-hide="!addGiftRecipientControl.adding">
 			<div class="s-add-info-dropdown-inner">
