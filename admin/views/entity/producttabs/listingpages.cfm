@@ -59,7 +59,6 @@ Notes:
 </cfloop>
 <cfoutput>
 	<sw-listing-display
-		ng-if="$root.loadedResourceBundle"	
 		data-collection="'Content'"
 		data-multiselect-field-name="listingPages"
 		data-multiselect-id-paths="#selectedListingPageIDPaths#"

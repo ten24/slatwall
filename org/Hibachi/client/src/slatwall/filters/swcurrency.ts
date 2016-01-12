@@ -7,7 +7,7 @@ class SWCurrency{
     //@ngInject
     public static Factory($sce,$log,$hibachi){
         var data = null, serviceInvoked = false;
-        function realFilter(value,decimalPlace) {
+        function realFilter(value,decimalPlace,returnStringFlag=true) {
             // REAL FILTER LOGIC, DISREGARDING PROMISES
             if(!angular.isDefined(data)){
                 $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
@@ -20,13 +20,17 @@ class SWCurrency{
                     value = parseFloat(value.toString()).toFixed(2)
                 }
             }
-            return data + value;
+            if(returnStringFlag){
+                return data + value;
+            } else { 
+                return value;
+            }   
         }
 
         var filterStub:any;
-        filterStub = function(value,currencyCode,decimalPlace) {
+        filterStub = function(value,currencyCode,decimalPlace,returnStringFlag=true) {
 
-            if( data === null ) {
+            if( data === null && returnStringFlag) {
                 if( !serviceInvoked ) {
                     serviceInvoked = true;
                         $hibachi.getCurrencies().then((currencies)=>{
@@ -36,7 +40,7 @@ class SWCurrency{
                 }
                 return "-";
             }
-            else return realFilter(value,decimalPlace);
+            else return realFilter(value,decimalPlace,returnStringFlag);
         }
 
         filterStub.$stateful = true;

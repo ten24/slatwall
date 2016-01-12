@@ -38,7 +38,6 @@ import {SWDirective} from "./components/swdirective";
 import {SWExportAction} from "./components/swexportaction";
 import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
-import {SWResizedImage} from "./components/swresizedimage";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 
@@ -1169,7 +1168,6 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .directive('swExportAction',SWExportAction.Factory())
 .directive('swHref',SWHref.Factory())
 .directive('swProcessCaller',SWProcessCaller.Factory())
-.directive('swresizedimage',SWResizedImage.Factory())
 .directive('sw:sortable',SWSortable.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
 ;

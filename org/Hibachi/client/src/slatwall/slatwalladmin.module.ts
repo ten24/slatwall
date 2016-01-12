@@ -10,6 +10,8 @@ import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {workflowmodule} from "../workflow/workflow.module";
 import {entitymodule} from "../entity/entity.module";
+//directives
+import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
 import {EntityRBKey} from "./filters/entityrbkey";
 import {SWCurrency} from "./filters/swcurrency";
@@ -41,7 +43,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   {
       //configure partials path properties
      pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-     pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/');
+     pathBuilderConfig.setBasePartialsPath('/org/Hibachi/client/src/');
 
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
@@ -112,6 +114,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
     }])
  //services
 .service('slatwallInterceptor', SlatwallInterceptor.Factory())
+//directives
+.directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //filters
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])

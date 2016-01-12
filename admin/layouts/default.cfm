@@ -378,7 +378,7 @@ Notes:
 		</script>
 
 
-		<script type="text/javascript" src="/org/Hibachi/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></script>
 	</body>
 </html>

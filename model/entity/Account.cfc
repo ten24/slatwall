@@ -257,10 +257,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	public string function getPasswordResetID() {
-		if(!structKeyExists(variables, "passwordResetID")) {
-			variables.passwordResetID = getService("accountService").getPasswordResetID(account=this);
-		}
-		return variables.passwordResetID;
+		return getService("accountService").getPasswordResetID(account=this);
 	}
 
 	public string function getPhoneNumber() {

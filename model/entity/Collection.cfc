@@ -1035,7 +1035,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								}else{
 									record[Replace(listRestValue,'.','_','all')] = entity.getValueByPropertyIdentifier(listRestValue);
 								}//<--end if
-
+ 
 							}//<--end for
 							arrayAppend(variables.records,record);
 						}//<--end entity

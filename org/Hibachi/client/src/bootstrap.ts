@@ -139,7 +139,7 @@ class bootstrapper /*extends BaseBootStrapper*/{
 //        });
 //
 //    }
-}
+} 
 
 export = new bootstrapper();
 

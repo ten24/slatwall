@@ -493,7 +493,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
 		var propertyName = listLast(arguments.propertyIdentifier,'.');
-
+		
 		if(!isNull(object) && !isSimpleValue(object)) {
 			if(arguments.formatValue) {
 				return object.getFormattedValue( propertyName );
@@ -508,6 +508,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
+		
 		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 			return this;
 		}
