@@ -31,7 +31,11 @@
 
     function bootstrapApplication(angularApp) {
         angular.element(document).ready(function () {
-            angular.bootstrap(document, [angularApp]);
+        	if(angular.isArray(angularApp)){
+        		angular.bootstrap(document, angularApp);
+        	}else{
+        		angular.bootstrap(document, [angularApp]);
+        	}
         });
     }
 

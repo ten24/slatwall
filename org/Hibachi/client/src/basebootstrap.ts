@@ -4,7 +4,6 @@
 require('./vendor.ts')();
 import {coremodule} from "./core/core.module";
 interface IBaseBootStrapper{
-    bootstrapConfigPromise:any;
     myApplication:any;
 }
 
@@ -12,48 +11,106 @@ interface IBaseBootStrapper{
 
 //custom bootstrapper
 class BaseBootStrapper implements IBaseBootStrapper{
-    public bootstrapConfigPromise:any;
     public myApplication:any;
+    public _resourceBundle = {};
     constructor(){
-      this.myApplication = coremodule;
-      this.bootstrapConfigPromise = this.fetchConfig();
+      return angular.lazy(this.myApplication)
+        .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
+            this.$http = $http;
+            this.$q = $q;
+            
+            if(localStorage.appConfig && localStorage.resourceBundles){
+                 return $http.get('/index.cfm/?slatAction=api:main.getInstantiationKey')
+                .then( (resp)=> {
+                    var appConfig = JSON.parse(localStorage.appConfig);
+                    if(resp.data.data === appConfig.instantiationKey){
+                        coremodule.constant('appConfig',appConfig)
+                        .constant('resourceBundles',JSON.parse(localStorage.resourceBundles));
+                    }else{
+                        return this.getData();                            
+                    }
+                });
+            }else{
+                return this.getData();
+            }
+        }])
+        .loading(function(){
+            //angular.element('#loading').show();
+        })
+        .error(function(){
+            //angular.element('#error').show();
+        })
+        .done(function() {
+            //angular.element('#loading').hide();
+        });
 
     }
     
-//    fetchData=(fetchConfig)=>{
-//        var promises = [];
-//        var constantNames = [];
-//        for(var i in fetchConfig){
-//            var constantName = i;
-//            constantNames.push(constantName);
-//            var urlstring = fetchConfig[i];
-//            var urlString = '/index.cfm/?slatAction=api:main.getConfig';
-//            var params = {};
-//            $http.get(urlString,{
-//                params:params
-//            }).success((data)=>{
-//                deferred.resolve(data);
-//            }).error((reason)=>{
-//                deferred.reject(reason);
-//            });
-//            return deferred.promise;
-//            
-//            promises.push(promise);
-//        }
-        
-        var initInjector = angular.injector(["ng"]);
-        var $http = initInjector.get<ng.IHttpService>("$http");
-        var $q = initInjector.get<ng.IQService>("$q");
-        var deferred = $q.defer();
+    getData=()=>{
+        return this.$http.get('/index.cfm/?slatAction=api:main.getConfig')
+        .then( (resp)=> {
+            coremodule.constant('appConfig',resp.data.data);
+            localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
+            this.appConfig = resp.data.data;
+            return this.getResourceBundles();
+            
+        });    
     }
     
-    fetchConfig=()=>{
-         
+    getResourceBundle= (locale) => {
+        var deferred = this.$q.defer();
+        var locale = locale || this.appConfig.rbLocale;
 
-          
-          
+        if(this._resourceBundle[locale]) {
+            return this._resourceBundle[locale];
+        }
+
+        var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
+
+        this.$http(
+            {
+                url:urlString,
+                method:"GET"
+            }
+        ).success((response:any,status,headersGetter) => {
+            this._resourceBundle[locale] = response.data;
+            console.log(this._resourceBundle);
+            deferred.resolve(response);
+        }).error((response:any) => {
+            this._resourceBundle[locale] = {};
+            deferred.reject(response);
+        });
+        return deferred.promise
     }
+    
+    getResourceBundles= () => {
+        ////$log.debug('hasResourceBundle');
+        ////$log.debug(this._loadedResourceBundle);
+        //$log.debug(this.getConfigValue('rbLocale').split('_'));
+        var rbLocale = this.appConfig.rbLocale.split('_');
+        var localeListArray = rbLocale;
+        var rbPromise;
+        var rbPromises = [];
+        rbPromise = this.getResourceBundle(this.appConfig.rbLocale);
+        rbPromises.push(rbPromise);
+        if(localeListArray.length === 2) {
+            //$log.debug('has two');
+            rbPromise = this.getResourceBundle(localeListArray[0]);
+            rbPromises.push(rbPromise);
+        }
+        if(localeListArray[0] !== 'en') {
+            //$log.debug('get english');
+            this.getResourceBundle('en_us');
+            this.getResourceBundle('en');
+        }
+        var resourceBundlePromises = this.$q.all(rbPromises).then((data) => {
+            coremodule.constant('resourceBundles',this._resourceBundle);
+            localStorage.setItem('resourceBundles',JSON.stringify(this._resourceBundle));
+        },(error) =>{
+        });
+        return resourceBundlePromises;
 
+    }
 }
 
 export = {BaseBootStrapper};
