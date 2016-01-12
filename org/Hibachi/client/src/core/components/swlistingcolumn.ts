@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts'' />
 
 class SWListingColumnController{
     public editable:boolean;
@@ -32,7 +32,6 @@ class SWListingColumn implements ng.IDirective{
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
-    public static $inject = ['utilityService'];
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
@@ -45,12 +44,12 @@ class SWListingColumn implements ng.IDirective{
         ];
         return directive;
     }
+    // @ngInject
     constructor(private utilityService){
 
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-
         var column = {
             propertyIdentifier:scope.swListingColumn.propertyIdentifier,
             processObjectProperty:scope.swListingColumn.processObjectProperty,

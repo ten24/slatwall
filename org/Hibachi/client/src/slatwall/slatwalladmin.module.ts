@@ -8,6 +8,7 @@ import {contentmodule} from "../content/content.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
 import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
+import {promotionmodule} from "../promotion/promotion.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {workflowmodule} from "../workflow/workflow.module";
@@ -35,6 +36,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   giftcardmodule.name, 
   optiongroupmodule.name,
   orderitemmodule.name,
+  promotionmodule.name,
   productmodule.name,
   productbundlemodule.name,
   workflowmodule.name,

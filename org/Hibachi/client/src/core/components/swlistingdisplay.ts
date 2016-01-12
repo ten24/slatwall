@@ -455,7 +455,6 @@ class SWListingDisplayController{
     public setupColumns = ()=>{
         //assumes no alias formatting
         angular.forEach(this.columns.reverse(), (column)=>{
-
             var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
 
             var title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
