@@ -80,7 +80,7 @@ var coremodule = angular.module('hibachi.core',[]).config(()=>{
 //filters
 .filter('percentage',[PercentageFilter.Factory])
 //directives
-.directive('swTypeahedSearch',SWTypeaheadSearch.Factory())
+.directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
