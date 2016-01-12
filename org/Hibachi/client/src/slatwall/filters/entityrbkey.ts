@@ -2,12 +2,11 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
-
 class EntityRBKey{
-    public $hibachi;
     //@ngInject
-    
     public static Factory(rbkeyService){
+        console.log('testhere');
+        console.log(rbkeyService);
         return (text:string)=>{
             if(angular.isDefined(text) && angular.isString(text)){
                 text = text.replace('_', '').toLowerCase();

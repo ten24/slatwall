@@ -113,7 +113,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
  //services
 .service('slatwallInterceptor', SlatwallInterceptor.Factory())
 //filters
-.filter('entityRBKey',['$hibachi',EntityRBKey.Factory])
+.filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
 ;
 export{

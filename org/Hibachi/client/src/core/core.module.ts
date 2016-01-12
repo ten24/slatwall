@@ -68,11 +68,6 @@ class PathBuilderConfig{
 }
 
 var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)=>{
-    $provide.decorator('rbkeyService',['$delegate',($delegate)=>{
-        console.log('rbkey');
-        console.log($delegate);
-        $delegate.getResourceBundles();
-    }])
     $provide.decorator('$hibachi',[
         "$delegate",
         '$http',

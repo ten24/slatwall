@@ -8,6 +8,8 @@ interface IBaseBootStrapper{
     myApplication:any;
 }
 
+
+
 //custom bootstrapper
 class BaseBootStrapper implements IBaseBootStrapper{
     public bootstrapConfigPromise:any;
@@ -17,23 +19,39 @@ class BaseBootStrapper implements IBaseBootStrapper{
       this.bootstrapConfigPromise = this.fetchConfig();
 
     }
-
+    
+//    fetchData=(fetchConfig)=>{
+//        var promises = [];
+//        var constantNames = [];
+//        for(var i in fetchConfig){
+//            var constantName = i;
+//            constantNames.push(constantName);
+//            var urlstring = fetchConfig[i];
+//            var urlString = '/index.cfm/?slatAction=api:main.getConfig';
+//            var params = {};
+//            $http.get(urlString,{
+//                params:params
+//            }).success((data)=>{
+//                deferred.resolve(data);
+//            }).error((reason)=>{
+//                deferred.reject(reason);
+//            });
+//            return deferred.promise;
+//            
+//            promises.push(promise);
+//        }
+        
+        var initInjector = angular.injector(["ng"]);
+        var $http = initInjector.get<ng.IHttpService>("$http");
+        var $q = initInjector.get<ng.IQService>("$q");
+        var deferred = $q.defer();
+    }
+    
     fetchConfig=()=>{
-          var initInjector = angular.injector(["ng"]);
-          var $http = initInjector.get<ng.IHttpService>("$http");
-          var $q = initInjector.get<ng.IQService>("$q");
+         
 
-          var deferred = $q.defer();
-          var urlString = '/index.cfm/?slatAction=api:main.getConfig';
-          var params = {};
-          $http.get(urlString,{
-              params:params
-          }).success((data)=>{
-              deferred.resolve(data);
-          }).error((reason)=>{
-              deferred.reject(reason);
-          });
-          return deferred.promise;
+          
+          
     }
 
 }
