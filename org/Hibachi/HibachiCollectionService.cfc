@@ -578,14 +578,26 @@ component output="false" accessors="true" extends="HibachiService" {
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
 					//add all attributes by alias
+<<<<<<< HEAD
  					if(structKeyExists(column,'attributeID')){
  						ArrayAppend(attributePropertyIdentifierArray,piAlias);
  					}
+=======
+					if(structKeyExists(column,'attributeID')){
+						ArrayAppend(attributePropertyIdentifierArray,piAlias);
+					}
+>>>>>>> refs/heads/hotfix
 				}
 			}
+<<<<<<< HEAD
 
 			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray, attributePropertyIdentifierArray, enforceAuthorization);
 
+=======
+			
+			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,enforceAuthorization);
+			
+>>>>>>> refs/heads/hotfix
 			var collectionStruct = {};
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,authorizedProperties);
@@ -597,7 +609,11 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		return response;
 	}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> refs/heads/hotfix
 	public array function getAuthorizedProperties(required any collectionEntity, any collectionPropertyIdentifiers=[], any aggregatePropertyIdentifierArray=[], any attributePropertyIdentifierArray=[], boolean enforeAuthorization=true){
 		var authorizedProperties = [];
 		for(var collectionPropertyIdentifier in arguments.collectionPropertyIdentifiers){
@@ -612,8 +628,13 @@ component output="false" accessors="true" extends="HibachiService" {
 			arrayAppend(authorizedProperties,aggregatePropertyIdentifier);
 		}
 		for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
+<<<<<<< HEAD
  			arrayAppend(authorizedProperties,attributePropertyIdentifier);
  		}
+=======
+			arrayAppend(authorizedProperties,attributePropertyIdentifier);
+		}
+>>>>>>> refs/heads/hotfix
 		return authorizedProperties;
 	}
 

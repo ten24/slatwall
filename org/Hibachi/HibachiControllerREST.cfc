@@ -114,7 +114,7 @@ component output="false" accessors="true" extends="HibachiController" {
     
     public any function getDetailTabs(required struct rc){
         var detailTabs = [];
-        var tabsDirectory = expandPath( '/' ) & 'org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
+        var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & 'org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
         var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
         for(var tabFile in tabFilesList){
             var tab = {};

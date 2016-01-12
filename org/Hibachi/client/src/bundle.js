@@ -48,7 +48,7 @@
 	'use strict';
 	__webpack_require__(1)();
 	var slatwalladmin_module_1 = __webpack_require__(9);
-	var logger_module_1 = __webpack_require__(154);
+	var logger_module_1 = __webpack_require__(168);
 	//custom bootstrapper
 	var bootstrapper = (function () {
 	    function bootstrapper() {
@@ -59,7 +59,7 @@
 	            var $http = initInjector.get("$http");
 	            var $q = initInjector.get("$q");
 	            var deferred = $q.defer();
-	            var urlString = '/index.cfm/?slatAction=api:main.getModel';
+	            var urlString = 'index.cfm/?slatAction=api:main.getModel';
 	            var params = {};
 	            $http.get(urlString, {
 	                params: params
@@ -657,14 +657,16 @@
 	var ngslatwall_module_1 = __webpack_require__(112);
 	var ngslatwallmodel_module_1 = __webpack_require__(114);
 	var content_module_1 = __webpack_require__(115);
-	var orderitem_module_1 = __webpack_require__(120);
-	var product_module_1 = __webpack_require__(126);
-	var productbundle_module_1 = __webpack_require__(128);
-	var workflow_module_1 = __webpack_require__(134);
-	var entity_module_1 = __webpack_require__(146);
+	var giftcard_module_1 = __webpack_require__(120);
+	var optiongroup_module_1 = __webpack_require__(131);
+	var orderitem_module_1 = __webpack_require__(134);
+	var product_module_1 = __webpack_require__(140);
+	var productbundle_module_1 = __webpack_require__(142);
+	var workflow_module_1 = __webpack_require__(148);
+	var entity_module_1 = __webpack_require__(160);
 	//filters
-	var entityrbkey_1 = __webpack_require__(152);
-	var swcurrency_1 = __webpack_require__(153);
+	var entityrbkey_1 = __webpack_require__(166);
+	var swcurrency_1 = __webpack_require__(167);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -675,6 +677,8 @@
 	    ngslatwallmodel_module_1.ngslatwallmodelmodule.name,
 	    entity_module_1.entitymodule.name,
 	    content_module_1.contentmodule.name,
+	    giftcard_module_1.giftcardmodule.name,
+	    optiongroup_module_1.optiongroupmodule.name,
 	    orderitem_module_1.orderitemmodule.name,
 	    product_module_1.productmodule.name,
 	    productbundle_module_1.productbundlemodule.name,
@@ -687,7 +691,7 @@
 	    function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig, pathBuilderConfig) {
 	        //configure partials path properties
 	        pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-	        pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/');
+	        pathBuilderConfig.setBasePartialsPath('/org/Hibachi/client/src/');
 	        datepickerConfig.showWeeks = false;
 	        datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
 	        datepickerPopupConfig.toggleWeeksText = null;
@@ -4389,7 +4393,7 @@
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var Column = (function () {
 	    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
 	        if (isVisible === void 0) { isVisible = true; }
@@ -4453,13 +4457,15 @@
 	})();
 	exports.OrderBy = OrderBy;
 	var CollectionConfig = (function () {
-	    function CollectionConfig($slatwall, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords) {
+	    // @ngInject
+	    function CollectionConfig($slatwall, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, isDistinct) {
 	        var _this = this;
 	        if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
 	        if (currentPage === void 0) { currentPage = 1; }
 	        if (pageShow === void 0) { pageShow = 10; }
 	        if (keywords === void 0) { keywords = ''; }
 	        if (allRecords === void 0) { allRecords = false; }
+	        if (isDistinct === void 0) { isDistinct = false; }
 	        this.$slatwall = $slatwall;
 	        this.utilityService = utilityService;
 	        this.baseEntityName = baseEntityName;
@@ -4474,8 +4480,10 @@
 	        this.pageShow = pageShow;
 	        this.keywords = keywords;
 	        this.allRecords = allRecords;
+	        this.isDistinct = isDistinct;
 	        this.clearFilterGroups = function () {
 	            _this.filterGroups = [{ filterGroup: [] }];
+	            return _this;
 	        };
 	        this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
 	            return new CollectionConfig(_this.$slatwall, _this.utilityService, baseEntityName, baseEntityAlias);
@@ -4497,13 +4505,17 @@
 	            _this.groupBys = jsonCollection.groupBys;
 	            _this.pageShow = jsonCollection.pageShow;
 	            _this.allRecords = jsonCollection.allRecords;
+	            _this.isDistinct = jsonCollection.isDistinct;
+	            return _this;
 	        };
 	        this.loadFilterGroups = function (filterGroupsConfig) {
 	            if (filterGroupsConfig === void 0) { filterGroupsConfig = [{ filterGroup: [] }]; }
 	            _this.filterGroups = filterGroupsConfig;
+	            return _this;
 	        };
 	        this.loadColumns = function (columns) {
 	            _this.columns = columns;
+	            return _this;
 	        };
 	        this.getCollectionConfig = function () {
 	            return {
@@ -4518,6 +4530,7 @@
 	                keywords: _this.keywords,
 	                defaultColumns: (!_this.columns || !_this.columns.length),
 	                allRecords: _this.allRecords,
+	                isDistinct: _this.isDistinct
 	            };
 	        };
 	        this.getEntityName = function () {
@@ -4534,7 +4547,8 @@
 	                pageShow: _this.pageShow,
 	                keywords: _this.keywords,
 	                defaultColumns: (!_this.columns || !_this.columns.length),
-	                allRecords: _this.allRecords
+	                allRecords: _this.allRecords,
+	                isDistinct: _this.isDistinct
 	            };
 	            if (angular.isDefined(_this.id)) {
 	                options['id'] = _this.id;
@@ -4558,7 +4572,7 @@
 	        this.processJoin = function (propertyIdentifier) {
 	            var _propertyIdentifier = '', propertyIdentifierParts = propertyIdentifier.split('.'), current_collection = _this.collection;
 	            for (var i = 0; i < propertyIdentifierParts.length; i++) {
-	                if ('cfc' in current_collection.metaData[propertyIdentifierParts[i]]) {
+	                if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
 	                    current_collection = _this.$slatwall.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
 	                    _propertyIdentifier += '_' + propertyIdentifierParts[i];
 	                    _this.addJoin(new Join(_propertyIdentifier.replace(/_/g, '.').substring(1), _this.baseEntityAlias + _propertyIdentifier));
@@ -4582,6 +4596,7 @@
 	            if (!joinFound) {
 	                _this.joins.push(join);
 	            }
+	            return _this;
 	        };
 	        this.addAlias = function (propertyIdentifier) {
 	            var parts = propertyIdentifier.split('.');
@@ -4620,8 +4635,8 @@
 	                else if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
 	                    ormtype = lastEntity.metaData[lastProperty].ormtype;
 	                }
-	                if (angular.isDefined(lastEntity[lastProperty])) {
-	                    persistent = lastEntity[lastProperty].persistent;
+	                if (angular.isDefined(lastEntity.metaData[lastProperty])) {
+	                    persistent = lastEntity.metaData[lastProperty].persistent;
 	                }
 	                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
 	                if (options['aggregate']) {
@@ -4636,11 +4651,13 @@
 	                }
 	                _this.columns.push(columnObject);
 	            }
+	            return _this;
 	        };
 	        this.setDisplayProperties = function (propertyIdentifier, title, options) {
 	            if (title === void 0) { title = ''; }
 	            if (options === void 0) { options = {}; }
 	            _this.addDisplayProperty(propertyIdentifier, title, options);
+	            return _this;
 	        };
 	        this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
 	            var column = {
@@ -4654,12 +4671,14 @@
 	            angular.extend(column, options);
 	            //Add columns
 	            _this.addColumn(column.propertyIdentifier, undefined, column);
+	            return _this;
 	        };
 	        this.addGroupBy = function (groupByAlias) {
 	            if (!_this.groupBys) {
 	                _this.groupBys = '';
 	            }
 	            _this.groupBys = _this.utilityService.listAppend(_this.groupBys, groupByAlias);
+	            return _this;
 	        };
 	        this.addDisplayProperty = function (propertyIdentifier, title, options) {
 	            if (title === void 0) { title = ''; }
@@ -4676,6 +4695,7 @@
 	                }
 	                _this.addColumn(_this.formatPropertyIdentifier(column), title, options);
 	            });
+	            return _this;
 	        };
 	        this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
 	            if (comparisonOperator === void 0) { comparisonOperator = '='; }
@@ -4695,10 +4715,12 @@
 	            //create filter group
 	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
 	            _this.filterGroups[0].filterGroup.push(filter);
+	            return _this;
 	        };
 	        this.removeFilter = function (propertyIdentifier, value, comparisonOperator) {
 	            if (comparisonOperator === void 0) { comparisonOperator = '='; }
 	            _this.removeFilterHelper(_this.filterGroups, propertyIdentifier, value, comparisonOperator);
+	            return _this;
 	        };
 	        this.removeFilterHelper = function (filter, propertyIdentifier, value, comparisonOperator, currentGroup) {
 	            if (angular.isUndefined(currentGroup)) {
@@ -4722,6 +4744,7 @@
 	            if (criteria === void 0) { criteria = 'One'; }
 	            if (readOnly === void 0) { readOnly = false; }
 	            _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatPropertyIdentifier(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
+	            return _this;
 	        };
 	        //orderByList in this form: "property|direction" concrete: "skuName|ASC"
 	        this.setOrderBy = function (orderByList) {
@@ -4729,6 +4752,7 @@
 	            angular.forEach(orderBys, function (orderBy) {
 	                _this.addOrderBy(orderBy);
 	            });
+	            return _this;
 	        };
 	        this.addOrderBy = function (orderByString) {
 	            if (!_this.orderBy) {
@@ -4744,9 +4768,11 @@
 	        };
 	        this.setCurrentPage = function (pageNumber) {
 	            _this.currentPage = pageNumber;
+	            return _this;
 	        };
 	        this.setPageShow = function (NumberOfPages) {
 	            _this.pageShow = NumberOfPages;
+	            return _this;
 	        };
 	        this.getPageShow = function () {
 	            return _this.pageShow;
@@ -4754,18 +4780,22 @@
 	        this.setAllRecords = function (allFlag) {
 	            if (allFlag === void 0) { allFlag = false; }
 	            _this.allRecords = allFlag;
+	            return _this;
 	        };
 	        this.setKeywords = function (keyword) {
 	            _this.keywords = keyword;
+	            return _this;
 	        };
 	        this.setId = function (id) {
 	            _this.id = id;
+	            return _this;
 	        };
 	        this.hasFilters = function () {
 	            return (_this.filterGroups.length && _this.filterGroups[0].filterGroup.length);
 	        };
 	        this.clearFilters = function () {
 	            _this.filterGroups = [{ filterGroup: [] }];
+	            return _this;
 	        };
 	        this.getEntity = function (id) {
 	            if (angular.isDefined(id)) {
@@ -4780,7 +4810,6 @@
 	            }
 	        }
 	    }
-	    CollectionConfig.$inject = ['$slatwall', 'utilityService'];
 	    return CollectionConfig;
 	})();
 	exports.CollectionConfig = CollectionConfig;
@@ -8874,7 +8903,8 @@
 	            var form = propertyDisplay.form.$$swFormInfo;
 	            $log.debug("Name is:" + name + " and form is: " + form);
 	            var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
-	            $log.debug("Validations: ");
+	            $log.debug("Validations: ", validations);
+	            $log.debug(propertyDisplay.form.$$swFormInfo);
 	            var validationsForContext = [];
 	            //get the form context and the form name.
 	            var formContext = propertyDisplay.form.$$swFormInfo.context;
@@ -8946,12 +8976,23 @@
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
 	            }
+	            else if (propertyDisplay.fieldType === 'number') {
+	                template = '<input type="number" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
 	            return template;
 	        };
 	        return {
 	            require: '^form',
 	            scope: {
-	                propertyDisplay: "="
+	                propertyDisplay: "=",
+	                type: "@?"
 	            },
 	            restrict: "E",
 	            //adding model and form controller
@@ -13473,15 +13514,1043 @@
 /* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var hibachi_module_1 = __webpack_require__(10);
+	var ngslatwall_module_1 = __webpack_require__(112);
+	//controllers
+	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(121);
+	//directives
+	var swaddorderitemgiftrecipient_1 = __webpack_require__(123);
+	var swgiftcardbalance_1 = __webpack_require__(124);
+	var swgiftcarddetail_1 = __webpack_require__(125);
+	var swgiftcardhistory_1 = __webpack_require__(126);
+	var swgiftcardoverview_1 = __webpack_require__(127);
+	var swgiftcardorderinfo_1 = __webpack_require__(128);
+	var swgiftcardrecipientinfo_1 = __webpack_require__(129);
+	var sworderitemgiftrecipientrow_1 = __webpack_require__(130);
+	var giftcardmodule = angular.module('giftcard', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name])
+	    .config([function () {
+	    }]).run([function () {
+	    }])
+	    .constant('giftCardPartialsPath', 'giftcard/components/')
+	    .controller('preprocessorderitem_addorderitemgiftrecipient', preprocessorderitem_addorderitemgiftrecipient_1.OrderItemGiftRecipientControl)
+	    .directive('swAddOrderItemGiftRecipient', swaddorderitemgiftrecipient_1.SWAddOrderItemGiftRecipient.Factory())
+	    .directive('swGiftCardBalance', swgiftcardbalance_1.SWGiftCardBalance.Factory())
+	    .directive('swGiftCardOverview', swgiftcardoverview_1.SWGiftCardOverview.Factory())
+	    .directive('swGiftCardDetail', swgiftcarddetail_1.SWGiftCardDetail.Factory())
+	    .directive('swGiftCardHistory', swgiftcardhistory_1.SWGiftCardHistory.Factory())
+	    .directive('swGiftCardRecipientInfo', swgiftcardrecipientinfo_1.SWGiftCardRecipientInfo.Factory())
+	    .directive('swGiftCardOrderInfo', swgiftcardorderinfo_1.SWGiftCardOrderInfo.Factory())
+	    .directive('swOrderItemGiftRecipientRow', sworderitemgiftrecipientrow_1.SWOrderItemGiftRecipientRow.Factory());
+	exports.giftcardmodule = giftcardmodule;
+
+
+/***/ },
+/* 121 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var giftrecipient_1 = __webpack_require__(122);
+	var OrderItemGiftRecipientControl = (function () {
+	    function OrderItemGiftRecipientControl($scope, $slatwall) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$slatwall = $slatwall;
+	        this.getUnassignedCountArray = function () {
+	            var unassignedCountArray = new Array();
+	            for (var i = 1; i <= _this.getUnassignedCount(); i++) {
+	                unassignedCountArray.push(i);
+	            }
+	            return unassignedCountArray;
+	        };
+	        this.getAssignedCount = function () {
+	            var assignedCount = 0;
+	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
+	                assignedCount += orderItemGiftRecipient.quantity;
+	            });
+	            return assignedCount;
+	        };
+	        this.getUnassignedCount = function () {
+	            var unassignedCount = _this.quantity;
+	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
+	                unassignedCount -= orderItemGiftRecipient.quantity;
+	            });
+	            return unassignedCount;
+	        };
+	        this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+	        $scope.collection = {};
+	        this.adding = false;
+	        this.searchText = "";
+	        var count = 1;
+	        this.currentGiftRecipient = new giftrecipient_1.GiftRecipient();
+	    }
+	    OrderItemGiftRecipientControl.$inject = ["$scope", "$slatwall"];
+	    return OrderItemGiftRecipientControl;
+	})();
+	exports.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
+
+
+/***/ },
+/* 122 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var GiftRecipient = (function () {
+	    function GiftRecipient(firstName, lastName, emailAddress, giftMessage, quantity, account, editing) {
+	        var _this = this;
+	        this.reset = function () {
+	            _this.firstName = null;
+	            _this.lastName = null;
+	            _this.emailAddress = null;
+	            _this.account = null;
+	            _this.editing = false;
+	            _this.quantity = 1;
+	        };
+	        this.quantity = 1;
+	        this.editing = false;
+	        this.account = false;
+	    }
+	    return GiftRecipient;
+	})();
+	exports.GiftRecipient = GiftRecipient;
+
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var giftrecipient_1 = __webpack_require__(122);
+	var SWAddOrderItemRecipientController = (function () {
+	    function SWAddOrderItemRecipientController($slatwall) {
+	        var _this = this;
+	        this.$slatwall = $slatwall;
+	        this.unassignedCountArray = [];
+	        this.addGiftRecipientFromAccountList = function (account) {
+	            var giftRecipient = new giftrecipient_1.GiftRecipient();
+	            giftRecipient.firstName = account.firstName;
+	            giftRecipient.lastName = account.lastName;
+	            giftRecipient.emailAddress = account.primaryEmailAddress_emailAddress;
+	            giftRecipient.account = true;
+	            _this.orderItemGiftRecipients.push(giftRecipient);
+	            _this.searchText = "";
+	        };
+	        this.getUnassignedCountArray = function () {
+	            if (_this.getUnassignedCount() < _this.unassignedCountArray.length) {
+	                _this.unassignedCountArray.splice(_this.getUnassignedCount(), _this.unassignedCountArray.length);
+	            }
+	            if (_this.getUnassignedCount() > _this.unassignedCountArray.length) {
+	                for (var i = _this.unassignedCountArray.length + 1; i <= _this.getUnassignedCount(); i++) {
+	                    _this.unassignedCountArray.push({ name: i, value: i });
+	                }
+	            }
+	            return _this.unassignedCountArray;
+	        };
+	        this.getAssignedCount = function () {
+	            _this.assignedCount = 0;
+	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
+	                _this.assignedCount += orderItemGiftRecipient.quantity;
+	            });
+	            return _this.assignedCount;
+	        };
+	        this.getUnassignedCount = function () {
+	            _this.unassignedCount = _this.quantity;
+	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
+	                _this.unassignedCount -= orderItemGiftRecipient.quantity;
+	            });
+	            return _this.unassignedCount;
+	        };
+	        this.addGiftRecipient = function () {
+	            if (_this.currentGiftRecipient.forms.createRecipient.$valid) {
+	                _this.showInvalidAddFormMessage = true;
+	                _this.adding = false;
+	                var giftRecipient = new giftrecipient_1.GiftRecipient();
+	                angular.extend(giftRecipient, _this.currentGiftRecipient.data);
+	                _this.orderItemGiftRecipients.push(giftRecipient);
+	                _this.searchText = "";
+	                _this.currentGiftRecipient = _this.$slatwall.newEntity("OrderItemGiftRecipient");
+	            }
+	            else {
+	                _this.showInvalidAddFormMessage = true;
+	            }
+	        };
+	        this.cancelAddRecipient = function () {
+	            _this.adding = false;
+	            _this.currentGiftRecipient.reset();
+	            _this.searchText = "";
+	            _this.showInvalidAddFormMessage = false;
+	        };
+	        this.startFormWithName = function (searchString) {
+	            if (searchString === void 0) { searchString = _this.searchText; }
+	            _this.adding = true;
+	            _this.currentGiftRecipient.forms.createRecipient.$setUntouched();
+	            _this.currentGiftRecipient.forms.createRecipient.$setPristine();
+	            if (searchString != "") {
+	                _this.currentGiftRecipient.firstName = searchString;
+	                _this.searchText = "";
+	            }
+	        };
+	        this.getTotalQuantity = function () {
+	            var totalQuantity = 0;
+	            angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
+	                totalQuantity += orderItemGiftRecipient.quantity;
+	            });
+	            return totalQuantity;
+	        };
+	        this.getMessageCharactersLeft = function () {
+	            if (angular.isDefined(_this.currentGiftRecipient.giftMessage)) {
+	                return 250 - _this.currentGiftRecipient.giftMessage.length;
+	            }
+	            else {
+	                return 250;
+	            }
+	        };
+	        this.adding = false;
+	        this.assignedCount = 0;
+	        this.searchText = "";
+	        var count = 1;
+	        this.currentGiftRecipient = $slatwall.newEntity("OrderItemGiftRecipient");
+	        this.orderItemGiftRecipients = [];
+	        this.showInvalidAddFormMessage = false;
+	    }
+	    SWAddOrderItemRecipientController.$inject = ["$slatwall"];
+	    return SWAddOrderItemRecipientController;
+	})();
+	exports.SWAddOrderItemRecipientController = SWAddOrderItemRecipientController;
+	var SWAddOrderItemGiftRecipient = (function () {
+	    function SWAddOrderItemGiftRecipient($slatwall, giftCardPartialsPath, pathBuilderConfig) {
+	        this.$slatwall = $slatwall;
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.require = "^form";
+	        this.restrict = "EA";
+	        this.transclude = true;
+	        this.scope = {};
+	        this.bindToController = {
+	            "quantity": "=",
+	            "orderItemGiftRecipients": "=",
+	            "adding": "=",
+	            "searchText": "=",
+	            "currentgiftRecipient": "=",
+	            "showInvalidAddFormMessage": "=?",
+	            "showInvalidRowMessage": "=?",
+	            "tableForm": "=",
+	            "recipientAddForm": "="
+	        };
+	        this.controller = SWAddOrderItemRecipientController;
+	        this.controllerAs = "addGiftRecipientControl";
+	        this.link = function ($scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/addorderitemgiftrecipient.html";
+	    }
+	    SWAddOrderItemGiftRecipient.Factory = function () {
+	        var directive = function ($slatwall, giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWAddOrderItemGiftRecipient($slatwall, giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$slatwall',
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    SWAddOrderItemGiftRecipient.$inject = ["$slatwall"];
+	    return SWAddOrderItemGiftRecipient;
+	})();
+	exports.SWAddOrderItemGiftRecipient = SWAddOrderItemGiftRecipient;
+
+
+/***/ },
+/* 124 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWGiftCardBalanceController = (function () {
+	    function SWGiftCardBalanceController(collectionConfigService) {
+	        var _this = this;
+	        this.collectionConfigService = collectionConfigService;
+	        this.init = function () {
+	            _this.initialBalance = 0;
+	            var totalDebit = 0;
+	            var totalCredit = 0;
+	            var transactionConfig = _this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
+	            transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
+	            transactionConfig.addFilter('giftCard.giftCardID', _this.giftCard.giftCardID);
+	            transactionConfig.setAllRecords(true);
+	            transactionConfig.setOrderBy("createdDateTime|DESC");
+	            var transactionPromise = transactionConfig.getEntity();
+	            transactionPromise.then(function (response) {
+	                _this.transactions = response.records;
+	                var initialCreditIndex = _this.transactions.length - 1;
+	                _this.initialBalance = _this.transactions[initialCreditIndex].creditAmount;
+	                angular.forEach(_this.transactions, function (transaction, index) {
+	                    if (!angular.isString(transaction.debitAmount)) {
+	                        totalDebit += transaction.debitAmount;
+	                    }
+	                    if (!angular.isString(transaction.creditAmount)) {
+	                        totalCredit += transaction.creditAmount;
+	                    }
+	                });
+	                _this.currentBalance = totalCredit - totalDebit;
+	                _this.balancePercentage = parseInt(((_this.currentBalance / _this.initialBalance) * 100).toString());
+	            });
+	        };
+	        this.init();
+	    }
+	    SWGiftCardBalanceController.$inject = ["collectionConfigService"];
+	    return SWGiftCardBalanceController;
+	})();
+	exports.SWGiftCardBalanceController = SWGiftCardBalanceController;
+	var SWGiftCardBalance = (function () {
+	    function SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	        this.collectionConfigService = collectionConfigService;
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.scope = {};
+	        this.bindToController = {
+	            giftCard: "=?",
+	            transactions: "=?",
+	            initialBalance: "=?",
+	            currentBalance: "=?",
+	            balancePercentage: "=?"
+	        };
+	        this.controller = SWGiftCardBalanceController;
+	        this.controllerAs = "swGiftCardBalance";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/balance.html";
+	        this.restrict = "EA";
+	    }
+	    SWGiftCardBalance.Factory = function () {
+	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'collectionConfigService',
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWGiftCardBalance;
+	})();
+	exports.SWGiftCardBalance = SWGiftCardBalance;
+
+
+/***/ },
+/* 125 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWGiftCardDetailController = (function () {
+	    function SWGiftCardDetailController(collectionConfigService) {
+	        var _this = this;
+	        this.collectionConfigService = collectionConfigService;
+	        this.init = function () {
+	            var giftCardConfig = _this.collectionConfigService.newCollectionConfig('GiftCard');
+	            giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
+	            giftCardConfig.addFilter('giftCardID', _this.giftCardId);
+	            giftCardConfig.setAllRecords(true);
+	            giftCardConfig.getEntity().then(function (response) {
+	                _this.giftCard = response.records[0];
+	            });
+	        };
+	        this.init();
+	    }
+	    SWGiftCardDetailController.$inject = ["collectionConfigService"];
+	    return SWGiftCardDetailController;
+	})();
+	exports.SWGiftCardDetailController = SWGiftCardDetailController;
+	var SWGiftCardDetail = (function () {
+	    function SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	        this.collectionConfigService = collectionConfigService;
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.scope = {};
+	        this.bindToController = {
+	            giftCardId: "@",
+	            giftCard: "=?"
+	        };
+	        this.controller = SWGiftCardDetailController;
+	        this.controllerAs = "swGiftCardDetail";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/basic.html";
+	        this.restrict = "E";
+	    }
+	    SWGiftCardDetail.Factory = function () {
+	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'collectionConfigService',
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWGiftCardDetail;
+	})();
+	exports.SWGiftCardDetail = SWGiftCardDetail;
+
+
+/***/ },
+/* 126 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWGiftCardHistoryController = (function () {
+	    function SWGiftCardHistoryController(collectionConfigService) {
+	        var _this = this;
+	        this.collectionConfigService = collectionConfigService;
+	        this.init = function () {
+	            var initialBalance = 0;
+	            var totalDebit = 0;
+	            var transactionConfig = _this.collectionConfigService.newCollectionConfig('GiftCardTransaction');
+	            transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime", "id,credit,debit,created,giftcardID,ordernumber,orderdatetime");
+	            transactionConfig.addFilter('giftCard.giftCardID', _this.giftCard.giftCardID);
+	            transactionConfig.setAllRecords(true);
+	            transactionConfig.setOrderBy("createdDateTime|DESC");
+	            var emailBounceConfig = _this.collectionConfigService.newCollectionConfig('EmailBounce');
+	            emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
+	            emailBounceConfig.addFilter('relatedObjectID', _this.giftCard.giftCardID);
+	            emailBounceConfig.setAllRecords(true);
+	            emailBounceConfig.setOrderBy("rejectedEmailSendTime|DESC");
+	            var emailConfig = _this.collectionConfigService.newCollectionConfig('Email');
+	            emailConfig.setDisplayProperties('emailID, emailTo, relatedObject, relatedObjectID, createdDateTime');
+	            emailConfig.addFilter('relatedObjectID', _this.giftCard.giftCardID);
+	            emailConfig.setAllRecords(true);
+	            emailConfig.setOrderBy("createdDateTime|DESC");
+	            emailConfig.getEntity().then(function (response) {
+	                _this.emails = response.records;
+	                emailBounceConfig.getEntity().then(function (response) {
+	                    _this.bouncedEmails = response.records;
+	                    transactionConfig.getEntity().then(function (response) {
+	                        _this.transactions = response.records;
+	                        var initialCreditIndex = _this.transactions.length - 1;
+	                        var initialBalance = _this.transactions[initialCreditIndex].creditAmount;
+	                        var currentBalance = initialBalance;
+	                        for (var i = initialCreditIndex; i >= 0; i--) {
+	                            var transaction = _this.transactions[i];
+	                            if (typeof transaction.debitAmount !== "string") {
+	                                transaction.debit = true;
+	                                totalDebit += transaction.debitAmount;
+	                            }
+	                            else if (typeof transaction.creditAmount !== "string") {
+	                                if (i != initialCreditIndex) {
+	                                    currentBalance += transaction.creditAmount;
+	                                }
+	                                transaction.debit = false;
+	                            }
+	                            var tempCurrentBalance = currentBalance - totalDebit;
+	                            transaction.balance = tempCurrentBalance;
+	                            if (i == initialCreditIndex) {
+	                                var activeCard = {
+	                                    activated: true,
+	                                    debit: false,
+	                                    activeAt: transaction.orderPayment_order_orderOpenDateTime,
+	                                    balance: initialBalance
+	                                };
+	                                _this.transactions.splice(i, 0, activeCard);
+	                                if (angular.isDefined(_this.bouncedEmails)) {
+	                                    angular.forEach(_this.bouncedEmails, function (email, bouncedEmailIndex) {
+	                                        email.bouncedEmail = true;
+	                                        email.balance = initialBalance;
+	                                        _this.transactions.splice(i, 0, email);
+	                                    });
+	                                }
+	                                if (angular.isDefined(_this.emails)) {
+	                                    angular.forEach(_this.emails, function (email) {
+	                                        email.emailSent = true;
+	                                        email.debit = false;
+	                                        email.sentAt = email.createdDateTime;
+	                                        email.balance = initialBalance;
+	                                        _this.transactions.splice(i, 0, email);
+	                                    });
+	                                }
+	                            }
+	                        }
+	                    });
+	                });
+	            });
+	            var orderConfig = _this.collectionConfigService.newCollectionConfig('Order');
+	            orderConfig.setDisplayProperties("orderID,orderNumber,orderOpenDateTime,account.firstName,account.lastName,account.accountID,account.primaryEmailAddress.emailAddress");
+	            orderConfig.addFilter('orderID', _this.giftCard.originalOrderItem_order_orderID);
+	            orderConfig.setAllRecords(true);
+	            orderConfig.getEntity().then(function (response) {
+	                _this.order = response.records[0];
+	            });
+	        };
+	        this.init();
+	    }
+	    SWGiftCardHistoryController.$inject = ["collectionConfigService"];
+	    return SWGiftCardHistoryController;
+	})();
+	exports.SWGiftCardHistoryController = SWGiftCardHistoryController;
+	var SWGiftCardHistory = (function () {
+	    function SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	        this.collectionConfigService = collectionConfigService;
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.scope = {};
+	        this.bindToController = {
+	            giftCard: "=?",
+	            transactions: "=?",
+	            bouncedEmails: "=?",
+	            order: "=?"
+	        };
+	        this.controller = SWGiftCardHistoryController;
+	        this.controllerAs = "swGiftCardHistory";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/history.html";
+	        this.restrict = "EA";
+	    }
+	    SWGiftCardHistory.Factory = function () {
+	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'collectionConfigService',
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWGiftCardHistory;
+	})();
+	exports.SWGiftCardHistory = SWGiftCardHistory;
+
+
+/***/ },
+/* 127 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWGiftCardOverviewController = (function () {
+	    function SWGiftCardOverviewController() {
+	    }
+	    return SWGiftCardOverviewController;
+	})();
+	exports.SWGiftCardOverviewController = SWGiftCardOverviewController;
+	var SWGiftCardOverview = (function () {
+	    function SWGiftCardOverview(giftCardPartialsPath, pathBuilderConfig) {
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.scope = {};
+	        this.bindToController = {
+	            giftCard: "=?"
+	        };
+	        this.controller = SWGiftCardOverviewController;
+	        this.controllerAs = "swGiftCardOverview";
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
+	        this.restrict = "EA";
+	    }
+	    SWGiftCardOverview.Factory = function () {
+	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWGiftCardOverview(giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWGiftCardOverview;
+	})();
+	exports.SWGiftCardOverview = SWGiftCardOverview;
+
+
+/***/ },
+/* 128 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWGiftCardOrderInfoController = (function () {
+	    function SWGiftCardOrderInfoController(collectionConfigService) {
+	        var _this = this;
+	        this.collectionConfigService = collectionConfigService;
+	        this.init = function () {
+	            var orderConfig = _this.collectionConfigService.newCollectionConfig('Order');
+	            orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
+	            orderConfig.addFilter('orderID', _this.giftCard.originalOrderItem_order_orderID);
+	            orderConfig.setAllRecords(true);
+	            orderConfig.getEntity().then(function (response) {
+	                _this.order = response.records[0];
+	            });
+	        };
+	        this.init();
+	    }
+	    SWGiftCardOrderInfoController.$inject = ["collectionConfigService"];
+	    return SWGiftCardOrderInfoController;
+	})();
+	exports.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
+	var SWGiftCardOrderInfo = (function () {
+	    function SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	        this.collectionConfigService = collectionConfigService;
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.scope = {};
+	        this.bindToController = {
+	            giftCard: "=?",
+	            order: "=?"
+	        };
+	        this.controller = SWGiftCardOrderInfoController;
+	        this.controllerAs = "swGiftCardOrderInfo";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/orderinfo.html";
+	        this.restrict = "EA";
+	    }
+	    SWGiftCardOrderInfo.Factory = function () {
+	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'collectionConfigService',
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    SWGiftCardOrderInfo.$inject = ["collectionConfigService", "partialsPath"];
+	    return SWGiftCardOrderInfo;
+	})();
+	exports.SWGiftCardOrderInfo = SWGiftCardOrderInfo;
+
+
+/***/ },
+/* 129 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWGiftCardRecipientInfoController = (function () {
+	    function SWGiftCardRecipientInfoController() {
+	    }
+	    return SWGiftCardRecipientInfoController;
+	})();
+	exports.SWGiftCardRecipientInfoController = SWGiftCardRecipientInfoController;
+	var SWGiftCardRecipientInfo = (function () {
+	    function SWGiftCardRecipientInfo(giftCardPartialsPath, pathBuilderConfig) {
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.scope = {};
+	        this.bindToController = {
+	            giftCard: "=?"
+	        };
+	        this.controller = SWGiftCardRecipientInfoController;
+	        this.controllerAs = "swGiftCardRecipientInfo";
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
+	        this.restrict = "EA";
+	    }
+	    SWGiftCardRecipientInfo.Factory = function () {
+	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWGiftCardRecipientInfo(giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWGiftCardRecipientInfo;
+	})();
+	exports.SWGiftCardRecipientInfo = SWGiftCardRecipientInfo;
+
+
+/***/ },
+/* 130 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWOrderItemGiftRecipientRowController = (function () {
+	    function SWOrderItemGiftRecipientRowController() {
+	        var _this = this;
+	        this.edit = function (recipient) {
+	            angular.forEach(_this.recipients, function (recipient) {
+	                recipient.editing = false;
+	            });
+	            if (!recipient.editing) {
+	                recipient.editing = true;
+	            }
+	        };
+	        this.delete = function (recipient) {
+	            _this.recipients.splice(_this.recipients.indexOf(recipient), 1);
+	        };
+	        this.saveGiftRecipient = function (recipient) {
+	            if (_this.tableForm.$valid) {
+	                _this.showInvalidRecipientMessage = false;
+	                recipient.editing = false;
+	            }
+	            else {
+	                _this.showInvalidRecipientMessage = true;
+	            }
+	        };
+	        this.getQuantity = function () {
+	            if (isNaN(_this.quantity)) {
+	                return 0;
+	            }
+	            else {
+	                return _this.quantity;
+	            }
+	        };
+	        this.getUnassignedCount = function () {
+	            var unassignedCount = _this.getQuantity();
+	            angular.forEach(_this.recipients, function (recipient) {
+	                unassignedCount -= recipient.quantity;
+	            });
+	            return unassignedCount;
+	        };
+	        this.getMessageCharactersLeft = function () {
+	            if (angular.isDefined(_this.recipient.giftMessage)) {
+	                return 250 - _this.recipient.giftMessage.length;
+	            }
+	            else {
+	                return 250;
+	            }
+	        };
+	        this.getUnassignedCountArray = function () {
+	            var unassignedCountArray = new Array();
+	            for (var i = 1; i <= _this.recipient.quantity + _this.getUnassignedCount(); i++) {
+	                unassignedCountArray.push(i);
+	            }
+	            return unassignedCountArray;
+	        };
+	    }
+	    return SWOrderItemGiftRecipientRowController;
+	})();
+	exports.SWOrderItemGiftRecipientRowController = SWOrderItemGiftRecipientRowController;
+	var SWOrderItemGiftRecipientRow = (function () {
+	    function SWOrderItemGiftRecipientRow(giftCardPartialsPath, pathBuilderConfig) {
+	        var _this = this;
+	        this.giftCardPartialsPath = giftCardPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.restrict = 'AE';
+	        this.scope = {
+	            recipient: "=",
+	            recipients: "=",
+	            quantity: "=",
+	            showInvalidRecipientMessage: "=",
+	            tableForm: "=?",
+	            index: "="
+	        };
+	        this.bindToController = {
+	            recipient: "=",
+	            recipients: "=",
+	            quantity: "=",
+	            showInvalidRecipientMessage: "=",
+	            tableForm: "=?",
+	            index: "="
+	        };
+	        this.controller = SWOrderItemGiftRecipientRowController;
+	        this.controllerAs = "giftRecipientRowControl";
+	        this.init = function () {
+	            _this.templateUrl = _this.pathBuilderConfig.buildPartialsPath(_this.giftCardPartialsPath) + "/orderitemgiftrecipientrow.html";
+	        };
+	        this.init();
+	    }
+	    SWOrderItemGiftRecipientRow.Factory = function () {
+	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
+	            return new SWOrderItemGiftRecipientRow(giftCardPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'giftCardPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOrderItemGiftRecipientRow;
+	})();
+	exports.SWOrderItemGiftRecipientRow = SWOrderItemGiftRecipientRow;
+
+
+/***/ },
+/* 131 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var hibachi_module_1 = __webpack_require__(10);
+	var ngslatwall_module_1 = __webpack_require__(112);
+	//controllers
+	//directives
+	var swaddoptiongroup_1 = __webpack_require__(132);
+	var swoptionsforoptiongroup_1 = __webpack_require__(133);
+	var optiongroupmodule = angular.module('optiongroup', [hibachi_module_1.hibachimodule.name, ngslatwall_module_1.ngslatwallmodule.name])
+	    .config([function () {
+	    }]).run([function () {
+	    }])
+	    .constant('optionGroupPartialsPath', 'optiongroup/components/')
+	    .directive('swAddOptionGroup', swaddoptiongroup_1.SWAddOptionGroup.Factory())
+	    .directive('swOptionsForOptionGroup', swoptionsforoptiongroup_1.SWOptionsForOptionGroup.Factory());
+	exports.optiongroupmodule = optiongroupmodule;
+
+
+/***/ },
+/* 132 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var optionWithGroup = (function () {
+	    function optionWithGroup(optionID, optionGroupID, match) {
+	        var _this = this;
+	        this.optionID = optionID;
+	        this.optionGroupID = optionGroupID;
+	        this.match = match;
+	        this.toString = function () {
+	            return _this.optionID;
+	        };
+	    }
+	    return optionWithGroup;
+	})();
+	exports.optionWithGroup = optionWithGroup;
+	var SWAddOptionGroupController = (function () {
+	    // @ngInject
+	    function SWAddOptionGroupController($slatwall, $timeout, collectionConfigService, observerService, utilityService) {
+	        var _this = this;
+	        this.$slatwall = $slatwall;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.observerService = observerService;
+	        this.utilityService = utilityService;
+	        this.getOptionList = function () {
+	            return _this.utilityService.arrayToList(_this.selection);
+	        };
+	        this.validateOptions = function (args) {
+	            _this.addToSelection(args[0], args[1].optionGroupID);
+	            if (_this.hasCompleteSelection()) {
+	                if (_this.validateSelection()) {
+	                    _this.selectedOptionList = _this.getOptionList();
+	                    _this.showValidFlag = true;
+	                    _this.showInvalidFlag = false;
+	                }
+	                else {
+	                    _this.showValidFlag = false;
+	                    _this.showInvalidFlag = true;
+	                }
+	            }
+	        };
+	        this.validateSelection = function () {
+	            var valid = true;
+	            angular.forEach(_this.usedOptions, function (combination) {
+	                if (valid) {
+	                    var counter = 0;
+	                    angular.forEach(combination, function (usedOption) {
+	                        if (_this.selection[counter].optionGroupID === usedOption.optionGroup_optionGroupID
+	                            && _this.selection[counter].optionID != usedOption.optionID) {
+	                            _this.selection[counter].match = true;
+	                        }
+	                        counter++;
+	                    });
+	                    if (!_this.allSelectionFieldsValidForThisCombination()) {
+	                        valid = false;
+	                    }
+	                }
+	            });
+	            return valid;
+	        };
+	        this.allSelectionFieldsValidForThisCombination = function () {
+	            var matches = 0;
+	            angular.forEach(_this.selection, function (pair) {
+	                if (!pair.match) {
+	                    matches++;
+	                }
+	                //reset 
+	                pair.match = false;
+	            });
+	            return matches != _this.selection.length;
+	        };
+	        this.hasCompleteSelection = function () {
+	            var answer = true;
+	            angular.forEach(_this.selection, function (pair) {
+	                if (pair.optionID.length === 0) {
+	                    answer = false;
+	                }
+	            });
+	            return answer;
+	        };
+	        this.addToSelection = function (optionId, optionGroupId) {
+	            angular.forEach(_this.selection, function (pair) {
+	                if (pair.optionGroupID === optionGroupId) {
+	                    pair.optionID = optionId;
+	                    return true;
+	                }
+	            });
+	            return false;
+	        };
+	        this.optionGroupIds = this.optionGroups.split(",");
+	        this.optionGroupIds.sort();
+	        this.selection = [];
+	        this.showValidFlag = false;
+	        this.showInvalidFlag = false;
+	        for (var i = 0; i < this.optionGroupIds.length; i++) {
+	            this.selection.push(new optionWithGroup("", this.optionGroupIds[i], false));
+	        }
+	        this.productCollectionConfig = collectionConfigService.newCollectionConfig("Product");
+	        this.productCollectionConfig.addDisplayProperty("productID, productName, productType.productTypeID");
+	        this.productCollectionConfig.getEntity(this.productId).then(function (response) {
+	            _this.product = response;
+	            _this.productTypeID = response.productType_productTypeID;
+	            _this.skuCollectionConfig = collectionConfigService.newCollectionConfig("Sku");
+	            _this.skuCollectionConfig.addDisplayProperty("skuID, skuCode, product.productID");
+	            _this.skuCollectionConfig.addFilter("product.productID", _this.productId);
+	            _this.skuCollectionConfig.setAllRecords(true);
+	            _this.usedOptions = [];
+	            _this.skuCollectionConfig.getEntity().then(function (response) {
+	                _this.skus = response.records;
+	                angular.forEach(_this.skus, function (sku) {
+	                    var optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
+	                    optionCollectionConfig.addDisplayProperty("optionID, optionName, optionCode, optionGroup.optionGroupID");
+	                    optionCollectionConfig.setAllRecords(true);
+	                    optionCollectionConfig.addFilter("skus.skuID", sku.skuID);
+	                    optionCollectionConfig.getEntity().then(function (response) {
+	                        _this.usedOptions.push(utilityService.arraySorter(response.records, ["optionGroup_optionGroupID"]));
+	                    });
+	                });
+	            });
+	        });
+	        this.observerService.attach(this.validateOptions, "validateOptions");
+	    }
+	    return SWAddOptionGroupController;
+	})();
+	exports.SWAddOptionGroupController = SWAddOptionGroupController;
+	var SWAddOptionGroup = (function () {
+	    // @ngInject
+	    function SWAddOptionGroup($slatwall, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
+	        this.$slatwall = $slatwall;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.observerService = observerService;
+	        this.optionGroupPartialsPath = optionGroupPartialsPath;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            productId: "@",
+	            optionGroups: "="
+	        };
+	        this.controller = SWAddOptionGroupController;
+	        this.controllerAs = "swAddOptionGroup";
+	        this.link = function ($scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";
+	    }
+	    SWAddOptionGroup.Factory = function () {
+	        var directive = function ($slatwall, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
+	            return new SWAddOptionGroup($slatwall, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$slatwall',
+	            '$timeout',
+	            'collectionConfigService',
+	            'observerService',
+	            'optionGroupPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWAddOptionGroup;
+	})();
+	exports.SWAddOptionGroup = SWAddOptionGroup;
+
+
+/***/ },
+/* 133 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWOptionsForOptionGroupController = (function () {
+	    // @ngInject
+	    function SWOptionsForOptionGroupController($slatwall, $timeout, collectionConfigService, observerService) {
+	        var _this = this;
+	        this.$slatwall = $slatwall;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.observerService = observerService;
+	        this.validateChoice = function () {
+	            _this.observerService.notify("validateOptions", [_this.selectedOption, _this.optionGroup]);
+	        };
+	        this.optionGroupCollectionConfig = collectionConfigService.newCollectionConfig("OptionGroup");
+	        this.optionGroupCollectionConfig.getEntity(this.optionGroupId).then(function (response) {
+	            _this.optionGroup = response;
+	        });
+	        this.optionCollectionConfig = collectionConfigService.newCollectionConfig("Option");
+	        this.optionCollectionConfig.setDisplayProperties("optionID, optionName, optionGroup.optionGroupID");
+	        this.optionCollectionConfig.addFilter("optionGroup.optionGroupID", this.optionGroupId);
+	        this.optionCollectionConfig.setAllRecords(true);
+	        this.optionCollectionConfig.getEntity().then(function (response) {
+	            _this.options = response.records;
+	        });
+	    }
+	    return SWOptionsForOptionGroupController;
+	})();
+	exports.SWOptionsForOptionGroupController = SWOptionsForOptionGroupController;
+	var SWOptionsForOptionGroup = (function () {
+	    // @ngInject
+	    function SWOptionsForOptionGroup($slatwall, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
+	        this.$slatwall = $slatwall;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.observerService = observerService;
+	        this.optionGroupPartialsPath = optionGroupPartialsPath;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            optionGroupId: "@",
+	            usedOptions: "="
+	        };
+	        this.controller = SWOptionsForOptionGroupController;
+	        this.controllerAs = "swOptionsForOptionGroup";
+	        this.link = function ($scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(optionGroupPartialsPath) + "optionsforoptiongroup.html";
+	    }
+	    SWOptionsForOptionGroup.Factory = function () {
+	        var directive = function ($slatwall, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
+	            return new SWOptionsForOptionGroup($slatwall, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$slatwall',
+	            '$timeout',
+	            'collectionConfigService',
+	            'observerService',
+	            'optionGroupPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWOptionsForOptionGroup;
+	})();
+	exports.SWOptionsForOptionGroup = SWOptionsForOptionGroup;
+
+
+/***/ },
+/* 134 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var core_module_1 = __webpack_require__(16);
 	//directives
-	var swchildorderitem_1 = __webpack_require__(121);
-	var sworderitem_1 = __webpack_require__(122);
-	var swoishippinglabelstamp_1 = __webpack_require__(123);
-	var sworderitemdetailstamp_1 = __webpack_require__(124);
-	var sworderitems_1 = __webpack_require__(125);
+	var swchildorderitem_1 = __webpack_require__(135);
+	var sworderitem_1 = __webpack_require__(136);
+	var swoishippinglabelstamp_1 = __webpack_require__(137);
+	var sworderitemdetailstamp_1 = __webpack_require__(138);
+	var sworderitems_1 = __webpack_require__(139);
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -13495,7 +14564,7 @@
 
 
 /***/ },
-/* 121 */
+/* 135 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13785,7 +14854,7 @@
 
 
 /***/ },
-/* 122 */
+/* 136 */
 /***/ function(module, exports) {
 
 	var SWOrderItem = (function () {
@@ -14202,7 +15271,7 @@
 
 
 /***/ },
-/* 123 */
+/* 137 */
 /***/ function(module, exports) {
 
 	/**
@@ -14243,7 +15312,7 @@
 
 
 /***/ },
-/* 124 */
+/* 138 */
 /***/ function(module, exports) {
 
 	/**
@@ -14342,11 +15411,11 @@
 
 
 /***/ },
-/* 125 */
+/* 139 */
 /***/ function(module, exports) {
 
 	var SWOrderItems = (function () {
-	    function SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
+	    function SWOrderItems($log, $timeout, $location, $slatwall, collectionConfigService, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -14378,208 +15447,28 @@
 	                    if (scope.pageShow === 'Auto') {
 	                        scope.pageShow = 50;
 	                    }
-	                    var columnsConfig = [
-	                        {
-	                            "isDeletable": false,
-	                            "isExportable": true,
-	                            "propertyIdentifier": "_orderitem.orderItemID",
-	                            "ormtype": "id",
-	                            "isVisible": true,
-	                            "title": "Order Item ID",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "isVisible": false,
-	                            "ormtype": "string",
-	                            "propertyIdentifier": "_orderitem.currencyCode"
-	                        },
-	                        {
-	                            "title": "Order Item Type",
-	                            "propertyIdentifier": "_orderitem.orderItemType",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Order Item Price",
-	                            "propertyIdentifier": "_orderitem.price",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Sku Name",
-	                            "propertyIdentifier": "_orderitem.sku.skuName",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Sku Price",
-	                            "propertyIdentifier": "_orderitem.skuPrice",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Sku ID",
-	                            "propertyIdentifier": "_orderitem.sku.skuID",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "SKU Code",
-	                            "propertyIdentifier": "_orderitem.sku.skuCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Product Bundle Group",
-	                            "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Product ID",
-	                            "propertyIdentifier": "_orderitem.sku.product.productID",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Product Name",
-	                            "propertyIdentifier": "_orderitem.sku.product.productName",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Product Type",
-	                            "propertyIdentifier": "_orderitem.sku.product.productType",
-	                            "isVisible": true
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.sku.baseProductType",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Product Description",
-	                            "propertyIdentifier": "_orderitem.sku.product.productDescription",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Event Start Date Time",
-	                            "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Product Description",
-	                            "propertyIdentifier": "_orderitem.sku.options",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Sku Location",
-	                            "propertyIdentifier": "_orderitem.sku.locations",
-	                            "isVisible": true,
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Subscription Term",
-	                            "propertyIdentifier": "_orderitem.sku.subscriptionTerm.subscriptionTermName",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Subscription Benefits",
-	                            "propertyIdentifier": "_orderitem.sku.subscriptionBenefits",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Qty.",
-	                            "propertyIdentifier": "_orderitem.quantity",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Fulfillment Method Name",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Fulfillment ID",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.orderFulfillmentID",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Fulfillment Method Type",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Street Address",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Street Address",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Street Address 2",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Postal Code",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "City",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "State",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Country",
-	                            "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
-	                            "isVisible": true,
-	                            "ormtype": "string",
-	                            "isSearchable": true
-	                        },
-	                        {
-	                            "title": "Image File Name",
-	                            "propertyIdentifier": "_orderitem.sku.imageFile",
-	                            "isVisible": true,
-	                        },
-	                        {
-	                            "title": "Total",
-	                            "propertyIdentifier": "_orderitem.itemTotal",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Discount Amount",
-	                            "propertyIdentifier": "_orderitem.discountAmount",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "title": "Tax Amount",
-	                            "propertyIdentifier": "_orderitem.taxAmount",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.extendedPrice",
-	                            "persistent": false
-	                        },
-	                        {
-	                            "propertyIdentifier": "_orderitem.productBundlePrice",
-	                            "persistent": false
-	                        }
-	                    ];
+	                    var orderItemCollection = collectionConfigService.newCollectionConfig('OrderItem');
+	                    orderItemCollection.setDisplayProperties('orderItemID,currencyCode,sku.skuName' +
+	                        ',price,skuPrice,sku.skuID,sku.skuCode,productBundleGroup.productBundleGroupID,sku.product.productID' +
+	                        ',sku.product.productName,sku.product.productDescription,sku.eventStartDateTime' +
+	                        ',quantity,orderFulfillment.fulfillmentMethod.fulfillmentMethodName,orderFulfillment.orderFulfillmentID' +
+	                        ',orderFulfillment.shippingAddress.streetAddress' +
+	                        ',orderFulfillment.shippingAddress.street2Address,orderFulfillment.shippingAddress.postalCode,orderFulfillment.shippingAddress.city,orderFulfillment.shippingAddress.stateCode' +
+	                        ',orderFulfillment.shippingAddress.countryCode' +
+	                        ',orderItemType.systemCode,orderFulfillment.fulfillmentMethod.fulfillmentMethodType' +
+	                        ',orderFulfillment.pickupLocation.primaryAddress.address.streetAddress,orderFulfillment.pickupLocation.primaryAddress.address.street2Address' +
+	                        ',orderFulfillment.pickupLocation.primaryAddress.address.city,orderFulfillment.pickupLocation.primaryAddress.address.stateCode' +
+	                        ',orderFulfillment.pickupLocation.primaryAddress.address.postalCode' +
+	                        ',itemTotal,discountAmount,taxAmount,extendedPrice,productBundlePrice,sku.baseProductType' +
+	                        ',sku.subscriptionBenefits' +
+	                        ',sku.product.productType.systemCode,sku.options,sku.locations' +
+	                        ',sku.subscriptionTerm.subscriptionTermName' +
+	                        ',sku.imageFile' +
+	                        '')
+	                        .addFilter('order.orderID', scope.orderId)
+	                        .addFilter('parentOrderItem', 'null', 'IS')
+	                        .setKeywords(scope.keywords)
+	                        .setPageShow(scope.paginator.getPageShow());
 	                    //add attributes to the column config
 	                    angular.forEach(scope.attributes, function (attribute) {
 	                        var attributeColumn = {
@@ -14587,44 +15476,13 @@
 	                            attributeID: attribute.attributeID,
 	                            attributeSetObject: "orderItem"
 	                        };
-	                        columnsConfig.push(attributeColumn);
+	                        orderItemCollection.columns.push(attributeColumn);
 	                    });
-	                    var filterGroupsConfig = [
-	                        {
-	                            "filterGroup": [
-	                                {
-	                                    "propertyIdentifier": "_orderitem.order.orderID",
-	                                    "comparisonOperator": "=",
-	                                    "value": scope.orderId,
-	                                },
-	                                {
-	                                    "logicalOperator": "AND",
-	                                    "propertyIdentifier": "_orderitem.parentOrderItem",
-	                                    "comparisonOperator": "is",
-	                                    "value": "null",
-	                                }
-	                            ]
-	                        }
-	                    ];
-	                    options = {
-	                        columnsConfig: angular.toJson(columnsConfig),
-	                        filterGroupsConfig: angular.toJson(filterGroupsConfig),
-	                        currentPage: scope.paginator.getCurrentPage(),
-	                        pageShow: scope.paginator.getPageShow(),
-	                        keywords: scope.keywords
-	                    };
-	                    //Create a list of order items.
-	                    //scope.orderItems = [];
-	                    scope.orderAttributes = [];
-	                    scope.attributeValues = [];
-	                    var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+	                    var orderItemsPromise = orderItemCollection.getEntity();
 	                    orderItemsPromise.then(function (value) {
 	                        scope.collection = value;
 	                        var collectionConfig = {};
-	                        collectionConfig.columns = columnsConfig;
-	                        collectionConfig.baseEntityName = 'SlatwallOrderItem';
-	                        collectionConfig.baseEntityAlias = '_orderitem';
-	                        scope.orderItems = $slatwall.populateCollection(value.pageRecords, collectionConfig);
+	                        scope.orderItems = $slatwall.populateCollection(value.pageRecords, orderItemCollection);
 	                        for (var orderItem in scope.orderItems) {
 	                            $log.debug("OrderItem Product Type");
 	                            $log.debug(scope.orderItems);
@@ -14635,47 +15493,12 @@
 	                        scope.orderItems = [];
 	                    });
 	                };
-	                //get all possible attributes
-	                var attributesConfig = [
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeID",
-	                        "ormtype": "id",
-	                        "title": "attributeID",
-	                    },
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeCode",
-	                        "ormtype": "string",
-	                        "title": "Attribute Code",
-	                    },
-	                    {
-	                        "propertyIdentifier": "_attribute.attributeName",
-	                        "ormtype": "string",
-	                        "title": "Attribute Name",
-	                    }
-	                ];
-	                var attributesFilters = [
-	                    {
-	                        "filterGroup": [
-	                            {
-	                                "propertyIdentifier": "_attribute.displayOnOrderDetailFlag",
-	                                "comparisonOperator": "=",
-	                                "value": true
-	                            },
-	                            {
-	                                "logicalOperator": "AND",
-	                                "propertyIdentifier": "_attribute.activeFlag",
-	                                "comparisonOperator": "=",
-	                                "value": true
-	                            }
-	                        ]
-	                    }
-	                ];
-	                var attributeOptions = {
-	                    columnsConfig: angular.toJson(attributesConfig),
-	                    filterGroupsConfig: angular.toJson(attributesFilters),
-	                    allRecords: true
-	                };
-	                var attItemsPromise = $slatwall.getEntity('attribute', attributeOptions);
+	                var attributesCollection = collectionConfigService.newCollectionConfig('Attribute');
+	                attributesCollection.setDisplayProperties('attributeID,attributeCode,attributeName')
+	                    .addFilter('displayOnOrderDetailFlag', true)
+	                    .addFilter('activeFlag', true)
+	                    .setAllRecords(true);
+	                var attItemsPromise = attributesCollection.getEntity();
 	                attItemsPromise.then(function (value) {
 	                    scope.attributes = [];
 	                    angular.forEach(value.records, function (attributeItemData) {
@@ -14685,26 +15508,28 @@
 	                    scope.getCollection();
 	                });
 	                //Add claim function and cancel function
-	                scope.appendToCollection = function () {
-	                    if (scope.pageShow === 'Auto') {
+	                /*scope.appendToCollection = function(){
+	                    if(scope.pageShow === 'Auto'){
 	                        $log.debug('AppendToCollection');
-	                        if (scope.paginator.autoScrollPage < scope.collection.totalPages) {
+	                        if(scope.paginator.autoScrollPage < scope.collection.totalPages){
 	                            scope.paginator.autoScrollDisabled = true;
 	                            scope.paginator.autoScrollPage++;
-	                            var appendOptions = {};
-	                            angular.extend(appendOptions, options);
+
+	                            var appendOptions:any = {};
+	                            angular.extend(appendOptions,options);
 	                            appendOptions.pageShow = 50;
 	                            appendOptions.currentPage = scope.paginator.autoScrollPage;
+
 	                            var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
-	                            collectionListingPromise.then(function (value) {
+	                            collectionListingPromise.then(function(value){
 	                                scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
 	                                scope.autoScrollDisabled = false;
-	                            }, function (reason) {
+	                            },function(reason){
 	                                scope.collection.pageRecords = [];
 	                            });
 	                        }
 	                    }
-	                };
+	                };*/
 	                scope.paginator = paginationService.createPagination();
 	                scope.paginator.collection = scope.collection;
 	                scope.paginator.getCollection = scope.getCollection;
@@ -14712,14 +15537,15 @@
 	        };
 	    }
 	    SWOrderItems.Factory = function () {
-	        var directive = function ($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
-	            return new SWOrderItems($log, $timeout, $location, $slatwall, formService, orderItemPartialsPath, pathBuilderConfig, paginationService);
+	        var directive = function ($log, $timeout, $location, $slatwall, collectionConfigService, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
+	            return new SWOrderItems($log, $timeout, $location, $slatwall, collectionConfigService, formService, orderItemPartialsPath, pathBuilderConfig, paginationService);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$timeout',
 	            '$location',
 	            '$slatwall',
+	            'collectionConfigService',
 	            'formService',
 	            'orderItemPartialsPath',
 	            'pathBuilderConfig',
@@ -14733,7 +15559,7 @@
 
 
 /***/ },
-/* 126 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -14742,7 +15568,7 @@
 	var core_module_1 = __webpack_require__(16);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(127);
+	var preprocessproduct_create_1 = __webpack_require__(141);
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -14753,7 +15579,7 @@
 
 
 /***/ },
-/* 127 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14829,7 +15655,7 @@
 
 
 /***/ },
-/* 128 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -14837,13 +15663,13 @@
 	//modules
 	var core_module_1 = __webpack_require__(16);
 	//services
-	var productbundleservice_1 = __webpack_require__(129);
+	var productbundleservice_1 = __webpack_require__(143);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(130);
+	var create_bundle_controller_1 = __webpack_require__(144);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(131);
-	var swproductbundlegroups_1 = __webpack_require__(132);
-	var swproductbundlegroup_1 = __webpack_require__(133);
+	var swproductbundlegrouptype_1 = __webpack_require__(145);
+	var swproductbundlegroups_1 = __webpack_require__(146);
+	var swproductbundlegroup_1 = __webpack_require__(147);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -14857,7 +15683,7 @@
 
 
 /***/ },
-/* 129 */
+/* 143 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14942,7 +15768,7 @@
 
 
 /***/ },
-/* 130 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15030,7 +15856,7 @@
 
 
 /***/ },
-/* 131 */
+/* 145 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15200,7 +16026,7 @@
 
 
 /***/ },
-/* 132 */
+/* 146 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15260,7 +16086,7 @@
 
 
 /***/ },
-/* 133 */
+/* 147 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15605,24 +16431,24 @@
 
 
 /***/ },
-/* 134 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(135);
+	var workflowconditionservice_1 = __webpack_require__(149);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(136);
-	var swworkflowbasic_1 = __webpack_require__(137);
-	var swworkflowcondition_1 = __webpack_require__(138);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(139);
-	var swworkflowconditiongroups_1 = __webpack_require__(140);
-	var swworkflowtask_1 = __webpack_require__(141);
-	var swworkflowtaskactions_1 = __webpack_require__(142);
-	var swworkflowtasks_1 = __webpack_require__(143);
-	var swworkflowtrigger_1 = __webpack_require__(144);
-	var swworkflowtriggers_1 = __webpack_require__(145);
+	var swadmincreatesuperuser_1 = __webpack_require__(150);
+	var swworkflowbasic_1 = __webpack_require__(151);
+	var swworkflowcondition_1 = __webpack_require__(152);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(153);
+	var swworkflowconditiongroups_1 = __webpack_require__(154);
+	var swworkflowtask_1 = __webpack_require__(155);
+	var swworkflowtaskactions_1 = __webpack_require__(156);
+	var swworkflowtasks_1 = __webpack_require__(157);
+	var swworkflowtrigger_1 = __webpack_require__(158);
+	var swworkflowtriggers_1 = __webpack_require__(159);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
@@ -15642,7 +16468,7 @@
 
 
 /***/ },
-/* 135 */
+/* 149 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15697,7 +16523,7 @@
 
 
 /***/ },
-/* 136 */
+/* 150 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15731,7 +16557,7 @@
 
 
 /***/ },
-/* 137 */
+/* 151 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15771,7 +16597,7 @@
 
 
 /***/ },
-/* 138 */
+/* 152 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15893,7 +16719,7 @@
 
 
 /***/ },
-/* 139 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15932,7 +16758,7 @@
 
 
 /***/ },
-/* 140 */
+/* 154 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15981,7 +16807,7 @@
 
 
 /***/ },
-/* 141 */
+/* 155 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16033,7 +16859,7 @@
 
 
 /***/ },
-/* 142 */
+/* 156 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16215,7 +17041,7 @@
 
 
 /***/ },
-/* 143 */
+/* 157 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16407,7 +17233,7 @@
 
 
 /***/ },
-/* 144 */
+/* 158 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16497,7 +17323,7 @@
 
 
 /***/ },
-/* 145 */
+/* 159 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16688,7 +17514,7 @@
 
 
 /***/ },
-/* 146 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -16702,12 +17528,12 @@
 	// import {FormService} from "./services/formservice";
 	// import {MetaDataService} from "./services/metadataservice";
 	//controllers
-	var otherwisecontroller_1 = __webpack_require__(147);
-	var routercontroller_1 = __webpack_require__(148);
+	var otherwisecontroller_1 = __webpack_require__(161);
+	var routercontroller_1 = __webpack_require__(162);
 	//directives
-	var swdetailtabs_1 = __webpack_require__(149);
-	var swdetail_1 = __webpack_require__(150);
-	var swlist_1 = __webpack_require__(151);
+	var swdetailtabs_1 = __webpack_require__(163);
+	var swdetail_1 = __webpack_require__(164);
+	var swlist_1 = __webpack_require__(165);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute'])
 	    .config(['$routeProvider', '$injector',
 	    function ($routeProvider, $injector) {
@@ -16748,7 +17574,7 @@
 
 
 /***/ },
-/* 147 */
+/* 161 */
 /***/ function(module, exports) {
 
 	var OtherWiseController = (function () {
@@ -16762,7 +17588,7 @@
 
 
 /***/ },
-/* 148 */
+/* 162 */
 /***/ function(module, exports) {
 
 	var RouterController = (function () {
@@ -16788,7 +17614,7 @@
 
 
 /***/ },
-/* 149 */
+/* 163 */
 /***/ function(module, exports) {
 
 	var SWDetailTabs = (function () {
@@ -16819,7 +17645,7 @@
 
 
 /***/ },
-/* 150 */
+/* 164 */
 /***/ function(module, exports) {
 
 	var SWDetail = (function () {
@@ -16889,7 +17715,7 @@
 
 
 /***/ },
-/* 151 */
+/* 165 */
 /***/ function(module, exports) {
 
 	var SWList = (function () {
@@ -16933,7 +17759,7 @@
 
 
 /***/ },
-/* 152 */
+/* 166 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16957,7 +17783,7 @@
 
 
 /***/ },
-/* 153 */
+/* 167 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17008,7 +17834,7 @@
 
 
 /***/ },
-/* 154 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
