@@ -166,10 +166,10 @@ interface IPaginationService{
 }
 
 class PaginationService implements IPaginationService{
-    //@ngInject
+    
 
     private paginations = {};
-
+    //@ngInject
     constructor(
         private utilityService
     ){

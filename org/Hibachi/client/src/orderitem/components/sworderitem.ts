@@ -4,7 +4,7 @@ class SWOrderItem{
 			$compile,
 			$http,
 			$templateCache,
-			$slatwall,
+			$hibachi,
 			orderItemPartialsPath,
 			pathBuilderConfig
 		)=> new SWOrderItem(
@@ -12,7 +12,7 @@ class SWOrderItem{
 			$compile,
 			$http,
 			$templateCache,
-			$slatwall,
+			$hibachi,
 			orderItemPartialsPath,
 			pathBuilderConfig
 	  	);
@@ -21,7 +21,7 @@ class SWOrderItem{
 			'$compile',
 			'$http',
 			'$templateCache',
-			'$slatwall',
+			'$hibachi',
 			'orderItemPartialsPath',
 			'pathBuilderConfig'
 		];
@@ -32,7 +32,7 @@ class SWOrderItem{
 		$compile,
 		$http,
 		$templateCache,
-		$slatwall,
+		$hibachi,
 		orderItemPartialsPath,
 		pathBuilderConfig
 	){
@@ -114,7 +114,7 @@ class SWOrderItem{
 											filterGroupsConfig:angular.toJson(queueGroupsConfig),
 											allRecords:true
 										};
-					var positionPromise = $slatwall.getEntity('EventRegistration', queueOptions);
+					var positionPromise = $hibachi.getEntity('EventRegistration', queueOptions);
 							$log.debug(positionPromise);
 							positionPromise.then(function(value){
 								angular.forEach(value.records,function(position){
@@ -399,13 +399,13 @@ class SWOrderItem{
 						scope.orderItem.clicked = !scope.orderItem.clicked;
 						scope.orderItem.hide = !scope.orderItem.hide;
 						scope.orderItem.childItemsRetrieved = true;
-						var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+						var orderItemsPromise = $hibachi.getEntity('orderItem', options);
 						orderItemsPromise.then(function(value){
 							var collectionConfig:any = {};
 							collectionConfig.columns = columnsConfig;
 							collectionConfig.baseEntityName = 'SlatwallOrderItem';
 							collectionConfig.baseEntityAlias = '_orderitem';
-							var childOrderItems = $slatwall.populateCollection(value.records,collectionConfig);
+							var childOrderItems = $hibachi.populateCollection(value.records,collectionConfig);
 							angular.forEach(childOrderItems,function(childOrderItem){
 								childOrderItem.depth = scope.orderItem.depth+1;
 								scope.childOrderItems.push(childOrderItem);

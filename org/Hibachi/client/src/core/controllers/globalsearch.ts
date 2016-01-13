@@ -5,14 +5,18 @@ class GlobalSearchController{
 		$log,
 		$window,
 		$timeout,
-		$slatwall
+		$hibachi,
+        rbkeyService
 	){
+        
+        console.log('test');
+        console.log(rbkeyService);
 		$scope.keywords = '';
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
 		$scope.loading = false; //Set loading wheel to false
 		$scope.resultsFound = true; // Set the results Found to true because no search has been done yet
-	
+
 		$scope.searchResults = {
 			'product' : {
 				'title': 'Products',
@@ -25,7 +29,7 @@ class GlobalSearchController{
 				}
 			},
 			'brand' : {
-				'title': $slatwall.getRBKey('entity.Brands'),
+				'title': rbkeyService.getRBKey('entity.Brands'),
 				'resultNameFilter': function(data) {
 					return data['brandName'];
 				},
@@ -55,44 +59,44 @@ class GlobalSearchController{
 				}
 			}
 		};
-	
-	
+
+
 		var _timeoutPromise;
 		var _loadingCount = 0;
-		
+
 		$scope.updateSearchResults = function() {
-			
+
 			$scope.loading = true;
 			$scope.showResults();
-			
+
 			if(_timeoutPromise) {
 				$timeout.cancel(_timeoutPromise);
 			}
-	
+
 			_timeoutPromise = $timeout(function(){
-				
+
 				// If no keywords, then set everything back to their defaults
 				if($scope.keywords === ''){
 					$scope.hideResults();
-					
+
 				// Otherwise performe the search
 				} else {
 					$scope.showResults();
-				
+
 					// Set the loadingCount to the number of AJAX Calls we are about to do
 					_loadingCount = Object.keys($scope.searchResults).length;
-					
+
 					for (var entityName in $scope.searchResults){
-						
+
 						(function(entityName) {
-		
-							var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords, pageShow : 4, deferkey : 'global-search-'+entityName} );
-		
+
+							var searchPromise = $hibachi.getEntity(entityName, {keywords : $scope.keywords, pageShow : 4, deferkey : 'global-search-'+entityName} );
+
 							searchPromise.then(function(data){
-								
+
 								// Clear out the old Results
 								$scope.searchResults[ entityName ].results = [];
-								$scope.searchResults[ entityName ].title = $slatwall.getRBKey('entity.'+entityName.toLowerCase()+'_plural');
+								$scope.searchResults[ entityName ].title = rbkeyService.getRBKey('entity.'+entityName.toLowerCase()+'_plural');
 								// push in the new results
 								for(var i in data.pageRecords) {
 									$scope.searchResults[ entityName ].results.push({
@@ -100,14 +104,14 @@ class GlobalSearchController{
 										'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
 									});
 								}
-								
+
 								// Increment Down The Loading Count
 								_loadingCount--;
-								
+
 								// If the loadingCount drops to 0, then we can update scope
 								if(_loadingCount == 0){
-									$scope.loading = false;	
-									
+									$scope.loading = false;
+
 									var _foundResults = false;
 									for (var _thisEntityName in $scope.searchResults){
 										if($scope.searchResults[ _thisEntityName ].results.length){
@@ -115,23 +119,23 @@ class GlobalSearchController{
 											break;
 										}
 									}
-									
+
 									$scope.resultsFound = _foundResults;
 								}
-								
+
 							});
-		
+
 						})( entityName );
-						
+
 					}
 				}
-	
+
 			}, 500);
-		
-			
+
+
 		};
-	
-	
+
+
 		$scope.showResults = function() {
 			$scope.searchResultsOpen = true;
 			$scope.sidebarClass = 'sidebar s-search-width';
@@ -143,7 +147,7 @@ class GlobalSearchController{
 				}
 			};
 		};
-	
+
 		$scope.hideResults = function() {
 			$scope.searchResultsOpen = false;
 			$scope.sidebarClass = 'sidebar';
@@ -152,7 +156,7 @@ class GlobalSearchController{
 			$window.onclick = null;
 			$scope.loading = false;
 			$scope.resultsFound = true;
-			
+
 			for (var entityName in $scope.searchResults){
 				$scope.searchResults[ entityName ].results = [];
 			}

@@ -84,7 +84,8 @@ class CollectionConfig {
     public collection: any;
     // @ngInject
     constructor(
-        private $slatwall:any,
+        private rbkeyService:any,
+        private $hibachi:any,
         private utilityService,
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
@@ -101,8 +102,13 @@ class CollectionConfig {
         private isDistinct:boolean = false
 
     ){
+        console.log('abc');
+        console.log(rbkeyService);
+        console.log($hibachi);
+        this.$hibachi = $hibachi;
+        this.rbkeyService = rbkeyService;
         if(angular.isDefined(this.baseEntityName)){
-            this.collection = this.$slatwall.getEntityExample(this.baseEntityName);
+            this.collection = this.$hibachi.getEntityExample(this.baseEntityName);
             if(angular.isUndefined(this.baseEntityAlias)){
                 this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
             }
@@ -115,7 +121,7 @@ class CollectionConfig {
     };
 
     public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
-        return new CollectionConfig(this.$slatwall, this.utilityService, baseEntityName, baseEntityAlias);
+        return new CollectionConfig(this.rbkeyService, this.$hibachi, this.utilityService, baseEntityName, baseEntityAlias);
     };
 
     public loadJson= (jsonCollection):any =>{
@@ -214,7 +220,7 @@ public getCollectionConfig= ():any =>{
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
-                current_collection = this.$slatwall.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+                current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
                 this.addJoin(new Join(
                     _propertyIdentifier.replace(/_/g, '.').substring(1),
@@ -264,7 +270,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
                 ormtype = 'string',
                 lastProperty=column.split('.').pop()
                 ;
-            var lastEntity = this.$slatwall.getEntityExample(this.$slatwall.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
+            var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
@@ -331,7 +337,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
     public addDisplayAggregate=(propertyIdentifier:string,aggregateFunction:string,aggregateAlias:string,options?):CollectionConfig=>{
         var column = {
             propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier, true),
-            title : this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+propertyIdentifier),
+            title : this.rbkeyService.getRBKey("entity."+this.baseEntityName+"."+propertyIdentifier),
             aggregate:{
                 aggregateFunction:aggregateFunction,
                 aggregateAlias:aggregateAlias
@@ -360,7 +366,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
             if(angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
                 title = _DividedTitles[index].trim();
             }else {
-                title = this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+column);
+                title = this.rbkeyService.getRBKey("entity."+this.baseEntityName+"."+column);
             }
             this.addColumn(this.formatPropertyIdentifier(column),title, options);
         });
@@ -502,7 +508,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
         if (angular.isDefined(id)){
             this.setId(id);
         }
-        return this.$slatwall.getEntity(this.baseEntityName, this.getOptions());
+        return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
     };
 
 }

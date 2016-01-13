@@ -9,11 +9,12 @@ class SWEditFilterItem{
 			$log,
 			$filter,
             $timeout,
-			$slatwall,
+			$hibachi,
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			pathBuilderConfig,
+            rbkeyService
 		)=> new SWEditFilterItem(
 			$http,
 			$compile,
@@ -21,11 +22,12 @@ class SWEditFilterItem{
 			$log,
 			$filter,
             $timeout,
-			$slatwall,
+			$hibachi,
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			pathBuilderConfig,
+            rbkeyService
 		);
 		directive.$inject = [
 			'$http',
@@ -34,11 +36,12 @@ class SWEditFilterItem{
 			'$log',
 			'$filter',
             '$timeout',
-			'$slatwall',
+			'$hibachi',
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'pathBuilderConfig',
+            'rbkeyService'
 		];
 		return directive;
 	}
@@ -49,11 +52,12 @@ class SWEditFilterItem{
 		$log,
 		$filter,
         $timeout,
-		$slatwall,
+		$hibachi,
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		pathBuilderConfig,
+        rbkeyService
 	){
 		return {
 			require:'^swFilterGroups',
@@ -90,7 +94,7 @@ class SWEditFilterItem{
                         
                         scope.filterItem.breadCrumbs = [
                                                 {
-                                                    rbKey:$slatwall.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
+                                                    rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
                                                     entityAlias:scope.collectionConfig.baseEntityAlias,
                                                     cfc:scope.collectionConfig.baseEntityAlias,
                                                     propertyIdentifier:scope.collectionConfig.baseEntityAlias
@@ -101,7 +105,7 @@ class SWEditFilterItem{
                         entityAliasArrayFromString.pop();
                         for(var i in entityAliasArrayFromString){
                             var breadCrumb = {
-                                    rbKey:$slatwall.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
+                                    rbKey:rbkeyService.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
                                     entityAlias:entityAliasArrayFromString[i],
                                     cfc:entityAliasArrayFromString[i],
                                     propertyIdentifier:entityAliasArrayFromString[i]
@@ -113,7 +117,7 @@ class SWEditFilterItem{
                    
                     angular.forEach(scope.filterItem.breadCrumbs,function(breadCrumb,key){
                         if(angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])){
-                            var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
                             filterPropertiesPromise.then(function(value){
                                 metadataService.setPropertiesList(value,breadCrumb.propertyIdentifier);
                                 scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);

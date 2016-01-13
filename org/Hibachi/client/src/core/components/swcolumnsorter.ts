@@ -21,6 +21,7 @@ class SWColumnSorter{
 		];
 		return directive;
 	}
+    //@ngInject
 	public constructor(
 		$log,
 		observerService,

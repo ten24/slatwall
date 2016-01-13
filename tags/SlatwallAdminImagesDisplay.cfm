@@ -78,7 +78,7 @@
 					</div>
 				</cfloop>
 			<cfelse>
-				<div class="alert alert-info deafult-margin" role="alert" ng-if="$root.loadedResourceBundle" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
+				<div class="alert alert-info deafult-margin" role="alert" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
 			</cfif>
 			<div class="col-xs-3">
 				<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-primary" icon="plus" />

@@ -18,14 +18,14 @@ class SWAddOrderItemRecipientController {
     public tableForm;
     public showInvalidAddFormMessage:boolean;
     
-    public static $inject=["$slatwall"];
+    public static $inject=["$hibachi"];
     
-    constructor(private $slatwall){
+    constructor(private $hibachi){
         this.adding = false; 
         this.assignedCount = 0; 
         this.searchText = ""; 
         var count = 1;
-        this.currentGiftRecipient = $slatwall.newEntity("OrderItemGiftRecipient");
+        this.currentGiftRecipient = $hibachi.newEntity("OrderItemGiftRecipient");
         this.orderItemGiftRecipients = [];
         this.showInvalidAddFormMessage = false;
     }
@@ -82,7 +82,7 @@ class SWAddOrderItemRecipientController {
                 angular.extend(giftRecipient,this.currentGiftRecipient.data);
                 this.orderItemGiftRecipients.push(giftRecipient);
                 this.searchText = ""; 
-                this.currentGiftRecipient = this.$slatwall.newEntity("OrderItemGiftRecipient"); 
+                this.currentGiftRecipient = this.$hibachi.newEntity("OrderItemGiftRecipient"); 
             } else { 
                 this.showInvalidAddFormMessage = true;
             }
@@ -125,7 +125,7 @@ class SWAddOrderItemRecipientController {
 
 class SWAddOrderItemGiftRecipient implements ng.IDirective{
 
-	public static $inject=["$slatwall"];
+	public static $inject=["$hibachi"];
     public templateUrl; 
     public require = "^form";
     public restrict = "EA";
@@ -149,16 +149,16 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
     
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
-            $slatwall,
+            $hibachi,
 		    giftCardPartialsPath,
 			pathBuilderConfig
         ) => new SWAddOrderItemGiftRecipient(
-            $slatwall,
+            $hibachi,
 			giftCardPartialsPath,
 			pathBuilderConfig
         );
         directive.$inject = [
-            '$slatwall',
+            '$hibachi',
 			'giftCardPartialsPath',
 			'pathBuilderConfig'
         ];
@@ -166,7 +166,7 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
     }
     
 	constructor(
-		private $slatwall,
+		private $hibachi,
 	    private giftCardPartialsPath,
 		private pathBuilderConfig
 	){

@@ -5,7 +5,7 @@
 class SWCurrency{
    
     //@ngInject
-    public static Factory($sce,$log,$slatwall){
+    public static Factory($sce,$log,$hibachi){
         var data = null, serviceInvoked = false;
         function realFilter(value,decimalPlace,returnStringFlag=true) {
             // REAL FILTER LOGIC, DISREGARDING PROMISES
@@ -33,7 +33,7 @@ class SWCurrency{
             if( data === null && returnStringFlag) {
                 if( !serviceInvoked ) {
                     serviceInvoked = true;
-                        $slatwall.getCurrencies().then((currencies)=>{
+                        $hibachi.getCurrencies().then((currencies)=>{
                         var result = currencies.data;
                         data = result[currencyCode];
                     });

@@ -16,6 +16,7 @@ class SWExportAction{
 		];
 		return directive;
 	}
+    //@ngInject
 	constructor(
 		$log,
 		corePartialsPath,

@@ -8,7 +8,7 @@ class SWFormField{
 			$log,
 			$templateCache,
 			$window,
-			$slatwall,
+			$hibachi,
 			formService,
 			coreFormPartialsPath,
 			pathBuilderConfig
@@ -16,7 +16,7 @@ class SWFormField{
 			$log,
 			$templateCache,
 			$window,
-			$slatwall,
+			$hibachi,
 			formService,
 			coreFormPartialsPath,
 			pathBuilderConfig
@@ -25,7 +25,7 @@ class SWFormField{
 			'$log',
 			'$templateCache',
 			'$window',
-			'$slatwall',
+			'$hibachi',
 			'formService',
 			'coreFormPartialsPath',
 			'pathBuilderConfig'
@@ -36,7 +36,7 @@ class SWFormField{
 		 $log,
 		 $templateCache,
 		 $window,
-		 $slatwall,
+		 $hibachi,
 		 formService,
 		 coreFormPartialsPath,
 		 pathBuilderConfig
@@ -64,5 +64,5 @@ class SWFormField{
 export{
 	SWFormField
 }
-//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$slatwall', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $slatwall, formService, coreFormPartialsPath)]);
+//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$hibachi', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath)]);
 

@@ -7,18 +7,18 @@ class SWOrderItemDetailStamp{
 	public static Factory(){
 		var directive = (
 			$log,
-			$slatwall,
+			$hibachi,
 			orderItemPartialsPath,
 			pathBuilderConfig
 		) => new SWOrderItemDetailStamp(
 			$log,
-			$slatwall,
+			$hibachi,
 			orderItemPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'orderItemPartialsPath',
 			'pathBuilderConfig'
 		]
@@ -26,7 +26,7 @@ class SWOrderItemDetailStamp{
 	}
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		orderItemPartialsPath,
 		pathBuilderConfig
 	){

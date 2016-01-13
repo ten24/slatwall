@@ -5,20 +5,20 @@ class SWWorkflowTrigger{
 	public static Factory(){
 		var directive = (
 			$log,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			workflowPartialsPath,
 			pathBuilderConfig
 		)=> new SWWorkflowTrigger(
 			$log,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			workflowPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'metadataService',
 			'workflowPartialsPath',
 			'pathBuilderConfig'
@@ -27,7 +27,7 @@ class SWWorkflowTrigger{
 	}
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		metadataService,
 		workflowPartialsPath,
 			pathBuilderConfig
@@ -53,7 +53,7 @@ class SWWorkflowTrigger{
 					scope.finished = false;
 					scope.workflowTriggers.selectedTrigger = undefined;
 
-					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
+					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
 							baseEntityName:		scope.workflowTrigger.data.workflow.data.workflowObject,
@@ -79,7 +79,7 @@ class SWWorkflowTrigger{
 				 * Hard deletes a workflow trigger
 				 */
 				scope.deleteTrigger = function(workflowTrigger){
-					var deleteTriggerPromise = $slatwall.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
+					var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 					deleteTriggerPromise.then(function(value){
 						$log.debug('deleteTrigger');
 						scope.workflowTriggers.splice(workflowTrigger.$$index,1);

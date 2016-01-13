@@ -2,8 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFLogoutController{
     //@ngInject
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private $slatwall:any){
-        this.$slatwall = $slatwall; 
+    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private $hibachi:any){
+        this.$hibachi = $hibachi; 
     }
 }
 class SWFLogout implements ng.IDirective{

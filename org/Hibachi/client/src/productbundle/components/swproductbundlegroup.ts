@@ -18,7 +18,7 @@ class CollectionFilterItem{
 
 class SWProductBundleGroupController {
 
-	public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
+	public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath"];
 	public $id;
 	public showAdvanced;
 	public productBundleGroup;
@@ -54,7 +54,7 @@ class SWProductBundleGroupController {
 	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
 				private productBundleService,  private metadataservice, private utilityservice,
-				private $slatwall, private productBundlePartialsPath){
+				private $hibachi, private productBundlePartialsPath){
 
 		this.$id = 'productBundleGroup';
         this.maxRecords = 10;
@@ -69,7 +69,7 @@ class SWProductBundleGroupController {
         
         if(angular.isUndefined(this.filterPropertiesList)){
             this.filterPropertiesList = {};
-            var filterPropertiesPromise = this.$slatwall.getFilterPropertiesByBaseEntityName('_sku');
+            var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
             filterPropertiesPromise.then((value)=>{
                 metadataservice.setPropertiesList(value,'_sku');
                 this.filterPropertiesList['_sku'] = metadataservice.getPropertiesListByBaseEntityAlias('_sku');
@@ -172,7 +172,7 @@ class SWProductBundleGroupController {
             currentPage:1, 
             pageShow:10
         };
-        var collectionPromise = this.$slatwall.getEntity('Sku',options);
+        var collectionPromise = this.$hibachi.getEntity('Sku',options);
         collectionPromise.then((response)=>{
             this.collection = response;
         });
@@ -370,7 +370,7 @@ class SWProductBundleGroupController {
 
 class SWProductBundleGroup implements ng.IDirective{
 
-	public static $inject=["$http", "$slatwall", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath"];
+	public static $inject=["$http", "$hibachi", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath"];
 	public templateUrl;
 	public restrict = "EA";
 	public scope = {}
@@ -389,7 +389,7 @@ class SWProductBundleGroup implements ng.IDirective{
 	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
 				private productBundleService,  private metadataservice, private utilityservice,
-				private $slatwall, private productBundlePartialsPath,
+				private $hibachi, private productBundlePartialsPath,
 			pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	}
@@ -400,14 +400,14 @@ class SWProductBundleGroup implements ng.IDirective{
 
 	public static Factory(){
 		var directive = (
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath,
+            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath,
 			pathBuilderConfig
         )=> new SWProductBundleGroup(
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $slatwall, productBundlePartialsPath,
+            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath,
 			pathBuilderConfig
         );
         directive.$inject = [
-            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$slatwall", "productBundlePartialsPath",
+            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath",
 			"pathBuilderConfig"
         ];
         return directive;

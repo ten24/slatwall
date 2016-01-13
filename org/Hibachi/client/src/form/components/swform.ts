@@ -74,7 +74,7 @@ interface ViewModel {
          * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
          */
         // @ngInject
-        constructor(public $scope, public $element, public $slatwall, public $http, public $timeout, public observerService, public $rootScope){
+        constructor(public $scope, public $element, public $hibachi, public $http, public $timeout, public observerService, public $rootScope){
             /** only use if the developer has specified these features with isProcessForm */
             if(angular.isUndefined(this.isDirty)){
                 this.isDirty = false;    
@@ -132,13 +132,13 @@ interface ViewModel {
 
             });
 
-            /** make sure we have our data using new logic and $slatwall*/
+            /** make sure we have our data using new logic and $hibachi*/
             if (this.processObject == undefined || vm.entityName == undefined) {
                 throw ("ProcessObject Undefined Exception");
             }
 
             try {
-                vm.actionFn = this.$slatwall.newEntity(vm.processObject);
+                vm.actionFn = this.$hibachi.newEntity(vm.processObject);
             }catch (e){
                 vm.postOnly = true;
             }

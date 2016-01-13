@@ -48,7 +48,7 @@ class SWListingDisplayController{
     public tableID;
     public tableclass;
     public tableattributes;
-    public hasSearch:boolean = true;
+    public hasSearch:boolean;
 
 
 
@@ -60,17 +60,18 @@ class SWListingDisplayController{
         public $transclude,
         public $timeout,
         public $q,
-        public $slatwall,
+        public $hibachi,
         public partialsPath,
         public utilityService,
         public collectionConfigService,
         public paginationService,
         public selectionService,
-        public observerService
+        public observerService,
+        public rbkeyService
     ){
         this.$q = $q;
         this.$timeout = $timeout;
-        this.$slatwall = $slatwall;
+        this.$hibachi = $hibachi;
         this.$transclude = $transclude;
         this.partialsPath = partialsPath;
         this.utilityService = utilityService;
@@ -80,6 +81,7 @@ class SWListingDisplayController{
         this.paginationService = paginationService;
         this.selectionService = selectionService;
         this.observerService = observerService;
+        this.rbkeyService = rbkeyService;
         this.intialSetup();
 
     }
@@ -120,7 +122,7 @@ class SWListingDisplayController{
 
         this.setupColumns();
 
-        this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
+        this.exampleEntity = this.$hibachi.newEntity(this.collectionObject);
         this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
 
 
@@ -277,7 +279,7 @@ class SWListingDisplayController{
         this.processObjectProperties = this.processObjectProperties || '';
         this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
         //this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
-        this.norecordstext = this.$slatwall.getRBKey('entity.'+this.collectionObject+'.norecords');
+        this.norecordstext = this.rbkeyService.getRBKey('entity.'+this.collectionObject+'.norecords');
 
         //Setup Sortability
         if(this.sortProperty && this.sortProperty.length){
@@ -370,9 +372,9 @@ class SWListingDisplayController{
                     ){
                     //Get the entity object to get property metaData
 
-                    var thisEntityName = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.exampleEntity.metaData.className, column.propertyIdentifier);
+                    var thisEntityName = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.exampleEntity.metaData.className, column.propertyIdentifier);
                     var thisPropertyName = this.utilityService.listLast(column.propertyIdentifier,'.');
-                    var thisPropertyMeta = this.$slatwall.getPropertyByEntityNameAndPropertyName(thisEntityName,thisPropertyName);
+                    var thisPropertyMeta = this.$hibachi.getPropertyByEntityNameAndPropertyName(thisEntityName,thisPropertyName);
                     /* <!--- Setup automatic search, sort, filter & range --->
                     <cfif not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
                         <cfset column.search = true />
@@ -456,9 +458,9 @@ class SWListingDisplayController{
         //assumes no alias formatting
         angular.forEach(this.columns.reverse(), (column)=>{
 
-            var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
+            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
 
-            var title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+            var title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
             if(angular.isUndefined(column.isVisible)){
                 column.isVisible = true;
             }
@@ -469,8 +471,8 @@ class SWListingDisplayController{
             //assumes alias formatting from collectionConfig
             angular.forEach(this.collectionConfig.columns, (column)=>{
 
-                var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
-                column.title = column.title || this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+                var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
+                column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                 if(angular.isUndefined(column.isVisible)){
                     column.isVisible = true;
                 }
@@ -622,9 +624,7 @@ class SWListingDisplay implements ng.IDirective{
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";
     public templateUrl;
-    public static $inject = ['corePartialsPath',
-            'observerService',
-			'pathBuilderConfig'];
+    
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
@@ -646,7 +646,7 @@ class SWListingDisplay implements ng.IDirective{
     constructor(
         public corePartialsPath,
         public observerService,
-			pathBuilderConfig
+		public pathBuilderConfig
     ){
         this.corePartialsPath = corePartialsPath;
         this.observerService = observerService;

@@ -4,7 +4,7 @@ class SWCriteriaString{
 	public static Factory(){
 		var directive = (
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
@@ -12,7 +12,7 @@ class SWCriteriaString{
 			pathBuilderConfig
 		)=> new SWCriteriaString(
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
@@ -21,7 +21,7 @@ class SWCriteriaString{
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'$filter',
 			'collectionPartialsPath',
 			'collectionService',
@@ -32,7 +32,7 @@ class SWCriteriaString{
 	}
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		$filter,
 		collectionPartialsPath,
 		collectionService,

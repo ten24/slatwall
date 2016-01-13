@@ -8,7 +8,7 @@ class SWConditionCriteria{
 			$compile,
 			$templateCache,
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			workflowPartialsPath,
 			collectionPartialsPath,
@@ -20,7 +20,7 @@ class SWConditionCriteria{
 			$compile,
 			$templateCache,
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			workflowPartialsPath,
 			collectionPartialsPath,
@@ -33,7 +33,7 @@ class SWConditionCriteria{
 			'$compile',
 			'$templateCache',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'$filter',
 			'workflowPartialsPath',
 			'collectionPartialsPath',
@@ -48,7 +48,7 @@ class SWConditionCriteria{
 		$compile,
 		$templateCache,
 		$log,
-		$slatwall,
+		$hibachi,
 		$filter,
 		workflowPartialsPath,
 		collectionPartialsPath,
@@ -875,7 +875,7 @@ class SWConditionCriteria{
 								$log.debug(scope.filterPropertiesList);
 
 								if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
-									var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+									var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
 									filterPropertiesPromise.then(function(value){
 										scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
 										metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
@@ -889,7 +889,7 @@ class SWConditionCriteria{
 							case "one-to-many":
 								scope.manyToManyOptions = getManyToManyOptions();
 								scope.oneToManyOptions = getOneToManyOptions();
-								var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+								var existingCollectionsPromise = $hibachi.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 								existingCollectionsPromise.then(function(value){
 									scope.collectionOptions = value.data;
 									if(angular.isDefined(scope.workflowCondition.collectionID)){

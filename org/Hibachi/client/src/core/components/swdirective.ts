@@ -10,6 +10,7 @@ class SWDirective{
 		];
 		return directive;
 	}
+    //@ngInject
 	constructor(
 		$compile
 	){
