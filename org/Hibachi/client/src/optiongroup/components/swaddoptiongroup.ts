@@ -32,7 +32,7 @@ class SWAddOptionGroupController {
     public showInvalidFlag; 
     
     // @ngInject
-    constructor(private $slatwall, private $timeout, 
+    constructor(private $hibachi, private $timeout, 
                 private collectionConfigService, 
                 private observerService,
                 private utilityService
@@ -179,14 +179,14 @@ class SWAddOptionGroup implements ng.IDirective{
      
     public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
-            $slatwall, 
+            $hibachi, 
             $timeout, 
             collectionConfigService,
             observerService,
 			optionGroupPartialsPath,
 			pathBuilderConfig
 		) => new SWAddOptionGroup(
-            $slatwall, 
+            $hibachi, 
             $timeout, 
             collectionConfigService,
             observerService,
@@ -194,7 +194,7 @@ class SWAddOptionGroup implements ng.IDirective{
 			pathBuilderConfig
 		);
 		directive.$inject = [
-            '$slatwall', 
+            '$hibachi', 
             '$timeout', 
             'collectionConfigService',
             'observerService',
@@ -204,7 +204,7 @@ class SWAddOptionGroup implements ng.IDirective{
 		return directive;
 	}
     // @ngInject
-    constructor(private $slatwall, private $timeout, 
+    constructor(private $hibachi, private $timeout, 
                 private collectionConfigService, 
                 private observerService, private optionGroupPartialsPath, pathBuilderConfig
     ){

@@ -4,18 +4,18 @@ class SWAdminCreateSuperUser{
 	public static Factory(){
 		var directive = (
 			$log,
-			$slatwall,
+			$hibachi,
 			workflowPartialsPath,
 			pathBuilderConfig
 		)=> new SWAdminCreateSuperUser(
 			$log,
-			$slatwall,
+			$hibachi,
 			workflowPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'workflowPartialsPath',
 			'pathBuilderConfig'
 		];
@@ -23,7 +23,7 @@ class SWAdminCreateSuperUser{
 	}
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		workflowPartialsPath,
 			pathBuilderConfig
 	){
@@ -33,7 +33,7 @@ class SWAdminCreateSuperUser{
 			},
 			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"admincreatesuperuser.html",
 			link: function(scope, element,attrs){
-                scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
+                scope.Account_SetupInitialAdmin = $hibachi.newAccount_SetupInitialAdmin();
 			}
 		};
 	}

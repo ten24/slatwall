@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class Form implements ng.IFormController{
     [name: string]: any;
@@ -21,7 +21,7 @@ class Form implements ng.IFormController{
     $rollbackViewValue = (): void =>{}
     $setSubmitted = (): void =>{}
     $setUntouched = (): void =>{}
-
+    //@ngInject
     constructor(
         name:string,
         object:any,

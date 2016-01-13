@@ -7,7 +7,7 @@ class SWChildOrderItem{
       $http,
       $compile,
       $templateCache,
-      $slatwall,
+      $hibachi,
       orderItemPartialsPath,
       pathBuilderConfig
     )=> new SWChildOrderItem(
@@ -15,7 +15,7 @@ class SWChildOrderItem{
       $http,
       $compile,
       $templateCache,
-      $slatwall,
+      $hibachi,
       orderItemPartialsPath,
       pathBuilderConfig
     );
@@ -24,7 +24,7 @@ class SWChildOrderItem{
       '$http',
       '$compile',
       '$templateCache',
-      '$slatwall',
+      '$hibachi',
       'orderItemPartialsPath',
       'pathBuilderConfig'
     ];
@@ -35,7 +35,7 @@ class SWChildOrderItem{
     $http,
     $compile,
     $templateCache,
-    $slatwall,
+    $hibachi,
     orderItemPartialsPath,
     pathBuilderConfig
   ){
@@ -281,13 +281,13 @@ class SWChildOrderItem{
           orderItem.clicked = true;
           if(!scope.orderItem.childItemsRetrieved){
             scope.orderItem.childItemsRetrieved = true;
-            var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+            var orderItemsPromise = $hibachi.getEntity('orderItem', options);
             orderItemsPromise.then(function(value){
               var collectionConfig:any = {};
               collectionConfig.columns = columnsConfig;
               collectionConfig.baseEntityName = 'SlatwallOrderItem';
               collectionConfig.baseEntityAlias = '_orderitem';
-              var childOrderItems = $slatwall.populateCollection(value.records,collectionConfig);
+              var childOrderItems = $hibachi.populateCollection(value.records,collectionConfig);
               angular.forEach(childOrderItems,function(childOrderItem){
                 childOrderItem.hide = false;
                 childOrderItem.depth = orderItem.depth+1;

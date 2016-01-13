@@ -21,7 +21,7 @@ class SWContentListController{
         public $scope:ng.IScope,
         public $log:ng.ILogService,
         public $timeout:ng.ITimeoutService,
-        public $slatwall,
+        public $hibachi,
         public paginationService,
         public observerService,
         public collectionConfigService

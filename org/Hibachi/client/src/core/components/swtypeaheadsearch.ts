@@ -5,7 +5,7 @@
 class SWTypeaheadSearchController {
 
 	public collectionConfig; 
-    public entity:string;
+	public entity:string;
 	public properties:string;
 	public propertiesToDisplay:string;
 	public filterGroupsConfig:any;
@@ -26,7 +26,7 @@ class SWTypeaheadSearchController {
 	private typeaheadCollectionConfigs;
     
     // @ngInject
-	constructor(private $slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService){
+	constructor(private $hibachi, private $timeout:ng.ITimeoutService, private collectionConfigService){
 
         if(angular.isDefined(this.collectionConfig)){
             this.typeaheadCollectionConfig = this.collectionConfig; 
@@ -149,7 +149,7 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 
-	public static $inject=["$slatwall", "$timeout", "collectionConfigService", "corePartialsPath",
+	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
 			'pathBuilderConfig'];
 	public templateUrl;
 	public restrict = "EA";
@@ -174,7 +174,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public controllerAs="swTypeaheadSearch";
 
 
-	constructor(private $slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
+	constructor(private $hibachi, private $timeout:ng.ITimeoutService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
 
@@ -184,20 +184,20 @@ class SWTypeaheadSearch implements ng.IDirective{
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-			$slatwall
+			$hibachi
 			,$timeout
 			,collectionConfigService
 			,corePartialsPath,
 			pathBuilderConfig
 
 		)=> new SWTypeaheadSearch(
-			$slatwall
+			$hibachi
 			,$timeout
 			,collectionConfigService
 			,corePartialsPath,
 			pathBuilderConfig
 		);
-		directive.$inject = ["$slatwall", "$timeout", "collectionConfigService", "corePartialsPath",
+		directive.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
 			'pathBuilderConfig'];
 		return directive;
 	}

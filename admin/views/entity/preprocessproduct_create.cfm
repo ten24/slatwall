@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<span id="productCreate" ng-controller="preprocessproduct_create as preprocessproduct_createCtrl" ng-if="$root.loadedResourceBundle">
+	<span id="productCreate" ng-controller="preprocessproduct_create as preprocessproduct_createCtrl">
 		<hb:HibachiEntityProcessForm entity="#rc.processObject.getProduct()#"  edit="#rc.edit#">
 
 			<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></hb:HibachiEntityActionBar>
@@ -213,7 +213,7 @@ Notes:
 								<hb:HibachiListingColumn propertyIdentifier="optionName" />
 							</hb:HibachiListingDisplay>-->
 							<sw-listing-display
-								ng-if="$root.loadedResourceBundle && preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"
+								ng-if="preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"
 								data-collection-promise="preprocessproduct_createCtrl.collectionListingPromise"
 								data-collection="preprocessproduct_createCtrl.collection"
 								data-multiselect-field-name="options"

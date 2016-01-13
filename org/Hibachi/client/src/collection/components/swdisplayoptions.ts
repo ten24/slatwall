@@ -7,30 +7,33 @@ class SWDisplayOptions{
 			$compile,
 			$templateCache,
 			$log,
-			$slatwall,
+			$hibachi,
 			collectionService,
 			pathBuilderConfig,
-			collectionPartialsPath
+			collectionPartialsPath,
+            rbkeyService
 
 		) => new SWDisplayOptions(
 			$http,
 			$compile,
 			$templateCache,
 			$log,
-			$slatwall,
+			$hibachi,
 			collectionService,
 			pathBuilderConfig,
-			collectionPartialsPath
+			collectionPartialsPath,
+            rbkeyService
 		);
 		directive.$inject = [
 			'$http',
 			'$compile',
 			'$templateCache',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'collectionService',
 			'pathBuilderConfig',
-			'collectionPartialsPath'
+			'collectionPartialsPath',
+            'rbkeyService'
 		];
 		return directive;
 	}
@@ -41,10 +44,11 @@ class SWDisplayOptions{
 		$compile,
 		$templateCache,
 		$log,
-		$slatwall,
+		$hibachi,
 		collectionService,
 		pathBuilderConfig,
-		collectionPartialsPath
+		collectionPartialsPath,
+        rbkeyService
 	){
 
 		return{
@@ -100,13 +104,13 @@ class SWDisplayOptions{
 						//pass over the initial item
 						if(key !== 0 ){
 							if(key === 1){
-								currentEntityInstance = $slatwall['new'+$scope.baseEntityName.replace('Slatwall','')]();
+								currentEntityInstance = $hibachi['new'+$scope.baseEntityName.replace('Slatwall','')]();
 								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
-								title += $slatwall.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
+								title += rbkeyService.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
 							}else{
-								var currentEntityInstance = $slatwall['new'+currentEntity.cfc.charAt(0).toUpperCase()+currentEntity.cfc.slice(1)]();
+								var currentEntityInstance = $hibachi['new'+currentEntity.cfc.charAt(0).toUpperCase()+currentEntity.cfc.slice(1)]();
 								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
-								title += $slatwall.getRBKey(prefix+currentEntityInstance.metaData.className+'.'+currentEntity.name);
+								title += rbkeyService.getRBKey(prefix+currentEntityInstance.metaData.className+'.'+currentEntity.name);
 							}
 							if(key < propertyIdentifierArray.length-1){
 								title += ' | ';
