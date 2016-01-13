@@ -59,7 +59,7 @@ class SWEntityActionBar implements ng.IDirective{
 
     }
 
-
+    //@ngInject
     constructor(private corePartialsPath,pathBuilderConfig){
         this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'entityactionbar.html';
     }

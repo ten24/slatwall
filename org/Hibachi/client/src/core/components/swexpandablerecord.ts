@@ -15,6 +15,7 @@ class SWExpandableRecordController{
     public collectionConfig:any;
     public parentId:string;
     public entity:any
+    //@ngInject
     constructor(private $timeout:ng.ITimeoutService, private utilityService, private $hibachi, private collectionConfigService){
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;

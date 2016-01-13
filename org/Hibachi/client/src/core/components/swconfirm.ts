@@ -42,6 +42,7 @@ class SWConfirm{
         directive.$inject = ['$hibachi', '$log', '$compile', '$modal', 'partialsPath'];
         return directive;
     }
+    //@ngInject
     constructor($hibachi, $log, $compile, $modal, partialsPath){
         var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText){
 

@@ -12,6 +12,7 @@ class SWClickOutside{
         ];
         return directive;
     }
+    //@ngInject
     constructor(
         $document,$timeout
     ){

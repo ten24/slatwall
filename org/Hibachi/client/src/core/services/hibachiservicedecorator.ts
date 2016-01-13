@@ -18,8 +18,6 @@ class HibachiServiceDecorator{
         appConfig
     ){
         var _deferred = {};
-        console.log($delegate);
-            console.log(appConfig);
         var _config = appConfig;
 
         var _jsEntities = {};

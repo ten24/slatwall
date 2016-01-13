@@ -20,7 +20,7 @@ class OrderItemGiftRecipientControl{
         public searchText:string;
         public currentGiftRecipient:GiftRecipient;
         public quantityForm;
-
+        //@ngInject
         constructor(private $scope: IOrderItemGiftRecipientScope,  private $hibachi){
                 this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                 $scope.collection = {};
