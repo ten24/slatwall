@@ -101,7 +101,6 @@ Notes:
 			<!--- Delete .zip file and unzipped folder --->
 			<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
 			<cfdirectory action="delete" directory="#sourcePath#" recurse="true">
-			<cfthrow>
 			<cfset updateCMSApplications()>
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
