@@ -38,7 +38,12 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<div class="form-group <cfif attributes.requiredFlag>s-required</cfif>">
-						<label for="#attributes.fieldName#" class="control-label col-sm-4">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
+						<label for="#attributes.fieldName#" class="control-label col-sm-4">
+							<span class="s-title">#attributes.title#</span>
+							<cfif len(attributes.hint)> 
+								<a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="fa fa-info-circle"></i></a>
+							</cfif>
+						</label>
 						<div class="col-sm-8">
 							<hb:HibachiFormField attributecollection="#attributes#" />
 							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
