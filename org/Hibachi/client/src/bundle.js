@@ -50,9 +50,6 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	/*jshint browser:true */
-	//'use strict';
-	//require('./vendor.ts')();
-	//import {coremodule} from "./core/core.module";
 	var basebootstrap_1 = __webpack_require__(1);
 	var slatwalladmin_module_1 = __webpack_require__(47);
 	var logger_module_1 = __webpack_require__(170);
@@ -61,7 +58,8 @@
 	    __extends(bootstrapper, _super);
 	    function bootstrapper() {
 	        this.myApplication = [slatwalladmin_module_1.slatwalladminmodule.name, logger_module_1.loggermodule.name];
-	        _super.call(this).bootstrap();
+	        var angular = _super.call(this);
+	        angular.bootstrap();
 	    }
 	    return bootstrapper;
 	})(basebootstrap_1.BaseBootStrapper);
@@ -72,11 +70,9 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/*jshint browser:true */
-	'use strict';
 	__webpack_require__(2)();
 	var core_module_1 = __webpack_require__(11);
-	//custom bootstrapper
+	//generic bootstrapper
 	var BaseBootStrapper = (function () {
 	    function BaseBootStrapper() {
 	        var _this = this;
@@ -141,13 +137,13 @@
 	            .resolve(['$http', '$q', '$timeout', function ($http, $q, $timeout) {
 	                _this.$http = $http;
 	                _this.$q = $q;
-	                if (localStorage.appConfig && localStorage.resourceBundles) {
+	                if (localStorage.getItem('appConfig') && localStorage.getItem('resourceBundles')) {
 	                    return $http.get('/index.cfm/?slatAction=api:main.getInstantiationKey')
 	                        .then(function (resp) {
-	                        var appConfig = JSON.parse(localStorage.appConfig);
+	                        var appConfig = JSON.parse(localStorage.getItem('appConfig'));
 	                        if (resp.data.data === appConfig.instantiationKey) {
 	                            core_module_1.coremodule.constant('appConfig', appConfig)
-	                                .constant('resourceBundles', JSON.parse(localStorage.resourceBundles));
+	                                .constant('resourceBundles', JSON.parse(localStorage.getItem('resourceBundles')));
 	                        }
 	                        else {
 	                            return _this.getData();
@@ -170,7 +166,7 @@
 	    }
 	    return BaseBootStrapper;
 	})();
-	module.exports = { BaseBootStrapper: BaseBootStrapper };
+	exports.BaseBootStrapper = BaseBootStrapper;
 
 
 /***/ },
@@ -2641,7 +2637,7 @@
 	            ////$log.debug('rbkey');
 	            ////$log.debug(key);
 	            ////$log.debug(this.getConfig().rbLocale);
-	            var keyValue = _this.getRBKey(key, appConfig.rbLocale);
+	            var keyValue = _this.getRBKey(key, _this.appConfig.rbLocale);
 	            ////$log.debug(keyValue);
 	            return keyValue;
 	        };

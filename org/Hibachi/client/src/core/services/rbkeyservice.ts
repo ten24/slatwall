@@ -28,7 +28,7 @@ class RbKeyService{
 		////$log.debug(key);
 		////$log.debug(this.getConfig().rbLocale);
 
-		var keyValue = this.getRBKey(key,appConfig.rbLocale);
+		var keyValue = this.getRBKey(key,this.appConfig.rbLocale);
 		////$log.debug(keyValue);
 
 		return keyValue;
@@ -117,7 +117,7 @@ class RbKeyService{
 		}
 		return '';
 	}
-    
+
 
 }
 export {

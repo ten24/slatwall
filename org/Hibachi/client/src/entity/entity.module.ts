@@ -24,7 +24,7 @@ var entitymodule = angular.module('hibachi.entity',['ngRoute'])
 ($routeProvider,$injector,$locationProvider)=>{
      //detect if we are in hashbang mode
      var vars:any = {};
-     var parts:any = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, (m:any,key:string,value:string)=> {
+     var parts:any = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, (m:any,key:string,value:string):any=> {
         vars[key] = value;
      });
 

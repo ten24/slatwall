@@ -1,33 +1,30 @@
-/*jshint browser:true */
-'use strict';
 
 require('./vendor.ts')();
 import {coremodule} from "./core/core.module";
-interface IBaseBootStrapper{
-    myApplication:any;
-}
-
-
-
-//custom bootstrapper
-class BaseBootStrapper implements IBaseBootStrapper{
+declare var angular:any;
+//generic bootstrapper
+export class BaseBootStrapper{
     public myApplication:any;
     public _resourceBundle = {};
+    public $http:ng.IHttpService;
+    public $q:ng.IQService;
+    public appConfig:any;
+
     constructor(){
       return angular.lazy(this.myApplication)
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;
             this.$q = $q;
-            
-            if(localStorage.appConfig && localStorage.resourceBundles){
+
+            if(localStorage.getItem('appConfig') && localStorage.getItem('resourceBundles')){
                  return $http.get('/index.cfm/?slatAction=api:main.getInstantiationKey')
                 .then( (resp)=> {
-                    var appConfig = JSON.parse(localStorage.appConfig);
+                    var appConfig = JSON.parse(localStorage.getItem('appConfig'));
                     if(resp.data.data === appConfig.instantiationKey){
                         coremodule.constant('appConfig',appConfig)
-                        .constant('resourceBundles',JSON.parse(localStorage.resourceBundles));
+                        .constant('resourceBundles',JSON.parse(localStorage.getItem('resourceBundles')));
                     }else{
-                        return this.getData();                            
+                        return this.getData();
                     }
                 });
             }else{
@@ -45,18 +42,18 @@ class BaseBootStrapper implements IBaseBootStrapper{
         });
 
     }
-    
+
     getData=()=>{
         return this.$http.get('/index.cfm/?slatAction=api:main.getConfig')
-        .then( (resp)=> {
+        .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
             this.appConfig = resp.data.data;
             return this.getResourceBundles();
-            
-        });    
+
+        });
     }
-    
+
     getResourceBundle= (locale) => {
         var deferred = this.$q.defer();
         var locale = locale || this.appConfig.rbLocale;
@@ -82,7 +79,7 @@ class BaseBootStrapper implements IBaseBootStrapper{
         });
         return deferred.promise
     }
-    
+
     getResourceBundles= () => {
         ////$log.debug('hasResourceBundle');
         ////$log.debug(this._loadedResourceBundle);
@@ -113,7 +110,6 @@ class BaseBootStrapper implements IBaseBootStrapper{
     }
 }
 
-export = {BaseBootStrapper};
 
 
 
