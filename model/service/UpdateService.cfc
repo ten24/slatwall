@@ -77,11 +77,7 @@ Notes:
 			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" recurse="yes" overwrite="yes" source="#slatwallRootPath#">
 				<cfloop query="slatwallDirectoryList">
 					<cfif not listFindNoCase("WEB-INF,.project,setting.xml", slatwallDirectoryList.name)>
-						<cfif slatwallDirectoryList.type eq "File">
-							<cfzipparam source="#slatwallDirectoryList.name#" prefix="#slatwallDirectoryList.name#"  />
-						<cfelse>
-							<cfzipparam source="#slatwallDirectoryList.name#"/>
-						</cfif>
+						<cfzipparam source="#slatwallDirectoryList.name#"  />
 					</cfif>
 				</cfloop>
 			</cfzip>
