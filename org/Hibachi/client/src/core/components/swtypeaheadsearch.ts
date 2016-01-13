@@ -26,7 +26,7 @@ class SWTypeaheadSearchController {
 	private typeaheadCollectionConfigs;
     
     // @ngInject
-	constructor(private $hibachi, private $timeout:ng.ITimeoutService, private collectionConfigService){
+	constructor(private $hibachi, public $scope, private $timeout:ng.ITimeoutService, private $transclude:ng.ITranscludeFunction, private collectionConfigService){
 
         if(angular.isDefined(this.collectionConfig)){
             this.typeaheadCollectionConfig = this.collectionConfig; 
@@ -36,6 +36,9 @@ class SWTypeaheadSearchController {
         } else { 
             throw("You did not pass the correct collection config data to swTypeaheadSearch")
         }
+        
+        this.$transclude = this.$transclude;
+        this.$transclude(this.$scope,()=>{});
 
 		if(angular.isDefined(this.propertiesToDisplay)){
 			this.displayList = this.propertiesToDisplay.split(",");
@@ -74,7 +77,7 @@ class SWTypeaheadSearchController {
 					var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
 					filterConfig = filterConfig.trim();
 					this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
-				}
+				} 
 
 				var promise = this.typeaheadCollectionConfig.getEntity();
 
@@ -87,11 +90,11 @@ class SWTypeaheadSearchController {
 						}
 
 						//Custom method for gravatar on accounts (non-persistant-property)
-						if(angular.isDefined(this.results) && this.entity == "Account"){
-							angular.forEach(this.results,(account)=>{
-								account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-							});
-						}
+						//if(angular.isDefined(this.results) && this.entity == "Account"){
+						//	angular.forEach(this.results,(account)=>{
+						//		account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+						//	});
+						//}
 
 				});
 			}, 500);
@@ -174,7 +177,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public controllerAs="swTypeaheadSearch";
 
 
-	constructor(private $hibachi, private $timeout:ng.ITimeoutService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
+	constructor(private $hibachi, public $scope, private $timeout:ng.ITimeoutService, private $transclude:ng.ITranscludeFunction, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
 
@@ -185,19 +188,23 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
 			$hibachi
+            ,$scope
 			,$timeout
+            ,$transclude
 			,collectionConfigService
-			,corePartialsPath,
-			pathBuilderConfig
+			,corePartialsPath
+            ,pathBuilderConfig
 
 		)=> new SWTypeaheadSearch(
 			$hibachi
+            ,$scope
 			,$timeout
+            ,$transclude
 			,collectionConfigService
-			,corePartialsPath,
-			pathBuilderConfig
+			,corePartialsPath
+            ,pathBuilderConfig
 		);
-		directive.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
+		directive.$inject = ["$hibachi", "$scope", "$timeout", "$transclude", "collectionConfigService", "corePartialsPath",
 			'pathBuilderConfig'];
 		return directive;
 	}

@@ -18,6 +18,7 @@ import {PercentageFilter} from "./filters/percentage";
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
+import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
@@ -1147,6 +1148,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .filter('percentage',[PercentageFilter.Factory])
 //directives
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
+.directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
