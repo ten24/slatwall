@@ -48,7 +48,7 @@ class SWListingDisplayController{
     public tableID;
     public tableclass;
     public tableattributes;
-    public hasSearch:boolean = true;
+    public hasSearch:boolean;
 
 
 
@@ -624,9 +624,7 @@ class SWListingDisplay implements ng.IDirective{
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";
     public templateUrl;
-    public static $inject = ['corePartialsPath',
-            'observerService',
-			'pathBuilderConfig'];
+    
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
@@ -648,7 +646,7 @@ class SWListingDisplay implements ng.IDirective{
     constructor(
         public corePartialsPath,
         public observerService,
-			pathBuilderConfig
+		public pathBuilderConfig
     ){
         this.corePartialsPath = corePartialsPath;
         this.observerService = observerService;

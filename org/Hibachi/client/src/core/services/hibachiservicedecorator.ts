@@ -529,7 +529,10 @@ class HibachiServiceDecorator{
                     return "checkboxgroup";
                 }else if(propertyName.indexOf('password') > -1){
                     return "password";
+                } else if("big_decimal" === dataType){
+                    return "text";
                 }
+  
 
             }else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'many-to-one'){
                 return 'select';

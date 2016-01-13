@@ -14,36 +14,36 @@ class SWCollectionTable{
 			$hibachi
 		) => new SWCollectionTable(
 			$http,
-			$compile,
-			$log,
-			pathBuilderConfig,
-			collectionPartialsPath,
-			paginationService,
-			selectionService,
-			$hibachi
+            $compile,
+            $log,
+            pathBuilderConfig,
+            collectionPartialsPath,
+            paginationService,
+            selectionService,
+            $hibachi
 		);
 		directive.$inject = [
 			'$http',
-			'$compile',
-			'$log',
-			'pathBuilderConfig',
-			'collectionPartialsPath',
-			'paginationService',
-			'selectionService',
-			'$hibachi',
+            '$compile',
+            '$log',
+            'pathBuilderConfig',
+            'collectionPartialsPath',
+            'paginationService',
+            'selectionService',
+            '$hibachi'
 		];
 		return directive;
 	}
-	//ngInject
+	//@ngInject
 	constructor(
 		$http,
-		$compile,
-		$log,
-		pathBuilderConfig,
-		collectionPartialsPath,
-		paginationService,
-		selectionService,
-		$hibachi
+        $compile,
+        $log,
+        pathBuilderConfig,
+        collectionPartialsPath,
+        paginationService,
+        selectionService,
+        $hibachi
 	){
 		return {
 			restrict: 'E',
