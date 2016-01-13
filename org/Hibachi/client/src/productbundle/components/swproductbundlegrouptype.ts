@@ -8,6 +8,7 @@ class SWProductBundleGroupType{
 			$log,
 			$slatwall,
 			formService,
+            collectionConfigService,
 			productBundlePartialsPath,
 			productBundleService,
 			pathBuilderConfig
@@ -16,6 +17,7 @@ class SWProductBundleGroupType{
 			$log,
 			$slatwall,
 			formService,
+            collectionConfigService,
 			productBundlePartialsPath,
 			productBundleService,
 			pathBuilderConfig
@@ -25,6 +27,7 @@ class SWProductBundleGroupType{
 			'$log',
 			'$slatwall',
 			'formService',
+            'collectionConfigService',
 			'productBundlePartialsPath',
 			'productBundleService',
 			'pathBuilderConfig'
@@ -36,6 +39,7 @@ class SWProductBundleGroupType{
 		$log,
 		$slatwall,
 		formService,
+        collectionConfigService,
 		productBundlePartialsPath,
 		productBundleService,
 			pathBuilderConfig
@@ -55,6 +59,8 @@ class SWProductBundleGroupType{
 				$scope.productBundleGroupTypes.$$adding = false;
                 $scope.productBundleGroupTypeSaving = false;
 				$scope.productBundleGroupType = {};
+                $scope.productBundleGroupTypes.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig("Type");
+                $scope.productBundleGroupTypes.typeaheadCollectionConfig.addFilter("type.parentType.systemCode","productBundleGroupType","=");
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $slatwall.newType();
 					var parentType = $slatwall.newType();
@@ -67,6 +73,7 @@ class SWProductBundleGroupType{
 				 * Sets the state to adding and sets the initial data.
 				 */
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
+                    console.log("ADDING TYPE")
 					$scope.productBundleGroupTypes.$$adding = isAdding;
 					var productBundleGroupType = $slatwall.newType();
 					var parentType = $slatwall.newType();
@@ -76,7 +83,7 @@ class SWProductBundleGroupType{
 					productBundleGroupType.data.typeDescription = '';
 					productBundleGroupType.data.typeNameCode='';
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
-					formService.getForm('form.addProductBundleGroupType').$setDirty();
+					//formService.getForm('form.addProductBundleGroupType').$setDirty();
 				};
 
 				$scope.showAddProductBundleGroupTypeBtn = false;

@@ -4,8 +4,8 @@
 
 class SWTypeaheadSearchController {
 
-	public static $inject=["$slatwall", "$timeout", "collectionConfigService"];
-	public entity:string;
+	public collectionConfig; 
+    public entity:string;
 	public properties:string;
 	public propertiesToDisplay:string;
 	public filterGroupsConfig:any;
@@ -24,11 +24,18 @@ class SWTypeaheadSearchController {
 	private entityList;
 	private typeaheadCollectionConfig;
 	private typeaheadCollectionConfigs;
-
+    
+    // @ngInject
 	constructor(private $slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService){
 
-		this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-		this.typeaheadCollectionConfig.setDisplayProperties(this.properties);
+        if(angular.isDefined(this.collectionConfig)){
+            this.typeaheadCollectionConfig = this.collectionConfig; 
+        } else if (angular.isDefined(this.entity) && angular.isDefined(this.properties)){ 
+            this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+            this.typeaheadCollectionConfig.setDisplayProperties(this.properties);
+        } else { 
+            throw("You did not pass the correct collection config data to swTypeaheadSearch")
+        }
 
 		if(angular.isDefined(this.propertiesToDisplay)){
 			this.displayList = this.propertiesToDisplay.split(",");
@@ -149,8 +156,9 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public scope = {}
 
 	public bindToController = {
-		entity:"@",
-		properties:"@",
+        collectionConfig:"=",
+		entity:"@?",
+		properties:"@?",
 		propertiesToDisplay:"@?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
