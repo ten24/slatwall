@@ -30,7 +30,7 @@ class SWEntityActionBarButtonGroup implements ng.IDirective{
 			'pathBuilderConfig'];
 		return directive;
 	}
-
+    //@ngInject
 	constructor(private corePartialsPath,
 			pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'entityactionbarbuttongroup.html';

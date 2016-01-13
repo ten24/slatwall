@@ -8,7 +8,7 @@ class CreateBundleController{
 		$log,
 		$rootScope,
 		$window,
-		$slatwall,
+		$hibachi,
 		dialogService,
 		alertService,
 		productBundleService,
@@ -56,9 +56,9 @@ class CreateBundleController{
 				}
 			}
 
-			$scope.product = $slatwall.newProduct();
-			var brand = $slatwall.newBrand();
-			var productType = $slatwall.newProductType();
+			$scope.product = $hibachi.newProduct();
+			var brand = $hibachi.newBrand();
+			var productType = $hibachi.newProductType();
 			$scope.product.$$setBrand(brand);
 			$scope.product.$$setProductType(productType);
 			$scope.product.$$addSku();
@@ -68,7 +68,7 @@ class CreateBundleController{
 		$scope.productBundleGroup;
 
 		if(angular.isDefined(productID) && productID !== ''){
-			var productPromise = $slatwall.getProduct({id:productID});
+			var productPromise = $hibachi.getProduct({id:productID});
 
 			productPromise.promise.then(function(){
 				$log.debug(productPromise.value);

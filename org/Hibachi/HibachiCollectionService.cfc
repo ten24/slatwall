@@ -578,7 +578,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
 					//add all attributes by alias
-
+ 
 					if(structKeyExists(column,'attributeID')){
 						ArrayAppend(attributePropertyIdentifierArray,piAlias);
 					}

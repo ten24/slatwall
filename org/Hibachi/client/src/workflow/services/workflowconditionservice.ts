@@ -18,8 +18,8 @@ class WorkflowCondition{
 }
 
  class WorkflowConditionService{
-	public static $inject = ["$log","$slatwall","alertService"];
-	public constructor(public $log:ng.ILogService,$slatwall,alertService){
+	public static $inject = ["$log","$hibachi","alertService"];
+	public constructor(public $log:ng.ILogService,$hibachi,alertService){
 
 	}
 	public newWorkflowCondition = () =>{

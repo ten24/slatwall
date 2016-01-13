@@ -11,39 +11,39 @@ class SWCollectionTable{
 			collectionPartialsPath,
 			paginationService,
 			selectionService,
-			$slatwall
+			$hibachi
 		) => new SWCollectionTable(
 			$http,
-			$compile,
-			$log,
-			pathBuilderConfig,
-			collectionPartialsPath,
-			paginationService,
-			selectionService,
-			$slatwall
+            $compile,
+            $log,
+            pathBuilderConfig,
+            collectionPartialsPath,
+            paginationService,
+            selectionService,
+            $hibachi
 		);
 		directive.$inject = [
 			'$http',
-			'$compile',
-			'$log',
-			'pathBuilderConfig',
-			'collectionPartialsPath',
-			'paginationService',
-			'selectionService',
-			'$slatwall',
+            '$compile',
+            '$log',
+            'pathBuilderConfig',
+            'collectionPartialsPath',
+            'paginationService',
+            'selectionService',
+            '$hibachi'
 		];
 		return directive;
 	}
-	//ngInject
+	//@ngInject
 	constructor(
 		$http,
-		$compile,
-		$log,
-		pathBuilderConfig,
-		collectionPartialsPath,
-		paginationService,
-		selectionService,
-		$slatwall
+        $compile,
+        $log,
+        pathBuilderConfig,
+        collectionPartialsPath,
+        paginationService,
+        selectionService,
+        $hibachi
 	){
 		return {
 			restrict: 'E',
@@ -62,8 +62,8 @@ class SWCollectionTable{
                 }
 				console.log('here');
                 console.log(scope.collection);
-				console.log($slatwall);
-                scope.collectionObject = $slatwall['new'+scope.collection.collectionObject]();
+				console.log($hibachi);
+                scope.collectionObject = $hibachi['new'+scope.collection.collectionObject]();
 
                 var escapeRegExp = function(str) {
                     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");

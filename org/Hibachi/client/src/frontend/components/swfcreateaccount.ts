@@ -2,8 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFCreateAccountController{
     //@ngInject
-    constructor(private $slatwall:any){
-        this.$slatwall = $slatwall; 
+    constructor(private $hibachi:any){
+        this.$hibachi = $hibachi; 
     }
 }
 

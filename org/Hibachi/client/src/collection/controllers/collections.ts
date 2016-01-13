@@ -8,7 +8,7 @@ class CollectionController{
 		$location,
 		$log,
 		$timeout,
-		$slatwall,
+		$hibachi,
 		collectionService,
 		metadataService,
 		selectionService,
@@ -53,7 +53,7 @@ class CollectionController{
 					$scope.autoScrollDisabled = true;
 					$scope.autoScrollPage++;
 
-					var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.autoScrollPage, pageShow:50});
+					var collectionListingPromise = $hibachi.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.autoScrollPage, pageShow:50});
 					collectionListingPromise.then(function(value){
 						$scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
 						$scope.autoScrollDisabled = false;
@@ -86,7 +86,7 @@ class CollectionController{
 				pageShow = $scope.paginator.getPageShow();
 			}
 //			$scope.currentPage = $scope.pagination.getCurrentPage();
-			var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:pageShow, keywords:$scope.keywords});
+			var collectionListingPromise = $hibachi.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:pageShow, keywords:$scope.keywords});
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
 				$scope.paginator.setPageRecordsInfo($scope.collection);
@@ -121,7 +121,7 @@ class CollectionController{
 			if(newValue !== oldValue){
 				if(angular.isUndefined($scope.filterPropertiesList) ){
 					$scope.filterPropertiesList = {};
-					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+					var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
 					filterPropertiesPromise.then(function(value){
 						metadataService.setPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
 						$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
@@ -192,7 +192,7 @@ class CollectionController{
 					data.collectionConfig = collectionConfigString;
 					//has to be removed in order to save transient correctly
 					delete data.pageRecords;
-					var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data,'save');
+					var saveCollectionPromise = $hibachi.saveEntity(entityName,collection.collectionID,data,'save');
 					saveCollectionPromise.then(function(value){
 
 						$scope.errorMessage = {};
@@ -286,7 +286,7 @@ export{
 // '$location',
 // '$log',
 // '$timeout',
-// '$slatwall',
+// '$hibachi',
 // 'collectionService',
 // 'metadataService',
 // 'selectionService',
@@ -296,7 +296,7 @@ export{
 // $location,
 // $log,
 // $timeout,
-// $slatwall,
+// $hibachi,
 // collectionService,
 // metadataService,
 // selectionService,

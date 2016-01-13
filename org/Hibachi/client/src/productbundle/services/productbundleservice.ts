@@ -4,13 +4,13 @@
 
 class ProductBundleService{
     public static $inject = [
-        '$log','$slatwall','utilityService'
+        '$log','$hibachi','utilityService'
     ];
 
-    constructor(private $log:ng.ILogService, private $slatwall, private utilityService){
+    constructor(private $log:ng.ILogService, private $hibachi, private utilityService){
 
         this.$log = $log;
-        this.$slatwall = $slatwall;
+        this.$hibachi = $hibachi;
         this.utilityService = utilityService;
     }
 

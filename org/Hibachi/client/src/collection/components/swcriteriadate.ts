@@ -5,7 +5,7 @@ class SWCriteriaDate{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
@@ -13,7 +13,7 @@ class SWCriteriaDate{
 			pathBuilderConfig
 		)=>new SWCriteriaDate(
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
@@ -22,7 +22,7 @@ class SWCriteriaDate{
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'$filter',
 			'collectionPartialsPath',
 			'collectionService',
@@ -33,7 +33,7 @@ class SWCriteriaDate{
 	}
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		$filter,
 		collectionPartialsPath,
 		collectionService,

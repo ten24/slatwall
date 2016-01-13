@@ -13,7 +13,7 @@ class SWOptionsForOptionGroupController {
     public selectedOption; 
  
     // @ngInject
-    constructor(private $slatwall, private $timeout, 
+    constructor(private $hibachi, private $timeout, 
                 private collectionConfigService, 
                 private observerService
     ){
@@ -53,14 +53,14 @@ class SWOptionsForOptionGroup implements ng.IDirective{
     
         public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
-            $slatwall, 
+            $hibachi, 
             $timeout, 
             collectionConfigService, 
             observerService,
             optionGroupPartialsPath,
             pathBuilderConfig
         ) => new SWOptionsForOptionGroup(
-            $slatwall, 
+            $hibachi, 
             $timeout, 
             collectionConfigService, 
             observerService,
@@ -68,7 +68,7 @@ class SWOptionsForOptionGroup implements ng.IDirective{
             pathBuilderConfig
         );
         directive.$inject = [
-            '$slatwall', 
+            '$hibachi', 
             '$timeout', 
             'collectionConfigService',
             'observerService', 
@@ -78,7 +78,7 @@ class SWOptionsForOptionGroup implements ng.IDirective{
         return directive;
     }
     // @ngInject
-    constructor(private $slatwall, private $timeout, 
+    constructor(private $hibachi, private $timeout, 
                 private collectionConfigService, 
                 private observerService, private optionGroupPartialsPath, pathBuilderConfig
     ){
