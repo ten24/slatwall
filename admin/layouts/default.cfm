@@ -367,17 +367,6 @@ Notes:
 			</span>
 		</span>
 		
-		<script type="text/javascript">
-			console.log('config here');
-			console.log($.slatwall.getConfig());
-			var slatwallAngular = {};
-			slatwallAngular.slatwallConfig = $.slatwall.getConfig();
-			
-			
-
-		</script>
-
-
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" charset="utf-8"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></script>
 	</body>
