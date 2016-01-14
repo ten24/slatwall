@@ -29,9 +29,10 @@
 					logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
 				}
 			}
-			
 			// Make sure that the validation struct has contexts & properties
 			param name="validation.properties" default="#structNew()#";
+			param name="validation.conditions" default="#structNew()#";
+			param name="validation.populatedPropertyValidation" default="#structNew()#";
 			
 			// Add any additional rules
 			if(structKeyExists(customValidation, "properties")) {
@@ -41,6 +42,30 @@
 					} else {
 						for(var r=1; r<=arrayLen(customValidation.properties[ key ]); r++) {
 							arrayAppend(validation.properties[ key ],customValidation.properties[ key ][r]);	
+						}
+					}
+				}
+			}
+			
+			if(structKeyExists(customValidation, "conditions")) {
+				for(var key in customValidation.conditions) {
+					if(!structKeyExists(validation.conditions, key)) {
+						validation.conditions[ key ] = customValidation.conditions[ key ];
+					} else {
+						for(var item in customValidation.conditions[ key ]) {
+							structAppend(validation.conditions[ key ], customValidation.conditions[ key ] [item]);	
+						}
+					}
+				}
+			}
+			
+			if(structKeyExists(customValidation, "populatedPropertyValidation")) {
+				for(var key in customValidation.populatedPropertyValidation) {
+					if(!structKeyExists(validation.populatedPropertyValidation, key)) {
+						validation.populatedPropertyValidation[ key ] = customValidation.populatedPropertyValidation[ key ];
+					} else {
+						for(var r=1; r<=arrayLen(customValidation.populatedPropertyValidation[ key ]); r++) {
+							arrayAppend(validation.populatedPropertyValidation[ key ],customValidation.populatedPropertyValidation[ key ][r]);	
 						}
 					}
 				}
