@@ -19,11 +19,10 @@ class SWTypeaheadSearchController {
 	public hideSearch;
 	public modelBind;
 	public clickOutsideArgs;
-    public resultsPromise; 
-   
+    public resultsPromise;
+    public resultsDefferred; 
     
-	private _timeoutPromise;
-    private resultsDefferred; 
+	private _timeoutPromise; 
 	private entityList;
 	private typeaheadCollectionConfig;
 	private typeaheadCollectionConfigs;
@@ -50,7 +49,7 @@ class SWTypeaheadSearchController {
         }
 
         //init timeoutPromise for link
-        this._timeoutPromise = this.$timeout(()=>{{},500);
+        this._timeoutPromise = this.$timeout(()=>{},500);
 
         //populate the displayList
         this.$transclude = this.$transclude;
@@ -195,63 +194,29 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
 
-	constructor(private $hibachi, private $injector, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
+	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope, element, attrs, controller, transclude) =>{
-        console.log("prelinkHTML", element.html(), scope)
         var children = element.children();
-        console.log("children", children)
-        var listItemTemplate = angular.element('<li></li>');
+        var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
         var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
         var transcludeContent = transclude(scope,()=>{});
-        console.log("trannyHtml", transcludeContent)
         actionTemplate.append(transcludeContent); 
         listItemTemplate.append(actionTemplate); 
         
         scope.swTypeaheadSearch.resultsPromise.then(()=>{
-            console.log("THENNN")
-            angular.forEach(scope.swTypeaheadSearch.results, (item,key)=>{
-                console.log("itemkey",item,key)
-            }); 
+            children.append(this.$compile(listItemTemplate)(scope));
         });
-            
-        console.log("postlinkHTML", element.html(), scope)
 	}
     
-    /*public compile:ng.IDirectiveCompileFn = (tElement, tAttrs, tTransclude) => {
-        
-        // Extract the children from this instance of the directive
-        console.log('beforeHTML', tElement.html());
-        var children = tElement.children();
-        var listTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
-        var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
-        var rootScope:IScope = this.$injector.get("$rootScope");
-        console.log(rootScope)
-        //var transcludeContent = tTransclude(this.scope,()=>{});
-        //console.log("TRANNY", transcludeContent)
-        //actionTemplate.append(transcludeContent);
-        listTemplate.append(actionTemplate); 
-        children.append(listTemplate);
-        tElement.html('');
-        tElement.append(children);
-         console.log('afterHTML', tElement.html());
-      return {
-        pre: function preLink(scope, tElement, iAttrs, crtl, transclude) {
-            
-        },
-        post: function postLink(scope, iElement, iAttrs, controller, transclude) {
-            console.log("beforepost",iElement.html())
-            console.log("afterpost",iElement.html())
-        }
-        };
-    }*/
+ 
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
 			$hibachi
-            ,$injector
+            ,$compile
 			,$timeout
             ,utilityService
 			,collectionConfigService
@@ -260,14 +225,14 @@ class SWTypeaheadSearch implements ng.IDirective{
 
 		)=> new SWTypeaheadSearch(
 			$hibachi
-            ,$injector
+            ,$compile
 			,$timeout
             ,utilityService
 			,collectionConfigService
 			,corePartialsPath
             ,pathBuilderConfig
 		);
-		directive.$inject = ["$hibachi", "$injector", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
+		directive.$inject = ["$hibachi", "$compile", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
 			'pathBuilderConfig'];
 		return directive;
 	}
