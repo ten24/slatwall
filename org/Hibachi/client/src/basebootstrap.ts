@@ -16,7 +16,12 @@ export class BaseBootStrapper{
             this.$http = $http;
             this.$q = $q;
 
-            if(localStorage.getItem('appConfig') && localStorage.getItem('resourceBundles')){
+            if(
+                localStorage.getItem('appConfig') 
+                && localStorage.getItem('appConfig') !== 'undefined'
+                && localStorage.getItem('resourceBundles')
+                && localStorage.getItem('resourceBundles') !== 'undefined'
+            ){
                  return $http.get('index.cfm/?slatAction=api:main.getInstantiationKey')
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
