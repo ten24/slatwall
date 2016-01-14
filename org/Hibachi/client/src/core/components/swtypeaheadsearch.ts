@@ -12,21 +12,27 @@ class SWTypeaheadSearchController {
 	public allRecords:boolean;
 	public placeholderText:string;
 	public searchText:string;
-	public results;
+	public results = [];
 	public addFunction;
+    public displayList;
 	public addButtonFunction;
 	public hideSearch;
 	public modelBind;
 	public clickOutsideArgs;
-
+    public resultsPromise; 
+   
+    
 	private _timeoutPromise;
-	private displayList;
+    private resultsDefferred; 
 	private entityList;
 	private typeaheadCollectionConfig;
 	private typeaheadCollectionConfigs;
     
     // @ngInject
-	constructor(private $hibachi, public $scope, private $timeout:ng.ITimeoutService, private $transclude:ng.ITranscludeFunction, private collectionConfigService){
+	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
+
+        this.resultsDeferred = $q.defer();
+        this.resultsPromise = this.resultsDeferred.promise;
 
         if(angular.isDefined(this.collectionConfig)){
             this.typeaheadCollectionConfig = this.collectionConfig; 
@@ -34,16 +40,26 @@ class SWTypeaheadSearchController {
             this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
             this.typeaheadCollectionConfig.setDisplayProperties(this.properties);
         } else { 
-            throw("You did not pass the correct collection config data to swTypeaheadSearch")
+            throw("You did not pass the correct collection config data to swTypeaheadSearch");
         }
         
-        this.$transclude = this.$transclude;
-        this.$transclude(this.$scope,()=>{});
-
 		if(angular.isDefined(this.propertiesToDisplay)){
 			this.displayList = this.propertiesToDisplay.split(",");
-		}
+		} else { 
+            this.displayList = [];
+        }
 
+        //init timeoutPromise for link
+        this._timeoutPromise = this.$timeout(()=>{{},500);
+
+        //populate the displayList
+        this.$transclude = this.$transclude;
+        this.$transclude($scope,()=>{});
+        
+        this.typeaheadCollectionConfig.setDisplayProperties(this.utilityService.arrayToList(this.displayList));
+        
+        console.log("TypeaheadCollectionConfig", this.typeaheadCollectionConfig);
+        
 		if(angular.isDefined(this.allRecords)){
 			this.typeaheadCollectionConfig.setAllRecords(this.allRecords);
 		} else {
@@ -68,8 +84,7 @@ class SWTypeaheadSearchController {
 				if(this.hideSearch){
 					this.hideSearch = false;
 				}
-
-				this.results = new Array();
+                
 				this.typeaheadCollectionConfig.setKeywords(search);
 
 				if(angular.isDefined(this.filterGroupsConfig)){
@@ -82,13 +97,14 @@ class SWTypeaheadSearchController {
 				var promise = this.typeaheadCollectionConfig.getEntity();
 
 				promise.then( (response) =>{
-
 						if(angular.isDefined(this.allRecords) && this.allRecords == false){
-							this.results = response.pageRecords;
+							console.log("setting Results")
+                            this.results = response.pageRecords;
 						} else {
+                            console.log("setting Results")
 							this.results = response.records;
 						}
-
+                        
 						//Custom method for gravatar on accounts (non-persistant-property)
 						//if(angular.isDefined(this.results) && this.entity == "Account"){
 						//	angular.forEach(this.results,(account)=>{
@@ -96,7 +112,9 @@ class SWTypeaheadSearchController {
 						//	});
 						//}
 
-				});
+				}).finally(()=>{
+                      this.resultsDeferred.resolve();
+                });
 			}, 500);
 		} else {
 			this.results = [];
@@ -155,6 +173,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
 			'pathBuilderConfig'];
 	public templateUrl;
+    public transclude=true; 
 	public restrict = "EA";
 	public scope = {}
 
@@ -176,35 +195,79 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
 
-
-	constructor(private $hibachi, public $scope, private $timeout:ng.ITimeoutService, private $transclude:ng.ITranscludeFunction, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
+	constructor(private $hibachi, private $injector, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
 		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
 
-	public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
+	public link:ng.IDirectiveLinkFn = (scope, element, attrs, controller, transclude) =>{
+        console.log("prelinkHTML", element.html(), scope)
+        var children = element.children();
+        console.log("children", children)
+        var listItemTemplate = angular.element('<li></li>');
+        var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
+        var transcludeContent = transclude(scope,()=>{});
+        console.log("trannyHtml", transcludeContent)
+        actionTemplate.append(transcludeContent); 
+        listItemTemplate.append(actionTemplate); 
+        
+        scope.swTypeaheadSearch.resultsPromise.then(()=>{
+            console.log("THENNN")
+            angular.forEach(scope.swTypeaheadSearch.results, (item,key)=>{
+                console.log("itemkey",item,key)
+            }); 
+        });
+            
+        console.log("postlinkHTML", element.html(), scope)
 	}
+    
+    /*public compile:ng.IDirectiveCompileFn = (tElement, tAttrs, tTransclude) => {
+        
+        // Extract the children from this instance of the directive
+        console.log('beforeHTML', tElement.html());
+        var children = tElement.children();
+        var listTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
+        var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
+        var rootScope:IScope = this.$injector.get("$rootScope");
+        console.log(rootScope)
+        //var transcludeContent = tTransclude(this.scope,()=>{});
+        //console.log("TRANNY", transcludeContent)
+        //actionTemplate.append(transcludeContent);
+        listTemplate.append(actionTemplate); 
+        children.append(listTemplate);
+        tElement.html('');
+        tElement.append(children);
+         console.log('afterHTML', tElement.html());
+      return {
+        pre: function preLink(scope, tElement, iAttrs, crtl, transclude) {
+            
+        },
+        post: function postLink(scope, iElement, iAttrs, controller, transclude) {
+            console.log("beforepost",iElement.html())
+            console.log("afterpost",iElement.html())
+        }
+        };
+    }*/
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
 			$hibachi
-            ,$scope
+            ,$injector
 			,$timeout
-            ,$transclude
+            ,utilityService
 			,collectionConfigService
 			,corePartialsPath
             ,pathBuilderConfig
 
 		)=> new SWTypeaheadSearch(
 			$hibachi
-            ,$scope
+            ,$injector
 			,$timeout
-            ,$transclude
+            ,utilityService
 			,collectionConfigService
 			,corePartialsPath
             ,pathBuilderConfig
 		);
-		directive.$inject = ["$hibachi", "$scope", "$timeout", "$transclude", "collectionConfigService", "corePartialsPath",
+		directive.$inject = ["$hibachi", "$injector", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
 			'pathBuilderConfig'];
 		return directive;
 	}

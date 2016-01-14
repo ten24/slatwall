@@ -30,6 +30,11 @@
                         data-placeholder-text="Search or Add Bundle Group Type..."
                         data-add-function="saveProductBundleGroupType()"
                         data-add-button-function="productBundleGroupTypes.setAdding(true)">
+                        
+                        <div sw-typeahead-search-line-item data-property-identifier="typeName">
+                            <span ng-bind="item.typeName"></span>
+                        </div> 
+                        
                 </div>
 
 				<!--<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">
