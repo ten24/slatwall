@@ -179,7 +179,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// If this integration is active lets register all of its event handlers, and decorate the beanFactory with it
 					if( integration.getEnabledFlag() ) {
-						
 						for(var e=1; e<=arrayLen(integrationCFC.getEventHandlers()); e++) {
 							getHibachiEventService().registerEventHandler( integrationCFC.getEventHandlers()[e] );
 						}
