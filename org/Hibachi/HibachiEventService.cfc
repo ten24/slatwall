@@ -154,14 +154,7 @@ component output="false" update="true" extends="HibachiService" {
 				}
 			}
 		}
-		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallcms/model/handler')) {
-			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallcms/model/handler');
-			for(var h=1; h<=arrayLen(dirList); h++) {
-				if(listLast(dirList[h], '.') eq 'cfc') {
-					registerEventHandler( "#getApplicationValue('applicationKey')#.integrationServices.slatwallcms.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
-				}
-			}
-		}
+		
 	}
 	
 	public any function getEventNameOptions() {

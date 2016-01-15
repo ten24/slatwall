@@ -63,7 +63,25 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 	
 	public array function getEventHandlers() {
-		return ["Slatwall.integrationServices.slatwallcms.model.handler.SlatwallCMSHandler"];
+		var eventHandlers = ["Slatwall.integrationServices.slatwallcms.model.handler.SlatwallCMSHandler"];
+		//get all cms sites
+		var sitesSmartList = getHibachiScope().getService('siteService').getSiteSmartList();
+		sitesSmartList.addFilter('app.integration.integrationPackage','slatwallcms');
+		var sites = sitesSmartList.getRecords();
+		//use sites to register handlers
+		for(var site in sites){
+			var siteComponentPath = "#getApplicationValue('applicationRootMappingPath')#.custom.apps.#site.getApp().getAppCode()#.#site.getSiteCode()#.model.handler";
+			var eventHandlerPath = site.getSitePath()&'/model/handler';
+			if(directoryExists(eventHandlerPath)) {
+				var dirList = directoryList(eventHandlerPath);
+				for(var h=1; h<=arrayLen(dirList); h++) {
+					if(listLast(dirList[h], '.') eq 'cfc') {
+						arrayAppend(eventHandlers,"#getApplicationValue('applicationKey')#.#siteComponentPath#.#listFirst(listLast(dirList[h], '/\'), '.')#");
+					}
+				}
+			}
+		}
+		return eventHandlers;
 	}
 	
 }
