@@ -685,8 +685,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
-            if(!len(arguments.processObject.getAccountPaymentMethodID()) && len(arguments.processObject.getNewOrderPayment().getGiftCardNumber())){
-	            var giftCard = getService("GiftCardService").get("GiftCard", getDAO("GiftCardDAO").getIDbyCode(arguments.processObject.getNewOrderPayment().getGiftCardNumber()));
+            if(!len(arguments.processObject.getAccountPaymentMethodID()) && !isNull(arguments.processObject.getGiftCard())){
+	            var giftCard = arguments.processObject.getGiftCard();
             } else if(len(arguments.processObject.getAccountPaymentMethodID()) && getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).isGiftCardAccountPaymentMethod()) {
             	var giftCard = getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).getGiftCard();
             }
@@ -700,12 +700,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 		arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
-
-
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-
-
 
 		// If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term AND the orderPayment's paymentMethod
 		//  is set to allow accounts to save... then auto set the 'save account payment method flag'.
@@ -728,10 +724,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
-		}
-
-		if(arguments.processObject.getSaveGiftCardToAccountFlag() && !isNull(arguments.processObject.getGiftCard())){
-			var giftCard = arguments.processObject.getGiftCard();
 		}
 
 		// Attach 'createTransaction' errors to the order
