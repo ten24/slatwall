@@ -1,4 +1,4 @@
-component extends="Slatwall.org.Hibachi.HibachiObject" {
+component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 
 	public void function onEvent( required any eventName, required struct eventData={} ) {
 		
