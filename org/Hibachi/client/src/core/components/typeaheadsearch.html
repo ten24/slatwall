@@ -1,18 +1,21 @@
-<div sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArgs)">
-	<form>
-		<div class="s-search">
-			<input type="text" placeholder="{{swTypeaheadSearch.placeholderText}}" class="form-control input-sm" ng-model="swTypeaheadSearch.searchText" ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)">
-			<i class="fa fa-search"></i>
-		</div>
-	</form>
-
-	<div class="s-results" ng-hide="swTypeaheadSearch.hideSearch == null">
-		<!-- Only show if there is text -->
-		<button type="button" class="btn btn-primary" ng-show="swTypeaheadSearch.searchText.length" ng-click="swTypeaheadSearch.addButtonItem(item)">
-			<i class="fa fa-plus" ></i> Add
-		</button>
-		<ul ng-show="swTypeaheadSearch.searchText.length > 0" ng-hide="swTypeaheadSearch.hideSearch" class="dropdown-menu item">
-            
+<!--<div sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArgs)" class="s-select-list-wrapper s-search">-->
+<div class="s-select-list-wrapper s-search">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="s-input-btn">
+                <input id="searchinput" placeholder="{{swTypeaheadSearch.placeholderText}}" ng-model="swTypeaheadSearch.searchText" ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)" type="search" class="form-control">
+                <span class="glyphicon glyphicon-remove" ng-if="swTypeaheadSearch.searchText.length" ng-click="swTypeaheadSearch.clearSearch()"></span>
+            </div>
+            <div class="input-group-btn">
+                <button class="btn btn-sm btn-default" ng-if="swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.toggleOptions()"><i class="fa fa-caret-down" ></i></button>
+                <button class="btn btn-sm btn-default" ng-if="!swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.toggleOptions()"><i class="fa fa-caret-up"></i></button>
+				<button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-plus" ng-click="swTypeaheadSearch.addButtonItem(item)"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="dropdown s-search-results-wrapper"> 
+        <ul ng-show="!swTypeaheadSearch.hideSearch" class="dropdown-menu">
+            <!-- populated by the directives link function -->
         </ul>
-	</div>
+    </div> 
 </div>

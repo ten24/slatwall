@@ -40,9 +40,7 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        console.log("SAM", scope);
         if(angular.isDefined(scope.$parent.swTypeaheadSearch)){
-            console.log("HAS TYPEAHEAD")
             scope.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
         }
     }
