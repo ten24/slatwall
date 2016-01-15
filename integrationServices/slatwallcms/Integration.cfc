@@ -70,13 +70,13 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		var sites = sitesSmartList.getRecords();
 		//use sites to register handlers
 		for(var site in sites){
-			var siteComponentPath = "#getApplicationValue('applicationRootMappingPath')#.custom.apps.#site.getApp().getAppCode()#.#site.getSiteCode()#.model.handler";
+			var siteComponentPath = "#getApplicationValue('applicationKey')#.custom.apps.#site.getApp().getAppCode()#.#site.getSiteCode()#.model.handler";
 			var eventHandlerPath = site.getSitePath()&'/model/handler';
 			if(directoryExists(eventHandlerPath)) {
 				var dirList = directoryList(eventHandlerPath);
 				for(var h=1; h<=arrayLen(dirList); h++) {
 					if(listLast(dirList[h], '.') eq 'cfc') {
-						arrayAppend(eventHandlers,"#getApplicationValue('applicationKey')#.#siteComponentPath#.#listFirst(listLast(dirList[h], '/\'), '.')#");
+						arrayAppend(eventHandlers,"#siteComponentPath#.#listFirst(listLast(dirList[h], '/\'), '.')#");
 					}
 				}
 			}

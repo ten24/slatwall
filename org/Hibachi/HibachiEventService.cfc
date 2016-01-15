@@ -98,9 +98,9 @@ component output="false" update="true" extends="HibachiService" {
 				
 				// Stick the Hibachi Scope in with the rest of the event data
 				arguments.eventData[ "#getApplicationValue('applicationKey')#Scope" ] = getHibachiScope();
-				
 				// Attempt to evaluate this method
-				evaluate("object.#eventName#( argumentCollection=arguments.eventData )");	
+				
+				object.callEvent(eventName=arguments.eventName,eventData=arguments.eventData);
 				
 			}
 		}
