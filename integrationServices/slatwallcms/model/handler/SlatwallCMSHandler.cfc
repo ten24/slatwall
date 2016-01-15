@@ -144,6 +144,7 @@ component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
        		//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
        		if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
        			if(!ListFind(adminDomanNamesSetting, arguments.slatwallScope.getService('siteService').getCurrentDomain())){
+       				arguments.slatwallScope.getService('updateService').updateCMSApplications();
        				writeOutput('#arguments.slatwallScope.getService('siteService').getCurrentDomain()# is neither a CMS domain or an admin domain and therefore restricted.');
        				abort;
        			}
