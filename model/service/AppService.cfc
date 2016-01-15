@@ -67,12 +67,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public void function updateCMSApp(required app){
-		if(directoryExists(replacenocase(arguments.app.getAppPath(),'\','/','all'))){
-			getService("hibachiUtilityService").copyFile(
-				source= replacenocase(getSkeletonAppPath(),'\','/','all') & '/Application.cfc', 
-				destination=replacenocase(arguments.app.getAppPath(),'\','/','all') & '/Application.cfc', 
-				overwrite=true
-			);
+		deployApplication(arguments.app);
+		for(var site in arguments.app.getSites()){
+			getService('siteService').deploySite(site,false);
 		}
 	}
 	
