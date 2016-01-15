@@ -685,12 +685,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
-            if(!len(arguments.processObject.getAccountPaymentMethodID())){
+            if(!len(arguments.processObject.getAccountPaymentMethodID()) && len(arguments.processObject.getNewOrderPayment().getGiftCardNumber())){
 	            var giftCard = getService("GiftCardService").get("GiftCard", getDAO("GiftCardDAO").getIDbyCode(arguments.processObject.getNewOrderPayment().getGiftCardNumber()));
-            } else if(getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).isGiftCardAccountPaymentMethod()) {
+            } else if(len(arguments.processObject.getAccountPaymentMethodID()) && getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).isGiftCardAccountPaymentMethod()) {
             	var giftCard = getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).getGiftCard();
             }
-            newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
+  			if(!isNull(giftCard)){
+            	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
+            } else {
+            	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
+            }
         }
 
 		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
@@ -726,7 +730,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-		if(arguments.processObject.getSaveGiftCardToAccountFlag()){
+		if(arguments.processObject.getSaveGiftCardToAccountFlag() && !isNull(arguments.processObject.getGiftCard())){
 			var giftCard = arguments.processObject.getGiftCard();
 		}
 
