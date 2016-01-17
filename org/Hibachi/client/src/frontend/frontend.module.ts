@@ -6,11 +6,6 @@ import {coremodule} 	from "../core/core.module";
 import {FrontendController} from './controllers/frontend';
 //directives
 import {SWFDirective} 		from "./components/swfdirective";
-import {SWFCart} 			from "./components/swfcart";
-import {SWFCreateAccount} 	from "./components/swfcreateaccount";
-import {SWFLogin} 			from "./components/swflogin";
-import {SWFLogout} 			from "./components/swflogout";
-import {SWFPromo} 			from "./components/swfpromo";
 
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
@@ -20,12 +15,14 @@ var frontendmodule = angular.module('frontend', [coremodule.name])
 					pathBuilderConfig.setBaseURL('/');
                     pathBuilderConfig.setBasePartialsPath('custom/assets/');
 }])
-.run(['$rootScope', 'publicService','pathBuilderConfig', function($rootScope, publicService,pathBuilderConfig) {
-
-	$rootScope.hibachiScope = publicService;
-	$rootScope.hibachiScope.getAccount();
+.run(['$rootScope', '$hibachi', 'publicService','pathBuilderConfig', function($rootScope, $hibachi, publicService, pathBuilderConfig) {
+	console.log($rootScope, $hibachi)
+    $rootScope.hibachiScope = publicService;
+	$rootScope.hibachiScope.getAccount(); 
 	$rootScope.hibachiScope.getCart();
 	$rootScope.slatwall = $rootScope.hibachiScope;
+    $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
+    
 }])
 
 //constants
@@ -34,11 +31,6 @@ var frontendmodule = angular.module('frontend', [coremodule.name])
 .controller('frontendController',FrontendController)
 //directives
 .directive('swfDirective', SWFDirective.Factory())
-.directive('swfCart', SWFCart.Factory())
-.directive('swfCreateAccount', SWFCreateAccount.Factory())
-.directive('swfLogin', SWFLogin.Factory())
-.directive('swfLogout', SWFLogout.Factory())
-.directive('swfPromo', 	SWFPromo.Factory());
 
 export{
 	frontendmodule

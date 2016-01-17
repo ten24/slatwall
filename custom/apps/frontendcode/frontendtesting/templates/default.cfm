@@ -4,8 +4,7 @@
   <div>
     <section>
         <div>     
-        	<div ng-init="Account_Login = slatwall.getProcessObject('Account_Login') "></div>
-                      {{(Account_Login|json)}}                         
+        	                        
             <div class="container" >
                 <div>
                     <h2>Examples:</h2>
@@ -105,16 +104,16 @@
                        
                             <div>
                             	<label>
-                            		Email Address {{Account_Login.validations.properties.emailAddress.value}}
+                            		Email Address 
                             	</label>
-                                <swf-form-field type="email" object="Account_Login.validations.properties.emailAddress.value" class="formControl" name="emailAddress"></swf-form-field>
+                                <swf-form-field type="email" object="Account_Login.emailAddress" class="formControl" name="emailAddress"></swf-form-field>
                                 <span error-for="emailAddress"></span>
                             </div>
                             <div>
                                 <label>
                                     Password
                                 </label>
-                                <swf-form-field type="password" object="Account_Login.validations.properties.password" class="formControl" name="password"></swf-form-field>
+                                <swf-form-field type="password" object="Account_Login.password" class="formControl" name="password"></swf-form-field>
                                 <div error-for="password"></div>
                             </div>
                             <input type="submit" ng-click="$parent.swForm.submit()" />

@@ -687,8 +687,8 @@ component extends="FW1.framework" {
 			} else {
 				writeOutput( serializeJSON(request.context.ajaxResponse) );
 			}
-			abort;
 		}
+		abort;
 	}
 	
 	public void function setupView() {
