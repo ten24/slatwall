@@ -41,7 +41,7 @@
 						<label for="#attributes.fieldName#" class="control-label col-sm-4">
 							<span class="s-title">#attributes.title#</span>
 							<cfif len(attributes.hint)> 
-								<a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="fa fa-info-circle"></i></a>
+								<a href="##" tabindex="-1" data-toggle="tooltip" class="s-tooltip-hint" data-title="#attributes.hint#"><i class="fa fa-info-circle"></i></a>
 							</cfif>
 						</label>
 						<div class="col-sm-8">
