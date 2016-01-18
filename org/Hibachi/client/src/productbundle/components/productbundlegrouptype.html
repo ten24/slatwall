@@ -1,6 +1,6 @@
 <div class="form-group" >
 			<label class="control-label" for=""><span sw-rbkey="'admin.productBundle.bundleGroupType'"></span>:</label>
-			<div class="s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
+			<div class="s-search-filter" id="j-inside-product-bundle-group-type">
 			
 				<!--<div class="input-group" >
 					<input  type="text"
@@ -26,10 +26,11 @@
                 
                 <div sw-typeahead-search 
                         data-collection-config="productBundleGroupTypes.typeaheadCollectionConfig"
-                        data-model-bind="productBundleGroup.data.productBundleGroupType.data.typeName"
+                        data-search-text="productBundleGroup.data.productBundleGroupType.data.typeName"
                         data-placeholder-text="Search or Add Bundle Group Type..."
-                        data-add-function="saveProductBundleGroupType()"
-                        data-add-button-function="productBundleGroupTypes.setAdding(true)">
+                        data-add-function="selectProductBundleGroupType"
+                        data-add-button-function="productBundleGroupTypes.setAdding"
+                        >
                         
                         <span sw-typeahead-search-line-item data-property-identifier="typeName">
                             <span ng-bind="item.typeName"></span>

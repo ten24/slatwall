@@ -60,7 +60,7 @@ class SWProductBundleGroupType{
                 $scope.productBundleGroupTypeSaving = false;
 				$scope.productBundleGroupType = {};
                 $scope.productBundleGroupTypes.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig("Type");
-                $scope.productBundleGroupTypes.typeaheadCollectionConfig.setDisplayProperties("parentType.systemCode")
+                $scope.productBundleGroupTypes.typeaheadCollectionConfig.setDisplayProperties("typeID,typeCode,parentType.systemCode")
                 $scope.productBundleGroupTypes.typeaheadCollectionConfig.addFilter("parentType.systemCode","productBundleGroupType","=");
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $hibachi.newType();
@@ -73,18 +73,19 @@ class SWProductBundleGroupType{
 				/**
 				 * Sets the state to adding and sets the initial data.
 				 */
-				$scope.productBundleGroupTypes.setAdding = function(isAdding){
-                    console.log("ADDING TYPE")
-					$scope.productBundleGroupTypes.$$adding = isAdding;
-					var productBundleGroupType = $hibachi.newType();
-					var parentType = $hibachi.newType();
-					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-					productBundleGroupType.$$setParentType(parentType);
-					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
-					productBundleGroupType.data.typeDescription = '';
-					productBundleGroupType.data.typeNameCode='';
-					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
-					//formService.getForm('form.addProductBundleGroupType').$setDirty();
+				$scope.productBundleGroupTypes.setAdding = function(){
+                    $scope.productBundleGroupTypes.$$adding = !$scope.productBundleGroupTypes.$$adding;
+                    if(!$scope.productBundleGroupTypes.$$adding){
+                        var productBundleGroupType = $hibachi.newType();
+                        var parentType = $hibachi.newType();
+                        parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+                        productBundleGroupType.$$setParentType(parentType);
+                        productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
+                        productBundleGroupType.data.typeDescription = '';
+                        productBundleGroupType.data.typeNameCode='';
+                        angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
+                        //formService.getForm('form.addProductBundleGroupType').$setDirty();
+                    }
 				};
 
 				$scope.showAddProductBundleGroupTypeBtn = false;
@@ -133,17 +134,13 @@ class SWProductBundleGroupType{
 				/**
 				 * Handles user selection of the dropdown.
 				 */
-				$scope.selectProductBundleGroupType = function ($item, $model, $label) {
-				    $scope.$item = $item;
-				    $scope.$model = $model;
-				    $scope.$label = $label;
-
-					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
+				$scope.selectProductBundleGroupType = function (item) {
+					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,item);
 					var parentType = $hibachi.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					$scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
 				    $scope.showAddProductBundleGroupTypeBtn = false;
-				    	};
+				 };
 
 				/**
 				 * Closes the add screen
@@ -166,16 +163,18 @@ class SWProductBundleGroupType{
 				 * Saves product bundle group type
 				 */
 				$scope.saveProductBundleGroupType = function(){
-					$scope.productBundleGroupTypeSaving = true;
-                    //Gets the promise from save
+                    $scope.productBundleGroupTypeSaving = true;
+                    //Gets the promise from save                    
                     var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
                     promise.then(function(response){
                         //Calls close function
+                        
                         if (promise.$$state.status){
                             $scope.productBundleGroupTypeSaving = false;
                             $scope.closeAddScreen();
                         }
                     },()=>{
+                         
                         $scope.productBundleGroupTypeSaving = false;
                     });
 
@@ -183,7 +182,7 @@ class SWProductBundleGroupType{
 
 				//Sets up clickOutside Directive call back arguments
 				$scope.clickOutsideArgs = {
-					callBackActions : [$scope.closeAddScreen,$scope.clearTypeName]
+					callBackActions : [$scope.closeAddScreen]
 				};
 				/**
 				 * Works with swclickoutside directive to close dialog

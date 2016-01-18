@@ -17,8 +17,7 @@ class SWTypeaheadSearchController {
     public displayList = [];
 	public addButtonFunction;
 	public hideSearch = true;
-	public modelBind;
-	public clickOutsideArgs;
+	public clickOutsideArguments;
     public resultsPromise;
     public resultsDeferred; 
     
@@ -60,12 +59,6 @@ class SWTypeaheadSearchController {
 		} else {
 			this.typeaheadCollectionConfig.setAllRecords(true);
 		}
-        if(angular.isDefined(this.modelBind)){
-            console.log("SCuPE",$scope);
-            this.$scope.$watch("swTypeaheadSearch.modelBind", (newValue, oldValue)=>{
-                this.searchText = newValue; 
-            });
-        }
         
 	}
     
@@ -83,10 +76,6 @@ class SWTypeaheadSearchController {
     }
 
 	public search = (search:string)=>{
-
-		if(angular.isDefined(this.modelBind)){
-			this.modelBind = search;
-		}
         
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
@@ -126,7 +115,6 @@ class SWTypeaheadSearchController {
                 });
 			}, 500);
 		}  else if(search.length == 0){
-
             this._timeoutPromise = this.$timeout(()=>{ 
 
                 var promise = this.typeaheadCollectionConfig.getEntity();
@@ -158,13 +146,10 @@ class SWTypeaheadSearchController {
 
 		if(angular.isDefined(this.displayList)){
 			this.searchText = item[this.displayList[0]];
-            if(angular.isDefined(this.modelBind)){
-                this.modelBind = this.searchText;
-            }
 		}
-
+        
 		if(angular.isDefined(this.addFunction)){
-			this.addFunction();
+			this.addFunction()(item);
 		}
 	}
 
@@ -173,13 +158,9 @@ class SWTypeaheadSearchController {
 		if(!this.hideSearch){
 			this.hideSearch = true;
 		}
-
-		if(angular.isDefined(this.modelBind)){
-			this.modelBind = this.searchText;
-		} 
-
+        
 		if(angular.isDefined(this.addButtonFunction)){
-			this.addButtonFunction({searchString: this.searchText});
+			this.addButtonFunction()(this.searchText);
 		}
 	}
 
@@ -218,8 +199,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 		addFunction:"&?",
 		addButtonFunction:"&?",
 		hideSearch:"=",
-		modelBind:"=?",
-		clickOutsideArgs:"@"
+		clickOutsideArguments:"=?"
 	}
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
