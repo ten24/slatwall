@@ -4,7 +4,7 @@
 class SWFLoginController{
     public pObject:string;
     // @ngInject
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private $hibachi:any, private dialogService:any){
+    constructor(private $log:ng.ILogService, private $window:ng.IWindowService, private $hibachi:any, private dialogService:any){
         this.$hibachi = $hibachi; 
         this.pObject   = "Account_Login";
     }

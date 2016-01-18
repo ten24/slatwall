@@ -16,7 +16,7 @@ var frontendmodule = angular.module('frontend', [coremodule.name])
                     pathBuilderConfig.setBasePartialsPath('custom/assets/');
 }])
 .run(['$rootScope', '$hibachi', 'publicService','pathBuilderConfig', function($rootScope, $hibachi, publicService, pathBuilderConfig) {
-	console.log($rootScope, $hibachi)
+	console.log("Objects:", $rootScope, $hibachi)
     $rootScope.hibachiScope = publicService;
 	$rootScope.hibachiScope.getAccount(); 
 	$rootScope.hibachiScope.getCart();

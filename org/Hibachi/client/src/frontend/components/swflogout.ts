@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFLogoutController{
     //@ngInject
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private $hibachi:any){
+    constructor(private $log:ng.ILogService, private $window:ng.IWindowService, private $hibachi:any){
         this.$hibachi = $hibachi; 
     }
 }

@@ -14,7 +14,7 @@ class SWFCartController{
     public listItem;
     public object;
     //@ngInject
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private frontendPartialsPath, public $rootScope){
+    constructor(private $log:ng.ILogService, private $window:ng.IWindowService, private frontendPartialsPath, public $rootScope){
         this.$rootScope         = $rootScope;
         this.hibachiScope       = this.$rootScope.hibachiScope;
         this.cart               = this.hibachiScope.cart;

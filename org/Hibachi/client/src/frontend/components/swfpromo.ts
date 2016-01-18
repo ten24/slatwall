@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />   
 class SWFPromoController{
     // @ngInject
-    constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private $hibachi, private dialogService:any){
+    constructor(private $log:ng.ILogService, private $window:ng.IWindowService, private $hibachi, private dialogService:any){
         this.$hibachi = $hibachi; 
     }
 }

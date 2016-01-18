@@ -3568,9 +3568,9 @@
 	})();
 	exports.SWActionCallerController = SWActionCallerController;
 	var SWActionCaller = (function () {
-	    function SWActionCaller(partialsPath, utiltiyService, $hibachi) {
+	    function SWActionCaller(partialsPath, utilityService, $hibachi) {
 	        this.partialsPath = partialsPath;
-	        this.utiltiyService = utiltiyService;
+	        this.utilityService = utilityService;
 	        this.$hibachi = $hibachi;
 	        this.restrict = 'EA';
 	        this.scope = {};
@@ -3598,8 +3598,8 @@
 	        };
 	    }
 	    SWActionCaller.Factory = function () {
-	        var directive = function (partialsPath, utiltiyService, $hibachi) {
-	            return new SWActionCaller(partialsPath, utiltiyService, $hibachi);
+	        var directive = function (partialsPath, utilityService, $hibachi) {
+	            return new SWActionCaller(partialsPath, utilityService, $hibachi);
 	        };
 	        directive.$inject = [
 	            'partialsPath',
@@ -5605,7 +5605,7 @@
 	        pathBuilderConfig.setBasePartialsPath('custom/assets/');
 	    }])
 	    .run(['$rootScope', '$hibachi', 'publicService', 'pathBuilderConfig', function ($rootScope, $hibachi, publicService, pathBuilderConfig) {
-	        console.log($rootScope, $hibachi);
+	        console.log("Objects:", $rootScope, $hibachi);
 	        $rootScope.hibachiScope = publicService;
 	        $rootScope.hibachiScope.getAccount();
 	        $rootScope.hibachiScope.getCart();
@@ -5646,8 +5646,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFDirectiveController = (function () {
 	    //@ngInject
-	    function SWFDirectiveController($route, $log, frontendPartialsPath, $rootScope) {
-	        this.$route = $route;
+	    function SWFDirectiveController($log, frontendPartialsPath, $rootScope) {
 	        this.$log = $log;
 	        this.frontendPartialsPath = frontendPartialsPath;
 	        this.$rootScope = $rootScope;
