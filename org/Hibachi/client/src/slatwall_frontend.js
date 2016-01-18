@@ -51,7 +51,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var basebootstrap_1 = __webpack_require__(1);
-	var frontend_module_1 = __webpack_require__(47);
+	var frontend_module_1 = __webpack_require__(48);
 	//custom bootstrapper
 	var bootstrapper = (function (_super) {
 	    __extends(bootstrapper, _super);
@@ -70,7 +70,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(2)();
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//generic bootstrapper
 	var BaseBootStrapper = (function () {
 	    function BaseBootStrapper() {
@@ -185,6 +185,7 @@
 	    __webpack_require__(8);
 	    __webpack_require__(9);
 	    __webpack_require__(10);
+	    __webpack_require__(11);
 	};
 
 
@@ -196,6 +197,12 @@
 
 /***/ },
 /* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_RESULT__;!function(a){"use strict";function b(a,b){var c=(65535&a)+(65535&b),d=(a>>16)+(b>>16)+(c>>16);return d<<16|65535&c}function c(a,b){return a<<b|a>>>32-b}function d(a,d,e,f,g,h){return b(c(b(b(d,a),b(f,h)),g),e)}function e(a,b,c,e,f,g,h){return d(b&c|~b&e,a,b,f,g,h)}function f(a,b,c,e,f,g,h){return d(b&e|c&~e,a,b,f,g,h)}function g(a,b,c,e,f,g,h){return d(b^c^e,a,b,f,g,h)}function h(a,b,c,e,f,g,h){return d(c^(b|~e),a,b,f,g,h)}function i(a,c){a[c>>5]|=128<<c%32,a[(c+64>>>9<<4)+14]=c;var d,i,j,k,l,m=1732584193,n=-271733879,o=-1732584194,p=271733878;for(d=0;d<a.length;d+=16)i=m,j=n,k=o,l=p,m=e(m,n,o,p,a[d],7,-680876936),p=e(p,m,n,o,a[d+1],12,-389564586),o=e(o,p,m,n,a[d+2],17,606105819),n=e(n,o,p,m,a[d+3],22,-1044525330),m=e(m,n,o,p,a[d+4],7,-176418897),p=e(p,m,n,o,a[d+5],12,1200080426),o=e(o,p,m,n,a[d+6],17,-1473231341),n=e(n,o,p,m,a[d+7],22,-45705983),m=e(m,n,o,p,a[d+8],7,1770035416),p=e(p,m,n,o,a[d+9],12,-1958414417),o=e(o,p,m,n,a[d+10],17,-42063),n=e(n,o,p,m,a[d+11],22,-1990404162),m=e(m,n,o,p,a[d+12],7,1804603682),p=e(p,m,n,o,a[d+13],12,-40341101),o=e(o,p,m,n,a[d+14],17,-1502002290),n=e(n,o,p,m,a[d+15],22,1236535329),m=f(m,n,o,p,a[d+1],5,-165796510),p=f(p,m,n,o,a[d+6],9,-1069501632),o=f(o,p,m,n,a[d+11],14,643717713),n=f(n,o,p,m,a[d],20,-373897302),m=f(m,n,o,p,a[d+5],5,-701558691),p=f(p,m,n,o,a[d+10],9,38016083),o=f(o,p,m,n,a[d+15],14,-660478335),n=f(n,o,p,m,a[d+4],20,-405537848),m=f(m,n,o,p,a[d+9],5,568446438),p=f(p,m,n,o,a[d+14],9,-1019803690),o=f(o,p,m,n,a[d+3],14,-187363961),n=f(n,o,p,m,a[d+8],20,1163531501),m=f(m,n,o,p,a[d+13],5,-1444681467),p=f(p,m,n,o,a[d+2],9,-51403784),o=f(o,p,m,n,a[d+7],14,1735328473),n=f(n,o,p,m,a[d+12],20,-1926607734),m=g(m,n,o,p,a[d+5],4,-378558),p=g(p,m,n,o,a[d+8],11,-2022574463),o=g(o,p,m,n,a[d+11],16,1839030562),n=g(n,o,p,m,a[d+14],23,-35309556),m=g(m,n,o,p,a[d+1],4,-1530992060),p=g(p,m,n,o,a[d+4],11,1272893353),o=g(o,p,m,n,a[d+7],16,-155497632),n=g(n,o,p,m,a[d+10],23,-1094730640),m=g(m,n,o,p,a[d+13],4,681279174),p=g(p,m,n,o,a[d],11,-358537222),o=g(o,p,m,n,a[d+3],16,-722521979),n=g(n,o,p,m,a[d+6],23,76029189),m=g(m,n,o,p,a[d+9],4,-640364487),p=g(p,m,n,o,a[d+12],11,-421815835),o=g(o,p,m,n,a[d+15],16,530742520),n=g(n,o,p,m,a[d+2],23,-995338651),m=h(m,n,o,p,a[d],6,-198630844),p=h(p,m,n,o,a[d+7],10,1126891415),o=h(o,p,m,n,a[d+14],15,-1416354905),n=h(n,o,p,m,a[d+5],21,-57434055),m=h(m,n,o,p,a[d+12],6,1700485571),p=h(p,m,n,o,a[d+3],10,-1894986606),o=h(o,p,m,n,a[d+10],15,-1051523),n=h(n,o,p,m,a[d+1],21,-2054922799),m=h(m,n,o,p,a[d+8],6,1873313359),p=h(p,m,n,o,a[d+15],10,-30611744),o=h(o,p,m,n,a[d+6],15,-1560198380),n=h(n,o,p,m,a[d+13],21,1309151649),m=h(m,n,o,p,a[d+4],6,-145523070),p=h(p,m,n,o,a[d+11],10,-1120210379),o=h(o,p,m,n,a[d+2],15,718787259),n=h(n,o,p,m,a[d+9],21,-343485551),m=b(m,i),n=b(n,j),o=b(o,k),p=b(p,l);return[m,n,o,p]}function j(a){var b,c="";for(b=0;b<32*a.length;b+=8)c+=String.fromCharCode(a[b>>5]>>>b%32&255);return c}function k(a){var b,c=[];for(c[(a.length>>2)-1]=void 0,b=0;b<c.length;b+=1)c[b]=0;for(b=0;b<8*a.length;b+=8)c[b>>5]|=(255&a.charCodeAt(b/8))<<b%32;return c}function l(a){return j(i(k(a),8*a.length))}function m(a,b){var c,d,e=k(a),f=[],g=[];for(f[15]=g[15]=void 0,e.length>16&&(e=i(e,8*a.length)),c=0;16>c;c+=1)f[c]=909522486^e[c],g[c]=1549556828^e[c];return d=i(f.concat(k(b)),512+8*b.length),j(i(g.concat(d),640))}function n(a){var b,c,d="0123456789abcdef",e="";for(c=0;c<a.length;c+=1)b=a.charCodeAt(c),e+=d.charAt(b>>>4&15)+d.charAt(15&b);return e}function o(a){return unescape(encodeURIComponent(a))}function p(a){return l(o(a))}function q(a){return n(p(a))}function r(a,b){return m(o(a),o(b))}function s(a,b){return n(r(a,b))}function t(a,b,c){return b?c?r(b,a):s(b,a):c?p(a):q(a)} true?!(__WEBPACK_AMD_DEFINE_RESULT__ = function(){return t}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):a.md5=t}(this);
+
+/***/ },
+/* 5 */
 /***/ function(module, exports) {
 
 	/*
@@ -496,7 +503,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	/*
@@ -511,7 +518,7 @@
 	}]),angular.module("template/typeahead/typeahead-popup.html",[]).run(["$templateCache",function(a){a.put("template/typeahead/typeahead-popup.html",'<ul class="dropdown-menu" ng-show="isOpen()" ng-style="{top: position.top+\'px\', left: position.left+\'px\'}" style="display: block;" role="listbox" aria-hidden="{{!isOpen()}}">\n    <li ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }" ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{match.id}}">\n        <div typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>\n    </li>\n</ul>\n')}]);
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/*
@@ -532,7 +539,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	/*
@@ -594,7 +601,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	/*
@@ -616,7 +623,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports) {
 
 	(function (angular) {
@@ -709,7 +716,7 @@
 	})(angular);
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	;(function($, window, document, undefined) {
@@ -828,50 +835,50 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var publicservice_1 = __webpack_require__(12);
-	var utilityservice_1 = __webpack_require__(13);
-	var selectionservice_1 = __webpack_require__(15);
-	var observerservice_1 = __webpack_require__(16);
-	var formservice_1 = __webpack_require__(17);
-	var metadataservice_1 = __webpack_require__(18);
-	var rbkeyservice_1 = __webpack_require__(19);
-	var hibachiservice_1 = __webpack_require__(20);
+	var publicservice_1 = __webpack_require__(13);
+	var utilityservice_1 = __webpack_require__(14);
+	var selectionservice_1 = __webpack_require__(16);
+	var observerservice_1 = __webpack_require__(17);
+	var formservice_1 = __webpack_require__(18);
+	var metadataservice_1 = __webpack_require__(19);
+	var rbkeyservice_1 = __webpack_require__(20);
+	var hibachiservice_1 = __webpack_require__(21);
 	//controllers
-	var globalsearch_1 = __webpack_require__(21);
+	var globalsearch_1 = __webpack_require__(22);
 	//filters
-	var percentage_1 = __webpack_require__(22);
+	var percentage_1 = __webpack_require__(23);
 	//directives
 	//  components
-	var swactioncaller_1 = __webpack_require__(23);
-	var swtypeaheadsearch_1 = __webpack_require__(24);
-	var swactioncallerdropdown_1 = __webpack_require__(25);
-	var swcolumnsorter_1 = __webpack_require__(26);
-	var swconfirm_1 = __webpack_require__(27);
-	var swentityactionbar_1 = __webpack_require__(28);
-	var swentityactionbarbuttongroup_1 = __webpack_require__(29);
-	var swexpandablerecord_1 = __webpack_require__(30);
-	var swlistingdisplay_1 = __webpack_require__(31);
-	var swlistingcolumn_1 = __webpack_require__(32);
-	var swlogin_1 = __webpack_require__(33);
-	var swnumbersonly_1 = __webpack_require__(34);
-	var swloading_1 = __webpack_require__(35);
-	var swscrolltrigger_1 = __webpack_require__(36);
-	var swrbkey_1 = __webpack_require__(37);
-	var swoptions_1 = __webpack_require__(38);
-	var swselection_1 = __webpack_require__(39);
-	var swclickoutside_1 = __webpack_require__(40);
-	var swdirective_1 = __webpack_require__(41);
-	var swexportaction_1 = __webpack_require__(42);
-	var swhref_1 = __webpack_require__(43);
-	var swprocesscaller_1 = __webpack_require__(44);
-	var swsortable_1 = __webpack_require__(45);
-	var swlistingglobalsearch_1 = __webpack_require__(46);
+	var swactioncaller_1 = __webpack_require__(24);
+	var swtypeaheadsearch_1 = __webpack_require__(25);
+	var swactioncallerdropdown_1 = __webpack_require__(26);
+	var swcolumnsorter_1 = __webpack_require__(27);
+	var swconfirm_1 = __webpack_require__(28);
+	var swentityactionbar_1 = __webpack_require__(29);
+	var swentityactionbarbuttongroup_1 = __webpack_require__(30);
+	var swexpandablerecord_1 = __webpack_require__(31);
+	var swlistingdisplay_1 = __webpack_require__(32);
+	var swlistingcolumn_1 = __webpack_require__(33);
+	var swlogin_1 = __webpack_require__(34);
+	var swnumbersonly_1 = __webpack_require__(35);
+	var swloading_1 = __webpack_require__(36);
+	var swscrolltrigger_1 = __webpack_require__(37);
+	var swrbkey_1 = __webpack_require__(38);
+	var swoptions_1 = __webpack_require__(39);
+	var swselection_1 = __webpack_require__(40);
+	var swclickoutside_1 = __webpack_require__(41);
+	var swdirective_1 = __webpack_require__(42);
+	var swexportaction_1 = __webpack_require__(43);
+	var swhref_1 = __webpack_require__(44);
+	var swprocesscaller_1 = __webpack_require__(45);
+	var swsortable_1 = __webpack_require__(46);
+	var swlistingglobalsearch_1 = __webpack_require__(47);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -1841,7 +1848,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -1992,7 +1999,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __extends = (this && this.__extends) || function (d, b) {
@@ -2003,7 +2010,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	var baseservice_1 = __webpack_require__(14);
+	var baseservice_1 = __webpack_require__(15);
 	var UtilityService = (function (_super) {
 	    __extends(UtilityService, _super);
 	    function UtilityService() {
@@ -2241,7 +2248,7 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2255,7 +2262,7 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2266,7 +2273,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(14);
+	var baseservice_1 = __webpack_require__(15);
 	var SelectionService = (function (_super) {
 	    __extends(SelectionService, _super);
 	    function SelectionService() {
@@ -2317,7 +2324,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2335,7 +2342,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(14);
+	var baseservice_1 = __webpack_require__(15);
 	var ObserverService = (function (_super) {
 	    __extends(ObserverService, _super);
 	    //@ngInject
@@ -2433,7 +2440,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2523,7 +2530,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2619,7 +2626,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -2726,7 +2733,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3198,7 +3205,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	var GlobalSearchController = (function () {
@@ -3334,7 +3341,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3358,7 +3365,7 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3381,11 +3388,12 @@
 	            if (_this.type == "button") {
 	                //handle submit.
 	                /** in order to attach the correct controller to local vm, we need a watch to bind */
-	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.frmController; }, function (newValue, oldValue) {
+	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.formController; }, function (newValue, oldValue) {
 	                    if (newValue !== undefined) {
+	                        console.log("Found formCtr", newValue);
 	                        _this.formCtrl = newValue;
+	                        unbindWatcher();
 	                    }
-	                    unbindWatcher();
 	                });
 	            }
 	            //			this.actionItem = this.getActionItem();
@@ -3411,6 +3419,7 @@
 	            */
 	        };
 	        this.submit = function () {
+	            console.log("Submit is hit", _this.action);
 	            _this.formCtrl.submit(_this.action);
 	        };
 	        this.getAction = function () {
@@ -3594,7 +3603,12 @@
 	        };
 	        this.controller = SWActionCallerController;
 	        this.controllerAs = "swActionCaller";
-	        this.link = function (scope, element, attrs) {
+	        this.require = "^?swForm";
+	        this.link = function (scope, element, attrs, formController) {
+	            console.log("Controller", formController);
+	            if (angular.isDefined(formController)) {
+	                scope.formController = formController;
+	            }
 	        };
 	    }
 	    SWActionCaller.Factory = function () {
@@ -3615,7 +3629,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3761,7 +3775,7 @@
 
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3809,7 +3823,7 @@
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -3856,7 +3870,7 @@
 
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4008,7 +4022,7 @@
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4073,7 +4087,7 @@
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4111,7 +4125,7 @@
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4265,7 +4279,7 @@
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4754,7 +4768,7 @@
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4823,7 +4837,7 @@
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4892,7 +4906,7 @@
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4948,7 +4962,7 @@
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 	var SWLoading = (function () {
@@ -4981,7 +4995,7 @@
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports) {
 
 	var SWScrollTrigger = (function () {
@@ -5070,7 +5084,7 @@
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports) {
 
 	var SWRbKey = (function () {
@@ -5111,7 +5125,7 @@
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5176,7 +5190,7 @@
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var SWSelection = (function () {
@@ -5234,7 +5248,7 @@
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5288,7 +5302,7 @@
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	var SWDirective = (function () {
@@ -5330,7 +5344,7 @@
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	var SWExportAction = (function () {
@@ -5361,7 +5375,7 @@
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	var SWHref = (function () {
@@ -5392,7 +5406,7 @@
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5472,7 +5486,7 @@
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	var SWSortable = (function () {
@@ -5524,7 +5538,7 @@
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5585,27 +5599,27 @@
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	//modules
-	var core_module_1 = __webpack_require__(11);
+	var hibachi_module_1 = __webpack_require__(49);
 	//controllers
-	var frontend_1 = __webpack_require__(48);
+	var frontend_1 = __webpack_require__(115);
 	//directives
-	var swfdirective_1 = __webpack_require__(49);
+	var swfdirective_1 = __webpack_require__(116);
 	//need to inject the public service into the rootscope for use in the directives.
 	//Also, we set the initial value for account and cart.
-	var frontendmodule = angular.module('frontend', [core_module_1.coremodule.name])
-	    .config(['pathBuilderConfig', function (pathBuilderConfig) {
+	var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.name])
+	    .config(['pathBuilderConfig', '$sceDelegateProvider', function (pathBuilderConfig, $sceDelegateProvider) {
 	        /** set the baseURL */
 	        pathBuilderConfig.setBaseURL('/');
-	        pathBuilderConfig.setBasePartialsPath('custom/assets/');
+	        pathBuilderConfig.setBasePartialsPath('org/hibachi/client/src/');
 	    }])
-	    .run(['$rootScope', '$hibachi', 'publicService', 'pathBuilderConfig', function ($rootScope, $hibachi, publicService, pathBuilderConfig) {
-	        console.log("Objects:", $rootScope, $hibachi);
+	    .run(['$rootScope', '$hibachi', 'publicService', function ($rootScope, $hibachi, publicService) {
+	        console.log("hibachi:", $rootScope, $hibachi);
 	        $rootScope.hibachiScope = publicService;
 	        $rootScope.hibachiScope.getAccount();
 	        $rootScope.hibachiScope.getCart();
@@ -5619,7 +5633,7206 @@
 
 
 /***/ },
-/* 48 */
+/* 49 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//import alertmodule = require('./alert/alert.module');
+	var alert_module_1 = __webpack_require__(50);
+	var collection_module_1 = __webpack_require__(54);
+	var core_module_1 = __webpack_require__(12);
+	var dialog_module_1 = __webpack_require__(78);
+	var pagination_module_1 = __webpack_require__(81);
+	var form_module_1 = __webpack_require__(84);
+	var validation_module_1 = __webpack_require__(99);
+	var hibachimodule = angular.module('hibachi', [
+	    alert_module_1.alertmodule.name,
+	    core_module_1.coremodule.name,
+	    collection_module_1.collectionmodule.name,
+	    dialog_module_1.dialogmodule.name,
+	    pagination_module_1.paginationmodule.name,
+	    form_module_1.formmodule.name,
+	    validation_module_1.validationmodule.name
+	]);
+	exports.hibachimodule = hibachimodule;
+
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//controllers
+	var alertcontroller_1 = __webpack_require__(51);
+	//services
+	var alertService_1 = __webpack_require__(52);
+	var alertmodule = angular.module('hibachi.alert', [])
+	    .controller('alertController', alertcontroller_1.AlertController)
+	    .service('alertService', alertService_1.AlertService);
+	exports.alertmodule = alertmodule;
+
+
+/***/ },
+/* 51 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var AlertController = (function () {
+	    //@ngInject
+	    function AlertController($scope, alertService) {
+	        $scope.$id = "alertController";
+	        $scope.alerts = alertService.getAlerts();
+	    }
+	    return AlertController;
+	})();
+	exports.AlertController = AlertController;
+
+
+/***/ },
+/* 52 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	//import Alert = require('../model/alert');
+	var alert_1 = __webpack_require__(53);
+	var AlertService = (function () {
+	    function AlertService($timeout, alerts) {
+	        var _this = this;
+	        this.$timeout = $timeout;
+	        this.alerts = alerts;
+	        this.newAlert = function () {
+	            return new alert_1.Alert();
+	        };
+	        this.get = function () {
+	            return _this.alerts || [];
+	        };
+	        this.addAlert = function (alert) {
+	            _this.alerts.push(alert);
+	            _this.$timeout(function (alert) {
+	                _this.removeAlert(alert);
+	            }, 3500);
+	        };
+	        this.addAlerts = function (alerts) {
+	            alerts.forEach(function (alert) {
+	                _this.addAlert(alert);
+	            });
+	        };
+	        this.removeAlert = function (alert) {
+	            var index = _this.alerts.indexOf(alert, 0);
+	            if (index != undefined) {
+	                _this.alerts.splice(index, 1);
+	            }
+	        };
+	        this.getAlerts = function () {
+	            return _this.alerts;
+	        };
+	        this.formatMessagesToAlerts = function (messages) {
+	            var alerts = [];
+	            if (messages) {
+	                for (var message in messages) {
+	                    var alert = new alert_1.Alert();
+	                    alert.msg = messages[message].message;
+	                    alert.type = messages[message].messageType;
+	                    alerts.push(alert);
+	                    if (alert.type === 'success' || alert.type === 'error') {
+	                        _this.$timeout(function () {
+	                            alert.fade = true;
+	                        }, 3500);
+	                        alert.dismissable = false;
+	                    }
+	                    else {
+	                        alert.fade = false;
+	                        alert.dismissable = true;
+	                    }
+	                }
+	            }
+	            return alerts;
+	        };
+	        this.removeOldestAlert = function () {
+	            _this.alerts.splice(0, 1);
+	        };
+	        this.alerts = [];
+	    }
+	    AlertService.$inject = [
+	        '$timeout'
+	    ];
+	    return AlertService;
+	})();
+	exports.AlertService = AlertService;
+
+
+/***/ },
+/* 53 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	//model
+	var Alert = (function () {
+	    function Alert(msg, type, fade, dismissable) {
+	        this.fade = false;
+	        this.dismissable = false;
+	        this.msg = msg;
+	        this.type = type;
+	        this.fade = fade;
+	        this.dismissable = dismissable;
+	    }
+	    return Alert;
+	})();
+	exports.Alert = Alert;
+
+
+/***/ },
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var core_module_1 = __webpack_require__(12);
+	//services
+	var collectionconfigservice_1 = __webpack_require__(55);
+	var collectionservice_1 = __webpack_require__(56);
+	//controllers
+	var collections_1 = __webpack_require__(57);
+	var createcollection_1 = __webpack_require__(58);
+	var confirmationcontroller_1 = __webpack_require__(59);
+	//directives
+	var swcollection_1 = __webpack_require__(60);
+	var swaddfilterbuttons_1 = __webpack_require__(61);
+	var swdisplayoptions_1 = __webpack_require__(62);
+	var swdisplayitem_1 = __webpack_require__(63);
+	var swcollectiontable_1 = __webpack_require__(64);
+	var swcolumnitem_1 = __webpack_require__(65);
+	var swconditioncriteria_1 = __webpack_require__(66);
+	var swcriteria_1 = __webpack_require__(67);
+	var swcriteriaboolean_1 = __webpack_require__(68);
+	var swcriteriamanytomany_1 = __webpack_require__(69);
+	var swcriteriamanytoone_1 = __webpack_require__(70);
+	var swcriterianumber_1 = __webpack_require__(71);
+	var swcriteriaonetomany_1 = __webpack_require__(72);
+	var swcriteriastring_1 = __webpack_require__(73);
+	var sweditfilteritem_1 = __webpack_require__(74);
+	var swfiltergroups_1 = __webpack_require__(75);
+	var swfilteritem_1 = __webpack_require__(76);
+	var swfiltergroupitem_1 = __webpack_require__(77);
+	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
+	    .config([function () {
+	    }]).run([function () {
+	    }])
+	    .constant('collectionPartialsPath', 'collection/components/')
+	    .controller('collections', collections_1.CollectionController)
+	    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
+	    .controller('createCollection', createcollection_1.CreateCollection)
+	    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', function (rbkeyService, $hibachi, utilityService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService); }])
+	    .service('collectionService', collectionservice_1.CollectionService)
+	    .directive('swCollection', swcollection_1.SWCollection.Factory())
+	    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
+	    .directive('swDisplayOptions', swdisplayoptions_1.SWDisplayOptions.Factory())
+	    .directive('swDisplayItem', swdisplayitem_1.SWDisplayItem.Factory())
+	    .directive('swCollectionTable', swcollectiontable_1.SWCollectionTable.Factory())
+	    .directive('swColumnItem', swcolumnitem_1.SWColumnItem.Factory())
+	    .directive('swConditionCriteria', swconditioncriteria_1.SWConditionCriteria.Factory())
+	    .directive('swCriteria', swcriteria_1.SWCriteria.Factory())
+	    .directive('swCriteriaBoolean', swcriteriaboolean_1.SWCriteriaBoolean.Factory())
+	    .directive('swCriteriaManyToMany', swcriteriamanytomany_1.SWCriteriaManyToMany.Factory())
+	    .directive('swCriteriaManyToOne', swcriteriamanytoone_1.SWCriteriaManyToOne.Factory())
+	    .directive('swCriteriaNumber', swcriterianumber_1.SWCriteriaNumber.Factory())
+	    .directive('swCriteriaOneToMany', swcriteriaonetomany_1.SWCriteriaOneToMany.Factory())
+	    .directive('swCriteriaString', swcriteriastring_1.SWCriteriaString.Factory())
+	    .directive('swEditFilterItem', sweditfilteritem_1.SWEditFilterItem.Factory())
+	    .directive('swFilterGroups', swfiltergroups_1.SWFilterGroups.Factory())
+	    .directive('swFilterItem', swfilteritem_1.SWFilterItem.Factory())
+	    .directive('swFilterGroupItem', swfiltergroupitem_1.SWFilterGroupItem.Factory());
+	exports.collectionmodule = collectionmodule;
+
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var Column = (function () {
+	    function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
+	        if (isVisible === void 0) { isVisible = true; }
+	        if (isDeletable === void 0) { isDeletable = true; }
+	        if (isSearchable === void 0) { isSearchable = true; }
+	        if (isExportable === void 0) { isExportable = true; }
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.title = title;
+	        this.isVisible = isVisible;
+	        this.isDeletable = isDeletable;
+	        this.isSearchable = isSearchable;
+	        this.isExportable = isExportable;
+	        this.persistent = persistent;
+	        this.ormtype = ormtype;
+	        this.attributeID = attributeID;
+	        this.attributeSetObject = attributeSetObject;
+	    }
+	    return Column;
+	})();
+	exports.Column = Column;
+	var Filter = (function () {
+	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue) {
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.value = value;
+	        this.comparisonOperator = comparisonOperator;
+	        this.logicalOperator = logicalOperator;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.displayValue = displayValue;
+	    }
+	    return Filter;
+	})();
+	exports.Filter = Filter;
+	var CollectionFilter = (function () {
+	    function CollectionFilter(propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
+	        if (readOnly === void 0) { readOnly = false; }
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.displayValue = displayValue;
+	        this.collectionID = collectionID;
+	        this.criteria = criteria;
+	        this.fieldtype = fieldtype;
+	        this.readOnly = readOnly;
+	    }
+	    return CollectionFilter;
+	})();
+	exports.CollectionFilter = CollectionFilter;
+	var Join = (function () {
+	    function Join(associationName, alias) {
+	        this.associationName = associationName;
+	        this.alias = alias;
+	    }
+	    return Join;
+	})();
+	exports.Join = Join;
+	var OrderBy = (function () {
+	    function OrderBy(propertyIdentifier, direction) {
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.direction = direction;
+	    }
+	    return OrderBy;
+	})();
+	exports.OrderBy = OrderBy;
+	var CollectionConfig = (function () {
+	    // @ngInject
+	    function CollectionConfig(rbkeyService, $hibachi, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, isDistinct) {
+	        var _this = this;
+	        if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
+	        if (currentPage === void 0) { currentPage = 1; }
+	        if (pageShow === void 0) { pageShow = 10; }
+	        if (keywords === void 0) { keywords = ''; }
+	        if (allRecords === void 0) { allRecords = false; }
+	        if (isDistinct === void 0) { isDistinct = false; }
+	        this.rbkeyService = rbkeyService;
+	        this.$hibachi = $hibachi;
+	        this.utilityService = utilityService;
+	        this.baseEntityName = baseEntityName;
+	        this.baseEntityAlias = baseEntityAlias;
+	        this.columns = columns;
+	        this.filterGroups = filterGroups;
+	        this.joins = joins;
+	        this.orderBy = orderBy;
+	        this.groupBys = groupBys;
+	        this.id = id;
+	        this.currentPage = currentPage;
+	        this.pageShow = pageShow;
+	        this.keywords = keywords;
+	        this.allRecords = allRecords;
+	        this.isDistinct = isDistinct;
+	        this.clearFilterGroups = function () {
+	            _this.filterGroups = [{ filterGroup: [] }];
+	            return _this;
+	        };
+	        this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
+	            return new CollectionConfig(_this.rbkeyService, _this.$hibachi, _this.utilityService, baseEntityName, baseEntityAlias);
+	        };
+	        this.loadJson = function (jsonCollection) {
+	            //if json then make a javascript object else use the javascript object
+	            if (angular.isString(jsonCollection)) {
+	                jsonCollection = angular.fromJson(jsonCollection);
+	            }
+	            _this.baseEntityAlias = jsonCollection.baseEntityAlias;
+	            _this.baseEntityName = jsonCollection.baseEntityName;
+	            if (angular.isDefined(jsonCollection.filterGroups)) {
+	                _this.filterGroups = jsonCollection.filterGroups;
+	            }
+	            _this.columns = jsonCollection.columns;
+	            _this.joins = jsonCollection.joins;
+	            _this.keywords = jsonCollection.keywords;
+	            _this.orderBy = jsonCollection.orderBy;
+	            _this.groupBys = jsonCollection.groupBys;
+	            _this.pageShow = jsonCollection.pageShow;
+	            _this.allRecords = jsonCollection.allRecords;
+	            _this.isDistinct = jsonCollection.isDistinct;
+	            return _this;
+	        };
+	        this.loadFilterGroups = function (filterGroupsConfig) {
+	            if (filterGroupsConfig === void 0) { filterGroupsConfig = [{ filterGroup: [] }]; }
+	            _this.filterGroups = filterGroupsConfig;
+	            return _this;
+	        };
+	        this.loadColumns = function (columns) {
+	            _this.columns = columns;
+	            return _this;
+	        };
+	        this.getCollectionConfig = function () {
+	            return {
+	                baseEntityAlias: _this.baseEntityAlias,
+	                baseEntityName: _this.baseEntityName,
+	                columns: _this.columns,
+	                filterGroups: _this.filterGroups,
+	                joins: _this.joins,
+	                groupBys: _this.groupBys,
+	                currentPage: _this.currentPage,
+	                pageShow: _this.pageShow,
+	                keywords: _this.keywords,
+	                defaultColumns: (!_this.columns || !_this.columns.length),
+	                allRecords: _this.allRecords,
+	                isDistinct: _this.isDistinct
+	            };
+	        };
+	        this.getEntityName = function () {
+	            return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
+	        };
+	        this.getOptions = function () {
+	            var options = {
+	                columnsConfig: angular.toJson(_this.columns),
+	                filterGroupsConfig: angular.toJson(_this.filterGroups),
+	                joinsConfig: angular.toJson(_this.joins),
+	                orderByConfig: angular.toJson(_this.orderBy),
+	                groupBysConfig: angular.toJson(_this.groupBys),
+	                currentPage: _this.currentPage,
+	                pageShow: _this.pageShow,
+	                keywords: _this.keywords,
+	                defaultColumns: (!_this.columns || !_this.columns.length),
+	                allRecords: _this.allRecords,
+	                isDistinct: _this.isDistinct
+	            };
+	            if (angular.isDefined(_this.id)) {
+	                options['id'] = _this.id;
+	            }
+	            return options;
+	        };
+	        this.debug = function () {
+	            return _this;
+	        };
+	        this.formatPropertyIdentifier = function (propertyIdentifier, addJoin) {
+	            if (addJoin === void 0) { addJoin = false; }
+	            var _propertyIdentifier = _this.baseEntityAlias;
+	            if (addJoin === true) {
+	                _propertyIdentifier += _this.processJoin(propertyIdentifier);
+	            }
+	            else {
+	                _propertyIdentifier += '.' + propertyIdentifier;
+	            }
+	            return _propertyIdentifier;
+	        };
+	        this.processJoin = function (propertyIdentifier) {
+	            var _propertyIdentifier = '', propertyIdentifierParts = propertyIdentifier.split('.'), current_collection = _this.collection;
+	            for (var i = 0; i < propertyIdentifierParts.length; i++) {
+	                if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
+	                    current_collection = _this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
+	                    _propertyIdentifier += '_' + propertyIdentifierParts[i];
+	                    _this.addJoin(new Join(_propertyIdentifier.replace(/_/g, '.').substring(1), _this.baseEntityAlias + _propertyIdentifier));
+	                }
+	                else {
+	                    _propertyIdentifier += '.' + propertyIdentifierParts[i];
+	                }
+	            }
+	            return _propertyIdentifier;
+	        };
+	        this.addJoin = function (join) {
+	            if (!_this.joins) {
+	                _this.joins = [];
+	            }
+	            var joinFound = false;
+	            angular.forEach(_this.joins, function (configJoin) {
+	                if (configJoin.alias === join.alias) {
+	                    joinFound = true;
+	                }
+	            });
+	            if (!joinFound) {
+	                _this.joins.push(join);
+	            }
+	            return _this;
+	        };
+	        this.addAlias = function (propertyIdentifier) {
+	            var parts = propertyIdentifier.split('.');
+	            if (parts.length > 1 && parts[0] !== _this.baseEntityAlias) {
+	                return _this.baseEntityAlias + '.' + propertyIdentifier;
+	            }
+	            return propertyIdentifier;
+	        };
+	        this.addColumn = function (column, title, options) {
+	            if (title === void 0) { title = ''; }
+	            if (options === void 0) { options = {}; }
+	            if (!_this.columns || _this.utilityService.ArrayFindByPropertyValue(_this.columns, 'propertyIdentifier', column) === -1) {
+	                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
+	                var lastEntity = _this.$hibachi.getEntityExample(_this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, column));
+	                if (angular.isUndefined(_this.columns)) {
+	                    _this.columns = [];
+	                }
+	                if (!angular.isUndefined(options['isVisible'])) {
+	                    isVisible = options['isVisible'];
+	                }
+	                if (!angular.isUndefined(options['isDeletable'])) {
+	                    isDeletable = options['isDeletable'];
+	                }
+	                if (!angular.isUndefined(options['isSearchable'])) {
+	                    isSearchable = options['isSearchable'];
+	                }
+	                if (!angular.isUndefined(options['isExportable'])) {
+	                    isExportable = options['isExportable'];
+	                }
+	                if (angular.isUndefined(options['isExportable']) && !isVisible) {
+	                    isExportable = false;
+	                }
+	                if (!angular.isUndefined(options['ormtype'])) {
+	                    ormtype = options['ormtype'];
+	                }
+	                else if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
+	                    ormtype = lastEntity.metaData[lastProperty].ormtype;
+	                }
+	                if (angular.isDefined(lastEntity.metaData[lastProperty])) {
+	                    persistent = lastEntity.metaData[lastProperty].persistent;
+	                }
+	                var columnObject = new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']);
+	                if (options['aggregate']) {
+	                    columnObject['aggregate'] = options['aggregate'],
+	                        columnObject['aggregateAlias'] = title;
+	                }
+	                //add any non-conventional options
+	                for (var key in options) {
+	                    if (!columnObject[key]) {
+	                        columnObject[key] = options[key];
+	                    }
+	                }
+	                _this.columns.push(columnObject);
+	            }
+	            return _this;
+	        };
+	        this.setDisplayProperties = function (propertyIdentifier, title, options) {
+	            if (title === void 0) { title = ''; }
+	            if (options === void 0) { options = {}; }
+	            _this.addDisplayProperty(propertyIdentifier, title, options);
+	            return _this;
+	        };
+	        this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
+	            var column = {
+	                propertyIdentifier: _this.formatPropertyIdentifier(propertyIdentifier, true),
+	                title: _this.rbkeyService.getRBKey("entity." + _this.baseEntityName + "." + propertyIdentifier),
+	                aggregate: {
+	                    aggregateFunction: aggregateFunction,
+	                    aggregateAlias: aggregateAlias
+	                }
+	            };
+	            angular.extend(column, options);
+	            //Add columns
+	            _this.addColumn(column.propertyIdentifier, undefined, column);
+	            return _this;
+	        };
+	        this.addGroupBy = function (groupByAlias) {
+	            if (!_this.groupBys) {
+	                _this.groupBys = '';
+	            }
+	            _this.groupBys = _this.utilityService.listAppend(_this.groupBys, groupByAlias);
+	            return _this;
+	        };
+	        this.addDisplayProperty = function (propertyIdentifier, title, options) {
+	            if (title === void 0) { title = ''; }
+	            if (options === void 0) { options = {}; }
+	            var _DividedColumns = propertyIdentifier.trim().split(',');
+	            var _DividedTitles = title.trim().split(',');
+	            _DividedColumns.forEach(function (column, index) {
+	                column = column.trim();
+	                if (angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+	                    title = _DividedTitles[index].trim();
+	                }
+	                else {
+	                    title = _this.rbkeyService.getRBKey("entity." + _this.baseEntityName + "." + column);
+	                }
+	                _this.addColumn(_this.formatPropertyIdentifier(column), title, options);
+	            });
+	            return _this;
+	        };
+	        this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
+	            if (comparisonOperator === void 0) { comparisonOperator = '='; }
+	            //if filterGroups does not exists then set a default
+	            if (!_this.filterGroups) {
+	                _this.filterGroups = [{ filterGroup: [] }];
+	            }
+	            //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
+	            if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
+	                logicalOperator = 'AND';
+	            if (propertyIdentifier.split('.').length < 2) {
+	                var join = false;
+	            }
+	            else {
+	                var join = true;
+	            }
+	            //create filter group
+	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
+	            _this.filterGroups[0].filterGroup.push(filter);
+	            return _this;
+	        };
+	        this.removeFilter = function (propertyIdentifier, value, comparisonOperator) {
+	            if (comparisonOperator === void 0) { comparisonOperator = '='; }
+	            _this.removeFilterHelper(_this.filterGroups, propertyIdentifier, value, comparisonOperator);
+	            return _this;
+	        };
+	        this.removeFilterHelper = function (filter, propertyIdentifier, value, comparisonOperator, currentGroup) {
+	            if (angular.isUndefined(currentGroup)) {
+	                currentGroup = filter;
+	            }
+	            if (angular.isArray(filter)) {
+	                angular.forEach(filter, function (key) {
+	                    _this.removeFilterHelper(key, propertyIdentifier, value, comparisonOperator, filter);
+	                });
+	            }
+	            else if (angular.isArray(filter.filterGroup)) {
+	                _this.removeFilterHelper(filter.filterGroup, propertyIdentifier, value, comparisonOperator, filter.filterGroup);
+	            }
+	            else {
+	                if (filter.propertyIdentifier == propertyIdentifier && filter.value == value && filter.comparisonOperator == comparisonOperator) {
+	                    currentGroup.splice(currentGroup.indexOf(filter), 1);
+	                }
+	            }
+	        };
+	        this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
+	            if (criteria === void 0) { criteria = 'One'; }
+	            if (readOnly === void 0) { readOnly = false; }
+	            _this.filterGroups[0].filterGroup.push(new CollectionFilter(_this.formatPropertyIdentifier(propertyIdentifier), displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly));
+	            return _this;
+	        };
+	        //orderByList in this form: "property|direction" concrete: "skuName|ASC"
+	        this.setOrderBy = function (orderByList) {
+	            var orderBys = orderByList.split(',');
+	            angular.forEach(orderBys, function (orderBy) {
+	                _this.addOrderBy(orderBy);
+	            });
+	            return _this;
+	        };
+	        this.addOrderBy = function (orderByString) {
+	            if (!_this.orderBy) {
+	                _this.orderBy = [];
+	            }
+	            var propertyIdentifier = _this.utilityService.listFirst(orderByString, '|');
+	            var direction = _this.utilityService.listLast(orderByString, '|');
+	            var orderBy = {
+	                propertyIdentifier: _this.formatPropertyIdentifier(propertyIdentifier),
+	                direction: direction
+	            };
+	            _this.orderBy.push(orderBy);
+	        };
+	        this.setCurrentPage = function (pageNumber) {
+	            _this.currentPage = pageNumber;
+	            return _this;
+	        };
+	        this.setPageShow = function (NumberOfPages) {
+	            _this.pageShow = NumberOfPages;
+	            return _this;
+	        };
+	        this.getPageShow = function () {
+	            return _this.pageShow;
+	        };
+	        this.setAllRecords = function (allFlag) {
+	            if (allFlag === void 0) { allFlag = false; }
+	            _this.allRecords = allFlag;
+	            return _this;
+	        };
+	        this.setKeywords = function (keyword) {
+	            _this.keywords = keyword;
+	            return _this;
+	        };
+	        this.setId = function (id) {
+	            _this.id = id;
+	            return _this;
+	        };
+	        this.hasFilters = function () {
+	            return (_this.filterGroups.length && _this.filterGroups[0].filterGroup.length);
+	        };
+	        this.clearFilters = function () {
+	            _this.filterGroups = [{ filterGroup: [] }];
+	            return _this;
+	        };
+	        this.getEntity = function (id) {
+	            if (angular.isDefined(id)) {
+	                _this.setId(id);
+	            }
+	            return _this.$hibachi.getEntity(_this.baseEntityName, _this.getOptions());
+	        };
+	        console.log('abc');
+	        console.log(rbkeyService);
+	        console.log($hibachi);
+	        this.$hibachi = $hibachi;
+	        this.rbkeyService = rbkeyService;
+	        if (angular.isDefined(this.baseEntityName)) {
+	            this.collection = this.$hibachi.getEntityExample(this.baseEntityName);
+	            if (angular.isUndefined(this.baseEntityAlias)) {
+	                this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
+	            }
+	        }
+	    }
+	    return CollectionConfig;
+	})();
+	exports.CollectionConfig = CollectionConfig;
+
+
+/***/ },
+/* 56 */
+/***/ function(module, exports) {
+
+	var CollectionService = (function () {
+	    function CollectionService($filter, $log) {
+	        var _this = this;
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this.get = function () {
+	            return _this._pageDialogs || [];
+	        };
+	        //test
+	        this.setFilterCount = function (count) {
+	            _this.$log.debug('incrementFilterCount');
+	            _this._filterCount = count;
+	        };
+	        this.getFilterCount = function () {
+	            return _this._filterCount;
+	        };
+	        this.getColumns = function () {
+	            return _this._collection.collectionConfig.columns;
+	        };
+	        this.getFilterPropertiesList = function () {
+	            return _this._filterPropertiesList;
+	        };
+	        this.getFilterPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
+	            return _this._filterPropertiesList[baseEntityAlias];
+	        };
+	        this.setFilterPropertiesList = function (value, key) {
+	            if (angular.isUndefined(_this._filterPropertiesList[key])) {
+	                _this._filterPropertiesList[key] = value;
+	            }
+	        };
+	        this.stringifyJSON = function (jsonObject) {
+	            var jsonString = angular.toJson(jsonObject);
+	            return jsonString;
+	        };
+	        this.removeFilterItem = function (filterItem, filterGroup) {
+	            filterGroup.pop(filterGroup.indexOf(filterItem));
+	        };
+	        this.selectFilterItem = function (filterItem) {
+	            if (filterItem.$$isClosed) {
+	                for (var i in filterItem.$$siblingItems) {
+	                    filterItem.$$siblingItems[i].$$isClosed = true;
+	                    filterItem.$$siblingItems[i].$$disabled = true;
+	                }
+	                filterItem.$$isClosed = false;
+	                filterItem.$$disabled = false;
+	                filterItem.setItemInUse(true);
+	            }
+	            else {
+	                for (var i in filterItem.$$siblingItems) {
+	                    filterItem.$$siblingItems[i].$$disabled = false;
+	                }
+	                filterItem.$$isClosed = true;
+	                filterItem.setItemInUse(false);
+	            }
+	        };
+	        this.selectFilterGroupItem = function (filterGroupItem) {
+	            if (filterGroupItem.$$isClosed) {
+	                for (var i in filterGroupItem.$$siblingItems) {
+	                    filterGroupItem.$$siblingItems[i].$$disabled = true;
+	                }
+	                filterGroupItem.$$isClosed = false;
+	                filterGroupItem.$$disabled = false;
+	            }
+	            else {
+	                for (var i in filterGroupItem.$$siblingItems) {
+	                    filterGroupItem.$$siblingItems[i].$$disabled = false;
+	                }
+	                filterGroupItem.$$isClosed = true;
+	            }
+	            filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
+	        };
+	        this.newFilterItem = function (filterItemGroup, setItemInUse, prepareForFilterGroup) {
+	            if (angular.isUndefined(prepareForFilterGroup)) {
+	                prepareForFilterGroup = false;
+	            }
+	            var filterItem = {
+	                displayPropertyIdentifier: "",
+	                propertyIdentifier: "",
+	                comparisonOperator: "",
+	                value: "",
+	                $$disabled: false,
+	                $$isClosed: true,
+	                $$isNew: true,
+	                $$siblingItems: filterItemGroup,
+	                setItemInUse: setItemInUse
+	            };
+	            if (filterItemGroup.length !== 0) {
+	                filterItem.logicalOperator = "AND";
+	            }
+	            if (prepareForFilterGroup === true) {
+	                filterItem.$$prepareForFilterGroup = true;
+	            }
+	            filterItemGroup.push(filterItem);
+	            _this.selectFilterItem(filterItem);
+	        };
+	        this.newFilterGroupItem = function (filterItemGroup, setItemInUse) {
+	            var filterGroupItem = {
+	                filterGroup: [],
+	                $$disabled: "false",
+	                $$isClosed: "true",
+	                $$siblingItems: filterItemGroup,
+	                $$isNew: "true",
+	                setItemInUse: setItemInUse
+	            };
+	            if (filterItemGroup.length !== 0) {
+	                filterGroupItem.logicalOperator = "AND";
+	            }
+	            filterItemGroup.push(filterGroupItem);
+	            _this.selectFilterGroupItem(filterGroupItem);
+	            _this.newFilterItem(filterGroupItem.filterGroup, setItemInUse, undefined);
+	        };
+	        this.transplantFilterItemIntoFilterGroup = function (filterGroup, filterItem) {
+	            var filterGroupItem = {
+	                filterGroup: [],
+	                $$disabled: "false",
+	                $$isClosed: "true",
+	                $$isNew: "true"
+	            };
+	            if (angular.isDefined(filterItem.logicalOperator)) {
+	                filterGroupItem.logicalOperator = filterItem.logicalOperator;
+	                delete filterItem.logicalOperator;
+	            }
+	            filterGroupItem.setItemInUse = filterItem.setItemInUse;
+	            filterGroupItem.$$siblingItems = filterItem.$$siblingItems;
+	            filterItem.$$siblingItems = [];
+	            filterGroup.pop(filterGroup.indexOf(filterItem));
+	            filterItem.$$prepareForFilterGroup = false;
+	            filterGroupItem.filterGroup.push(filterItem);
+	            filterGroup.push(filterGroupItem);
+	        };
+	        this.formatFilterPropertiesList = function (filterPropertiesList, propertyIdentifier) {
+	            _this.$log.debug('format Filter Properties List arguments 2');
+	            _this.$log.debug(filterPropertiesList);
+	            _this.$log.debug(propertyIdentifier);
+	            var simpleGroup = {
+	                $$group: 'simple',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(simpleGroup);
+	            var drillDownGroup = {
+	                $$group: 'drilldown',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(drillDownGroup);
+	            var compareCollections = {
+	                $$group: 'compareCollections',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(compareCollections);
+	            var attributeCollections = {
+	                $$group: 'attribute',
+	                displayPropertyIdentifier: '-----------------'
+	            };
+	            filterPropertiesList.data.push(attributeCollections);
+	            for (var i in filterPropertiesList.data) {
+	                if (angular.isDefined(filterPropertiesList.data[i].ormtype)) {
+	                    if (angular.isDefined(filterPropertiesList.data[i].attributeID)) {
+	                        filterPropertiesList.data[i].$$group = 'attribute';
+	                    }
+	                    else {
+	                        filterPropertiesList.data[i].$$group = 'simple';
+	                    }
+	                }
+	                if (angular.isDefined(filterPropertiesList.data[i].fieldtype)) {
+	                    if (filterPropertiesList.data[i].fieldtype === 'id') {
+	                        filterPropertiesList.data[i].$$group = 'simple';
+	                    }
+	                    if (filterPropertiesList.data[i].fieldtype === 'many-to-one') {
+	                        filterPropertiesList.data[i].$$group = 'drilldown';
+	                    }
+	                    if (filterPropertiesList.data[i].fieldtype === 'many-to-many' || filterPropertiesList.data[i].fieldtype === 'one-to-many') {
+	                        filterPropertiesList.data[i].$$group = 'compareCollections';
+	                    }
+	                }
+	                filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' + filterPropertiesList.data[i].name;
+	            }
+	            filterPropertiesList.data = _this._orderBy(filterPropertiesList.data, ['-$$group', 'propertyIdentifier'], false);
+	        };
+	        this.orderBy = function (propertiesList, predicate, reverse) {
+	            return _this._orderBy(propertiesList, predicate, reverse);
+	        };
+	        this.$filter = $filter;
+	        this.$log = $log;
+	        this._collection = null;
+	        this._collectionConfig = null;
+	        this._filterPropertiesList = {};
+	        this._filterCount = 0;
+	        this._orderBy = $filter('orderBy');
+	    }
+	    CollectionService.$inject = [
+	        '$filter', '$log'
+	    ];
+	    return CollectionService;
+	})();
+	exports.CollectionService = CollectionService;
+
+
+/***/ },
+/* 57 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var CollectionController = (function () {
+	    //@ngInject
+	    function CollectionController($scope, $location, $log, $timeout, $hibachi, collectionService, metadataService, selectionService, paginationService, collectionConfigService) {
+	        //init values
+	        //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
+	        $scope.$id = "collectionsController";
+	        /*used til we convert to use route params*/
+	        var QueryString = function () {
+	            // This function is anonymous, is executed immediately and
+	            // the return value is assigned to QueryString!
+	            var query_string = {};
+	            var query = window.location.search.substring(1);
+	            var vars = query.split("&");
+	            for (var i = 0; i < vars.length; i++) {
+	                var pair = vars[i].split("=");
+	                // If first entry with this name
+	                if (typeof query_string[pair[0]] === "undefined") {
+	                    query_string[pair[0]] = pair[1];
+	                }
+	                else if (typeof query_string[pair[0]] === "string") {
+	                    var arr = [query_string[pair[0]], pair[1]];
+	                    query_string[pair[0]] = arr;
+	                }
+	                else {
+	                    query_string[pair[0]].push(pair[1]);
+	                }
+	            }
+	            return query_string;
+	        }();
+	        //get url param to retrieve collection listing
+	        $scope.collectionID = QueryString.collectionID;
+	        $scope.paginator = paginationService.createPagination();
+	        $scope.appendToCollection = function () {
+	            if ($scope.paginator.getPageShow() === 'Auto') {
+	                $log.debug('AppendToCollection');
+	                if ($scope.autoScrollPage < $scope.collection.totalPages) {
+	                    $scope.autoScrollDisabled = true;
+	                    $scope.autoScrollPage++;
+	                    var collectionListingPromise = $hibachi.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.autoScrollPage, pageShow: 50 });
+	                    collectionListingPromise.then(function (value) {
+	                        $scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
+	                        $scope.autoScrollDisabled = false;
+	                    }, function (reason) {
+	                    });
+	                }
+	            }
+	        };
+	        $scope.keywords = "";
+	        $scope.loadingCollection = false;
+	        var searchPromise;
+	        $scope.searchCollection = function () {
+	            if (searchPromise) {
+	                $timeout.cancel(searchPromise);
+	            }
+	            searchPromise = $timeout(function () {
+	                $log.debug('search with keywords');
+	                $log.debug($scope.keywords);
+	                //Set current page here so that the pagination does not break when getting collection
+	                $scope.paginator.setCurrentPage(1);
+	                $scope.loadingCollection = true;
+	            }, 500);
+	        };
+	        $scope.getCollection = function () {
+	            var pageShow = 50;
+	            if ($scope.paginator.getPageShow() !== 'Auto') {
+	                pageShow = $scope.paginator.getPageShow();
+	            }
+	            //			$scope.currentPage = $scope.pagination.getCurrentPage();
+	            var collectionListingPromise = $hibachi.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.getCurrentPage(), pageShow: pageShow, keywords: $scope.keywords });
+	            collectionListingPromise.then(function (value) {
+	                $scope.collection = value;
+	                $scope.paginator.setPageRecordsInfo($scope.collection);
+	                $scope.collectionInitial = angular.copy($scope.collection);
+	                if (angular.isUndefined($scope.collectionConfig)) {
+	                    var test = collectionConfigService.newCollectionConfig();
+	                    test.loadJson(value.collectionConfig);
+	                    $scope.collectionConfig = test.getCollectionConfig();
+	                }
+	                //check if we have any filter Groups
+	                if (angular.isUndefined($scope.collectionConfig.filterGroups)) {
+	                    $scope.collectionConfig.filterGroups = [
+	                        {
+	                            filterGroup: []
+	                        }
+	                    ];
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	                $scope.loadingCollection = false;
+	            }, function (reason) {
+	            });
+	            return collectionListingPromise;
+	        };
+	        $scope.paginator.getCollection = $scope.getCollection;
+	        $scope.getCollection();
+	        var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
+	            if (newValue !== oldValue) {
+	                if (angular.isUndefined($scope.filterPropertiesList)) {
+	                    $scope.filterPropertiesList = {};
+	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+	                    filterPropertiesPromise.then(function (value) {
+	                        metadataService.setPropertiesList(value, $scope.collectionConfig.baseEntityAlias);
+	                        $scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+	                        metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias], $scope.collectionConfig.baseEntityAlias);
+	                    });
+	                }
+	                unbindCollectionObserver();
+	            }
+	        });
+	        $scope.setCollectionForm = function (form) {
+	            $scope.collectionForm = form;
+	        };
+	        $scope.collectionDetails = {
+	            isOpen: false,
+	            openCollectionDetails: function () {
+	                $scope.collectionDetails.isOpen = true;
+	            }
+	        };
+	        $scope.errorMessage = {};
+	        var filterItemCounter = function (filterGroupArray) {
+	            var filterItemCount = 0;
+	            if (!angular.isDefined(filterGroupArray)) {
+	                filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
+	            }
+	            //Start out loop
+	            for (var index in filterGroupArray) {
+	                //If filter isn't new then increment the count
+	                if (!filterGroupArray[index].$$isNew
+	                    && !angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    filterItemCount++;
+	                }
+	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    //Call function recursively
+	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+	                }
+	                else {
+	                    break;
+	                }
+	            }
+	            return filterItemCount;
+	        };
+	        $scope.saveCollection = function () {
+	            $timeout(function () {
+	                $log.debug('saving Collection');
+	                var entityName = 'collection';
+	                var collection = $scope.collection;
+	                $log.debug($scope.collectionConfig);
+	                if (isFormValid($scope.collectionForm)) {
+	                    var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
+	                    $log.debug(collectionConfigString);
+	                    var data = angular.copy(collection);
+	                    data.collectionConfig = collectionConfigString;
+	                    //has to be removed in order to save transient correctly
+	                    delete data.pageRecords;
+	                    var saveCollectionPromise = $hibachi.saveEntity(entityName, collection.collectionID, data, 'save');
+	                    saveCollectionPromise.then(function (value) {
+	                        $scope.errorMessage = {};
+	                        //Set current page here so that the pagination does not break when getting collection
+	                        $scope.paginator.setCurrentPage(1);
+	                        $scope.collectionDetails.isOpen = false;
+	                    }, function (reason) {
+	                        //revert to original
+	                        angular.forEach(reason.errors, function (value, key) {
+	                            $scope.collectionForm[key].$invalid = true;
+	                            $scope.errorMessage[key] = value[0];
+	                        });
+	                        //$scope.collection = angular.copy($scope.collectionInitial);
+	                    });
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	            });
+	        };
+	        var isFormValid = function (angularForm) {
+	            $log.debug('validateForm');
+	            var formValid = true;
+	            for (var field in angularForm) {
+	                // look at each form input with a name attribute set
+	                // checking if it is pristine and not a '$' special field
+	                if (field[0] != '$') {
+	                    // need to use formValid variable instead of formController.$valid because checkbox dropdown is not an input
+	                    // and somehow formController didn't invalid if checkbox dropdown is invalid
+	                    if (angularForm[field].$invalid) {
+	                        formValid = false;
+	                        for (var error in angularForm[field].$error) {
+	                            if (error == 'required') {
+	                                $scope.errorMessage[field] = 'This field is required';
+	                            }
+	                        }
+	                    }
+	                    if (angularForm[field].$pristine) {
+	                        if (angular.isUndefined(angularForm[field].$viewValue)) {
+	                            angularForm[field].$setViewValue("");
+	                        }
+	                        else {
+	                            angularForm[field].$setViewValue(angularForm[field].$viewValue);
+	                        }
+	                    }
+	                }
+	            }
+	            return formValid;
+	        };
+	        $scope.copyExistingCollection = function () {
+	            $scope.collection.collectionConfig = $scope.selectedExistingCollection;
+	        };
+	        $scope.setSelectedExistingCollection = function (selectedExistingCollection) {
+	            $scope.selectedExistingCollection = selectedExistingCollection;
+	        };
+	        $scope.setSelectedFilterProperty = function (selectedFilterProperty) {
+	            $scope.selectedFilterProperty = selectedFilterProperty;
+	        };
+	        $scope.filterCount = collectionService.getFilterCount;
+	        //export action
+	        $scope.exportCollection = function () {
+	            var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
+	            var data = { "ids": selectionService.getSelections('collectionSelection') };
+	            var target = "downloadCollection";
+	            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
+	            $.each(data, function (n, v) {
+	                $('#postToIframe').append('<input type="hidden" name="' + n + '" value="' + v + '" />');
+	            });
+	            $('#postToIframe').submit().remove();
+	        };
+	    }
+	    return CollectionController;
+	})();
+	exports.CollectionController = CollectionController;
+	// 'use strict';
+	// angular.module('slatwalladmin')
+	// //using $location to get url params, this will probably change to using routes eventually
+	// .controller('collections', [
+	// 	'$scope',
+	// '$location',
+	// '$log',
+	// '$timeout',
+	// '$hibachi',
+	// 'collectionService',
+	// 'metadataService',
+	// 'selectionService',
+	// 'paginationService',
+	// 	function(
+	// 		$scope,
+	// $location,
+	// $log,
+	// $timeout,
+	// $hibachi,
+	// collectionService,
+	// metadataService,
+	// selectionService,
+	// paginationService
+	// 	){
+	//
+	// 	}
+	// ]);
+
+
+/***/ },
+/* 58 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var CreateCollection = (function () {
+	    //@ngInject
+	    function CreateCollection($scope, $log, $timeout, $hibachi, collectionService, formService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService, rbkeyService) {
+	        $scope.params = dialogService.getCurrentDialog().params;
+	        $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
+	        $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
+	        if ($scope.params.entityName == 'Type' && !angular.isDefined($scope.params.entityId)) {
+	            var systemCode = $scope.params.parentEntity.charAt(0).toLowerCase() + $scope.params.parentEntity.slice(1) + 'Type';
+	            $scope.myCollection.addFilter('parentType.systemCode', systemCode);
+	        }
+	        $scope.keywords = '';
+	        $scope.paginator = paginationService.createPagination();
+	        //$scope.isRadio = true;
+	        $scope.hideEditView = true;
+	        //$scope.closeSaving = true;
+	        $scope.hasSelection = selectionService.getSelectionCount;
+	        $scope.idsSelected = selectionService.getSelections;
+	        $scope.unselectAll = function () {
+	            selectionService.clearSelections('collectionSelection');
+	            $scope.getCollection();
+	        };
+	        $scope.newCollection = $hibachi.newCollection();
+	        $scope.newCollection.data.collectionCode = $scope.params.entityName + "-" + new Date().valueOf();
+	        $scope.newCollection.data.collectionObject = $scope.params.entityName;
+	        if (angular.isDefined($scope.params.entityId)) {
+	            $scope.newCollection.data.collectionID = $scope.params.entityId;
+	            $timeout(function () {
+	                $scope.newCollection.forms['form.createCollection'].$setDirty();
+	            });
+	        }
+	        if (angular.isDefined($scope.params.collectionName)) {
+	            $scope.newCollection.data.collectionName = $scope.params.collectionName;
+	            $timeout(function () {
+	                $scope.newCollection.forms['form.createCollection'].$setDirty();
+	            });
+	        }
+	        if (typeof String.prototype.startsWith != 'function') {
+	            String.prototype.startsWith = function (str) {
+	                return this.slice(0, str.length) == str;
+	            };
+	        }
+	        $scope.saveCollection = function () {
+	            $scope.myCollection.loadJson($scope.collectionConfig);
+	            $scope.getCollection();
+	        };
+	        $scope.getCollection = function () {
+	            $scope.closeSaving = true;
+	            $scope.myCollection.setPageShow($scope.paginator.getPageShow());
+	            $scope.myCollection.setCurrentPage($scope.paginator.getCurrentPage());
+	            $scope.myCollection.setKeywords($scope.keywords);
+	            var collectionOptions;
+	            if (angular.isDefined($scope.params.entityId)) {
+	                collectionOptions = {
+	                    id: $scope.params.entityId,
+	                    currentPage: $scope.paginator.getCurrentPage(),
+	                    pageShow: $scope.paginator.getPageShow(),
+	                    keywords: $scope.keywords
+	                };
+	            }
+	            else {
+	                collectionOptions = $scope.myCollection.getOptions();
+	            }
+	            $log.debug($scope.myCollection.getOptions());
+	            var collectionListingPromise = $hibachi.getEntity($scope.myCollection.getEntityName(), collectionOptions);
+	            collectionListingPromise.then(function (value) {
+	                if (angular.isDefined($scope.params.entityId)) {
+	                    $scope.newCollection.data.collectionName = value.collectionName;
+	                }
+	                $scope.collection = value;
+	                $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
+	                $scope.collectionInitial = angular.copy($scope.collection);
+	                $scope.paginator.setRecordsCount($scope.collection.recordsCount);
+	                $scope.paginator.setPageRecordsInfo($scope.collection);
+	                if (angular.isUndefined($scope.myCollection.columns)) {
+	                    var colConfig = angular.fromJson(value.collectionConfig);
+	                    colConfig.baseEntityName = colConfig.baseEntityName.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
+	                    $scope.myCollection.loadJson(colConfig);
+	                }
+	                if (angular.isUndefined($scope.collectionConfig)) {
+	                    var tempCollectionConfig = collectionConfigService.newCollectionConfig();
+	                    tempCollectionConfig.loadJson(value.collectionConfig);
+	                    $scope.collectionConfig = tempCollectionConfig.getCollectionConfig();
+	                }
+	                if (angular.isUndefined($scope.collectionConfig.filterGroups) || !$scope.collectionConfig.filterGroups.length) {
+	                    $scope.collectionConfig.filterGroups = [
+	                        {
+	                            filterGroup: []
+	                        }
+	                    ];
+	                }
+	                collectionService.setFilterCount(filterItemCounter());
+	                $scope.loadingCollection = false;
+	                $scope.closeSaving = false;
+	            }, function (reason) {
+	            });
+	            return collectionListingPromise;
+	        };
+	        $scope.paginator.collection = $scope.newCollection;
+	        $scope.paginator.getCollection = $scope.getCollection;
+	        var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
+	            if (newValue !== oldValue) {
+	                if (angular.isUndefined($scope.filterPropertiesList)) {
+	                    $scope.filterPropertiesList = {};
+	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+	                    filterPropertiesPromise.then(function (value) {
+	                        metadataService.setPropertiesList(value, $scope.collectionConfig.baseEntityAlias);
+	                        $scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
+	                        metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias], $scope.collectionConfig.baseEntityAlias);
+	                    });
+	                }
+	                unbindCollectionObserver();
+	            }
+	        });
+	        var filterItemCounter = function (filterGroupArray) {
+	            var filterItemCount = 0;
+	            if (!angular.isDefined(filterGroupArray)) {
+	                filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
+	            }
+	            //Start out loop
+	            for (var index in filterGroupArray) {
+	                //If filter isn't new then increment the count
+	                if (!filterGroupArray[index].$$isNew && !angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    filterItemCount++;
+	                }
+	                else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
+	                    //Call function recursively
+	                    filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+	                }
+	                else {
+	                    break;
+	                }
+	            }
+	            return filterItemCount;
+	        };
+	        $scope.getCollection();
+	        $scope.copyExistingCollection = function () {
+	            $scope.collection.collectionConfig = $scope.selectedExistingCollection;
+	        };
+	        $scope.setSelectedExistingCollection = function (selectedExistingCollection) {
+	            $scope.selectedExistingCollection = selectedExistingCollection;
+	        };
+	        $scope.setSelectedFilterProperty = function (selectedFilterProperty) {
+	            $scope.selectedFilterProperty = selectedFilterProperty;
+	        };
+	        $scope.loadingCollection = false;
+	        var searchPromise;
+	        $scope.searchCollection = function () {
+	            if (searchPromise) {
+	                $timeout.cancel(searchPromise);
+	            }
+	            searchPromise = $timeout(function () {
+	                //$log.debug('search with keywords');
+	                //$log.debug($scope.keywords);
+	                //Set current page here so that the pagination does not break when getting collection
+	                $scope.paginator.setCurrentPage(1);
+	                $scope.loadingCollection = true;
+	                $scope.getCollection();
+	            }, 500);
+	        };
+	        $scope.filterCount = collectionService.getFilterCount;
+	        //
+	        $scope.hideExport = true;
+	        $scope.saveNewCollection = function ($index) {
+	            if ($scope.closeSaving)
+	                return;
+	            $scope.closeSaving = true;
+	            if (!angular.isUndefined(selectionService.getSelections('collectionSelection'))
+	                && (selectionService.getSelections('collectionSelection').length > 0)) {
+	                $scope.collectionConfig.filterGroups[0].filterGroup = [
+	                    {
+	                        "displayPropertyIdentifier": rbkeyService.getRBKey("entity." + $scope.myCollection.baseEntityName.toLowerCase() + "." + $scope.myCollection.collection.$$getIDName().toLowerCase()),
+	                        "propertyIdentifier": $scope.myCollection.baseEntityAlias + "." + $scope.myCollection.collection.$$getIDName(),
+	                        "comparisonOperator": "in",
+	                        "value": selectionService.getSelections('collectionSelection').join(),
+	                        "displayValue": selectionService.getSelections('collectionSelection').join(),
+	                        "ormtype": "string",
+	                        "fieldtype": "id",
+	                        "conditionDisplay": "In List"
+	                    }
+	                ];
+	            }
+	            $scope.newCollection.data.collectionConfig = $scope.collectionConfig;
+	            if (!$scope.newCollection.data.collectionConfig.baseEntityName.startsWith(hibachiConfig.applicationKey))
+	                $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
+	            $scope.newCollection.$$save().then(function () {
+	                observerService.notify('addCollection', $scope.newCollection.data);
+	                selectionService.clearSelection('collectionSelection');
+	                dialogService.removePageDialog($index);
+	                $scope.closeSaving = false;
+	            }, function () {
+	                $scope.closeSaving = false;
+	            });
+	        };
+	    }
+	    return CreateCollection;
+	})();
+	exports.CreateCollection = CreateCollection;
+
+
+/***/ },
+/* 59 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var ConfirmationController = (function () {
+	    //@ngInject
+	    function ConfirmationController($scope, $log, $modalInstance) {
+	        $scope.deleteEntity = function (entity) {
+	            $log.debug("Deleting an entity.");
+	            $log.debug($scope.entity);
+	            this.close();
+	        };
+	        $scope.fireCallback = function (callbackFunction) {
+	            callbackFunction();
+	            this.close();
+	        };
+	        /**
+	        * Closes the modal window
+	        */
+	        $scope.close = function () {
+	            $modalInstance.close();
+	        };
+	        /**
+	        * Cancels the modal window
+	        */
+	        $scope.cancel = function () {
+	            $modalInstance.dismiss("cancel");
+	        };
+	    }
+	    return ConfirmationController;
+	})();
+	exports.ConfirmationController = ConfirmationController;
+
+
+/***/ },
+/* 60 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCollection = (function () {
+	    //@ngInject
+	    function SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
+	        return {
+	            restrict: 'A',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "collection.html",
+	            link: function (scope, $element, $attrs) {
+	                scope.tabsUniqueID = Math.floor(Math.random() * 999);
+	                scope.toggleCogOpen = $attrs.toggleoption;
+	                //Toggles open/close of filters and display options
+	                scope.toggleFiltersAndOptions = function () {
+	                    if (scope.toggleCogOpen === false) {
+	                        scope.toggleCogOpen = true;
+	                    }
+	                    else {
+	                        scope.toggleCogOpen = false;
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWCollection.Factory = function () {
+	        var directive = function ($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
+	            return new SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$log',
+	            'pathBuilderConfig',
+	            'collectionPartialsPath',
+	            'collectionService'
+	        ];
+	        return directive;
+	    };
+	    return SWCollection;
+	})();
+	exports.SWCollection = SWCollection;
+
+
+/***/ },
+/* 61 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWAddFilterButtons = (function () {
+	    //@ngInject
+	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	        return {
+	            require: '^swFilterGroups',
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "addfilterbuttons.html",
+	            scope: {
+	                itemInUse: "="
+	            },
+	            link: function (scope, element, attrs, filterGroupsController) {
+	                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+	                scope.addFilterItem = function () {
+	                    collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(), filterGroupsController.setItemInUse);
+	                };
+	                scope.addFilterGroupItem = function () {
+	                    collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(), filterGroupsController.setItemInUse, true);
+	                };
+	            }
+	        };
+	    }
+	    SWAddFilterButtons.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            'collectionService',
+	            'collectionPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWAddFilterButtons;
+	})();
+	exports.SWAddFilterButtons = SWAddFilterButtons;
+
+
+/***/ },
+/* 62 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWDisplayOptions = (function () {
+	    //@ngInject
+	    function SWDisplayOptions($http, $compile, $templateCache, $log, $hibachi, collectionService, pathBuilderConfig, collectionPartialsPath, rbkeyService) {
+	        return {
+	            restrict: 'E',
+	            transclude: true,
+	            scope: {
+	                orderBy: "=",
+	                columns: '=',
+	                propertiesList: "=",
+	                saveCollection: "&",
+	                baseEntityAlias: "=",
+	                baseEntityName: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "displayoptions.html",
+	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+	                    $log.debug('display options initialize');
+	                    this.removeColumn = function (columnIndex) {
+	                        $log.debug('parent remove column');
+	                        $log.debug($scope.columns);
+	                        if ($scope.columns.length) {
+	                            $scope.columns.splice(columnIndex, 1);
+	                        }
+	                    };
+	                    this.getPropertiesList = function () {
+	                        return $scope.propertiesList;
+	                    };
+	                    $scope.addDisplayDialog = {
+	                        isOpen: false,
+	                        toggleDisplayDialog: function () {
+	                            $scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen;
+	                        }
+	                    };
+	                    var getTitleFromProperty = function (selectedProperty) {
+	                        var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall', '').charAt(0).toLowerCase() + $scope.baseEntityName.replace('Slatwall', '').slice(1);
+	                        var propertyIdentifier = selectedProperty.propertyIdentifier;
+	                        var title = '';
+	                        var propertyIdentifierArray = propertyIdentifier.split('.');
+	                        var currentEntity;
+	                        var currentEntityInstance;
+	                        var prefix = 'entity.';
+	                        if (selectedProperty.$$group == "attribute") {
+	                            return selectedProperty.displayPropertyIdentifier;
+	                        }
+	                        angular.forEach(propertyIdentifierArray, function (propertyIdentifierItem, key) {
+	                            //pass over the initial item
+	                            if (key !== 0) {
+	                                if (key === 1) {
+	                                    currentEntityInstance = $hibachi['new' + $scope.baseEntityName.replace('Slatwall', '')]();
+	                                    currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
+	                                    title += rbkeyService.getRBKey(prefix + baseEntityCfcName + '.' + propertyIdentifierItem);
+	                                }
+	                                else {
+	                                    var currentEntityInstance = $hibachi['new' + currentEntity.cfc.charAt(0).toUpperCase() + currentEntity.cfc.slice(1)]();
+	                                    currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
+	                                    title += rbkeyService.getRBKey(prefix + currentEntityInstance.metaData.className + '.' + currentEntity.name);
+	                                }
+	                                if (key < propertyIdentifierArray.length - 1) {
+	                                    title += ' | ';
+	                                }
+	                            }
+	                        });
+	                        return title;
+	                    };
+	                    $scope.addColumn = function (selectedProperty, closeDialog) {
+	                        $log.debug('add Column');
+	                        $log.debug(selectedProperty);
+	                        if (selectedProperty.$$group === 'simple' || 'attribute') {
+	                            $log.debug($scope.columns);
+	                            if (angular.isDefined(selectedProperty)) {
+	                                var column = {
+	                                    title: getTitleFromProperty(selectedProperty.propertyIdentifier),
+	                                    propertyIdentifier: selectedProperty.propertyIdentifier,
+	                                    isVisible: true,
+	                                    isDeletable: true,
+	                                    isSearchable: true,
+	                                    isExportable: true
+	                                };
+	                                //only add attributeid if the selectedProperty is attributeid
+	                                if (angular.isDefined(selectedProperty.attributeID)) {
+	                                    column['attributeID'] = selectedProperty.attributeID;
+	                                    column['attributeSetObject'] = selectedProperty.attributeSetObject;
+	                                }
+	                                if (angular.isDefined(selectedProperty.ormtype)) {
+	                                    column['ormtype'] = selectedProperty.ormtype;
+	                                }
+	                                $scope.columns.push(column);
+	                                $scope.saveCollection();
+	                                if (angular.isDefined(closeDialog) && closeDialog === true) {
+	                                    $scope.addDisplayDialog.toggleDisplayDialog();
+	                                }
+	                            }
+	                        }
+	                    };
+	                    $scope.selectBreadCrumb = function (breadCrumbIndex) {
+	                        //splice out array items above index
+	                        var removeCount = $scope.breadCrumbs.length - 1 - breadCrumbIndex;
+	                        $scope.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
+	                        $scope.selectedPropertyChanged(null);
+	                    };
+	                    var unbindBaseEntityAlias = $scope.$watch('baseEntityAlias', function (newValue, oldValue) {
+	                        if (newValue !== oldValue) {
+	                            $scope.breadCrumbs = [{
+	                                    entityAlias: $scope.baseEntityAlias,
+	                                    cfc: $scope.baseEntityAlias,
+	                                    propertyIdentifier: $scope.baseEntityAlias
+	                                }];
+	                            unbindBaseEntityAlias();
+	                        }
+	                    });
+	                    $scope.selectedPropertyChanged = function (selectedProperty) {
+	                        // drill down or select field?
+	                        $log.debug('selectedPropertyChanged');
+	                        $log.debug(selectedProperty);
+	                        $scope.selectedProperty = selectedProperty;
+	                    };
+	                    jQuery(function ($) {
+	                        var panelList = angular.element($element).children('ul');
+	                        panelList.sortable({
+	                            // Only make the .panel-heading child elements support dragging.
+	                            // Omit this to make then entire <li>...</li> draggable.
+	                            handle: '.s-pannel-name',
+	                            update: function (event, ui) {
+	                                var tempColumnsArray = [];
+	                                $('.s-pannel-name', panelList).each(function (index, elem) {
+	                                    var newIndex = $(elem).attr('j-column-index');
+	                                    var columnItem = $scope.columns[newIndex];
+	                                    tempColumnsArray.push(columnItem);
+	                                });
+	                                $scope.$apply(function () {
+	                                    $scope.columns = tempColumnsArray;
+	                                });
+	                                $scope.saveCollection();
+	                            }
+	                        });
+	                    });
+	                    /*var unbindBaseEntityAlaisWatchListener = scope.$watch('baseEntityAlias',function(){
+	                         $("select").selectBoxIt();
+	                         unbindBaseEntityAlaisWatchListener();
+	                    });*/
+	                }]
+	        };
+	    }
+	    SWDisplayOptions.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, collectionService, pathBuilderConfig, collectionPartialsPath, rbkeyService) {
+	            return new SWDisplayOptions($http, $compile, $templateCache, $log, $hibachi, collectionService, pathBuilderConfig, collectionPartialsPath, rbkeyService);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$hibachi',
+	            'collectionService',
+	            'pathBuilderConfig',
+	            'collectionPartialsPath',
+	            'rbkeyService'
+	        ];
+	        return directive;
+	    };
+	    return SWDisplayOptions;
+	})();
+	exports.SWDisplayOptions = SWDisplayOptions;
+
+
+/***/ },
+/* 63 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWDisplayItem = (function () {
+	    //@ngInject
+	    function SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            require: '^swDisplayOptions',
+	            restrict: 'A',
+	            scope: {
+	                selectedProperty: "=",
+	                propertiesList: "=",
+	                breadCrumbs: "=",
+	                selectedPropertyChanged: "&"
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "displayitem.html",
+	            link: function (scope, element, attrs, displayOptionsController) {
+	                scope.showDisplayItem = false;
+	                scope.selectedDisplayOptionChanged = function (selectedDisplayOption) {
+	                    var breadCrumb = {
+	                        entityAlias: scope.selectedProperty.name,
+	                        cfc: scope.selectedProperty.cfc,
+	                        propertyIdentifier: scope.selectedProperty.propertyIdentifier
+	                    };
+	                    scope.breadCrumbs.push(breadCrumb);
+	                    scope.selectedPropertyChanged({ selectedProperty: selectedDisplayOption });
+	                };
+	                scope.$watch('selectedProperty', function (selectedProperty) {
+	                    if (angular.isDefined(selectedProperty)) {
+	                        if (selectedProperty === null) {
+	                            scope.showDisplayItem = false;
+	                            return;
+	                        }
+	                        if (selectedProperty.$$group !== 'drilldown') {
+	                            scope.showDisplayItem = false;
+	                            return;
+	                        }
+	                        if (selectedProperty.$$group === 'drilldown') {
+	                            if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
+	                                var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
+	                                filterPropertiesPromise.then(function (value) {
+	                                    metadataService.setPropertiesList(value, selectedProperty.propertyIdentifier);
+	                                    scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);
+	                                    metadataService.formatPropertiesList(scope.propertiesList[selectedProperty.propertyIdentifier], selectedProperty.propertyIdentifier);
+	                                }, function (reason) {
+	                                });
+	                            }
+	                        }
+	                        scope.showDisplayItem = true;
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWDisplayItem.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWDisplayItem;
+	})();
+	exports.SWDisplayItem = SWDisplayItem;
+
+
+/***/ },
+/* 64 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCollectionTable = (function () {
+	    //@ngInject
+	    function SWCollectionTable($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $hibachi) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "collectiontable.html",
+	            scope: {
+	                collection: "=",
+	                collectionConfig: "=",
+	                isRadio: "=",
+	                //angularLink:true || false
+	                angularLinks: "="
+	            },
+	            link: function (scope, element, attrs) {
+	                if (angular.isUndefined(scope.angularLinks)) {
+	                    scope.angularLinks = false;
+	                }
+	                console.log('here');
+	                console.log(scope.collection);
+	                console.log($hibachi);
+	                scope.collectionObject = $hibachi['new' + scope.collection.collectionObject]();
+	                var escapeRegExp = function (str) {
+	                    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	                };
+	                scope.replaceAll = function (str, find, replace) {
+	                    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+	                };
+	                /*
+	                 * Handles setting the key on the data.
+	                 * */
+	                angular.forEach(scope.collectionConfig.columns, function (column) {
+	                    $log.debug("Config Key : " + column);
+	                    column.key = column.propertyIdentifier.replace(/\./g, '_').replace(scope.collectionConfig.baseEntityAlias + '_', '');
+	                });
+	                scope.addSelection = function (selectionid, selection) {
+	                    selectionService.addSelection(selectionid, selection);
+	                };
+	            }
+	        };
+	    }
+	    SWCollectionTable.Factory = function () {
+	        var directive = function ($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $hibachi) {
+	            return new SWCollectionTable($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $hibachi);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$log',
+	            'pathBuilderConfig',
+	            'collectionPartialsPath',
+	            'paginationService',
+	            'selectionService',
+	            '$hibachi'
+	        ];
+	        return directive;
+	    };
+	    return SWCollectionTable;
+	})();
+	exports.SWCollectionTable = SWCollectionTable;
+
+
+/***/ },
+/* 65 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWColumnItem = (function () {
+	    function SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath) {
+	        return {
+	            restrict: 'A',
+	            require: "^swDisplayOptions",
+	            scope: {
+	                column: "=",
+	                columns: "=",
+	                columnIndex: "=",
+	                saveCollection: "&",
+	                propertiesList: "=",
+	                orderBy: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
+	            link: function (scope, element, attrs, displayOptionsController) {
+	                scope.editingDisplayTitle = false;
+	                scope.editDisplayTitle = function () {
+	                    if (angular.isUndefined(scope.column.displayTitle)) {
+	                        scope.column.displayTitle = scope.column.title;
+	                    }
+	                    if (!scope.column.displayTitle.length) {
+	                        scope.column.displayTitle = scope.column.title;
+	                    }
+	                    scope.previousDisplayTitle = scope.column.displayTitle;
+	                    scope.editingDisplayTitle = true;
+	                };
+	                scope.saveDisplayTitle = function () {
+	                    var savePromise = scope.saveCollection();
+	                    scope.editingDisplayTitle = false;
+	                };
+	                scope.cancelDisplayTitle = function () {
+	                    scope.column.displayTitle = scope.previousDisplayTitle;
+	                    scope.editingDisplayTitle = false;
+	                };
+	                $log.debug('displayOptionsController');
+	                if (angular.isUndefined(scope.column.sorting)) {
+	                    scope.column.sorting = {
+	                        active: false,
+	                        sortOrder: 'asc',
+	                        priority: 0
+	                    };
+	                }
+	                scope.toggleVisible = function (column) {
+	                    $log.debug('toggle visible');
+	                    if (angular.isUndefined(column.isVisible)) {
+	                        column.isVisible = false;
+	                    }
+	                    column.isVisible = !column.isVisible;
+	                    scope.saveCollection();
+	                };
+	                scope.toggleSearchable = function (column) {
+	                    $log.debug('toggle searchable');
+	                    if (angular.isUndefined(column.isSearchable)) {
+	                        column.isSearchable = false;
+	                    }
+	                    column.isSearchable = !column.isSearchable;
+	                    scope.saveCollection();
+	                };
+	                scope.toggleExportable = function (column) {
+	                    $log.debug('toggle exporable');
+	                    if (angular.isUndefined(column.isExportable)) {
+	                        column.isExportable = false;
+	                    }
+	                    column.isExportable = !column.isExportable;
+	                    scope.saveCollection();
+	                };
+	                var compareByPriority = function (a, b) {
+	                    if (angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)) {
+	                        if (a.sorting.priority < b.sorting.priority) {
+	                            return -1;
+	                        }
+	                        if (a.sorting.priority > b.sorting.priority) {
+	                            return 1;
+	                        }
+	                    }
+	                    return 0;
+	                };
+	                var updateOrderBy = function () {
+	                    if (angular.isDefined(scope.columns)) {
+	                        var columnsCopy = angular.copy(scope.columns);
+	                        columnsCopy.sort(compareByPriority);
+	                        scope.orderBy = [];
+	                        angular.forEach(columnsCopy, function (column) {
+	                            if (angular.isDefined(column.sorting) && column.sorting.active === true) {
+	                                var orderBy = {
+	                                    propertyIdentifier: column.propertyIdentifier,
+	                                    direction: column.sorting.sortOrder
+	                                };
+	                                scope.orderBy.push(orderBy);
+	                            }
+	                        });
+	                    }
+	                };
+	                scope.toggleSortable = function (column) {
+	                    $log.debug('toggle sortable');
+	                    if (angular.isUndefined(column.sorting)) {
+	                        column.sorting = {
+	                            active: true,
+	                            sortOrder: 'asc',
+	                            priority: 0
+	                        };
+	                    }
+	                    if (column.sorting.active === true) {
+	                        if (column.sorting.sortOrder === 'asc') {
+	                            column.sorting.sortOrder = 'desc';
+	                        }
+	                        else {
+	                            removeSorting(column);
+	                            column.sorting.active = false;
+	                        }
+	                    }
+	                    else {
+	                        column.sorting.active = true;
+	                        column.sorting.sortOrder = 'asc';
+	                        column.sorting.priority = getActivelySorting().length;
+	                    }
+	                    updateOrderBy();
+	                    scope.saveCollection();
+	                };
+	                var removeSorting = function (column, saving) {
+	                    if (column.sorting.active === true) {
+	                        for (var i in scope.columns) {
+	                            if (scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority) {
+	                                scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+	                            }
+	                        }
+	                        column.sorting.priority = 0;
+	                    }
+	                    if (!saving) {
+	                        updateOrderBy();
+	                        scope.saveCollection();
+	                    }
+	                };
+	                scope.prioritize = function (column) {
+	                    if (column.sorting.priority === 1) {
+	                        var activelySorting = getActivelySorting();
+	                        for (var i in scope.columns) {
+	                            if (scope.columns[i].sorting.active === true) {
+	                                scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+	                            }
+	                        }
+	                        column.sorting.priority = activelySorting.length;
+	                    }
+	                    else {
+	                        for (var i in scope.columns) {
+	                            if (scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority === column.sorting.priority - 1) {
+	                                scope.columns[i].sorting.priority = scope.columns[i].sorting.priority + 1;
+	                            }
+	                        }
+	                        column.sorting.priority -= 1;
+	                    }
+	                    updateOrderBy();
+	                    scope.saveCollection();
+	                };
+	                var getActivelySorting = function () {
+	                    var activelySorting = [];
+	                    for (var i in scope.columns) {
+	                        if (scope.columns[i].sorting.active === true) {
+	                            activelySorting.push(scope.columns[i]);
+	                        }
+	                    }
+	                    return activelySorting;
+	                };
+	                scope.removeColumn = function (columnIndex) {
+	                    $log.debug('remove column');
+	                    $log.debug(columnIndex);
+	                    removeSorting(scope.columns[columnIndex], true);
+	                    displayOptionsController.removeColumn(columnIndex);
+	                    updateOrderBy();
+	                    scope.saveCollection();
+	                };
+	            }
+	        };
+	    }
+	    SWColumnItem.Factory = function () {
+	        var directive = function ($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath) {
+	            return new SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath);
+	        };
+	        directive.$inject = [
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$timeout',
+	            'pathBuilderConfig',
+	            'collectionService',
+	            'collectionPartialsPath'
+	        ];
+	        return directive;
+	    };
+	    return SWColumnItem;
+	})();
+	exports.SWColumnItem = SWColumnItem;
+
+
+/***/ },
+/* 66 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWConditionCriteria = (function () {
+	    function SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        /* Template info begin*/
+	        var getTemplate = function (selectedFilterProperty) {
+	            var template = '';
+	            var templatePath = '';
+	            if (angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)) {
+	                templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteria.html";
+	            }
+	            else {
+	                var criteriaormtype = selectedFilterProperty.ormtype;
+	                var criteriafieldtype = selectedFilterProperty.fieldtype;
+	                /*TODO: convert all switches to object literals*/
+	                switch (criteriaormtype) {
+	                    case 'boolean':
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriaboolean.html";
+	                        break;
+	                    case 'string':
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriastring.html";
+	                        break;
+	                    case 'timestamp':
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriadate.html";
+	                        break;
+	                    case 'big_decimal':
+	                    case 'integer':
+	                    case 'float':
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criterianumber.html";
+	                        break;
+	                }
+	                switch (criteriafieldtype) {
+	                    case "many-to-one":
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriamanytoone.html";
+	                        break;
+	                    case "many-to-many":
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriamanytomany.html";
+	                        break;
+	                    case "one-to-many":
+	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriaonetomany.html";
+	                        break;
+	                }
+	            }
+	            var templateLoader = $http.get(templatePath, { cache: $templateCache });
+	            return templateLoader;
+	        };
+	        /* Template info end*/
+	        /* Options info begin */
+	        var getStringOptions = function (type) {
+	            var stringOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                stringOptions = [
+	                    {
+	                        display: "Equals",
+	                        comparisonOperator: "="
+	                    },
+	                    {
+	                        display: "Doesn't Equal",
+	                        comparisonOperator: "<>"
+	                    },
+	                    {
+	                        display: "Contains",
+	                        comparisonOperator: "like",
+	                        pattern: "%w%"
+	                    },
+	                    {
+	                        display: "Doesn't Contain",
+	                        comparisonOperator: "not like",
+	                        pattern: "%w%"
+	                    },
+	                    {
+	                        display: "Starts With",
+	                        comparisonOperator: "like",
+	                        pattern: "w%"
+	                    },
+	                    {
+	                        display: "Doesn't Start With",
+	                        comparisonOperator: "not like",
+	                        pattern: "w%"
+	                    },
+	                    {
+	                        display: "Ends With",
+	                        comparisonOperator: "like",
+	                        pattern: "%w"
+	                    },
+	                    {
+	                        display: "Doesn't End With",
+	                        comparisonOperator: "not like",
+	                        pattern: "%w"
+	                    },
+	                    {
+	                        display: "In List",
+	                        comparisonOperator: "in"
+	                    },
+	                    {
+	                        display: "Not In List",
+	                        comparisonOperator: "not in"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	                if (type === 'condition') {
+	                    stringOptions = [
+	                        {
+	                            display: "Equals",
+	                            comparisonOperator: "="
+	                        },
+	                        {
+	                            display: "In List",
+	                            comparisonOperator: "in"
+	                        },
+	                        {
+	                            display: "Defined",
+	                            comparisonOperator: "is not",
+	                            value: "null"
+	                        },
+	                        {
+	                            display: "Not Defined",
+	                            comparisonOperator: "is",
+	                            value: "null"
+	                        }
+	                    ];
+	                }
+	            }
+	            return stringOptions;
+	        };
+	        var getBooleanOptions = function (type) {
+	            var booleanOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type === 'filter' || type === 'condition') {
+	                booleanOptions = [
+	                    {
+	                        display: "True",
+	                        comparisonOperator: "=",
+	                        value: "True"
+	                    },
+	                    {
+	                        display: "False",
+	                        comparisonOperator: "=",
+	                        value: "False"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return booleanOptions;
+	        };
+	        var getDateOptions = function (type) {
+	            var dateOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type === 'filter') {
+	                dateOptions = [
+	                    {
+	                        display: "Date",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'exactDate',
+	                        }
+	                    },
+	                    {
+	                        display: "In Range",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'range'
+	                        }
+	                    },
+	                    {
+	                        display: "Not In Range",
+	                        comparisonOperator: "not between",
+	                        dateInfo: {
+	                            type: 'range'
+	                        }
+	                    },
+	                    {
+	                        display: "Today",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'd',
+	                            measureCount: 0,
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "Yesterday",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'd',
+	                            measureCount: -1,
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Week",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'w',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Month",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'm',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Quarter",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'q',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "This Year",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'y',
+	                            behavior: 'toDate'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Hour(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'h',
+	                            measureTypeDisplay: 'Hours'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Day(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'd',
+	                            measureTypeDisplay: 'Days'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Week(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'w',
+	                            measureTypeDisplay: 'Weeks'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Month(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'm',
+	                            measureTypeDisplay: 'Months'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Quarter(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'q',
+	                            measureTypeDisplay: 'Quarters'
+	                        }
+	                    },
+	                    {
+	                        display: "Last N Year(s)",
+	                        comparisonOperator: "between",
+	                        dateInfo: {
+	                            type: 'calculation',
+	                            measureType: 'y',
+	                            measureTypeDisplay: 'Years'
+	                        }
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                dateOptions = [
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return dateOptions;
+	        };
+	        var getNumberOptions = function (type) {
+	            var numberOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                numberOptions = [
+	                    {
+	                        display: "Equals",
+	                        comparisonOperator: "="
+	                    },
+	                    {
+	                        display: "Doesn't Equal",
+	                        comparisonOperator: "<>"
+	                    },
+	                    {
+	                        display: "In Range",
+	                        comparisonOperator: "between",
+	                        type: "range"
+	                    },
+	                    {
+	                        display: "Not In Range",
+	                        comparisonOperator: "not between",
+	                        type: "range"
+	                    },
+	                    {
+	                        display: "Greater Than",
+	                        comparisonOperator: ">"
+	                    },
+	                    {
+	                        display: "Greater Than Or Equal",
+	                        comparisonOperator: ">="
+	                    },
+	                    {
+	                        display: "Less Than",
+	                        comparisonOperator: "<"
+	                    },
+	                    {
+	                        display: "Less Than Or Equal",
+	                        comparisonOperator: "<="
+	                    },
+	                    {
+	                        display: "In List",
+	                        comparisonOperator: "in"
+	                    },
+	                    {
+	                        display: "Not In List",
+	                        comparisonOperator: "not in"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                numberOptions = [
+	                    {
+	                        display: "Equals",
+	                        comparisonOperator: "="
+	                    },
+	                    {
+	                        display: "Doesn't Equal",
+	                        comparisonOperator: "<>"
+	                    },
+	                    {
+	                        display: "Greater Than",
+	                        comparisonOperator: ">"
+	                    },
+	                    {
+	                        display: "Greater Than Or Equal",
+	                        comparisonOperator: ">="
+	                    },
+	                    {
+	                        display: "Less Than",
+	                        comparisonOperator: "<"
+	                    },
+	                    {
+	                        display: "Less Than Or Equal",
+	                        comparisonOperator: "<="
+	                    },
+	                    {
+	                        display: "In List",
+	                        comparisonOperator: "in"
+	                    },
+	                    {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return numberOptions;
+	        };
+	        var getOneToManyOptions = function (type) {
+	            var oneToManyOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                oneToManyOptions = [
+	                    {
+	                        display: "All Exist In Collection",
+	                        comparisonOperator: "All"
+	                    },
+	                    {
+	                        display: "None Exist In Collection",
+	                        comparisonOperator: "None"
+	                    },
+	                    {
+	                        display: "Some Exist In Collection",
+	                        comparisonOperator: "One"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                oneToManyOptions = [];
+	            }
+	            return oneToManyOptions;
+	        };
+	        var getManyToManyOptions = function (type) {
+	            var manyToManyOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                manyToManyOptions = [
+	                    {
+	                        display: "All Exist In Collection",
+	                        comparisonOperator: "All"
+	                    },
+	                    {
+	                        display: "None Exist In Collection",
+	                        comparisonOperator: "None"
+	                    },
+	                    {
+	                        display: "Some Exist In Collection",
+	                        comparisonOperator: "One"
+	                    },
+	                    {
+	                        display: "Empty",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Empty",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            if (type === 'condition') {
+	                manyToManyOptions = [
+	                    {
+	                        display: "Empty",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    },
+	                    {
+	                        display: "Not Empty",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    }
+	                ];
+	            }
+	            return manyToManyOptions;
+	        };
+	        var getManyToOneOptions = function (type) {
+	            var manyToOneOptions = [];
+	            if (angular.isUndefined(type)) {
+	                type = 'filter';
+	            }
+	            if (type == 'filter') {
+	                manyToOneOptions = {
+	                    drillEntity: {},
+	                    hasEntity: {
+	                        display: "Defined",
+	                        comparisonOperator: "is not",
+	                        value: "null"
+	                    },
+	                    notHasEntity: {
+	                        display: "Not Defined",
+	                        comparisonOperator: "is",
+	                        value: "null"
+	                    }
+	                };
+	            }
+	            return manyToOneOptions;
+	        };
+	        /* Options info end */
+	        var linker = function (scope, element, attrs) {
+	            /*show the user the value without % symbols as these are reserved*/
+	            scope.$watch('selectedFilterProperty.criteriaValue', function (criteriaValue) {
+	                if (angular.isDefined(criteriaValue)) {
+	                    scope.selectedFilterProperty.criteriaValue = $filter('likeFilter')(criteriaValue);
+	                }
+	            });
+	            scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+	                if (angular.isDefined(selectedFilterProperty)) {
+	                    $log.debug('watchSelectedFilterProperty');
+	                    $log.debug(scope.selectedFilterProperty);
+	                    /*prepopulate if we have a comparison operator and value*/
+	                    if (selectedFilterProperty === null) {
+	                        return;
+	                    }
+	                    if (angular.isDefined(selectedFilterProperty.ormtype)) {
+	                        switch (scope.selectedFilterProperty.ormtype) {
+	                            case "boolean":
+	                                scope.conditionOptions = getBooleanOptions();
+	                                break;
+	                            case "string":
+	                                scope.conditionOptions = getStringOptions();
+	                                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                                    //scope.selectedFilterProperty.criteriaValue = '';
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                        selectedFilterProperty.showCriteriaValue = false;
+	                                    }
+	                                    else {
+	                                        selectedFilterProperty.showCriteriaValue = true;
+	                                    }
+	                                };
+	                                break;
+	                            case "timestamp":
+	                                scope.conditionOptions = getDateOptions();
+	                                scope.today = function () {
+	                                    if (angular.isDefined(scope.selectedFilterProperty)) {
+	                                        scope.selectedFilterProperty.criteriaRangeStart = new Date();
+	                                        scope.selectedFilterProperty.criteriaRangeEnd = new Date();
+	                                    }
+	                                };
+	                                scope.clear = function () {
+	                                    scope.selectedFilterProperty.criteriaRangeStart = null;
+	                                    scope.selectedFilterProperty.criteriaRangeEnd = null;
+	                                };
+	                                scope.openCalendarStart = function ($event) {
+	                                    $event.preventDefault();
+	                                    $event.stopPropagation();
+	                                    scope.openedCalendarStart = true;
+	                                };
+	                                scope.openCalendarEnd = function ($event) {
+	                                    $event.preventDefault();
+	                                    $event.stopPropagation();
+	                                    scope.openedCalendarEnd = true;
+	                                };
+	                                scope.formats = [
+	                                    'dd-MMMM-yyyy',
+	                                    'yyyy/MM/dd',
+	                                    'dd.MM.yyyy',
+	                                    'shortDate'];
+	                                scope.format = scope.formats[1];
+	                                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                                    $log.debug('selectedConditionChanged Begin');
+	                                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                                    //check whether condition is checking for null values in date
+	                                    if (angular.isDefined(selectedCondition.dateInfo)) {
+	                                        //is condition a calculation
+	                                        if (selectedCondition.dateInfo.type === 'calculation') {
+	                                            selectedCondition.showCriteriaStart = true;
+	                                            selectedCondition.showCriteriaEnd = true;
+	                                            selectedCondition.disableCriteriaStart = true;
+	                                            selectedCondition.disableCriteriaEnd = true;
+	                                            //if item is a calculation of an N number of measure display the measure and number input
+	                                            if (angular.isUndefined(selectedCondition.dateInfo.behavior)) {
+	                                                $log.debug('Not toDate');
+	                                                selectedCondition.showNumberOf = true;
+	                                                selectedCondition.conditionDisplay = 'Number of ' + selectedCondition.dateInfo.measureTypeDisplay + ' :';
+	                                            }
+	                                            else {
+	                                                $log.debug('toDate');
+	                                                var today = Date.parse('today');
+	                                                var todayEOD = today.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = todayEOD;
+	                                                //get this Measure to date
+	                                                switch (selectedCondition.dateInfo.measureType) {
+	                                                    case 'd':
+	                                                        var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
+	                                                        dateBOD.setHours(0, 0, 0, 0);
+	                                                        selectedFilterProperty.criteriaRangeStart = dateBOD.getTime();
+	                                                        break;
+	                                                    case 'w':
+	                                                        var firstDayOfWeek = Date.today().last().monday();
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfWeek.getTime();
+	                                                        break;
+	                                                    case 'm':
+	                                                        var firstDayOfMonth = Date.today().moveToFirstDayOfMonth();
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfMonth.getTime();
+	                                                        break;
+	                                                    case 'q':
+	                                                        var month = Date.parse('today').toString('MM');
+	                                                        var year = Date.parse('today').toString('yyyy');
+	                                                        var quarterMonth = (Math.floor(month / 3) * 3);
+	                                                        var firstDayOfQuarter = new Date(year, quarterMonth, 1);
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfQuarter.getTime();
+	                                                        break;
+	                                                    case 'y':
+	                                                        var year = Date.parse('today').toString('yyyy');
+	                                                        var firstDayOfYear = new Date(year, 0, 1);
+	                                                        selectedFilterProperty.criteriaRangeStart = firstDayOfYear.getTime();
+	                                                        break;
+	                                                }
+	                                            }
+	                                        }
+	                                        if (selectedCondition.dateInfo.type === 'range') {
+	                                            selectedCondition.showCriteriaStart = true;
+	                                            selectedCondition.showCriteriaEnd = true;
+	                                            selectedCondition.disableCriteriaStart = false;
+	                                            selectedCondition.disableCriteriaEnd = false;
+	                                            selectedCondition.showNumberOf = false;
+	                                        }
+	                                        if (selectedCondition.dateInfo.type === 'exactDate') {
+	                                            selectedCondition.showCriteriaStart = true;
+	                                            selectedCondition.showCriteriaEnd = false;
+	                                            selectedCondition.disableCriteriaStart = false;
+	                                            selectedCondition.disableCriteriaEnd = true;
+	                                            selectedCondition.showNumberOf = false;
+	                                            selectedCondition.conditionDisplay = '';
+	                                            selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+	                                            selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+	                                        }
+	                                    }
+	                                    else {
+	                                        selectedCondition.showCriteriaStart = false;
+	                                        selectedCondition.showCriteriaEnd = false;
+	                                        selectedCondition.showNumberOf = false;
+	                                        selectedCondition.conditionDisplay = '';
+	                                    }
+	                                    $log.debug('selectedConditionChanged End');
+	                                    $log.debug('selectedConditionChanged Result');
+	                                    $log.debug(selectedCondition);
+	                                    $log.debug(selectedFilterProperty);
+	                                };
+	                                scope.criteriaRangeChanged = function (selectedFilterProperty) {
+	                                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                                    if (selectedCondition.dateInfo.type === 'calculation') {
+	                                        var measureCount = selectedFilterProperty.criteriaNumberOf;
+	                                        switch (selectedCondition.dateInfo.measureType) {
+	                                            case 'h':
+	                                                var today = Date.parse('today');
+	                                                selectedFilterProperty.criteriaRangeEnd = today.getTime();
+	                                                var todayXHoursAgo = Date.parse('today').add(-(measureCount)).hours();
+	                                                selectedFilterProperty.criteriaRangeStart = todayXHoursAgo.getTime();
+	                                                break;
+	                                            case 'd':
+	                                                var lastFullDay = Date.parse('today').add(-1).days();
+	                                                lastFullDay.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullDay.getTime();
+	                                                var lastXDaysAgo = Date.parse('today').add(-(measureCount)).days();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXDaysAgo.getTime();
+	                                                break;
+	                                            case 'w':
+	                                                var lastFullWeekEnd = Date.today().last().sunday();
+	                                                lastFullWeekEnd.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullWeekEnd.getTime();
+	                                                var lastXWeeksAgo = Date.today().last().sunday().add(-(measureCount)).weeks();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXWeeksAgo.getTime();
+	                                                break;
+	                                            case 'm':
+	                                                var lastFullMonthEnd = Date.today().add(-1).months().moveToLastDayOfMonth();
+	                                                lastFullMonthEnd.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullMonthEnd.getTime();
+	                                                var lastXMonthsAgo = Date.today().add(-1).months().moveToLastDayOfMonth().add(-(measureCount)).months();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXMonthsAgo.getTime();
+	                                                break;
+	                                            case 'q':
+	                                                var currentQuarter = Math.floor((Date.parse('today').getMonth() / 3));
+	                                                var firstDayOfCurrentQuarter = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+	                                                var lastDayOfPreviousQuarter = firstDayOfCurrentQuarter.add(-1).days();
+	                                                lastDayOfPreviousQuarter.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastDayOfPreviousQuarter.getTime();
+	                                                var lastXQuartersAgo = new Date(Date.parse('today').getFullYear(), currentQuarter * 3, 1);
+	                                                lastXQuartersAgo.add(-(measureCount * 3)).months();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXQuartersAgo.getTime();
+	                                                break;
+	                                            case 'y':
+	                                                var lastFullYearEnd = new Date(new Date().getFullYear(), 11, 31).add(-1).years();
+	                                                lastFullYearEnd.setHours(23, 59, 59, 999);
+	                                                selectedFilterProperty.criteriaRangeEnd = lastFullYearEnd.getTime();
+	                                                var lastXYearsAgo = new Date(new Date().getFullYear(), 11, 31).add(-(measureCount) - 1).years();
+	                                                selectedFilterProperty.criteriaRangeStart = lastXYearsAgo.getTime();
+	                                                break;
+	                                        }
+	                                    }
+	                                    if (selectedCondition.dateInfo.type === 'exactDate') {
+	                                        selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0, 0, 0, 0);
+	                                        selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23, 59, 59, 999);
+	                                    }
+	                                    if (selectedCondition.dateInfo.type === 'range') {
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaRangeStart)) {
+	                                            selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0, 0, 0, 0);
+	                                        }
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaRangeEnd)) {
+	                                            selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23, 59, 59, 999);
+	                                        }
+	                                    }
+	                                    $log.debug('criteriaRangeChanged');
+	                                    $log.debug(selectedCondition);
+	                                    $log.debug(selectedFilterProperty);
+	                                };
+	                                break;
+	                            case "big_decimal":
+	                            case "integer":
+	                            case "float":
+	                                scope.conditionOptions = getNumberOptions();
+	                                scope.criteriaRangeChanged = function (selectedFilterProperty) {
+	                                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                                };
+	                                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                                    selectedFilterProperty.showCriteriaValue = true;
+	                                    //check whether the type is a range
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)) {
+	                                        selectedFilterProperty.showCriteriaValue = false;
+	                                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+	                                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+	                                    }
+	                                    //is null or is not null
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                        selectedFilterProperty.showCriteriaValue = false;
+	                                    }
+	                                };
+	                                break;
+	                        }
+	                    }
+	                    if (angular.isDefined(scope.selectedFilterProperty.fieldtype)) {
+	                        switch (scope.selectedFilterProperty.fieldtype) {
+	                            case "many-to-one":
+	                                scope.conditionOptions = getManyToOneOptions(scope.comparisonType);
+	                                $log.debug('many-to-one');
+	                                $log.debug(scope.selectedFilterProperty);
+	                                $log.debug(scope.filterPropertiesList);
+	                                if (angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])) {
+	                                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.selectedFilterProperty.cfc);
+	                                    filterPropertiesPromise.then(function (value) {
+	                                        scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+	                                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier], scope.selectedFilterProperty.propertyIdentifier);
+	                                    }, function (reason) {
+	                                    });
+	                                }
+	                                break;
+	                            case "many-to-many":
+	                            case "one-to-many":
+	                                scope.manyToManyOptions = getManyToManyOptions();
+	                                scope.oneToManyOptions = getOneToManyOptions();
+	                                var existingCollectionsPromise = $hibachi.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+	                                existingCollectionsPromise.then(function (value) {
+	                                    scope.collectionOptions = value.data;
+	                                    if (angular.isDefined(scope.workflowCondition.collectionID)) {
+	                                        for (var i in scope.collectionOptions) {
+	                                            if (scope.collectionOptions[i].collectionID === scope.workflowCondition.collectionID) {
+	                                                scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+	                                            }
+	                                        }
+	                                        for (var i in scope.oneToManyOptions) {
+	                                            if (scope.oneToManyOptions[i].comparisonOperator === scope.workflowCondition.criteria) {
+	                                                scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
+	                                            }
+	                                        }
+	                                    }
+	                                });
+	                                break;
+	                        }
+	                    }
+	                    $log.debug('workflowCondition');
+	                    $log.debug(scope.workflowCondition);
+	                    angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                        if (conditionOption.display == scope.workflowCondition.conditionDisplay) {
+	                            scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                            scope.selectedFilterProperty.criteriaValue = scope.workflowCondition.value;
+	                            if (angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
+	                                && angular.isDefined(scope.workflowCondition.value)
+	                                && scope.workflowCondition.value.length) {
+	                                var dateRangeArray = scope.workflowCondition.value.split("-");
+	                                scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
+	                                scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
+	                            }
+	                            if (angular.isDefined(scope.workflowCondition.criteriaNumberOf)) {
+	                                scope.selectedFilterProperty.criteriaNumberOf = scope.workflowCondition.criteriaNumberOf;
+	                            }
+	                            if (angular.isDefined(scope.selectedConditionChanged)) {
+	                                scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                            }
+	                        }
+	                    });
+	                    $log.debug('templateLoader');
+	                    $log.debug(selectedFilterProperty);
+	                    var templateLoader = getTemplate(selectedFilterProperty);
+	                    var promise = templateLoader.success(function (html) {
+	                        element.html(html);
+	                        $compile(element.contents())(scope);
+	                    });
+	                }
+	            });
+	            scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                $log.debug(selectedCriteria);
+	                //update breadcrumbs as array of filterpropertylist keys
+	                $log.debug(scope.selectedFilterProperty);
+	                var breadCrumb = {
+	                    entityAlias: scope.selectedFilterProperty.name,
+	                    cfc: scope.selectedFilterProperty.cfc,
+	                    propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier
+	                };
+	                scope.workflowCondition.breadCrumbs.push(breadCrumb);
+	                //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                //update criteria to display the condition of the new critera we have selected
+	            };
+	        };
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflowCondition: "=",
+	                selectedFilterProperty: "=",
+	                filterPropertiesList: "=",
+	                selectedFilterPropertyChanged: "&"
+	            },
+	            link: linker
+	        };
+	    }
+	    SWConditionCriteria.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'workflowPartialsPath',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWConditionCriteria;
+	})();
+	exports.SWConditionCriteria = SWConditionCriteria;
+
+
+/***/ },
+/* 67 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCriteria = (function () {
+	    function SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            scope: {
+	                filterItem: "=",
+	                selectedFilterProperty: "=",
+	                filterPropertiesList: "=",
+	                selectedFilterPropertyChanged: "&",
+	                comparisonType: "=",
+	                collectionConfig: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteria.html',
+	            link: function (scope, element, attrs) {
+	            }
+	        };
+	    }
+	    SWCriteria.Factory = function () {
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteria;
+	})();
+	exports.SWCriteria = SWCriteria;
+
+
+/***/ },
+/* 68 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCriteriaBoolean = (function () {
+	    function SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriaboolean.html',
+	            link: function (scope, element, attrs) {
+	                var getBooleanOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var booleanOptions = [];
+	                    if (type === 'filter') {
+	                        booleanOptions = [
+	                            {
+	                                display: "True",
+	                                comparisonOperator: "=",
+	                                value: "True"
+	                            },
+	                            {
+	                                display: "False",
+	                                comparisonOperator: "=",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        booleanOptions = [
+	                            {
+	                                display: "True",
+	                                comparisonOperator: "eq",
+	                                value: "True"
+	                            },
+	                            {
+	                                display: "False",
+	                                comparisonOperator: "eq",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "null",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "null",
+	                                value: "True"
+	                            }
+	                        ];
+	                    }
+	                    return booleanOptions;
+	                };
+	                scope.conditionOptions = getBooleanOptions(scope.comparisonType);
+	                angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                    if (conditionOption.display == scope.filterItem.conditionDisplay) {
+	                        scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                        scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+	                        if (angular.isDefined(scope.selectedConditionChanged)) {
+	                            scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                        }
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaBoolean.Factory = function () {
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaBoolean;
+	})();
+	exports.SWCriteriaBoolean = SWCriteriaBoolean;
+
+
+/***/ },
+/* 69 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCriteriaManyToMany = (function () {
+	    function SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriamanytomany.html',
+	            link: function (scope, element, attrs) {
+	                scope.data = {};
+	                scope.collectionOptionsOpen = false;
+	                scope.toggleCollectionOptions = function (flag) {
+	                    scope.collectionOptionsOpen = (!angular.isUndefined(flag)) ? flag : !scope.collectionOptionsOpen;
+	                };
+	                scope.selectCollection = function (collection) {
+	                    scope.toggleCollectionOptions();
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[2];
+	                };
+	                scope.cleanSelection = function () {
+	                    scope.toggleCollectionOptions(false);
+	                    scope.data.collectionName = "";
+	                    scope.selectedFilterProperty.selectedCollection = null;
+	                };
+	                var getManyToManyOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    $log.debug('type', type);
+	                    var manyToManyOptions = [];
+	                    if (type == 'filter') {
+	                        manyToManyOptions = [
+	                            {
+	                                display: "All Exist In Collection",
+	                                comparisonOperator: "All"
+	                            },
+	                            {
+	                                display: "None Exist In Collection",
+	                                comparisonOperator: "None"
+	                            },
+	                            {
+	                                display: "Some Exist In Collection",
+	                                comparisonOperator: "One"
+	                            },
+	                            {
+	                                display: "Empty",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Empty",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        manyToManyOptions = [];
+	                    }
+	                    return manyToManyOptions;
+	                };
+	                scope.manyToManyOptions = getManyToManyOptions(scope.comparisonType);
+	                var existingCollectionsPromise = $hibachi.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
+	                existingCollectionsPromise.then(function (value) {
+	                    scope.collectionOptions = value.data;
+	                    if (angular.isDefined(scope.filterItem.collectionID)) {
+	                        for (var i in scope.collectionOptions) {
+	                            if (scope.collectionOptions[i].collectionID === scope.filterItem.collectionID) {
+	                                scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+	                            }
+	                        }
+	                        for (var i in scope.manyToManyOptions) {
+	                            if (scope.manyToManyOptions[i].comparisonOperator === scope.filterItem.criteria) {
+	                                scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[i];
+	                            }
+	                        }
+	                    }
+	                });
+	                function populateUI(collection) {
+	                    scope.collectionOptions.push(collection);
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[2];
+	                }
+	                observerService.attach(populateUI, 'addCollection', 'addCollection');
+	                scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                    $log.debug(selectedCriteria);
+	                    //update breadcrumbs as array of filterpropertylist keys
+	                    $log.debug(scope.selectedFilterProperty);
+	                    var breadCrumb = {
+	                        entityAlias: scope.selectedFilterProperty.name,
+	                        cfc: scope.selectedFilterProperty.cfc,
+	                        propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier,
+	                        rbKey: rbkeyService.getRBKey('entity.' + scope.selectedFilterProperty.cfc.replace('_', ''))
+	                    };
+	                    scope.filterItem.breadCrumbs.push(breadCrumb);
+	                    //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                    scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                    //update criteria to display the condition of the new critera we have selected
+	                };
+	                scope.addNewCollection = function () {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
+	                        entityName: scope.selectedFilterProperty.cfc,
+	                        collectionName: scope.data.collectionName,
+	                        parentEntity: scope.collectionConfig.baseEntityName
+	                    });
+	                    scope.cleanSelection();
+	                };
+	                scope.viewSelectedCollection = function () {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components//criteriacreatecollection', {
+	                        entityName: 'collection',
+	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
+	                        parentEntity: scope.collectionConfig.baseEntityName
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWCriteriaManyToMany.Factory = function () {
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
+	            return new SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'dialogService',
+	            'observerService',
+	            'pathBuilderConfig',
+	            'rbkeyService',
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaManyToMany;
+	})();
+	exports.SWCriteriaManyToMany = SWCriteriaManyToMany;
+
+
+/***/ },
+/* 70 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCriteriaManyToOne = (function () {
+	    function SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriamanytoone.html',
+	            link: function (scope, element, attrs) {
+	                var getManyToOneOptions = function () {
+	                    var manyToOneOptions = {
+	                        drillEntity: {},
+	                        hasEntity: {
+	                            display: "Defined",
+	                            comparisonOperator: "is not",
+	                            value: "null"
+	                        },
+	                        notHasEntity: {
+	                            display: "Not Defined",
+	                            comparisonOperator: "is",
+	                            value: "null"
+	                        }
+	                    };
+	                    return manyToOneOptions;
+	                };
+	                scope.manyToOneOptions = getManyToOneOptions();
+	                scope.conditionOptions = getManyToOneOptions();
+	                $log.debug('many-to-one');
+	                $log.debug(scope.selectedFilterProperty);
+	                $log.debug(scope.filterPropertiesList);
+	                scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+	                    if (angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])) {
+	                        var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
+	                        filterPropertiesPromise.then(function (value) {
+	                            scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+	                            metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier], scope.selectedFilterProperty.propertyIdentifier);
+	                        }, function (reason) {
+	                        });
+	                    }
+	                    scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                        $log.debug(selectedCriteria);
+	                        $log.debug('changed');
+	                        //update breadcrumbs as array of filterpropertylist keys
+	                        $log.debug(scope.selectedFilterProperty);
+	                        var breadCrumb = {
+	                            entityAlias: scope.selectedFilterProperty.name,
+	                            cfc: scope.selectedFilterProperty.cfc,
+	                            propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier,
+	                            rbKey: rbkeyService.getRBKey('entity.' + scope.selectedFilterProperty.cfc.replace('_', ''))
+	                        };
+	                        $log.debug('breadcrumb');
+	                        $log.debug(breadCrumb);
+	                        $log.debug(scope.filterItem.breadCrumbs);
+	                        scope.filterItem.breadCrumbs.push(breadCrumb);
+	                        //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                        scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                        //update criteria to display the condition of the new critera we have selected
+	                        $log.debug(scope.selectedFilterProperty);
+	                    };
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaManyToOne.Factory = function () {
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
+	            return new SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig',
+	            'rbkeyService'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaManyToOne;
+	})();
+	exports.SWCriteriaManyToOne = SWCriteriaManyToOne;
+	// 'use strict';
+	// angular.module('slatwalladmin')
+	// .directive('swCriteriaManyToOne', [
+	// 	'$log',
+	// 	'$hibachi',
+	// 	'$filter',
+	// 	'collectionPartialsPath',
+	// 	'collectionService',
+	// 	'metadataService',
+	// 	function(
+	// 		$log,
+	// 		$hibachi,
+	// 		$filter,
+	// 		collectionPartialsPath,
+	// 		collectionService,
+	// 		metadataService
+	// 	){
+	// 		return {
+	// 			restrict: 'E',
+	// 			templateUrl:collectionPartialsPath+'criteriamanytoone.html',
+	// 			link: function(scope, element, attrs){
+	// 				var getManyToOneOptions = function(){
+	// 			    	var manyToOneOptions = {
+	// 			            drillEntity:{},
+	// 						hasEntity:{
+	// 							display:"Defined",
+	// 							comparisonOperator:"is not",
+	// 							value:"null"
+	// 						},
+	// 						notHasEntity:{
+	// 							display:"Not Defined",
+	// 							comparisonOperator:"is",
+	// 							value:"null"
+	// 						}
+	// 			    	};
+	// 			    	return manyToOneOptions;
+	// 			    };
+	// 			    scope.manyToOneOptions = getManyToOneOptions();
+	// 			    scope.conditionOptions = getManyToOneOptions();
+	// 				$log.debug('many-to-one');
+	// 				$log.debug(scope.selectedFilterProperty);
+	// 				$log.debug(scope.filterPropertiesList);
+	// 				scope.$watch('selectedFilterProperty',function(selectedFilterProperty){
+	// 					if(angular.isUndefined(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier])){
+	// 						var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedFilterProperty.cfc);
+	// 						filterPropertiesPromise.then(function(value){
+	// 							scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier] = value;
+	// 							metadataService.formatPropertiesList(scope.filterPropertiesList[scope.selectedFilterProperty.propertyIdentifier],scope.selectedFilterProperty.propertyIdentifier);
+	// 						}, function(reason){
+	// 						});
+	// 					}
+	// 					scope.selectedCriteriaChanged = function(selectedCriteria){
+	// 						$log.debug(selectedCriteria);
+	// 						$log.debug('changed');
+	// 						//update breadcrumbs as array of filterpropertylist keys
+	// 						$log.debug(scope.selectedFilterProperty);
+	// 						var breadCrumb = {
+	// 								entityAlias:scope.selectedFilterProperty.name,
+	// 								cfc:scope.selectedFilterProperty.cfc,
+	// 								propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
+	// 								rbKey:rbkeyService.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
+	// 						};
+	// 						$log.debug('breadcrumb');
+	// 						$log.debug(breadCrumb);
+	// 						$log.debug(scope.filterItem.breadCrumbs);
+	// 						scope.filterItem.breadCrumbs.push(breadCrumb);
+	// 						//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	// 						scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
+	// 						//update criteria to display the condition of the new critera we have selected
+	// 						$log.debug(scope.selectedFilterProperty);
+	// 					};
+	// 				});
+	// 			}
+	// 		};
+	// 	}
+	// ]);
+
+
+/***/ },
+/* 71 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCriteriaNumber = (function () {
+	    function SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criterianumber.html',
+	            link: function (scope, element, attrs) {
+	                var getNumberOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var numberOptions = [];
+	                    if (type === 'filter') {
+	                        numberOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "="
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "<>"
+	                            },
+	                            {
+	                                display: "In Range",
+	                                comparisonOperator: "between",
+	                                type: "range"
+	                            },
+	                            {
+	                                display: "Not In Range",
+	                                comparisonOperator: "not between",
+	                                type: "range"
+	                            },
+	                            {
+	                                display: "Greater Than",
+	                                comparisonOperator: ">"
+	                            },
+	                            {
+	                                display: "Greater Than Or Equal",
+	                                comparisonOperator: ">="
+	                            },
+	                            {
+	                                display: "Less Than",
+	                                comparisonOperator: "<"
+	                            },
+	                            {
+	                                display: "Less Than Or Equal",
+	                                comparisonOperator: "<="
+	                            },
+	                            {
+	                                display: "In List",
+	                                comparisonOperator: "in"
+	                            },
+	                            {
+	                                display: "Not In List",
+	                                comparisonOperator: "not in"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        numberOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "eq"
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "neq"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "null",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "null",
+	                                value: "True"
+	                            }
+	                        ];
+	                    }
+	                    return numberOptions;
+	                };
+	                scope.$watch('selectedFilterProperty.criteriaValue', function (criteriaValue) {
+	                    if (angular.isDefined(criteriaValue)) {
+	                        scope.selectedFilterProperty.criteriaValue = criteriaValue;
+	                        $log.debug(scope.selectedFilterProperty);
+	                    }
+	                });
+	                scope.conditionOptions = getNumberOptions(scope.comparisonType);
+	                scope.criteriaRangeChanged = function (selectedFilterProperty) {
+	                    var selectedCondition = selectedFilterProperty.selectedCriteriaType;
+	                };
+	                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                    selectedFilterProperty.showCriteriaValue = true;
+	                    //check whether the type is a range
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)) {
+	                        selectedFilterProperty.showCriteriaValue = false;
+	                        selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
+	                        selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
+	                    }
+	                    //is null or is not null
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                        selectedFilterProperty.showCriteriaValue = false;
+	                    }
+	                };
+	                angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                    $log.debug('populate');
+	                    if (conditionOption.display == scope.filterItem.conditionDisplay) {
+	                        scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                        $log.debug(scope.filterItem);
+	                        if (scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between') {
+	                            var criteriaRangeArray = scope.filterItem.value.split('-');
+	                            $log.debug(criteriaRangeArray);
+	                            scope.selectedFilterProperty.criteriaRangeStart = parseInt(criteriaRangeArray[0]);
+	                            scope.selectedFilterProperty.criteriaRangeEnd = parseInt(criteriaRangeArray[1]);
+	                        }
+	                        else {
+	                            scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+	                        }
+	                        if (angular.isDefined(scope.filterItem.criteriaNumberOf)) {
+	                            scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
+	                        }
+	                        if (angular.isDefined(scope.selectedConditionChanged)) {
+	                            scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                        }
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaNumber.Factory = function () {
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaNumber;
+	})();
+	exports.SWCriteriaNumber = SWCriteriaNumber;
+
+
+/***/ },
+/* 72 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCriteriaOneToMany = (function () {
+	    function SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriaonetomany.html',
+	            link: function (scope, element, attrs) {
+	                scope.data = {};
+	                scope.collectionOptionsOpen = false;
+	                scope.toggleCollectionOptions = function (flag) {
+	                    scope.collectionOptionsOpen = (!angular.isUndefined(flag)) ? flag : !scope.collectionOptionsOpen;
+	                };
+	                scope.selectCollection = function (collection) {
+	                    scope.toggleCollectionOptions();
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[2];
+	                };
+	                scope.cleanSelection = function () {
+	                    scope.toggleCollectionOptions(false);
+	                    scope.data.collectionName = "";
+	                    scope.selectedFilterProperty.selectedCollection = null;
+	                };
+	                var getOneToManyOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var oneToManyOptions = [];
+	                    if (type == 'filter') {
+	                        oneToManyOptions = [
+	                            {
+	                                display: "All Exist In Collection",
+	                                comparisonOperator: "All"
+	                            },
+	                            {
+	                                display: "None Exist In Collection",
+	                                comparisonOperator: "None"
+	                            },
+	                            {
+	                                display: "Some Exist In Collection",
+	                                comparisonOperator: "One"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        oneToManyOptions = [];
+	                    }
+	                    return oneToManyOptions;
+	                };
+	                $log.debug('onetomany');
+	                $log.debug(scope.selectedFilterProperty);
+	                scope.oneToManyOptions = getOneToManyOptions(scope.comparisonType);
+	                var existingCollectionsPromise = $hibachi.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
+	                existingCollectionsPromise.then(function (value) {
+	                    scope.collectionOptions = value.data;
+	                    if (angular.isDefined(scope.filterItem.collectionID)) {
+	                        for (var i in scope.collectionOptions) {
+	                            if (scope.collectionOptions[i].collectionID === scope.filterItem.collectionID) {
+	                                scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+	                            }
+	                        }
+	                        for (var i in scope.oneToManyOptions) {
+	                            if (scope.oneToManyOptions[i].comparisonOperator === scope.filterItem.criteria) {
+	                                scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
+	                            }
+	                        }
+	                    }
+	                });
+	                function populateUI(collection) {
+	                    scope.collectionOptions.push(collection);
+	                    scope.selectedFilterProperty.selectedCollection = collection;
+	                    scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[2];
+	                }
+	                observerService.attach(populateUI, 'addCollection', 'addCollection');
+	                scope.selectedCriteriaChanged = function (selectedCriteria) {
+	                    $log.debug(selectedCriteria);
+	                    //update breadcrumbs as array of filterpropertylist keys
+	                    $log.debug(scope.selectedFilterProperty);
+	                    var breadCrumb = {
+	                        entityAlias: scope.selectedFilterProperty.name,
+	                        cfc: scope.selectedFilterProperty.cfc,
+	                        propertyIdentifier: scope.selectedFilterProperty.propertyIdentifier,
+	                        rbKey: rbkeyService.getRBKey('entity.' + scope.selectedFilterProperty.cfc.replace('_', '')),
+	                        filterProperty: scope.selectedFilterProperty
+	                    };
+	                    scope.filterItem.breadCrumbs.push(breadCrumb);
+	                    $log.debug('criteriaChanged');
+	                    //$log.debug(selectedFilterPropertyChanged);
+	                    $log.debug(scope.selectedFilterProperty);
+	                    //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
+	                    scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
+	                    //update criteria to display the condition of the new critera we have selected
+	                };
+	                scope.addNewCollection = function () {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
+	                        entityName: scope.selectedFilterProperty.cfc,
+	                        collectionName: scope.data.collectionName,
+	                        parentEntity: scope.collectionConfig.baseEntityName
+	                    });
+	                    scope.cleanSelection();
+	                };
+	                scope.viewSelectedCollection = function () {
+	                    scope.toggleCollectionOptions();
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
+	                        entityName: 'collection',
+	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
+	                        parentEntity: scope.collectionConfig.baseEntityName
+	                    });
+	                };
+	            }
+	        };
+	    }
+	    SWCriteriaOneToMany.Factory = function () {
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
+	            return new SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'dialogService',
+	            'observerService',
+	            'pathBuilderConfig',
+	            'rbkeyService'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaOneToMany;
+	})();
+	exports.SWCriteriaOneToMany = SWCriteriaOneToMany;
+
+
+/***/ },
+/* 73 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWCriteriaString = (function () {
+	    function SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriastring.html',
+	            link: function (scope, element, attrs) {
+	                var getStringOptions = function (type) {
+	                    if (angular.isUndefined(type)) {
+	                        type = 'filter';
+	                    }
+	                    var stringOptions = [];
+	                    if (type === 'filter') {
+	                        stringOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "="
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "<>"
+	                            },
+	                            {
+	                                display: "Contains",
+	                                comparisonOperator: "like",
+	                                pattern: "%w%"
+	                            },
+	                            {
+	                                display: "Doesn't Contain",
+	                                comparisonOperator: "not like",
+	                                pattern: "%w%"
+	                            },
+	                            {
+	                                display: "Starts With",
+	                                comparisonOperator: "like",
+	                                pattern: "w%"
+	                            },
+	                            {
+	                                display: "Doesn't Start With",
+	                                comparisonOperator: "not like",
+	                                pattern: "w%"
+	                            },
+	                            {
+	                                display: "Ends With",
+	                                comparisonOperator: "like",
+	                                pattern: "%w"
+	                            },
+	                            {
+	                                display: "Doesn't End With",
+	                                comparisonOperator: "not like",
+	                                pattern: "%w"
+	                            },
+	                            {
+	                                display: "In List",
+	                                comparisonOperator: "in"
+	                            },
+	                            {
+	                                display: "Not In List",
+	                                comparisonOperator: "not in"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "is not",
+	                                value: "null"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "is",
+	                                value: "null"
+	                            }
+	                        ];
+	                    }
+	                    else if (type === 'condition') {
+	                        stringOptions = [
+	                            {
+	                                display: "Equals",
+	                                comparisonOperator: "eq"
+	                            },
+	                            {
+	                                display: "Doesn't Equal",
+	                                comparisonOperator: "neq"
+	                            },
+	                            {
+	                                display: "Defined",
+	                                comparisonOperator: "null",
+	                                value: "False"
+	                            },
+	                            {
+	                                display: "Not Defined",
+	                                comparisonOperator: "null",
+	                                value: "True"
+	                            }
+	                        ];
+	                    }
+	                    return stringOptions;
+	                };
+	                //initialize values
+	                scope.conditionOptions = getStringOptions(scope.comparisonType);
+	                scope.inListArray = [];
+	                if (angular.isDefined(scope.filterItem.value)) {
+	                    scope.inListArray = scope.filterItem.value.split(',');
+	                }
+	                scope.newListItem = '';
+	                //declare functions
+	                scope.addToValueInListFormat = function (inListItem) {
+	                    // Adds item into array
+	                    scope.inListArray.push(inListItem);
+	                    //set value field to the user generated list
+	                    scope.filterItem.value = scope.inListArray.toString();
+	                    scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+	                    scope.newListItem = '';
+	                };
+	                scope.removelistItem = function (argListIndex) {
+	                    scope.inListArray.splice(argListIndex, 1);
+	                    scope.filterItem.value = scope.inListArray.toString();
+	                    scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
+	                };
+	                scope.clearField = function () {
+	                    scope.newListItem = '';
+	                };
+	                scope.selectedConditionChanged = function (selectedFilterProperty) {
+	                    //scope.selectedFilterProperty.criteriaValue = '';
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                        selectedFilterProperty.showCriteriaValue = false;
+	                    }
+	                    else {
+	                        if (selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in') {
+	                            selectedFilterProperty.showCriteriaValue = false;
+	                            scope.comparisonOperatorInAndNotInFlag = true;
+	                        }
+	                        else {
+	                            selectedFilterProperty.showCriteriaValue = true;
+	                        }
+	                    }
+	                };
+	                scope.$watch('filterItem.value', function (criteriaValue) {
+	                    //remove percents for like values
+	                    if (angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)) {
+	                        scope.filterItem.value = scope.filterItem.value.replace('%', '');
+	                    }
+	                });
+	                scope.$watch('selectedFilterProperty', function (selectedFilterProperty) {
+	                    if (angular.isDefined(selectedFilterProperty)) {
+	                        angular.forEach(scope.conditionOptions, function (conditionOption) {
+	                            if (conditionOption.display == scope.filterItem.conditionDisplay) {
+	                                scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+	                                scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+	                                if (angular.isDefined(scope.selectedConditionChanged)) {
+	                                    scope.selectedConditionChanged(scope.selectedFilterProperty);
+	                                }
+	                            }
+	                        });
+	                    }
+	                });
+	            }
+	        };
+	    }
+	    SWCriteriaString.Factory = function () {
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	            return new SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            '$filter',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWCriteriaString;
+	})();
+	exports.SWCriteriaString = SWCriteriaString;
+
+
+/***/ },
+/* 74 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWEditFilterItem = (function () {
+	    function SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
+	        return {
+	            require: '^swFilterGroups',
+	            restrict: 'E',
+	            scope: {
+	                collectionConfig: "=",
+	                filterItem: "=",
+	                filterPropertiesList: "=",
+	                saveCollection: "&",
+	                removeFilterItem: "&",
+	                filterItemIndex: "=",
+	                comparisonType: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "editfilteritem.html",
+	            link: function (scope, element, attrs, filterGroupsController) {
+	                function daysBetween(first, second) {
+	                    // Copy date parts of the timestamps, discarding the time parts.
+	                    var one = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+	                    var two = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+	                    // Do the math.
+	                    var millisecondsPerDay = 1000 * 60 * 60 * 24;
+	                    var millisBetween = two.getTime() - one.getTime();
+	                    var days = millisBetween / millisecondsPerDay;
+	                    // Round down.
+	                    return Math.floor(days);
+	                }
+	                if (angular.isUndefined(scope.filterItem.breadCrumbs)) {
+	                    scope.filterItem.breadCrumbs = [];
+	                    if (scope.filterItem.propertyIdentifier === "") {
+	                        scope.filterItem.breadCrumbs = [
+	                            {
+	                                rbKey: rbkeyService.getRBKey('entity.' + scope.collectionConfig.baseEntityAlias.replace('_', '')),
+	                                entityAlias: scope.collectionConfig.baseEntityAlias,
+	                                cfc: scope.collectionConfig.baseEntityAlias,
+	                                propertyIdentifier: scope.collectionConfig.baseEntityAlias
+	                            }
+	                        ];
+	                    }
+	                    else {
+	                        var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+	                        entityAliasArrayFromString.pop();
+	                        for (var i in entityAliasArrayFromString) {
+	                            var breadCrumb = {
+	                                rbKey: rbkeyService.getRBKey('entity.' + scope.collectionConfig.baseEntityAlias.replace('_', '')),
+	                                entityAlias: entityAliasArrayFromString[i],
+	                                cfc: entityAliasArrayFromString[i],
+	                                propertyIdentifier: entityAliasArrayFromString[i]
+	                            };
+	                            scope.filterItem.breadCrumbs.push(breadCrumb);
+	                        }
+	                    }
+	                }
+	                else {
+	                    angular.forEach(scope.filterItem.breadCrumbs, function (breadCrumb, key) {
+	                        if (angular.isUndefined(scope.filterPropertiesList[breadCrumb.propertyIdentifier])) {
+	                            var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(breadCrumb.cfc);
+	                            filterPropertiesPromise.then(function (value) {
+	                                metadataService.setPropertiesList(value, breadCrumb.propertyIdentifier);
+	                                scope.filterPropertiesList[breadCrumb.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(breadCrumb.propertyIdentifier);
+	                                metadataService.formatPropertiesList(scope.filterPropertiesList[breadCrumb.propertyIdentifier], breadCrumb.propertyIdentifier);
+	                                var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+	                                entityAliasArrayFromString.pop();
+	                                entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                                if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                    for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                        var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                        if (filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier) {
+	                                            //selectItem from drop down
+	                                            scope.selectedFilterProperty = filterProperty;
+	                                            //decorate with value and comparison Operator so we can use it in the Condition section
+	                                            scope.selectedFilterProperty.value = scope.filterItem.value;
+	                                            scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+	                                        }
+	                                    }
+	                                }
+	                            });
+	                        }
+	                        else {
+	                            var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
+	                            entityAliasArrayFromString.pop();
+	                            entityAliasArrayFromString = entityAliasArrayFromString.join('.').trim();
+	                            if (angular.isDefined(scope.filterPropertiesList[entityAliasArrayFromString])) {
+	                                for (var i in scope.filterPropertiesList[entityAliasArrayFromString].data) {
+	                                    var filterProperty = scope.filterPropertiesList[entityAliasArrayFromString].data[i];
+	                                    if (filterProperty.propertyIdentifier === scope.filterItem.propertyIdentifier) {
+	                                        //selectItem from drop down
+	                                        scope.selectedFilterProperty = filterProperty;
+	                                        //decorate with value and comparison Operator so we can use it in the Condition section
+	                                        scope.selectedFilterProperty.value = scope.filterItem.value;
+	                                        scope.selectedFilterProperty.comparisonOperator = scope.filterItem.comparisonOperator;
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    });
+	                }
+	                if (angular.isUndefined(scope.filterItem.$$isClosed)) {
+	                    scope.filterItem.$$isClosed = true;
+	                }
+	                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+	                scope.togglePrepareForFilterGroup = function () {
+	                    scope.filterItem.$$prepareForFilterGroup = !scope.filterItem.$$prepareForFilterGroup;
+	                };
+	                //public functions
+	                scope.selectBreadCrumb = function (breadCrumbIndex) {
+	                    //splice out array items above index
+	                    var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+	                    scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1, removeCount);
+	                    $log.debug('selectBreadCrumb');
+	                    $log.debug(scope.selectedFilterProperty);
+	                    //scope.selectedFilterPropertyChanged(scope.filterItem.breadCrumbs[scope.filterItem.breadCrumbs.length -1].filterProperty);
+	                    scope.selectedFilterPropertyChanged(null);
+	                };
+	                scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
+	                    $log.debug('selectedFilterProperty');
+	                    $log.debug(selectedFilterProperty);
+	                    if (angular.isDefined(scope.selectedFilterProperty) && scope.selectedFilterProperty === null) {
+	                        scope.selectedFilterProperty = {};
+	                    }
+	                    if (angular.isDefined(scope.selectedFilterProperty) && angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType)) {
+	                        delete scope.selectedFilterProperty.selectedCriteriaType;
+	                    }
+	                    if (angular.isDefined(scope.filterItem.value)) {
+	                        delete scope.filterItem.value;
+	                    }
+	                    scope.selectedFilterProperty.showCriteriaValue = false;
+	                    scope.selectedFilterProperty = selectedFilterProperty;
+	                };
+	                scope.addFilterItem = function () {
+	                    collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(), filterGroupsController.setItemInUse);
+	                };
+	                scope.cancelFilterItem = function () {
+	                    $log.debug('cancelFilterItem');
+	                    $log.debug(scope.filterItemIndex);
+	                    //scope.deselectItems(scope.filterGroupItem[filterItemIndex]);
+	                    scope.filterItem.setItemInUse(false);
+	                    scope.filterItem.$$isClosed = true;
+	                    for (var siblingIndex in scope.filterItem.$$siblingItems) {
+	                        scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+	                    }
+	                    if (scope.filterItem.$$isNew === true) {
+	                        scope.removeFilterItem({ filterItemIndex: scope.filterItemIndex });
+	                    }
+	                };
+	                scope.saveFilter = function (selectedFilterProperty, filterItem, callback) {
+	                    $log.debug('saveFilter begin');
+	                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)) {
+	                        return;
+	                    }
+	                    if (angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)) {
+	                        //populate filterItem with selectedFilterProperty values
+	                        filterItem.$$isNew = false;
+	                        filterItem.propertyIdentifier = selectedFilterProperty.propertyIdentifier;
+	                        filterItem.displayPropertyIdentifier = selectedFilterProperty.displayPropertyIdentifier;
+	                        switch (selectedFilterProperty.ormtype) {
+	                            case 'boolean':
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                filterItem.displayValue = filterItem.value;
+	                                break;
+	                            case 'string':
+	                                if (angular.isDefined(selectedFilterProperty.attributeID)) {
+	                                    filterItem.attributeID = selectedFilterProperty.attributeID;
+	                                    filterItem.attributeSetObject = selectedFilterProperty.attributeSetObject;
+	                                }
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                    filterItem.displayValue = filterItem.value;
+	                                }
+	                                else {
+	                                    //if has a pattern then we need to evaluate where to add % for like statement
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)) {
+	                                        filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
+	                                        filterItem.displayValue = filterItem.value;
+	                                    }
+	                                    else {
+	                                        filterItem.value = filterItem.value;
+	                                        if (angular.isUndefined(filterItem.displayValue)) {
+	                                            filterItem.displayValue = filterItem.value;
+	                                        }
+	                                    }
+	                                }
+	                                break;
+	                            //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
+	                            case 'timestamp':
+	                                //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //is it null or a range
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                    filterItem.displayValue = filterItem.value;
+	                                }
+	                                else {
+	                                    if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation') {
+	                                        var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart), new Date(selectedFilterProperty.criteriaRangeEnd));
+	                                        filterItem.value = _daysBetween;
+	                                        filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+	                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+	                                        }
+	                                    }
+	                                    else {
+	                                        var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+	                                        filterItem.value = dateValueString;
+	                                        var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart), 'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd), 'MM/dd/yyyy @ h:mma');
+	                                        filterItem.displayValue = formattedDateValueString;
+	                                        if (angular.isDefined(selectedFilterProperty.criteriaNumberOf)) {
+	                                            filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+	                                        }
+	                                    }
+	                                }
+	                                break;
+	                            case 'big_decimal':
+	                            case 'integer':
+	                            case 'float':
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //is null, is not null
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                }
+	                                else {
+	                                    if (angular.isUndefined(selectedFilterProperty.selectedCriteriaType.type)) {
+	                                        filterItem.value = selectedFilterProperty.criteriaValue;
+	                                    }
+	                                    else {
+	                                        var decimalValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+	                                        filterItem.value = decimalValueString;
+	                                    }
+	                                }
+	                                filterItem.displayValue = filterItem.value;
+	                                break;
+	                        }
+	                        switch (selectedFilterProperty.fieldtype) {
+	                            case 'many-to-one':
+	                                filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                //is null, is not null
+	                                if (angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)) {
+	                                    filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
+	                                }
+	                                filterItem.displayValue = filterItem.value;
+	                                break;
+	                            case 'one-to-many':
+	                            case 'many-to-many':
+	                                filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
+	                                filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
+	                                filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
+	                                break;
+	                        }
+	                        if (angular.isUndefined(filterItem.displayValue)) {
+	                            filterItem.displayValue = filterItem.value;
+	                        }
+	                        if (angular.isDefined(selectedFilterProperty.ormtype)) {
+	                            filterItem.ormtype = selectedFilterProperty.ormtype;
+	                        }
+	                        if (angular.isDefined(selectedFilterProperty.fieldtype)) {
+	                            filterItem.fieldtype = selectedFilterProperty.fieldtype;
+	                        }
+	                        for (var siblingIndex in filterItem.$$siblingItems) {
+	                            filterItem.$$siblingItems[siblingIndex].$$disabled = false;
+	                        }
+	                        filterItem.conditionDisplay = selectedFilterProperty.selectedCriteriaType.display;
+	                        //if the add to New group checkbox has been checked then we need to transplant the filter item into a filter group
+	                        if (filterItem.$$prepareForFilterGroup === true) {
+	                            collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.getFilterGroupItem(), filterItem);
+	                        }
+	                        //persist Config and 
+	                        scope.saveCollection();
+	                        $log.debug(selectedFilterProperty);
+	                        $log.debug(filterItem);
+	                        $timeout(function () {
+	                            callback();
+	                        });
+	                        $log.debug('saveFilter end');
+	                    }
+	                };
+	            }
+	        };
+	    }
+	    SWEditFilterItem.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
+	            return new SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            '$filter',
+	            '$timeout',
+	            '$hibachi',
+	            'collectionPartialsPath',
+	            'collectionService',
+	            'metadataService',
+	            'pathBuilderConfig',
+	            'rbkeyService'
+	        ];
+	        return directive;
+	    };
+	    return SWEditFilterItem;
+	})();
+	exports.SWEditFilterItem = SWEditFilterItem;
+
+
+/***/ },
+/* 75 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWFilterGroups = (function () {
+	    function SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'EA',
+	            scope: {
+	                collectionConfig: "=",
+	                filterGroupItem: "=",
+	                filterPropertiesList: "=",
+	                saveCollection: "&",
+	                filterGroup: "=",
+	                comparisonType: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
+	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
+	                    //if the filter group comparisontype is not specified, then assume we are doing filters
+	                    if (!angular.isDefined($scope.comparisonType)) {
+	                        $scope.comparisonType = 'filter';
+	                    }
+	                    $scope.itemInUse = false;
+	                    $log.debug('collectionConfig');
+	                    $log.debug($scope.collectionConfig);
+	                    this.getFilterGroup = function () {
+	                        return $scope.filterGroup;
+	                    };
+	                    this.getFilterGroupItem = function () {
+	                        return $scope.filterGroupItem;
+	                    };
+	                    this.setItemInUse = function (booleanValue) {
+	                        $scope.itemInUse = booleanValue;
+	                    };
+	                    this.getItemInUse = function () {
+	                        return $scope.itemInUse;
+	                    };
+	                    this.saveCollection = function () {
+	                        $scope.saveCollection();
+	                    };
+	                    $scope.deselectItems = function (filterItem) {
+	                        for (var i in filterItem.$$siblingItems) {
+	                            filterItem.$$siblingItems[i].$$disabled = false;
+	                        }
+	                    };
+	                    this.removeFilterItem = function (filterItemIndex) {
+	                        if (angular.isDefined(filterItemIndex)) {
+	                            $scope.deselectItems($scope.filterGroupItem[filterItemIndex]);
+	                            $scope.filterGroupItem[filterItemIndex].setItemInUse(false);
+	                            //remove item
+	                            $log.debug('removeFilterItem');
+	                            $log.debug(filterItemIndex);
+	                            $scope.filterGroupItem.splice(filterItemIndex, 1);
+	                            //make sure first item has no logical operator if it exists
+	                            if ($scope.filterGroupItem.length) {
+	                                delete $scope.filterGroupItem[0].logicalOperator;
+	                            }
+	                            $log.debug('removeFilterItem');
+	                            $log.debug(filterItemIndex);
+	                            $scope.saveCollection();
+	                        }
+	                    };
+	                    this.removeFilterGroupItem = function (filterGroupItemIndex) {
+	                        //remove Item
+	                        $scope.deselectItems($scope.filterGroupItem[filterGroupItemIndex]);
+	                        $scope.filterGroupItem[filterGroupItemIndex].setItemInUse(false);
+	                        $scope.filterGroupItem.splice(filterGroupItemIndex, 1);
+	                        //make sure first item has no logical operator if it exists
+	                        if ($scope.filterGroupItem.length) {
+	                            delete $scope.filterGroupItem[0].logicalOperator;
+	                        }
+	                        $log.debug('removeFilterGroupItem');
+	                        $log.debug(filterGroupItemIndex);
+	                        $scope.saveCollection();
+	                    };
+	                }]
+	        };
+	    }
+	    SWFilterGroups.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig) {
+	            return new SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            'collectionPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFilterGroups;
+	})();
+	exports.SWFilterGroups = SWFilterGroups;
+
+
+/***/ },
+/* 76 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWFilterItem = (function () {
+	    function SWFilterItem($log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            require: '^swFilterGroups',
+	            scope: {
+	                collectionConfig: "=",
+	                filterItem: "=",
+	                siblingItems: "=",
+	                filterPropertiesList: "=",
+	                filterItemIndex: "=",
+	                saveCollection: "&",
+	                comparisonType: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filteritem.html",
+	            link: function (scope, element, attrs, filterGroupsController) {
+	                scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
+	                if (angular.isUndefined(scope.filterItem.$$isClosed)) {
+	                    scope.filterItem.$$isClosed = true;
+	                }
+	                if (angular.isUndefined(scope.filterItem.$$disabled)) {
+	                    scope.filterItem.$$disabled = false;
+	                }
+	                if (angular.isUndefined(scope.filterItem.siblingItems)) {
+	                    scope.filterItem.$$siblingItems = scope.siblingItems;
+	                }
+	                scope.filterItem.setItemInUse = filterGroupsController.setItemInUse;
+	                scope.selectFilterItem = function (filterItem) {
+	                    collectionService.selectFilterItem(filterItem);
+	                };
+	                scope.removeFilterItem = function () {
+	                    filterGroupsController.removeFilterItem(scope.filterItemIndex, filterGroupsController.getFilterGroupItem());
+	                };
+	                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
+	                scope.logicalOperatorChanged = function (logicalOperatorValue) {
+	                    $log.debug('logicalOperatorChanged');
+	                    $log.debug(logicalOperatorValue);
+	                    scope.filterItem.logicalOperator = logicalOperatorValue;
+	                    filterGroupsController.saveCollection();
+	                };
+	            }
+	        };
+	    }
+	    SWFilterItem.Factory = function () {
+	        var directive = function ($log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	            return new SWFilterItem($log, collectionService, collectionPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            'collectionService',
+	            'collectionPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFilterItem;
+	})();
+	exports.SWFilterItem = SWFilterItem;
+
+
+/***/ },
+/* 77 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWFilterGroupItem = (function () {
+	    function SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'A',
+	            require: "^swFilterGroups",
+	            scope: {
+	                collectionConfig: "=",
+	                filterGroupItem: "=",
+	                siblingItems: "=",
+	                filterPropertiesList: "=",
+	                filterGroupItemIndex: "=",
+	                saveCollection: "&",
+	                comparisonType: "="
+	            },
+	            link: function (scope, element, attrs, filterGroupsController) {
+	                var Partial = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filtergroupitem.html";
+	                var templateLoader = $http.get(Partial, { cache: $templateCache });
+	                var promise = templateLoader.success(function (html) {
+	                    element.html(html);
+	                }).then(function (response) {
+	                    element.replaceWith($compile(element.html())(scope));
+	                });
+	                //for(item in filterGroupItem){}
+	                scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
+	                scope.filterGroupItem.$$index = scope.filterGroupItemIndex;
+	                scope.removeFilterGroupItem = function () {
+	                    filterGroupsController.removeFilterGroupItem(scope.filterGroupItemIndex);
+	                };
+	                scope.filterGroupItem.removeFilterGroupItem = scope.removeFilterGroupItem;
+	                scope.filterGroupItem.$$disabled = false;
+	                if (angular.isUndefined(scope.filterGroupItem.$$isClosed)) {
+	                    scope.filterGroupItem.$$isClosed = true;
+	                }
+	                scope.filterGroupItem.$$siblingItems = scope.siblingItems;
+	                scope.selectFilterGroupItem = function (filterGroupItem) {
+	                    collectionService.selectFilterGroupItem(filterGroupItem);
+	                };
+	                scope.logicalOperatorChanged = function (logicalOperatorValue) {
+	                    $log.debug('logicalOperatorChanged');
+	                    $log.debug(logicalOperatorValue);
+	                    scope.filterGroupItem.logicalOperator = logicalOperatorValue;
+	                    filterGroupsController.saveCollection();
+	                };
+	            }
+	        };
+	    }
+	    SWFilterGroupItem.Factory = function () {
+	        var directive = function ($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	            return new SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$compile',
+	            '$templateCache',
+	            '$log',
+	            'collectionService',
+	            'collectionPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFilterGroupItem;
+	})();
+	exports.SWFilterGroupItem = SWFilterGroupItem;
+
+
+/***/ },
+/* 78 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//services
+	var dialogservice_1 = __webpack_require__(79);
+	//controllers
+	var pagedialog_1 = __webpack_require__(80);
+	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
+	})
+	    .service('dialogService', dialogservice_1.DialogService)
+	    .controller('pageDialog', pagedialog_1.PageDialogController)
+	    .constant('dialogPartials', 'dialog/components/');
+	exports.dialogmodule = dialogmodule;
+
+
+/***/ },
+/* 79 */
+/***/ function(module, exports) {
+
+	var DialogService = (function () {
+	    function DialogService(pathBuilderConfig) {
+	        var _this = this;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.get = function () {
+	            return _this._pageDialogs || [];
+	        };
+	        this.addPageDialog = function (name, params) {
+	            var newDialog = {
+	                'path': name + '.html',
+	                'params': params
+	            };
+	            _this._pageDialogs.push(newDialog);
+	        };
+	        this.removePageDialog = function (index) {
+	            _this._pageDialogs.splice(index, 1);
+	        };
+	        this.getPageDialogs = function () {
+	            return _this._pageDialogs;
+	        };
+	        this.removeCurrentDialog = function () {
+	            _this._pageDialogs.splice(_this._pageDialogs.length - 1, 1);
+	        };
+	        this.getCurrentDialog = function () {
+	            return _this._pageDialogs[_this._pageDialogs.length - 1];
+	        };
+	        this._pageDialogs = [];
+	        this.pathBuilderConfig = pathBuilderConfig;
+	    }
+	    DialogService.$inject = [
+	        'pathBuilderConfig'
+	    ];
+	    return DialogService;
+	})();
+	exports.DialogService = DialogService;
+
+
+/***/ },
+/* 80 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var PageDialogController = (function () {
+	    //@ngInject
+	    function PageDialogController($scope, $location, $log, $anchorScroll, $hibachi, dialogService) {
+	        $scope.$id = 'pageDialogController';
+	        //get url param to retrieve collection listing
+	        $scope.pageDialogs = dialogService.getPageDialogs();
+	        $scope.scrollToTopOfDialog = function () {
+	            $location.hash('/#topOfPageDialog');
+	            $anchorScroll();
+	        };
+	        $scope.pageDialogStyle = { "z-index": 3000 };
+	    }
+	    return PageDialogController;
+	})();
+	exports.PageDialogController = PageDialogController;
+
+
+/***/ },
+/* 81 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+	//services
+	var paginationservice_1 = __webpack_require__(82);
+	var swpaginationbar_1 = __webpack_require__(83);
+	var core_module_1 = __webpack_require__(12);
+	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
+	    .run([function () {
+	    }])
+	    .service('paginationService', paginationservice_1.PaginationService)
+	    .directive('swPaginationBar', swpaginationbar_1.SWPaginationBar.Factory())
+	    .constant('partialsPath', 'pagination/components/');
+	exports.paginationmodule = paginationmodule;
+
+
+/***/ },
+/* 82 */
+/***/ function(module, exports) {
+
+	/// <reference path="../../../typings/tsd.d.ts" />
+	/// <reference path="../../../typings/slatwallTypeScript.d.ts" />
+	/*collection service is used to maintain the state of the ui*/
+	var Pagination = (function () {
+	    //@ngInject
+	    function Pagination(uuid) {
+	        var _this = this;
+	        this.uuid = uuid;
+	        this.pageShow = 10;
+	        this.currentPage = 1;
+	        this.pageStart = 0;
+	        this.pageEnd = 0;
+	        this.recordsCount = 0;
+	        this.totalPages = 0;
+	        this.pageShowOptions = [
+	            { display: 10, value: 10 },
+	            { display: 20, value: 20 },
+	            { display: 50, value: 50 },
+	            { display: 250, value: 250 },
+	            { display: "Auto", value: "Auto" }
+	        ];
+	        this.autoScrollPage = 1;
+	        this.autoScrollDisabled = false;
+	        this.getSelectedPageShowOption = function () {
+	            return _this.selectedPageShowOption;
+	        };
+	        this.pageShowOptionChanged = function (pageShowOption) {
+	            _this.setPageShow(pageShowOption.value);
+	            _this.setCurrentPage(1);
+	            _this.getCollection();
+	        };
+	        this.getTotalPages = function () {
+	            return _this.totalPages;
+	        };
+	        this.setTotalPages = function (totalPages) {
+	            _this.totalPages = totalPages;
+	        };
+	        this.getPageStart = function () {
+	            return _this.pageStart;
+	        };
+	        this.setPageStart = function (pageStart) {
+	            _this.pageStart = pageStart;
+	        };
+	        this.getPageEnd = function () {
+	            return _this.pageEnd;
+	        };
+	        this.setPageEnd = function (pageEnd) {
+	            _this.pageEnd = pageEnd;
+	        };
+	        this.getRecordsCount = function () {
+	            return _this.recordsCount;
+	        };
+	        this.setRecordsCount = function (recordsCount) {
+	            _this.recordsCount = recordsCount;
+	        };
+	        this.getPageShowOptions = function () {
+	            return _this.pageShowOptions;
+	        };
+	        this.setPageShowOptions = function (pageShowOptions) {
+	            _this.pageShowOptions = pageShowOptions;
+	        };
+	        this.getPageShow = function () {
+	            return _this.pageShow;
+	        };
+	        this.setPageShow = function (pageShow) {
+	            _this.pageShow = pageShow;
+	        };
+	        this.getCurrentPage = function () {
+	            return _this.currentPage;
+	        };
+	        this.setCurrentPage = function (currentPage) {
+	            _this.currentPage = currentPage;
+	            _this.getCollection();
+	        };
+	        this.previousPage = function () {
+	            if (_this.getCurrentPage() == 1)
+	                return;
+	            _this.setCurrentPage(_this.getCurrentPage() - 1);
+	        };
+	        this.nextPage = function () {
+	            if (_this.getCurrentPage() < _this.getTotalPages()) {
+	                _this.currentPage = _this.getCurrentPage() + 1;
+	                _this.getCollection();
+	            }
+	        };
+	        this.hasPrevious = function () {
+	            return (_this.getPageStart() <= 1);
+	        };
+	        this.hasNext = function () {
+	            return (_this.getPageEnd() === _this.getRecordsCount());
+	        };
+	        this.showPreviousJump = function () {
+	            return (angular.isDefined(_this.getCurrentPage()) && _this.getCurrentPage() > 3);
+	        };
+	        this.showNextJump = function () {
+	            return !!(_this.getCurrentPage() < _this.getTotalPages() - 3 && _this.getTotalPages() > 6);
+	        };
+	        this.previousJump = function () {
+	            _this.setCurrentPage(_this.currentPage - 3);
+	        };
+	        this.nextJump = function () {
+	            _this.setCurrentPage(_this.getCurrentPage() + 3);
+	        };
+	        this.showPageNumber = function (pageNumber) {
+	            if (_this.getCurrentPage() >= _this.getTotalPages() - 3) {
+	                if (pageNumber > _this.getTotalPages() - 6) {
+	                    return true;
+	                }
+	            }
+	            if (_this.getCurrentPage() <= 3) {
+	                if (pageNumber < 6) {
+	                    return true;
+	                }
+	            }
+	            else {
+	                var bottomRange = _this.getCurrentPage() - 2;
+	                var topRange = _this.getCurrentPage() + 2;
+	                if (pageNumber > bottomRange && pageNumber < topRange) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
+	        this.setPageRecordsInfo = function (collection) {
+	            _this.setRecordsCount(collection.recordsCount);
+	            if (_this.getRecordsCount() === 0) {
+	                _this.setPageStart(0);
+	            }
+	            else {
+	                _this.setPageStart(collection.pageRecordsStart);
+	            }
+	            _this.setPageEnd(collection.pageRecordsEnd);
+	            _this.setTotalPages(collection.totalPages);
+	            _this.totalPagesArray = [];
+	            if (angular.isUndefined(_this.getCurrentPage()) || _this.getCurrentPage() < 5) {
+	                var start = 1;
+	                var end = (_this.getTotalPages() <= 10) ? _this.getTotalPages() + 1 : 10;
+	            }
+	            else {
+	                var start = (!_this.showNextJump()) ? _this.getTotalPages() - 4 : _this.getCurrentPage() - 3;
+	                var end = (_this.showNextJump()) ? _this.getCurrentPage() + 5 : _this.getTotalPages() + 1;
+	            }
+	            for (var i = start; i < end; i++) {
+	                _this.totalPagesArray.push(i);
+	            }
+	        };
+	        this.uuid = uuid;
+	        this.selectedPageShowOption = this.pageShowOptions[0];
+	    }
+	    return Pagination;
+	})();
+	exports.Pagination = Pagination;
+	var PaginationService = (function () {
+	    //@ngInject
+	    function PaginationService(utilityService) {
+	        var _this = this;
+	        this.utilityService = utilityService;
+	        this.paginations = {};
+	        this.createPagination = function () {
+	            var uuid = _this.utilityService.createID(10);
+	            _this.paginations[uuid] = new Pagination(uuid);
+	            return _this.paginations[uuid];
+	        };
+	        this.getPagination = function (uuid) {
+	            if (!uuid)
+	                return;
+	            return _this.paginations[uuid];
+	        };
+	    }
+	    return PaginationService;
+	})();
+	exports.PaginationService = PaginationService;
+
+
+/***/ },
+/* 83 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	//import pagination = require('../services/paginationservice');
+	//var PaginationService = pagination.PaginationService;
+	//'use strict';
+	var SWPaginationBarController = (function () {
+	    //@ngInject
+	    function SWPaginationBarController(paginationService) {
+	        if (angular.isUndefined(this.paginator)) {
+	            this.paginator = paginationService.createPagination();
+	        }
+	    }
+	    return SWPaginationBarController;
+	})();
+	exports.SWPaginationBarController = SWPaginationBarController;
+	var SWPaginationBar = (function () {
+	    //@ngInject
+	    function SWPaginationBar(pathBuilderConfig, partialsPath) {
+	        this.restrict = 'E';
+	        this.scope = {};
+	        this.bindToController = {
+	            paginator: "="
+	        };
+	        this.controller = SWPaginationBarController;
+	        this.controllerAs = "swPaginationBar";
+	        this.link = function (scope, element, attrs) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(partialsPath) + 'paginationbar.html';
+	    }
+	    SWPaginationBar.Factory = function () {
+	        var directive = function (pathBuilderConfig, partialsPath) { return new SWPaginationBar(pathBuilderConfig, partialsPath); };
+	        directive.$inject = ['pathBuilderConfig', 'partialsPath'];
+	        return directive;
+	    };
+	    return SWPaginationBar;
+	})();
+	exports.SWPaginationBar = SWPaginationBar;
+	//class SWPaginationBarFactory{
+	//    public static getFactoryFor<T extends SWPaginationBar>(classType:Function):ng.IDirectiveFactory {
+	//        var factory = (...args:any[]):T=>{
+	//            var directive = <any>classType;
+	//            return new directive(args);
+	//        }
+	//
+	//        factory.$inject = classType.$inject;
+	//        return factory;
+	//        // var directive: ng.IDirectiveFactory =
+	//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService);
+	//        // directive.$inject = ['$log','$timeout','partialsPath','paginationService'];
+	//        // return directive;
+	//    }
+	//}
+	//angular.module('hibachi.pagination').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
+
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//services
+	// import {AccountService} from "./services/accountservice";
+	// import {CartService} from "./services/cartservice";
+	// import {UtilityService} from "./services/utilityservice";
+	// import {SelectionService} from "./services/selectionservice";
+	// import {ObserverService} from "./services/observerservice";
+	// import {FormService} from "./services/formservice";
+	// import {MetaDataService} from "./services/metadataservice";
+	//directives
+	//  components
+	//form
+	var swinput_1 = __webpack_require__(85);
+	var swfformfield_1 = __webpack_require__(86);
+	var swform_1 = __webpack_require__(87);
+	var swformfield_1 = __webpack_require__(88);
+	var swformfieldjson_1 = __webpack_require__(89);
+	var swformfieldnumber_1 = __webpack_require__(90);
+	var swformfieldpassword_1 = __webpack_require__(91);
+	var swformfieldradio_1 = __webpack_require__(92);
+	var swformfieldsearchselect_1 = __webpack_require__(93);
+	var swformfieldselect_1 = __webpack_require__(94);
+	var swformfieldtext_1 = __webpack_require__(95);
+	var swformregistrar_1 = __webpack_require__(96);
+	var swfpropertydisplay_1 = __webpack_require__(97);
+	var swpropertydisplay_1 = __webpack_require__(98);
+	var formmodule = angular.module('hibachi.form', []).config(function () {
+	})
+	    .constant('coreFormPartialsPath', 'form/components/')
+	    .directive('swInput', swinput_1.SWInput.Factory())
+	    .directive('swfFormField', swfformfield_1.SWFFormField.Factory())
+	    .directive('swForm', swform_1.SWForm.Factory())
+	    .directive('swFormField', swformfield_1.SWFormField.Factory())
+	    .directive('swFormFieldJson', swformfieldjson_1.SWFormFieldJson.Factory())
+	    .directive('swFormFieldNumber', swformfieldnumber_1.SWFormFieldNumber.Factory())
+	    .directive('swFormFieldPassword', swformfieldpassword_1.SWFormFieldPassword.Factory())
+	    .directive('swFormFieldRadio', swformfieldradio_1.SWFormFieldRadio.Factory())
+	    .directive('swFormFieldSearchSelect', swformfieldsearchselect_1.SWFormFieldSearchSelect.Factory())
+	    .directive('swFormFieldSelect', swformfieldselect_1.SWFormFieldSelect.Factory())
+	    .directive('swFormFieldText', swformfieldtext_1.SWFormFieldText.Factory())
+	    .directive('swFormRegistrar', swformregistrar_1.SWFormRegistrar.Factory())
+	    .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory())
+	    .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory());
+	exports.formmodule = formmodule;
+
+
+/***/ },
+/* 85 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
+	 * validate based on that context as defined in the validation properties object.
+	 */
+	var SWInput = (function () {
+	    function SWInput($log, $compile, utilityService) {
+	        var getValidationDirectives = function (propertyDisplay) {
+	            var spaceDelimitedList = '';
+	            var name = propertyDisplay.property;
+	            var form = propertyDisplay.form.$$swFormInfo;
+	            $log.debug("Name is:" + name + " and form is: " + form);
+	            var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+	            $log.debug("Validations: ", validations);
+	            $log.debug(propertyDisplay.form.$$swFormInfo);
+	            var validationsForContext = [];
+	            //get the form context and the form name.
+	            var formContext = propertyDisplay.form.$$swFormInfo.context;
+	            var formName = propertyDisplay.form.$$swFormInfo.name;
+	            $log.debug("Form context is: ");
+	            $log.debug(formContext);
+	            $log.debug("Form Name: ");
+	            $log.debug(formName);
+	            //get the validations for the current element.
+	            var propertyValidations = propertyDisplay.object.validations.properties[name];
+	            /*
+	            * Investigating why number inputs are not working.
+	            * */
+	            //check if the contexts match.
+	            if (angular.isObject(propertyValidations)) {
+	                //if this is a procesobject validation then the context is implied
+	                if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
+	                    propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+	                }
+	                if (propertyValidations[0].contexts === formContext) {
+	                    $log.debug("Matched");
+	                    for (var prop in propertyValidations[0]) {
+	                        if (prop != "contexts" && prop !== "conditions") {
+	                            spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+	                        }
+	                    }
+	                }
+	                $log.debug(spaceDelimitedList);
+	            }
+	            //loop over validations that are required and create the space delimited list
+	            $log.debug(validations);
+	            //get all validations related to the form context;
+	            $log.debug(form);
+	            $log.debug(propertyDisplay);
+	            angular.forEach(validations, function (validation, key) {
+	                if (utilityService.listFind(validation.contexts.toLowerCase(), form.context.toLowerCase()) !== -1) {
+	                    $log.debug("Validations for context");
+	                    $log.debug(validation);
+	                    validationsForContext.push(validation);
+	                }
+	            });
+	            //now that we have all related validations for the specific form context that we are working with collection the directives we need
+	            //getValidationDirectiveByType();
+	            return spaceDelimitedList;
+	        };
+	        var getTemplate = function (propertyDisplay) {
+	            var template = '';
+	            var validations = '';
+	            var currency = '';
+	            if (!propertyDisplay.noValidate) {
+	                validations = getValidationDirectives(propertyDisplay);
+	            }
+	            if (propertyDisplay.object.metaData.$$getPropertyFormatType(propertyDisplay.property) == "currency") {
+	                currency = 'sw-currency-formatter ';
+	                if (angular.isDefined(propertyDisplay.object.data.currencyCode)) {
+	                    currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
+	                }
+	            }
+	            if (propertyDisplay.fieldType === 'text') {
+	                template = '<input type="text" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations + currency +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            else if (propertyDisplay.fieldType === 'password') {
+	                template = '<input type="password" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            else if (propertyDisplay.fieldType === 'number') {
+	                template = '<input type="number" class="form-control" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            return template;
+	        };
+	        return {
+	            require: '^form',
+	            scope: {
+	                propertyDisplay: "=",
+	                type: "@?"
+	            },
+	            restrict: "E",
+	            //adding model and form controller
+	            link: function (scope, element, attr, formController) {
+	                //renders the template and compiles it
+	                element.html(getTemplate(scope.propertyDisplay));
+	                $compile(element.contents())(scope);
+	            }
+	        };
+	    }
+	    SWInput.Factory = function () {
+	        var directive = function ($log, $compile, utilityService) {
+	            return new SWInput($log, $compile, utilityService);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$compile',
+	            'utilityService'
+	        ];
+	        return directive;
+	    };
+	    return SWInput;
+	})();
+	exports.SWInput = SWInput;
+
+
+/***/ },
+/* 86 */
+/***/ function(module, exports) {
+
+	/**********************************************************************************************
+	 **********************************************************************************************
+	 **********************************************************************************************
+	 **		___________________________________________
+	 ** 	Form Field - type have the following options (This is for the frontend so it can be modified):
+	 **
+	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
+	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		file				|	No value can be passed in
+	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		password			|	No Value can be passed in
+	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		text				|	Simple Text Field
+	 **		textarea			|	Simple Textarea
+	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
+	 **		submit				|	submit button to post these properties back to the server.
+	 **		------------------------------------------------------------------------------------------------------
+	 **
+	 **		attr.valueObject" type="any" default="" />
+	 **		attr.valueObjectProperty" type="string" default="" />
+	 **
+	 **		General Settings that end up getting applied to the value object
+	 **		attr.type" type="string" default="text"
+	 **		attr.name" type="string" default=""
+	 **		attr.class" type="string" default=""
+	 **		attr.value" type="any" default=""
+	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
+	 **		attr.fieldAttributes" type="string" default=""
+	 **
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 */
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	    * Property Display Controller handles the logic for this directive.
+	    */
+	var SWFFormFieldController = (function () {
+	    function SWFFormFieldController($scope) {
+	        this.$scope = $scope;
+	        var vm = this;
+	        if (angular.isDefined(this.propertyDisplay)) {
+	            vm.propertyDisplay = this.propertyDisplay;
+	        }
+	        else {
+	            vm.propertyDisplay = {
+	                name: vm.name,
+	                class: vm.class,
+	                errorClass: vm.errorClass,
+	                type: vm.type,
+	                object: vm.object,
+	                propertyIdentifier: vm.propertyIdentifier
+	            };
+	        }
+	    }
+	    /**
+	        * Handles the logic for the frontend version of the property display.
+	        */
+	    SWFFormFieldController.$inject = ['$scope'];
+	    return SWFFormFieldController;
+	})();
+	/**
+	    * This class handles configuring formFields for use in process forms on the front end.
+	    */
+	var SWFFormField = (function () {
+	    function SWFFormField(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = "E";
+	        this.require = "^?swfPropertyDisplay";
+	        this.controller = SWFFormFieldController;
+	        this.controllerAs = "swfFormField";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?",
+	            propertyIdentifier: "@?",
+	            name: "@?",
+	            class: "@?",
+	            errorClass: "@?",
+	            type: "@?"
+	        };
+	        this.link = function (scope, element, attrs, formController, transcludeFn) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfformfield.html';
+	    }
+	    /**
+	        * Handles injecting the partials path into this class
+	        */
+	    SWFFormField.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFFormField(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFFormField;
+	})();
+	exports.SWFFormField = SWFFormField;
+
+
+/***/ },
+/* 87 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Form Controller handles the logic for this directive.
+	 */
+	var SWFormController = (function () {
+	    /**
+	     * This controller handles most of the logic for the swFormDirective when more complicated self inspection is needed.
+	     */
+	    // @ngInject
+	    function SWFormController($scope, $element, $hibachi, $http, $timeout, observerService, $rootScope) {
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$hibachi = $hibachi;
+	        this.$http = $http;
+	        this.$timeout = $timeout;
+	        this.observerService = observerService;
+	        this.$rootScope = $rootScope;
+	        /** only use if the developer has specified these features with isProcessForm */
+	        if (angular.isUndefined(this.isDirty)) {
+	            this.isDirty = false;
+	        }
+	        this.isProcessForm = this.isProcessForm || "false";
+	        if (this.isProcessForm == "true") {
+	            console.log("Form Name:", this.name);
+	            this.handleForm(this, $scope);
+	        }
+	    }
+	    /**
+	     * Iterates through the form elements and checks if the names of any of them match
+	     * the meta data that comes back from the processObject call. Supplies a generic submit
+	     * method that can be called by any subclasses that inject formCtrl. On submit,
+	     * this class will attach any errors to the correspnding form element.
+	     */
+	    SWFormController.prototype.handleForm = function (context, $scope) {
+	        var _this = this;
+	        console.log("Context", context);
+	        /** local variables */
+	        this.processObject = this.name || "";
+	        var vm = context;
+	        vm.hiddenFields = this.hiddenFields;
+	        vm.entityName = this.entityName;
+	        vm.processObject = this.processObject;
+	        vm.action = this.action;
+	        vm.actions = this.actions;
+	        vm.$timeout = this.$timeout;
+	        vm.postOnly = false;
+	        vm.hibachiScope = this.$rootScope.hibachiScope;
+	        var observerService = this.observerService;
+	        /** parse the name */
+	        vm.entityName = this.processObject.split("_")[0];
+	        var processObject = this.processObject.split("_")[1];
+	        /** try to grab the meta data from the process entity in slatwall in a process exists
+	         *  otherwise, just use the service method to access it.
+	         */
+	        /** Cart is an alias for an Order */
+	        if (vm.entityName == "Order") {
+	            vm.entityName = "Cart";
+	        }
+	        ;
+	        /** find the form scope */
+	        this.$scope.$on('anchor', function (event, data) {
+	            if (data.anchorType == "form" && data.scope !== undefined) {
+	                vm["formCtrl"] = data.scope;
+	            }
+	        });
+	        /** make sure we have our data using new logic and $hibachi*/
+	        if (this.processObject == undefined || vm.entityName == undefined) {
+	            throw ("ProcessObject Undefined Exception");
+	        }
+	        try {
+	            vm.actionFn = this.object;
+	        }
+	        catch (e) {
+	            console.log("Post Only is Set");
+	            vm.postOnly = true;
+	        }
+	        /** We use these for our models */
+	        vm.formData = {};
+	        /** returns all the data from the form by iterating the form elements */
+	        vm.getFormData = function () {
+	            var _this = this;
+	            console.log("Form Data:", this.object);
+	            angular.forEach(this.object, function (val, key) {
+	                /** Check for form elements that have a name that doesn't start with $ */
+	                if (angular.isString(val)) {
+	                    _this.formData[key] = val;
+	                    console.log("Using Form Element: ", _this.formData[key]);
+	                }
+	            });
+	            return vm.formData || "";
+	        };
+	        vm.simpleValidate = function () {
+	            //get a list of all form elements.
+	            //foreach element, get its name.
+	            //if its name matches the validations name, validate it.
+	            console.log("Validate minimum client side needed:", this.object);
+	            angular.forEach(this.object, function (val, key) {
+	                /** Check for form elements that have a name that doesn't start with $ */
+	                if (angular.isString(val)) {
+	                }
+	            });
+	            return vm.formData || "";
+	        };
+	        /****
+	          * Handle parsing through the server errors and injecting the error text for that field
+	          * If the form only has a submit, then simply call that function and set errors.
+	          ***/
+	        vm.parseErrors = function (result) {
+	            var _this = this;
+	            console.log("Resultant Errors: ", result);
+	            if (angular.isDefined(result.errors) && result.errors) {
+	                angular.forEach(result.errors, function (val, key) {
+	                    console.log("Parsing Rule: ", result.errors[key]);
+	                    console.log(_this.object, key, _this.object[key]);
+	                    console.log("Yes, is defined...");
+	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
+	                    console.log("Primary Element: ", primaryElement);
+	                    vm.$timeout(function () {
+	                        console.log("Appending");
+	                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+	                    }, 0);
+	                    //vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
+	                    //vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
+	                }, this);
+	            }
+	        };
+	        vm.eventsObj = [];
+	        /** looks at the onSuccess, onError, and onLoading and parses the string into useful subcategories */
+	        vm.parseEventString = function (evntStr, evntType) {
+	            vm.events = vm.parseEvents(evntStr, evntType); //onSuccess : [hide:this, show:someOtherForm, refresh:Account]
+	        };
+	        vm.eventsHandler = function (params) {
+	            for (var e in params.events) {
+	                if (angular.isDefined(params.events[e].value) && params.events[e].value == vm.processObject.toLowerCase()) {
+	                    if (params.events[e].name == "hide") {
+	                        vm.hide(params.events[e].value);
+	                    }
+	                    if (params.events[e].name == "show") {
+	                        vm.show(params.events[e].value);
+	                    }
+	                    if (params.events[e].name == "update") {
+	                        vm.update(params.events[e].value);
+	                    }
+	                    if (params.events[e].name == "refresh") {
+	                        vm.refresh(params.events[e].value);
+	                    }
+	                    ;
+	                }
+	            }
+	        };
+	        /** hides this directive on event */
+	        vm.hide = function (param) {
+	            if (vm.processObject.toLowerCase() == param) {
+	                _this.$element.hide();
+	            }
+	        };
+	        /** shows this directive on event */
+	        vm.show = function (param) {
+	            if (vm.processObject.toLowerCase() == param) {
+	                _this.$element.show();
+	            }
+	        };
+	        /** refreshes this directive on event */
+	        vm.refresh = function (params) {
+	            //stub
+	        };
+	        /** updates this directive on event */
+	        vm.update = function (params) {
+	            //stub
+	        };
+	        /** clears this directive on event */
+	        vm.clear = function (params) {
+	            //stub
+	        };
+	        vm.parseEvents = function (str, evntType) {
+	            if (str == undefined)
+	                return;
+	            var strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
+	            var eventsObj = {
+	                "events": []
+	            }; //will hold events
+	            for (var token in strTokens) {
+	                var t = strTokens[token].split(":")[0].toLowerCase().replace(' ', '');
+	                var u = strTokens[token].split(":")[1].toLowerCase().replace(' ', '');
+	                if (t == "show" || t == "hide" || t == "refresh" || t == "update") {
+	                    if (u == "this") {
+	                        u == vm.processObject.toLowerCase();
+	                    } //<--replaces the alias this with the name of this form.
+	                    var event_1 = { "name": t, "value": u };
+	                    eventsObj.events.push(event_1);
+	                }
+	            }
+	            if (eventsObj.events.length) {
+	                observerService.attach(vm.eventsHandler, "onSuccess");
+	            }
+	            return eventsObj;
+	        };
+	        /** find and clear all errors on form */
+	        vm.clearErrors = function () {
+	            /** clear all form errors on submit. */
+	            _this.$timeout(function () {
+	                var errorElements = _this.$element.find("[error-for]");
+	                errorElements.empty();
+	                //vm["formCtrl"][vm.processObject].$setPristine(true);
+	            }, 0);
+	        };
+	        /** iterates through the factory submitting data */
+	        vm.iterateFactory = function (submitFunction) {
+	            if (!submitFunction) {
+	                throw "Action not defined on form";
+	            }
+	            var submitFn = vm.hibachiScope.doAction;
+	            vm.formData = vm.formData || {};
+	            console.log("Calling Final Submit");
+	            submitFn(submitFunction, vm.formData).then(function (result) {
+	                if (vm.hibachiScope.hasErrors) {
+	                    vm.parseErrors(result.data);
+	                    //trigger an onError event
+	                    observerService.notify("onError", { "caller": _this.processObject, "events": vm.events.events || "" });
+	                }
+	                else {
+	                    //trigger a on success event
+	                    observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events || "" });
+	                }
+	            }, angular.noop);
+	            console.log("Leaving iterateFactory.");
+	        };
+	        /** does either a single or multiple actions */
+	        vm.doAction = function (actionObject) {
+	            if (angular.isArray(actionObject)) {
+	                for (var _i = 0; _i < actionObject.length; _i++) {
+	                    var submitFunction = actionObject[_i];
+	                    vm.iterateFactory(submitFunction);
+	                }
+	            }
+	            else if (angular.isString(actionObject)) {
+	                vm.iterateFactory(actionObject);
+	            }
+	            else {
+	                throw ("Unknown type of action exception");
+	            }
+	        };
+	        /** create the generic submit function */
+	        vm.submit = function (Action) {
+	            var action = Action || _this.action;
+	            vm.clearErrors();
+	            vm.formData = vm.getFormData() || "";
+	            vm.doAction(action);
+	        };
+	        this.submit = vm.submit;
+	        /* give children access to the process
+	        */
+	        vm.getProcessObject = function () {
+	            return vm.processEntity;
+	        };
+	        /* handle events
+	        */
+	        if (this.onSuccess) {
+	            vm.parseEventString(this.onSuccess, "onSuccess");
+	            observerService.attach(vm.eventsHandler, "onSuccess");
+	        }
+	        else if (this.onError) {
+	            vm.parseEventString(this.onError, "onError");
+	            observerService.attach(vm.eventsHandler, "onError"); //stub
+	        }
+	    };
+	    return SWFormController;
+	})();
+	var SWForm = (function () {
+	    // @ngInject
+	    function SWForm(coreFormPartialsPath, pathBuilderConfig) {
+	        this.coreFormPartialsPath = coreFormPartialsPath;
+	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.templateUrl = "";
+	        this.transclude = true;
+	        this.restrict = "E";
+	        this.controller = SWFormController;
+	        this.controllerAs = "swForm";
+	        this.scope = {};
+	        /**
+	         * Binds all of our variables to the controller so we can access using this
+	         */
+	        this.bindToController = {
+	            name: "@?",
+	            context: "@?",
+	            entityName: "@?",
+	            processObject: "@?",
+	            hiddenFields: "=?",
+	            action: "@?",
+	            actions: "@?",
+	            formClass: "@?",
+	            formData: "=?",
+	            object: "=?",
+	            onSuccess: "@?",
+	            onError: "@?",
+	            hideUntil: "@?",
+	            isProcessForm: "@?",
+	            isDirty: "=?"
+	        };
+	        /**
+	            * Sets the context of this form
+	            */
+	        this.link = function (scope, element, attrs, controller) {
+	            scope.context = scope.context || 'save';
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
+	    }
+	    /**
+	     * Handles injecting the partials path into this class
+	     */
+	    SWForm.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWForm(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWForm;
+	})();
+	exports.SWForm = SWForm;
+
+
+/***/ },
+/* 88 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormField = (function () {
+	    function SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            require: "^form",
+	            restrict: 'AE',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'formfield.html',
+	            link: function (scope, element, attrs, formController) {
+	                if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
+	                    scope.propertyDisplay.isDirty = true;
+	                }
+	                if (angular.isDefined(formController[scope.propertyDisplay.property])) {
+	                    scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
+	                    formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
+	                }
+	            }
+	        };
+	    }
+	    SWFormField.Factory = function () {
+	        var directive = function ($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$templateCache',
+	            '$window',
+	            '$hibachi',
+	            'formService',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormField;
+	})();
+	exports.SWFormField = SWFormField;
+	//	angular.module('slatwalladmin').directive('swFormField',['$log','$templateCache', '$window', '$hibachi', 'formService', 'coreFormPartialsPath',($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath) => new swFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath)]);
+
+
+/***/ },
+/* 89 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldJsonController = (function () {
+	    //@ngInject
+	    function SWFormFieldJsonController(formService) {
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return SWFormFieldJsonController;
+	})();
+	var SWFormFieldJson = (function () {
+	    function SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.controller = SWFormFieldJsonController;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.controllerAs = "ctrl";
+	        this.templateUrl = "";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "json.html";
+	    }
+	    SWFormFieldJson.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldJson;
+	})();
+	exports.SWFormFieldJson = SWFormFieldJson;
+
+
+/***/ },
+/* 90 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldNumberController = (function () {
+	    function SWFormFieldNumberController() {
+	        if (this.propertyDisplay.isDirty == undefined)
+	            this.propertyDisplay.isDirty = false;
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return SWFormFieldNumberController;
+	})();
+	var SWFormFieldNumber = (function () {
+	    function SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.templateUrl = "";
+	        this.controller = SWFormFieldNumberController;
+	        this.controllerAs = "ctrl";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "number.html";
+	    }
+	    SWFormFieldNumber.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFormFieldNumber;
+	})();
+	exports.SWFormFieldNumber = SWFormFieldNumber;
+
+
+/***/ },
+/* 91 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var swFormFieldPasswordController = (function () {
+	    //@ngInject
+	    function swFormFieldPasswordController() {
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	    }
+	    return swFormFieldPasswordController;
+	})();
+	var SWFormFieldPassword = (function () {
+	    //@ngInject
+	    function SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "=?"
+	        };
+	        this.controller = swFormFieldPasswordController;
+	        this.controllerAs = "ctrl";
+	        this.link = function (scope, element, attrs, formController) { };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "password.html";
+	    }
+	    SWFormFieldPassword.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFormFieldPassword;
+	})();
+	exports.SWFormFieldPassword = SWFormFieldPassword;
+
+
+/***/ },
+/* 92 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldRadio = (function () {
+	    //@ngInject
+	    function SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'radio.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                console.log('radio');
+	                var makeRandomID = function makeid(count) {
+	                    var text = "";
+	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	                    for (var i = 0; i < count; i++)
+	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	                    return text;
+	                };
+	                if (scope.propertyDisplay.fieldType === 'yesno') {
+	                    //format value
+	                    scope.selectedRadioFormName = makeRandomID(26);
+	                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
+	                    scope.formFieldChanged = function (option) {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+	                        scope.propertyDisplay.form['selected' + scope.propertyDisplay.object.metaData.className + scope.propertyDisplay.property + scope.selectedRadioFormName].$dirty = false;
+	                    };
+	                    scope.propertyDisplay.options = [
+	                        {
+	                            name: 'Yes',
+	                            value: 1
+	                        },
+	                        {
+	                            name: 'No',
+	                            value: 0
+	                        }
+	                    ];
+	                    if (angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
+	                        for (var i in scope.propertyDisplay.options) {
+	                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                scope.selected = scope.propertyDisplay.options[i];
+	                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                            }
+	                        }
+	                    }
+	                    else {
+	                        scope.selected = scope.propertyDisplay.options[0];
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
+	                    }
+	                    $timeout(function () {
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
+	                    });
+	                }
+	            }
+	        };
+	    }
+	    SWFormFieldRadio.Factory = function () {
+	        var directive = function ($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log', '$timeout', 'coreFormPartialsPath', 'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldRadio;
+	})();
+	exports.SWFormFieldRadio = SWFormFieldRadio;
+
+
+/***/ },
+/* 93 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldSearchSelect = (function () {
+	    function SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                //set up selectionOptions
+	                scope.selectionOptions = {
+	                    value: [],
+	                    $$adding: false
+	                };
+	                //match in matches track by
+	                //function to set state of adding new item
+	                scope.setAdding = function (isAdding) {
+	                    scope.isAdding = isAdding;
+	                    scope.showAddBtn = false;
+	                };
+	                scope.selectedOption = {};
+	                scope.showAddBtn = false;
+	                var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
+	                //create basic
+	                var object = $hibachi.newEntity(propertyMetaData.cfc);
+	                //				scope.propertyDisplay.template = '';
+	                //				//check for a template
+	                //				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
+	                //				var templatePath = coreFormPartialsPath + 'formfields/searchselecttemplates/';
+	                //				if(angular.isUndefined(scope.propertyDisplay.template)){
+	                //					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
+	                //						$log.debug('template');
+	                //						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
+	                //					},function(){
+	                //						scope.propertyDisplay.template = templatePath+'index.html';
+	                //						$log.debug('template');
+	                //						$log.debug(scope.propertyDisplay.template);
+	                //					});
+	                //				}
+	                //set up query function for finding related object
+	                scope.cfcProperCase = propertyMetaData.cfcProperCase;
+	                scope.selectionOptions.getOptionsByKeyword = function (keyword) {
+	                    var filterGroupsConfig = '[' +
+	                        ' {  ' +
+	                        '"filterGroup":[  ' +
+	                        '{' +
+	                        ' "propertyIdentifier":"_' + scope.cfcProperCase.toLowerCase() + '.' + scope.cfcProperCase + 'Name",' +
+	                        ' "comparisonOperator":"like",' +
+	                        ' "ormtype":"string",' +
+	                        ' "value":"%' + keyword + '%"' +
+	                        '  }' +
+	                        ' ]' +
+	                        ' }' +
+	                        ']';
+	                    return $hibachi.getEntity(propertyMetaData.cfc, { filterGroupsConfig: filterGroupsConfig.trim() })
+	                        .then(function (value) {
+	                        $log.debug('typesByKeyword');
+	                        $log.debug(value);
+	                        scope.selectionOptions.value = value.pageRecords;
+	                        var myLength = keyword.length;
+	                        if (myLength > 0) {
+	                            scope.showAddBtn = true;
+	                        }
+	                        else {
+	                            scope.showAddBtn = false;
+	                        }
+	                        return scope.selectionOptions.value;
+	                    });
+	                };
+	                var propertyPromise = scope.propertyDisplay.object['$$get' + propertyMetaData.nameCapitalCase]();
+	                propertyPromise.then(function (data) {
+	                });
+	                //set up behavior when selecting an item
+	                scope.selectItem = function ($item, $model, $label) {
+	                    scope.$item = $item;
+	                    scope.$model = $model;
+	                    scope.$label = $label;
+	                    scope.showAddBtn = false; //turns off the add btn on select
+	                    //angular.extend(inflatedObject.data,$item);
+	                    object.$$init($item);
+	                    $log.debug('select item');
+	                    $log.debug(object);
+	                    scope.propertyDisplay.object['$$set' + propertyMetaData.nameCapitalCase](object);
+	                };
+	                //				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
+	                //					$log.debug('getmeta');
+	                //					$log.debug(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+	                //
+	                //					//scope.propertyDipslay.object['$$get'+]
+	                //				}
+	                //
+	                //				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
+	            }
+	        };
+	    }
+	    SWFormFieldSearchSelect.Factory = function () {
+	        var directive = function ($http, $log, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$log',
+	            '$hibachi',
+	            'formService',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldSearchSelect;
+	})();
+	exports.SWFormFieldSearchSelect = SWFormFieldSearchSelect;
+
+
+/***/ },
+/* 94 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldSelect = (function () {
+	    //@ngInject
+	    function SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
+	        return {
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'select.html',
+	            require: "^form",
+	            restrict: 'E',
+	            scope: {
+	                propertyDisplay: "="
+	            },
+	            link: function (scope, element, attr, formController) {
+	                var selectType;
+	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
+	                    selectType = 'object';
+	                    $log.debug('selectType:object');
+	                }
+	                else {
+	                    selectType = 'string';
+	                    $log.debug('selectType:string');
+	                }
+	                scope.formFieldChanged = function (option) {
+	                    $log.debug('formfieldchanged');
+	                    $log.debug(option);
+	                    if (selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
+	                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
+	                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
+	                        }
+	                    }
+	                    else if (selectType === 'string') {
+	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+	                    }
+	                };
+	                scope.getOptions = function () {
+	                    if (angular.isUndefined(scope.propertyDisplay.options)) {
+	                        var optionsPromise = $hibachi.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
+	                        optionsPromise.then(function (value) {
+	                            scope.propertyDisplay.options = value.data;
+	                            if (selectType === 'object') {
+	                                if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+	                                }
+	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === '') {
+	                                    $log.debug('no ID');
+	                                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
+	                                }
+	                                else {
+	                                    var found = false;
+	                                    for (var i in scope.propertyDisplay.options) {
+	                                        if (angular.isObject(scope.propertyDisplay.options[i].value)) {
+	                                            $log.debug('isObject');
+	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                                                found = true;
+	                                                break;
+	                                            }
+	                                        }
+	                                        else {
+	                                            $log.debug('notisObject');
+	                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+	                                            if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()) {
+	                                                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                                scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
+	                                                found = true;
+	                                                break;
+	                                            }
+	                                        }
+	                                        if (!found) {
+	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                        }
+	                                    }
+	                                }
+	                            }
+	                            else if (selectType === 'string') {
+	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null) {
+	                                    for (var i in scope.propertyDisplay.options) {
+	                                        if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+	                                            scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+	                                            scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+	                                        }
+	                                    }
+	                                }
+	                                else {
+	                                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
+	                                }
+	                            }
+	                        });
+	                    }
+	                };
+	                if (scope.propertyDisplay.eagerLoadOptions == true) {
+	                    scope.getOptions();
+	                }
+	                //formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
+	                if (selectType === 'object') {
+	                    formController[scope.propertyDisplay.property + 'ID'].$dirty = scope.propertyDisplay.isDirty;
+	                }
+	                else if (selectType === 'string') {
+	                    formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
+	                }
+	            }
+	        }; //<--end return
+	    }
+	    SWFormFieldSelect.Factory = function () {
+	        var directive = function ($log, $hibachi, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
+	            return new SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$hibachi',
+	            'formService',
+	            'coreFormPartialsPath',
+	            'utilityService',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldSelect;
+	})();
+	exports.SWFormFieldSelect = SWFormFieldSelect;
+
+
+/***/ },
+/* 95 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormFieldTextController = (function () {
+	    //@ngInject
+	    function SWFormFieldTextController(formService) {
+	        this.formService = formService;
+	        if (this.propertyDisplay.isDirty == undefined)
+	            this.propertyDisplay.isDirty = false;
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	        this.formService.setPristinePropertyValue(this.propertyDisplay.property, this.propertyDisplay.object.data[this.propertyDisplay.property]);
+	    }
+	    return SWFormFieldTextController;
+	})();
+	var SWFormFieldText = (function () {
+	    function SWFormFieldText(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.controller = SWFormFieldTextController;
+	        this.controllerAs = "ctrl";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "="
+	        };
+	        //@ngInject
+	        this.link = function (scope, element, attr, formController) {
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "text.html";
+	    }
+	    SWFormFieldText.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormFieldText(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldText;
+	})();
+	exports.SWFormFieldText = SWFormFieldText;
+	//     angular.module('slatwalladmin').directive('swFormFieldText', ['$log','$hibachi','formService','partialsPath', ($log, $hibachi, formService, partialsPath) => new SWFormFieldText($log, $hibachi, formService, partialsPath)]);
+	// }
+
+
+/***/ },
+/* 96 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWFormRegistrar = (function () {
+	    //@ngInject
+	    function SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            restrict: 'E',
+	            require: "^form",
+	            scope: {
+	                object: "=",
+	                context: "@",
+	                name: "@",
+	                isDirty: "="
+	            },
+	            link: function (scope, element, attrs, formController) {
+	                /*add form info at the form level*/
+	                formController.$$swFormInfo = {
+	                    object: scope.object,
+	                    context: scope.context || 'save',
+	                    name: scope.name
+	                };
+	                var makeRandomID = function makeid(count) {
+	                    var text = "";
+	                    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	                    for (var i = 0; i < count; i++)
+	                        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	                    return text;
+	                };
+	                if (scope.isDirty) {
+	                    formController.autoDirty = true;
+	                }
+	                scope.form = formController;
+	                /*register form with service*/
+	                formController.name = scope.name;
+	                formController.$setDirty();
+	                formService.setForm(formController);
+	                /*register form at object level*/
+	                if (!angular.isDefined(scope.object.forms)) {
+	                    scope.object.forms = {};
+	                }
+	                scope.object.forms[scope.name] = formController;
+	            }
+	        };
+	    }
+	    SWFormRegistrar.Factory = function () {
+	        var directive = function (formService, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            'formService',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWFormRegistrar;
+	})();
+	exports.SWFormRegistrar = SWFormRegistrar;
+	// 	angular.module('slatwalladmin').directive('swFormRegistrar',[ 'formService', 'partialsPath', (formService, partialsPath) => new swFormRegistrar(formService, partialsPath)]);
+	// }
+
+
+/***/ },
+/* 97 */
+/***/ function(module, exports) {
+
+	/**********************************************************************************************
+	 **********************************************************************************************
+	 **********************************************************************************************
+	 **		Property Display (This one is specifically for the frontend so that it can be modified)
+	 **		isHidden
+	 **		requiredFlag
+	 **		title
+	 **		hint
+	 **		editting
+	 **		object
+	 **		class
+	 **		___________________________________________
+	 ** 	attr.type have the following options:
+	 **
+	 **		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
+	 **		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		file				|	No value can be passed in
+	 **		multiselect			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		password			|	No Value can be passed in
+	 **		radiogroup			|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		select      		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
+	 **		text				|	Simple Text Field
+	 **		textarea			|	Simple Textarea
+	 **		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
+	 **		submit				|	submit button to post these properties back to the server.
+	 **		------------------------------------------------------------------------------------------------------
+	 **
+	 **		attr.valueObject" type="any" default="" />
+	 **		attr.valueObjectProperty" type="string" default="" />
+	 **
+	 **		General Settings that end up getting applied to the value object
+	 **		attr.type" type="string" default="text"
+	 **		attr.name" type="string" default=""
+	 **		attr.class" type="string" default=""
+	 **		attr.value" type="any" default=""
+	 **		attr.valueOptions" type="array" default="#arrayNew(1)#"		<!--- Used for select, checkbox group, multiselect --->
+	 **		attr.fieldAttributes" type="string" default=""
+	 **
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 *********************************************************************************************
+	 */
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	    * Property Display Controller handles the logic for this directive.
+	    */
+	var SWFPropertyDisplayController = (function () {
+	    /**
+	        * Handles the logic for the frontend version of the property display.
+	        */
+	    //@ngInject
+	    function SWFPropertyDisplayController($scope) {
+	        this.$scope = $scope;
+	        var vm = this;
+	        vm.processObject = {};
+	        vm.valueObjectProperty = this.valueObjectProperty;
+	        vm.type = this.type || "text";
+	        vm.class = this.class || "formControl";
+	        vm.valueObject = this.valueObject;
+	        vm.value = this.object[this.propertyIdentifier];
+	        vm.fieldAttributes = this.fieldAttributes || "";
+	        vm.label = this.label || "true";
+	        vm.labelText = this.labelText || "";
+	        vm.labelClass = this.labelClass || "";
+	        vm.name = this.name || "unnamed";
+	        vm.options = this.options;
+	        vm.optionValues = this.optionValues;
+	        vm.errorClass = this.errorClass;
+	        vm.errorText = this.errorText;
+	        vm.object = this.object; //this is the process object
+	        vm.propertyIdentifier = this.propertyIdentifier; //this is the property
+	        vm.loader = this.loader;
+	        vm.noValidate = this.noValidate;
+	        /** in order to attach the correct controller to local vm, we need a watch to bind */
+	        /** handle options */
+	        if (vm.options && angular.isString(vm.options)) {
+	            var optionsArray = [];
+	            optionsArray = vm.options.toString().split(",");
+	            angular.forEach(optionsArray, function (o) {
+	                var newOption = {
+	                    name: "",
+	                    value: ""
+	                };
+	                newOption.name = o.name;
+	                newOption.value = o.value;
+	                vm.optionValues.push(newOption);
+	            }, vm);
+	        }
+	        /** handle turning the options into an array of objects */
+	        /** handle setting the default value for the yes / no element  */
+	        if (this.type == "yesno" && (this.value && angular.isString(this.value))) {
+	            vm.selected == this.value;
+	        }
+	        this.propertyDisplay = {
+	            type: vm.type,
+	            name: vm.name,
+	            class: vm.class,
+	            loader: vm.loader,
+	            errorClass: vm.errorClass,
+	            option: vm.options,
+	            valueObject: vm.valueObject,
+	            object: vm.object,
+	            label: vm.label,
+	            labelText: vm.labelText,
+	            labelClass: vm.labelClass,
+	            optionValues: vm.optionValues,
+	            edit: vm.editting,
+	            title: vm.title,
+	            value: vm.value,
+	            errorText: vm.errorText,
+	        };
+	        console.log("Property Display", this.propertyDisplay);
+	    }
+	    return SWFPropertyDisplayController;
+	})();
+	/**
+	    * This class handles configuring formFields for use in process forms on the front end.
+	    */
+	var SWFPropertyDisplay = (function () {
+	    //@ngInject
+	    function SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig) {
+	        this.restrict = "E";
+	        this.require = "?^swForm";
+	        this.transclude = true;
+	        this.templateUrl = "";
+	        this.controller = SWFPropertyDisplayController;
+	        this.controllerAs = "swfPropertyDisplayController";
+	        this.scope = {};
+	        this.bindToController = {
+	            type: "@?",
+	            name: "@?",
+	            class: "@?",
+	            edit: "@?",
+	            title: "@?",
+	            hint: "@?",
+	            valueObject: "=?",
+	            valueObjectProperty: "=?",
+	            propertyIdentifier: "@?",
+	            options: "@?",
+	            fieldAttributes: "@?",
+	            object: "=",
+	            label: "@?",
+	            labelText: "@?",
+	            labelClass: "@?",
+	            errorText: "@?",
+	            errorClass: "@?",
+	            formTemplate: "@?"
+	        };
+	        this.link = function (scope, element, attrs, formController, transcludeFn) {
+	            scope.frmController = formController;
+	        };
+	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
+	    }
+	    SWFPropertyDisplay.Factory = function () {
+	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        return directive;
+	    };
+	    return SWFPropertyDisplay;
+	})();
+	exports.SWFPropertyDisplay = SWFPropertyDisplay;
+
+
+/***/ },
+/* 98 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	var SWPropertyDisplay = (function () {
+	    function SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
+	        return {
+	            require: '^form',
+	            restrict: 'AE',
+	            scope: {
+	                object: "=",
+	                options: "=?",
+	                property: "@",
+	                editable: "=",
+	                editing: "=",
+	                isHidden: "=",
+	                title: "=",
+	                hint: "@",
+	                optionsArguments: "=",
+	                eagerLoadOptions: "=",
+	                isDirty: "=",
+	                onChange: "=",
+	                fieldType: "@",
+	                noValidate: "="
+	            },
+	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "propertydisplay.html",
+	            link: function (scope, element, attrs, formController) {
+	                //if the item is new, then all fields at the object level are dirty
+	                $log.debug('editingproper');
+	                $log.debug(scope.property);
+	                $log.debug(scope.title);
+	                if (!angular.isDefined(scope.object)) {
+	                    scope.object = formController.$$swFormInfo.object;
+	                }
+	                /**
+	                 * Configuration for property display object.
+	                 */
+	                scope.propertyDisplay = {
+	                    object: scope.object,
+	                    options: scope.options,
+	                    property: scope.property,
+	                    errors: {},
+	                    editing: scope.editing,
+	                    editable: scope.editable,
+	                    isHidden: scope.isHidden,
+	                    fieldType: scope.fieldType || scope.object.metaData.$$getPropertyFieldType(scope.property),
+	                    title: scope.title,
+	                    hint: scope.hint || scope.object.metaData.$$getPropertyHint(scope.property),
+	                    optionsArguments: scope.optionsArguments || {},
+	                    eagerLoadOptions: scope.eagerLoadOptions || true,
+	                    isDirty: scope.isDirty,
+	                    onChange: scope.onChange,
+	                    noValidate: scope.noValidate
+	                };
+	                if (angular.isUndefined(scope.propertyDisplay.noValidate)) {
+	                    scope.propertyDisplay.noValidate = false;
+	                }
+	                if (angular.isUndefined(scope.propertyDisplay.editable)) {
+	                    scope.propertyDisplay.editable = true;
+	                }
+	                if (angular.isUndefined(scope.editing)) {
+	                    scope.propertyDisplay.editing = false;
+	                }
+	                if (angular.isUndefined(scope.propertyDisplay.isHidden)) {
+	                    scope.propertyDisplay.isHidden = false;
+	                }
+	                scope.applyFilter = function (model, filter) {
+	                    try {
+	                        return $filter(filter)(model);
+	                    }
+	                    catch (e) {
+	                        return model;
+	                    }
+	                };
+	                scope.$id = 'propertyDisplay:' + scope.property;
+	                /* register form that the propertyDisplay belongs to*/
+	                scope.propertyDisplay.form = formController;
+	                $log.debug(scope.propertyDisplay);
+	                $log.debug('propertyDisplay');
+	                $log.debug(scope.propertyDisplay);
+	            }
+	        };
+	    }
+	    SWPropertyDisplay.Factory = function () {
+	        var directive = function ($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
+	            return new SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$filter',
+	            'coreFormPartialsPath',
+	            'pathBuilderConfig'
+	        ];
+	        return directive;
+	    };
+	    return SWPropertyDisplay;
+	})();
+	exports.SWPropertyDisplay = SWPropertyDisplay;
+
+
+/***/ },
+/* 99 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/// <reference path="../../typings/tsd.d.ts" />
+	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+	var swvalidate_1 = __webpack_require__(100);
+	var swvalidationminlength_1 = __webpack_require__(101);
+	var swvalidationdatatype_1 = __webpack_require__(102);
+	var swvalidationeq_1 = __webpack_require__(103);
+	var swvalidationgte_1 = __webpack_require__(104);
+	var swvalidationlte_1 = __webpack_require__(105);
+	var swvalidationmaxlength_1 = __webpack_require__(106);
+	var swvalidationmaxvalue_1 = __webpack_require__(107);
+	var swvalidationminvalue_1 = __webpack_require__(108);
+	var swvalidationneq_1 = __webpack_require__(109);
+	var swvalidationnumeric_1 = __webpack_require__(110);
+	var swvalidationregex_1 = __webpack_require__(111);
+	var swvalidationrequired_1 = __webpack_require__(112);
+	var swvalidationunique_1 = __webpack_require__(113);
+	var swvalidationuniqueornull_1 = __webpack_require__(114);
+	var validationmodule = angular.module('hibachi.validation', [])
+	    .run([function () {
+	    }])
+	    .directive('swValidate', swvalidate_1.SWValidate.Factory())
+	    .directive('swvalidationminlength', swvalidationminlength_1.SWValidationMinLength.Factory())
+	    .directive('swvalidationdatatype', swvalidationdatatype_1.SWValidationDataType.Factory())
+	    .directive('swvalidationeq', swvalidationeq_1.SWValidationEq.Factory())
+	    .directive("swvalidationgte", swvalidationgte_1.SWValidationGte.Factory())
+	    .directive("swvalidationlte", swvalidationlte_1.SWValidationLte.Factory())
+	    .directive('swvalidationmaxlength', swvalidationmaxlength_1.SWValidationMaxLength.Factory())
+	    .directive("swvalidationmaxvalue", swvalidationmaxvalue_1.SWValidationMaxValue.Factory())
+	    .directive("swvalidationminvalue", swvalidationminvalue_1.SWValidationMinValue.Factory())
+	    .directive("swvalidationneq", swvalidationneq_1.SWValidationNeq.Factory())
+	    .directive("swvalidationnumeric", swvalidationnumeric_1.SWValidationNumeric.Factory())
+	    .directive("swvalidationregex", swvalidationregex_1.SWValidationRegex.Factory())
+	    .directive("swvalidationrequired", swvalidationrequired_1.SWValidationRequired.Factory())
+	    .directive("swvalidationunique", swvalidationunique_1.SWValidationUnique.Factory())
+	    .directive("swvalidationuniqueornull", swvalidationuniqueornull_1.SWValidationUniqueOrNull.Factory());
+	exports.validationmodule = validationmodule;
+
+
+/***/ },
+/* 100 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * This validate directive will look at the current element, figure out the context (save, edit, delete) and
+	 * validate based on that context as defined in the validation properties object.
+	 */
+	// 'use strict';
+	// angular.module('slatwalladmin').directive('swValidate',
+	// [ '$log','$hibachi', function($log, $hibachi) {
+	var SWValidate = (function () {
+	    function SWValidate($log, $hibachi) {
+	        return {
+	            restrict: "A",
+	            require: '^ngModel',
+	            link: function (scope, elem, attr, ngModel) {
+	                //Define our contexts and validation property enums.
+	                var ContextsEnum = {
+	                    SAVE: { name: "save", value: 0 },
+	                    DELETE: { name: "delete", value: 1 },
+	                    EDIT: { name: "edit", value: 2 }
+	                };
+	                var ValidationPropertiesEnum = {
+	                    REGEX: { name: "regex", value: 0 },
+	                    MIN_VALUE: { name: "minValue", value: 1 },
+	                    MAX_VALUE: { name: "maxValue", value: 2 },
+	                    EQ: { name: "eq", value: 3 },
+	                    NEQ: { name: "neq", value: 4 },
+	                    UNIQUE: { name: "unique", value: 5 },
+	                    LTE: { name: "lte", value: 6 },
+	                    GTE: { name: "gte", value: 7 },
+	                    MIN_LENGTH: { name: "minLength", value: 8 },
+	                    MAX_LENGTH: { name: "maxLength", value: 9 },
+	                    DATA_TYPE: { name: "dataType", value: 10 },
+	                    REQUIRED: { name: "required", value: 11 }
+	                };
+	                scope.validationPropertiesEnum = ValidationPropertiesEnum;
+	                scope.contextsEnum = ContextsEnum;
+	                var myCurrentContext = scope.contextsEnum.SAVE; //We are only checking the save context right now.
+	                var contextNamesArray = getNamesFromObject(ContextsEnum); //Convert for higher order functions.
+	                var validationPropertiesArray = getNamesFromObject(ValidationPropertiesEnum); //Convert for higher order functions.
+	                var validationObject = scope.propertyDisplay.object.validations.properties; //Get the scope validation object.
+	                var errors = scope.propertyDisplay.errors;
+	                var errorMessages = [];
+	                var failFlag = 0;
+	                /**
+	                * Iterates over the validation object looking for the current elements validations, maps that to a validation function list
+	                * and calls those validate functions. When a validation fails, an error is set, the elements border turns red.
+	                */
+	                function validate(name, context, elementValue) {
+	                    var validationResults = {};
+	                    validationResults = { "name": "name", "context": "context", "required": "required", "error": "none", "errorkey": "none" };
+	                    for (var key in validationObject) {
+	                        // Look for the current attribute in the
+	                        // validation parameters.
+	                        if (key === name || key === name + "Flag") {
+	                            // Now that we have found the current
+	                            // validation parameters, iterate
+	                            // through them looking for
+	                            // the required parameters that match
+	                            // the current page context (save,
+	                            // delete, etc.)
+	                            for (var inner in validationObject[key]) {
+	                                var required = validationObject[key][inner].required || "false"; // Get
+	                                // the
+	                                // required
+	                                // value
+	                                var context = validationObject[key][inner].contexts || "none"; // Get
+	                                // the
+	                                // element
+	                                // context
+	                                //Setup the validation results object to pass back to caller.
+	                                validationResults = { "name": key, "context": context, "required": required, "error": "none", "errorkey": "none" };
+	                                var elementValidationArr = map(checkHasValidationType, validationPropertiesArray, validationObject[key][inner]);
+	                                //Iterate over the array and call the validate function if it has that property.
+	                                for (var i = 0; i < elementValidationArr.length; i++) {
+	                                    if (elementValidationArr[i] == true) {
+	                                        if (validationPropertiesArray[i] === "regex" && elementValue !== "") {
+	                                            //Get the regex string to match and send to validation function.
+	                                            var re = validationObject[key][inner].regex;
+	                                            var result = validate_RegExp(elementValue, re); //true if pattern match, fail otherwise.
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Invalid input");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                errorMessages
+	                                                    .push("Valid input");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "minValue") {
+	                                            var validationMinValue = validationObject[key][inner].minValue;
+	                                            $log.debug(validationMinValue);
+	                                            var result = validate_MinValue(elementValue, validationMinValue);
+	                                            $log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Minimum value is: "
+	                                                    + validationMinValue);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "maxValue") {
+	                                            var validationMaxValue = validationObject[key][inner].maxValue;
+	                                            var result = validate_MaxValue(elementValue, validationMaxValue);
+	                                            $log.debug("Max Value result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Maximum value is: "
+	                                                    + validationMaxValue);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_VALUE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "minLength") {
+	                                            var validationMinLength = validationObject[key][inner].minLength;
+	                                            var result = validate_MinLength(elementValue, validationMinLength);
+	                                            $log.debug("Min Length result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Minimum length must be: "
+	                                                    + validationMinLength);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_LENGTH"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "maxLength") {
+	                                            var validationMaxLength = validationObject[key][inner].maxLength;
+	                                            var result = validate_MaxLength(elementValue, validationMaxLength);
+	                                            $log.debug("Max Length result is: " + result);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Maximum length is: "
+	                                                    + validationMaxLength);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_LENGTH"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "eq") {
+	                                            var validationEq = validationObject[key][inner].eq;
+	                                            var result = validate_Eq(elementValue, validationEq);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must equal "
+	                                                    + validationEq);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["EQ"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "neq") {
+	                                            var validationNeq = validationObject[key][inner].neq;
+	                                            var result = validate_Neq(elementValue, validationNeq);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must not equal: "
+	                                                    + validationNeq);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["NEQ"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "lte") {
+	                                            var validationLte = validationObject[key][inner].lte;
+	                                            var result = validate_Lte(elementValue, validationLte);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must be less than "
+	                                                    + validationLte);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["LTE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "gte") {
+	                                            var validationGte = validationObject[key][inner].gte;
+	                                            var result = validate_Gte(elementValue, validationGte);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Must be greater than: "
+	                                                    + validationGte);
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["GTE"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                        if (validationPropertiesArray[i] === "required") {
+	                                            var validationRequire = validationObject[key][inner].require;
+	                                            var result = validate_Required(elementValue, validationRequire);
+	                                            if (result != true) {
+	                                                errorMessages
+	                                                    .push("Required");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
+	                                                validationResults.fail = true;
+	                                            }
+	                                            else {
+	                                                errorMessages
+	                                                    .push("Required");
+	                                                validationResults.error = errorMessages[errorMessages.length - 1];
+	                                                validationResults.errorkey = ValidationPropertiesEnum["REQUIRED"].name;
+	                                                validationResults.fail = false;
+	                                            }
+	                                            return validationResults;
+	                                        }
+	                                    }
+	                                }
+	                            }
+	                        }
+	                    } //<---end validate.			
+	                }
+	                /**
+	                * Function to map if we need a validation on this element.
+	                */
+	                function checkHasValidationType(validationProp, validationType) {
+	                    if (validationProp[validationType] != undefined) {
+	                        return true;
+	                    }
+	                    else {
+	                        return false;
+	                    }
+	                }
+	                /**
+	                * Iterates over the properties object finding which types of validation are needed.
+	                */
+	                function map(func, array, obj) {
+	                    var result = [];
+	                    forEach(array, function (element) {
+	                        result.push(func(obj, element));
+	                    });
+	                    return result;
+	                }
+	                /**
+	                * Array iteration helper.
+	                */
+	                function forEach(array, action) {
+	                    for (var i = 0; i < array.length; i++)
+	                        action(array[i]);
+	                }
+	                /**
+	                * Helper function to read all the names in our enums into an array that the higher order functions can use.
+	                */
+	                function getNamesFromObject(obj) {
+	                    var result = [];
+	                    for (var i in obj) {
+	                        var name = obj[i].name || "stub";
+	                        result.push(name);
+	                    }
+	                    return result;
+	                }
+	                /**
+	                * Tests the value for a RegExp match given by the pattern string.
+	                * Validates true if pattern match, false otherwise.
+	                */
+	                function validate_RegExp(value, pattern) {
+	                    var regex = new RegExp(pattern);
+	                    if (regex.test(value)) {
+	                        return true;
+	                    }
+	                    return false;
+	                }
+	                /**
+	                * Validates true if userValue >= minValue (inclusive)
+	                */
+	                function validate_MinValue(userValue, minValue) {
+	                    return (userValue >= minValue);
+	                }
+	                /**
+	                * Validates true if userValue <= maxValue (inclusive)
+	                */
+	                function validate_MaxValue(userValue, maxValue) {
+	                    return (userValue <= maxValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if length of the userValue >= minLength (inclusive)
+	                */
+	                function validate_MinLength(userValue, minLength) {
+	                    return (userValue.length >= minLength) ? true : false;
+	                }
+	                /**
+	                * Validates true if length of the userValue <= maxLength (inclusive)
+	                */
+	                function validate_MaxLength(userValue, maxLength) {
+	                    return (userValue.length <= maxLength) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue == eqValue
+	                */
+	                function validate_Eq(userValue, eqValue) {
+	                    return (userValue == eqValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue != neqValue
+	                */
+	                function validate_Neq(userValue, neqValue) {
+	                    return (userValue != neqValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue < decisionValue (exclusive)
+	                */
+	                function validate_Lte(userValue, decisionValue) {
+	                    return (userValue < decisionValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue > decisionValue (exclusive)
+	                */
+	                function validate_Gte(userValue, decisionValue) {
+	                    return (userValue > decisionValue) ? true : false;
+	                }
+	                /**
+	                * Validates true if the userValue === property
+	                */
+	                function validate_EqProperty(userValue, property) {
+	                    return (userValue === property) ? true : false;
+	                }
+	                /**
+	                * Validates true if the given value is !NaN (Negate, Not a Number).
+	                */
+	                function validate_IsNumeric(value) {
+	                    return !isNaN(value) ? true : false;
+	                }
+	                /**
+	                * Validates true if the given userValue is empty and the field is required.
+	                */
+	                function validate_Required(property, userValue) {
+	                    return (userValue == "" && property == true) ? true : false;
+	                }
+	                /**
+	                * Handles the 'eager' validation on every key press.
+	                */
+	                ngModel.$parsers.unshift(function (value) {
+	                    var name = elem.context.name; //Get the element name for the validate function.
+	                    var currentValue = elem.val(); //Get the current element value to check validations against.
+	                    var val = validate(name, myCurrentContext, currentValue) || {};
+	                    //Check if field is required.				
+	                    $log.debug(scope);
+	                    $log.debug(val);
+	                    ngModel.$setValidity(val.errorkey, !val.fail);
+	                    return true;
+	                }); //<---end $parsers
+	                /**
+	                * This handles 'lazy' validation on blur.
+	                */
+	                elem.bind('blur', function (e) {
+	                });
+	            }
+	        };
+	    }
+	    SWValidate.Factory = function () {
+	        var directive = function ($log, $hibachi) { return new SWValidate($log, $hibachi); };
+	        directive.$inject = ['$log', '$hibachi'];
+	        return directive;
+	    };
+	    return SWValidate;
+	})();
+	exports.SWValidate = SWValidate;
+
+
+/***/ },
+/* 101 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the min length.
+	 */
+	/**
+	 * Returns true if the user value is greater than the minimum value.
+	 */
+	var SWValidationMinLength = (function () {
+	    function SWValidationMinLength($log) {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationminlength =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationminlength;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        $log.debug('invalid min length');
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMinLength.Factory = function () {
+	        var directive = function ($log) { return new SWValidationMinLength($log); };
+	        directive.$inject = ['$log'];
+	        return directive;
+	    };
+	    return SWValidationMinLength;
+	})();
+	exports.SWValidationMinLength = SWValidationMinLength;
+
+
+/***/ },
+/* 102 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * True if the data type matches the given data type.
+	 */
+	/**
+	 * Validates true if the model value is a numeric value.
+	 */
+	var SWValidationDataType = (function () {
+	    function SWValidationDataType() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                var MY_EMAIL_REGEXP = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
+	                ngModel.$validators.swvalidationdatatype =
+	                    function (modelValue) {
+	                        if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string") {
+	                            return true;
+	                        }
+	                        if (angular.isNumber(parseInt(modelValue)) && attributes.swvalidationdatatype === "numeric") {
+	                            return true;
+	                        }
+	                        if (angular.isArray(modelValue) && attributes.swvalidationdatatype === "array") {
+	                            return true;
+	                        }
+	                        if (angular.isDate(modelValue) && attributes.swvalidationdatatype === "date") {
+	                            return true;
+	                        }
+	                        if (angular.isObject(modelValue) && attributes.swvalidationdatatype === "object") {
+	                            return true;
+	                        }
+	                        if (attributes.swvalidationdatatype === 'email') {
+	                            return MY_EMAIL_REGEXP.test(modelValue);
+	                        }
+	                        if (angular.isUndefined(modelValue && attributes.swvalidationdatatype === "undefined")) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationDataType.Factory = function () {
+	        var directive = function () {
+	            return new SWValidationDataType();
+	        };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationDataType;
+	})();
+	exports.SWValidationDataType = SWValidationDataType;
+
+
+/***/ },
+/* 103 */
+/***/ function(module, exports) {
+
+	/**
+	 * SwValidationEQ: Validates true if the user value == the constraint value.
+	 * @usage <input type='text' swvalidationgte='5' /> will validate false if the user enters
+	 * value other than 5.
+	 */
+	var SWValidationEq = (function () {
+	    function SWValidationEq() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationeq =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationeq;
+	                        if (modelValue === constraintValue) {
+	                            return true;
+	                        }
+	                        else {
+	                            return false;
+	                        }
+	                    }; //<--end function
+	            } //<--end link
+	        };
+	    }
+	    SWValidationEq.Factory = function () {
+	        var directive = function () {
+	            return new SWValidationEq();
+	        };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationEq;
+	})();
+	exports.SWValidationEq = SWValidationEq;
+
+
+/***/ },
+/* 104 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * SwValidationGTE: Validates true if the user value >= to the constraint value.
+	 * @usage <input type='text' swvalidationGte='5' /> will validate false if the user enters
+	 * value less than OR equal to 5.
+	 */
+	var SWValidationGte = (function () {
+	    function SWValidationGte() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationGte =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationGte || 0;
+	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
+	                            return true; //Passes the validation
+	                        }
+	                        return false;
+	                    }; //<--end function
+	            } //<--end link
+	        };
+	    }
+	    SWValidationGte.Factory = function () {
+	        var directive = function () { return new SWValidationGte(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationGte;
+	})();
+	exports.SWValidationGte = SWValidationGte;
+
+
+/***/ },
+/* 105 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * SwValidationLTE: Validates true if the user value <= to the constraint value.
+	 * @usage <input type='number' swvalidationlte='5000' /> will validate false if the user enters
+	 * value greater than OR equal to 5,000.
+	 */
+	var SWValidationLte = (function () {
+	    function SWValidationLte() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationlte =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationlte;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationLte.Factory = function () {
+	        var directive = function () { return new SWValidationLte(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationLte;
+	})();
+	exports.SWValidationLte = SWValidationLte;
+
+
+/***/ },
+/* 106 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the max length.
+	 */
+	var SWValidationMaxLength = (function () {
+	    function SWValidationMaxLength() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationmaxlength =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationmaxlength;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue.length) >= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMaxLength.Factory = function () {
+	        var directive = function () { return new SWValidationMaxLength(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationMaxLength;
+	})();
+	exports.SWValidationMaxLength = SWValidationMaxLength;
+
+
+/***/ },
+/* 107 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the min value.
+	 */
+	var SWValidationMaxValue = (function () {
+	    function SWValidationMaxValue() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationmaxvalue =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationmaxvalue;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(viewValue) <= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMaxValue.Factory = function () {
+	        var directive = function () { return new SWValidationMaxValue(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationMaxValue;
+	})();
+	exports.SWValidationMaxValue = SWValidationMaxValue;
+
+
+/***/ },
+/* 108 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the user value is greater than the minimum value.
+	 */
+	var SWValidationMinValue = (function () {
+	    function SWValidationMinValue() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationminvalue =
+	                    function (modelValue, viewValue) {
+	                        var constraintValue = attributes.swvalidationminvalue;
+	                        var userValue = viewValue || 0;
+	                        if (parseInt(modelValue) >= parseInt(constraintValue)) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationMinValue.Factory = function () {
+	        var directive = function () { return new SWValidationMinValue(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationMinValue;
+	})();
+	exports.SWValidationMinValue = SWValidationMinValue;
+
+
+/***/ },
+/* 109 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 *  Validates true if the user value != the property value.
+	 */
+	var SWValidationNeq = (function () {
+	    function SWValidationNeq() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationneq =
+	                    function (modelValue) {
+	                        if (modelValue != attributes.swvalidationneq) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationNeq.Factory = function () {
+	        var directive = function () { return new SWValidationNeq(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationNeq;
+	})();
+	exports.SWValidationNeq = SWValidationNeq;
+
+
+/***/ },
+/* 110 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the model value (user value) is a numeric value.
+	 * @event This event fires on every change to an input.
+	 */
+	var SWValidationNumeric = (function () {
+	    function SWValidationNumeric() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationnumeric =
+	                    function (modelValue, viewValue) {
+	                        //Returns true if this is not a number.
+	                        if (!isNaN(viewValue)) {
+	                            return true;
+	                        }
+	                        else {
+	                            return false;
+	                        }
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationNumeric.Factory = function () {
+	        var directive = function () { return new SWValidationNumeric(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationNumeric;
+	})();
+	exports.SWValidationNumeric = SWValidationNumeric;
+
+
+/***/ },
+/* 111 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the model value matches a regex string.
+	 */
+	var SWValidationRegex = (function () {
+	    function SWValidationRegex() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationregex =
+	                    function (modelValue) {
+	                        //Returns true if this user value (model value) does match the pattern
+	                        var pattern = attributes.swvalidationregex;
+	                        var regex = new RegExp(pattern);
+	                        if (regex.test(modelValue)) {
+	                            return true;
+	                        }
+	                        else {
+	                            return false;
+	                        }
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationRegex.Factory = function () {
+	        var directive = function () { return new SWValidationRegex(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationRegex;
+	})();
+	exports.SWValidationRegex = SWValidationRegex;
+
+
+/***/ },
+/* 112 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Returns true if the uservalue is empty and false otherwise
+	 */
+	var SWValidationRequired = (function () {
+	    function SWValidationRequired() {
+	        return {
+	            restrict: "A",
+	            require: "^ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$validators.swvalidationrequired =
+	                    function (modelValue, viewValue) {
+	                        var value = modelValue || viewValue;
+	                        if (value) {
+	                            return true;
+	                        }
+	                        return false;
+	                    };
+	            }
+	        };
+	    }
+	    SWValidationRequired.Factory = function () {
+	        var directive = function () { return new SWValidationRequired(); };
+	        directive.$inject = [];
+	        return directive;
+	    };
+	    return SWValidationRequired;
+	})();
+	exports.SWValidationRequired = SWValidationRequired;
+
+
+/***/ },
+/* 113 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the given object is 'unique' and false otherwise.
+	 */
+	var SWValidationUnique = (function () {
+	    function SWValidationUnique($http, $q, $hibachi, $log) {
+	        return {
+	            restrict: "A",
+	            require: "ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$asyncValidators.swvalidationunique = function (modelValue, viewValue) {
+	                    $log.debug('asyc');
+	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
+	                    //First time the asyncValidators function is loaded the
+	                    //key won't be set  so ensure that we have
+	                    //key and propertyName before checking with the server
+	                    if (key && property) {
+	                        $hibachi.checkUniqueValue(key, property, currentValue)
+	                            .then(function (unique) {
+	                            $log.debug('uniquetest');
+	                            $log.debug(unique);
+	                            if (unique) {
+	                                deferred.resolve(); //It's unique
+	                            }
+	                            else {
+	                                deferred.reject(); //Add unique to $errors
+	                            }
+	                        });
+	                    }
+	                    else {
+	                        deferred.resolve(); //Ensure promise is resolved if we hit this
+	                    }
+	                    return deferred.promise;
+	                };
+	            }
+	        };
+	    }
+	    SWValidationUnique.Factory = function () {
+	        var directive = function ($http, $q, $hibachi, $log) { return new SWValidationUnique($http, $q, $hibachi, $log); };
+	        directive.$inject = ['$http', '$q', '$hibachi', '$log'];
+	        return directive;
+	    };
+	    return SWValidationUnique;
+	})();
+	exports.SWValidationUnique = SWValidationUnique;
+
+
+/***/ },
+/* 114 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/**
+	 * Validates true if the given object is 'unique' and false otherwise.
+	 */
+	var SWValidationUniqueOrNull = (function () {
+	    function SWValidationUniqueOrNull($http, $q, $hibachi, $log) {
+	        return {
+	            restrict: "A",
+	            require: "ngModel",
+	            link: function (scope, element, attributes, ngModel) {
+	                ngModel.$asyncValidators.swvalidationuniqueornull = function (modelValue, viewValue) {
+	                    $log.debug('async');
+	                    var deferred = $q.defer(), currentValue = modelValue || viewValue, key = scope.propertyDisplay.object.metaData.className, property = scope.propertyDisplay.property;
+	                    //First time the asyncValidators function is loaded the
+	                    //key won't be set  so ensure that we have
+	                    //key and propertyName before checking with the server
+	                    if (key && property) {
+	                        $hibachi.checkUniqueOrNullValue(key, property, currentValue)
+	                            .then(function (unique) {
+	                            $log.debug('uniquetest');
+	                            $log.debug(unique);
+	                            if (unique) {
+	                                deferred.resolve(); //It's unique
+	                            }
+	                            else {
+	                                deferred.reject(); //Add unique to $errors
+	                            }
+	                        });
+	                    }
+	                    else {
+	                        deferred.resolve(); //Ensure promise is resolved if we hit this
+	                    }
+	                    return deferred.promise;
+	                };
+	            }
+	        };
+	    }
+	    SWValidationUniqueOrNull.Factory = function () {
+	        var directive = function ($http, $q, $hibachi, $log) { return new SWValidationUniqueOrNull($http, $q, $hibachi, $log); };
+	        directive.$inject = ['$http', '$q', '$hibachi', '$log'];
+	        return directive;
+	    };
+	    return SWValidationUniqueOrNull;
+	})();
+	exports.SWValidationUniqueOrNull = SWValidationUniqueOrNull;
+
+
+/***/ },
+/* 115 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5639,7 +12852,7 @@
 
 
 /***/ },
-/* 49 */
+/* 116 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />

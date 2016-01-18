@@ -338,7 +338,7 @@ component extends="FW1.framework" {
 				}
 				arrayAppend(request.context.messages,message);
 				renderApiResponse();
-				abort;
+				
 			}
 			//Route the user to the noaccess page if they are already logged in
 			else if( getHibachiScope().getLoggedInFlag() ) {
@@ -649,6 +649,7 @@ component extends="FW1.framework" {
 			//response String to xml placeholder
 		}
 		writeOutput( responseString );
+		abort;
 	}
 	
 	public void function setupResponse() {
@@ -687,8 +688,9 @@ component extends="FW1.framework" {
 			} else {
 				writeOutput( serializeJSON(request.context.ajaxResponse) );
 			}
+			abort;
 		}
-		abort;
+		
 	}
 	
 	public void function setupView() {

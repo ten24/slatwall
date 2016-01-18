@@ -49,20 +49,22 @@ class SWActionCallerController{
     public init = ():void =>{
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
-
-            if (this.type == "button"){
+        if (this.type == "button"){
                 //handle submit.
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.formController; }, (newValue, oldValue) => {
+                    
                     if (newValue !== undefined){
+                        console.log("Found formCtr", newValue);
                         this.formCtrl = newValue;
-
+                        unbindWatcher();
                     }
-
-                    unbindWatcher();
+                    
+                   
                 });
 
             }
+            
 //			this.actionItem = this.getActionItem();
 //			this.actionItemEntityName = this.getActionItemEntityName();
 //			this.text = this.getText();
@@ -88,9 +90,9 @@ class SWActionCallerController{
     }
 
     public submit = () => {
-
-            this.formCtrl.submit(this.action);
-        }
+        console.log("Submit is hit", this.action);
+        this.formCtrl.submit(this.action);
+    }
 
     public getAction = ():string =>{
 
@@ -259,15 +261,16 @@ class SWActionCaller implements ng.IDirective{
     };
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
+    public require="^?swForm"
     public templateUrl;
     public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
             partialsPath,
-            utiltiyService,
+            utilityService,
             $hibachi
         ) => new SWActionCaller(
             partialsPath,
-            utiltiyService,
+            utilityService,
             $hibachi
         );
         directive.$inject = [
@@ -280,12 +283,17 @@ class SWActionCaller implements ng.IDirective{
 
     constructor(
         public partialsPath,
-        public utiltiyService,
+        public utilityService,
         public $hibachi
         ){
     }
 
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>{
+        console.log("Controller", formController);
+        if (angular.isDefined(formController)){
+            scope.formController = formController;    
+        }
+        
     }
 }
 export{

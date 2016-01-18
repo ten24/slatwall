@@ -108,10 +108,12 @@ class SWFPropertyDisplayController {
 
 		let vm:any = this;
 		vm.processObject = {};
+        
 		vm.valueObjectProperty 	= this.valueObjectProperty;
 		vm.type                	= this.type || "text" ;
 		vm.class			   	= this.class|| "formControl";
 		vm.valueObject		  	= this.valueObject;
+        vm.value                = this.object[this.propertyIdentifier];
 		vm.fieldAttributes     	= this.fieldAttributes || "";
 		vm.label			    = this.label || "true";
 		vm.labelText			= this.labelText || "";
@@ -121,12 +123,11 @@ class SWFPropertyDisplayController {
 		vm.optionValues        	= this.optionValues;
 		vm.errorClass			= this.errorClass;
 		vm.errorText			= this.errorText;
-		vm.formCtrl 			= {};
 		vm.object				= this.object; //this is the process object
 		vm.propertyIdentifier   = this.propertyIdentifier; //this is the property
 		vm.loader				= this.loader;
 		vm.noValidate			= this.noValidate;
-
+        
 		/** in order to attach the correct controller to local vm, we need a watch to bind */
 
 
@@ -172,6 +173,7 @@ class SWFPropertyDisplayController {
 			value: 	vm.value,
 			errorText: vm.errorText,
 		};
+        console.log("Property Display", this.propertyDisplay);
 	}
 }
 
@@ -195,6 +197,7 @@ class SWFPropertyDisplay {
 			hint: "@?",
 			valueObject: "=?",
 			valueObjectProperty: "=?",
+            propertyIdentifier: "@?",
 			options: "@?",
 			fieldAttributes: "@?",
 			object: "=",

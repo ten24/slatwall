@@ -80,8 +80,10 @@ interface ViewModel {
                 this.isDirty = false;    
             } 
             this.isProcessForm = this.isProcessForm || "false";
+            
             if (this.isProcessForm == "true") {
-                this.handleSelfInspection( this );
+                console.log("Form Name:", this.name);
+                this.handleForm( this, $scope );
             }
             
         }
@@ -92,10 +94,10 @@ interface ViewModel {
     * method that can be called by any subclasses that inject formCtrl. On submit,
     * this class will attach any errors to the correspnding form element.
     */
-    handleSelfInspection ( context ) {
+    handleForm ( context, $scope ) {
         console.log("Context", context);
-    /** local variables */
-        this.processObject = this.object || "";
+        /** local variables */
+        this.processObject = this.name || "";
         
         let vm: ViewModel       = context;
             vm.hiddenFields     = this.hiddenFields;
@@ -112,7 +114,7 @@ interface ViewModel {
             /** parse the name */
             vm.entityName      = this.processObject.split("_")[0];
             let processObject   = this.processObject.split("_")[1];
-
+            
             /** try to grab the meta data from the process entity in slatwall in a process exists
              *  otherwise, just use the service method to access it.
              */
@@ -138,8 +140,9 @@ interface ViewModel {
             }
 
             try {
-                vm.actionFn = this.$hibachi.newEntity(vm.processObject);
+                vm.actionFn = this.object;
             }catch (e){
+                console.log("Post Only is Set");
                 vm.postOnly = true;
             }
 
@@ -149,32 +152,61 @@ interface ViewModel {
             /** returns all the data from the form by iterating the form elements */
             vm.getFormData = function()
             {
-                angular.forEach(vm["formCtrl"][vm.processObject], (val, key) => {
+                console.log("Form Data:", this.object);
+                angular.forEach(this.object, (val, key) => {
                     /** Check for form elements that have a name that doesn't start with $ */
-                    if (key.toString().indexOf('$') == -1) {
-                        this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
+                    if (angular.isString(val)) {
+                        this.formData[key] = val;
+                        console.log("Using Form Element: ", this.formData[key]);
                     }
+                    
                 });
 
                 return vm.formData || "";
             }
+            
+            vm.simpleValidate = function()
+            {
+                
+                //get a list of all form elements.
+                //foreach element, get its name.
+                //if its name matches the validations name, validate it.
+                
+                console.log("Validate minimum client side needed:", this.object);
+                angular.forEach(this.object, (val, key) => {
+                    /** Check for form elements that have a name that doesn't start with $ */
+                    if (angular.isString(val)) {
+                        
+                    }
+                    
+                });
 
+                return vm.formData || "";
+            }
+            
+            
             /****
               * Handle parsing through the server errors and injecting the error text for that field
               * If the form only has a submit, then simply call that function and set errors.
               ***/
             vm.parseErrors = function(result)
             {
-                if (angular.isDefined(result.errors) && result.errors.length != 0) {
+                console.log("Resultant Errors: ", result);
+                if (angular.isDefined(result.errors) && result.errors) {
                     angular.forEach(result.errors, (val, key) => {
-                        if (angular.isDefined(vm["formCtrl"][vm.processObject][key])) {
+                        console.log("Parsing Rule: ", result.errors[key]);
+                        console.log(this.object, key, this.object[key]);
+                        
+                            console.log("Yes, is defined...");
                             let primaryElement = this.$element.find("[error-for='" + key + "']");
+                            console.log("Primary Element: ", primaryElement);
                             vm.$timeout(function() {
+                                console.log("Appending");
                                 primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
                             }, 0);
-                            vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
-                            vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
-                        }
+                            //vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
+                            //vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
+                        
                     }, this);
                 }
             };
@@ -218,9 +250,13 @@ interface ViewModel {
             vm.update  = (params) =>{
                //stub
             }
-
+            /** clears this directive on event */
+            vm.clear  = (params) =>{
+               //stub
+            }
+            
             vm.parseEvents = function(str, evntType) {
-
+                
                 if (str == undefined) return;
                 let strTokens = str.split(","); //this gives the format [hide:this, show:Account_Logout, update:Account or Cart]
                 let eventsObj = {
@@ -249,7 +285,7 @@ interface ViewModel {
                 this.$timeout(()=>{
                      let errorElements = this.$element.find("[error-for]");
                      errorElements.empty();
-                     vm["formCtrl"][vm.processObject].$setPristine(true);
+                     //vm["formCtrl"][vm.processObject].$setPristine(true);
                 },0);
 
             }
@@ -261,6 +297,7 @@ interface ViewModel {
                     
                     let submitFn = vm.hibachiScope.doAction;
                     vm.formData = vm.formData || {};
+                    console.log("Calling Final Submit");
                     submitFn(submitFunction, vm.formData).then( (result) =>{
                         if (vm.hibachiScope.hasErrors) {
                             vm.parseErrors(result.data);
@@ -271,6 +308,7 @@ interface ViewModel {
                             observerService.notify("onSuccess", {"caller":this.processObject, "events":vm.events.events||""});
                         }
                     }, angular.noop);
+                    console.log("Leaving iterateFactory.");
             }
 
             /** does either a single or multiple actions */
