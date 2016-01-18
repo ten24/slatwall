@@ -93,15 +93,17 @@ class CreateBundleController{
 			$scope.newSaving = true;
 			$log.debug($scope.newSaving);
             $scope.dIndex = closeDialogIndex;
-			$scope.product.$$save().then(function(){
+			$scope.product.$$save().then(function(data){
 				$log.debug("Turn off the loader after saving.");
 				$scope.newSaving = false;
 				$scope.closeSaving = true;
 				$rootScope.closePageDialog($scope.dIndex);
-
+               
 				if(saveAndNew){
 					$rootScope.openPageDialog( 'productbundle/createproductbundle' )
-				}
+				} else { 
+                     window.location = $slatwall.buildUrl("admin:entity.detailproduct", "productID="+data.productID);
+                }
 			},()=>{
                 $scope.newSaving = false;
             });
