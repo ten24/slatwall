@@ -3390,7 +3390,6 @@
 	                /** in order to attach the correct controller to local vm, we need a watch to bind */
 	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.formController; }, function (newValue, oldValue) {
 	                    if (newValue !== undefined) {
-	                        console.log("Found formCtr", newValue);
 	                        _this.formCtrl = newValue;
 	                        unbindWatcher();
 	                    }
@@ -3419,7 +3418,6 @@
 	            */
 	        };
 	        this.submit = function () {
-	            console.log("Submit is hit", _this.action);
 	            _this.formCtrl.submit(_this.action);
 	        };
 	        this.getAction = function () {
@@ -3605,7 +3603,6 @@
 	        this.controllerAs = "swActionCaller";
 	        this.require = "^?swForm";
 	        this.link = function (scope, element, attrs, formController) {
-	            console.log("Controller", formController);
 	            if (angular.isDefined(formController)) {
 	                scope.formController = formController;
 	            }
@@ -3625,7 +3622,6 @@
 	    return SWActionCaller;
 	})();
 	exports.SWActionCaller = SWActionCaller;
-	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
 
 
 /***/ },
@@ -5619,7 +5615,6 @@
 	        pathBuilderConfig.setBasePartialsPath('org/hibachi/client/src/');
 	    }])
 	    .run(['$rootScope', '$hibachi', 'publicService', function ($rootScope, $hibachi, publicService) {
-	        console.log("hibachi:", $rootScope, $hibachi);
 	        $rootScope.hibachiScope = publicService;
 	        $rootScope.hibachiScope.getAccount();
 	        $rootScope.hibachiScope.getCart();
@@ -10547,7 +10542,7 @@
 	    function SWFFormFieldController($scope) {
 	        this.$scope = $scope;
 	        var vm = this;
-	        if (angular.isDefined(this.propertyDisplay)) {
+	        if (this.propertyDisplay) {
 	            vm.propertyDisplay = this.propertyDisplay;
 	        }
 	        else {
@@ -10635,7 +10630,6 @@
 	        }
 	        this.isProcessForm = this.isProcessForm || "false";
 	        if (this.isProcessForm == "true") {
-	            console.log("Form Name:", this.name);
 	            this.handleForm(this, $scope);
 	        }
 	    }
@@ -10647,7 +10641,7 @@
 	     */
 	    SWFormController.prototype.handleForm = function (context, $scope) {
 	        var _this = this;
-	        console.log("Context", context);
+	        //console.log("Context", context);
 	        /** local variables */
 	        this.processObject = this.name || "";
 	        var vm = context;
@@ -10685,7 +10679,7 @@
 	            vm.actionFn = this.object;
 	        }
 	        catch (e) {
-	            console.log("Post Only is Set");
+	            //console.log("Post Only is Set");
 	            vm.postOnly = true;
 	        }
 	        /** We use these for our models */
@@ -10693,24 +10687,11 @@
 	        /** returns all the data from the form by iterating the form elements */
 	        vm.getFormData = function () {
 	            var _this = this;
-	            console.log("Form Data:", this.object);
+	            //console.log("Form Data:", this.object);
 	            angular.forEach(this.object, function (val, key) {
 	                /** Check for form elements that have a name that doesn't start with $ */
 	                if (angular.isString(val)) {
 	                    _this.formData[key] = val;
-	                    console.log("Using Form Element: ", _this.formData[key]);
-	                }
-	            });
-	            return vm.formData || "";
-	        };
-	        vm.simpleValidate = function () {
-	            //get a list of all form elements.
-	            //foreach element, get its name.
-	            //if its name matches the validations name, validate it.
-	            console.log("Validate minimum client side needed:", this.object);
-	            angular.forEach(this.object, function (val, key) {
-	                /** Check for form elements that have a name that doesn't start with $ */
-	                if (angular.isString(val)) {
 	                }
 	            });
 	            return vm.formData || "";
@@ -10721,16 +10702,16 @@
 	          ***/
 	        vm.parseErrors = function (result) {
 	            var _this = this;
-	            console.log("Resultant Errors: ", result);
+	            //console.log("Resultant Errors: ", result);
 	            if (angular.isDefined(result.errors) && result.errors) {
 	                angular.forEach(result.errors, function (val, key) {
-	                    console.log("Parsing Rule: ", result.errors[key]);
-	                    console.log(_this.object, key, _this.object[key]);
-	                    console.log("Yes, is defined...");
+	                    //console.log("Parsing Rule: ", result.errors[key]);
+	                    //console.log(this.object, key, this.object[key]);
+	                    //console.log("Yes, is defined...");
 	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
-	                    console.log("Primary Element: ", primaryElement);
+	                    //console.log("Primary Element: ", primaryElement);
 	                    vm.$timeout(function () {
-	                        console.log("Appending");
+	                        //console.log("Appending");
 	                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
 	                    }, 0);
 	                    //vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
@@ -10825,7 +10806,7 @@
 	            }
 	            var submitFn = vm.hibachiScope.doAction;
 	            vm.formData = vm.formData || {};
-	            console.log("Calling Final Submit");
+	            //console.log("Calling Final Submit");
 	            submitFn(submitFunction, vm.formData).then(function (result) {
 	                if (vm.hibachiScope.hasErrors) {
 	                    vm.parseErrors(result.data);
@@ -10837,7 +10818,7 @@
 	                    observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events || "" });
 	                }
 	            }, angular.noop);
-	            console.log("Leaving iterateFactory.");
+	            //console.log("Leaving iterateFactory.");
 	        };
 	        /** does either a single or multiple actions */
 	        vm.doAction = function (actionObject) {
@@ -11665,7 +11646,7 @@
 	            value: vm.value,
 	            errorText: vm.errorText,
 	        };
-	        console.log("Property Display", this.propertyDisplay);
+	        //console.log("Property Display", this.propertyDisplay);
 	    }
 	    return SWFPropertyDisplayController;
 	})();

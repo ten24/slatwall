@@ -53,14 +53,10 @@ class SWActionCallerController{
                 //handle submit.
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
                 var unbindWatcher = this.$scope.$watch(() => { return this.$scope.formController; }, (newValue, oldValue) => {
-                    
                     if (newValue !== undefined){
-                        console.log("Found formCtr", newValue);
                         this.formCtrl = newValue;
                         unbindWatcher();
                     }
-                    
-                   
                 });
 
             }
@@ -90,7 +86,6 @@ class SWActionCallerController{
     }
 
     public submit = () => {
-        console.log("Submit is hit", this.action);
         this.formCtrl.submit(this.action);
     }
 
@@ -289,7 +284,6 @@ class SWActionCaller implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>{
-        console.log("Controller", formController);
         if (angular.isDefined(formController)){
             scope.formController = formController;    
         }
@@ -300,6 +294,4 @@ export{
     SWActionCaller,
     SWActionCallerController
 }
-	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
-
 

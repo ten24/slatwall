@@ -173,7 +173,7 @@ class SWFPropertyDisplayController {
 			value: 	vm.value,
 			errorText: vm.errorText,
 		};
-        console.log("Property Display", this.propertyDisplay);
+        //console.log("Property Display", this.propertyDisplay);
 	}
 }
 

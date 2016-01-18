@@ -3,9 +3,7 @@
 <div>
   <div>
     <section>
-        <div>     
-        	
-                                               
+        <div>                                  
             <div class="container" >
                 <div>
                     <h2>Examples:</h2>
@@ -22,7 +20,7 @@
                         <swf-directive partial-name="logindirectivepartial"></swf-directive>
                      </p>
                     
-                     <b>Example Logout </b><br>
+                     <b>Example Logout (This one has no properties and still works even without defined processObject)</b><br>
                         <swf-directive partial-name="logoutdirectivepartial"></swf-directive>
                      </p>
                       
@@ -52,7 +50,7 @@
                       
                       <b>Example login using just form fields</b><br>
                       <div ng-init="AccountLoginObjTwo = slatwall.getProcessObject('Account_Login') "></div> 
-                      {{AccountLoginObjTwo}}
+                      
                       <sw-form data-is-process-form="true" 
                              data-object="AccountLoginObjTwo" 
                              data-on-success="hide:this" 
@@ -81,16 +79,15 @@
                                     name="password"></swf-form-field>
                                     <div error-for="password"></div>
                             </div>
-                            
                             <input type="submit" ng-click="$parent.swForm.submit()" />
                       </sw-form>
+                      
                 </div>
             </div>
         </div>
     </section>
   </div>
    </dd> 
-
 </div>
 </cfoutput>
 <cfinclude template="footer.cfm" >

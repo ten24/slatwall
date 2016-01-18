@@ -59,8 +59,9 @@ class SWFFormFieldController {
 	public static $inject = ['$scope'];
 	constructor ( public $scope:ng.IScope ) {
 		let vm:IFormFieldControllerVM = this;
-        if (angular.isDefined(this.propertyDisplay)){
-            vm.propertyDisplay = this.propertyDisplay;    
+        
+        if (this.propertyDisplay){
+            vm.propertyDisplay = this.propertyDisplay;   
         }else{
             vm.propertyDisplay =  {
                 name: vm.name,
@@ -70,6 +71,7 @@ class SWFFormFieldController {
                 object: vm.object,
                 propertyIdentifier: vm.propertyIdentifier 
             };
+            //console.log("Built a property display");
         }
 		
 	}

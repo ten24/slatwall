@@ -19,7 +19,6 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 }])
 .run(['$rootScope', '$hibachi', 'publicService', function($rootScope, $hibachi, publicService) {
 	
-    console.log("hibachi:", $rootScope, $hibachi)
     $rootScope.hibachiScope = publicService;
 	$rootScope.hibachiScope.getAccount(); 
 	$rootScope.hibachiScope.getCart();
