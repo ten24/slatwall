@@ -22,6 +22,7 @@ module.exports = {
     //previous scripts loaded
      alias:{
     	'date':'../lib/date/date.min.js'
+        ,'md5':'../lib/md5/md5.min.js'
   		,'angular':'../lib/angular/angular.min.js'
   		,'angular-lazy-bootstrap':'../lib/angular-lazy-bootstrap/bootstrap.js'
   		,'ui.bootstrap':'../lib/angular-ui-bootstrap/ui.bootstrap.min.js'

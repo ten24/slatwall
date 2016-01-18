@@ -37,14 +37,28 @@
 </div>
 
 <div ng-if="addGiftRecipientControl.getUnassignedCount() > 0">
-	<div class="s-search-filter s-gift-card">
+	<div class="s-search-filter">
 
-		<div sw-typeahead-search data-entity="Account"
-				data-properties="accountID,firstName,lastName,primaryEmailAddress.emailAddress"
-				data-placeholder-text="Search or Add Recipient..."
-				data-add-function="addGiftRecipientControl.addGiftRecipientFromAccountList(item)"
-				data-add-button-function="addGiftRecipientControl.startFormWithName(searchString)">
+		<div sw-typeahead-search 
+            data-entity="Account"
+            data-properties="accountID"
+            data-placeholder-text="Search or Add Recipient..."
+            data-add-function="addGiftRecipientControl.addGiftRecipientFromAccountList"
+            data-add-button-function="addGiftRecipientControl.startFormWithName">
+            <div>
+                <div sw-typeahead-search-line-item data-property-identifier="primaryEmailAddress.emailAddress" class="col-xs-2 s-photo">
+                    <sw-gravatar data-email-address="item.primaryEmailAddress_emailAddress">
+                </div>
+                <div class="col-xs-10 s-info">
+                    <div class="s-name">
+                        <span sw-typeahead-search-line-item data-property-identifier="firstName" ng-bind="item.firstName"></span>
+                        <span sw-typeahead-search-line-item data-property-identifier="lastName" ng-bind="item.lastName"></span>
+                    </div>
+                    <div class="s-email" ng-bind="item.primaryEmailAddress_emailAddress"></div>
+                </div>
+            </div>
 		</div>
+        
 		<sw-form data-object="addGiftRecipientControl.currentGiftRecipient" name="createRecipient" class="s-add-info-dropdown" ng-hide="!addGiftRecipientControl.adding">
 			<div class="s-add-info-dropdown-inner">
 					<h5 sw-rbkey="'admin.entity.addorderitemgiftrecipient.createRecipient'"></h5>

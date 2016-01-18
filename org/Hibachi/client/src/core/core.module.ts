@@ -25,6 +25,7 @@ import {SWConfirm} from "./components/swconfirm";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
+import {SWGravatar} from "./components/swgravatar"; 
 import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingColumn} from "./components/swlistingcolumn";
 import {SWLogin} from "./components/swlogin";
@@ -1156,6 +1157,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
+.directive('swGravatar', SWGravatar.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
 .directive('swLogin',SWLogin.Factory())
