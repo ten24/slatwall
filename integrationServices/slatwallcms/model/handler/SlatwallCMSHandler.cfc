@@ -1,4 +1,4 @@
-component {
+component extends="Slatwall.org.Hibachi.HibachiEventHandler" {
 	
 	variables.fullSitePaths = {};
 	variables.slatwallApplications = {};
