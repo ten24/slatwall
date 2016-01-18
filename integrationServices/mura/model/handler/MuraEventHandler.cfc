@@ -1092,7 +1092,8 @@
 				SELECT
 					tcontentcategories.categoryID,
 					tcontentcategories.parentID,
-					tcontentcategories.name
+					tcontentcategories.name,
+					tcontentcategories.urltitle
 				FROM
 					tcontentcategories
 				  LEFT JOIN
@@ -1122,13 +1123,15 @@
 							categoryIDPath,
 							siteID,
 							cmsCategoryID,
-							categoryName
+							categoryName,
+							urlTitle
 						) VALUES (
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#newCategoryID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#newCategoryID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.categoryID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.urltitle#" />
 						)
 					</cfquery>
 				<!--- Creating Internal Page, or resetting if parent can't be found --->	
@@ -1155,7 +1158,8 @@
 								parentCategoryID,
 								siteID,
 								cmsCategoryID,
-								categoryName
+								categoryName,
+								urlTitle
 							) VALUES (
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#newCategoryID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#parentMappingCache[ missingCategoryQuery.parentID ].categoryIDPath#,#newCategoryID#" />,
@@ -1163,6 +1167,7 @@
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.categoryID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.urltitle#" />
 							)
 						</cfquery>
 					</cfif>
