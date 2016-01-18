@@ -3787,7 +3787,7 @@ tabel .s-table-header {
 .s-pannel-group .panel-default {
   overflow: visible;
 }
-.s-pannel-group .panel-default a {
+.s-pannel-group .panel-default a.s-tooltip-hint {
   text-decoration: none;
   cursor: pointer;
   color: #aaa;

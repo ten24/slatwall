@@ -620,11 +620,11 @@
 				// Otherwise just remove the cmsAccountID & account authentication
 				} else {
 					
-					slatwallAccount.setCMSAccountID( javaCase("null", "") );
+					slatwallAccount.setCMSAccountID( javaCast("null", "") );
 					
-					for(var i=arrayLen(account.getAccountAuthentications()); i>=1; i--) {
-						if(!isNull(account.getAccountAuthentications()[i].getIntegration()) && account.getAccountAuthentications()[i].getIntegration().getIntegrationPackage() eq "mura") {
-							$.slatwall.getService("accountService").deleteAccountAuthentication(account.getAccountAuthentications()[i]);
+					for(var i=arrayLen(slatwallAccount.getAccountAuthentications()); i>=1; i--) {
+						if(!isNull(slatwallAccount.getAccountAuthentications()[i].getIntegration()) && slatwallAccount.getAccountAuthentications()[i].getIntegration().getIntegrationPackage() eq "mura") {
+							$.slatwall.getService("accountService").deleteAccountAuthentication(slatwallAccount.getAccountAuthentications()[i]);
 						}
 					}
 				}
