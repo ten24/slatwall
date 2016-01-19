@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService"  accessors="true" output="false" 
 {
     property name="accountService" type="any";
+    property name="addressService" type="any";
     property name="orderService" type="any";
     property name="userUtility" type="any";
     property name="paymentService" type="any";
@@ -57,7 +58,6 @@ component extends="HibachiService"  accessors="true" output="false"
     property name="productService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
-    
 
     variables.publicContexts = [];
     variables.responseType = "json";
