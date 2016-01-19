@@ -1,3 +1,6 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
+
 class SWSortable{
     public static Factory(){
         var directive = (expression, compiledElement)=> new SWSortable(expression, compiledElement);

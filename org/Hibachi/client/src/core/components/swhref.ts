@@ -1,17 +1,19 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWHref{
 	public static Factory(){
 		var directive = (
-			
+
 		)=>new SWHref(
-			
+
 		);
 		directive.$inject = [
-			
+
 		];
 		return directive;
 	}
 	constructor(
-		
+
 	){
 		return {
 			restrict: 'A',

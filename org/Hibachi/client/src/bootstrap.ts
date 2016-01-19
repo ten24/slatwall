@@ -1,3 +1,5 @@
+/// <reference path='../typings/slatwallTypescript.d.ts' />
+/// <reference path='../typings/tsd.d.ts' />
 /*jshint browser:true */
 import {BaseBootStrapper} from "./basebootstrap";
 import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
