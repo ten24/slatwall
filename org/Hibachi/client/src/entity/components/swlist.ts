@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWList{
 	public static Factory(){
 		var directive = (
@@ -30,9 +32,9 @@ class SWList{
 	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'/list.html',
 	        link: function (scope, element, attr) {
 	        	$log.debug('slatwallList init');
-	        	
+
 	        	scope.getCollection = function(){
-	        		
+
 	        		var pageShow = 50;
 	        		if(scope.pageShow !== 'Auto'){
 	        			pageShow = scope.pageShow;

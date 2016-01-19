@@ -49,6 +49,8 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
+	/// <reference path='../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../typings/tsd.d.ts' />
 	/*jshint browser:true */
 	var basebootstrap_1 = __webpack_require__(1);
 	var slatwalladmin_module_1 = __webpack_require__(51);
@@ -70,6 +72,8 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/// <reference path='../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../typings/tsd.d.ts' />
 	__webpack_require__(2)();
 	var core_module_1 = __webpack_require__(11);
 	//generic bootstrapper
@@ -176,6 +180,8 @@
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/// <reference path='../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../typings/tsd.d.ts' />
 	module.exports = function () {
 	    /* JS */
 	    __webpack_require__(3);
@@ -3210,6 +3216,8 @@
 /* 21 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var GlobalSearchController = (function () {
 	    //@ngInject
 	    function GlobalSearchController($scope, $log, $window, $timeout, $hibachi, rbkeyService) {
@@ -5159,6 +5167,8 @@
 /* 39 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWLoading = (function () {
 	    function SWLoading($log, corePartialsPath, pathBuilderConfig) {
 	        return {
@@ -5192,6 +5202,8 @@
 /* 40 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWScrollTrigger = (function () {
 	    function SWScrollTrigger($rootScope, $window, $timeout) {
 	        return {
@@ -5281,6 +5293,8 @@
 /* 41 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWRbKey = (function () {
 	    function SWRbKey($hibachi, observerService, utilityService, $rootScope, $log, rbkeyService) {
 	        return {
@@ -5387,6 +5401,8 @@
 /* 43 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSelection = (function () {
 	    function SWSelection($log, selectionService, observerService, corePartialsPath, pathBuilderConfig) {
 	        return {
@@ -5499,6 +5515,8 @@
 /* 45 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDirective = (function () {
 	    //@ngInject
 	    function SWDirective($compile) {
@@ -5541,6 +5559,8 @@
 /* 46 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWExportAction = (function () {
 	    //@ngInject
 	    function SWExportAction($log, corePartialsPath, pathBuilderConfig) {
@@ -5572,6 +5592,8 @@
 /* 47 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWHref = (function () {
 	    function SWHref() {
 	        return {
@@ -5683,6 +5705,8 @@
 /* 49 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSortable = (function () {
 	    function SWSortable(expression, compiledElement) {
 	        return function (linkElement) {
@@ -12675,6 +12699,8 @@
 /* 106 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
 	 * SwValidationEQ: Validates true if the user value == the constraint value.
 	 * @usage <input type='text' swvalidationgte='5' /> will validate false if the user enters
@@ -15176,6 +15202,8 @@
 /* 140 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItem = (function () {
 	    function SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
 	        return {
@@ -15593,6 +15621,8 @@
 /* 141 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
 	 * Displays a shipping label in the order items row.
 	 * @module slatwalladmin
@@ -15634,6 +15664,8 @@
 /* 142 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	/**
 	 * Displays a shipping label in the order items row.
 	 * @module slatwalladmin
@@ -15733,6 +15765,8 @@
 /* 143 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItems = (function () {
 	    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
 	        return {
@@ -17948,6 +17982,8 @@
 /* 166 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var OtherWiseController = (function () {
 	    //@ngInject
 	    function OtherWiseController($scope) {
@@ -17962,6 +17998,8 @@
 /* 167 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var RouterController = (function () {
 	    //@ngInject
 	    function RouterController($scope, $routeParams, $location, $log, partialsPath, baseURL) {
@@ -17988,6 +18026,8 @@
 /* 168 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDetailTabs = (function () {
 	    function SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
 	        return {
@@ -18019,6 +18059,8 @@
 /* 169 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDetail = (function () {
 	    function SWDetail($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
 	        return {
@@ -18089,6 +18131,8 @@
 /* 170 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWList = (function () {
 	    function SWList($log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
 	        return {
@@ -18133,6 +18177,8 @@
 /* 171 */
 /***/ function(module, exports) {
 
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCurrencyFormatter = (function () {
 	    function SWCurrencyFormatter($filter, $timeout) {
 	        var _this = this;

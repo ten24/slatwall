@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderItems{
 	public static Factory(){
 		var directive = (
@@ -117,7 +119,7 @@ class SWOrderItems{
 						orderItemCollection.columns.push(attributeColumn);
 					});
 
-					
+
 					var orderItemsPromise = orderItemCollection.getEntity();
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
@@ -141,7 +143,7 @@ class SWOrderItems{
  				.addFilter('displayOnOrderDetailFlag',true)
  				.addFilter('activeFlag',true)
  				.setAllRecords(true);
- 
+
  				var attItemsPromise = attributesCollection.getEntity();
 				attItemsPromise.then(function(value){
 					scope.attributes = [];

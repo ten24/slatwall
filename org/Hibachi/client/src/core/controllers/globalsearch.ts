@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class GlobalSearchController{
 	//@ngInject
 	constructor(
@@ -8,7 +10,7 @@ class GlobalSearchController{
 		$hibachi,
         rbkeyService
 	){
-        
+
         console.log('test');
         console.log(rbkeyService);
 		$scope.keywords = '';
