@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWExpandableRecordController{
     public static $inject = ['$timeout','utilityService','$hibachi','collectionConfigService'];

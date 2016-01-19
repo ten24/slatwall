@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 declare var CKEDITOR:any;
 class SWContentEditor{
     public static Factory(){
