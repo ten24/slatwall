@@ -14,7 +14,7 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 .config(['pathBuilderConfig', '$sceDelegateProvider' ,(pathBuilderConfig, $sceDelegateProvider)=>{
     /** set the baseURL */ 
     pathBuilderConfig.setBaseURL('/');
-    pathBuilderConfig.setBasePartialsPath('org/hibachi/client/src/');
+    pathBuilderConfig.setBasePartialsPath('custom/assets/');//org/hibachi/client/src/
                     
 }])
 .run(['$rootScope', '$hibachi', 'publicService', function($rootScope, $hibachi, publicService) {
@@ -22,6 +22,8 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
     $rootScope.hibachiScope = publicService;
 	$rootScope.hibachiScope.getAccount(); 
 	$rootScope.hibachiScope.getCart();
+    $rootScope.hibachiScope.getCountries();
+    $rootScope.hibachiScope.getStates();
 	$rootScope.slatwall = $rootScope.hibachiScope;
     $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
     

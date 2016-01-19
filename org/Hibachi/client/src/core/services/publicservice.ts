@@ -12,6 +12,8 @@ class PublicService {
     public http:ng.IHttpService;
     public header:any;
     private baseUrl = "";
+    public shippingAddress = "";
+    public billingAddress = "";
     
     //@ngInject
     constructor(public $http:ng.IHttpService, public $q:ng.IQService) { 
@@ -46,6 +48,43 @@ class PublicService {
         });
         return deferred.promise;
     }
+    /** accessors for countries */
+    public getCountries=(refresh:boolean):any =>  {
+        let urlBase = this.baseUrl + 'getCountries/' + this.ajaxRequestParam;
+        var deferred = this.$q.defer();
+        this.$http.get(urlBase).success((result:any)=>{
+            this.cart = result;
+            console.log("Countries:", this.cart);
+            deferred.resolve(result);
+        }).error((reason)=>{
+            deferred.reject(reason);  
+        });
+        return deferred.promise;
+    }
+    /** accessors for states */
+    public getStates=(refresh:boolean):any =>  {
+        let urlBase = this.baseUrl + 'getStates/' + this.ajaxRequestParam;
+        var deferred = this.$q.defer();
+        this.$http.get(urlBase).success((result:any)=>{
+            this.cart = result;
+            console.log("States:", this.cart);
+            deferred.resolve(result);
+        }).error((reason)=>{
+            deferred.reject(reason);  
+        });
+        return deferred.promise;
+    }
+    
+    /** sets the current shipping address */
+    public setShippingAddress=(shippingAddress) => {
+        this.shippingAddress = shippingAddress;
+    }
+    
+    /** sets the current shipping address */
+    public setBillingAddress=(billingAddress) => {
+        this.billingAddress = billingAddress;
+    }
+    
     /** this is the generic method used to call all server side actions.
         *  @param action {string} the name of the action (method) to call in the public service.
         *  @param data   {object} the params as key value pairs to pass in the post request.

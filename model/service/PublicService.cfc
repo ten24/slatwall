@@ -791,4 +791,51 @@ component extends="HibachiService"  accessors="true" output="false"
         }
         arguments.data.ajaxResponse["errors"] = errors;
     } 
+    
+    /** returns a list of states either for us (default) or by the passed in countryCode */
+    public void function getStates( required struct data ) {
+        param name="data.countryCode" type="string" default="US";
+        var country = getAddressService().getCountry(data.countryCode);
+        var stateCodeOptions = country.getStateCodeOptions();
+        var states = country.getStates();
+        var addressOptions = {
+            
+            'streetAddressLabel' =  country.getStreetAddressLabel(),
+            'streetAddressShowFlag' =  country.getStreetAddressShowFlag(),
+            'streetAddressRequiredFlag' =  country.getStreetAddressRequiredFlag(),
+            
+            'street2AddressLabel' =  country.getStreet2AddressLabel(),
+            'street2AddressShowFlag' =  country.getStreet2AddressShowFlag(),
+            'street2AddressRequiredFlag' =  country.getStreet2AddressRequiredFlag(),
+            
+            'cityLabel' =  country.getCityLabel(),
+            'cityShowFlag' =  country.getCityShowFlag(),
+            'cityRequiredFlag' =  country.getCityRequiredFlag(),
+            
+            'localityLabel' =  country.getLocalityLabel(),
+            'localityShowFlag' =  country.getLocalityShowFlag(),
+            'localityRequiredFlag' =  country.getLocalityRequiredFlag(),
+            
+            'stateCodeLabel' =  country.getStateCodeLabel(),
+            'stateCodeShowFlag' =  country.getStateCodeShowFlag(),
+            'stateCodeRequiredFlag' =  country.getStateCodeRequiredFlag(),
+            
+            'postalCodeLabel' =  country.getPostalCodeLabel(),
+            'postalCodeShowFlag' =  country.getPostalCodeShowFlag(),
+            'postalCodeRequiredFlag' =  country.getPostalCodeRequiredFlag()
+            
+        };
+        
+        arguments.data.ajaxResponse["country"] = {
+            'stateCodeOptions' =  stateCodeOptions,
+            'addressOptions' = addressOptions
+        };
+        
+    }
+    
+    /** returns the list of country code options */
+    public void function getCountries( required struct data ) {
+        arguments.data.ajaxResponse['countryCodeOptions'] = getAddressService().getCountryCodeOptions();
+    }
+    
 }
