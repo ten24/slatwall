@@ -53,7 +53,7 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	property name="categoryIDPath" ormtype="string" length="4000";
 	property name="categoryName" ormtype="string";
 	property name="categoryDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
-	property name="urlTitle" ormtype="string" unique="true";
+	property name="urlTitle" ormtype="string";
 	property name="restrictAccessFlag" ormtype="boolean";
 	property name="allowProductAssignmentFlag" ormtype="boolean";
 	
