@@ -1,17 +1,17 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWFormFieldSelect implements ng.IDirective {
 	public static Factory(){
 		var directive = (
 			$log,
-			$slatwall,
+			$hibachi,
 			formService,
 			coreFormPartialsPath,
 			utilityService,
 			pathBuilderConfig
 		)=>new SWFormFieldSelect(
 			$log,
-			$slatwall,
+			$hibachi,
 			formService,
 			coreFormPartialsPath,
 			utilityService,
@@ -19,7 +19,7 @@ class SWFormFieldSelect implements ng.IDirective {
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'formService',
 			'coreFormPartialsPath',
 			'utilityService',
@@ -30,7 +30,7 @@ class SWFormFieldSelect implements ng.IDirective {
 	//@ngInject
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		formService,
 		coreFormPartialsPath,
 		utilityService,
@@ -77,7 +77,7 @@ class SWFormFieldSelect implements ng.IDirective {
 
 						if(angular.isUndefined(scope.propertyDisplay.options)){
 
-							var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className,
+							var optionsPromise = $hibachi.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className,
 								scope.propertyDisplay.optionsArguments
 							);
 							optionsPromise.then(function(value){
@@ -86,14 +86,14 @@ class SWFormFieldSelect implements ng.IDirective {
 								if(selectType === 'object'
 								){
 									if(angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
-										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
 									}
 
 									if(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === ''){
 										$log.debug('no ID');
 										$log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
 										scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
 										scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
 									}else{
 										var found = false;

@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWFormFieldTextController implements ng.IDirective {
 	public propertyDisplay:any;
@@ -53,7 +53,7 @@ class SWFormFieldText implements ng.IDirective {
 export{
 	SWFormFieldText
 }
-//     angular.module('slatwalladmin').directive('swFormFieldText', ['$log','$slatwall','formService','partialsPath', ($log, $slatwall, formService, partialsPath) => new SWFormFieldText($log, $slatwall, formService, partialsPath)]);
+//     angular.module('slatwalladmin').directive('swFormFieldText', ['$log','$hibachi','formService','partialsPath', ($log, $hibachi, formService, partialsPath) => new SWFormFieldText($log, $hibachi, formService, partialsPath)]);
 // }
 
 

@@ -2,8 +2,6 @@
 /// <reference path="../../typings/slatwallTypeScript.d.ts" />
 import {hibachimodule} from "../hibachi/hibachi.module";
 import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
-import {ngslatwallmodule} from "../ngslatwall/ngslatwall.module";
-import {ngslatwallmodelmodule} from "../ngslatwallmodel/ngslatwallmodel.module";
 import {contentmodule} from "../content/content.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
 import {optiongroupmodule} from "../optiongroup/optiongroup.module";
@@ -12,12 +10,13 @@ import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 import {workflowmodule} from "../workflow/workflow.module";
 import {entitymodule} from "../entity/entity.module";
+//directives
+import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
 import {EntityRBKey} from "./filters/entityrbkey";
 import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
-declare var slatwallAngular:any;
 declare var $:SlatwallJQueryStatic;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
@@ -26,11 +25,9 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   'ngSanitize',
   //custom modules
   hibachimodule.name,
-  ngslatwallmodule.name,
-  ngslatwallmodelmodule.name,
   entitymodule.name,
   contentmodule.name,
-  giftcardmodule.name, 
+  giftcardmodule.name,
   optiongroupmodule.name,
   orderitemmodule.name,
   productmodule.name,
@@ -46,29 +43,11 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   {
       //configure partials path properties
      pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-     pathBuilderConfig.setBasePartialsPath('org/Hibachi/client/src/');
+     pathBuilderConfig.setBasePartialsPath('/org/Hibachi/client/src/');
 
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
      datepickerPopupConfig.toggleWeeksText = null;
-     if(slatwallAngular.hashbang){
-         $locationProvider.html5Mode( false ).hashPrefix('!');
-     }
-     //
-     //$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
-
-
-    //  var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
-
-    //   $provide.constant("partialsPath", _partialsPath);
-    //  $provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-
-
-    //  angular.forEach(slatwallAngular.constantPaths, function(constantPath,key){
-    //      var constantKey = constantPath.charAt(0).toLowerCase()+constantPath.slice(1)+'PartialsPath';
-    //      var constantPartialsPath = _partialsPath+constantPath.toLowerCase()+'/';
-    //      $provide.constant(constantKey, constantPartialsPath);
-    //  });
 
      $logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
      $filterProvider.register('likeFilter',function(){
@@ -104,13 +83,12 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      });
 
      $httpProvider.interceptors.push('slatwallInterceptor');
-     console.log($httpProvider.interceptors);
-    console.log(hibachimodule);
+
      // route provider configuration
 
 
  }])
- .run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService','pathBuilderConfig', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService,pathBuilderConfig) => {
+ .run(['$rootScope','$filter','$anchorScroll','$hibachi','dialogService','observerService','utilityService','pathBuilderConfig', ($rootScope,$filter,$anchorScroll,$hibachi,dialogService,observerService,utilityService,pathBuilderConfig) => {
         $anchorScroll.yOffset = 100;
 
         $rootScope.openPageDialog = function( partial ) {
@@ -121,28 +99,29 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
             dialogService.removePageDialog( index );
         };
 
-        $rootScope.loadedResourceBundle = false;
-        $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
-        $rootScope.buildUrl = $slatwall.buildUrl;
+        // $rootScope.loadedResourceBundle = false;
+        // $rootScope.loadedResourceBundle = $hibachi.hasResourceBundle();
+        $rootScope.buildUrl = $hibachi.buildUrl;
         $rootScope.createID = utilityService.createID;
 
-        var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
-            if(newValue !== oldValue){
-                $rootScope.$broadcast('hasResourceBundle');
-                rbListener();
-            }
-        });
+        // var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
+        //     if(newValue !== oldValue){
+        //         $rootScope.$broadcast('hasResourceBundle');
+        //         rbListener();
+        //     }
+        // });
 
     }])
  //services
 .service('slatwallInterceptor', SlatwallInterceptor.Factory())
+//directives
+.directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //filters
-.filter('entityRBKey',['$slatwall',EntityRBKey.Factory])
-.filter('swcurrency',['$sce','$log','$slatwall',SWCurrency.Factory])
+.filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
+.filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
 ;
 export{
-    slatwalladminmodule,
-    slatwallAngular
+    slatwalladminmodule
 };
 // ((): void => {
 
@@ -233,7 +212,7 @@ export{
 //             templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 //         });
 
-//     }]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService) => {
+//     }]).run(['$rootScope','$filter','$anchorScroll','$hibachi','dialogService','observerService','utilityService', ($rootScope,$filter,$anchorScroll,$hibachi,dialogService,observerService,utilityService) => {
 //         $anchorScroll.yOffset = 100;
 
 //         $rootScope.openPageDialog = function( partial ) {
@@ -245,8 +224,8 @@ export{
 //         };
 
 //         $rootScope.loadedResourceBundle = false;
-//         $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
-//         $rootScope.buildUrl = $slatwall.buildUrl;
+//         $rootScope.loadedResourceBundle = $hibachi.hasResourceBundle();
+//         $rootScope.buildUrl = $hibachi.buildUrl;
 //         $rootScope.createID = utilityService.createID;
 
 //         var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){

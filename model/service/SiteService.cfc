@@ -48,8 +48,8 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
-	variables.skeletonSitePath = expandPath('/integrationServices/slatwallcms/skeletonsite');
-	variables.sharedAssetsPath = '/custom/assets';
+	variables.skeletonSitePath = expandPath('/#getApplicationValue('applicationKey')#')&'/integrationServices/slatwallcms/skeletonsite';
+	variables.sharedAssetsPath = expandPath('/#getApplicationValue('applicationKey')#')&'/custom/assets';
 
 	// ===================== START: Logical Methods ===========================
 	public string function getSharedAssetsPath(){
@@ -234,10 +234,10 @@ component  extends="HibachiService" accessors="true" {
 		createSlatwallTemplatesChildren(slatwallTemplatesContent,arguments.site);
 	}
 
-	public void function deploySite(required any site) {
+	public void function deploySite(required any site, boolean createContent=true) {
 		// copy skeletonsite to /apps/{applicationCodeOrID}/{siteCodeOrID}/
 		if(!directoryExists(arguments.site.getSitePath())){
-			createDirectory(arguments.site.getSitePath());
+			directoryCreate(arguments.site.getSitePath());
 		}
 		getService("hibachiUtilityService").duplicateDirectory(
 			source=getSkeletonSitePath(),
@@ -246,7 +246,9 @@ component  extends="HibachiService" accessors="true" {
 			recurse=true,
 			copyContentExclusionList=".svn,.git"
 		);
+		if(arguments.createContent){
 		createDefaultContentPages(arguments.site);
+		}
 
 
 		// create 6 content nodes for this site, and map to the appropriate templates

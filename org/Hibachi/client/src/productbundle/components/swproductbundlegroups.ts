@@ -1,11 +1,11 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWProductBundleGroups{
     public static Factory(){
         var directive = (
             $http,
 			$log,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			productBundlePartialsPath,
 			productBundleService,
@@ -13,7 +13,7 @@ class SWProductBundleGroups{
         )=> new SWProductBundleGroups(
             $http,
 			$log,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			productBundlePartialsPath,
 			productBundleService,
@@ -22,7 +22,7 @@ class SWProductBundleGroups{
         directive.$inject = [
             '$http',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'metadataService',
 			'productBundlePartialsPath',
 			'productBundleService',
@@ -33,7 +33,7 @@ class SWProductBundleGroups{
     constructor(
         $http,
 		$log,
-		$slatwall,
+		$hibachi,
 		metadataService,
 		productBundlePartialsPath,
 		productBundleService,

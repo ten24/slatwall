@@ -1,23 +1,24 @@
-
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWDetailTabs{
 	public static Factory(){
 		var directive = (
 			$location,
 			$log,
-			$slatwall,
+			$hibachi,
 			coreEntityPartialsPath,
 			pathBuilderConfig
 		)=> new SWDetailTabs(
 			$location,
 			$log,
-			$slatwall,
+			$hibachi,
 			coreEntityPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$location',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'coreEntityPartialsPath',
 			'pathBuilderConfig'
 		];
@@ -26,7 +27,7 @@ class SWDetailTabs{
 	constructor(
 		$location,
 		$log,
-		$slatwall,
+		$hibachi,
 		coreEntityPartialsPath,
 		pathBuilderConfig
 	){

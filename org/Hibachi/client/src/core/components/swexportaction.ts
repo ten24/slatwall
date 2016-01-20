@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWExportAction{
 	public static Factory(){
 		var directive = (
@@ -16,6 +18,7 @@ class SWExportAction{
 		];
 		return directive;
 	}
+    //@ngInject
 	constructor(
 		$log,
 		corePartialsPath,

@@ -54,46 +54,45 @@ Notes:
 
 <cfoutput>
 	<div class="container s-login-container">
-		
+
 		<div class="s-login-wrapper col-xs-6 col-xs-offset-3">
-	
+
 			<div class="s-logo">
-				
+
 				<img src="#request.slatwallScope.getBaseURL()#/assets/images/logo-1x.png" alt="Slatwall"
 					 srcset="#request.slatwallScope.getBaseURL()#/assets/images/logo-2x.png 2x">
 			</div>
 			<hb:HibachiMessageDisplay />
-			
+
 			<!--- RESET PASSWORD FROM FORGOT PASSWORD EMAIL --->
 			<cfif len(rc.swprid) eq 64>
-					
+
 				<form id="adminResetPasswordForm" action="?s=1" class="s-form-signin" method="post">
 					<h2>Reset Password</h2>
 					<input type="hidden" name="slatAction" value="admin:main.resetPassword" />
 					<input type="hidden" name="swprid" value="#rc.swprid#" />
 					<input type="hidden" name="accountID" value="#left(rc.swprid, 32)#" />
-	
+
 					<cfif structKeyExists(rc,'processObject')>
 						<cfset processObject = rc.processObject />
 					<cfelse>
-						<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("resetPassword") />
+						<cfset processObject = rc.fw.getHibachiScope().getAccount(left(rc.swprid, 32)).getProcessObject("resetPassword") />
 					</cfif>
-	
+
 					<hb:HibachiErrorDisplay object="#processObject#" errorName="swprid" />
-	
 					<hb:HibachiPropertyDisplay object="#processObject#" property="password" edit="true" fieldAttributes="placeholder='Password'" />
 					<hb:HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" fieldAttributes="placeholder='Confirm Password'"/>
-	
+
 					<button type="submit" class="btn btn-lg s-btn-ten24 pull-right">Reset & Login</button>
 				</form>
-				
+
 			<cfelseif rc.accountAuthenticationExists>
 				<cfset authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login") />
 				<cfset updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword") />
-	
+
 				<!--- UPDATE PASSWORD BECAUSE OF FORCE RESET --->
 				<cfif (authorizeProcessObject.hasError('passwordUpdateRequired') OR updateProcessObject.hasErrors())>
-	
+
 					<form id="adminLoginForm" action="?s=1" class="s-form-signin" method="post">
 						<h2>Password Update Required</h2>
 						<input type="hidden" name="slatAction" value="admin:main.updatePassword" />
@@ -105,7 +104,7 @@ Notes:
 					</form>
 				<!--- LOGIN & FORGOT PASSWORD --->
 				<cfelse>
-					
+
 					<!--- LOGIN --->
 					<cfset authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login") />
 					<form class="s-form-signin" action="?s=1" id="j-login-wrapper" method="post" novalidate="novalidate">
@@ -119,7 +118,7 @@ Notes:
 						<a href="##" id="j-forgot-password" class="s-forgot-password-link s-login-link" tabindex="-1">Forgot Password</a>
 						<button type="submit" class="btn btn-lg btn-primary">#$.slatwall.rbKey('define.login')#</button>
 					</form>
-	
+
 					<!--- FORGOT PASSWORD --->
 					<cfset forgotPasswordProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("forgotPassword") />
 					<form class="s-form-signin" action="?s=1"  method="post" id="j-forgot-password-wrapper" novalidate="novalidate">
@@ -129,17 +128,17 @@ Notes:
 						<hb:HibachiPropertyDisplay object="#forgotPasswordProcessObject#" property="emailAddress" edit="true" fieldAttributes="autocomplete='off' placeholder='Email'" />
 						<button type="submit" class="btn btn-lg btn-primary">#$.slatwall.rbKey('admin.main.sendPasswordReset')#</button>
 					</form>
-	
+
 					<!--- INTEGRATION LOGINS --->
 					<cfloop array="#rc.integrationLoginHTMLArray#" index="loginHTML">
 						<hr />
 						#loginHTML#
 					</cfloop>
-						
+
 				</cfif>
-			
+
 			<cfelse>
-				
+
 				<!--- CREATE SUPER USER --->
 				<form id="adminCreateSuperUserForm" class="s-form-signin" action="?s=1" method="post">
 					<h2>Setup Super User</h2>
@@ -154,9 +153,9 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" fieldAttributes="placeholder='Confirm Password'"/>
 					<button type="submit" class="btn btn-lg btn-primary pull-right">Create & Login</button>
 				</form>
-				
+
 			</cfif>
-			
+
 		</div>
 	</div>
 

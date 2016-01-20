@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class PageDialogController{
 	//@ngInject
 	constructor(
@@ -7,7 +7,7 @@ class PageDialogController{
 		$location,
 		$log,
 		$anchorScroll,
-		$slatwall,
+		$hibachi,
 		dialogService
 	){
 		$scope.$id = 'pageDialogController';

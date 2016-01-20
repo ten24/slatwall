@@ -1,17 +1,17 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTaskActions{
     public static Factory(){
         var directive = (
             $log,
-            $slatwall,
+            $hibachi,
             metadataService,
             collectionService,
             workflowPartialsPath,
 			pathBuilderConfig
         )=> new SWWorkflowTaskActions(
             $log,
-            $slatwall,
+            $hibachi,
             metadataService,
             collectionService,
             workflowPartialsPath,
@@ -19,7 +19,7 @@ class SWWorkflowTaskActions{
         );
         directive.$inject = [
             '$log',
-            '$slatwall',
+            '$hibachi',
             'metadataService',
             'collectionService',
             'workflowPartialsPath',
@@ -29,7 +29,7 @@ class SWWorkflowTaskActions{
     }
     constructor(
         $log,
-        $slatwall,
+        $hibachi,
         metadataService,
         collectionService,
         workflowPartialsPath,
@@ -151,7 +151,7 @@ class SWWorkflowTaskActions{
                     $log.debug(workflowTaskAction);
                     scope.finished = false;
                     scope.workflowTaskActions.selectedTaskAction = undefined;
-                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTask.data.workflow.data.workflowObject);
+                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTask.data.workflow.data.workflowObject);
                     filterPropertiesPromise.then(function (value) {
                         scope.filterPropertiesList = {
                             baseEntityName: scope.workflowTask.data.workflow.data.workflowObject,

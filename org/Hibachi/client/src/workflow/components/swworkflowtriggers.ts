@@ -1,19 +1,19 @@
 
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTriggers{
 	public static Factory(){
 		var directive = (
 			$log,
 			$location,
-			$slatwall,
+			$hibachi,
 			workflowPartialsPath,
 			formService,
 			pathBuilderConfig
 		)=> new SWWorkflowTriggers(
 			$log,
 			$location,
-			$slatwall,
+			$hibachi,
 			workflowPartialsPath,
 			formService,
 			pathBuilderConfig
@@ -21,7 +21,7 @@ class SWWorkflowTriggers{
 		directive.$inject = [
 			'$log',
 			'$location',
-			'$slatwall',
+			'$hibachi',
 			'workflowPartialsPath',
 			'formService',
 			'pathBuilderConfig'
@@ -31,7 +31,7 @@ class SWWorkflowTriggers{
 	constructor(
 		$log,
 		$location,
-		$slatwall,
+		$hibachi,
 		workflowPartialsPath,
 		formService,
 			pathBuilderConfig
@@ -100,7 +100,7 @@ class SWWorkflowTriggers{
 					         ']'+
 						'}'+
 					']';
-					var collectionsPromise = $slatwall.getEntity('Collection',{filterGroupsConfig:filterGroupsConfig});
+					var collectionsPromise = $hibachi.getEntity('Collection',{filterGroupsConfig:filterGroupsConfig});
 
 					collectionsPromise.then(function(value){
 						$log.debug('getcollections');
@@ -128,7 +128,7 @@ class SWWorkflowTriggers{
 				 */
 				scope.getEventOptions = function(objectName){
 					if(!scope.eventOptions.length){
-						var eventOptionsPromise = $slatwall.getEventOptions(objectName);
+						var eventOptionsPromise = $hibachi.getEventOptions(objectName);
 
 						eventOptionsPromise.then(function(value){
 							$log.debug('getEventOptions');

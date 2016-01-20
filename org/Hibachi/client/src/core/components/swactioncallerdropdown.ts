@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWActionCallerDropdownController{
     public title:string;
@@ -8,6 +8,7 @@ class SWActionCallerDropdownController{
     public dropdownClass:string;
     public dropdownId:string;
     public buttonClass:string;
+    
     constructor(){
         this.title = this.title || '';
         this.icon = this.icon || 'plus';

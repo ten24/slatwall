@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * This validate directive will look at the current element, figure out the context (save, edit, delete) and
  * validate based on that context as defined in the validation properties object.
@@ -33,7 +33,8 @@ class SWInput{
 			var form = propertyDisplay.form.$$swFormInfo;
 			$log.debug("Name is:" + name + " and form is: " + form);
 			var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
-			$log.debug("Validations: ");
+			$log.debug("Validations: ", validations);
+            $log.debug(propertyDisplay.form.$$swFormInfo)
 			var validationsForContext = [];
 
 			//get the form context and the form name.
@@ -91,16 +92,24 @@ class SWInput{
 		var getTemplate = function(propertyDisplay){
 			var template = '';
 			var validations = '';
+            var currency = '';
 			if(!propertyDisplay.noValidate){
 				validations = getValidationDirectives(propertyDisplay);
 			}
+            if(propertyDisplay.object.metaData.$$getPropertyFormatType(propertyDisplay.property) == "currency"){
+                currency = 'sw-currency-formatter ';
+                if(angular.isDefined(propertyDisplay.object.data.currencyCode)){
+                    currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
+                }
+            }
+           
 			if(propertyDisplay.fieldType === 'text'){
 				template = '<input type="text" class="form-control" '+
 				'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
 				'ng-disabled="!propertyDisplay.editable" '+
 				'ng-show="propertyDisplay.editing" '+
 				'name="'+propertyDisplay.property+'" ' +
-				validations+
+				validations + currency +
 				'id="swinput'+utilityService.createID(26)+'"'+
 				' />';
 			}else if(propertyDisplay.fieldType === 'password'){
@@ -109,10 +118,19 @@ class SWInput{
 				'ng-disabled="!propertyDisplay.editable" '+
 				'ng-show="propertyDisplay.editing" '+
 				'name="'+propertyDisplay.property+'" ' +
-				validations+
+				validations +
 				'id="swinput'+utilityService.createID(26)+'"'+
 				' />';
-			}
+			} else if(propertyDisplay.fieldType === 'number'){
+                template = '<input type="number" class="form-control" '+
+				'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+				'ng-disabled="!propertyDisplay.editable" '+
+				'ng-show="propertyDisplay.editing" '+
+				'name="'+propertyDisplay.property+'" ' +
+				validations +
+				'id="swinput'+utilityService.createID(26)+'"'+
+				' />';
+            }
 
 			return template;
 		};
@@ -120,7 +138,8 @@ class SWInput{
 		return {
 			require:'^form',
 			scope:{
-				propertyDisplay:"="
+				propertyDisplay:"=",
+                type:"@?"
 			},
 			restrict : "E",
 			//adding model and form controller

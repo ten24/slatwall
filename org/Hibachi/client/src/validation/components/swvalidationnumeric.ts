@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * Validates true if the model value (user value) is a numeric value.
  * @event This event fires on every change to an input.
@@ -10,7 +10,7 @@ class SWValidationNumeric{
             restrict: "A",
             require: "^ngModel",
             link: function(scope, element, attributes, ngModel) {
-                    ngModel.$validators.swvalidationnumeric = 
+                ngModel.$validators.swvalidationnumeric = 
                     function(modelValue, viewValue) {
                         //Returns true if this is not a number.
                         if (!isNaN(viewValue)){

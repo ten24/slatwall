@@ -1,19 +1,19 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWFormFieldSearchSelect{
 	public static Factory(){
 		var directive = (
 			$http,
 			$log,
-			$slatwall,
+			$hibachi,
 			formService,
 			coreFormPartialsPath,
 			pathBuilderConfig
 		)=>new SWFormFieldSearchSelect(
 			$http,
 			$log,
-			$slatwall,
+			$hibachi,
 			formService,
 			coreFormPartialsPath,
 			pathBuilderConfig
@@ -21,7 +21,7 @@ class SWFormFieldSearchSelect{
 		directive.$inject = [
 			'$http',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'formService',
 			'coreFormPartialsPath',
 			'pathBuilderConfig'
@@ -31,7 +31,7 @@ class SWFormFieldSearchSelect{
 	constructor(
 		$http,
 		$log,
-		$slatwall,
+		$hibachi,
 		formService,
 		coreFormPartialsPath,
 		pathBuilderConfig
@@ -60,7 +60,7 @@ class SWFormFieldSearchSelect{
 				scope.showAddBtn = false;
 				var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
 				//create basic
-				var object = $slatwall.newEntity(propertyMetaData.cfc);
+				var object = $hibachi.newEntity(propertyMetaData.cfc);
 
 //				scope.propertyDisplay.template = '';
 //				//check for a template
@@ -92,7 +92,7 @@ class SWFormFieldSearchSelect{
 						' ]'+
 					' }'+
 					']';
-					return $slatwall.getEntity(propertyMetaData.cfc, {filterGroupsConfig:filterGroupsConfig.trim()})
+					return $hibachi.getEntity(propertyMetaData.cfc, {filterGroupsConfig:filterGroupsConfig.trim()})
 					.then(function(value){
 						$log.debug('typesByKeyword');
 						$log.debug(value);

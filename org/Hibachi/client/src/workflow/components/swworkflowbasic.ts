@@ -1,25 +1,25 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowBasic{
 	public static Factory(){
 		var directive=(
-			$log, $location, $slatwall, formService, workflowPartialsPath,
+			$log, $location, $hibachi, formService, workflowPartialsPath,
 			pathBuilderConfig
 		)=>new SWWorkflowBasic(
-			$log, $location, $slatwall, formService, workflowPartialsPath,
+			$log, $location, $hibachi, formService, workflowPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
 			'$location',
-			'$slatwall',
+			'$hibachi',
 			'formService',
 			'workflowPartialsPath',
 			'pathBuilderConfig'
 		];
 		return directive;
 	}
-	constructor($log, $location, $slatwall, formService, workflowPartialsPath,
+	constructor($log, $location, $hibachi, formService, workflowPartialsPath,
 			pathBuilderConfig){
 
 		return {

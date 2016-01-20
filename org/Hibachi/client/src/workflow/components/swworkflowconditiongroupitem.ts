@@ -1,18 +1,18 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowConditionGroupItem{
 	public static Factory(){
 		var directive = (
 			$log,
 			$location,
-			$slatwall,
+			$hibachi,
 			formService,
 			workflowPartialsPath,
 			pathBuilderConfig
 		)=> new (
 			$log,
 			$location,
-			$slatwall,
+			$hibachi,
 			formService,
 			workflowPartialsPath,
 			pathBuilderConfig
@@ -20,7 +20,7 @@ class SWWorkflowConditionGroupItem{
 		directive.$inject = [
 			'$log',
 			'$location',
-			'$slatwall',
+			'$hibachi',
 			'formService',
 			'workflowPartialsPath',
 			'pathBuilderConfig'
@@ -30,7 +30,7 @@ class SWWorkflowConditionGroupItem{
 	constructor(
 		$log,
 		$location,
-		$slatwall,
+		$hibachi,
 		formService,
 		workflowPartialsPath,
 			pathBuilderConfig

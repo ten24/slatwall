@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class ProductCreateController{
         public collectionConfig;
@@ -9,9 +9,10 @@ class ProductCreateController{
         constructor(
                 private $scope,
                 private $element, private $log:ng.ILogService,
-                private $slatwall,
+                private $hibachi,
                 private collectionConfigService,
-                private selectionService
+                private selectionService,
+                private rbkeyService
         ){
             this.$log.debug('init product_create controller');
             //on select change get collection
@@ -77,7 +78,7 @@ class ProductCreateController{
             });
             
             if(this.$scope.preprocessproduct_createCtrl.options.length > 1){
-                this.$scope.preprocessproduct_createCtrl.options.splice(0,0,{label:this.$slatwall.getRBKey('processObject.Product_Create.selectProductType'),value:""});
+                this.$scope.preprocessproduct_createCtrl.options.splice(0,0,{label:this.rbkeyService.getRBKey('processObject.Product_Create.selectProductType'),value:""});
             }
             
             this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.options[0]);

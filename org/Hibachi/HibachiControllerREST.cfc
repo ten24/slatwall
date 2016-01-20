@@ -29,6 +29,8 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
     this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
     this.publicMethods=listAppend(this.publicMethods, 'getModel');
+    this.publicMethods=listAppend(this.publicMethods, 'getConfig');
+    this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
     
     //  this.secureMethods='';
     //  this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -60,6 +62,16 @@ component output="false" accessors="true" extends="HibachiController" {
         
         //could possibly check whether we want a different contentType other than json in the future example:xml
         
+    }
+    
+    public void function getConfig(required struct rc){
+    	var config = getService('HibachiSessionService').getConfig();
+    	config[ 'modelConfig' ] = getModel(arguments.rc);
+    	arguments.rc.apiResponse.content['data'] = config;
+    }
+    
+    public void function getInstantiationKey(required struct rc){
+    	arguments.rc.apiResponse.content['data'] = '#getApplicationValue('instantiationKey')#';
     }
     
     public void function getCurrencies(required struct rc){
@@ -114,7 +126,7 @@ component output="false" accessors="true" extends="HibachiController" {
     
     public any function getDetailTabs(required struct rc){
         var detailTabs = [];
-        var tabsDirectory = expandPath( '/' ) & 'org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
+        var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & '/org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
         var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
         for(var tabFile in tabFilesList){
             var tab = {};
@@ -437,7 +449,7 @@ component output="false" accessors="true" extends="HibachiController" {
         }
     }
     
-    public any function getModel(required struct rc){
+    private any function getModel(required struct rc){
         var model = {};
         if(!request.slatwallScope.hasApplicationValue('objectModel')){
             var entities = [];
@@ -470,7 +482,7 @@ component output="false" accessors="true" extends="HibachiController" {
             request.slatwallScope.setApplicationValue('objectModel',model);
         }
         model = request.slatwallScope.getApplicationValue('objectModel');
-        arguments.rc.apiResponse.content['data'] = model;
+        return model;
     }
     
     public any function get( required struct rc ) {

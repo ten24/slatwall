@@ -1,25 +1,25 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWContentNode{
     public static Factory(){
         var directive = (
             $log,
             $compile,
-            $slatwall,
+            $hibachi,
             contentPartialsPath,
             pathBuilderConfig
         )=> new SWContentNode(
             $log,
             $compile,
-            $slatwall,
+            $hibachi,
             contentPartialsPath,
             pathBuilderConfig
         );
         directive.$inject = [
             '$log',
             '$compile',
-            '$slatwall',
+            '$hibachi',
             'contentPartialsPath',
             'pathBuilderConfig'
         ];
@@ -28,7 +28,7 @@ class SWContentNode{
     constructor(
         $log,
         $compile,
-        $slatwall,
+        $hibachi,
         contentPartialsPath,
         pathBuilderConfig
     ){
@@ -128,7 +128,7 @@ class SWContentNode{
                         }]
                     }];
 
-                    var collectionListingPromise = $slatwall.getEntity('Content', {
+                    var collectionListingPromise = $hibachi.getEntity('Content', {
                         columnsConfig: angular.toJson(childContentColumnsConfig),
                         filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
                         orderByConfig: angular.toJson(childContentOrderBy),

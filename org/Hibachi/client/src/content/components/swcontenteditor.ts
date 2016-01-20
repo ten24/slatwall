@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 declare var CKEDITOR:any;
 class SWContentEditor{
     public static Factory(){
@@ -7,7 +7,7 @@ class SWContentEditor{
             $log,
 			$location,
 			$http,
-			$slatwall,
+			$hibachi,
 			formService,
 			contentPartialsPath,
             pathBuilderConfig
@@ -15,7 +15,7 @@ class SWContentEditor{
             $log,
 			$location,
 			$http,
-			$slatwall,
+			$hibachi,
 			formService,
 			contentPartialsPath,
             pathBuilderConfig
@@ -24,7 +24,7 @@ class SWContentEditor{
             '$log',
 			'$location',
 			'$http',
-			'$slatwall',
+			'$hibachi',
 			'formService',
 			'contentPartialsPath',
             'pathBuilderConfig'
@@ -35,7 +35,7 @@ class SWContentEditor{
         $log,
 		$location,
 		$http,
-		$slatwall,
+		$hibachi,
 		formService,
 		contentPartialsPath,
             pathBuilderConfig

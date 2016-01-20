@@ -578,14 +578,17 @@ component output="false" accessors="true" extends="HibachiService" {
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
 					//add all attributes by alias
- 					if(structKeyExists(column,'attributeID')){
- 						ArrayAppend(attributePropertyIdentifierArray,piAlias);
- 					}
+ 
+					if(structKeyExists(column,'attributeID')){
+						ArrayAppend(attributePropertyIdentifierArray,piAlias);
+					}
+
 				}
 			}
 
-			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray, attributePropertyIdentifierArray, enforceAuthorization);
-
+			
+			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,enforceAuthorization);
+			
 			var collectionStruct = {};
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,authorizedProperties);
@@ -612,8 +615,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			arrayAppend(authorizedProperties,aggregatePropertyIdentifier);
 		}
 		for(var attributePropertyIdentifier in arguments.attributePropertyIdentifierArray){
- 			arrayAppend(authorizedProperties,attributePropertyIdentifier);
- 		}
+
+			arrayAppend(authorizedProperties,attributePropertyIdentifier);
+		}
+
 		return authorizedProperties;
 	}
 

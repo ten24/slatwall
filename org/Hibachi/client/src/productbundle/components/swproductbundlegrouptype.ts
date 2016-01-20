@@ -1,12 +1,12 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWProductBundleGroupType{
 	public static Factory(){
         var directive = (
             $http,
 			$log,
-			$slatwall,
+			$hibachi,
 			formService,
 			productBundlePartialsPath,
 			productBundleService,
@@ -14,7 +14,7 @@ class SWProductBundleGroupType{
         )=> new SWProductBundleGroupType(
             $http,
 			$log,
-			$slatwall,
+			$hibachi,
 			formService,
 			productBundlePartialsPath,
 			productBundleService,
@@ -23,7 +23,7 @@ class SWProductBundleGroupType{
         directive.$inject = [
             '$http',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'formService',
 			'productBundlePartialsPath',
 			'productBundleService',
@@ -34,7 +34,7 @@ class SWProductBundleGroupType{
     constructor(
         $http,
 		$log,
-		$slatwall,
+		$hibachi,
 		formService,
 		productBundlePartialsPath,
 		productBundleService,
@@ -56,8 +56,8 @@ class SWProductBundleGroupType{
                 $scope.productBundleGroupTypeSaving = false;
 				$scope.productBundleGroupType = {};
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
-					var productBundleGroupType = $slatwall.newType();
-					var parentType = $slatwall.newType();
+					var productBundleGroupType = $hibachi.newType();
+					var parentType = $hibachi.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					productBundleGroupType.$$setParentType(parentType);
 					$scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
@@ -68,8 +68,8 @@ class SWProductBundleGroupType{
 				 */
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
 					$scope.productBundleGroupTypes.$$adding = isAdding;
-					var productBundleGroupType = $slatwall.newType();
-					var parentType = $slatwall.newType();
+					var productBundleGroupType = $hibachi.newType();
+					var parentType = $hibachi.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					productBundleGroupType.$$setParentType(parentType);
 					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
@@ -105,7 +105,7 @@ class SWProductBundleGroupType{
 					     ' ]'+
 					  ' }'+
 					']';
-					return $slatwall.getEntity('type', {filterGroupsConfig:filterGroupsConfig.trim()})
+					return $hibachi.getEntity('type', {filterGroupsConfig:filterGroupsConfig.trim()})
 					.then(function(value){
 						$log.debug('typesByKeyword');
 						$log.debug(value);
@@ -131,7 +131,7 @@ class SWProductBundleGroupType{
 				    $scope.$label = $label;
 
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
-					var parentType = $slatwall.newType();
+					var parentType = $hibachi.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					$scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
 				    $scope.showAddProductBundleGroupTypeBtn = false;

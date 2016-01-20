@@ -1,12 +1,12 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTask{
 	public static Factory(){
 		var directive = (
 			$log,
 			$location,
 			$timeout,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
@@ -15,7 +15,7 @@ class SWWorkflowTask{
 			$log,
 			$location,
 			$timeout,
-			$slatwall,
+			$hibachi,
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
@@ -25,7 +25,7 @@ class SWWorkflowTask{
 			'$log',
 			'$location',
 			'$timeout',
-			'$slatwall',
+			'$hibachi',
 			'metadataService',
 			'collectionService',
 			'workflowPartialsPath',
@@ -37,7 +37,7 @@ class SWWorkflowTask{
 		$log,
 		$location,
 		$timeout,
-		$slatwall,
+		$hibachi,
 		metadataService,
 		collectionService,
 		workflowPartialsPath,

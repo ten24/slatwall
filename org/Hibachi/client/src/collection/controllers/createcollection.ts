@@ -1,11 +1,14 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 declare var hibachiConfig:any;
+
 class CreateCollection{
+
     //@ngInject
     constructor(
-        $scope, $log, $timeout, $slatwall, collectionService, formService,
-                  metadataService, paginationService, dialogService, observerService, selectionService,collectionConfigService
+        $scope, $log, $timeout, $hibachi, collectionService, formService,
+                  metadataService, paginationService, dialogService, observerService, selectionService,collectionConfigService,
+            rbkeyService
     ){
         $scope.params = dialogService.getCurrentDialog().params;
         $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
@@ -28,7 +31,7 @@ class CreateCollection{
             $scope.getCollection();
         };
 
-        $scope.newCollection = $slatwall.newCollection();
+        $scope.newCollection = $hibachi.newCollection();
         $scope.newCollection.data.collectionCode = $scope.params.entityName+"-"+new Date().valueOf();
         $scope.newCollection.data.collectionObject = $scope.params.entityName;
 
@@ -38,7 +41,7 @@ class CreateCollection{
             $scope.newCollection.data.collectionID = $scope.params.entityId;
             $timeout(function(){
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
-                
+
             });
         }
 
@@ -46,7 +49,7 @@ class CreateCollection{
             $scope.newCollection.data.collectionName = $scope.params.collectionName;
             $timeout(function(){
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
-               
+
             });
         }
 
@@ -81,7 +84,7 @@ class CreateCollection{
             }
 
             $log.debug($scope.myCollection.getOptions());
-            var collectionListingPromise = $slatwall.getEntity(
+            var collectionListingPromise = $hibachi.getEntity(
                 $scope.myCollection.getEntityName(), collectionOptions
             );
             collectionListingPromise.then(function (value) {
@@ -130,7 +133,7 @@ class CreateCollection{
             if (newValue !== oldValue) {
                 if (angular.isUndefined($scope.filterPropertiesList)) {
                     $scope.filterPropertiesList = {};
-                    var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
+                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
                     filterPropertiesPromise.then(function (value) {
                         metadataService.setPropertiesList(value, $scope.collectionConfig.baseEntityAlias);
                         $scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
@@ -211,7 +214,7 @@ class CreateCollection{
                 && (selectionService.getSelections('collectionSelection').length > 0)){
                 $scope.collectionConfig.filterGroups[0].filterGroup = [
                     {
-                        "displayPropertyIdentifier": $slatwall.getRBKey("entity."+$scope.myCollection.baseEntityName.toLowerCase()+"."+$scope.myCollection.collection.$$getIDName().toLowerCase()),
+                        "displayPropertyIdentifier": rbkeyService.getRBKey("entity."+$scope.myCollection.baseEntityName.toLowerCase()+"."+$scope.myCollection.collection.$$getIDName().toLowerCase()),
                         "propertyIdentifier": $scope.myCollection.baseEntityAlias + "."+$scope.myCollection.collection.$$getIDName(),
                         "comparisonOperator":"in",
                         "value":selectionService.getSelections('collectionSelection').join(),

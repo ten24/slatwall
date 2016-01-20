@@ -7,7 +7,7 @@ class SWDisplayItem{
 			$compile,
 			$templateCache,
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
@@ -18,7 +18,7 @@ class SWDisplayItem{
 			$compile,
 			$templateCache,
 			$log,
-			$slatwall,
+			$hibachi,
 			$filter,
 			collectionPartialsPath,
 			collectionService,
@@ -30,7 +30,7 @@ class SWDisplayItem{
 			'$compile',
 			'$templateCache',
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'$filter',
 			'collectionPartialsPath',
 			'collectionService',
@@ -46,7 +46,7 @@ class SWDisplayItem{
 		$compile,
 		$templateCache,
 		$log,
-		$slatwall,
+		$hibachi,
 		$filter,
 		collectionPartialsPath,
 		collectionService,
@@ -92,7 +92,7 @@ class SWDisplayItem{
 
 						if(selectedProperty.$$group === 'drilldown'){
 							if(angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])){
-								var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
+								var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(selectedProperty.cfc);
 								filterPropertiesPromise.then(function(value){
 									metadataService.setPropertiesList(value,selectedProperty.propertyIdentifier);
 									scope.propertiesList[selectedProperty.propertyIdentifier] = metadataService.getPropertiesListByBaseEntityAlias(selectedProperty.propertyIdentifier);

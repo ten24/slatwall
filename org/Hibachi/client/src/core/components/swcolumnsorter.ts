@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWColumnSorter{
 	public static Factory(){
 		var directive = (
@@ -21,6 +21,7 @@ class SWColumnSorter{
 		];
 		return directive;
 	}
+    //@ngInject
 	public constructor(
 		$log,
 		observerService,

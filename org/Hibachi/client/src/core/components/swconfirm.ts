@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * <------------------------------------------------------------------------------------------------------------------------------------>
  *   This directive can be used to prompt the user with a confirmation dialog.
@@ -35,14 +35,15 @@
 class SWConfirm{
     public static Factory(){
         var directive = (
-            $slatwall, $log, $compile, $modal, partialsPath
+            $hibachi, $log, $compile, $modal, partialsPath
         ) => new SWConfirm(
-            $slatwall, $log, $compile, $modal, partialsPath
+            $hibachi, $log, $compile, $modal, partialsPath
         );
-        directive.$inject = ['$slatwall', '$log', '$compile', '$modal', 'partialsPath'];
+        directive.$inject = ['$hibachi', '$log', '$compile', '$modal', 'partialsPath'];
         return directive;
     }
-    constructor($slatwall, $log, $compile, $modal, partialsPath){
+    //@ngInject
+    constructor($hibachi, $log, $compile, $modal, partialsPath){
         var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText){
 
         /* Keys */

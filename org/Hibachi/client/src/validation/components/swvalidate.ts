@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * This validate directive will look at the current element, figure out the context (save, edit, delete) and 
  * validate based on that context as defined in the validation properties object.
@@ -7,14 +7,14 @@
 // 'use strict';
 // angular.module('slatwalladmin').directive('swValidate',
 
-// [ '$log','$slatwall', function($log, $slatwall) {
+// [ '$log','$hibachi', function($log, $hibachi) {
 class SWValidate{
 	public static Factory(){
-		var directive = ($log, $slatwall)=>new SWValidate($log, $slatwall);
-		directive.$inject = ['$log', '$slatwall'];
+		var directive = ($log, $hibachi)=>new SWValidate($log, $hibachi);
+		directive.$inject = ['$log', '$hibachi'];
 		return directive;
 	}
-	constructor($log, $slatwall){
+	constructor($log, $hibachi){
 		return {
 			
 			restrict : "A",

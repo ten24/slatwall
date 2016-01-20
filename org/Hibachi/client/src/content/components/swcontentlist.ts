@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWContentListController{
     public getCollection:Function;
     public openRoot:boolean;
@@ -21,7 +21,7 @@ class SWContentListController{
         public $scope:ng.IScope,
         public $log:ng.ILogService,
         public $timeout:ng.ITimeoutService,
-        public $slatwall,
+        public $hibachi,
         public paginationService,
         public observerService,
         public collectionConfigService

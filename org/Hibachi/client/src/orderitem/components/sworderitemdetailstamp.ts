@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * Displays a shipping label in the order items row.
  * @module slatwalladmin
@@ -7,18 +9,18 @@ class SWOrderItemDetailStamp{
 	public static Factory(){
 		var directive = (
 			$log,
-			$slatwall,
+			$hibachi,
 			orderItemPartialsPath,
 			pathBuilderConfig
 		) => new SWOrderItemDetailStamp(
 			$log,
-			$slatwall,
+			$hibachi,
 			orderItemPartialsPath,
 			pathBuilderConfig
 		);
 		directive.$inject = [
 			'$log',
-			'$slatwall',
+			'$hibachi',
 			'orderItemPartialsPath',
 			'pathBuilderConfig'
 		]
@@ -26,7 +28,7 @@ class SWOrderItemDetailStamp{
 	}
 	constructor(
 		$log,
-		$slatwall,
+		$hibachi,
 		orderItemPartialsPath,
 		pathBuilderConfig
 	){

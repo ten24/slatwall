@@ -1,10 +1,10 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * Validates true if the given object is 'unique' and false otherwise.
  */
 class SWValidationUnique{
-    constructor($http,$q,$slatwall,$log){
+    constructor($http,$q,$hibachi,$log){
         return {
             restrict : "A",
             require : "ngModel",
@@ -19,7 +19,7 @@ class SWValidationUnique{
                     //key won't be set  so ensure that we have
                     //key and propertyName before checking with the server
                     if (key && property) {
-                        $slatwall.checkUniqueValue(key, property, currentValue)
+                        $hibachi.checkUniqueValue(key, property, currentValue)
                         .then(function (unique) {
                             $log.debug('uniquetest');
                             $log.debug(unique);
@@ -43,8 +43,8 @@ class SWValidationUnique{
         };
     }
     public static Factory(){
-        var directive = ($http,$q,$slatwall,$log)=>new SWValidationUnique($http,$q,$slatwall,$log);
-        directive.$inject = ['$http','$q','$slatwall','$log'];
+        var directive = ($http,$q,$hibachi,$log)=>new SWValidationUnique($http,$q,$hibachi,$log);
+        directive.$inject = ['$http','$q','$hibachi','$log'];
         return directive;
     }
 }

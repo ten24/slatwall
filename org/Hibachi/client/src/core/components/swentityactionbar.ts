@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWEntityActionBarController{
     public init = () =>{
@@ -59,7 +59,7 @@ class SWEntityActionBar implements ng.IDirective{
 
     }
 
-
+    //@ngInject
     constructor(private corePartialsPath,pathBuilderConfig){
         this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'entityactionbar.html';
     }

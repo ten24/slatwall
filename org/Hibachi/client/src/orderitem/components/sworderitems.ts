@@ -1,10 +1,12 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderItems{
 	public static Factory(){
 		var directive = (
 			$log,
 			$timeout,
 			$location,
-			$slatwall,
+			$hibachi,
             collectionConfigService,
 			formService,
 			orderItemPartialsPath,
@@ -14,7 +16,7 @@ class SWOrderItems{
 			$log,
 			$timeout,
 			$location,
-			$slatwall,
+			$hibachi,
             collectionConfigService,
 			formService,
 			orderItemPartialsPath,
@@ -25,7 +27,7 @@ class SWOrderItems{
 			'$log',
 			'$timeout',
 			'$location',
-			'$slatwall',
+			'$hibachi',
             'collectionConfigService',
 			'formService',
 			'orderItemPartialsPath',
@@ -38,7 +40,7 @@ class SWOrderItems{
 		$log,
 		$timeout,
 		$location,
-		$slatwall,
+		$hibachi,
         collectionConfigService,
 		formService,
 		orderItemPartialsPath,
@@ -117,12 +119,12 @@ class SWOrderItems{
 						orderItemCollection.columns.push(attributeColumn);
 					});
 
-					
+
 					var orderItemsPromise = orderItemCollection.getEntity();
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
 						var collectionConfig:any = {};
-						scope.orderItems = $slatwall.populateCollection(value.pageRecords,orderItemCollection);
+						scope.orderItems = $hibachi.populateCollection(value.pageRecords,orderItemCollection);
                          for (var orderItem in scope.orderItems){
                              $log.debug("OrderItem Product Type");
                              $log.debug(scope.orderItems);
@@ -141,7 +143,7 @@ class SWOrderItems{
  				.addFilter('displayOnOrderDetailFlag',true)
  				.addFilter('activeFlag',true)
  				.setAllRecords(true);
- 
+
  				var attItemsPromise = attributesCollection.getEntity();
 				attItemsPromise.then(function(value){
 					scope.attributes = [];
@@ -167,7 +169,7 @@ class SWOrderItems{
 							appendOptions.pageShow = 50;
 							appendOptions.currentPage = scope.paginator.autoScrollPage;
 
-							var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
+							var collectionListingPromise = $hibachi.getEntity('orderItem', appendOptions);
 							collectionListingPromise.then(function(value){
 								scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
 								scope.autoScrollDisabled = false;
