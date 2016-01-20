@@ -25,58 +25,33 @@ class PublicService {
         this.$q = $q
         
     }
-    
     /** accessors for account */
     public getAccount=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getAccount/' + this.ajaxRequestParam + "&returnJsonObject=cart,account";
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
-            this.account = result;
-            console.log("Account:", this.account);
-            deferred.resolve(result);
-        }).error((reason)=>{
-            deferred.reject(reason);  
-        });
-        return deferred.promise
+        let urlBase = this.baseActionPath + 'getAccount/';
+        var result = this.doAction(urlBase);
+        console.log("Result: ", result);
+        return result;
     }
     /** accessors for cart */
     public getCart=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getCart/' + this.ajaxRequestParam;
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
-            this.cart = result;
-            console.log("Cart:", this.cart);
-            deferred.resolve(result);
-        }).error((reason)=>{
-            deferred.reject(reason);  
-        });
-        return deferred.promise;
+        let urlBase = this.baseActionPath + 'getCart/';
+        var result = this.doAction(urlBase);
+        console.log("Result: ", result);
+        return result;
     }
     /** accessors for countries */
     public getCountries=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getCountries/' + this.ajaxRequestParam;
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
-            this.countries = result;
-            console.log("Countries:", this.countries);
-            deferred.resolve(result);
-        }).error((reason)=>{
-            deferred.reject(reason);  
-        });
-        return deferred.promise;
+        let urlBase = this.baseActionPath + 'getCountries/';
+        var result = this.doAction(urlBase);
+        console.log("Result: ", result);
+        return result;
     }
     /** accessors for states */
     public getStates=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getStates/' + this.ajaxRequestParam;
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
-            this.states = result;
-            console.log("States:", this.states);
-            deferred.resolve(result);
-        }).error((reason)=>{
-            deferred.reject(reason);  
-        });
-        return deferred.promise;
+        let urlBase = this.baseActionPath + 'getStates/';
+        var result = this.doAction(urlBase);
+        console.log("Result: ", result);
+        return result;
     }
     
     /** sets the current shipping address */
@@ -94,7 +69,7 @@ class PublicService {
         *  @param data   {object} the params as key value pairs to pass in the post request.
         *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
         */
-    public doAction=(action:string, data:any) => {
+    public doAction=(action:string, data?:any) => {
         let method = "";
         if (!action) {throw "Action is required exception";}
         
@@ -140,11 +115,10 @@ class PublicService {
             return deferred.promise;
         }else{
             //get
+            this.baseActionPath + this.ajaxRequestParam + "&returnJsonObject=cart,account";
             var deferred = this.$q.defer();
             this.$http.get(urlBase).success((result:any)=>{
-            this.states = result;
-            console.log("States:", this.states);
-            deferred.resolve(result);
+                deferred.resolve(result);
             }).error((reason)=>{
                 deferred.reject(reason);  
             });
