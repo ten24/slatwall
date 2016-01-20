@@ -30,7 +30,6 @@ module.exports = {
         ,'angular-animate':'../lib/angular/angular-animate.min.js'
         ,'angular-sanitize':'../lib/angular/angular-sanitize.min.js'
         ,'metismenu':'../lib/metismenu/metismenu.js'
-      	,'md5':'../lib/md5/md5.js'
       //,'ng-ckeditor':'../lib/ng-ckeditor/ng-ckeditor.min.js'
   	}
   },

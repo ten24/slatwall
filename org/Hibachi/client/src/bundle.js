@@ -51,8 +51,8 @@
 	};
 	/*jshint browser:true */
 	var basebootstrap_1 = __webpack_require__(1);
-	var slatwalladmin_module_1 = __webpack_require__(49);
-	var logger_module_1 = __webpack_require__(172);
+	var slatwalladmin_module_1 = __webpack_require__(53);
+	var logger_module_1 = __webpack_require__(176);
 	//custom bootstrapper
 	var bootstrapper = (function (_super) {
 	    __extends(bootstrapper, _super);
@@ -859,22 +859,22 @@
 	var swentityactionbarbuttongroup_1 = __webpack_require__(30);
 	var swexpandablerecord_1 = __webpack_require__(31);
 	var swgravatar_1 = __webpack_require__(32);
-	var swlistingdisplay_1 = __webpack_require__(33);
-	var swlistingcolumn_1 = __webpack_require__(34);
-	var swlogin_1 = __webpack_require__(35);
-	var swnumbersonly_1 = __webpack_require__(36);
-	var swloading_1 = __webpack_require__(37);
-	var swscrolltrigger_1 = __webpack_require__(38);
-	var swrbkey_1 = __webpack_require__(39);
-	var swoptions_1 = __webpack_require__(40);
-	var swselection_1 = __webpack_require__(41);
-	var swclickoutside_1 = __webpack_require__(42);
-	var swdirective_1 = __webpack_require__(43);
-	var swexportaction_1 = __webpack_require__(44);
-	var swhref_1 = __webpack_require__(45);
-	var swprocesscaller_1 = __webpack_require__(46);
-	var swsortable_1 = __webpack_require__(47);
-	var swlistingglobalsearch_1 = __webpack_require__(48);
+	var swlistingdisplay_1 = __webpack_require__(37);
+	var swlistingcolumn_1 = __webpack_require__(38);
+	var swlogin_1 = __webpack_require__(39);
+	var swnumbersonly_1 = __webpack_require__(40);
+	var swloading_1 = __webpack_require__(41);
+	var swscrolltrigger_1 = __webpack_require__(42);
+	var swrbkey_1 = __webpack_require__(43);
+	var swoptions_1 = __webpack_require__(44);
+	var swselection_1 = __webpack_require__(45);
+	var swclickoutside_1 = __webpack_require__(46);
+	var swdirective_1 = __webpack_require__(47);
+	var swexportaction_1 = __webpack_require__(48);
+	var swhref_1 = __webpack_require__(49);
+	var swprocesscaller_1 = __webpack_require__(50);
+	var swsortable_1 = __webpack_require__(51);
+	var swlistingglobalsearch_1 = __webpack_require__(52);
 	var PathBuilderConfig = (function () {
 	    function PathBuilderConfig() {
 	        var _this = this;
@@ -4378,7 +4378,7 @@
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var md5 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"md5\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var md5 = __webpack_require__(33);
 	var SWGravatarController = (function () {
 	    // @ngInject
 	    function SWGravatarController() {
@@ -4415,6 +4415,336 @@
 
 /***/ },
 /* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	(function(){
+	  var crypt = __webpack_require__(34),
+	      utf8 = __webpack_require__(35).utf8,
+	      isBuffer = __webpack_require__(36),
+	      bin = __webpack_require__(35).bin,
+
+	  // The core
+	  md5 = function (message, options) {
+	    // Convert to byte array
+	    if (message.constructor == String)
+	      if (options && options.encoding === 'binary')
+	        message = bin.stringToBytes(message);
+	      else
+	        message = utf8.stringToBytes(message);
+	    else if (isBuffer(message))
+	      message = Array.prototype.slice.call(message, 0);
+	    else if (!Array.isArray(message))
+	      message = message.toString();
+	    // else, assume byte array already
+
+	    var m = crypt.bytesToWords(message),
+	        l = message.length * 8,
+	        a =  1732584193,
+	        b = -271733879,
+	        c = -1732584194,
+	        d =  271733878;
+
+	    // Swap endian
+	    for (var i = 0; i < m.length; i++) {
+	      m[i] = ((m[i] <<  8) | (m[i] >>> 24)) & 0x00FF00FF |
+	             ((m[i] << 24) | (m[i] >>>  8)) & 0xFF00FF00;
+	    }
+
+	    // Padding
+	    m[l >>> 5] |= 0x80 << (l % 32);
+	    m[(((l + 64) >>> 9) << 4) + 14] = l;
+
+	    // Method shortcuts
+	    var FF = md5._ff,
+	        GG = md5._gg,
+	        HH = md5._hh,
+	        II = md5._ii;
+
+	    for (var i = 0; i < m.length; i += 16) {
+
+	      var aa = a,
+	          bb = b,
+	          cc = c,
+	          dd = d;
+
+	      a = FF(a, b, c, d, m[i+ 0],  7, -680876936);
+	      d = FF(d, a, b, c, m[i+ 1], 12, -389564586);
+	      c = FF(c, d, a, b, m[i+ 2], 17,  606105819);
+	      b = FF(b, c, d, a, m[i+ 3], 22, -1044525330);
+	      a = FF(a, b, c, d, m[i+ 4],  7, -176418897);
+	      d = FF(d, a, b, c, m[i+ 5], 12,  1200080426);
+	      c = FF(c, d, a, b, m[i+ 6], 17, -1473231341);
+	      b = FF(b, c, d, a, m[i+ 7], 22, -45705983);
+	      a = FF(a, b, c, d, m[i+ 8],  7,  1770035416);
+	      d = FF(d, a, b, c, m[i+ 9], 12, -1958414417);
+	      c = FF(c, d, a, b, m[i+10], 17, -42063);
+	      b = FF(b, c, d, a, m[i+11], 22, -1990404162);
+	      a = FF(a, b, c, d, m[i+12],  7,  1804603682);
+	      d = FF(d, a, b, c, m[i+13], 12, -40341101);
+	      c = FF(c, d, a, b, m[i+14], 17, -1502002290);
+	      b = FF(b, c, d, a, m[i+15], 22,  1236535329);
+
+	      a = GG(a, b, c, d, m[i+ 1],  5, -165796510);
+	      d = GG(d, a, b, c, m[i+ 6],  9, -1069501632);
+	      c = GG(c, d, a, b, m[i+11], 14,  643717713);
+	      b = GG(b, c, d, a, m[i+ 0], 20, -373897302);
+	      a = GG(a, b, c, d, m[i+ 5],  5, -701558691);
+	      d = GG(d, a, b, c, m[i+10],  9,  38016083);
+	      c = GG(c, d, a, b, m[i+15], 14, -660478335);
+	      b = GG(b, c, d, a, m[i+ 4], 20, -405537848);
+	      a = GG(a, b, c, d, m[i+ 9],  5,  568446438);
+	      d = GG(d, a, b, c, m[i+14],  9, -1019803690);
+	      c = GG(c, d, a, b, m[i+ 3], 14, -187363961);
+	      b = GG(b, c, d, a, m[i+ 8], 20,  1163531501);
+	      a = GG(a, b, c, d, m[i+13],  5, -1444681467);
+	      d = GG(d, a, b, c, m[i+ 2],  9, -51403784);
+	      c = GG(c, d, a, b, m[i+ 7], 14,  1735328473);
+	      b = GG(b, c, d, a, m[i+12], 20, -1926607734);
+
+	      a = HH(a, b, c, d, m[i+ 5],  4, -378558);
+	      d = HH(d, a, b, c, m[i+ 8], 11, -2022574463);
+	      c = HH(c, d, a, b, m[i+11], 16,  1839030562);
+	      b = HH(b, c, d, a, m[i+14], 23, -35309556);
+	      a = HH(a, b, c, d, m[i+ 1],  4, -1530992060);
+	      d = HH(d, a, b, c, m[i+ 4], 11,  1272893353);
+	      c = HH(c, d, a, b, m[i+ 7], 16, -155497632);
+	      b = HH(b, c, d, a, m[i+10], 23, -1094730640);
+	      a = HH(a, b, c, d, m[i+13],  4,  681279174);
+	      d = HH(d, a, b, c, m[i+ 0], 11, -358537222);
+	      c = HH(c, d, a, b, m[i+ 3], 16, -722521979);
+	      b = HH(b, c, d, a, m[i+ 6], 23,  76029189);
+	      a = HH(a, b, c, d, m[i+ 9],  4, -640364487);
+	      d = HH(d, a, b, c, m[i+12], 11, -421815835);
+	      c = HH(c, d, a, b, m[i+15], 16,  530742520);
+	      b = HH(b, c, d, a, m[i+ 2], 23, -995338651);
+
+	      a = II(a, b, c, d, m[i+ 0],  6, -198630844);
+	      d = II(d, a, b, c, m[i+ 7], 10,  1126891415);
+	      c = II(c, d, a, b, m[i+14], 15, -1416354905);
+	      b = II(b, c, d, a, m[i+ 5], 21, -57434055);
+	      a = II(a, b, c, d, m[i+12],  6,  1700485571);
+	      d = II(d, a, b, c, m[i+ 3], 10, -1894986606);
+	      c = II(c, d, a, b, m[i+10], 15, -1051523);
+	      b = II(b, c, d, a, m[i+ 1], 21, -2054922799);
+	      a = II(a, b, c, d, m[i+ 8],  6,  1873313359);
+	      d = II(d, a, b, c, m[i+15], 10, -30611744);
+	      c = II(c, d, a, b, m[i+ 6], 15, -1560198380);
+	      b = II(b, c, d, a, m[i+13], 21,  1309151649);
+	      a = II(a, b, c, d, m[i+ 4],  6, -145523070);
+	      d = II(d, a, b, c, m[i+11], 10, -1120210379);
+	      c = II(c, d, a, b, m[i+ 2], 15,  718787259);
+	      b = II(b, c, d, a, m[i+ 9], 21, -343485551);
+
+	      a = (a + aa) >>> 0;
+	      b = (b + bb) >>> 0;
+	      c = (c + cc) >>> 0;
+	      d = (d + dd) >>> 0;
+	    }
+
+	    return crypt.endian([a, b, c, d]);
+	  };
+
+	  // Auxiliary functions
+	  md5._ff  = function (a, b, c, d, x, s, t) {
+	    var n = a + (b & c | ~b & d) + (x >>> 0) + t;
+	    return ((n << s) | (n >>> (32 - s))) + b;
+	  };
+	  md5._gg  = function (a, b, c, d, x, s, t) {
+	    var n = a + (b & d | c & ~d) + (x >>> 0) + t;
+	    return ((n << s) | (n >>> (32 - s))) + b;
+	  };
+	  md5._hh  = function (a, b, c, d, x, s, t) {
+	    var n = a + (b ^ c ^ d) + (x >>> 0) + t;
+	    return ((n << s) | (n >>> (32 - s))) + b;
+	  };
+	  md5._ii  = function (a, b, c, d, x, s, t) {
+	    var n = a + (c ^ (b | ~d)) + (x >>> 0) + t;
+	    return ((n << s) | (n >>> (32 - s))) + b;
+	  };
+
+	  // Package private blocksize
+	  md5._blocksize = 16;
+	  md5._digestsize = 16;
+
+	  module.exports = function (message, options) {
+	    if(typeof message == 'undefined')
+	      return;
+
+	    var digestbytes = crypt.wordsToBytes(md5(message, options));
+	    return options && options.asBytes ? digestbytes :
+	        options && options.asString ? bin.bytesToString(digestbytes) :
+	        crypt.bytesToHex(digestbytes);
+	  };
+
+	})();
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	(function() {
+	  var base64map
+	      = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
+
+	  crypt = {
+	    // Bit-wise rotation left
+	    rotl: function(n, b) {
+	      return (n << b) | (n >>> (32 - b));
+	    },
+
+	    // Bit-wise rotation right
+	    rotr: function(n, b) {
+	      return (n << (32 - b)) | (n >>> b);
+	    },
+
+	    // Swap big-endian to little-endian and vice versa
+	    endian: function(n) {
+	      // If number given, swap endian
+	      if (n.constructor == Number) {
+	        return crypt.rotl(n, 8) & 0x00FF00FF | crypt.rotl(n, 24) & 0xFF00FF00;
+	      }
+
+	      // Else, assume array and swap all items
+	      for (var i = 0; i < n.length; i++)
+	        n[i] = crypt.endian(n[i]);
+	      return n;
+	    },
+
+	    // Generate an array of any length of random bytes
+	    randomBytes: function(n) {
+	      for (var bytes = []; n > 0; n--)
+	        bytes.push(Math.floor(Math.random() * 256));
+	      return bytes;
+	    },
+
+	    // Convert a byte array to big-endian 32-bit words
+	    bytesToWords: function(bytes) {
+	      for (var words = [], i = 0, b = 0; i < bytes.length; i++, b += 8)
+	        words[b >>> 5] |= bytes[i] << (24 - b % 32);
+	      return words;
+	    },
+
+	    // Convert big-endian 32-bit words to a byte array
+	    wordsToBytes: function(words) {
+	      for (var bytes = [], b = 0; b < words.length * 32; b += 8)
+	        bytes.push((words[b >>> 5] >>> (24 - b % 32)) & 0xFF);
+	      return bytes;
+	    },
+
+	    // Convert a byte array to a hex string
+	    bytesToHex: function(bytes) {
+	      for (var hex = [], i = 0; i < bytes.length; i++) {
+	        hex.push((bytes[i] >>> 4).toString(16));
+	        hex.push((bytes[i] & 0xF).toString(16));
+	      }
+	      return hex.join('');
+	    },
+
+	    // Convert a hex string to a byte array
+	    hexToBytes: function(hex) {
+	      for (var bytes = [], c = 0; c < hex.length; c += 2)
+	        bytes.push(parseInt(hex.substr(c, 2), 16));
+	      return bytes;
+	    },
+
+	    // Convert a byte array to a base-64 string
+	    bytesToBase64: function(bytes) {
+	      for (var base64 = [], i = 0; i < bytes.length; i += 3) {
+	        var triplet = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
+	        for (var j = 0; j < 4; j++)
+	          if (i * 8 + j * 6 <= bytes.length * 8)
+	            base64.push(base64map.charAt((triplet >>> 6 * (3 - j)) & 0x3F));
+	          else
+	            base64.push('=');
+	      }
+	      return base64.join('');
+	    },
+
+	    // Convert a base-64 string to a byte array
+	    base64ToBytes: function(base64) {
+	      // Remove non-base-64 characters
+	      base64 = base64.replace(/[^A-Z0-9+\/]/ig, '');
+
+	      for (var bytes = [], i = 0, imod4 = 0; i < base64.length;
+	          imod4 = ++i % 4) {
+	        if (imod4 == 0) continue;
+	        bytes.push(((base64map.indexOf(base64.charAt(i - 1))
+	            & (Math.pow(2, -2 * imod4 + 8) - 1)) << (imod4 * 2))
+	            | (base64map.indexOf(base64.charAt(i)) >>> (6 - imod4 * 2)));
+	      }
+	      return bytes;
+	    }
+	  };
+
+	  module.exports = crypt;
+	})();
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	var charenc = {
+	  // UTF-8 encoding
+	  utf8: {
+	    // Convert a string to a byte array
+	    stringToBytes: function(str) {
+	      return charenc.bin.stringToBytes(unescape(encodeURIComponent(str)));
+	    },
+
+	    // Convert a byte array to a string
+	    bytesToString: function(bytes) {
+	      return decodeURIComponent(escape(charenc.bin.bytesToString(bytes)));
+	    }
+	  },
+
+	  // Binary encoding
+	  bin: {
+	    // Convert a string to a byte array
+	    stringToBytes: function(str) {
+	      for (var bytes = [], i = 0; i < str.length; i++)
+	        bytes.push(str.charCodeAt(i) & 0xFF);
+	      return bytes;
+	    },
+
+	    // Convert a byte array to a string
+	    bytesToString: function(bytes) {
+	      for (var str = [], i = 0; i < bytes.length; i++)
+	        str.push(String.fromCharCode(bytes[i]));
+	      return str.join('');
+	    }
+	  }
+	};
+
+	module.exports = charenc;
+
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	/**
+	 * Determine if an object is Buffer
+	 *
+	 * Author:   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+	 * License:  MIT
+	 *
+	 * `npm install is-buffer`
+	 */
+
+	module.exports = function (obj) {
+	  return !!(
+	    obj != null &&
+	    obj.constructor &&
+	    typeof obj.constructor.isBuffer === 'function' &&
+	    obj.constructor.isBuffer(obj)
+	  )
+	}
+
+
+/***/ },
+/* 37 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4903,7 +5233,7 @@
 
 
 /***/ },
-/* 34 */
+/* 38 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -4972,7 +5302,7 @@
 
 
 /***/ },
-/* 35 */
+/* 39 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5041,7 +5371,7 @@
 
 
 /***/ },
-/* 36 */
+/* 40 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5097,7 +5427,7 @@
 
 
 /***/ },
-/* 37 */
+/* 41 */
 /***/ function(module, exports) {
 
 	var SWLoading = (function () {
@@ -5130,7 +5460,7 @@
 
 
 /***/ },
-/* 38 */
+/* 42 */
 /***/ function(module, exports) {
 
 	var SWScrollTrigger = (function () {
@@ -5219,7 +5549,7 @@
 
 
 /***/ },
-/* 39 */
+/* 43 */
 /***/ function(module, exports) {
 
 	var SWRbKey = (function () {
@@ -5260,7 +5590,7 @@
 
 
 /***/ },
-/* 40 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5325,7 +5655,7 @@
 
 
 /***/ },
-/* 41 */
+/* 45 */
 /***/ function(module, exports) {
 
 	var SWSelection = (function () {
@@ -5383,7 +5713,7 @@
 
 
 /***/ },
-/* 42 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5394,35 +5724,31 @@
 	        return {
 	            restrict: 'A',
 	            scope: {
-	                swClickOutside: '&',
-	                outsideIfNot: '@'
+	                swClickOutside: '&'
 	            },
 	            link: function ($scope, elem, attr) {
-	                var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.replace(', ', ',').split(',') : [];
-	                if (attr.id !== undefined)
-	                    classList.push(attr.id);
+	                function isDescendant(parent, child) {
+	                    var node = child.parentNode;
+	                    while (node != null) {
+	                        if (node == parent) {
+	                            return true;
+	                        }
+	                        node = node.parentNode;
+	                    }
+	                    return false;
+	                }
 	                $document.on('click', function (e) {
-	                    var i = 0, element;
 	                    if (!e || !e.target)
 	                        return;
 	                    //check if our element already hiden
 	                    if (angular.element(elem).hasClass("ng-hide")) {
 	                        return;
 	                    }
-	                    for (element = e.target; element; element = element.parentNode) {
-	                        var id = element.id;
-	                        var classNames = element.className;
-	                        if (id !== undefined) {
-	                            for (i = 0; i < classList.length; i++) {
-	                                if ((id !== undefined && id.indexOf(classList[i]) > -1) || classNames.indexOf(classList[i]) > -1) {
-	                                    return;
-	                                }
-	                            }
-	                        }
+	                    if (e.target !== elem && !isDescendant(elem, e.target)) {
+	                        $timeout(function () {
+	                            $scope.swClickOutside();
+	                        });
 	                    }
-	                    $timeout(function () {
-	                        $scope.swClickOutside();
-	                    });
 	                });
 	            }
 	        };
@@ -5442,7 +5768,7 @@
 
 
 /***/ },
-/* 43 */
+/* 47 */
 /***/ function(module, exports) {
 
 	var SWDirective = (function () {
@@ -5484,7 +5810,7 @@
 
 
 /***/ },
-/* 44 */
+/* 48 */
 /***/ function(module, exports) {
 
 	var SWExportAction = (function () {
@@ -5515,7 +5841,7 @@
 
 
 /***/ },
-/* 45 */
+/* 49 */
 /***/ function(module, exports) {
 
 	var SWHref = (function () {
@@ -5546,7 +5872,7 @@
 
 
 /***/ },
-/* 46 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5626,7 +5952,7 @@
 
 
 /***/ },
-/* 47 */
+/* 51 */
 /***/ function(module, exports) {
 
 	var SWSortable = (function () {
@@ -5678,7 +6004,7 @@
 
 
 /***/ },
-/* 48 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -5739,26 +6065,26 @@
 
 
 /***/ },
-/* 49 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var hibachi_module_1 = __webpack_require__(50);
-	var slatwallinterceptor_1 = __webpack_require__(116);
-	var content_module_1 = __webpack_require__(117);
-	var giftcard_module_1 = __webpack_require__(122);
-	var optiongroup_module_1 = __webpack_require__(133);
-	var orderitem_module_1 = __webpack_require__(136);
-	var product_module_1 = __webpack_require__(143);
-	var productbundle_module_1 = __webpack_require__(145);
-	var workflow_module_1 = __webpack_require__(151);
-	var entity_module_1 = __webpack_require__(163);
+	var hibachi_module_1 = __webpack_require__(54);
+	var slatwallinterceptor_1 = __webpack_require__(120);
+	var content_module_1 = __webpack_require__(121);
+	var giftcard_module_1 = __webpack_require__(126);
+	var optiongroup_module_1 = __webpack_require__(137);
+	var orderitem_module_1 = __webpack_require__(140);
+	var product_module_1 = __webpack_require__(147);
+	var productbundle_module_1 = __webpack_require__(149);
+	var workflow_module_1 = __webpack_require__(155);
+	var entity_module_1 = __webpack_require__(167);
 	//directives
-	var swcurrencyformatter_1 = __webpack_require__(169);
+	var swcurrencyformatter_1 = __webpack_require__(173);
 	//filters
-	var entityrbkey_1 = __webpack_require__(170);
-	var swcurrency_1 = __webpack_require__(171);
+	var entityrbkey_1 = __webpack_require__(174);
+	var swcurrency_1 = __webpack_require__(175);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -5946,19 +6272,19 @@
 
 
 /***/ },
-/* 50 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//import alertmodule = require('./alert/alert.module');
-	var alert_module_1 = __webpack_require__(51);
-	var collection_module_1 = __webpack_require__(55);
+	var alert_module_1 = __webpack_require__(55);
+	var collection_module_1 = __webpack_require__(59);
 	var core_module_1 = __webpack_require__(11);
-	var dialog_module_1 = __webpack_require__(79);
-	var pagination_module_1 = __webpack_require__(82);
-	var form_module_1 = __webpack_require__(85);
-	var validation_module_1 = __webpack_require__(100);
+	var dialog_module_1 = __webpack_require__(83);
+	var pagination_module_1 = __webpack_require__(86);
+	var form_module_1 = __webpack_require__(89);
+	var validation_module_1 = __webpack_require__(104);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -5972,15 +6298,15 @@
 
 
 /***/ },
-/* 51 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//controllers
-	var alertcontroller_1 = __webpack_require__(52);
+	var alertcontroller_1 = __webpack_require__(56);
 	//services
-	var alertService_1 = __webpack_require__(53);
+	var alertService_1 = __webpack_require__(57);
 	var alertmodule = angular.module('hibachi.alert', [])
 	    .controller('alertController', alertcontroller_1.AlertController)
 	    .service('alertService', alertService_1.AlertService);
@@ -5988,7 +6314,7 @@
 
 
 /***/ },
-/* 52 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6005,13 +6331,13 @@
 
 
 /***/ },
-/* 53 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//import Alert = require('../model/alert');
-	var alert_1 = __webpack_require__(54);
+	var alert_1 = __webpack_require__(58);
 	var AlertService = (function () {
 	    function AlertService($timeout, alerts) {
 	        var _this = this;
@@ -6079,7 +6405,7 @@
 
 
 /***/ },
-/* 54 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6100,7 +6426,7 @@
 
 
 /***/ },
-/* 55 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -6108,31 +6434,31 @@
 	//modules
 	var core_module_1 = __webpack_require__(11);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(56);
-	var collectionservice_1 = __webpack_require__(57);
+	var collectionconfigservice_1 = __webpack_require__(60);
+	var collectionservice_1 = __webpack_require__(61);
 	//controllers
-	var collections_1 = __webpack_require__(58);
-	var createcollection_1 = __webpack_require__(59);
-	var confirmationcontroller_1 = __webpack_require__(60);
+	var collections_1 = __webpack_require__(62);
+	var createcollection_1 = __webpack_require__(63);
+	var confirmationcontroller_1 = __webpack_require__(64);
 	//directives
-	var swcollection_1 = __webpack_require__(61);
-	var swaddfilterbuttons_1 = __webpack_require__(62);
-	var swdisplayoptions_1 = __webpack_require__(63);
-	var swdisplayitem_1 = __webpack_require__(64);
-	var swcollectiontable_1 = __webpack_require__(65);
-	var swcolumnitem_1 = __webpack_require__(66);
-	var swconditioncriteria_1 = __webpack_require__(67);
-	var swcriteria_1 = __webpack_require__(68);
-	var swcriteriaboolean_1 = __webpack_require__(69);
-	var swcriteriamanytomany_1 = __webpack_require__(70);
-	var swcriteriamanytoone_1 = __webpack_require__(71);
-	var swcriterianumber_1 = __webpack_require__(72);
-	var swcriteriaonetomany_1 = __webpack_require__(73);
-	var swcriteriastring_1 = __webpack_require__(74);
-	var sweditfilteritem_1 = __webpack_require__(75);
-	var swfiltergroups_1 = __webpack_require__(76);
-	var swfilteritem_1 = __webpack_require__(77);
-	var swfiltergroupitem_1 = __webpack_require__(78);
+	var swcollection_1 = __webpack_require__(65);
+	var swaddfilterbuttons_1 = __webpack_require__(66);
+	var swdisplayoptions_1 = __webpack_require__(67);
+	var swdisplayitem_1 = __webpack_require__(68);
+	var swcollectiontable_1 = __webpack_require__(69);
+	var swcolumnitem_1 = __webpack_require__(70);
+	var swconditioncriteria_1 = __webpack_require__(71);
+	var swcriteria_1 = __webpack_require__(72);
+	var swcriteriaboolean_1 = __webpack_require__(73);
+	var swcriteriamanytomany_1 = __webpack_require__(74);
+	var swcriteriamanytoone_1 = __webpack_require__(75);
+	var swcriterianumber_1 = __webpack_require__(76);
+	var swcriteriaonetomany_1 = __webpack_require__(77);
+	var swcriteriastring_1 = __webpack_require__(78);
+	var sweditfilteritem_1 = __webpack_require__(79);
+	var swfiltergroups_1 = __webpack_require__(80);
+	var swfilteritem_1 = __webpack_require__(81);
+	var swfiltergroupitem_1 = __webpack_require__(82);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -6165,7 +6491,7 @@
 
 
 /***/ },
-/* 56 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -6598,7 +6924,7 @@
 
 
 /***/ },
-/* 57 */
+/* 61 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -6799,7 +7125,7 @@
 
 
 /***/ },
-/* 58 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7059,7 +7385,7 @@
 
 
 /***/ },
-/* 59 */
+/* 63 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7264,7 +7590,7 @@
 
 
 /***/ },
-/* 60 */
+/* 64 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7300,7 +7626,7 @@
 
 
 /***/ },
-/* 61 */
+/* 65 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7346,7 +7672,7 @@
 
 
 /***/ },
-/* 62 */
+/* 66 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7392,7 +7718,7 @@
 
 
 /***/ },
-/* 63 */
+/* 67 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7563,7 +7889,7 @@
 
 
 /***/ },
-/* 64 */
+/* 68 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7643,7 +7969,7 @@
 
 
 /***/ },
-/* 65 */
+/* 69 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7710,7 +8036,7 @@
 
 
 /***/ },
-/* 66 */
+/* 70 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -7910,7 +8236,7 @@
 
 
 /***/ },
-/* 67 */
+/* 71 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8800,7 +9126,7 @@
 
 
 /***/ },
-/* 68 */
+/* 72 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8843,7 +9169,7 @@
 
 
 /***/ },
-/* 69 */
+/* 73 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -8943,7 +9269,7 @@
 
 
 /***/ },
-/* 70 */
+/* 74 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9086,7 +9412,7 @@
 
 
 /***/ },
-/* 71 */
+/* 75 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9249,7 +9575,7 @@
 
 
 /***/ },
-/* 72 */
+/* 76 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9414,7 +9740,7 @@
 
 
 /***/ },
-/* 73 */
+/* 77 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9553,7 +9879,7 @@
 
 
 /***/ },
-/* 74 */
+/* 78 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -9735,7 +10061,7 @@
 
 
 /***/ },
-/* 75 */
+/* 79 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10047,7 +10373,7 @@
 
 
 /***/ },
-/* 76 */
+/* 80 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10146,7 +10472,7 @@
 
 
 /***/ },
-/* 77 */
+/* 81 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10212,7 +10538,7 @@
 
 
 /***/ },
-/* 78 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10284,15 +10610,15 @@
 
 
 /***/ },
-/* 79 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(80);
+	var dialogservice_1 = __webpack_require__(84);
 	//controllers
-	var pagedialog_1 = __webpack_require__(81);
+	var pagedialog_1 = __webpack_require__(85);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -10302,7 +10628,7 @@
 
 
 /***/ },
-/* 80 */
+/* 84 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -10343,7 +10669,7 @@
 
 
 /***/ },
-/* 81 */
+/* 85 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10366,14 +10692,14 @@
 
 
 /***/ },
-/* 82 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(83);
-	var swpaginationbar_1 = __webpack_require__(84);
+	var paginationservice_1 = __webpack_require__(87);
+	var swpaginationbar_1 = __webpack_require__(88);
 	var core_module_1 = __webpack_require__(11);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
@@ -10385,7 +10711,7 @@
 
 
 /***/ },
-/* 83 */
+/* 87 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
@@ -10563,7 +10889,7 @@
 
 
 /***/ },
-/* 84 */
+/* 88 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10622,7 +10948,7 @@
 
 
 /***/ },
-/* 85 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -10638,20 +10964,20 @@
 	//directives
 	//  components
 	//form
-	var swinput_1 = __webpack_require__(86);
-	var swfformfield_1 = __webpack_require__(87);
-	var swform_1 = __webpack_require__(88);
-	var swformfield_1 = __webpack_require__(89);
-	var swformfieldjson_1 = __webpack_require__(90);
-	var swformfieldnumber_1 = __webpack_require__(91);
-	var swformfieldpassword_1 = __webpack_require__(92);
-	var swformfieldradio_1 = __webpack_require__(93);
-	var swformfieldsearchselect_1 = __webpack_require__(94);
-	var swformfieldselect_1 = __webpack_require__(95);
-	var swformfieldtext_1 = __webpack_require__(96);
-	var swformregistrar_1 = __webpack_require__(97);
-	var swfpropertydisplay_1 = __webpack_require__(98);
-	var swpropertydisplay_1 = __webpack_require__(99);
+	var swinput_1 = __webpack_require__(90);
+	var swfformfield_1 = __webpack_require__(91);
+	var swform_1 = __webpack_require__(92);
+	var swformfield_1 = __webpack_require__(93);
+	var swformfieldjson_1 = __webpack_require__(94);
+	var swformfieldnumber_1 = __webpack_require__(95);
+	var swformfieldpassword_1 = __webpack_require__(96);
+	var swformfieldradio_1 = __webpack_require__(97);
+	var swformfieldsearchselect_1 = __webpack_require__(98);
+	var swformfieldselect_1 = __webpack_require__(99);
+	var swformfieldtext_1 = __webpack_require__(100);
+	var swformregistrar_1 = __webpack_require__(101);
+	var swfpropertydisplay_1 = __webpack_require__(102);
+	var swpropertydisplay_1 = __webpack_require__(103);
 	var formmodule = angular.module('hibachi.form', []).config(function () {
 	})
 	    .constant('coreFormPartialsPath', 'form/components/')
@@ -10673,7 +10999,7 @@
 
 
 /***/ },
-/* 86 */
+/* 90 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -10814,7 +11140,7 @@
 
 
 /***/ },
-/* 87 */
+/* 91 */
 /***/ function(module, exports) {
 
 	/**********************************************************************************************
@@ -10904,7 +11230,7 @@
 
 
 /***/ },
-/* 88 */
+/* 92 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11205,7 +11531,7 @@
 
 
 /***/ },
-/* 89 */
+/* 93 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11252,7 +11578,7 @@
 
 
 /***/ },
-/* 90 */
+/* 94 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11294,7 +11620,7 @@
 
 
 /***/ },
-/* 91 */
+/* 95 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11334,7 +11660,7 @@
 
 
 /***/ },
-/* 92 */
+/* 96 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11373,7 +11699,7 @@
 
 
 /***/ },
-/* 93 */
+/* 97 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11450,7 +11776,7 @@
 
 
 /***/ },
-/* 94 */
+/* 98 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11571,7 +11897,7 @@
 
 
 /***/ },
-/* 95 */
+/* 99 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11705,7 +12031,7 @@
 
 
 /***/ },
-/* 96 */
+/* 100 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11754,7 +12080,7 @@
 
 
 /***/ },
-/* 97 */
+/* 101 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -11820,7 +12146,7 @@
 
 
 /***/ },
-/* 98 */
+/* 102 */
 /***/ function(module, exports) {
 
 	/**********************************************************************************************
@@ -11988,7 +12314,7 @@
 
 
 /***/ },
-/* 99 */
+/* 103 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12090,26 +12416,26 @@
 
 
 /***/ },
-/* 100 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var swvalidate_1 = __webpack_require__(101);
-	var swvalidationminlength_1 = __webpack_require__(102);
-	var swvalidationdatatype_1 = __webpack_require__(103);
-	var swvalidationeq_1 = __webpack_require__(104);
-	var swvalidationgte_1 = __webpack_require__(105);
-	var swvalidationlte_1 = __webpack_require__(106);
-	var swvalidationmaxlength_1 = __webpack_require__(107);
-	var swvalidationmaxvalue_1 = __webpack_require__(108);
-	var swvalidationminvalue_1 = __webpack_require__(109);
-	var swvalidationneq_1 = __webpack_require__(110);
-	var swvalidationnumeric_1 = __webpack_require__(111);
-	var swvalidationregex_1 = __webpack_require__(112);
-	var swvalidationrequired_1 = __webpack_require__(113);
-	var swvalidationunique_1 = __webpack_require__(114);
-	var swvalidationuniqueornull_1 = __webpack_require__(115);
+	var swvalidate_1 = __webpack_require__(105);
+	var swvalidationminlength_1 = __webpack_require__(106);
+	var swvalidationdatatype_1 = __webpack_require__(107);
+	var swvalidationeq_1 = __webpack_require__(108);
+	var swvalidationgte_1 = __webpack_require__(109);
+	var swvalidationlte_1 = __webpack_require__(110);
+	var swvalidationmaxlength_1 = __webpack_require__(111);
+	var swvalidationmaxvalue_1 = __webpack_require__(112);
+	var swvalidationminvalue_1 = __webpack_require__(113);
+	var swvalidationneq_1 = __webpack_require__(114);
+	var swvalidationnumeric_1 = __webpack_require__(115);
+	var swvalidationregex_1 = __webpack_require__(116);
+	var swvalidationrequired_1 = __webpack_require__(117);
+	var swvalidationunique_1 = __webpack_require__(118);
+	var swvalidationuniqueornull_1 = __webpack_require__(119);
 	var validationmodule = angular.module('hibachi.validation', [])
 	    .run([function () {
 	    }])
@@ -12132,7 +12458,7 @@
 
 
 /***/ },
-/* 101 */
+/* 105 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12518,7 +12844,7 @@
 
 
 /***/ },
-/* 102 */
+/* 106 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12559,7 +12885,7 @@
 
 
 /***/ },
-/* 103 */
+/* 107 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12618,7 +12944,7 @@
 
 
 /***/ },
-/* 104 */
+/* 108 */
 /***/ function(module, exports) {
 
 	/**
@@ -12658,7 +12984,7 @@
 
 
 /***/ },
-/* 105 */
+/* 109 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12696,7 +13022,7 @@
 
 
 /***/ },
-/* 106 */
+/* 110 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12735,7 +13061,7 @@
 
 
 /***/ },
-/* 107 */
+/* 111 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12772,7 +13098,7 @@
 
 
 /***/ },
-/* 108 */
+/* 112 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12809,7 +13135,7 @@
 
 
 /***/ },
-/* 109 */
+/* 113 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12846,7 +13172,7 @@
 
 
 /***/ },
-/* 110 */
+/* 114 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12881,7 +13207,7 @@
 
 
 /***/ },
-/* 111 */
+/* 115 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12920,7 +13246,7 @@
 
 
 /***/ },
-/* 112 */
+/* 116 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12960,7 +13286,7 @@
 
 
 /***/ },
-/* 113 */
+/* 117 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -12996,7 +13322,7 @@
 
 
 /***/ },
-/* 114 */
+/* 118 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13048,7 +13374,7 @@
 
 
 /***/ },
-/* 115 */
+/* 119 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13100,7 +13426,7 @@
 
 
 /***/ },
-/* 116 */
+/* 120 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13241,7 +13567,7 @@
 
 
 /***/ },
-/* 117 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -13249,10 +13575,10 @@
 	//services
 	//filters
 	//directives
-	var swcontentbasic_1 = __webpack_require__(118);
-	var swcontenteditor_1 = __webpack_require__(119);
-	var swcontentlist_1 = __webpack_require__(120);
-	var swcontentnode_1 = __webpack_require__(121);
+	var swcontentbasic_1 = __webpack_require__(122);
+	var swcontenteditor_1 = __webpack_require__(123);
+	var swcontentlist_1 = __webpack_require__(124);
+	var swcontentnode_1 = __webpack_require__(125);
 	var contentmodule = angular.module('hibachi.content', []).config(function () {
 	})
 	    .constant('contentPartialsPath', 'content/components/')
@@ -13264,7 +13590,7 @@
 
 
 /***/ },
-/* 118 */
+/* 122 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13340,7 +13666,7 @@
 
 
 /***/ },
-/* 119 */
+/* 123 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13400,7 +13726,7 @@
 
 
 /***/ },
-/* 120 */
+/* 124 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13633,7 +13959,7 @@
 
 
 /***/ },
-/* 121 */
+/* 125 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13775,7 +14101,7 @@
 
 
 /***/ },
-/* 122 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -13783,16 +14109,16 @@
 	//modules
 	var core_module_1 = __webpack_require__(11);
 	//controllers
-	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(123);
+	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(127);
 	//directives
-	var swaddorderitemgiftrecipient_1 = __webpack_require__(125);
-	var swgiftcardbalance_1 = __webpack_require__(126);
-	var swgiftcarddetail_1 = __webpack_require__(127);
-	var swgiftcardhistory_1 = __webpack_require__(128);
-	var swgiftcardoverview_1 = __webpack_require__(129);
-	var swgiftcardorderinfo_1 = __webpack_require__(130);
-	var swgiftcardrecipientinfo_1 = __webpack_require__(131);
-	var sworderitemgiftrecipientrow_1 = __webpack_require__(132);
+	var swaddorderitemgiftrecipient_1 = __webpack_require__(129);
+	var swgiftcardbalance_1 = __webpack_require__(130);
+	var swgiftcarddetail_1 = __webpack_require__(131);
+	var swgiftcardhistory_1 = __webpack_require__(132);
+	var swgiftcardoverview_1 = __webpack_require__(133);
+	var swgiftcardorderinfo_1 = __webpack_require__(134);
+	var swgiftcardrecipientinfo_1 = __webpack_require__(135);
+	var sworderitemgiftrecipientrow_1 = __webpack_require__(136);
 	var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -13811,12 +14137,12 @@
 
 
 /***/ },
-/* 123 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(124);
+	var giftrecipient_1 = __webpack_require__(128);
 	var OrderItemGiftRecipientControl = (function () {
 	    //@ngInject
 	    function OrderItemGiftRecipientControl($scope, $hibachi) {
@@ -13858,7 +14184,7 @@
 
 
 /***/ },
-/* 124 */
+/* 128 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -13884,12 +14210,12 @@
 
 
 /***/ },
-/* 125 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(124);
+	var giftrecipient_1 = __webpack_require__(128);
 	var SWAddOrderItemRecipientController = (function () {
 	    function SWAddOrderItemRecipientController($hibachi) {
 	        var _this = this;
@@ -14032,7 +14358,7 @@
 
 
 /***/ },
-/* 126 */
+/* 130 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14110,7 +14436,7 @@
 
 
 /***/ },
-/* 127 */
+/* 131 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14168,7 +14494,7 @@
 
 
 /***/ },
-/* 128 */
+/* 132 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14297,7 +14623,7 @@
 
 
 /***/ },
-/* 129 */
+/* 133 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14337,7 +14663,7 @@
 
 
 /***/ },
-/* 130 */
+/* 134 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14396,7 +14722,7 @@
 
 
 /***/ },
-/* 131 */
+/* 135 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14436,7 +14762,7 @@
 
 
 /***/ },
-/* 132 */
+/* 136 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14543,7 +14869,7 @@
 
 
 /***/ },
-/* 133 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -14552,8 +14878,8 @@
 	var core_module_1 = __webpack_require__(11);
 	//controllers
 	//directives
-	var swaddoptiongroup_1 = __webpack_require__(134);
-	var swoptionsforoptiongroup_1 = __webpack_require__(135);
+	var swaddoptiongroup_1 = __webpack_require__(138);
+	var swoptionsforoptiongroup_1 = __webpack_require__(139);
 	var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -14565,7 +14891,7 @@
 
 
 /***/ },
-/* 134 */
+/* 138 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14733,7 +15059,7 @@
 
 
 /***/ },
-/* 135 */
+/* 139 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -14804,19 +15130,19 @@
 
 
 /***/ },
-/* 136 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
 	var core_module_1 = __webpack_require__(11);
 	//directives
-	var swchildorderitem_1 = __webpack_require__(137);
-	var sworderitem_1 = __webpack_require__(138);
-	var swoishippinglabelstamp_1 = __webpack_require__(139);
-	var sworderitemdetailstamp_1 = __webpack_require__(140);
-	var sworderitems_1 = __webpack_require__(141);
-	var swresizedimage_1 = __webpack_require__(142);
+	var swchildorderitem_1 = __webpack_require__(141);
+	var sworderitem_1 = __webpack_require__(142);
+	var swoishippinglabelstamp_1 = __webpack_require__(143);
+	var sworderitemdetailstamp_1 = __webpack_require__(144);
+	var sworderitems_1 = __webpack_require__(145);
+	var swresizedimage_1 = __webpack_require__(146);
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -14831,7 +15157,7 @@
 
 
 /***/ },
-/* 137 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15121,7 +15447,7 @@
 
 
 /***/ },
-/* 138 */
+/* 142 */
 /***/ function(module, exports) {
 
 	var SWOrderItem = (function () {
@@ -15538,7 +15864,7 @@
 
 
 /***/ },
-/* 139 */
+/* 143 */
 /***/ function(module, exports) {
 
 	/**
@@ -15579,7 +15905,7 @@
 
 
 /***/ },
-/* 140 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/**
@@ -15678,7 +16004,7 @@
 
 
 /***/ },
-/* 141 */
+/* 145 */
 /***/ function(module, exports) {
 
 	var SWOrderItems = (function () {
@@ -15826,7 +16152,7 @@
 
 
 /***/ },
-/* 142 */
+/* 146 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15869,7 +16195,7 @@
 
 
 /***/ },
-/* 143 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -15878,7 +16204,7 @@
 	var core_module_1 = __webpack_require__(11);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(144);
+	var preprocessproduct_create_1 = __webpack_require__(148);
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -15889,7 +16215,7 @@
 
 
 /***/ },
-/* 144 */
+/* 148 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -15966,7 +16292,7 @@
 
 
 /***/ },
-/* 145 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -15974,13 +16300,13 @@
 	//modules
 	var core_module_1 = __webpack_require__(11);
 	//services
-	var productbundleservice_1 = __webpack_require__(146);
+	var productbundleservice_1 = __webpack_require__(150);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(147);
+	var create_bundle_controller_1 = __webpack_require__(151);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(148);
-	var swproductbundlegroups_1 = __webpack_require__(149);
-	var swproductbundlegroup_1 = __webpack_require__(150);
+	var swproductbundlegrouptype_1 = __webpack_require__(152);
+	var swproductbundlegroups_1 = __webpack_require__(153);
+	var swproductbundlegroup_1 = __webpack_require__(154);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -15994,7 +16320,7 @@
 
 
 /***/ },
-/* 146 */
+/* 150 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16079,7 +16405,7 @@
 
 
 /***/ },
-/* 147 */
+/* 151 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16167,7 +16493,7 @@
 
 
 /***/ },
-/* 148 */
+/* 152 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16339,7 +16665,7 @@
 
 
 /***/ },
-/* 149 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16399,7 +16725,7 @@
 
 
 /***/ },
-/* 150 */
+/* 154 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16744,24 +17070,24 @@
 
 
 /***/ },
-/* 151 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(152);
+	var workflowconditionservice_1 = __webpack_require__(156);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(153);
-	var swworkflowbasic_1 = __webpack_require__(154);
-	var swworkflowcondition_1 = __webpack_require__(155);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(156);
-	var swworkflowconditiongroups_1 = __webpack_require__(157);
-	var swworkflowtask_1 = __webpack_require__(158);
-	var swworkflowtaskactions_1 = __webpack_require__(159);
-	var swworkflowtasks_1 = __webpack_require__(160);
-	var swworkflowtrigger_1 = __webpack_require__(161);
-	var swworkflowtriggers_1 = __webpack_require__(162);
+	var swadmincreatesuperuser_1 = __webpack_require__(157);
+	var swworkflowbasic_1 = __webpack_require__(158);
+	var swworkflowcondition_1 = __webpack_require__(159);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(160);
+	var swworkflowconditiongroups_1 = __webpack_require__(161);
+	var swworkflowtask_1 = __webpack_require__(162);
+	var swworkflowtaskactions_1 = __webpack_require__(163);
+	var swworkflowtasks_1 = __webpack_require__(164);
+	var swworkflowtrigger_1 = __webpack_require__(165);
+	var swworkflowtriggers_1 = __webpack_require__(166);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
@@ -16781,7 +17107,7 @@
 
 
 /***/ },
-/* 152 */
+/* 156 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16836,7 +17162,7 @@
 
 
 /***/ },
-/* 153 */
+/* 157 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16870,7 +17196,7 @@
 
 
 /***/ },
-/* 154 */
+/* 158 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16910,7 +17236,7 @@
 
 
 /***/ },
-/* 155 */
+/* 159 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17032,7 +17358,7 @@
 
 
 /***/ },
-/* 156 */
+/* 160 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17071,7 +17397,7 @@
 
 
 /***/ },
-/* 157 */
+/* 161 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17120,7 +17446,7 @@
 
 
 /***/ },
-/* 158 */
+/* 162 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17172,7 +17498,7 @@
 
 
 /***/ },
-/* 159 */
+/* 163 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17354,7 +17680,7 @@
 
 
 /***/ },
-/* 160 */
+/* 164 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17546,7 +17872,7 @@
 
 
 /***/ },
-/* 161 */
+/* 165 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17636,7 +17962,7 @@
 
 
 /***/ },
-/* 162 */
+/* 166 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17827,7 +18153,7 @@
 
 
 /***/ },
-/* 163 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -17841,12 +18167,12 @@
 	// import {FormService} from "./services/formservice";
 	// import {MetaDataService} from "./services/metadataservice";
 	//controllers
-	var otherwisecontroller_1 = __webpack_require__(164);
-	var routercontroller_1 = __webpack_require__(165);
+	var otherwisecontroller_1 = __webpack_require__(168);
+	var routercontroller_1 = __webpack_require__(169);
 	//directives
-	var swdetailtabs_1 = __webpack_require__(166);
-	var swdetail_1 = __webpack_require__(167);
-	var swlist_1 = __webpack_require__(168);
+	var swdetailtabs_1 = __webpack_require__(170);
+	var swdetail_1 = __webpack_require__(171);
+	var swlist_1 = __webpack_require__(172);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute'])
 	    .config(['$routeProvider', '$injector', '$locationProvider',
 	    function ($routeProvider, $injector, $locationProvider) {
@@ -17895,7 +18221,7 @@
 
 
 /***/ },
-/* 164 */
+/* 168 */
 /***/ function(module, exports) {
 
 	var OtherWiseController = (function () {
@@ -17909,7 +18235,7 @@
 
 
 /***/ },
-/* 165 */
+/* 169 */
 /***/ function(module, exports) {
 
 	var RouterController = (function () {
@@ -17935,7 +18261,7 @@
 
 
 /***/ },
-/* 166 */
+/* 170 */
 /***/ function(module, exports) {
 
 	var SWDetailTabs = (function () {
@@ -17966,7 +18292,7 @@
 
 
 /***/ },
-/* 167 */
+/* 171 */
 /***/ function(module, exports) {
 
 	var SWDetail = (function () {
@@ -18036,7 +18362,7 @@
 
 
 /***/ },
-/* 168 */
+/* 172 */
 /***/ function(module, exports) {
 
 	var SWList = (function () {
@@ -18080,7 +18406,7 @@
 
 
 /***/ },
-/* 169 */
+/* 173 */
 /***/ function(module, exports) {
 
 	var SWCurrencyFormatter = (function () {
@@ -18136,7 +18462,7 @@
 
 
 /***/ },
-/* 170 */
+/* 174 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18160,7 +18486,7 @@
 
 
 /***/ },
-/* 171 */
+/* 175 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18218,12 +18544,12 @@
 
 
 /***/ },
-/* 172 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-	var alert_module_1 = __webpack_require__(51);
+	var alert_module_1 = __webpack_require__(55);
 	var loggermodule = angular.module('logger', [alert_module_1.alertmodule.name])
 	    .run([function () {
 	    }]);
