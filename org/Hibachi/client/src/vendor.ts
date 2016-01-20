@@ -1,5 +1,4 @@
 
-
 export =  ()=> {
 
   /* JS */
@@ -11,5 +10,4 @@ export =  ()=> {
   require('angular-sanitize');
   require('angular-lazy-bootstrap');
   require('metismenu');
-
 };

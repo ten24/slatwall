@@ -1,11 +1,12 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
-
+var md5 = require('md5');
 class SWGravatarController {
 
     public gravatarURL;
     public emailAddress;
-    
+
     // @ngInject
 	constructor(){
         this.gravatarURL = "http://www.gravatar.com/avatar/" + md5(this.emailAddress.toLowerCase().trim());
@@ -17,7 +18,7 @@ class SWGravatar implements ng.IDirective{
 	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
 			'pathBuilderConfig'];
 	public template = "<img src='{{swGravatar.gravatarURL}}' />";
-    public transclude=false; 
+    public transclude=false;
 	public restrict = "E";
 	public scope = {}
 
@@ -27,13 +28,13 @@ class SWGravatar implements ng.IDirective{
 	public controller=SWGravatarController;
 	public controllerAs="swGravatar";
 
-	constructor(){	
+	constructor(){
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
 	}
-    
- 
+
+
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = () => new SWGravatar();
