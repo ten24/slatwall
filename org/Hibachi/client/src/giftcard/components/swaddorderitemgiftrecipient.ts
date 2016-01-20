@@ -96,12 +96,14 @@ class SWAddOrderItemRecipientController {
     }
 
     startFormWithName = (searchString = this.searchText):void =>{
-        this.adding = true; 
-        this.currentGiftRecipient.forms.createRecipient.$setUntouched();
-        this.currentGiftRecipient.forms.createRecipient.$setPristine();
-        if(searchString != ""){
-            this.currentGiftRecipient.firstName = searchString; 
-            this.searchText = ""; 
+        this.adding = !this.adding; 
+        if(this.adding){
+            this.currentGiftRecipient.forms.createRecipient.$setUntouched();
+            this.currentGiftRecipient.forms.createRecipient.$setPristine();
+            if(searchString != ""){
+                this.currentGiftRecipient.firstName = searchString; 
+                this.searchText = ""; 
+            }
         }
     }
 
