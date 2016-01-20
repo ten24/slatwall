@@ -10683,11 +10683,10 @@
 	        if (this.processObject == undefined || vm.entityName == undefined) {
 	            throw ("ProcessObject Undefined Exception");
 	        }
-	        try {
+	        if (angular.isDefined(this.object) && this.object.name) {
 	            vm.actionFn = this.object;
 	        }
-	        catch (e) {
-	            //console.log("Post Only is Set");
+	        else {
 	            vm.postOnly = true;
 	        }
 	        /** We use these for our models */

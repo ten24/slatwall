@@ -5,7 +5,7 @@ interface FindArray<T> extends Array<T> {
     find(predicate: (T) => boolean) : T;
 }
 
-class SWFCartController{
+class SWFCartController{ 
     public cart:{};
     public account:{};
     public validCartObjects:FindArray<Object>;
