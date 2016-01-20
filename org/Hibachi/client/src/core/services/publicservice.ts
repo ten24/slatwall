@@ -6,25 +6,29 @@ class PublicService {
     public ajaxRequestParam:string = "?ajaxRequest=1";
     public account:any; 
     public cart:any;
+    public states:any;
+    public countries:any;
     public success:boolean;
     public hasErrors:boolean;
     public errors:string;
     public http:ng.IHttpService;
     public header:any;
-    private baseUrl = "";
+    private baseActionPath = "";
     public shippingAddress = "";
     public billingAddress = "";
-    
+    ///index.cfm/api/scope/
     //@ngInject
     constructor(public $http:ng.IHttpService, public $q:ng.IQService) { 
-        this.baseUrl = "/index.cfm/api/scope/";
+        
+        this.baseActionPath = "/index.cfm/api/scope/"; //default path
         this.$http = $http;
         this.$q = $q
+        
     }
     
     /** accessors for account */
     public getAccount=(refresh:boolean):any =>  {
-        let urlBase = this.baseUrl + 'getAccount/' + this.ajaxRequestParam + "&returnJsonObject=cart,account";
+        let urlBase = this.baseActionPath + 'getAccount/' + this.ajaxRequestParam + "&returnJsonObject=cart,account";
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
             this.account = result;
@@ -37,7 +41,7 @@ class PublicService {
     }
     /** accessors for cart */
     public getCart=(refresh:boolean):any =>  {
-        let urlBase = this.baseUrl + 'getCart/' + this.ajaxRequestParam;
+        let urlBase = this.baseActionPath + 'getCart/' + this.ajaxRequestParam;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
             this.cart = result;
@@ -50,11 +54,11 @@ class PublicService {
     }
     /** accessors for countries */
     public getCountries=(refresh:boolean):any =>  {
-        let urlBase = this.baseUrl + 'getCountries/' + this.ajaxRequestParam;
+        let urlBase = this.baseActionPath + 'getCountries/' + this.ajaxRequestParam;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
-            this.cart = result;
-            console.log("Countries:", this.cart);
+            this.countries = result;
+            console.log("Countries:", this.countries);
             deferred.resolve(result);
         }).error((reason)=>{
             deferred.reject(reason);  
@@ -63,11 +67,11 @@ class PublicService {
     }
     /** accessors for states */
     public getStates=(refresh:boolean):any =>  {
-        let urlBase = this.baseUrl + 'getStates/' + this.ajaxRequestParam;
+        let urlBase = this.baseActionPath + 'getStates/' + this.ajaxRequestParam;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
-            this.cart = result;
-            console.log("States:", this.cart);
+            this.states = result;
+            console.log("States:", this.states);
             deferred.resolve(result);
         }).error((reason)=>{
             deferred.reject(reason);  
@@ -91,33 +95,63 @@ class PublicService {
         *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
         */
     public doAction=(action:string, data:any) => {
+        let method = "";
+        if (!action) {throw "Action is required exception";}
+        
+        if (action != undefined && data == undefined){method = "get";}else{method = "post"}
+        
+        //check if the caller is defining a path to hit, otherwise use the public scope.
+        if (action.indexOf("/") !== -1){
+            this.baseActionPath = action; //any path
+        }else{
+            this.baseActionPath = "/index.cfm/api/scope/" //public path
+        }
+        
         this.hasErrors = false;
         this.success = false;
         this.errors = undefined;
         this.header = {headers: this.formType};
         var deferred = this.$q.defer();
-        if (!action) {throw "Action is required exception";}
+        
         data.returnJsonObjects = "cart,account";
-        let urlBase = this.baseUrl + action + this.ajaxRequestParam;
-        let promise =  this.$http.post(urlBase, this.toFormParams(data), this.header).then((result:any)=>{
-            
-            /** update the account and the cart */
-            this.account = result.data.account;
-            this.cart = result.data.cart;
-            //if the action that was called was successful, then success is true.
-            if (result.data.successfulActions.length){
-                this.success = true;
-            }
-            if (result.data.failureActions.length){
-                this.hasErrors = true;
-                console.log("Errors:", result.data.errors);
-            }
+        
+        let urlBase = this.baseActionPath + action + this.ajaxRequestParam;
+        
+        if (method == "post"){
+            //post
+            let promise =  this.$http.post(urlBase, this.toFormParams(data), this.header).then((result:any)=>{
+                
+                /** update the account and the cart */
+                this.account = result.data.account;
+                this.cart = result.data.cart;
+                //if the action that was called was successful, then success is true.
+                if (result.data.successfulActions.length){
+                    this.success = true;
+                }
+                if (result.data.failureActions.length){
+                    this.hasErrors = true;
+                    console.log("Errors:", result.data.errors);
+                }
+                deferred.resolve(result);
+            }).catch((response)=>{
+                console.log("There was an error making this http call", response.status, response.data);
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        }else{
+            //get
+            var deferred = this.$q.defer();
+            this.$http.get(urlBase).success((result:any)=>{
+            this.states = result;
+            console.log("States:", this.states);
             deferred.resolve(result);
-        }).catch((response)=>{
-            console.log("There was an error making this http call", response.status, response.data);
-            deferred.reject(response);
-        });
-        return deferred.promise;
+            }).error((reason)=>{
+                deferred.reject(reason);  
+            });
+            return deferred.promise;
+        }
+        
+        
     }
     /** used to turn data into a correct format for the post */
     public toFormParams= (data):string => {
@@ -143,54 +177,6 @@ class PublicService {
         return {};
     }
     
-    /**
-     * Helper method to get orderitems
-     */
-    public getOrderItems = ():any =>{
-        let orderItems = [];
-        if (this.cart.orderitems !== undefined && this.cart.orderitems.length){
-            for (var item in this.cart.orderitems){
-                orderItems.push(item);
-            }
-        }
-        return orderItems;
-    }
-    
-    /**
-     * Helper method to get order fulfillments
-     */
-    public getOrderFulfillments = ():any =>{
-        let orderFulfillments = [];
-        if (this.cart.orderfulfillments !== undefined && this.cart.orderfulfillments.length){
-            for (var item in this.cart.orderfulfillments){
-                orderFulfillments.push(item);
-            }
-        }
-        return orderFulfillments;
-    }
-    
-    /**
-     * Helper method to get promotion codes
-     */
-    public getPromotionCodeList = ():any =>{
-        if (this.cart && this.cart.promotionCodeList !== undefined){
-            return this.cart.promotionCodeList;
-        }  
-    }
-    
-    /**
-     * Helper method to get promotion codes
-     */
-    public getPromotionCodes = ():any =>{
-        let promoCodes = [];
-        if (this.cart && this.cart.promotionCodes.length){
-            for (var p in this.cart.promotionCodes){
-                promoCodes.push(this.cart.promotionCodes[p].promotionCode);
-                
-            }
-            return promoCodes;
-        }  
-    }
 }
 export {PublicService};
 
