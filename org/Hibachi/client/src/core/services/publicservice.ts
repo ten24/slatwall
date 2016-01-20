@@ -88,11 +88,12 @@ class PublicService {
         this.header = {headers: this.formType};
         var deferred = this.$q.defer();
         
-        data.returnJsonObjects = "cart,account";
+       
         
         let urlBase = this.baseActionPath + action + this.ajaxRequestParam;
         
         if (method == "post"){
+             data.returnJsonObjects = "cart,account";
             //post
             let promise =  this.$http.post(urlBase, this.toFormParams(data), this.header).then((result:any)=>{
                 
