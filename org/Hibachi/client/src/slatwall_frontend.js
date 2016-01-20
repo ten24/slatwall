@@ -1847,6 +1847,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var PublicService = (function () {
+	    ///index.cfm/api/scope/
 	    //@ngInject
 	    function PublicService($http, $q) {
 	        var _this = this;
@@ -1854,12 +1855,12 @@
 	        this.$q = $q;
 	        this.formType = { 'Content-Type': "application/x-www-form-urlencoded" };
 	        this.ajaxRequestParam = "?ajaxRequest=1";
-	        this.baseUrl = "";
+	        this.baseActionPath = "";
 	        this.shippingAddress = "";
 	        this.billingAddress = "";
 	        /** accessors for account */
 	        this.getAccount = function (refresh) {
-	            var urlBase = _this.baseUrl + 'getAccount/' + _this.ajaxRequestParam + "&returnJsonObject=cart,account";
+	            var urlBase = '/index.cfm/api/scope/getAccount/' + _this.ajaxRequestParam + "&returnJsonObject=cart,account";
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
 	                _this.account = result;
@@ -1872,7 +1873,7 @@
 	        };
 	        /** accessors for cart */
 	        this.getCart = function (refresh) {
-	            var urlBase = _this.baseUrl + 'getCart/' + _this.ajaxRequestParam;
+	            var urlBase = '/index.cfm/api/scope/getCart/' + _this.ajaxRequestParam;
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
 	                _this.cart = result;
@@ -1885,7 +1886,7 @@
 	        };
 	        /** accessors for countries */
 	        this.getCountries = function (refresh) {
-	            var urlBase = _this.baseUrl + 'getCountries/' + _this.ajaxRequestParam;
+	            var urlBase = '/index.cfm/api/scope/getCountries/' + _this.ajaxRequestParam;
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
 	                _this.cart = result;
@@ -1894,11 +1895,11 @@
 	            }).error(function (reason) {
 	                deferred.reject(reason);
 	            });
-	            return deferred.promise;
+	            return deferred;
 	        };
 	        /** accessors for states */
 	        this.getStates = function (refresh) {
-	            var urlBase = _this.baseUrl + 'getStates/' + _this.ajaxRequestParam;
+	            var urlBase = '/index.cfm/api/scope/getStates/' + _this.ajaxRequestParam;
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
 	                _this.cart = result;
@@ -1923,34 +1924,62 @@
 	            *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
 	            */
 	        this.doAction = function (action, data) {
+	            var method = "";
+	            if (!action) {
+	                throw "Action is required exception";
+	            }
+	            if (action != undefined && data == undefined) {
+	                method = "get";
+	            }
+	            else {
+	                method = "post";
+	            }
+	            //check if the caller is defining a path to hit, otherwise use the public scope.
+	            if (action.indexOf("/") !== -1) {
+	                _this.baseActionPath = action; //any path
+	            }
+	            else {
+	                _this.baseActionPath = "/index.cfm/api/scope/" + action; //public path
+	            }
 	            _this.hasErrors = false;
 	            _this.success = false;
 	            _this.errors = undefined;
 	            _this.header = { headers: _this.formType };
 	            var deferred = _this.$q.defer();
-	            if (!action) {
-	                throw "Action is required exception";
+	            var urlBase = _this.baseActionPath + _this.ajaxRequestParam;
+	            if (method == "post") {
+	                data.returnJsonObjects = "cart,account";
+	                //post
+	                var promise = _this.$http.post(urlBase, _this.toFormParams(data), _this.header).then(function (result) {
+	                    /** update the account and the cart */
+	                    _this.account = result.data.account;
+	                    _this.cart = result.data.cart;
+	                    //if the action that was called was successful, then success is true.
+	                    if (result.data.successfulActions.length) {
+	                        _this.success = true;
+	                    }
+	                    if (result.data.failureActions.length) {
+	                        _this.hasErrors = true;
+	                        console.log("Errors:", result.data.errors);
+	                    }
+	                    deferred.resolve(result);
+	                }).catch(function (response) {
+	                    console.log("There was an error making this http call", response.status, response.data);
+	                    deferred.reject(response);
+	                });
+	                return deferred.promise;
 	            }
-	            data.returnJsonObjects = "cart,account";
-	            var urlBase = _this.baseUrl + action + _this.ajaxRequestParam;
-	            var promise = _this.$http.post(urlBase, _this.toFormParams(data), _this.header).then(function (result) {
-	                /** update the account and the cart */
-	                _this.account = result.data.account;
-	                _this.cart = result.data.cart;
-	                //if the action that was called was successful, then success is true.
-	                if (result.data.successfulActions.length) {
-	                    _this.success = true;
-	                }
-	                if (result.data.failureActions.length) {
-	                    _this.hasErrors = true;
-	                    console.log("Errors:", result.data.errors);
-	                }
-	                deferred.resolve(result);
-	            }).catch(function (response) {
-	                console.log("There was an error making this http call", response.status, response.data);
-	                deferred.reject(response);
-	            });
-	            return deferred.promise;
+	            else {
+	                //get
+	                var url = urlBase + "&returnJsonObject=cart,account";
+	                var deferred = _this.$q.defer();
+	                _this.$http.get(url).success(function (result) {
+	                    deferred.resolve(result);
+	                }).error(function (reason) {
+	                    deferred.reject(reason);
+	                });
+	                return deferred.promise;
+	            }
 	        };
 	        /** used to turn data into a correct format for the post */
 	        this.toFormParams = function (data) {
@@ -1974,51 +2003,7 @@
 	            }
 	            return {};
 	        };
-	        /**
-	         * Helper method to get orderitems
-	         */
-	        this.getOrderItems = function () {
-	            var orderItems = [];
-	            if (_this.cart.orderitems !== undefined && _this.cart.orderitems.length) {
-	                for (var item in _this.cart.orderitems) {
-	                    orderItems.push(item);
-	                }
-	            }
-	            return orderItems;
-	        };
-	        /**
-	         * Helper method to get order fulfillments
-	         */
-	        this.getOrderFulfillments = function () {
-	            var orderFulfillments = [];
-	            if (_this.cart.orderfulfillments !== undefined && _this.cart.orderfulfillments.length) {
-	                for (var item in _this.cart.orderfulfillments) {
-	                    orderFulfillments.push(item);
-	                }
-	            }
-	            return orderFulfillments;
-	        };
-	        /**
-	         * Helper method to get promotion codes
-	         */
-	        this.getPromotionCodeList = function () {
-	            if (_this.cart && _this.cart.promotionCodeList !== undefined) {
-	                return _this.cart.promotionCodeList;
-	            }
-	        };
-	        /**
-	         * Helper method to get promotion codes
-	         */
-	        this.getPromotionCodes = function () {
-	            var promoCodes = [];
-	            if (_this.cart && _this.cart.promotionCodes.length) {
-	                for (var p in _this.cart.promotionCodes) {
-	                    promoCodes.push(_this.cart.promotionCodes[p].promotionCode);
-	                }
-	                return promoCodes;
-	            }
-	        };
-	        this.baseUrl = "/index.cfm/api/scope/";
+	        this.baseActionPath = "/index.cfm/api/scope/"; //default path
 	        this.$http = $http;
 	        this.$q = $q;
 	    }
@@ -3446,6 +3431,7 @@
 	            </cfif>
 	            */
 	        };
+	        /** submit function delegates back to the form */
 	        this.submit = function () {
 	            _this.formCtrl.submit(_this.action);
 	        };
@@ -3604,10 +3590,7 @@
 	})();
 	exports.SWActionCallerController = SWActionCallerController;
 	var SWActionCaller = (function () {
-	    function SWActionCaller(partialsPath, utilityService, $hibachi) {
-	        this.partialsPath = partialsPath;
-	        this.utilityService = utilityService;
-	        this.$hibachi = $hibachi;
+	    function SWActionCaller() {
 	        this.restrict = 'EA';
 	        this.scope = {};
 	        this.bindToController = {
@@ -3639,14 +3622,7 @@
 	        };
 	    }
 	    SWActionCaller.Factory = function () {
-	        var directive = function (partialsPath, utilityService, $hibachi) {
-	            return new SWActionCaller(partialsPath, utilityService, $hibachi);
-	        };
-	        directive.$inject = [
-	            'partialsPath',
-	            'utilityService',
-	            '$hibachi'
-	        ];
+	        var directive = function () { return new SWActionCaller(); };
 	        return directive;
 	    };
 	    return SWActionCaller;
@@ -5639,7 +5615,7 @@
 	//need to inject the public service into the rootscope for use in the directives.
 	//Also, we set the initial value for account and cart.
 	var frontendmodule = angular.module('frontend', [hibachi_module_1.hibachimodule.name])
-	    .config(['pathBuilderConfig', '$sceDelegateProvider', function (pathBuilderConfig, $sceDelegateProvider) {
+	    .config(['pathBuilderConfig', function (pathBuilderConfig) {
 	        /** set the baseURL */
 	        pathBuilderConfig.setBaseURL('/');
 	        pathBuilderConfig.setBasePartialsPath('custom/assets/'); //org/hibachi/client/src/

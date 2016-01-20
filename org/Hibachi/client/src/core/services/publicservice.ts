@@ -25,33 +25,58 @@ class PublicService {
         this.$q = $q
         
     }
+    
     /** accessors for account */
     public getAccount=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getAccount/';
-        var result = this.doAction(urlBase);
-        console.log("Result: ", result);
-        return result;
+        let urlBase = '/index.cfm/api/scope/getAccount/' + this.ajaxRequestParam + "&returnJsonObject=cart,account";
+        var deferred = this.$q.defer();
+        this.$http.get(urlBase).success((result:any)=>{
+            this.account = result;
+            console.log("Account:", this.account);
+            deferred.resolve(result);
+        }).error((reason)=>{
+            deferred.reject(reason);  
+        });
+        return deferred.promise 
     }
     /** accessors for cart */
     public getCart=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getCart/';
-        var result = this.doAction(urlBase);
-        console.log("Result: ", result);
-        return result;
+        let urlBase = '/index.cfm/api/scope/getCart/' + this.ajaxRequestParam;
+        var deferred = this.$q.defer();
+        this.$http.get(urlBase).success((result:any)=>{
+            this.cart = result;
+            console.log("Cart:", this.cart);
+            deferred.resolve(result);
+        }).error((reason)=>{
+            deferred.reject(reason);  
+        });
+        return deferred.promise;
     }
     /** accessors for countries */
     public getCountries=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getCountries/';
-        var result = this.doAction(urlBase);
-        console.log("Result: ", result);
-        return result;
+        let urlBase = '/index.cfm/api/scope/getCountries/' + this.ajaxRequestParam;
+        var deferred = this.$q.defer();
+        this.$http.get(urlBase).success((result:any)=>{
+            this.cart = result;
+            console.log("Countries:", this.cart);
+            deferred.resolve(result);
+        }).error((reason)=>{
+            deferred.reject(reason);  
+        });
+        return deferred;
     }
     /** accessors for states */
     public getStates=(refresh:boolean):any =>  {
-        let urlBase = this.baseActionPath + 'getStates/';
-        var result = this.doAction(urlBase);
-        console.log("Result: ", result);
-        return result;
+        let urlBase = '/index.cfm/api/scope/getStates/' + this.ajaxRequestParam;
+        var deferred = this.$q.defer();
+        this.$http.get(urlBase).success((result:any)=>{
+            this.cart = result;
+            console.log("States:", this.cart);
+            deferred.resolve(result);
+        }).error((reason)=>{
+            deferred.reject(reason);  
+        });
+        return deferred.promise;
     }
     
     /** sets the current shipping address */
@@ -79,7 +104,7 @@ class PublicService {
         if (action.indexOf("/") !== -1){
             this.baseActionPath = action; //any path
         }else{
-            this.baseActionPath = "/index.cfm/api/scope/" //public path
+            this.baseActionPath = "/index.cfm/api/scope/" + action;//public path
         }
         
         this.hasErrors = false;
@@ -88,9 +113,7 @@ class PublicService {
         this.header = {headers: this.formType};
         var deferred = this.$q.defer();
         
-       
-        
-        let urlBase = this.baseActionPath + action + this.ajaxRequestParam;
+        let urlBase = this.baseActionPath + this.ajaxRequestParam;
         
         if (method == "post"){
              data.returnJsonObjects = "cart,account";
@@ -116,12 +139,12 @@ class PublicService {
             return deferred.promise;
         }else{
             //get
-            this.baseActionPath + this.ajaxRequestParam + "&returnJsonObject=cart,account";
+            var url = urlBase + "&returnJsonObject=cart,account";
             var deferred = this.$q.defer();
-            this.$http.get(urlBase).success((result:any)=>{
-                deferred.resolve(result);
+            this.$http.get(url).success((result:any)=>{
+              deferred.resolve(result);
             }).error((reason)=>{
-                deferred.reject(reason);  
+              deferred.reject(reason);
             });
             return deferred.promise;
         }
