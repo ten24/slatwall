@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 
 class SWTypeaheadSearchController {
@@ -36,7 +36,6 @@ class SWTypeaheadSearchController {
             this.typeaheadCollectionConfig = this.collectionConfig; 
         } else if (angular.isDefined(this.entity)){ 
             this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-            console.log("COLLECTION CONFIG INSTANTIATED", this.typeaheadCollectionConfig)
         } else { 
             throw("You did not pass the correct collection config data to swTypeaheadSearch");
         }
@@ -52,10 +51,8 @@ class SWTypeaheadSearchController {
         this.$transclude = this.$transclude;
         this.$transclude($scope,()=>{});
         
-        console.log("Setting diplay properties", this.utilityService.arrayToList(this.displayList));
         this.typeaheadCollectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
-        console.log(this.typeaheadCollectionConfig);
-        
+
 		if(angular.isDefined(this.allRecords)){
 			this.typeaheadCollectionConfig.setAllRecords(this.allRecords);
 		} else {
