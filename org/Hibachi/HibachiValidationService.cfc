@@ -40,8 +40,8 @@ component output="false" accessors="true" extends="HibachiService" {
 								arrayAppend(validation[customValidationKey][ key ],customValidation[customValidationKey][ key ][r]);	
 							}
 						}else{
-							for(var item in customValidation.conditions[ key ]) {
-								structAppend(validation.conditions[ key ], customValidation.conditions[ key ] [item]);	
+							for(var item in customValidation[customValidationKey][ key ]) {
+								structAppend(validation[customValidationKey][ key ], customValidation[customValidationKey][ key ] [item]);	
 							}
 						}
 					}
