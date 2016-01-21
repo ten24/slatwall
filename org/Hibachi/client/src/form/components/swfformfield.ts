@@ -32,7 +32,7 @@
  *********************************************************************************************
  *********************************************************************************************
  */
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 /** declare an interface so we don't get errors using vm */
