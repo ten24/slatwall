@@ -248,7 +248,7 @@ Notes:
 			var fileContent = fileRead(expandPath(filePath)) ;
 			
 			//declared custom strings
-			var lineBreak = lineBreak = Chr(13) & Chr(10);
+			var lineBreak = lineBreak = CreateObject("java", "java.lang.System").getProperty("line.separator");
 			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN #lineBreak#';
 			var customPropertyEndString = '//CUSTOM PROPERTIES END #lineBreak & lineBreak#';
 			var customFunctionBeginString = chr(9)&'//CUSTOM FUNCTIONS BEGIN #lineBreak#';
