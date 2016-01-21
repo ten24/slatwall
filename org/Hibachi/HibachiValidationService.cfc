@@ -31,7 +31,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			// Make sure that the validation struct has contexts & properties
 			for(var customValidationKey in customValidation){
-				if(!structKeyExists(validation,'customValidationKey')){
+				if(!structKeyExists(validation,customValidationKey)){
 					validation[customValidationKey] = customValidation[customValidationKey];
 					continue;
 				}
