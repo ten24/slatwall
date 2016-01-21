@@ -78,7 +78,8 @@ class ProductCreateController{
             });
             
             if(this.$scope.preprocessproduct_createCtrl.options.length > 1){
-                this.$scope.preprocessproduct_createCtrl.options.splice(0,0,{label:this.rbkeyService.getRBKey('processObject.Product_Create.selectProductType'),value:""});
+                //option.value can't be empty here because ngOptions won't be able to track by it. 
+                this.$scope.preprocessproduct_createCtrl.options.splice(0,0,{label:this.rbkeyService.getRBKey('processObject.Product_Create.selectProductType'),value:"pleaseselect"});
             }
             
             this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.options[0]);
