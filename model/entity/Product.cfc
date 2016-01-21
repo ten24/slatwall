@@ -123,6 +123,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
+	property name="skusOrderedByCodeAndImageFile" type="array" persistent="false";
 	property name="title" type="string" persistent="false";
 	property name="transactionExistsFlag" type="boolean" persistent="false";
 	property name="unusedProductOptions" type="array" persistent="false";
@@ -688,18 +689,34 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			var sl = getService("skuService").getSkuSmartList();
 			sl.addFilter('product.productID', getProductID());
+			sl.addSelect('skuCode', 'skuCode');
 			sl.addSelect('imageFile', 'imageFile');
+			sl.addOrder('skuCode|DESC');
 			sl.setSelectDistinctFlag( true );
 
 			var records = sl.getRecords();
 
 			for(var record in records) {
-				if(structKeyExists(record, "imageFile")) {
+
+				if(structKeyExists(record, "imageFile")){
 					arrayAppend(variables.defaultProductImageFiles, record["imageFile"]);
 				}
 			}
 		}
 		return variables.defaultProductImageFiles;
+	}
+
+	public array function getSkusOrderedByCodeAndImageFile() {
+		if(!structKeyExists(variables, "skusOrderedByCodeAndImageFile")) {
+			var sl = getService("skuService").getSkuSmartList();
+			sl.addFilter('product.productID', getProductID());
+			sl.addSelect('skuCode', 'skuCode');
+			sl.addSelect('imageFile', 'imageFile');
+			sl.addOrder('skuCode|DESC');
+			sl.setSelectDistinctFlag( true );
+			variables.skusOrderedByCodeAndImageFile = sl.getRecords();
+		}
+		return variables.skusOrderedByCodeAndImageFile;
 	}
 
 	public struct function getSalePriceDetailsForSkus() {
