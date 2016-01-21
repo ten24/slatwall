@@ -122,6 +122,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="nextSkuCodeCount" persistent="false";
 	property name="optionGroupCount" type="numeric" persistent="false";
 	property name="productBundleGroupsCount" type="numeric" persistent="false";
+	property name="defaultProductImageFilesCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
@@ -239,7 +240,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	}
 
 	public numeric function getTotalImageCount(){
-		return ArrayLen(this.getImages()) + ArrayLen(this.getDefaultProductImageFiles());
+		return this.getProductImagesCount() + this.getDefaultProductImageFilesCount();
 	}
 
 	public struct function getSkuSalePriceDetails( required any skuID) {
@@ -714,6 +715,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		}
 		return variables.defaultProductImageFiles;
+	}
+
+	public numeric function getDefaultProductImageFilesCount() {
+		if(!structKeyExists(variables,"defaultProductImageFilesCount")){
+			variables.defaultProductImageFilesCount = 0;
+			for(var imageFile in this.getDefaultProductImageFiles()){
+				if(fileExists(expandPath(this.getHibachiScope().getBaseImageURL() & "/product/default/#imageFile#"))){
+					variables.defaultProductImageFilesCount++;
+				}
+			}
+		}
+		return variables.defaultProductImageFilesCount;
 	}
 
 	public struct function getSalePriceDetailsForSkus() {
