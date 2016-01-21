@@ -11,10 +11,10 @@ import {SWFDirective} 		from "./components/swfdirective";
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
 var frontendmodule = angular.module('frontend', [hibachimodule.name])
-.config(['pathBuilderConfig', '$sceDelegateProvider' ,(pathBuilderConfig, $sceDelegateProvider)=>{
+.config(['pathBuilderConfig',(pathBuilderConfig)=>{
     /** set the baseURL */ 
     pathBuilderConfig.setBaseURL('/');
-    pathBuilderConfig.setBasePartialsPath('custom/assets/');//org/hibachi/client/src/
+    pathBuilderConfig.setBasePartialsPath('custom/client/src/');//org/hibachi/client/src/ 
                     
 }])
 .run(['$rootScope', '$hibachi', 'publicService', function($rootScope, $hibachi, publicService) {
@@ -23,7 +23,7 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 	$rootScope.hibachiScope.getAccount(); 
 	$rootScope.hibachiScope.getCart();
     $rootScope.hibachiScope.getCountries();
-    $rootScope.hibachiScope.getStates();
+    $rootScope.hibachiScope.getStates(); 
 	$rootScope.slatwall = $rootScope.hibachiScope;
     $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
     

@@ -67,11 +67,11 @@ class PublicService {
     }
     /** accessors for states */
     public getStates=(refresh:boolean):any =>  {
-        let urlBase = '/index.cfm/api/scope/getStates/' + this.ajaxRequestParam;
+        let urlBase = '/index.cfm/api/scope/getStateCodeAndAddressOptionsByCountryCode/' + this.ajaxRequestParam;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
             this.states = result;
-            console.log("States:", this.states);
+            console.log("StatesCode and Address Options:", this.states);
             deferred.resolve(result);
         }).error((reason)=>{
             deferred.reject(reason);  
