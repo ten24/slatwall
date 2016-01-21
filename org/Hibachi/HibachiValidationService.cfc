@@ -39,6 +39,10 @@ component output="false" accessors="true" extends="HibachiService" {
 							for(var r=1; r<=arrayLen(customValidation[customValidationKey][ key ]); r++) {
 								arrayAppend(validation[customValidationKey][ key ],customValidation[customValidationKey][ key ][r]);	
 							}
+						}else{
+							for(var item in customValidation.conditions[ key ]) {
+								structAppend(validation.conditions[ key ], customValidation.conditions[ key ] [item]);	
+							}
 						}
 					}
 				}
