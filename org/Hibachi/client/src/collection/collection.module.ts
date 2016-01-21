@@ -20,6 +20,7 @@ import {SWColumnItem} from "./components/swcolumnitem";
 import {SWConditionCriteria} from "./components/swconditioncriteria";
 import {SWCriteria} from "./components/swcriteria";
 import {SWCriteriaBoolean} from "./components/swcriteriaboolean";
+import {SWCriteriaDate} from "./components/swcriteriadate";
 import {SWCriteriaManyToMany} from "./components/swcriteriamanytomany";
 import {SWCriteriaManyToOne} from "./components/swcriteriamanytoone";
 import {SWCriteriaNumber} from "./components/swcriterianumber";
@@ -55,6 +56,7 @@ var collectionmodule = angular.module('hibachi.collection',[coremodule.name])
 .directive('swConditionCriteria',SWConditionCriteria.Factory())
 .directive('swCriteria',SWCriteria.Factory())
 .directive('swCriteriaBoolean',SWCriteriaBoolean.Factory())
+.directive('swCriteriaDate',SWCriteriaDate.Factory())
 .directive('swCriteriaManyToMany',SWCriteriaManyToMany.Factory())
 .directive('swCriteriaManyToOne',SWCriteriaManyToOne.Factory())
 .directive('swCriteriaNumber',SWCriteriaNumber.Factory())
