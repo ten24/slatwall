@@ -8,8 +8,7 @@ import {dialogmodule} from "../dialog/dialog.module";
 import {paginationmodule} from "../pagination/pagination.module";
 import {formmodule} from "../form/form.module";
 import {validationmodule} from "../validation/validation.module";
-//directives
-import {SWSaveAndFinish} from "./components/swsaveandfinish";
+
 
 var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
@@ -20,8 +19,6 @@ var hibachimodule = angular.module('hibachi',[
     formmodule.name,
     validationmodule.name
 ])
-.constant('hibachiPartialsPath','hibachi/components/')
-.directive('swSaveAndFinish',SWSaveAndFinish.Factory())
 ;
 
 export{

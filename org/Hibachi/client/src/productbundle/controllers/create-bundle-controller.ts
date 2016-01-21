@@ -88,6 +88,24 @@ class CreateBundleController{
 		} else {
 			productBundleConstructor();
 		}
+
+		$scope.saveProductBundle = (closeDialogIndex, saveAndNew) =>{
+			$scope.newSaving = true;
+			$log.debug($scope.newSaving);
+            $scope.dIndex = closeDialogIndex;
+			$scope.product.$$save().then(function(){
+				$log.debug("Turn off the loader after saving.");
+				$scope.newSaving = false;
+				$scope.closeSaving = true;
+				$rootScope.closePageDialog($scope.dIndex);
+
+				if(saveAndNew){
+					$rootScope.openPageDialog( 'productbundle/createproductbundle' )
+				}
+			},()=>{
+                $scope.newSaving = false;
+            });
+		};
 	}
 }
 export{
