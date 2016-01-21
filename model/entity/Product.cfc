@@ -172,8 +172,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.productTypeOptions = [];
 
 			if(arrayLen(records) > 1){
-				var defaultSelectOption = {name=getHibachiScope().getRbKey('processObject.Product_Create.selectProductType'),value=""};
-				arrayAppend(variables.productTypeOptions, defaultSelectOption);
+				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().getRbKey('processObject.Product_Create.selectProductType'),value=""});
 			}
 
 			for(var i=1; i<=arrayLen(records); i++) {
