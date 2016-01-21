@@ -40,7 +40,6 @@ class SWSaveAndFinishController{
            this.dialogService.removeCurrentDialog(); 
        }).finally((data)=>{
            this.saving = false;
-            console.log("PARTIAL PART:",this.partial,this,(!this.finish && angular.isDefined(this.partial)));
            if(this.openNewDialog && angular.isDefined(this.partial)){
                this.dialogService.addPageDialog(this.partial);
            } else { 
