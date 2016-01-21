@@ -179,7 +179,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			try{
 				var value = arguments.pageRecord.getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier, formatValue=true );
 				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-					pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
+					pageRecordStruct[ arguments.propertyIdentifier ] = this.capitalCase(lcase(value)) & " ";
 				} else {
 					pageRecordStruct[ arguments.propertyIdentifier ] = value;
 				}
@@ -210,7 +210,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					var value = arguments.pageRecord[arguments.propertyIdentifier];
 					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
 
-						pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
+						pageRecordStruct[ arguments.propertyIdentifier ] = this.capitalCase(lcase(value)) & " ";
 					} else {
 						pageRecordStruct[ arguments.propertyIdentifier ] = value;
 					}
@@ -578,7 +578,7 @@ component output="false" accessors="true" extends="HibachiService" {
 						ArrayAppend(aggregatePropertyIdentifierArray,column.aggregate.aggregateAlias);
 					}
 					//add all attributes by alias
- 
+
 					if(structKeyExists(column,'attributeID')){
 						ArrayAppend(attributePropertyIdentifierArray,piAlias);
 					}
@@ -586,9 +586,9 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 
-			
+
 			var authorizedProperties = getAuthorizedProperties(arguments.collectionEntity, collectionPropertyIdentifiers, aggregatePropertyIdentifierArray,attributePropertyIdentifierArray,enforceAuthorization);
-			
+
 			var collectionStruct = {};
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,authorizedProperties);
