@@ -78,7 +78,7 @@ Notes:
 						</div>
 					</div>
 				<cfelse>
-					<div class="alert alert-info deafult-margin" role="alert" ng-if="$root.loadedResourceBundle"><span sw-rbkey="'entity.Product.process.image.norecordsfoundforsku'"></span> : <span>#rc.product.getSkusOrderedByCode()[variables.index]["skuCode"]#</span></div>
+					<div class="alert alert-info deafult-margin" role="alert" ng-if="$root.loadedResourceBundle"><span sw-rbkey="'entity.Product.process.image.norecordsfoundforsku'"></span> : <span>#rc.product.getSkusOrderedByCodeAndImageFile()[variables.index]["skuCode"]#</span></div>
 					<div class="col-xs-3">
 						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="variables.imageFiles[variables.index]=#variables.imageFiles[variables.index]#" class="btn btn-primary" icon="plus" iconOnly="false"  modal="true" />
 					</div>
