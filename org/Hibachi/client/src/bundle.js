@@ -5902,7 +5902,7 @@
 	    .run(['$rootScope', '$filter', '$anchorScroll', '$hibachi', 'dialogService', 'observerService', 'utilityService', 'pathBuilderConfig', function ($rootScope, $filter, $anchorScroll, $hibachi, dialogService, observerService, utilityService, pathBuilderConfig) {
 	        $anchorScroll.yOffset = 100;
 	        $rootScope.openPageDialog = function (partial) {
-	            dialogService.addPageDialog(pathBuilderConfig.buildPartialsPath(partial));
+	            dialogService.addPageDialog(partial);
 	        };
 	        $rootScope.closePageDialog = function (index) {
 	            dialogService.removePageDialog(index);
@@ -6037,6 +6037,8 @@
 	var pagination_module_1 = __webpack_require__(84);
 	var form_module_1 = __webpack_require__(87);
 	var validation_module_1 = __webpack_require__(102);
+	//directives
+	var swsaveandfinish_1 = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./components/swsaveandfinish\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -6045,7 +6047,9 @@
 	    pagination_module_1.paginationmodule.name,
 	    form_module_1.formmodule.name,
 	    validation_module_1.validationmodule.name
-	]);
+	])
+	    .constant('hibachiPartialsPath', 'hibachi/components/')
+	    .directive('swSaveAndFinish', swsaveandfinish_1.SWSaveAndFinish.Factory());
 	exports.hibachimodule = hibachimodule;
 
 
@@ -10392,7 +10396,7 @@
 	        };
 	        this.addPageDialog = function (name, params) {
 	            var newDialog = {
-	                'path': name + '.html',
+	                'path': _this.pathBuilderConfig.buildPartialsPath(name + '.html'),
 	                'params': params
 	            };
 	            _this._pageDialogs.push(newDialog);
@@ -16230,22 +16234,6 @@
 	        else {
 	            productBundleConstructor();
 	        }
-	        $scope.saveProductBundle = function (closeDialogIndex, saveAndNew) {
-	            $scope.newSaving = true;
-	            $log.debug($scope.newSaving);
-	            $scope.dIndex = closeDialogIndex;
-	            $scope.product.$$save().then(function () {
-	                $log.debug("Turn off the loader after saving.");
-	                $scope.newSaving = false;
-	                $scope.closeSaving = true;
-	                $rootScope.closePageDialog($scope.dIndex);
-	                if (saveAndNew) {
-	                    $rootScope.openPageDialog('productbundle/createproductbundle');
-	                }
-	            }, function () {
-	                $scope.newSaving = false;
-	            });
-	        };
 	    }
 	    return CreateBundleController;
 	})();

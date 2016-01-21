@@ -1,4 +1,4 @@
-	component output="false" accessors="true" extends="HibachiService" {
+component output="false" accessors="true" extends="HibachiService" {
 	
 	variables.validationStructs = {};
 	variables.validationByContextStructs = {};
@@ -29,18 +29,24 @@
 					logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
 				}
 			}
-			
 			// Make sure that the validation struct has contexts & properties
-			param name="validation.properties" default="#structNew()#";
-			
-			// Add any additional rules
-			if(structKeyExists(customValidation, "properties")) {
-				for(var key in customValidation.properties) {
-					if(!structKeyExists(validation.properties, key)) {
-						validation.properties[ key ] = customValidation.properties[ key ];
+			for(var customValidationKey in customValidation){
+				if(!structKeyExists(validation,'customValidationKey')){
+					validation[customValidationKey] = customValidation[customValidationKey];
+					continue;
+				}
+				for(var key in customValidation[customValidationKey]) {
+					if(!structKeyExists(validation[customValidationKey], key)) {
+						validation[customValidationKey][ key ] = customValidation[customValidationKey][ key ];
 					} else {
-						for(var r=1; r<=arrayLen(customValidation.properties[ key ]); r++) {
-							arrayAppend(validation.properties[ key ],customValidation.properties[ key ][r]);	
+						if(isArray(customValidation[customValidationKey][ key ])){
+							for(var r=1; r<=arrayLen(customValidation[customValidationKey][ key ]); r++) {
+								arrayAppend(validation[customValidationKey][ key ],customValidation[customValidationKey][ key ][r]);	
+							}
+						}else{
+							for(var item in customValidation[customValidationKey][ key ]) {
+								structAppend(validation[customValidationKey][ key ], customValidation[customValidationKey][ key ] [item]);	
+							}
 						}
 					}
 				}

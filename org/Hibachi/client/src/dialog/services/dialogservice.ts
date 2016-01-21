@@ -24,7 +24,7 @@ class DialogService{
 
     addPageDialog = ( name:PageDialog, params?:any ):void =>{
         var newDialog = {
-            'path' : this.pathBuilderConfig.buildPartialsPath(name + '.html'),
+            'path' : name + '.html',
             'params' : params
         };
         this._pageDialogs.push( newDialog );
