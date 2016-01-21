@@ -721,8 +721,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		if(!structKeyExists(variables,"defaultProductImageFilesCount")){
 			variables.defaultProductImageFilesCount = 0;
 			for(var imageFile in this.getDefaultProductImageFiles()){
-				var imagePath = this.getHibachiScope().getBaseImageURL() & "/product/default/#imageFile#";
-				if(fileExists(expandPath(imagePath))){
+				if(fileExists(expandPath(this.getHibachiScope().getBaseImageURL() & "/product/default/#imageFile#"))){
 					variables.defaultProductImageFilesCount++;
 				}
 			}
