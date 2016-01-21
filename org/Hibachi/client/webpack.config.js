@@ -1,5 +1,4 @@
 var webpack = require('webpack');  
-//var angular = require('angular');
 var path = require('path');
 var PATHS = {
     app:__dirname + '/src'
@@ -31,7 +30,6 @@ module.exports = {
         ,'angular-animate':'../lib/angular/angular-animate.min.js'
         ,'angular-sanitize':'../lib/angular/angular-sanitize.min.js'
         ,'metismenu':'../lib/metismenu/metismenu.js'
-      
       //,'ng-ckeditor':'../lib/ng-ckeditor/ng-ckeditor.min.js'
   	}
   },

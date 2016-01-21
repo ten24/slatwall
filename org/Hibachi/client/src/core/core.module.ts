@@ -18,12 +18,14 @@ import {PercentageFilter} from "./filters/percentage";
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
+import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
+import {SWGravatar} from "./components/swgravatar"; 
 import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
@@ -1150,7 +1152,8 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 //filters
 .filter('percentage',[PercentageFilter.Factory])
 //directives
-.directive('swTypeahedSearch',SWTypeaheadSearch.Factory())
+.directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
+.directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
@@ -1158,6 +1161,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
+.directive('swGravatar', SWGravatar.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())

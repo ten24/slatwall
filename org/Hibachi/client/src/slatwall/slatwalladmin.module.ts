@@ -92,7 +92,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         $anchorScroll.yOffset = 100;
 
         $rootScope.openPageDialog = function( partial ) {
-            dialogService.addPageDialog( pathBuilderConfig.buildPartialsPath(partial) );
+            dialogService.addPageDialog( partial );
         };
 
         $rootScope.closePageDialog = function( index ) {

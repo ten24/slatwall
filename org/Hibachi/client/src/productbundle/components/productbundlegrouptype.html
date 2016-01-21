@@ -1,8 +1,8 @@
 <div class="form-group" >
 			<label class="control-label" for=""><span sw-rbkey="'admin.productBundle.bundleGroupType'"></span>:</label>
-			<div class="s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
+			<div class="s-search-filter" id="j-inside-product-bundle-group-type">
 			
-				<div class="input-group" >
+				<!--<div class="input-group" >
 					<input  type="text"
 							ng-model="productBundleGroup.data.productBundleGroupType.data.typeName"
 							placeholder="Search"
@@ -11,6 +11,8 @@
 							typeahead-on-select="selectProductBundleGroupType($item, $model, $label)"
                             required
 					>
+                    
+                    
 					
 					<div class="input-group-btn">
 						<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
@@ -19,19 +21,32 @@
 						</button>
 					</div>
 					
-				</div>
+                 
+				</div>-->
+                
+                <div sw-typeahead-search 
+                        data-collection-config="productBundleGroupTypes.typeaheadCollectionConfig"
+                        data-search-text="productBundleGroup.data.productBundleGroupType.data.typeName"
+                        data-placeholder-text="Search or Add Bundle Group Type..."
+                        data-add-function="selectProductBundleGroupType"
+                        data-add-button-function="productBundleGroupTypes.setAdding"
+                        >
+                        
+                        <span sw-typeahead-search-line-item data-property-identifier="typeName">
+                            <span ng-bind="item.typeName"></span>
+                        </span> 
+                        
+                </div>
 
-				<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">
+				<!--<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">
 					<button type="button"
 							class="btn s-btn-dgrey"
 							ng-show="showAddProductBundleGroupTypeBtn"
 							ng-click="productBundleGroupTypes.setAdding(true)"
 					>
 						<i class="fa fa-plus"></i> <span sw-rbkey="'define.add'"></span> "{{productBundleGroup.data.productBundleGroupType.data.typeName}}"
-					</button>
-					<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
-						
-
+					</button>-->
+					<div class="s-add-content" ng-if="productBundleGroupTypes.$$adding">
 							<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
 								<sw-form ng-attr-name="form.addProductBundleGroupType"
 									data-object="productBundleGroup.data.productBundleGroupType"
@@ -87,8 +102,6 @@
 									<i  ng-class="{'fa fa-plus s-loading': productBundleGroupTypeSaving === true, 'fa fa-plus': productBundleGroupTypeSaving === false}"></i> Add Group Type
 								</button>
 							</span>
-						</form>
 					</div>
-				</div>
 		</div>
 	</div>
