@@ -29,6 +29,7 @@ class SWProductBundleGroupController {
 	public showAll;
 	public currentPage;
 	public pageShow;
+    public recordsPerPage; 
 	public timeoutPromise;
 	public navigation;
 	public filterTemplatePath;
@@ -61,6 +62,7 @@ class SWProductBundleGroupController {
         this.recordsCount = 0;  
         this.pageRecordsStart = 0;
         this.pageRecordsEnd = 0;
+        this.recordsPerPage = 10;
         this.showAll = false;
         this.showAdvanced = false;
         this.currentPage = 1;
