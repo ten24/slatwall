@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 /*collection service is used to maintain the state of the ui*/
 import {PageDialog} from "../../dialog/model/pagedialog";

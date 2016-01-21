@@ -13,12 +13,12 @@ var GulpConfig = (function () {
         this.allJavaScript = ['./admin/client' + '/js/**/*.js'];
         this.allTypeScript = './src/**/*.ts';
 
-        this.ngSlatwallTypescript = './client/ts/modules/*.ts';
+        this.nghibachiTypescript = './client/ts/modules/*.ts';
         this.ngSlatwallOutputPath = './client/js/es6';
 
         this.typings = './typings/';
         this.libraryTypeScriptDefinitions = './typings/**/*.ts';
-        this.appTypeScriptReferences = this.typings + 'slatwallTypescript.d.ts';
+        this.appTypeScriptReferences = this.typings + 'hibachiTypescript.d.ts';
 
         this.compilePath = 'admin/client/js/';
         this.es6Path = './admin/client/js/es6/**/*.js';
