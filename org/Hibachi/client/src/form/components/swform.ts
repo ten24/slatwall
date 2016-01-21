@@ -1,5 +1,5 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 
 /** eliminated many of the unknown type errors in this class */

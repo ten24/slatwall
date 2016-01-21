@@ -1,4 +1,5 @@
-
+/// <reference path='../typings/slatwallTypescript.d.ts' />
+/// <reference path='../typings/tsd.d.ts' />
 require('./vendor.ts')();
 import {coremodule} from "./core/core.module";
 declare var angular:any;
@@ -17,7 +18,7 @@ export class BaseBootStrapper{
             this.$q = $q;
 
             if(
-                localStorage.getItem('appConfig') 
+                localStorage.getItem('appConfig')
                 && localStorage.getItem('appConfig') !== 'undefined'
                 && localStorage.getItem('resourceBundles')
                 && localStorage.getItem('resourceBundles') !== 'undefined'

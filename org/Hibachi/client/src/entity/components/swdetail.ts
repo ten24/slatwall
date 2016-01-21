@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWDetail{
 	public static Factory(){
 		var directive = (

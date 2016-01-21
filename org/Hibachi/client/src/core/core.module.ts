@@ -27,7 +27,11 @@ import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbutton
 import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar"; 
 import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingAggregate} from "./components/swlistingaggregate";
+import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
+import {SWListingFilter} from "./components/swlistingfilter";
+import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
@@ -1159,7 +1163,11 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
 .directive('swGravatar', SWGravatar.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
+.directive('swListingAggregate',SWListingAggregate.Factory())
+.directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
+.directive('swListingFilter',SWListingFilter.Factory())
+.directive('swListingOrderBy',SWListingOrderBy.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
 .directive('swLoading',SWLoading.Factory())
