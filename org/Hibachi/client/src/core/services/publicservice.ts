@@ -57,8 +57,8 @@ class PublicService {
         let urlBase = '/index.cfm/api/scope/getCountries/' + this.ajaxRequestParam;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
-            this.cart = result;
-            console.log("Countries:", this.cart);
+            this.countries = result;
+            console.log("Countries:", this.countries);
             deferred.resolve(result);
         }).error((reason)=>{
             deferred.reject(reason);  
@@ -70,8 +70,8 @@ class PublicService {
         let urlBase = '/index.cfm/api/scope/getStates/' + this.ajaxRequestParam;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
-            this.cart = result;
-            console.log("States:", this.cart);
+            this.states = result;
+            console.log("States:", this.states);
             deferred.resolve(result);
         }).error((reason)=>{
             deferred.reject(reason);  

@@ -113,14 +113,13 @@ class SWFPropertyDisplayController {
 		vm.type                	= this.type || "text" ;
 		vm.class			   	= this.class|| "formControl";
 		vm.valueObject		  	= this.valueObject;
-        vm.value                = this.object[this.propertyIdentifier];
 		vm.fieldAttributes     	= this.fieldAttributes || "";
 		vm.label			    = this.label || "true";
 		vm.labelText			= this.labelText || "";
 		vm.labelClass			= this.labelClass || "";
 		vm.name			    	= this.name || "unnamed";
 		vm.options				= this.options;
-		vm.optionValues        	= this.optionValues;
+		vm.optionValues        	= [];
 		vm.errorClass			= this.errorClass;
 		vm.errorText			= this.errorText;
 		vm.object				= this.object; //this is the process object
@@ -133,6 +132,7 @@ class SWFPropertyDisplayController {
 
 		/** handle options */
 		if (vm.options && angular.isString(vm.options)){
+            console.log("Options Found: ", vm.options);
 			let optionsArray = [];
 			optionsArray = vm.options.toString().split(",");
 
@@ -141,9 +141,12 @@ class SWFPropertyDisplayController {
 					name:"",
 					value:""
 				};
-				newOption.name = o.name;
-				newOption.value= o.value;
+				
+                newOption.name = o;
+				newOption.value= o;
+                
 				vm.optionValues.push(newOption);
+                console.log("Options Values: ", vm.optionValues);
 			}, vm);
 		}
 
@@ -170,7 +173,7 @@ class SWFPropertyDisplayController {
 			optionValues: vm.optionValues,
 			edit: 	vm.editting,
 			title: 	vm.title,
-			value: 	vm.value,
+			value: 	vm.value || "",
 			errorText: vm.errorText,
 		};
         //console.log("Property Display", this.propertyDisplay);

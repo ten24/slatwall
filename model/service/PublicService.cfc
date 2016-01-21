@@ -658,6 +658,78 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.$.slatwall.addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
     
+    public void function addOrderShippingAddress(required data){
+        param name="data.saveAsAccountAddressFlag" default="0";
+        /** add a shipping address */
+        
+        if (!isNull(data)){
+            if (data.edit && data.addressID){
+                var shipping = getService('AddressService').getAddressByID(data.addressID);
+            }else{
+                var shipping = getService('AddressService').newAddress(data);   
+            }
+            if (!isNull(data.name)){
+                 shipping.setName(data.name);   
+            }
+            if (!isNull(data.firstName)){
+                 shipping.setFirstName(data.firstName);     
+            }
+            if (!isNull(data.lastName)){
+                 shipping.setLastName(data.lastName);   
+            }
+            if (!isNull(data.streetAddress)){
+                 shipping.setStreetAddress(data.streetAddress);
+            }
+            if (!isNull(data.street2Address)){
+                 shipping.setStreet2Address(data.street2Address);
+            }
+            if (!isNull(data.city)){
+                 shipping.setCity(data.city);
+            }
+            if (!isNull(data.state)){
+                shipping.setStateCode(data.state);
+            }
+            if (!isNull(data.zip)){
+                shipping.setPostalCode(data.zip);
+            }
+            if (!isNull(data.phoneNumber)){
+                shipping.setPhoneNumber(data.phoneNumber);
+            }
+            if (!isNull(data.country)){
+                shipping.setCountryCode(data.country);
+            }else{
+                shipping.setCountryCode("US");
+            }
+            //get a new address populated with the data.
+            var newAddress = getService('AddressService').saveAddress(shipping);
+            
+            if (!shipping.hasErrors()){
+                //save the address at the order level.
+                var order = data.$.slatwall.cart();
+                order.setShippingAddress(newAddress);
+                getOrderService().saveOrder(order);
+                
+                //do we want to save as the account address as well?
+                /*if (!isNull(data.saveAsAccountAddressFlag) && data.saveAsAccountAddressFlag){
+                     var newAddress = getService('AddressService').saveAddress(shipping);
+                     order.setShippingAccountAddress(newAddress);
+                     getOrderService().saveOrder(order);
+                }
+                
+                //do we want to save this as the billing address as well?
+                if (!isNull(data.saveAsAccountAddressFlag) && data.saveAsAccountAddressFlag){
+                     var newAddress = getService('AddressService').saveAddress(shipping);
+                     order.setShippingAccountAddress(newAddress);
+                     getOrderService().saveOrder(order);
+                }*/
+                
+            }else{
+                for (var error in shipping.getErrors()){
+                    arrayAppend(arguments.data['ajaxRequest']['errors'], error);
+                }
+            }
+       }
+    }
     /** 
      * @http-context addPromotionCode
      * @description Add Promotion Code
