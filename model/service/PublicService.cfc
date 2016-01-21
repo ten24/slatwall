@@ -865,7 +865,7 @@ component extends="HibachiService"  accessors="true" output="false"
     } 
     
     /** returns a list of states either for us (default) or by the passed in countryCode */
-    public void function getStates( required struct data ) {
+    public void function getStateCodeAndAddressOptionsByCountryCode( required struct data ) {
         param name="data.countryCode" type="string" default="US";
         var country = getAddressService().getCountry(data.countryCode);
         var stateCodeOptions = country.getStateCodeOptions();
