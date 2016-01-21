@@ -45,41 +45,42 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.product" type="any" />
+<cfset variables.imageFiles = rc.product.getDefaultProductImageFiles()>
 
 <cfoutput>
 
 	<div class="row s-image-uploader">
 
-			<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="skuImage">
-				<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#skuImage.imageFile#" />
+			<cfloop from="1" to="#arrayLen(variables.imageFiles)#" index="variables.index">
+				<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#variables.imageFiles[variables.index]#" />
 				<cfif fileExists(expandPath(thisImagePath))>
 					<div class="col-xs-3">
 						<div class="thumbnail">
 							<div class="s-image">
-								<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath)#" target="_blank" alt="#skuImage.imageFile#">
+								<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath)#" target="_blank" alt="#variables.imageFiles[variables.index]#">
 									#$.slatwall.getResizedImage(imagePath=thisImagePath, width=210, height=210)#
 									<span class="s-zoom"><i class="fa fa-search"></i></span>
 								</a>
 							</div>
 							<div class="s-caption">
-								<h4 title="#skuImage.imageFile#">#skuImage.imageFile#</h4>
+								<h4 title="#variables.imageFiles[variables.index]#">#variables.imageFiles[variables.index]#</h4>
 							</div>
 							<div class="s-controlls">
 								<div class="btn-group btn-group-justified" role="group">
 									<div class="btn-group" role="group">
-										<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="skuImage.imageFile=#skuImage.imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
+										<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="variables.imageFiles[variables.index]=#variables.imageFiles[variables.index]#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
 									</div>
 									<div class="btn-group" role="group">
-										<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="skuImage.imageFile=#skuImage.imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
+										<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="variables.imageFiles[variables.index]=#variables.imageFiles[variables.index]#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				<cfelse>
-					<div class="alert alert-info deafult-margin" role="alert" ng-if="$root.loadedResourceBundle"><span sw-rbkey="'entity.Product.process.image.norecordsfoundforsku'"></span> : <span>#skuImage.skuCode#</span></div>
+					<div class="alert alert-info deafult-margin" role="alert" ng-if="$root.loadedResourceBundle"><span sw-rbkey="'entity.Product.process.image.norecordsfoundforsku'"></span> : <span>#rc.product.getSkusOrderedByCode()[variables.index]["skuCode"]#</span></div>
 					<div class="col-xs-3">
-						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#skuImage.imageFile#" class="btn btn-primary" icon="plus" iconOnly="false"  modal="true" />
+						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="variables.imageFiles[variables.index]=#variables.imageFiles[variables.index]#" class="btn btn-primary" icon="plus" iconOnly="false"  modal="true" />
 					</div>
 				</cfif>
 			</cfloop>
