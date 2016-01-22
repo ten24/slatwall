@@ -766,7 +766,7 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="data.newOrderPayment.orderPaymentID" default="";
         param name="data.accountAddressID" default="";
         param name="data.accountPaymentMethodID" default="";
-        
+        param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="444df303dedc6dab69dd7ebcc9b8036a";
         // Make sure that someone isn't trying to pass in another users orderPaymentID
         if(len(data.newOrderPayment.orderPaymentID)) {
             var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);
