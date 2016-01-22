@@ -1,4 +1,4 @@
-/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
 // import {AccountService} from "./services/accountservice";
@@ -15,9 +15,8 @@ import {RouterController} from "./controllers/routercontroller";
 import {SWDetailTabs} from "./components/swdetailtabs";
 import {SWDetail} from "./components/swdetail";
 import {SWList} from "./components/swlist";
-import {SlatwallJQueryStatic} from "../slatwall/services/slatwallinterceptor";
 
-declare var $:SlatwallJQueryStatic;
+declare var $:any;
 
 var entitymodule = angular.module('hibachi.entity',['ngRoute'])
 .config(['$routeProvider','$injector','$locationProvider',

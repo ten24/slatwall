@@ -1,6 +1,8 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../typings/slatwallTypeScript.d.ts" />
-import {hibachimodule} from "../hibachi/hibachi.module";
+/// <reference path="../../typings/slatwallTypescript.d.ts" />
+import {hibachimodule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.module";
+import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
+import {entitymodule} from "../../../../org/Hibachi/client/src/entity/entity.module";
 import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
 import {contentmodule} from "../content/content.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
@@ -8,8 +10,7 @@ import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
-import {workflowmodule} from "../workflow/workflow.module";
-import {entitymodule} from "../entity/entity.module";
+
 //directives
 import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
@@ -92,7 +93,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
         $anchorScroll.yOffset = 100;
 
         $rootScope.openPageDialog = function( partial ) {
-            dialogService.addPageDialog( pathBuilderConfig.buildPartialsPath(partial) );
+            dialogService.addPageDialog( partial );
         };
 
         $rootScope.closePageDialog = function( index ) {

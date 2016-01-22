@@ -1,7 +1,7 @@
 /// <reference path='../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //modules
-import {coremodule} from "../core/core.module";
+import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 //controllers
 //directives
 import {SWAddOptionGroup} from "./components/swaddoptiongroup";

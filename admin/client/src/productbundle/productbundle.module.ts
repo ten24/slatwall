@@ -2,7 +2,7 @@
 /// <reference path='../../typings/tsd.d.ts' />
 
 //modules
-import {coremodule} from "../core/core.module";
+import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 //services
 import {ProductBundleService} from "./services/productbundleservice";
 //controllers

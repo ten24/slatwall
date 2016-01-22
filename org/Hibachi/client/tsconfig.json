@@ -5,7 +5,7 @@
     "sourceMap": true
   },
   "files": [
-    "typings/slatwallTypescript.d.ts",
+    "typings/hibachiTypescript.d.ts",
     "typings/tsd.d.ts",
     "typings/requirejs/require.d.ts",
     "typings/js-md5/md5.d.ts",
