@@ -8,6 +8,7 @@ class PublicService {
     public cart:any;
     public states:any;
     public countries:any;
+    public addressOptions:any;
     public success:boolean;
     public hasErrors:boolean;
     public errors:string;
@@ -27,51 +28,41 @@ class PublicService {
     }
     
     /** accessors for account */
-    public getAccount=(refresh:boolean):any =>  {
-        let urlBase = '/index.cfm/api/scope/getAccount/' + this.ajaxRequestParam + "&returnJsonObject=cart,account";
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
-            this.account = result;
-            console.log("Account:", this.account);
-            deferred.resolve(result);
-        }).error((reason)=>{
-            deferred.reject(reason);  
-        });
-        return deferred.promise 
+    public getAccount=():any =>  {
+        let urlBase = '/index.cfm/api/scope/getAccount/';
+        return this.getData(urlBase, "account", "");
     }
     /** accessors for cart */
-    public getCart=(refresh:boolean):any =>  {
-        let urlBase = '/index.cfm/api/scope/getCart/' + this.ajaxRequestParam;
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
-            this.cart = result;
-            console.log("Cart:", this.cart);
-            deferred.resolve(result);
-        }).error((reason)=>{
-            deferred.reject(reason);  
-        });
-        return deferred.promise;
+    public getCart=():any =>  {
+        let urlBase = '/index.cfm/api/scope/getCart/';
+        return this.getData(urlBase, "cart", "");
     }
     /** accessors for countries */
-    public getCountries=(refresh:boolean):any =>  {
-        let urlBase = '/index.cfm/api/scope/getCountries/' + this.ajaxRequestParam;
-        var deferred = this.$q.defer();
-        this.$http.get(urlBase).success((result:any)=>{
-            this.countries = result;
-            console.log("Countries:", this.countries);
-            deferred.resolve(result);
-        }).error((reason)=>{
-            deferred.reject(reason);  
-        });
-        return deferred;
+    public getCountries=():any =>  {
+        let urlBase = '/index.cfm/api/scope/getCountries/';
+        return this.getData(urlBase, "countries", "");
+    }
+    
+    /** accessors for states */
+    public getStates=(countryCode:string):any =>  {
+       if (!angular.isDefined(countryCode)) countryCode = "US";
+       let urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
+       return this.getData(urlBase, "states", "&countryCode="+countryCode);
     }
     /** accessors for states */
-    public getStates=(refresh:boolean):any =>  {
-        let urlBase = '/index.cfm/api/scope/getStateCodeAndAddressOptionsByCountryCode/' + this.ajaxRequestParam;
+    public getAddressOptions=(countryCode:string):any =>  {
+       if (!angular.isDefined(countryCode)) countryCode = "US";
+       let urlBase = '/index.cfm/api/scope/getAddressOptionsByCountryCode/';
+       return this.getData(urlBase, "addressOptions", "&countryCode="+countryCode);
+    }
+    
+    /** accessors for states */
+    public getData=(url, setter, param):any =>  {
+        let urlBase = url + this.ajaxRequestParam + param;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
-            this.states = result;
-            console.log("StatesCode and Address Options:", this.states);
+            this[setter] = result;
+            console.log("Data:", this[setter]);
             deferred.resolve(result);
         }).error((reason)=>{
             deferred.reject(reason);  

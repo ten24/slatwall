@@ -1859,51 +1859,41 @@
 	        this.shippingAddress = "";
 	        this.billingAddress = "";
 	        /** accessors for account */
-	        this.getAccount = function (refresh) {
-	            var urlBase = '/index.cfm/api/scope/getAccount/' + _this.ajaxRequestParam + "&returnJsonObject=cart,account";
-	            var deferred = _this.$q.defer();
-	            _this.$http.get(urlBase).success(function (result) {
-	                _this.account = result;
-	                console.log("Account:", _this.account);
-	                deferred.resolve(result);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	        this.getAccount = function () {
+	            var urlBase = '/index.cfm/api/scope/getAccount/';
+	            return _this.getData(urlBase, "account", "");
 	        };
 	        /** accessors for cart */
-	        this.getCart = function (refresh) {
-	            var urlBase = '/index.cfm/api/scope/getCart/' + _this.ajaxRequestParam;
-	            var deferred = _this.$q.defer();
-	            _this.$http.get(urlBase).success(function (result) {
-	                _this.cart = result;
-	                console.log("Cart:", _this.cart);
-	                deferred.resolve(result);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	        this.getCart = function () {
+	            var urlBase = '/index.cfm/api/scope/getCart/';
+	            return _this.getData(urlBase, "cart", "");
 	        };
 	        /** accessors for countries */
-	        this.getCountries = function (refresh) {
-	            var urlBase = '/index.cfm/api/scope/getCountries/' + _this.ajaxRequestParam;
-	            var deferred = _this.$q.defer();
-	            _this.$http.get(urlBase).success(function (result) {
-	                _this.countries = result;
-	                console.log("Countries:", _this.countries);
-	                deferred.resolve(result);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred;
+	        this.getCountries = function () {
+	            var urlBase = '/index.cfm/api/scope/getCountries/';
+	            return _this.getData(urlBase, "countries", "");
 	        };
 	        /** accessors for states */
-	        this.getStates = function (refresh) {
-	            var urlBase = '/index.cfm/api/scope/getStateCodeAndAddressOptionsByCountryCode/' + _this.ajaxRequestParam;
+	        this.getStates = function (countryCode) {
+	            if (!angular.isDefined(countryCode))
+	                countryCode = "US";
+	            var urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
+	            return _this.getData(urlBase, "states", "&countryCode=" + countryCode);
+	        };
+	        /** accessors for states */
+	        this.getAddressOptions = function (countryCode) {
+	            if (!angular.isDefined(countryCode))
+	                countryCode = "US";
+	            var urlBase = '/index.cfm/api/scope/getAddressOptionsByCountryCode/';
+	            return _this.getData(urlBase, "addressOptions", "&countryCode=" + countryCode);
+	        };
+	        /** accessors for states */
+	        this.getData = function (url, setter, param) {
+	            var urlBase = url + _this.ajaxRequestParam + param;
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
-	                _this.states = result;
-	                console.log("StatesCode and Address Options:", _this.states);
+	                _this[setter] = result;
+	                console.log("Data:", _this[setter]);
 	                deferred.resolve(result);
 	            }).error(function (reason) {
 	                deferred.reject(reason);

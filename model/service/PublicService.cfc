@@ -877,9 +877,9 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** Given a country - this returns all of the address options for that country */
     public void function getAddressOptionsByCountryCode( required data ) {
-    	param name="data.countryCode" type="string" default="US";
-    	
-    	var country = getAddressService().getCountry(data.countryCode);
+        param name="data.countryCode" type="string" default="US";
+        
+        var country = getAddressService().getCountry(data.countryCode);
         var addressOptions = {
             
             'streetAddressLabel' =  country.getStreetAddressLabel(),
