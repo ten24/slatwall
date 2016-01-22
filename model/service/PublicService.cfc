@@ -864,12 +864,22 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.ajaxResponse["errors"] = errors;
     } 
     
-    /** returns a list of states either for us (default) or by the passed in countryCode */
-    public void function getStateCodeAndAddressOptionsByCountryCode( required struct data ) {
+    /** returns a list of state code options either for us (default) or by the passed in countryCode */
+    public void function getStateCodeOptionsByCountryCode( required struct data ) {
         param name="data.countryCode" type="string" default="US";
+        
         var country = getAddressService().getCountry(data.countryCode);
         var stateCodeOptions = country.getStateCodeOptions();
-        var states = country.getStates();
+        
+        arguments.data.ajaxResponse["stateCodeOptions"] = stateCodeOptions;
+        
+    }
+    
+    /** Given a country - this returns all of the address options for that country */
+    public void function getAddressOptionsByCountryCode( required data ) {
+    	param name="data.countryCode" type="string" default="US";
+    	
+    	var country = getAddressService().getCountry(data.countryCode);
         var addressOptions = {
             
             'streetAddressLabel' =  country.getStreetAddressLabel(),
@@ -898,10 +908,7 @@ component extends="HibachiService"  accessors="true" output="false"
             
         };
         
-        arguments.data.ajaxResponse["country"] = {
-            'stateCodeOptions' =  stateCodeOptions,
-            'addressOptions' = addressOptions
-        };
+        arguments.data.ajaxResponse["addressOptions"] = addressOptions;
         
     }
     
