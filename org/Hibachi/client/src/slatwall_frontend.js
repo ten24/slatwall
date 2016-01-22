@@ -1889,8 +1889,8 @@
 	            var urlBase = '/index.cfm/api/scope/getCountries/' + _this.ajaxRequestParam;
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
-	                _this.cart = result;
-	                console.log("Countries:", _this.cart);
+	                _this.countries = result;
+	                console.log("Countries:", _this.countries);
 	                deferred.resolve(result);
 	            }).error(function (reason) {
 	                deferred.reject(reason);
@@ -1899,11 +1899,11 @@
 	        };
 	        /** accessors for states */
 	        this.getStates = function (refresh) {
-	            var urlBase = '/index.cfm/api/scope/getStates/' + _this.ajaxRequestParam;
+	            var urlBase = '/index.cfm/api/scope/getStateCodeAndAddressOptionsByCountryCode/' + _this.ajaxRequestParam;
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
-	                _this.cart = result;
-	                console.log("States:", _this.cart);
+	                _this.states = result;
+	                console.log("StatesCode and Address Options:", _this.states);
 	                deferred.resolve(result);
 	            }).error(function (reason) {
 	                deferred.reject(reason);
@@ -5618,7 +5618,7 @@
 	    .config(['pathBuilderConfig', function (pathBuilderConfig) {
 	        /** set the baseURL */
 	        pathBuilderConfig.setBaseURL('/');
-	        pathBuilderConfig.setBasePartialsPath('custom/assets/'); //org/hibachi/client/src/
+	        pathBuilderConfig.setBasePartialsPath('custom/client/src/'); //org/hibachi/client/src/ 
 	    }])
 	    .run(['$rootScope', '$hibachi', 'publicService', function ($rootScope, $hibachi, publicService) {
 	        $rootScope.hibachiScope = publicService;
@@ -11595,20 +11595,20 @@
 	    //@ngInject
 	    function SWFPropertyDisplayController($scope) {
 	        this.$scope = $scope;
+	        this.optionValues = [];
 	        var vm = this;
 	        vm.processObject = {};
 	        vm.valueObjectProperty = this.valueObjectProperty;
 	        vm.type = this.type || "text";
 	        vm.class = this.class || "formControl";
 	        vm.valueObject = this.valueObject;
-	        vm.value = this.object[this.propertyIdentifier];
 	        vm.fieldAttributes = this.fieldAttributes || "";
 	        vm.label = this.label || "true";
 	        vm.labelText = this.labelText || "";
 	        vm.labelClass = this.labelClass || "";
 	        vm.name = this.name || "unnamed";
 	        vm.options = this.options;
-	        vm.optionValues = this.optionValues;
+	        vm.valueOptions = this.valueOptions;
 	        vm.errorClass = this.errorClass;
 	        vm.errorText = this.errorText;
 	        vm.object = this.object; //this is the process object
@@ -11625,10 +11625,24 @@
 	                    name: "",
 	                    value: ""
 	                };
-	                newOption.name = o.name;
-	                newOption.value = o.value;
-	                vm.optionValues.push(newOption);
+	                newOption.name = o;
+	                newOption.value = o;
+	                this.optionValues.push(newOption);
 	            }, vm);
+	        }
+	        if (angular.isDefined(vm.valueOptions) && angular.isObject(vm.valueOptions)) {
+	            vm.optionsValues = [];
+	            angular.forEach(vm.valueOptions, function (o) {
+	                var newOption = {
+	                    name: "",
+	                    value: ""
+	                };
+	                if (angular.isDefined(o.name) && angular.isDefined(o.value)) {
+	                    newOption.name = o.name;
+	                    newOption.value = o.value;
+	                    vm.optionValues.push(newOption);
+	                }
+	            });
 	        }
 	        /** handle turning the options into an array of objects */
 	        /** handle setting the default value for the yes / no element  */
@@ -11650,7 +11664,7 @@
 	            optionValues: vm.optionValues,
 	            edit: vm.editting,
 	            title: vm.title,
-	            value: vm.value,
+	            value: vm.value || "",
 	            errorText: vm.errorText,
 	        };
 	        //console.log("Property Display", this.propertyDisplay);
@@ -11681,6 +11695,7 @@
 	            valueObjectProperty: "=?",
 	            propertyIdentifier: "@?",
 	            options: "@?",
+	            valueOptions: "=?",
 	            fieldAttributes: "@?",
 	            object: "=",
 	            label: "@?",

@@ -49,7 +49,7 @@ interface IPropertyDisplayControllerViewModel {
 	valueObjectProperty:string,
 	type:string,
 	class:string,
-	valueObject:string,
+	valueObject: string | {},
 	fieldAttributes:string,
 	label:string,
 	name:string,
@@ -84,8 +84,9 @@ class SWFPropertyDisplayController {
 	public name;
 	public options;
 	public valueObjectProperty;
+    public valueOptions;
 	public processObject;
-	public optionValues;
+	public optionValues = [];
 	public formCtrl;
 	public propertyDisplay;
 	public object;
@@ -119,7 +120,7 @@ class SWFPropertyDisplayController {
 		vm.labelClass			= this.labelClass || "";
 		vm.name			    	= this.name || "unnamed";
 		vm.options				= this.options;
-		vm.optionValues        	= [];
+		vm.valueOptions        	= this.valueOptions;
 		vm.errorClass			= this.errorClass;
 		vm.errorText			= this.errorText;
 		vm.object				= this.object; //this is the process object
@@ -132,7 +133,6 @@ class SWFPropertyDisplayController {
 
 		/** handle options */
 		if (vm.options && angular.isString(vm.options)){
-            console.log("Options Found: ", vm.options);
 			let optionsArray = [];
 			optionsArray = vm.options.toString().split(",");
 
@@ -145,14 +145,28 @@ class SWFPropertyDisplayController {
                 newOption.name = o;
 				newOption.value= o;
                 
-				vm.optionValues.push(newOption);
-                console.log("Options Values: ", vm.optionValues);
+				this.optionValues.push(newOption);
 			}, vm);
 		}
+        
+        if (angular.isDefined(vm.valueOptions) && angular.isObject(vm.valueOptions)){
+            
+            vm.optionsValues = [];
+            angular.forEach(vm.valueOptions, function(o){
+				let newOption:any = {
+					name:"",
+					value:""
+				};
+				
+                if(angular.isDefined(o.name) && angular.isDefined(o.value)){
+                    newOption.name = o.name;
+                    newOption.value= o.value;
+                    vm.optionValues.push(newOption);   
+                }
+            });
+        }
 
 		/** handle turning the options into an array of objects */
-
-
 		/** handle setting the default value for the yes / no element  */
 		if (this.type=="yesno" && (this.value && angular.isString(this.value))){
 			vm.selected == this.value;
@@ -202,6 +216,7 @@ class SWFPropertyDisplay {
 			valueObjectProperty: "=?",
             propertyIdentifier: "@?",
 			options: "@?",
+            valueOptions: "=?",
 			fieldAttributes: "@?",
 			object: "=",
 			label:"@?",
