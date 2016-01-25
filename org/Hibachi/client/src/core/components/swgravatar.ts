@@ -16,7 +16,7 @@ class SWGravatarController {
 class SWGravatar implements ng.IDirective{
 
 	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-			'pathBuilderConfig'];
+			'hibachiPathBuilder'];
 	public template = "<img src='{{swGravatar.gravatarURL}}' />";
     public transclude=false;
 	public restrict = "E";

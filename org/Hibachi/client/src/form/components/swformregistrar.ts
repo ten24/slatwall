@@ -7,16 +7,16 @@ class SWFormRegistrar implements ng.IDirective {
 		var directive = (
 			formService,
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWFormRegistrar(
 			formService,
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject =[
 			'formService',
 			'coreFormPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -24,7 +24,7 @@ class SWFormRegistrar implements ng.IDirective {
 	constructor(
 		formService,
 		coreFormPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',

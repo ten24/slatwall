@@ -100,24 +100,24 @@ class SWOrderItemGiftRecipientRow implements ng.IDirective {
 			public static Factory():ng.IDirectiveFactory{
 				var directive:ng.IDirectiveFactory = (
 					giftCardPartialsPath,
-					pathBuilderConfig
+					slatwallPathBuilder
 				) => new SWOrderItemGiftRecipientRow(
 					giftCardPartialsPath,
-					pathBuilderConfig
+					slatwallPathBuilder
 				);
 				directive.$inject = [
 					'giftCardPartialsPath',
-					'pathBuilderConfig'
+					'slatwallPathBuilder'
 				];
 				return directive;
 			}
 
-			constructor(private giftCardPartialsPath, private pathBuilderConfig){
+			constructor(private giftCardPartialsPath, private slatwallPathBuilder){
 				this.init()
 			}
 
 			public init = () => {
-				this.templateUrl = this.pathBuilderConfig.buildPartialsPath(this.giftCardPartialsPath) + "/orderitemgiftrecipientrow.html"
+				this.templateUrl = this.slatwallPathBuilder.buildPartialsPath(this.giftCardPartialsPath) + "/orderitemgiftrecipientrow.html"
 			}
 }
 

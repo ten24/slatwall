@@ -44,7 +44,8 @@ class SlatwallInterceptor implements IInterceptor{
 			alertService,
 			baseURL:string,
 			dialogService,
-			utilityService
+			utilityService,
+            hibachiPathBuilder
 		)=> new SlatwallInterceptor(
 			$location,
 			$window,
@@ -54,7 +55,8 @@ class SlatwallInterceptor implements IInterceptor{
 			alertService,
 			baseURL,
 			dialogService,
-			utilityService
+			utilityService,
+            hibachiPathBuilder
 		);
 		eventHandler.$inject = [
 			'$location',
@@ -65,7 +67,8 @@ class SlatwallInterceptor implements IInterceptor{
 			'alertService',
 			'baseURL',
 			'dialogService',
-			'utilityService'
+			'utilityService',
+            'hibachiPathBuilder'
 		];
 		return eventHandler;
 	}
@@ -83,7 +86,8 @@ class SlatwallInterceptor implements IInterceptor{
 		public alertService,
 		public baseURL:string,
 		public dialogService,
-        public utilityService
+        public utilityService,
+        public hibachiPathBuilder
 	) {
         this.$location = $location;
     	this.$window = $window;
@@ -94,6 +98,7 @@ class SlatwallInterceptor implements IInterceptor{
 		this.baseURL = baseURL;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
+        this.hibachiPathBuilder = hibachiPathBuilder;
     }
 
 	public request = (config): ng.IPromise<any> => {
@@ -168,7 +173,7 @@ class SlatwallInterceptor implements IInterceptor{
 				var $http = this.$injector.get<ng.IHttpService>('$http');
 				if(rejection.data.messages[0].message === 'timeout'){
 					//open dialog
-					this.dialogService.addPageDialog('preprocesslogin',{} );
+					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
                     return $http.get(this.baseURL+'/index.cfm/api/auth/login').then((loginResponse:ISlatwallInterceptorPromise<any>)=>{
                         this.$window.localStorage.setItem('token',loginResponse.data.token);

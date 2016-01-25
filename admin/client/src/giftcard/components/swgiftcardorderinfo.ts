@@ -41,22 +41,22 @@ class SWGiftCardOrderInfo implements ng.IDirective {
 		var directive:ng.IDirectiveFactory = (
 			collectionConfigService,
 			giftCardPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		) => new SWGiftCardOrderInfo(
 			collectionConfigService,
 			giftCardPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		);
 		directive.$inject = [
 			'collectionConfigService',
 			'giftCardPartialsPath',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
 		];
 		return directive;
 	}
 
-	constructor(private collectionConfigService, private giftCardPartialsPath, private pathBuilderConfig){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/orderinfo.html";
+	constructor(private collectionConfigService, private giftCardPartialsPath, private slatwallPathBuilder){
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/orderinfo.html";
 		this.restrict = "EA";
 	}
 

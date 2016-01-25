@@ -10,30 +10,30 @@ class SWOiShippingLabelStamp{
 		var directive = (
 			$log,
 			orderItemPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		) => new SWOiShippingLabelStamp(
 			$log,
 			orderItemPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'orderItemPartialsPath',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
 		$log,
 		orderItemPartialsPath,
-		pathBuilderConfig
+		slatwallPathBuilder
 	){
 		return {
 			restrict: 'E',
 			scope:{
 				orderFulfillment:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(orderItemPartialsPath)+"orderfulfillment-shippinglabel.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"orderfulfillment-shippinglabel.html",
 			link: function(scope, element, attrs){
 				//Get the template.
 				$log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");

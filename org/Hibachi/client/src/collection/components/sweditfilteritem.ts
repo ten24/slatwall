@@ -13,7 +13,7 @@ class SWEditFilterItem{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
 		)=> new SWEditFilterItem(
 			$http,
@@ -26,7 +26,7 @@ class SWEditFilterItem{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
 		);
 		directive.$inject = [
@@ -40,7 +40,7 @@ class SWEditFilterItem{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
             'rbkeyService'
 		];
 		return directive;
@@ -56,7 +56,7 @@ class SWEditFilterItem{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig,
+		hibachiPathBuilder,
         rbkeyService
 	){
 		return {
@@ -71,7 +71,7 @@ class SWEditFilterItem{
 				filterItemIndex:"=",
 				comparisonType:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
                 function daysBetween(first, second) {
     

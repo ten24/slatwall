@@ -184,14 +184,14 @@ class SWAddOptionGroup implements ng.IDirective{
             collectionConfigService,
             observerService,
 			optionGroupPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		) => new SWAddOptionGroup(
             $hibachi, 
             $timeout, 
             collectionConfigService,
             observerService,
 			optionGroupPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		);
 		directive.$inject = [
             '$hibachi', 
@@ -199,16 +199,16 @@ class SWAddOptionGroup implements ng.IDirective{
             'collectionConfigService',
             'observerService',
 			'optionGroupPartialsPath',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
 		];
 		return directive;
 	}
     // @ngInject
     constructor(private $hibachi, private $timeout, 
                 private collectionConfigService, 
-                private observerService, private optionGroupPartialsPath, pathBuilderConfig
+                private observerService, private optionGroupPartialsPath, slatwallPathBuilder
     ){
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";	
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";	
     }
 
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{  

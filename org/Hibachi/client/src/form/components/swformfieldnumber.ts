@@ -25,15 +25,15 @@ class SWFormFieldNumber implements ng.IDirective {
 
     public static Factory(){
         var directive = (
-            coreFormPartialsPath,pathBuilderConfig
+            coreFormPartialsPath,hibachiPathBuilder
         )=> new SWFormFieldNumber(
-            coreFormPartialsPath,pathBuilderConfig
+            coreFormPartialsPath,hibachiPathBuilder
         );
-        directive.$inject = ['coreFormPartialsPath','pathBuilderConfig'];
+        directive.$inject = ['coreFormPartialsPath','hibachiPathBuilder'];
         return directive;
     }
-    constructor(coreFormPartialsPath,pathBuilderConfig) {
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "number.html";
+    constructor(coreFormPartialsPath,hibachiPathBuilder) {
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "number.html";
     }
 }
 export{

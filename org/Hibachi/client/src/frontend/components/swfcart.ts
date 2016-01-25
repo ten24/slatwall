@@ -35,8 +35,8 @@ class SWFCart implements ng.IDirective{
     public controllerAs="SwfCart";
     public templateUrl;
     //@ngInject
-    constructor(private frontendPartialsPath:any, pathBuilderConfig){
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(frontendPartialsPath)+'swfcartpartial.html';
+    constructor(private frontendPartialsPath:any, hibachiPathBuilder){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(frontendPartialsPath)+'swfcartpartial.html';
     }
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{}
@@ -44,14 +44,14 @@ class SWFCart implements ng.IDirective{
     public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
 		    frontendPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
         ) => new SWFCart(
 			frontendPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
         );
         directive.$inject = [
             'frontendPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
         ];
         return directive;
     }

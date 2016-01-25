@@ -23,20 +23,20 @@ class SWGiftCardOverview implements ng.IDirective {
 	public static Factory():ng.IDirectiveFactory{
 		var directive:ng.IDirectiveFactory = (
 			giftCardPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		) => new SWGiftCardOverview(
 			giftCardPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		);
 		directive.$inject = [
 			'giftCardPartialsPath',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
 		];
 		return directive;
 	}
 
-	constructor(private giftCardPartialsPath, private pathBuilderConfig){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
+	constructor(private giftCardPartialsPath, private slatwallPathBuilder){
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
 		this.restrict = "EA";
 	}
 

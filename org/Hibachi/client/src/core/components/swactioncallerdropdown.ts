@@ -37,13 +37,13 @@ class SWActionCallerDropdown implements ng.IDirective{
     public templateUrl;
 
     public static Factory(){
-        var directive = (corePartialsPath,pathBuilderConfig) => new SWActionCallerDropdown(corePartialsPath,pathBuilderConfig);
-        directive.$inject = ['corePartialsPath','pathBuilderConfig'];
+        var directive = (corePartialsPath,hibachiPathBuilder) => new SWActionCallerDropdown(corePartialsPath,hibachiPathBuilder);
+        directive.$inject = ['corePartialsPath','hibachiPathBuilder'];
         return directive;
     }
 
-    constructor(private corePartialsPath,pathBuilderConfig){
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'actioncallerdropdown.html';
+    constructor(private corePartialsPath,hibachiPathBuilder){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'actioncallerdropdown.html';
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

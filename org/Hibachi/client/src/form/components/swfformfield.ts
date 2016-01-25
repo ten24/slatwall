@@ -80,22 +80,22 @@ class SWFFormField {
 	public static Factory(){
 		var directive = (
 		 	coreFormPartialsPath,
-				pathBuilderConfig
+				hibachiPathBuilder
 		)=>new SWFFormField(
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'coreFormPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor (
 		coreFormPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	) {
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+ 'swfformfield.html';
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+ 'swfformfield.html';
 	}
 }
 

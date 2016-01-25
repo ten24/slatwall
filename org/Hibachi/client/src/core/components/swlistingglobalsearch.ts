@@ -50,13 +50,13 @@ class SWListingGlobalSearch implements ng.IDirective{
     public controllerAs="swListingGlobalSearch";
     public templateUrl;
     public static Factory(){
-        var directive = (utilityService,corePartialsPath,pathBuilderConfig)=>new SWListingGlobalSearch(utilityService,corePartialsPath,pathBuilderConfig);
-        directive.$inject = ['utilityService','corePartialsPath','pathBuilderConfig'];
+        var directive = (utilityService,corePartialsPath,hibachiPathBuilder)=>new SWListingGlobalSearch(utilityService,corePartialsPath,hibachiPathBuilder);
+        directive.$inject = ['utilityService','corePartialsPath','hibachiPathBuilder'];
         return directive;
     }
     //@ngInject
-    constructor(private utilityService,corePartialsPath,pathBuilderConfig){
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "listingglobalsearch.html";
+    constructor(private utilityService,corePartialsPath,hibachiPathBuilder){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "listingglobalsearch.html";
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

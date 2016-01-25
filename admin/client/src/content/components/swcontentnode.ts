@@ -8,20 +8,20 @@ class SWContentNode{
             $compile,
             $hibachi,
             contentPartialsPath,
-            pathBuilderConfig
+            slatwallPathBuilder
         )=> new SWContentNode(
             $log,
             $compile,
             $hibachi,
             contentPartialsPath,
-            pathBuilderConfig
+            slatwallPathBuilder
         );
         directive.$inject = [
             '$log',
             '$compile',
             '$hibachi',
             'contentPartialsPath',
-            'pathBuilderConfig'
+            'slatwallPathBuilder'
         ];
         return directive;
     }
@@ -30,7 +30,7 @@ class SWContentNode{
         $compile,
         $hibachi,
         contentPartialsPath,
-        pathBuilderConfig
+        slatwallPathBuilder
     ){
         return {
             restrict: 'A',
@@ -38,7 +38,7 @@ class SWContentNode{
                 contentData:'=',
                 loadChildren:"="
             },
-            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentnode.html',
+            templateUrl: slatwallPathBuilder.buildPartialsPath(contentPartialsPath) + 'contentnode.html',
             link: function(scope, element, attr) {
                 if(angular.isUndefined(scope.depth)){
                     scope.depth = 0;

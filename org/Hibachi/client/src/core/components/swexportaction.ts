@@ -5,16 +5,16 @@ class SWExportAction{
 		var directive = (
 			$log,
 			corePartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWExportAction(
 			$log,
 			corePartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject=[
 			'$log',
 			'corePartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -22,11 +22,11 @@ class SWExportAction{
 	constructor(
 		$log,
 		corePartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict:'A',
-			templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath)+'exportaction.html',
+			templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'exportaction.html',
 			scope: {
 			},
 			link:function(scope,element,attrs){

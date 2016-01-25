@@ -629,16 +629,16 @@ class SWListingDisplay implements ng.IDirective{
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
             observerService,
-			pathBuilderConfig
+			hibachiPathBuilder
         ) => new SWListingDisplay(
             corePartialsPath,
             observerService,
-			pathBuilderConfig
+			hibachiPathBuilder
         );
         directive.$inject =[
             'corePartialsPath',
             'observerService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
         ];
         return directive;
     }
@@ -646,11 +646,11 @@ class SWListingDisplay implements ng.IDirective{
     constructor(
         public corePartialsPath,
         public observerService,
-		public pathBuilderConfig
+		public hibachiPathBuilder
     ){
         this.corePartialsPath = corePartialsPath;
         this.observerService = observerService;
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.corePartialsPath)+'listingdisplay.html';
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplay.html';
     }
 
     public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{

@@ -4,20 +4,20 @@
 class SWFormFieldRadio implements ng.IDirective {
 	public static Factory(){
 		var directive = (
-			$log,$timeout,coreFormPartialsPath,pathBuilderConfig
+			$log,$timeout,coreFormPartialsPath,hibachiPathBuilder
 		)=> new SWFormFieldRadio(
-			$log,$timeout,coreFormPartialsPath,pathBuilderConfig
+			$log,$timeout,coreFormPartialsPath,hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$log','$timeout','coreFormPartialsPath','pathBuilderConfig'
+			'$log','$timeout','coreFormPartialsPath','hibachiPathBuilder'
 		];
 		return directive;
 	}
 	//@ngInject
-	constructor($log,$timeout,coreFormPartialsPath,pathBuilderConfig){
+	constructor($log,$timeout,coreFormPartialsPath,hibachiPathBuilder){
 
 		return{
-			templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+'radio.html',
+			templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+'radio.html',
 			require:"^form",
 			restrict: 'E',
 			scope:{

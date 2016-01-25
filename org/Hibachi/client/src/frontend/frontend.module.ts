@@ -15,12 +15,12 @@ import {SWFPromo} 			from "./components/swfpromo";
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
 var frontendmodule = angular.module('frontend', [coremodule.name])
-.config(['pathBuilderConfig',(pathBuilderConfig)=>{
+.config(['hibachiPathBuilder',(hibachiPathBuilder)=>{
                     /** set the baseURL */ 
-					pathBuilderConfig.setBaseURL('/');
-                    pathBuilderConfig.setBasePartialsPath('custom/assets/');
+					hibachiPathBuilder.setBaseURL('/');
+                    hibachiPathBuilder.setBasePartialsPath('custom/assets/');
 }])
-.run(['$rootScope', 'publicService','pathBuilderConfig', function($rootScope, publicService,pathBuilderConfig) {
+.run(['$rootScope', 'publicService','hibachiPathBuilder', function($rootScope, publicService,hibachiPathBuilder) {
 
 	$rootScope.hibachiScope = publicService;
 	$rootScope.hibachiScope.getAccount();

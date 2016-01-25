@@ -9,7 +9,7 @@ class SWCriteriaManyToOne{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
 		) => new SWCriteriaManyToOne(
 			$log,
@@ -18,7 +18,7 @@ class SWCriteriaManyToOne{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
 		);
 		directive.$inject = [
@@ -28,7 +28,7 @@ class SWCriteriaManyToOne{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
             'rbkeyService'
 		];
 		return directive;
@@ -40,12 +40,12 @@ class SWCriteriaManyToOne{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig,
+		hibachiPathBuilder,
         rbkeyService
 	){
 		return {
 			restrict: 'E',
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriamanytoone.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriamanytoone.html',
 			link: function(scope, element, attrs){
 				var getManyToOneOptions = function(){
 			    	var manyToOneOptions = {

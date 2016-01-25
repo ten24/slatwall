@@ -11,6 +11,9 @@ import {orderitemmodule} from "../orderitem/orderitem.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
 
+//constant
+import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
+
 //directives
 import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
@@ -39,12 +42,13 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
-.config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','pathBuilderConfig',
-     ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,pathBuilderConfig) =>
+.constant('slatwallPathBuilder', new SlatwallPathBuilder())
+.config(["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig','slatwallPathBuilder','appConfig',
+     ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig,slatwallPathBuilder,appConfig) =>
   {
       //configure partials path properties
-     pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-     pathBuilderConfig.setBasePartialsPath('/org/Hibachi/client/src/');
+     slatwallPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
+     slatwallPathBuilder.setBasePartialsPath('/admin/client/src/');
 
      datepickerConfig.showWeeks = false;
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
@@ -89,7 +93,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 
 
  }])
- .run(['$rootScope','$filter','$anchorScroll','$hibachi','dialogService','observerService','utilityService','pathBuilderConfig', ($rootScope,$filter,$anchorScroll,$hibachi,dialogService,observerService,utilityService,pathBuilderConfig) => {
+ .run(['$rootScope','$filter','$anchorScroll','$hibachi','dialogService','observerService','utilityService','slatwallPathBuilder', ($rootScope,$filter,$anchorScroll,$hibachi,dialogService,observerService,utilityService,slatwallPathBuilder) => {
         $anchorScroll.yOffset = 100;
 
         $rootScope.openPageDialog = function( partial ) {
@@ -120,6 +124,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 //filters
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
+
 ;
 export{
     slatwalladminmodule

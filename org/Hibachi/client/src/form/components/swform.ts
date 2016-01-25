@@ -363,17 +363,17 @@ class SWForm implements ng.IDirective {
     public static Factory(){
         var directive = (
             coreFormPartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         ) => new SWForm(
             coreFormPartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         );
-        directive.$inject = ['coreFormPartialsPath','pathBuilderConfig'];
+        directive.$inject = ['coreFormPartialsPath','hibachiPathBuilder'];
         return directive;
     }
     // @ngInject
-    constructor( public coreFormPartialsPath, public pathBuilderConfig) {
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
+    constructor( public coreFormPartialsPath, public hibachiPathBuilder) {
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
     }
 }
 export{

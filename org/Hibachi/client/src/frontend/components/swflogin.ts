@@ -20,22 +20,22 @@ class SWFLogin implements ng.IDirective{
     public templateUrl;
     
     // @ngInject
-    constructor(private pathBuilderConfig, private frontendPartialsPath ){
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(frontendPartialsPath)+'logindirectivepartial.html';
+    constructor(private hibachiPathBuilder, private frontendPartialsPath ){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(frontendPartialsPath)+'logindirectivepartial.html';
     }
     
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{}
     
     public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
-			pathBuilderConfig,
+			hibachiPathBuilder,
             frontendPartialsPath
         ) => new SWFLogin(
-			pathBuilderConfig,
+			hibachiPathBuilder,
             frontendPartialsPath
         );
         directive.$inject = [
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
             'frontendPartialsPath'
         ];
         return directive;

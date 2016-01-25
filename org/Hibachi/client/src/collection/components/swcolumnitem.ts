@@ -7,7 +7,7 @@ class SWColumnItem{
 			$templateCache,
 			$log,
 			$timeout,
-			pathBuilderConfig,
+			hibachiPathBuilder,
 			collectionService,
 			collectionPartialsPath
 		) => new SWColumnItem(
@@ -15,7 +15,7 @@ class SWColumnItem{
 			$templateCache,
 			$log,
 			$timeout,
-			pathBuilderConfig,
+			hibachiPathBuilder,
 			collectionService,
 			collectionPartialsPath
 		);
@@ -24,7 +24,7 @@ class SWColumnItem{
 			'$templateCache',
 			'$log',
 			'$timeout',
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
 			'collectionService',
 			'collectionPartialsPath'
 		];
@@ -35,7 +35,7 @@ class SWColumnItem{
 		$templateCache,
 		$log,
 		$timeout,
-		pathBuilderConfig,
+		hibachiPathBuilder,
 		collectionService,
 		collectionPartialsPath
 	){
@@ -51,7 +51,7 @@ class SWColumnItem{
 				propertiesList:"=",
 				orderBy:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"columnitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
                 scope.editingDisplayTitle=false;
 

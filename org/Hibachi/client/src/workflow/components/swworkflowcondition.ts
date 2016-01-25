@@ -9,7 +9,7 @@ class SWWorkflowCondition{
 			formService,
 			metadataService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWWorkflowCondition(
 			$log,
 			$location,
@@ -17,7 +17,7 @@ class SWWorkflowCondition{
 			formService,
 			metadataService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -26,7 +26,7 @@ class SWWorkflowCondition{
 			'formService',
 			'metadataService',
 			'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -37,7 +37,7 @@ class SWWorkflowCondition{
 		formService,
 		metadataService,
 		workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
@@ -47,7 +47,7 @@ class SWWorkflowCondition{
 				workflow:"=",
 				filterPropertiesList:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowcondition.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowcondition.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflowCondition init');
 				$log.debug(scope);

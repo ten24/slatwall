@@ -8,14 +8,14 @@ interface IDialogService {
 
 class DialogService{
     public static $inject = [
-        'pathBuilderConfig'
+        'hibachiPathBuilder'
     ];
     private _pageDialogs;
     constructor(
-         private pathBuilderConfig
+         private hibachiPathBuilder
     ){
         this._pageDialogs = [];
-        this.pathBuilderConfig = pathBuilderConfig;
+        this.hibachiPathBuilder = hibachiPathBuilder;
     }
 
     get = (): PageDialog[] =>{
@@ -24,7 +24,7 @@ class DialogService{
 
     addPageDialog = ( name:PageDialog, params?:any ):void =>{
         var newDialog = {
-            'path' : this.pathBuilderConfig.buildPartialsPath(name + '.html'),
+            'path' : name + '.html',
             'params' : params
         };
         this._pageDialogs.push( newDialog );

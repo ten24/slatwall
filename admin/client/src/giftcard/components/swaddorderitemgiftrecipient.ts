@@ -153,16 +153,16 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
         var directive:ng.IDirectiveFactory = (
             $hibachi,
 		    giftCardPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
         ) => new SWAddOrderItemGiftRecipient(
             $hibachi,
 			giftCardPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
         );
         directive.$inject = [
             '$hibachi',
 			'giftCardPartialsPath',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
         ];
         return directive;
     }
@@ -170,9 +170,9 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
 	constructor(
 		private $hibachi,
 	    private giftCardPartialsPath,
-		private pathBuilderConfig
+		private slatwallPathBuilder
 	){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/addorderitemgiftrecipient.html";
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/addorderitemgiftrecipient.html";
     }
 
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

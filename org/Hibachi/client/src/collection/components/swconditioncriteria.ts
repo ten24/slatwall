@@ -14,7 +14,7 @@ class SWConditionCriteria{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWConditionCriteria(
 			$http,
 			$compile,
@@ -26,7 +26,7 @@ class SWConditionCriteria{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$http',
@@ -39,7 +39,7 @@ class SWConditionCriteria{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -54,7 +54,7 @@ class SWConditionCriteria{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		/* Template info begin*/
 		var getTemplate = function(selectedFilterProperty){
@@ -62,25 +62,25 @@ class SWConditionCriteria{
 			var templatePath = '';
 
 			if(angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)){
-				templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteria.html";
+				templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteria.html";
 			}else{
 				var criteriaormtype = selectedFilterProperty.ormtype;
 				var criteriafieldtype = selectedFilterProperty.fieldtype;
 				/*TODO: convert all switches to object literals*/
 				switch(criteriaormtype){
 					case 'boolean':
-					templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriaboolean.html";
+					templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriaboolean.html";
 						break;
 					case 'string':
-						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriastring.html";
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriastring.html";
 						break;
 					case 'timestamp':
-						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriadate.html";
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriadate.html";
 						break;
 					case 'big_decimal':
 					case 'integer':
 					case 'float':
-						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criterianumber.html";
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criterianumber.html";
 						break;
 
 
@@ -88,13 +88,13 @@ class SWConditionCriteria{
 
 				switch(criteriafieldtype){
 					case "many-to-one":
-						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriamanytoone.html";
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriamanytoone.html";
 						break;
 					case "many-to-many":
-						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriamanytomany.html";
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriamanytomany.html";
 						break;
 					case "one-to-many":
-						templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"criteriaonetomany.html";
+						templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"criteriaonetomany.html";
 						break;
 				}
 			}

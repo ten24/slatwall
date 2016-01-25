@@ -9,14 +9,14 @@ class SWAddFilterButtons{
             $templateCache,
             collectionService,
             collectionPartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         ) => new SWAddFilterButtons(
             $http,
             $compile,
             $templateCache,
             collectionService,
             collectionPartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         );
         directive.$inject = [
             '$http',
@@ -24,7 +24,7 @@ class SWAddFilterButtons{
             '$templateCache',
             'collectionService',
             'collectionPartialsPath',
-            'pathBuilderConfig'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
@@ -35,13 +35,13 @@ class SWAddFilterButtons{
         $templateCache,
         collectionService,
         collectionPartialsPath,
-        pathBuilderConfig
+        hibachiPathBuilder
     ){
         return {
 
           require:'^swFilterGroups',
           restrict: 'E',
-          templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"addfilterbuttons.html",
+          templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"addfilterbuttons.html",
           scope:{
               itemInUse:"="
           },

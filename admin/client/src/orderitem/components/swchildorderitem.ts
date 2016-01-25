@@ -9,7 +9,7 @@ class SWChildOrderItem{
       $templateCache,
       $hibachi,
       orderItemPartialsPath,
-      pathBuilderConfig
+      slatwallPathBuilder
     )=> new SWChildOrderItem(
       $log,
       $http,
@@ -17,7 +17,7 @@ class SWChildOrderItem{
       $templateCache,
       $hibachi,
       orderItemPartialsPath,
-      pathBuilderConfig
+      slatwallPathBuilder
     );
     directive.$inject = [
       '$log',
@@ -26,7 +26,7 @@ class SWChildOrderItem{
       '$templateCache',
       '$hibachi',
       'orderItemPartialsPath',
-      'pathBuilderConfig'
+      'slatwallPathBuilder'
     ];
     return directive;
   }
@@ -37,7 +37,7 @@ class SWChildOrderItem{
     $templateCache,
     $hibachi,
     orderItemPartialsPath,
-    pathBuilderConfig
+    slatwallPathBuilder
   ){
     return {
       restrict : "A",
@@ -47,7 +47,7 @@ class SWChildOrderItem{
         childOrderItems:"=",
         attributes:"="
       },
-      templateUrl:pathBuilderConfig.buildPartialsPath(orderItemPartialsPath)+"childorderitem.html",
+      templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"childorderitem.html",
       link:function(scope, element, attr) {
 
         var columnsConfig =[

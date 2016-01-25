@@ -32,22 +32,22 @@ class SWFormFieldText implements ng.IDirective {
 	public static Factory(){
 		var directive = (
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWFormFieldText(
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'coreFormPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor(
 		coreFormPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	) {
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "text.html";
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "text.html";
 	}
 }
 export{
