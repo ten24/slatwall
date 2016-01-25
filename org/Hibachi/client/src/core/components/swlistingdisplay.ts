@@ -48,7 +48,7 @@ class SWListingDisplayController{
     public tableID;
     public tableclass;
     public tableattributes;
-    public showSearch:boolean;
+    public showSearch;
 
 
 
