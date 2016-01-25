@@ -18392,10 +18392,6 @@
 	            };
 	            _this.$scope.preprocessproduct_createCtrl.options.push(option);
 	        });
-	        if (this.$scope.preprocessproduct_createCtrl.options.length > 1) {
-	            this.$scope.preprocessproduct_createCtrl.options.splice(0, 0, { label: this.rbkeyService.getRBKey('processObject.Product_Create.selectProductType'), value: "" });
-	        }
-	        this.$scope.preprocessproduct_createCtrl.productTypeChanged(this.$scope.preprocessproduct_createCtrl.options[0]);
 	    }
 	    return ProductCreateController;
 	})();
