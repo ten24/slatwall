@@ -898,7 +898,7 @@
 	                return _this.baseURL + _this.basePartialsPath + componentsPath;
 	            }
 	            else {
-	                throw ('need to define baseURL and basePartialsPath in pathBuilderConfig. Inject pathBuilderConfig into module and configure it there');
+	                throw ('need to define baseURL and basePartialsPath in hibachiPathBuilder. Inject hibachiPathBuilder into module and configure it there');
 	            }
 	        };
 	    }
@@ -1813,7 +1813,7 @@
 	                return $delegate;
 	            }
 	        ]);
-	    }]).constant('pathBuilderConfig', new PathBuilderConfig())
+	    }]).constant('hibachiPathBuilder', new PathBuilderConfig())
 	    .constant('corePartialsPath', 'core/components/')
 	    .service('publicService', publicservice_1.PublicService)
 	    .service('utilityService', utilityservice_1.UtilityService)
@@ -3385,7 +3385,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWActionCallerController = (function () {
 	    //@ngInject
-	    function SWActionCallerController($scope, $element, $templateRequest, $compile, corePartialsPath, utilityService, $hibachi, rbkeyService, pathBuilderConfig) {
+	    function SWActionCallerController($scope, $element, $templateRequest, $compile, corePartialsPath, utilityService, $hibachi, rbkeyService, hibachiPathBuilder) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$element = $element;
@@ -3575,8 +3575,8 @@
 	        this.rbkeyService = rbkeyService;
 	        this.$hibachi = $hibachi;
 	        this.utilityService = utilityService;
-	        this.pathBuilderConfig = pathBuilderConfig;
-	        this.$templateRequest(this.pathBuilderConfig.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "actioncaller.html").then(function (html) {
 	            var template = angular.element(html);
 	            _this.$element.parent().append(template);
 	            $compile(template)($scope);
@@ -3779,7 +3779,7 @@
 	})();
 	exports.SWTypeaheadSearchController = SWTypeaheadSearchController;
 	var SWTypeaheadSearch = (function () {
-	    function SWTypeaheadSearch($hibachi, $compile, $timeout, utilityService, collectionConfigService, corePartialsPath, pathBuilderConfig) {
+	    function SWTypeaheadSearch($hibachi, $compile, $timeout, utilityService, collectionConfigService, corePartialsPath, hibachiPathBuilder) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.$compile = $compile;
@@ -3817,18 +3817,18 @@
 	                target.append(_this.$compile(listItemTemplate)(scope));
 	            });
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	    }
 	    SWTypeaheadSearch.Factory = function () {
-	        var directive = function ($hibachi, $compile, $timeout, utilityService, collectionConfigService, corePartialsPath, pathBuilderConfig) {
-	            return new SWTypeaheadSearch($hibachi, $compile, $timeout, utilityService, collectionConfigService, corePartialsPath, pathBuilderConfig);
+	        var directive = function ($hibachi, $compile, $timeout, utilityService, collectionConfigService, corePartialsPath, hibachiPathBuilder) {
+	            return new SWTypeaheadSearch($hibachi, $compile, $timeout, utilityService, collectionConfigService, corePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = ["$hibachi", "$compile", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
-	            'pathBuilderConfig'];
+	            'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    SWTypeaheadSearch.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-	        'pathBuilderConfig'];
+	        'hibachiPathBuilder'];
 	    return SWTypeaheadSearch;
 	})();
 	exports.SWTypeaheadSearch = SWTypeaheadSearch;
@@ -3899,7 +3899,7 @@
 	})();
 	exports.SWActionCallerDropdownController = SWActionCallerDropdownController;
 	var SWActionCallerDropdown = (function () {
-	    function SWActionCallerDropdown(corePartialsPath, pathBuilderConfig) {
+	    function SWActionCallerDropdown(corePartialsPath, hibachiPathBuilder) {
 	        this.corePartialsPath = corePartialsPath;
 	        this.restrict = 'E';
 	        this.scope = {};
@@ -3916,11 +3916,11 @@
 	        this.controllerAs = "swActionCallerDropdown";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + 'actioncallerdropdown.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'actioncallerdropdown.html';
 	    }
 	    SWActionCallerDropdown.Factory = function () {
-	        var directive = function (corePartialsPath, pathBuilderConfig) { return new SWActionCallerDropdown(corePartialsPath, pathBuilderConfig); };
-	        directive.$inject = ['corePartialsPath', 'pathBuilderConfig'];
+	        var directive = function (corePartialsPath, hibachiPathBuilder) { return new SWActionCallerDropdown(corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWActionCallerDropdown;
@@ -3936,13 +3936,13 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWColumnSorter = (function () {
 	    //@ngInject
-	    function SWColumnSorter($log, observerService, corePartialsPath, pathBuilderConfig) {
+	    function SWColumnSorter($log, observerService, corePartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'AE',
 	            scope: {
 	                column: "=",
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + "columnsorter.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "columnsorter.html",
 	            link: function (scope, element, attrs) {
 	                var orderBy = {
 	                    "propertyIdentifier": scope.column.propertyIdentifier,
@@ -3959,14 +3959,14 @@
 	        };
 	    }
 	    SWColumnSorter.Factory = function () {
-	        var directive = function ($log, observerService, corePartialsPath, pathBuilderConfig) {
-	            return new SWColumnSorter($log, observerService, corePartialsPath, pathBuilderConfig);
+	        var directive = function ($log, observerService, corePartialsPath, hibachiPathBuilder) {
+	            return new SWColumnSorter($log, observerService, corePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'observerService',
 	            'corePartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -4143,7 +4143,7 @@
 	})();
 	var SWEntityActionBar = (function () {
 	    //@ngInject
-	    function SWEntityActionBar(corePartialsPath, pathBuilderConfig) {
+	    function SWEntityActionBar(corePartialsPath, hibachiPathBuilder) {
 	        this.corePartialsPath = corePartialsPath;
 	        this.restrict = 'E';
 	        this.scope = {};
@@ -4177,13 +4177,13 @@
 	        this.controllerAs = "swEntityActionBar";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + 'entityactionbar.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'entityactionbar.html';
 	    }
 	    SWEntityActionBar.Factory = function () {
-	        var directive = function (corePartialsPath, pathBuilderConfig) {
-	            return new SWEntityActionBar(corePartialsPath, pathBuilderConfig);
+	        var directive = function (corePartialsPath, hibachiPathBuilder) {
+	            return new SWEntityActionBar(corePartialsPath, hibachiPathBuilder);
 	        };
-	        directive.$inject = ['corePartialsPath', 'pathBuilderConfig'];
+	        directive.$inject = ['corePartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWEntityActionBar;
@@ -4205,7 +4205,7 @@
 	})();
 	var SWEntityActionBarButtonGroup = (function () {
 	    //@ngInject
-	    function SWEntityActionBarButtonGroup(corePartialsPath, pathBuilderConfig) {
+	    function SWEntityActionBarButtonGroup(corePartialsPath, hibachiPathBuilder) {
 	        this.corePartialsPath = corePartialsPath;
 	        this.restrict = 'E';
 	        this.scope = {};
@@ -4215,14 +4215,14 @@
 	        this.controllerAs = "swEntityActionBarButtonGroup";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + 'entityactionbarbuttongroup.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'entityactionbarbuttongroup.html';
 	    }
 	    SWEntityActionBarButtonGroup.Factory = function () {
-	        var directive = function (corePartialsPath, pathBuilderConfig) {
-	            return new SWEntityActionBarButtonGroup(corePartialsPath, pathBuilderConfig);
+	        var directive = function (corePartialsPath, hibachiPathBuilder) {
+	            return new SWEntityActionBarButtonGroup(corePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = ['corePartialsPath',
-	            'pathBuilderConfig'];
+	            'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWEntityActionBarButtonGroup;
@@ -4301,14 +4301,14 @@
 	    return SWExpandableRecordController;
 	})();
 	var SWExpandableRecord = (function () {
-	    function SWExpandableRecord($compile, $templateRequest, $timeout, corePartialsPath, utilityService, pathBuilderConfig) {
+	    function SWExpandableRecord($compile, $templateRequest, $timeout, corePartialsPath, utilityService, hibachiPathBuilder) {
 	        var _this = this;
 	        this.$compile = $compile;
 	        this.$templateRequest = $templateRequest;
 	        this.$timeout = $timeout;
 	        this.corePartialsPath = corePartialsPath;
 	        this.utilityService = utilityService;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.restrict = 'EA';
 	        this.scope = {};
 	        this.bindToController = {
@@ -4342,7 +4342,7 @@
 	                        });
 	                    }
 	                }
-	                _this.$templateRequest(_this.pathBuilderConfig.buildPartialsPath(_this.corePartialsPath) + "expandablerecord.html").then(function (html) {
+	                _this.$templateRequest(_this.hibachiPathBuilder.buildPartialsPath(_this.corePartialsPath) + "expandablerecord.html").then(function (html) {
 	                    var template = angular.element(html);
 	                    //get autoopen reference to ensure only the root is autoopenable
 	                    var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
@@ -4361,11 +4361,11 @@
 	        this.corePartialsPath = corePartialsPath;
 	        this.$timeout = $timeout;
 	        this.utilityService = utilityService;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	    }
 	    SWExpandableRecord.Factory = function () {
-	        var directive = function ($compile, $templateRequest, $timeout, corePartialsPath, utilityService, pathBuilderConfig) {
-	            return new SWExpandableRecord($compile, $templateRequest, $timeout, corePartialsPath, utilityService, pathBuilderConfig);
+	        var directive = function ($compile, $templateRequest, $timeout, corePartialsPath, utilityService, hibachiPathBuilder) {
+	            return new SWExpandableRecord($compile, $templateRequest, $timeout, corePartialsPath, utilityService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$compile',
@@ -4373,12 +4373,12 @@
 	            '$timeout',
 	            'corePartialsPath',
 	            'utilityService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
 	    SWExpandableRecord.$inject = ['$compile', '$templateRequest', '$timeout', 'corePartialsPath', 'utilityService',
-	        'pathBuilderConfig'];
+	        'hibachiPathBuilder'];
 	    return SWExpandableRecord;
 	})();
 	exports.SWExpandableRecord = SWExpandableRecord;
@@ -4419,7 +4419,7 @@
 	        return directive;
 	    };
 	    SWGravatar.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-	        'pathBuilderConfig'];
+	        'hibachiPathBuilder'];
 	    return SWGravatar;
 	})();
 	exports.SWGravatar = SWGravatar;
@@ -5130,11 +5130,11 @@
 	})();
 	var SWListingDisplay = (function () {
 	    //@ngInject
-	    function SWListingDisplay(corePartialsPath, observerService, pathBuilderConfig) {
+	    function SWListingDisplay(corePartialsPath, observerService, hibachiPathBuilder) {
 	        var _this = this;
 	        this.corePartialsPath = corePartialsPath;
 	        this.observerService = observerService;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.restrict = 'E';
 	        this.scope = {};
 	        this.transclude = true;
@@ -5226,16 +5226,16 @@
 	        };
 	        this.corePartialsPath = corePartialsPath;
 	        this.observerService = observerService;
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.corePartialsPath) + 'listingdisplay.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath) + 'listingdisplay.html';
 	    }
 	    SWListingDisplay.Factory = function () {
-	        var directive = function (corePartialsPath, observerService, pathBuilderConfig) {
-	            return new SWListingDisplay(corePartialsPath, observerService, pathBuilderConfig);
+	        var directive = function (corePartialsPath, observerService, hibachiPathBuilder) {
+	            return new SWListingDisplay(corePartialsPath, observerService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'corePartialsPath',
 	            'observerService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -5545,7 +5545,7 @@
 	    return SWLoginController;
 	})();
 	var SWLogin = (function () {
-	    function SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, pathBuilderConfig) {
+	    function SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) {
 	        this.$route = $route;
 	        this.$log = $log;
 	        this.$window = $window;
@@ -5559,11 +5559,11 @@
 	        this.controllerAs = "SwLogin";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(this).corePartialsPath + '/login.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this).corePartialsPath + '/login.html';
 	    }
 	    SWLogin.Factory = function () {
-	        var directive = function ($route, $log, $window, corePartialsPath, $hibachi, dialogService, pathBuilderConfig) {
-	            return new SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, pathBuilderConfig);
+	        var directive = function ($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) {
+	            return new SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$route',
@@ -5572,7 +5572,7 @@
 	            'corePartialsPath',
 	            '$hibachi',
 	            'dialogService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -5644,11 +5644,11 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWLoading = (function () {
-	    function SWLoading($log, corePartialsPath, pathBuilderConfig) {
+	    function SWLoading($log, corePartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            transclude: true,
-	            templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + 'loading.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'loading.html',
 	            scope: {
 	                swLoading: '='
 	            },
@@ -5657,13 +5657,13 @@
 	        };
 	    }
 	    SWLoading.Factory = function () {
-	        var directive = function ($log, corePartialsPath, pathBuilderConfig) {
-	            return new SWLoading($log, corePartialsPath, pathBuilderConfig);
+	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) {
+	            return new SWLoading($log, corePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'corePartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -5813,13 +5813,13 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOptions = (function () {
-	    function SWOptions($log, $hibachi, observerService, corePartialsPath, pathBuilderConfig) {
+	    function SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'AE',
 	            scope: {
 	                objectName: '@'
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + "options.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "options.html",
 	            link: function (scope, element, attrs) {
 	                scope.swOptions = {};
 	                scope.swOptions.objectName = scope.objectName;
@@ -5854,15 +5854,15 @@
 	        };
 	    }
 	    SWOptions.Factory = function () {
-	        var directive = function ($log, $hibachi, observerService, corePartialsPath, pathBuilderConfig) {
-	            return new SWOptions($log, $hibachi, observerService, corePartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder) {
+	            return new SWOptions($log, $hibachi, observerService, corePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
 	            'observerService',
 	            'corePartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -5878,10 +5878,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSelection = (function () {
-	    function SWSelection($log, selectionService, observerService, corePartialsPath, pathBuilderConfig) {
+	    function SWSelection($log, selectionService, observerService, corePartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + "selection.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "selection.html",
 	            scope: {
 	                selection: "=",
 	                selectionid: "@",
@@ -5914,15 +5914,15 @@
 	        };
 	    }
 	    SWSelection.Factory = function () {
-	        var directive = function ($log, selectionService, observerService, corePartialsPath, pathBuilderConfig) {
-	            return new SWSelection($log, selectionService, observerService, corePartialsPath, pathBuilderConfig);
+	        var directive = function ($log, selectionService, observerService, corePartialsPath, hibachiPathBuilder) {
+	            return new SWSelection($log, selectionService, observerService, corePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'selectionService',
 	            'observerService',
 	            'corePartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -6039,23 +6039,23 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWExportAction = (function () {
 	    //@ngInject
-	    function SWExportAction($log, corePartialsPath, pathBuilderConfig) {
+	    function SWExportAction($log, corePartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(corePartialsPath) + 'exportaction.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(corePartialsPath) + 'exportaction.html',
 	            scope: {},
 	            link: function (scope, element, attrs) {
 	            }
 	        };
 	    }
 	    SWExportAction.Factory = function () {
-	        var directive = function ($log, corePartialsPath, pathBuilderConfig) {
-	            return new SWExportAction($log, corePartialsPath, pathBuilderConfig);
+	        var directive = function ($log, corePartialsPath, hibachiPathBuilder) {
+	            return new SWExportAction($log, corePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'corePartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -6104,7 +6104,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWProcessCallerController = (function () {
-	    function SWProcessCallerController($templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, pathBuilderConfig) {
+	    function SWProcessCallerController($templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, hibachiPathBuilder) {
 	        var _this = this;
 	        this.$templateRequest = $templateRequest;
 	        this.$compile = $compile;
@@ -6121,14 +6121,14 @@
 	        this.$scope = $scope;
 	        this.$element = $element;
 	        this.$transclude = this.$transclude;
-	        this.$templateRequest(pathBuilderConfig.buildPartialsPath(this.corePartialsPath) + "processcaller.html").then(function (html) {
+	        this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath) + "processcaller.html").then(function (html) {
 	            var template = angular.element(html);
 	            _this.$element.parent().append(template);
 	            $compile(template)(_this.$scope);
 	        });
 	    }
 	    SWProcessCallerController.$inject = ['$templateRequest', '$compile', 'corePartialsPath', '$scope', '$element', '$transclude', 'utilityService',
-	        'pathBuilderConfig'];
+	        'hibachiPathBuilder'];
 	    return SWProcessCallerController;
 	})();
 	var SWProcessCaller = (function () {
@@ -6267,7 +6267,7 @@
 	})();
 	var SWListingGlobalSearch = (function () {
 	    //@ngInject
-	    function SWListingGlobalSearch(utilityService, corePartialsPath, pathBuilderConfig) {
+	    function SWListingGlobalSearch(utilityService, corePartialsPath, hibachiPathBuilder) {
 	        this.utilityService = utilityService;
 	        this.restrict = 'EA';
 	        this.scope = {};
@@ -6280,11 +6280,11 @@
 	        this.controllerAs = "swListingGlobalSearch";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "listingglobalsearch.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "listingglobalsearch.html";
 	    }
 	    SWListingGlobalSearch.Factory = function () {
-	        var directive = function (utilityService, corePartialsPath, pathBuilderConfig) { return new SWListingGlobalSearch(utilityService, corePartialsPath, pathBuilderConfig); };
-	        directive.$inject = ['utilityService', 'corePartialsPath', 'pathBuilderConfig'];
+	        var directive = function (utilityService, corePartialsPath, hibachiPathBuilder) { return new SWListingGlobalSearch(utilityService, corePartialsPath, hibachiPathBuilder); };
+	        directive.$inject = ['utilityService', 'corePartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWListingGlobalSearch;
@@ -6331,11 +6331,11 @@
 	    'ui.bootstrap'
 	])
 	    .constant("baseURL", $.slatwall.getConfig().baseURL)
-	    .config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig', 'pathBuilderConfig',
-	    function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig, pathBuilderConfig) {
+	    .config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig', 'hibachiPathBuilder',
+	    function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig, hibachiPathBuilder) {
 	        //configure partials path properties
-	        pathBuilderConfig.setBaseURL($.slatwall.getConfig().baseURL);
-	        pathBuilderConfig.setBasePartialsPath('/org/Hibachi/client/src/');
+	        hibachiPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
+	        hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 	        datepickerConfig.showWeeks = false;
 	        datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
 	        datepickerPopupConfig.toggleWeeksText = null;
@@ -6375,7 +6375,7 @@
 	        $httpProvider.interceptors.push('slatwallInterceptor');
 	        // route provider configuration
 	    }])
-	    .run(['$rootScope', '$filter', '$anchorScroll', '$hibachi', 'dialogService', 'observerService', 'utilityService', 'pathBuilderConfig', function ($rootScope, $filter, $anchorScroll, $hibachi, dialogService, observerService, utilityService, pathBuilderConfig) {
+	    .run(['$rootScope', '$filter', '$anchorScroll', '$hibachi', 'dialogService', 'observerService', 'utilityService', 'hibachiPathBuilder', function ($rootScope, $filter, $anchorScroll, $hibachi, dialogService, observerService, utilityService, hibachiPathBuilder) {
 	        $anchorScroll.yOffset = 100;
 	        $rootScope.openPageDialog = function (partial) {
 	            dialogService.addPageDialog(partial);
@@ -7865,10 +7865,10 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCollection = (function () {
 	    //@ngInject
-	    function SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
+	    function SWCollection($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService) {
 	        return {
 	            restrict: 'A',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "collection.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "collection.html",
 	            link: function (scope, $element, $attrs) {
 	                scope.tabsUniqueID = Math.floor(Math.random() * 999);
 	                scope.toggleCogOpen = $attrs.toggleoption;
@@ -7885,14 +7885,14 @@
 	        };
 	    }
 	    SWCollection.Factory = function () {
-	        var directive = function ($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService) {
-	            return new SWCollection($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, collectionService);
+	        var directive = function ($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService) {
+	            return new SWCollection($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, collectionService);
 	        };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
 	            '$log',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'collectionPartialsPath',
 	            'collectionService'
 	        ];
@@ -7911,11 +7911,11 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAddFilterButtons = (function () {
 	    //@ngInject
-	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	    function SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            require: '^swFilterGroups',
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "addfilterbuttons.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "addfilterbuttons.html",
 	            scope: {
 	                itemInUse: "="
 	            },
@@ -7931,8 +7931,8 @@
 	        };
 	    }
 	    SWAddFilterButtons.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig) {
-	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, pathBuilderConfig);
+	        var directive = function ($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder) {
+	            return new SWAddFilterButtons($http, $compile, $templateCache, collectionService, collectionPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -7940,7 +7940,7 @@
 	            '$templateCache',
 	            'collectionService',
 	            'collectionPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -7957,7 +7957,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayOptions = (function () {
 	    //@ngInject
-	    function SWDisplayOptions($http, $compile, $templateCache, $log, $hibachi, collectionService, pathBuilderConfig, collectionPartialsPath, rbkeyService) {
+	    function SWDisplayOptions($http, $compile, $templateCache, $log, $hibachi, collectionService, hibachiPathBuilder, collectionPartialsPath, rbkeyService) {
 	        return {
 	            restrict: 'E',
 	            transclude: true,
@@ -7969,7 +7969,7 @@
 	                baseEntityAlias: "=",
 	                baseEntityName: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "displayoptions.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayoptions.html",
 	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 	                    $log.debug('display options initialize');
 	                    this.removeColumn = function (columnIndex) {
@@ -8099,8 +8099,8 @@
 	        };
 	    }
 	    SWDisplayOptions.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, collectionService, pathBuilderConfig, collectionPartialsPath, rbkeyService) {
-	            return new SWDisplayOptions($http, $compile, $templateCache, $log, $hibachi, collectionService, pathBuilderConfig, collectionPartialsPath, rbkeyService);
+	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, collectionService, hibachiPathBuilder, collectionPartialsPath, rbkeyService) {
+	            return new SWDisplayOptions($http, $compile, $templateCache, $log, $hibachi, collectionService, hibachiPathBuilder, collectionPartialsPath, rbkeyService);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -8109,7 +8109,7 @@
 	            '$log',
 	            '$hibachi',
 	            'collectionService',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'collectionPartialsPath',
 	            'rbkeyService'
 	        ];
@@ -8128,7 +8128,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDisplayItem = (function () {
 	    //@ngInject
-	    function SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	    function SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            require: '^swDisplayOptions',
 	            restrict: 'A',
@@ -8138,7 +8138,7 @@
 	                breadCrumbs: "=",
 	                selectedPropertyChanged: "&"
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "displayitem.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "displayitem.html",
 	            link: function (scope, element, attrs, displayOptionsController) {
 	                scope.showDisplayItem = false;
 	                scope.selectedDisplayOptionChanged = function (selectedDisplayOption) {
@@ -8178,8 +8178,8 @@
 	        };
 	    }
 	    SWDisplayItem.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
-	            return new SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
+	            return new SWDisplayItem($http, $compile, $templateCache, $log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -8191,7 +8191,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -8208,10 +8208,10 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCollectionTable = (function () {
 	    //@ngInject
-	    function SWCollectionTable($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $hibachi) {
+	    function SWCollectionTable($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "collectiontable.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "collectiontable.html",
 	            scope: {
 	                collection: "=",
 	                collectionConfig: "=",
@@ -8247,14 +8247,14 @@
 	        };
 	    }
 	    SWCollectionTable.Factory = function () {
-	        var directive = function ($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $hibachi) {
-	            return new SWCollectionTable($http, $compile, $log, pathBuilderConfig, collectionPartialsPath, paginationService, selectionService, $hibachi);
+	        var directive = function ($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi) {
+	            return new SWCollectionTable($http, $compile, $log, hibachiPathBuilder, collectionPartialsPath, paginationService, selectionService, $hibachi);
 	        };
 	        directive.$inject = [
 	            '$http',
 	            '$compile',
 	            '$log',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'collectionPartialsPath',
 	            'paginationService',
 	            'selectionService',
@@ -8274,7 +8274,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWColumnItem = (function () {
-	    function SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath) {
+	    function SWColumnItem($compile, $templateCache, $log, $timeout, hibachiPathBuilder, collectionService, collectionPartialsPath) {
 	        return {
 	            restrict: 'A',
 	            require: "^swDisplayOptions",
@@ -8286,7 +8286,7 @@
 	                propertiesList: "=",
 	                orderBy: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "columnitem.html",
 	            link: function (scope, element, attrs, displayOptionsController) {
 	                scope.editingDisplayTitle = false;
 	                scope.editDisplayTitle = function () {
@@ -8448,15 +8448,15 @@
 	        };
 	    }
 	    SWColumnItem.Factory = function () {
-	        var directive = function ($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath) {
-	            return new SWColumnItem($compile, $templateCache, $log, $timeout, pathBuilderConfig, collectionService, collectionPartialsPath);
+	        var directive = function ($compile, $templateCache, $log, $timeout, hibachiPathBuilder, collectionService, collectionPartialsPath) {
+	            return new SWColumnItem($compile, $templateCache, $log, $timeout, hibachiPathBuilder, collectionService, collectionPartialsPath);
 	        };
 	        directive.$inject = [
 	            '$compile',
 	            '$templateCache',
 	            '$log',
 	            '$timeout',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'collectionService',
 	            'collectionPartialsPath'
 	        ];
@@ -8474,13 +8474,13 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWConditionCriteria = (function () {
-	    function SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	    function SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        /* Template info begin*/
 	        var getTemplate = function (selectedFilterProperty) {
 	            var template = '';
 	            var templatePath = '';
 	            if (angular.isUndefined(selectedFilterProperty.ormtype) && angular.isUndefined(selectedFilterProperty.fieldtype)) {
-	                templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteria.html";
+	                templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criteria.html";
 	            }
 	            else {
 	                var criteriaormtype = selectedFilterProperty.ormtype;
@@ -8488,29 +8488,29 @@
 	                /*TODO: convert all switches to object literals*/
 	                switch (criteriaormtype) {
 	                    case 'boolean':
-	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriaboolean.html";
+	                        templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criteriaboolean.html";
 	                        break;
 	                    case 'string':
-	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriastring.html";
+	                        templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criteriastring.html";
 	                        break;
 	                    case 'timestamp':
-	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriadate.html";
+	                        templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criteriadate.html";
 	                        break;
 	                    case 'big_decimal':
 	                    case 'integer':
 	                    case 'float':
-	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criterianumber.html";
+	                        templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criterianumber.html";
 	                        break;
 	                }
 	                switch (criteriafieldtype) {
 	                    case "many-to-one":
-	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriamanytoone.html";
+	                        templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criteriamanytoone.html";
 	                        break;
 	                    case "many-to-many":
-	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriamanytomany.html";
+	                        templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criteriamanytomany.html";
 	                        break;
 	                    case "one-to-many":
-	                        templatePath = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "criteriaonetomany.html";
+	                        templatePath = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "criteriaonetomany.html";
 	                        break;
 	                }
 	            }
@@ -9334,8 +9334,8 @@
 	        };
 	    }
 	    SWConditionCriteria.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
-	            return new SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        var directive = function ($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
+	            return new SWConditionCriteria($http, $compile, $templateCache, $log, $hibachi, $filter, workflowPartialsPath, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -9348,7 +9348,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -9364,7 +9364,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteria = (function () {
-	    function SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	    function SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -9375,14 +9375,14 @@
 	                comparisonType: "=",
 	                collectionConfig: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteria.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteria.html',
 	            link: function (scope, element, attrs) {
 	            }
 	        };
 	    }
 	    SWCriteria.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
-	            return new SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
+	            return new SWCriteria($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -9391,7 +9391,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -9407,10 +9407,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaBoolean = (function () {
-	    function SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	    function SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriaboolean.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriaboolean.html',
 	            link: function (scope, element, attrs) {
 	                var getBooleanOptions = function (type) {
 	                    if (angular.isUndefined(type)) {
@@ -9481,8 +9481,8 @@
 	        };
 	    }
 	    SWCriteriaBoolean.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
-	            return new SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
+	            return new SWCriteriaBoolean($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -9491,7 +9491,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -9507,10 +9507,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaManyToMany = (function () {
-	    function SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
+	    function SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriamanytomany.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriamanytomany.html',
 	            link: function (scope, element, attrs) {
 	                scope.data = {};
 	                scope.collectionOptionsOpen = false;
@@ -9621,8 +9621,8 @@
 	        };
 	    }
 	    SWCriteriaManyToMany.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
-	            return new SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService);
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
+	            return new SWCriteriaManyToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -9633,7 +9633,7 @@
 	            'metadataService',
 	            'dialogService',
 	            'observerService',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'rbkeyService',
 	        ];
 	        return directive;
@@ -9650,10 +9650,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaManyToOne = (function () {
-	    function SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
+	    function SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriamanytoone.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriamanytoone.html',
 	            link: function (scope, element, attrs) {
 	                var getManyToOneOptions = function () {
 	                    var manyToOneOptions = {
@@ -9710,8 +9710,8 @@
 	        };
 	    }
 	    SWCriteriaManyToOne.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
-	            return new SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService);
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
+	            return new SWCriteriaManyToOne($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -9720,7 +9720,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'rbkeyService'
 	        ];
 	        return directive;
@@ -9813,10 +9813,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaNumber = (function () {
-	    function SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	    function SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criterianumber.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criterianumber.html',
 	            link: function (scope, element, attrs) {
 	                var getNumberOptions = function (type) {
 	                    if (angular.isUndefined(type)) {
@@ -9952,8 +9952,8 @@
 	        };
 	    }
 	    SWCriteriaNumber.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
-	            return new SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
+	            return new SWCriteriaNumber($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -9962,7 +9962,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -9978,10 +9978,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaOneToMany = (function () {
-	    function SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
+	    function SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriaonetomany.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriaonetomany.html',
 	            link: function (scope, element, attrs) {
 	                scope.data = {};
 	                scope.collectionOptionsOpen = false;
@@ -10088,8 +10088,8 @@
 	        };
 	    }
 	    SWCriteriaOneToMany.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService) {
-	            return new SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, pathBuilderConfig, rbkeyService);
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService) {
+	            return new SWCriteriaOneToMany($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService, hibachiPathBuilder, rbkeyService);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -10100,7 +10100,7 @@
 	            'metadataService',
 	            'dialogService',
 	            'observerService',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'rbkeyService'
 	        ];
 	        return directive;
@@ -10117,10 +10117,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWCriteriaString = (function () {
-	    function SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
+	    function SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + 'criteriastring.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + 'criteriastring.html',
 	            link: function (scope, element, attrs) {
 	                var getStringOptions = function (type) {
 	                    if (angular.isUndefined(type)) {
@@ -10273,8 +10273,8 @@
 	        };
 	    }
 	    SWCriteriaString.Factory = function () {
-	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig) {
-	            return new SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder) {
+	            return new SWCriteriaString($log, $hibachi, $filter, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -10283,7 +10283,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -10299,7 +10299,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWEditFilterItem = (function () {
-	    function SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
+	    function SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            require: '^swFilterGroups',
 	            restrict: 'E',
@@ -10312,7 +10312,7 @@
 	                filterItemIndex: "=",
 	                comparisonType: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "editfilteritem.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "editfilteritem.html",
 	            link: function (scope, element, attrs, filterGroupsController) {
 	                function daysBetween(first, second) {
 	                    // Copy date parts of the timestamps, discarding the time parts.
@@ -10580,8 +10580,8 @@
 	        };
 	    }
 	    SWEditFilterItem.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService) {
-	            return new SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, pathBuilderConfig, rbkeyService);
+	        var directive = function ($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
+	            return new SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -10594,7 +10594,7 @@
 	            'collectionPartialsPath',
 	            'collectionService',
 	            'metadataService',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'rbkeyService'
 	        ];
 	        return directive;
@@ -10611,7 +10611,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterGroups = (function () {
-	    function SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig) {
+	    function SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'EA',
 	            scope: {
@@ -10622,7 +10622,7 @@
 	                filterGroup: "=",
 	                comparisonType: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
 	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
 	                    //if the filter group comparisontype is not specified, then assume we are doing filters
 	                    if (!angular.isDefined($scope.comparisonType)) {
@@ -10685,8 +10685,8 @@
 	        };
 	    }
 	    SWFilterGroups.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig) {
-	            return new SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, pathBuilderConfig);
+	        var directive = function ($http, $compile, $templateCache, $log, collectionPartialsPath, hibachiPathBuilder) {
+	            return new SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -10694,7 +10694,7 @@
 	            '$templateCache',
 	            '$log',
 	            'collectionPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -10710,7 +10710,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterItem = (function () {
-	    function SWFilterItem($log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	    function SWFilterItem($log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            require: '^swFilterGroups',
@@ -10723,7 +10723,7 @@
 	                saveCollection: "&",
 	                comparisonType: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filteritem.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filteritem.html",
 	            link: function (scope, element, attrs, filterGroupsController) {
 	                scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
 	                if (angular.isUndefined(scope.filterItem.$$isClosed)) {
@@ -10753,14 +10753,14 @@
 	        };
 	    }
 	    SWFilterItem.Factory = function () {
-	        var directive = function ($log, collectionService, collectionPartialsPath, pathBuilderConfig) {
-	            return new SWFilterItem($log, collectionService, collectionPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
+	            return new SWFilterItem($log, collectionService, collectionPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'collectionService',
 	            'collectionPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -10776,7 +10776,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterGroupItem = (function () {
-	    function SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, pathBuilderConfig) {
+	    function SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            require: "^swFilterGroups",
@@ -10790,7 +10790,7 @@
 	                comparisonType: "="
 	            },
 	            link: function (scope, element, attrs, filterGroupsController) {
-	                var Partial = pathBuilderConfig.buildPartialsPath(collectionPartialsPath) + "filtergroupitem.html";
+	                var Partial = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filtergroupitem.html";
 	                var templateLoader = $http.get(Partial, { cache: $templateCache });
 	                var promise = templateLoader.success(function (html) {
 	                    element.html(html);
@@ -10822,8 +10822,8 @@
 	        };
 	    }
 	    SWFilterGroupItem.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, pathBuilderConfig) {
-	            return new SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, pathBuilderConfig);
+	        var directive = function ($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder) {
+	            return new SWFilterGroupItem($http, $compile, $templateCache, $log, collectionService, collectionPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -10832,7 +10832,7 @@
 	            '$log',
 	            'collectionService',
 	            'collectionPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -10864,15 +10864,15 @@
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
-	    function DialogService(pathBuilderConfig) {
+	    function DialogService(hibachiPathBuilder) {
 	        var _this = this;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.get = function () {
 	            return _this._pageDialogs || [];
 	        };
 	        this.addPageDialog = function (name, params) {
 	            var newDialog = {
-	                'path': _this.pathBuilderConfig.buildPartialsPath(name + '.html'),
+	                'path': _this.hibachiPathBuilder.buildPartialsPath(name + '.html'),
 	                'params': params
 	            };
 	            _this._pageDialogs.push(newDialog);
@@ -10890,10 +10890,10 @@
 	            return _this._pageDialogs[_this._pageDialogs.length - 1];
 	        };
 	        this._pageDialogs = [];
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	    }
 	    DialogService.$inject = [
-	        'pathBuilderConfig'
+	        'hibachiPathBuilder'
 	    ];
 	    return DialogService;
 	})();
@@ -11141,7 +11141,7 @@
 	exports.SWPaginationBarController = SWPaginationBarController;
 	var SWPaginationBar = (function () {
 	    //@ngInject
-	    function SWPaginationBar(pathBuilderConfig, partialsPath) {
+	    function SWPaginationBar(hibachiPathBuilder, partialsPath) {
 	        this.restrict = 'E';
 	        this.scope = {};
 	        this.bindToController = {
@@ -11151,11 +11151,11 @@
 	        this.controllerAs = "swPaginationBar";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(partialsPath) + 'paginationbar.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(partialsPath) + 'paginationbar.html';
 	    }
 	    SWPaginationBar.Factory = function () {
-	        var directive = function (pathBuilderConfig, partialsPath) { return new SWPaginationBar(pathBuilderConfig, partialsPath); };
-	        directive.$inject = ['pathBuilderConfig', 'partialsPath'];
+	        var directive = function (hibachiPathBuilder, partialsPath) { return new SWPaginationBar(hibachiPathBuilder, partialsPath); };
+	        directive.$inject = ['hibachiPathBuilder', 'partialsPath'];
 	        return directive;
 	    };
 	    return SWPaginationBar;
@@ -11430,7 +11430,7 @@
 	    * This class handles configuring formFields for use in process forms on the front end.
 	    */
 	var SWFFormField = (function () {
-	    function SWFFormField(coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFFormField(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = "E";
 	        this.require = "^swfPropertyDisplay";
 	        this.controller = SWFFormFieldController;
@@ -11441,18 +11441,18 @@
 	        };
 	        this.link = function (scope, element, attrs, formController, transcludeFn) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfformfield.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'swfformfield.html';
 	    }
 	    /**
 	        * Handles injecting the partials path into this class
 	        */
 	    SWFFormField.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFFormField(coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFFormField(coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -11710,9 +11710,9 @@
 	})();
 	var SWForm = (function () {
 	    // @ngInject
-	    function SWForm(coreFormPartialsPath, pathBuilderConfig) {
+	    function SWForm(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.coreFormPartialsPath = coreFormPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.templateUrl = "";
 	        this.transclude = true;
 	        this.restrict = "E";
@@ -11745,16 +11745,16 @@
 	        this.link = function (scope, element, attrs, controller) {
 	            scope.context = scope.context || 'save';
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "formPartial.html";
 	    }
 	    /**
 	     * Handles injecting the partials path into this class
 	     */
 	    SWForm.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWForm(coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWForm(coreFormPartialsPath, hibachiPathBuilder);
 	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWForm;
@@ -11769,14 +11769,14 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFormField = (function () {
-	    function SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
 	            require: "^form",
 	            restrict: 'AE',
 	            scope: {
 	                propertyDisplay: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'formfield.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'formfield.html',
 	            link: function (scope, element, attrs, formController) {
 	                if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
 	                    scope.propertyDisplay.isDirty = true;
@@ -11789,8 +11789,8 @@
 	        };
 	    }
 	    SWFormField.Factory = function () {
-	        var directive = function ($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormField($log, $templateCache, $window, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -11799,7 +11799,7 @@
 	            '$hibachi',
 	            'formService',
 	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -11823,7 +11823,7 @@
 	    return SWFormFieldJsonController;
 	})();
 	var SWFormFieldJson = (function () {
-	    function SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormFieldJson(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = 'E';
 	        this.require = "^form";
 	        this.scope = true;
@@ -11834,15 +11834,15 @@
 	        this.controllerAs = "ctrl";
 	        this.templateUrl = "";
 	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "json.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "json.html";
 	    }
 	    SWFormFieldJson.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldJson(coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormFieldJson(coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -11866,7 +11866,7 @@
 	    return SWFormFieldNumberController;
 	})();
 	var SWFormFieldNumber = (function () {
-	    function SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormFieldNumber(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = 'E';
 	        this.require = "^form";
 	        this.scope = true;
@@ -11877,13 +11877,13 @@
 	        this.controller = SWFormFieldNumberController;
 	        this.controllerAs = "ctrl";
 	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "number.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "number.html";
 	    }
 	    SWFormFieldNumber.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldNumber(coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormFieldNumber(coreFormPartialsPath, hibachiPathBuilder);
 	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWFormFieldNumber;
@@ -11906,7 +11906,7 @@
 	})();
 	var SWFormFieldPassword = (function () {
 	    //@ngInject
-	    function SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormFieldPassword(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = 'E';
 	        this.require = "^form";
 	        this.scope = true;
@@ -11916,13 +11916,13 @@
 	        this.controller = swFormFieldPasswordController;
 	        this.controllerAs = "ctrl";
 	        this.link = function (scope, element, attrs, formController) { };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "password.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "password.html";
 	    }
 	    SWFormFieldPassword.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldPassword(coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormFieldPassword(coreFormPartialsPath, hibachiPathBuilder);
 	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWFormFieldPassword;
@@ -11938,9 +11938,9 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFormFieldRadio = (function () {
 	    //@ngInject
-	    function SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormFieldRadio($log, $timeout, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'radio.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'radio.html',
 	            require: "^form",
 	            restrict: 'E',
 	            scope: {
@@ -11994,11 +11994,11 @@
 	        };
 	    }
 	    SWFormFieldRadio.Factory = function () {
-	        var directive = function ($log, $timeout, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldRadio($log, $timeout, coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $timeout, coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormFieldRadio($log, $timeout, coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
-	            '$log', '$timeout', 'coreFormPartialsPath', 'pathBuilderConfig'
+	            '$log', '$timeout', 'coreFormPartialsPath', 'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -12014,9 +12014,9 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFormFieldSearchSelect = (function () {
-	    function SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'search-select.html',
 	            require: "^form",
 	            restrict: 'E',
 	            scope: {
@@ -12110,8 +12110,8 @@
 	        };
 	    }
 	    SWFormFieldSearchSelect.Factory = function () {
-	        var directive = function ($http, $log, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function ($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormFieldSearchSelect($http, $log, $hibachi, formService, coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -12119,7 +12119,7 @@
 	            '$hibachi',
 	            'formService',
 	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -12136,9 +12136,9 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFormFieldSelect = (function () {
 	    //@ngInject
-	    function SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
+	    function SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, hibachiPathBuilder) {
 	        return {
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'select.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'select.html',
 	            require: "^form",
 	            restrict: 'E',
 	            scope: {
@@ -12244,8 +12244,8 @@
 	        }; //<--end return
 	    }
 	    SWFormFieldSelect.Factory = function () {
-	        var directive = function ($log, $hibachi, formService, coreFormPartialsPath, utilityService, pathBuilderConfig) {
-	            return new SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, formService, coreFormPartialsPath, utilityService, hibachiPathBuilder) {
+	            return new SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -12253,7 +12253,7 @@
 	            'formService',
 	            'coreFormPartialsPath',
 	            'utilityService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -12280,7 +12280,7 @@
 	    return SWFormFieldTextController;
 	})();
 	var SWFormFieldText = (function () {
-	    function SWFormFieldText(coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormFieldText(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = 'E';
 	        this.require = "^form";
 	        this.controller = SWFormFieldTextController;
@@ -12292,15 +12292,15 @@
 	        //@ngInject
 	        this.link = function (scope, element, attr, formController) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "text.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "text.html";
 	    }
 	    SWFormFieldText.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormFieldText(coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormFieldText(coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -12319,7 +12319,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFormRegistrar = (function () {
 	    //@ngInject
-	    function SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            require: "^form",
@@ -12360,13 +12360,13 @@
 	        };
 	    }
 	    SWFormRegistrar.Factory = function () {
-	        var directive = function (formService, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFormRegistrar(formService, coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (formService, coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormRegistrar(formService, coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'formService',
 	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -12501,7 +12501,7 @@
 	    */
 	var SWFPropertyDisplay = (function () {
 	    //@ngInject
-	    function SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig) {
+	    function SWFPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = "E";
 	        this.require = "?^swForm";
 	        this.transclude = true;
@@ -12531,13 +12531,13 @@
 	        this.link = function (scope, element, attrs, formController, transcludeFn) {
 	            scope.frmController = formController;
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
 	    }
 	    SWFPropertyDisplay.Factory = function () {
-	        var directive = function (coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWFPropertyDisplay(coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder);
 	        };
-	        directive.$inject = ['coreFormPartialsPath', 'pathBuilderConfig'];
+	        directive.$inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
 	    return SWFPropertyDisplay;
@@ -12552,7 +12552,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWPropertyDisplay = (function () {
-	    function SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
+	    function SWPropertyDisplay($log, $filter, coreFormPartialsPath, hibachiPathBuilder) {
 	        return {
 	            require: '^form',
 	            restrict: 'AE',
@@ -12572,7 +12572,7 @@
 	                fieldType: "@",
 	                noValidate: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "propertydisplay.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "propertydisplay.html",
 	            link: function (scope, element, attrs, formController) {
 	                //if the item is new, then all fields at the object level are dirty
 	                $log.debug('editingproper');
@@ -12631,14 +12631,14 @@
 	        };
 	    }
 	    SWPropertyDisplay.Factory = function () {
-	        var directive = function ($log, $filter, coreFormPartialsPath, pathBuilderConfig) {
-	            return new SWPropertyDisplay($log, $filter, coreFormPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $filter, coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWPropertyDisplay($log, $filter, coreFormPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$filter',
 	            'coreFormPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -13722,7 +13722,7 @@
 	exports.SWSaveAndFinishController = SWSaveAndFinishController;
 	var SWSaveAndFinish = (function () {
 	    //@ngInject
-	    function SWSaveAndFinish(hibachiPartialsPath, pathBuilderConfig) {
+	    function SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder) {
 	        this.hibachiPartialsPath = hibachiPartialsPath;
 	        this.restrict = "EA";
 	        this.scope = {};
@@ -13736,13 +13736,13 @@
 	            finish: "@?",
 	            partial: "@?"
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
 	    }
 	    SWSaveAndFinish.Factory = function () {
-	        var directive = function (hibachiPartialsPath, pathBuilderConfig) {
-	            return new SWSaveAndFinish(hibachiPartialsPath, pathBuilderConfig);
+	        var directive = function (hibachiPartialsPath, hibachiPathBuilder) {
+	            return new SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder);
 	        };
-	        directive.$inject = ["hibachiPartialsPath", "pathBuilderConfig"];
+	        directive.$inject = ["hibachiPartialsPath", "hibachiPathBuilder"];
 	        return directive;
 	    };
 	    return SWSaveAndFinish;
@@ -13849,25 +13849,25 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWAdminCreateSuperUser = (function () {
-	    function SWAdminCreateSuperUser($log, $hibachi, workflowPartialsPath, pathBuilderConfig) {
+	    function SWAdminCreateSuperUser($log, $hibachi, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {},
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "admincreatesuperuser.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "admincreatesuperuser.html",
 	            link: function (scope, element, attrs) {
 	                scope.Account_SetupInitialAdmin = $hibachi.newAccount_SetupInitialAdmin();
 	            }
 	        };
 	    }
 	    SWAdminCreateSuperUser.Factory = function () {
-	        var directive = function ($log, $hibachi, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWAdminCreateSuperUser($log, $hibachi, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWAdminCreateSuperUser($log, $hibachi, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -13883,13 +13883,13 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowBasic = (function () {
-	    function SWWorkflowBasic($log, $location, $hibachi, formService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowBasic($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            scope: {
 	                workflow: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath)
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)
 	                + "workflowbasic.html",
 	            link: function (scope, element, attrs) {
 	                console.log('workflowtest');
@@ -13898,8 +13898,8 @@
 	        };
 	    }
 	    SWWorkflowBasic.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowBasic($log, $location, $hibachi, formService, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowBasic($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -13907,7 +13907,7 @@
 	            '$hibachi',
 	            'formService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -13923,7 +13923,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowCondition = (function () {
-	    function SWWorkflowCondition($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowCondition($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -13932,7 +13932,7 @@
 	                workflow: "=",
 	                filterPropertiesList: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowcondition.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowcondition.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('workflowCondition init');
 	                $log.debug(scope);
@@ -14019,8 +14019,8 @@
 	        };
 	    }
 	    SWWorkflowCondition.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowCondition($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowCondition($log, $location, $hibachi, formService, metadataService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -14029,7 +14029,7 @@
 	            'formService',
 	            'metadataService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14045,22 +14045,22 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowConditionGroupItem = (function () {
-	    function SWWorkflowConditionGroupItem($log, $location, $hibachi, formService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowConditionGroupItem($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroupitem.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroupitem.html",
 	            link: function (scope, element, attrs) {
 	            }
 	        };
 	    }
 	    SWWorkflowConditionGroupItem.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, pathBuilderConfig) {
+	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder) {
 	            return new ($log,
 	                $location,
 	                $hibachi,
 	                formService,
 	                workflowPartialsPath,
-	                pathBuilderConfig);
+	                hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -14068,7 +14068,7 @@
 	            '$hibachi',
 	            'formService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14084,7 +14084,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowConditionGroups = (function () {
-	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -14093,7 +14093,7 @@
 	                workflow: "=",
 	                filterPropertiesList: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroups.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowconditiongroups.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('workflowconditiongroups init');
 	                scope.addWorkflowCondition = function () {
@@ -14110,14 +14110,14 @@
 	        };
 	    }
 	    SWWorkflowConditionGroups.Factory = function () {
-	        var directive = function ($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowConditionGroups($log, workflowConditionService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'workflowConditionService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14133,14 +14133,14 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTask = (function () {
-	    function SWWorkflowTask($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowTask($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {
 	                workflowTask: "=",
 	                workflowTasks: "=",
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtask.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtask.html",
 	            link: function (scope, element, attrs) {
 	                scope.removeWorkflowTask = function (workflowTask) {
 	                    var deletePromise = workflowTask.$$delete();
@@ -14158,8 +14158,8 @@
 	        };
 	    }
 	    SWWorkflowTask.Factory = function () {
-	        var directive = function ($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTask($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowTask($log, $location, $timeout, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -14169,7 +14169,7 @@
 	            'metadataService',
 	            'collectionService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14185,13 +14185,13 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTaskActions = (function () {
-	    function SWWorkflowTaskActions($log, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowTaskActions($log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'AE',
 	            scope: {
 	                workflowTask: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('Workflow Task Actions Init');
 	                $log.debug(scope.workflowTask);
@@ -14342,8 +14342,8 @@
 	        };
 	    }
 	    SWWorkflowTaskActions.Factory = function () {
-	        var directive = function ($log, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTaskActions($log, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowTaskActions($log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -14351,7 +14351,7 @@
 	            'metadataService',
 	            'collectionService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14370,15 +14370,15 @@
 	 * Handles adding, editing, and deleting Workflows Tasks.
 	 */
 	var SWWorkflowTasks = (function () {
-	    function SWWorkflowTasks($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowTasks($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            scope: {
 	                workflow: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtasks.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtasks.html",
 	            link: function (scope, element, attrs) {
-	                scope.workflowPartialsPath = pathBuilderConfig.buildPartialsPath(workflowPartialsPath);
+	                scope.workflowPartialsPath = hibachiPathBuilder.buildPartialsPath(workflowPartialsPath);
 	                scope.propertiesList = {};
 	                function logger(context, message) {
 	                    $log.debug("SwWorkflowTasks :" + context + " : " + message);
@@ -14533,8 +14533,8 @@
 	        };
 	    }
 	    SWWorkflowTasks.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTasks($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowTasks($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -14543,7 +14543,7 @@
 	            'metadataService',
 	            'collectionService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14559,7 +14559,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTrigger = (function () {
-	    function SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, pathBuilderConfig) {
+	    function SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            replace: true,
@@ -14567,7 +14567,7 @@
 	                workflowTrigger: "=",
 	                workflowTriggers: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
 	            link: function (scope, element, attrs) {
 	                $log.debug('workflow trigger init');
 	                /**
@@ -14625,15 +14625,15 @@
 	        };
 	    }
 	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, pathBuilderConfig) {
-	            return new SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
 	            'metadataService',
 	            'workflowPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14649,13 +14649,13 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTriggers = (function () {
-	    function SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, pathBuilderConfig) {
+	    function SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {
 	                workflow: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
 	            link: function (scope, element, attrs, formController) {
 	                $log.debug('Workflow triggers init');
 	                scope.$id = 'swWorkflowTriggers';
@@ -14815,8 +14815,8 @@
 	        };
 	    }
 	    SWWorkflowTriggers.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, workflowPartialsPath, formService, pathBuilderConfig) {
-	            return new SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, pathBuilderConfig);
+	        var directive = function ($log, $location, $hibachi, workflowPartialsPath, formService, hibachiPathBuilder) {
+	            return new SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -14824,7 +14824,7 @@
 	            '$hibachi',
 	            'workflowPartialsPath',
 	            'formService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14952,24 +14952,24 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDetailTabs = (function () {
-	    function SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
+	    function SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + 'detailtabs.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath) + 'detailtabs.html',
 	            link: function (scope, element, attr) {
 	            }
 	        };
 	    }
 	    SWDetailTabs.Factory = function () {
-	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
-	            return new SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig);
+	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
+	            return new SWDetailTabs($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$location',
 	            '$log',
 	            '$hibachi',
 	            'coreEntityPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -14985,10 +14985,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWDetail = (function () {
-	    function SWDetail($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
+	    function SWDetail($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/detail.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath) + '/detail.html',
 	            link: function (scope, element, attr) {
 	                scope.$id = "slatwallDetailController";
 	                $log.debug('slatwallDetailController');
@@ -15007,7 +15007,7 @@
 	                    });
 	                };
 	                var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
-	                scope.tabPartialPath = pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath);
+	                scope.tabPartialPath = hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath);
 	                scope.getEntity = function () {
 	                    if (scope.entityID === 'null') {
 	                        scope.entity = $hibachi['new' + propertyCasedEntityName]();
@@ -15033,15 +15033,15 @@
 	        };
 	    }
 	    SWDetail.Factory = function () {
-	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
-	            return new SWDetail($location, $log, $hibachi, coreEntityPartialsPath, pathBuilderConfig);
+	        var directive = function ($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
+	            return new SWDetail($location, $log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$location',
 	            '$log',
 	            '$hibachi',
 	            'coreEntityPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -15057,10 +15057,10 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWList = (function () {
-	    function SWList($log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
+	    function SWList($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath) + '/list.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath) + '/list.html',
 	            link: function (scope, element, attr) {
 	                $log.debug('slatwallList init');
 	                scope.getCollection = function () {
@@ -15080,14 +15080,14 @@
 	        };
 	    }
 	    SWList.Factory = function () {
-	        var directive = function ($log, $hibachi, coreEntityPartialsPath, pathBuilderConfig) {
-	            return new SWList($log, $hibachi, coreEntityPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder) {
+	            return new SWList($log, $hibachi, coreEntityPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
 	            'coreEntityPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -15267,10 +15267,10 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWContentBasic = (function () {
-	    function SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, pathBuilderConfig) {
+	    function SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'EA',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contentbasic.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(contentPartialsPath) + "contentbasic.html",
 	            link: function (scope, element, attrs) {
 	                if (!scope.content.$$isPersisted()) {
 	                    if (angular.isDefined($routeParams.siteID)) {
@@ -15318,8 +15318,8 @@
 	        };
 	    }
 	    SWContentBasic.Factory = function () {
-	        var directive = function ($log, $routeParams, $hibachi, formService, contentPartialsPath, pathBuilderConfig) {
-	            return new SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $routeParams, $hibachi, formService, contentPartialsPath, hibachiPathBuilder) {
+	            return new SWContentBasic($log, $routeParams, $hibachi, formService, contentPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -15327,7 +15327,7 @@
 	            '$hibachi',
 	            'formService',
 	            'contentPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -15343,13 +15343,13 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWContentEditor = (function () {
-	    function SWContentEditor($log, $location, $http, $hibachi, formService, contentPartialsPath, pathBuilderConfig) {
+	    function SWContentEditor($log, $location, $http, $hibachi, formService, contentPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'EA',
 	            scope: {
 	                content: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + "contenteditor.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(contentPartialsPath) + "contenteditor.html",
 	            link: function (scope, element, attrs) {
 	                scope.editorOptions = CKEDITOR.editorConfig;
 	                scope.onContentChange = function () {
@@ -15377,8 +15377,8 @@
 	        };
 	    }
 	    SWContentEditor.Factory = function () {
-	        var directive = function ($log, $location, $http, $hibachi, formService, contentPartialsPath, pathBuilderConfig) {
-	            return new SWContentEditor($log, $location, $http, $hibachi, formService, contentPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $location, $http, $hibachi, formService, contentPartialsPath, hibachiPathBuilder) {
+	            return new SWContentEditor($log, $location, $http, $hibachi, formService, contentPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -15387,7 +15387,7 @@
 	            '$hibachi',
 	            'formService',
 	            'contentPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -15599,7 +15599,7 @@
 	})();
 	var SWContentList = (function () {
 	    //@ngInject
-	    function SWContentList(contentPartialsPath, observerService, pathBuilderConfig) {
+	    function SWContentList(contentPartialsPath, observerService, hibachiPathBuilder) {
 	        this.restrict = 'E';
 	        //public bindToController=true;
 	        this.controller = SWContentListController;
@@ -15611,16 +15611,16 @@
 	            });
 	        };
 	        this.observerService = observerService;
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentlist.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(contentPartialsPath) + 'contentlist.html';
 	    }
 	    SWContentList.Factory = function () {
-	        var directive = function (contentPartialsPath, observerService, pathBuilderConfig) {
-	            return new SWContentList(contentPartialsPath, observerService, pathBuilderConfig);
+	        var directive = function (contentPartialsPath, observerService, hibachiPathBuilder) {
+	            return new SWContentList(contentPartialsPath, observerService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'contentPartialsPath',
 	            'observerService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -15636,14 +15636,14 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWContentNode = (function () {
-	    function SWContentNode($log, $compile, $hibachi, contentPartialsPath, pathBuilderConfig) {
+	    function SWContentNode($log, $compile, $hibachi, contentPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            scope: {
 	                contentData: '=',
 	                loadChildren: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(contentPartialsPath) + 'contentnode.html',
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(contentPartialsPath) + 'contentnode.html',
 	            link: function (scope, element, attr) {
 	                if (angular.isUndefined(scope.depth)) {
 	                    scope.depth = 0;
@@ -15754,15 +15754,15 @@
 	        };
 	    }
 	    SWContentNode.Factory = function () {
-	        var directive = function ($log, $compile, $hibachi, contentPartialsPath, pathBuilderConfig) {
-	            return new SWContentNode($log, $compile, $hibachi, contentPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $compile, $hibachi, contentPartialsPath, hibachiPathBuilder) {
+	            return new SWContentNode($log, $compile, $hibachi, contentPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$compile',
 	            '$hibachi',
 	            'contentPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -15986,10 +15986,10 @@
 	})();
 	exports.SWAddOrderItemRecipientController = SWAddOrderItemRecipientController;
 	var SWAddOrderItemGiftRecipient = (function () {
-	    function SWAddOrderItemGiftRecipient($hibachi, giftCardPartialsPath, pathBuilderConfig) {
+	    function SWAddOrderItemGiftRecipient($hibachi, giftCardPartialsPath, hibachiPathBuilder) {
 	        this.$hibachi = $hibachi;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.require = "^form";
 	        this.restrict = "EA";
 	        this.transclude = true;
@@ -16009,16 +16009,16 @@
 	        this.controllerAs = "addGiftRecipientControl";
 	        this.link = function ($scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/addorderitemgiftrecipient.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/addorderitemgiftrecipient.html";
 	    }
 	    SWAddOrderItemGiftRecipient.Factory = function () {
-	        var directive = function ($hibachi, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWAddOrderItemGiftRecipient($hibachi, giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function ($hibachi, giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWAddOrderItemGiftRecipient($hibachi, giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$hibachi',
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16071,10 +16071,10 @@
 	})();
 	exports.SWGiftCardBalanceController = SWGiftCardBalanceController;
 	var SWGiftCardBalance = (function () {
-	    function SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	    function SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.scope = {};
 	        this.bindToController = {
 	            giftCard: "=?",
@@ -16087,17 +16087,17 @@
 	        this.controllerAs = "swGiftCardBalance";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/balance.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/balance.html";
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardBalance.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function (collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWGiftCardBalance(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16132,10 +16132,10 @@
 	})();
 	exports.SWGiftCardDetailController = SWGiftCardDetailController;
 	var SWGiftCardDetail = (function () {
-	    function SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	    function SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.scope = {};
 	        this.bindToController = {
 	            giftCardId: "@",
@@ -16145,17 +16145,17 @@
 	        this.controllerAs = "swGiftCardDetail";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/basic.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/basic.html";
 	        this.restrict = "E";
 	    }
 	    SWGiftCardDetail.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function (collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWGiftCardDetail(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16259,10 +16259,10 @@
 	})();
 	exports.SWGiftCardHistoryController = SWGiftCardHistoryController;
 	var SWGiftCardHistory = (function () {
-	    function SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	    function SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.scope = {};
 	        this.bindToController = {
 	            giftCard: "=?",
@@ -16274,17 +16274,17 @@
 	        this.controllerAs = "swGiftCardHistory";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/history.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/history.html";
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardHistory.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function (collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWGiftCardHistory(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16306,25 +16306,25 @@
 	})();
 	exports.SWGiftCardOverviewController = SWGiftCardOverviewController;
 	var SWGiftCardOverview = (function () {
-	    function SWGiftCardOverview(giftCardPartialsPath, pathBuilderConfig) {
+	    function SWGiftCardOverview(giftCardPartialsPath, hibachiPathBuilder) {
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.scope = {};
 	        this.bindToController = {
 	            giftCard: "=?"
 	        };
 	        this.controller = SWGiftCardOverviewController;
 	        this.controllerAs = "swGiftCardOverview";
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/overview.html";
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardOverview.Factory = function () {
-	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardOverview(giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function (giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWGiftCardOverview(giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16359,10 +16359,10 @@
 	})();
 	exports.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
 	var SWGiftCardOrderInfo = (function () {
-	    function SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
+	    function SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
 	        this.collectionConfigService = collectionConfigService;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.scope = {};
 	        this.bindToController = {
 	            giftCard: "=?",
@@ -16372,17 +16372,17 @@
 	        this.controllerAs = "swGiftCardOrderInfo";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/orderinfo.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/orderinfo.html";
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardOrderInfo.Factory = function () {
-	        var directive = function (collectionConfigService, giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function (collectionConfigService, giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWGiftCardOrderInfo(collectionConfigService, giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'collectionConfigService',
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16405,25 +16405,25 @@
 	})();
 	exports.SWGiftCardRecipientInfoController = SWGiftCardRecipientInfoController;
 	var SWGiftCardRecipientInfo = (function () {
-	    function SWGiftCardRecipientInfo(giftCardPartialsPath, pathBuilderConfig) {
+	    function SWGiftCardRecipientInfo(giftCardPartialsPath, hibachiPathBuilder) {
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.scope = {};
 	        this.bindToController = {
 	            giftCard: "=?"
 	        };
 	        this.controller = SWGiftCardRecipientInfoController;
 	        this.controllerAs = "swGiftCardRecipientInfo";
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(giftCardPartialsPath) + "/recipientinfo.html";
 	        this.restrict = "EA";
 	    }
 	    SWGiftCardRecipientInfo.Factory = function () {
-	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWGiftCardRecipientInfo(giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function (giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWGiftCardRecipientInfo(giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16496,10 +16496,10 @@
 	})();
 	exports.SWOrderItemGiftRecipientRowController = SWOrderItemGiftRecipientRowController;
 	var SWOrderItemGiftRecipientRow = (function () {
-	    function SWOrderItemGiftRecipientRow(giftCardPartialsPath, pathBuilderConfig) {
+	    function SWOrderItemGiftRecipientRow(giftCardPartialsPath, hibachiPathBuilder) {
 	        var _this = this;
 	        this.giftCardPartialsPath = giftCardPartialsPath;
-	        this.pathBuilderConfig = pathBuilderConfig;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
 	        this.restrict = 'AE';
 	        this.scope = {
 	            recipient: "=",
@@ -16520,17 +16520,17 @@
 	        this.controller = SWOrderItemGiftRecipientRowController;
 	        this.controllerAs = "giftRecipientRowControl";
 	        this.init = function () {
-	            _this.templateUrl = _this.pathBuilderConfig.buildPartialsPath(_this.giftCardPartialsPath) + "/orderitemgiftrecipientrow.html";
+	            _this.templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.giftCardPartialsPath) + "/orderitemgiftrecipientrow.html";
 	        };
 	        this.init();
 	    }
 	    SWOrderItemGiftRecipientRow.Factory = function () {
-	        var directive = function (giftCardPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItemGiftRecipientRow(giftCardPartialsPath, pathBuilderConfig);
+	        var directive = function (giftCardPartialsPath, hibachiPathBuilder) {
+	            return new SWOrderItemGiftRecipientRow(giftCardPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            'giftCardPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16692,7 +16692,7 @@
 	exports.SWAddOptionGroupController = SWAddOptionGroupController;
 	var SWAddOptionGroup = (function () {
 	    // @ngInject
-	    function SWAddOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
+	    function SWAddOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, hibachiPathBuilder) {
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
@@ -16708,11 +16708,11 @@
 	        this.controllerAs = "swAddOptionGroup";
 	        this.link = function ($scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "addoptiongroup.html";
 	    }
 	    SWAddOptionGroup.Factory = function () {
-	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
-	            return new SWAddOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig);
+	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, hibachiPathBuilder) {
+	            return new SWAddOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$hibachi',
@@ -16720,7 +16720,7 @@
 	            'collectionConfigService',
 	            'observerService',
 	            'optionGroupPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16763,7 +16763,7 @@
 	exports.SWOptionsForOptionGroupController = SWOptionsForOptionGroupController;
 	var SWOptionsForOptionGroup = (function () {
 	    // @ngInject
-	    function SWOptionsForOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
+	    function SWOptionsForOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, hibachiPathBuilder) {
 	        this.$hibachi = $hibachi;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
@@ -16779,11 +16779,11 @@
 	        this.controllerAs = "swOptionsForOptionGroup";
 	        this.link = function ($scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(optionGroupPartialsPath) + "optionsforoptiongroup.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(optionGroupPartialsPath) + "optionsforoptiongroup.html";
 	    }
 	    SWOptionsForOptionGroup.Factory = function () {
-	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig) {
-	            return new SWOptionsForOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, pathBuilderConfig);
+	        var directive = function ($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, hibachiPathBuilder) {
+	            return new SWOptionsForOptionGroup($hibachi, $timeout, collectionConfigService, observerService, optionGroupPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$hibachi',
@@ -16791,7 +16791,7 @@
 	            'collectionConfigService',
 	            'observerService',
 	            'optionGroupPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -16834,7 +16834,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWChildOrderItem = (function () {
-	    function SWChildOrderItem($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
+	    function SWChildOrderItem($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: "A",
 	            scope: {
@@ -16843,7 +16843,7 @@
 	                childOrderItems: "=",
 	                attributes: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "childorderitem.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(orderItemPartialsPath) + "childorderitem.html",
 	            link: function (scope, element, attr) {
 	                var columnsConfig = [
 	                    {
@@ -17098,8 +17098,8 @@
 	        };
 	    }
 	    SWChildOrderItem.Factory = function () {
-	        var directive = function ($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWChildOrderItem($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
+	            return new SWChildOrderItem($log, $http, $compile, $templateCache, $hibachi, orderItemPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -17108,7 +17108,7 @@
 	            '$templateCache',
 	            '$hibachi',
 	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -17124,7 +17124,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItem = (function () {
-	    function SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
+	    function SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: "A",
 	            scope: {
@@ -17132,7 +17132,7 @@
 	                orderId: "@",
 	                attributes: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitem.html",
 	            link: function (scope, element, attr) {
 	                $log.debug('order item init');
 	                $log.debug(scope.orderItem);
@@ -17517,8 +17517,8 @@
 	        };
 	    }
 	    SWOrderItem.Factory = function () {
-	        var directive = function ($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
+	            return new SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -17527,7 +17527,7 @@
 	            '$templateCache',
 	            '$hibachi',
 	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -17548,13 +17548,13 @@
 	 * @class swOrderItemsShippingLabelStamp
 	 */
 	var SWOiShippingLabelStamp = (function () {
-	    function SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig) {
+	    function SWOiShippingLabelStamp($log, orderItemPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {
 	                orderFulfillment: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderfulfillment-shippinglabel.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderfulfillment-shippinglabel.html",
 	            link: function (scope, element, attrs) {
 	                //Get the template.
 	                $log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");
@@ -17564,13 +17564,13 @@
 	        };
 	    }
 	    SWOiShippingLabelStamp.Factory = function () {
-	        var directive = function ($log, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOiShippingLabelStamp($log, orderItemPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, orderItemPartialsPath, hibachiPathBuilder) {
+	            return new SWOiShippingLabelStamp($log, orderItemPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -17591,7 +17591,7 @@
 	 * @class swOrderItemsShippingLabelStamp
 	 */
 	var SWOrderItemDetailStamp = (function () {
-	    function SWOrderItemDetailStamp($log, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
+	    function SWOrderItemDetailStamp($log, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            scope: {
@@ -17600,7 +17600,7 @@
 	                skuId: "=",
 	                orderItem: "="
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem-detaillabel.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitem-detaillabel.html",
 	            link: function (scope, element, attrs) {
 	                scope.details = [];
 	                scope.orderItem.detailsName = [];
@@ -17664,14 +17664,14 @@
 	        };
 	    }
 	    SWOrderItemDetailStamp.Factory = function () {
-	        var directive = function ($log, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWOrderItemDetailStamp($log, $hibachi, orderItemPartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
+	            return new SWOrderItemDetailStamp($log, $hibachi, orderItemPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
 	            'orderItemPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -17687,13 +17687,13 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItems = (function () {
-	    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
+	    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, hibachiPathBuilder, paginationService) {
 	        return {
 	            restrict: 'E',
 	            scope: {
 	                orderId: "@"
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitems.html",
 	            link: function (scope, element, attrs) {
 	                var options = {};
 	                scope.keywords = "";
@@ -17809,8 +17809,8 @@
 	        };
 	    }
 	    SWOrderItems.Factory = function () {
-	        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, pathBuilderConfig, paginationService) {
-	            return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, pathBuilderConfig, paginationService);
+	        var directive = function ($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, hibachiPathBuilder, paginationService) {
+	            return new SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, hibachiPathBuilder, paginationService);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -17820,7 +17820,7 @@
 	            'collectionConfigService',
 	            'formService',
 	            'orderItemPartialsPath',
-	            'pathBuilderConfig',
+	            'hibachiPathBuilder',
 	            'paginationService'
 	        ];
 	        return directive;
@@ -17837,13 +17837,13 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWResizedImage = (function () {
-	    function SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
+	    function SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'E',
 	            scope: {
 	                orderItem: "=",
 	            },
-	            templateUrl: pathBuilderConfig.buildPartialsPath(orderItemPartialsPath) + "orderitem-image.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitem-image.html",
 	            link: function (scope, element, attrs) {
 	                var profileName = attrs.profilename;
 	                var skuID = scope.orderItem.data.sku.data.skuID;
@@ -17859,12 +17859,12 @@
 	        };
 	    }
 	    SWResizedImage.Factory = function () {
-	        var directive = function ($http, $log, $q, $hibachi, orderItemPartialsPath, pathBuilderConfig) {
-	            return new SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, pathBuilderConfig);
+	        var directive = function ($http, $log, $q, $hibachi, orderItemPartialsPath, hibachiPathBuilder) {
+	            return new SWResizedImage($http, $log, $q, $hibachi, orderItemPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http', '$log', '$q', '$hibachi', 'orderItemPartialsPath',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -18162,10 +18162,10 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWProductBundleGroupType = (function () {
-	    function SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
+	    function SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegrouptype.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegrouptype.html",
 	            scope: {
 	                productBundleGroup: "="
 	            },
@@ -18307,8 +18307,8 @@
 	        };
 	    }
 	    SWProductBundleGroupType.Factory = function () {
-	        var directive = function ($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
-	            return new SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, pathBuilderConfig);
+	        var directive = function ($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, hibachiPathBuilder) {
+	            return new SWProductBundleGroupType($http, $log, $hibachi, formService, collectionConfigService, productBundlePartialsPath, productBundleService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -18318,7 +18318,7 @@
 	            'collectionConfigService',
 	            'productBundlePartialsPath',
 	            'productBundleService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -18334,10 +18334,10 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWProductBundleGroups = (function () {
-	    function SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
+	    function SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, hibachiPathBuilder) {
 	        return {
 	            restrict: 'EA',
-	            templateUrl: pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html",
 	            scope: {
 	                sku: "=",
 	                productBundleGroups: "=",
@@ -18368,8 +18368,8 @@
 	        };
 	    }
 	    SWProductBundleGroups.Factory = function () {
-	        var directive = function ($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig) {
-	            return new SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, pathBuilderConfig);
+	        var directive = function ($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, hibachiPathBuilder) {
+	            return new SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$http',
@@ -18378,7 +18378,7 @@
 	            'metadataService',
 	            'productBundlePartialsPath',
 	            'productBundleService',
-	            'pathBuilderConfig'
+	            'hibachiPathBuilder'
 	        ];
 	        return directive;
 	    };
@@ -18693,7 +18693,7 @@
 	    return SWProductBundleGroupController;
 	})();
 	var SWProductBundleGroup = (function () {
-	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $hibachi, productBundlePartialsPath, pathBuilderConfig) {
+	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $hibachi, productBundlePartialsPath, hibachiPathBuilder) {
 	        this.$log = $log;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
@@ -18715,15 +18715,15 @@
 	        this.controllerAs = "swProductBundleGroup";
 	        this.link = function ($scope, element, attrs) {
 	        };
-	        this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	    }
 	    SWProductBundleGroup.Factory = function () {
-	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath, pathBuilderConfig) {
-	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath, pathBuilderConfig);
+	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath, hibachiPathBuilder) {
+	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath",
-	            "pathBuilderConfig"
+	            "hibachiPathBuilder"
 	        ];
 	        return directive;
 	    };

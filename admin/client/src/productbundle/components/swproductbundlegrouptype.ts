@@ -11,7 +11,7 @@ class SWProductBundleGroupType{
             collectionConfigService,
 			productBundlePartialsPath,
 			productBundleService,
-			pathBuilderConfig
+			slatwallPathBuilder
         )=> new SWProductBundleGroupType(
             $http,
 			$log,
@@ -20,7 +20,7 @@ class SWProductBundleGroupType{
             collectionConfigService,
 			productBundlePartialsPath,
 			productBundleService,
-			pathBuilderConfig
+			slatwallPathBuilder
         );
         directive.$inject = [
             '$http',
@@ -30,7 +30,7 @@ class SWProductBundleGroupType{
             'collectionConfigService',
 			'productBundlePartialsPath',
 			'productBundleService',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
         ];
         return directive;
     }
@@ -42,11 +42,11 @@ class SWProductBundleGroupType{
         collectionConfigService,
 		productBundlePartialsPath,
 		productBundleService,
-			pathBuilderConfig
+			slatwallPathBuilder
     ){
         return {
 			restrict: 'A',
-			templateUrl:pathBuilderConfig.buildPartialsPath(productBundlePartialsPath)+"productbundlegrouptype.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegrouptype.html",
 			scope:{
 				productBundleGroup:"="
 			},

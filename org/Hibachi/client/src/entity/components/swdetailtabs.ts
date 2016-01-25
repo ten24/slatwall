@@ -7,20 +7,20 @@ class SWDetailTabs{
 			$log,
 			$hibachi,
 			coreEntityPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWDetailTabs(
 			$location,
 			$log,
 			$hibachi,
 			coreEntityPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$location',
 			'$log',
 			'$hibachi',
 			'coreEntityPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -29,11 +29,11 @@ class SWDetailTabs{
 		$log,
 		$hibachi,
 		coreEntityPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 	        restrict: 'E',
-	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'detailtabs.html',
+	        templateUrl:hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath)+'detailtabs.html',
 	        link: function (scope, element, attr) {
 
 	        }

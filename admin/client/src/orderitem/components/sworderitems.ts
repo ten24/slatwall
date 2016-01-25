@@ -10,7 +10,7 @@ class SWOrderItems{
             collectionConfigService,
 			formService,
 			orderItemPartialsPath,
-			pathBuilderConfig,
+			slatwallPathBuilder,
 			paginationService
 		)=> new SWOrderItems(
 			$log,
@@ -20,7 +20,7 @@ class SWOrderItems{
             collectionConfigService,
 			formService,
 			orderItemPartialsPath,
-			pathBuilderConfig,
+			slatwallPathBuilder,
 			paginationService
 		);
 		directive.$inject = [
@@ -31,7 +31,7 @@ class SWOrderItems{
             'collectionConfigService',
 			'formService',
 			'orderItemPartialsPath',
-			'pathBuilderConfig',
+			'slatwallPathBuilder',
 			'paginationService'
 		];
 		return directive;
@@ -44,7 +44,7 @@ class SWOrderItems{
         collectionConfigService,
 		formService,
 		orderItemPartialsPath,
-		pathBuilderConfig,
+		slatwallPathBuilder,
 		paginationService
 	){
 		return {
@@ -52,7 +52,7 @@ class SWOrderItems{
 			scope:{
 				orderId:"@"
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(orderItemPartialsPath)+"orderitems.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"orderitems.html",
 
 			link: function(scope, element, attrs){
 				var options:any = {};

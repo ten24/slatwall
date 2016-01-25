@@ -1,5 +1,9 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+
+//constant
+import {HibachiPathBuilder} from "./services/hibachipathbuilder";
+
 //services
 import {PublicService} from "./services/publicservice";
 import {UtilityService} from "./services/utilityservice";
@@ -9,6 +13,7 @@ import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
+
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
@@ -48,31 +53,10 @@ import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 
 
-class PathBuilderConfig{
-    public baseURL:string;
-    public basePartialsPath:string;
-    constructor(){
 
-    }
-
-    public setBaseURL = (baseURL:string):void=>{
-        this.baseURL = baseURL;
-    }
-
-    public setBasePartialsPath = (basePartialsPath:string):void=>{
-        this.basePartialsPath = basePartialsPath
-    }
-
-    public buildPartialsPath = (componentsPath:string):string=>{
-        if(angular.isDefined(this.baseURL) && angular.isDefined(this.basePartialsPath)){
-            return this.baseURL + this.basePartialsPath + componentsPath;
-         }else{
-            throw('need to define baseURL and basePartialsPath in pathBuilderConfig. Inject pathBuilderConfig into module and configure it there');
-        }
-    }
-}
-
-var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)=>{
+var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPathBuilder','appConfig',($provide,hibachiPathBuilder,appConfig)=>{
+    hibachiPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
+    hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
     $provide.decorator('$hibachi',[
         "$delegate",
         '$http',
@@ -1136,7 +1120,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
             return $delegate;
         }
     ]);
-}]).constant('pathBuilderConfig',new PathBuilderConfig())
+}]).constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
 .service('publicService',PublicService)

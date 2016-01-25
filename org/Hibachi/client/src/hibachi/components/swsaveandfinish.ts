@@ -75,17 +75,17 @@ class SWSaveAndFinish{
        partial:"@?"
    }
    //@ngInject
-   constructor(private hibachiPartialsPath,pathBuilderConfig){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
+   constructor(private hibachiPartialsPath,hibachiPathBuilder){
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
    }
    
    public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-			hibachiPartialsPath,pathBuilderConfig
+			hibachiPartialsPath,hibachiPathBuilder
 		)=> new SWSaveAndFinish(
-            hibachiPartialsPath,pathBuilderConfig
+            hibachiPartialsPath,hibachiPathBuilder
 		);
-		directive.$inject = ["hibachiPartialsPath","pathBuilderConfig"];
+		directive.$inject = ["hibachiPartialsPath","hibachiPathBuilder"];
 		return directive;
 	}
 }

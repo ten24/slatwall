@@ -6,18 +6,18 @@ class SWColumnSorter{
 			$log,
 			observerService,
 			corePartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWColumnSorter(
 			$log,
 			observerService,
 			corePartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'observerService',
 			'corePartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -26,14 +26,14 @@ class SWColumnSorter{
 		$log,
 		observerService,
 		corePartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'AE',
 			scope:{
 				column:"=",
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+"columnsorter.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"columnsorter.html",
 			link: function(scope, element,attrs){
                 var orderBy:any = {
                     "propertyIdentifier":scope.column.propertyIdentifier,

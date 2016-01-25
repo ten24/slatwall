@@ -21,19 +21,19 @@ class SWEntityActionBarButtonGroup implements ng.IDirective{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory=(
 			corePartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		) => new SWEntityActionBarButtonGroup(
 			corePartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = ['corePartialsPath',
-			'pathBuilderConfig'];
+			'hibachiPathBuilder'];
 		return directive;
 	}
     //@ngInject
 	constructor(private corePartialsPath,
-			pathBuilderConfig){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'entityactionbarbuttongroup.html';
+			hibachiPathBuilder){
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'entityactionbarbuttongroup.html';
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

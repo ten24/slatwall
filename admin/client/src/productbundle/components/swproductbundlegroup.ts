@@ -392,8 +392,8 @@ class SWProductBundleGroup implements ng.IDirective{
 				private collectionConfigService,
 				private productBundleService,  private metadataservice, private utilityservice,
 				private $hibachi, private productBundlePartialsPath,
-			pathBuilderConfig){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
+			slatwallPathBuilder){
+		this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	}
 
 	public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
@@ -403,14 +403,14 @@ class SWProductBundleGroup implements ng.IDirective{
 	public static Factory(){
 		var directive = (
             $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
         )=> new SWProductBundleGroup(
             $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
         );
         directive.$inject = [
             "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath",
-			"pathBuilderConfig"
+			"slatwallPathBuilder"
         ];
         return directive;
 	}

@@ -11,18 +11,18 @@ class SWOrderItemDetailStamp{
 			$log,
 			$hibachi,
 			orderItemPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		) => new SWOrderItemDetailStamp(
 			$log,
 			$hibachi,
 			orderItemPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'$hibachi',
 			'orderItemPartialsPath',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
 		]
 		return directive;
 	}
@@ -30,7 +30,7 @@ class SWOrderItemDetailStamp{
 		$log,
 		$hibachi,
 		orderItemPartialsPath,
-		pathBuilderConfig
+		slatwallPathBuilder
 	){
 		return {
 			restrict: 'A',
@@ -40,7 +40,7 @@ class SWOrderItemDetailStamp{
 				skuId:"=",
 				orderItem:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(orderItemPartialsPath)+"orderitem-detaillabel.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"orderitem-detaillabel.html",
 			link: function(scope, element, attrs){
 				scope.details = [];
 				scope.orderItem.detailsName = [];

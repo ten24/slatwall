@@ -11,7 +11,7 @@ class SWCriteriaManyToMany{
             metadataService,
             dialogService,
             observerService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
         )=> new SWCriteriaManyToMany(
             $log,
@@ -22,7 +22,7 @@ class SWCriteriaManyToMany{
             metadataService,
             dialogService,
             observerService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
         );
         directive.$inject = [
@@ -34,7 +34,7 @@ class SWCriteriaManyToMany{
             'metadataService',
             'dialogService',
             'observerService',
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
             'rbkeyService',
         ];
         return directive;
@@ -48,12 +48,12 @@ class SWCriteriaManyToMany{
         metadataService,
         dialogService,
         observerService,
-        pathBuilderConfig,
+        hibachiPathBuilder,
         rbkeyService
     ){
         return {
             restrict: 'E',
-            templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriamanytomany.html',
+            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriamanytomany.html',
             link: function(scope, element, attrs){
                 scope.data ={};
                 scope.collectionOptionsOpen = false;

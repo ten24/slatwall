@@ -8,7 +8,7 @@ class SWOrderItem{
 			$templateCache,
 			$hibachi,
 			orderItemPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 		)=> new SWOrderItem(
 			$log,
 			$compile,
@@ -16,7 +16,7 @@ class SWOrderItem{
 			$templateCache,
 			$hibachi,
 			orderItemPartialsPath,
-			pathBuilderConfig
+			slatwallPathBuilder
 	  	);
 		directive.$inject = [
 			'$log',
@@ -25,7 +25,7 @@ class SWOrderItem{
 			'$templateCache',
 			'$hibachi',
 			'orderItemPartialsPath',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
 		];
 		return directive;
 	}
@@ -36,7 +36,7 @@ class SWOrderItem{
 		$templateCache,
 		$hibachi,
 		orderItemPartialsPath,
-		pathBuilderConfig
+		slatwallPathBuilder
 	){
 		return {
 			restrict : "A",
@@ -45,7 +45,7 @@ class SWOrderItem{
 				orderId:"@",
 				attributes:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(orderItemPartialsPath)+"orderitem.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"orderitem.html",
 			link : function(scope, element, attr) {
 				$log.debug('order item init');
 				$log.debug(scope.orderItem);

@@ -6,18 +6,18 @@ class SWList{
 			$log,
 			$hibachi,
 			coreEntityPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWList(
 			$log,
 			$hibachi,
 			coreEntityPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'$hibachi',
 			'coreEntityPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -25,11 +25,11 @@ class SWList{
 		$log,
 		$hibachi,
 		coreEntityPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 	){
 		return {
 	        restrict: 'E',
-	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'/list.html',
+	        templateUrl:hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath)+'/list.html',
 	        link: function (scope, element, attr) {
 	        	$log.debug('slatwallList init');
 

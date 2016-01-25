@@ -9,14 +9,14 @@ class SWContentBasic{
             $hibachi,
             formService,
             contentPartialsPath,
-            pathBuilderConfig
+            slatwallPathBuilder
         )=> new SWContentBasic(
             $log,
             $routeParams,
             $hibachi,
             formService,
             contentPartialsPath,
-            pathBuilderConfig
+            slatwallPathBuilder
         );
         directive.$inject = [
             '$log',
@@ -24,7 +24,7 @@ class SWContentBasic{
             '$hibachi',
             'formService',
             'contentPartialsPath',
-            'pathBuilderConfig'
+            'slatwallPathBuilder'
         ];
         return directive;
     }
@@ -34,11 +34,11 @@ class SWContentBasic{
         $hibachi,
         formService,
         contentPartialsPath,
-        pathBuilderConfig
+        slatwallPathBuilder
     ){
         return {
 			restrict: 'EA',
-			templateUrl:pathBuilderConfig.buildPartialsPath(contentPartialsPath)+"contentbasic.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(contentPartialsPath)+"contentbasic.html",
 			link: function(scope, element,attrs){
                 if(!scope.content.$$isPersisted()){
                     if(angular.isDefined($routeParams.siteID)){

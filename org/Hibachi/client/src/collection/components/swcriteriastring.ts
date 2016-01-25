@@ -9,7 +9,7 @@ class SWCriteriaString{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWCriteriaString(
 			$log,
 			$hibachi,
@@ -17,7 +17,7 @@ class SWCriteriaString{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -26,7 +26,7 @@ class SWCriteriaString{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -37,11 +37,11 @@ class SWCriteriaString{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriastring.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriastring.html',
 			link: function(scope, element, attrs){
 				var getStringOptions = function(type){
 					if(angular.isUndefined(type)){

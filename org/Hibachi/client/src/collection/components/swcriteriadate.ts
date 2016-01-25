@@ -10,7 +10,7 @@ class SWCriteriaDate{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWCriteriaDate(
 			$log,
 			$hibachi,
@@ -18,7 +18,7 @@ class SWCriteriaDate{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -27,7 +27,7 @@ class SWCriteriaDate{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -38,11 +38,11 @@ class SWCriteriaDate{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriadate.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriadate.html',
 			link: function(scope, element, attrs){
 				var getDateOptions = function(type){
 					if(angular.isUndefined(type)){

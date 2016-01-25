@@ -12,7 +12,7 @@ class SWDisplayItem{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWDisplayItem(
 			$http,
 			$compile,
@@ -23,7 +23,7 @@ class SWDisplayItem{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$http',
@@ -35,7 +35,7 @@ class SWDisplayItem{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive
 	}
@@ -51,7 +51,7 @@ class SWDisplayItem{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return{
 			require:'^swDisplayOptions',
@@ -63,7 +63,7 @@ class SWDisplayItem{
 				selectedPropertyChanged:"&"
 
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"displayitem.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
 				scope.showDisplayItem = false;
 

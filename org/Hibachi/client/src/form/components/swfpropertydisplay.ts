@@ -210,14 +210,14 @@ class SWFPropertyDisplay {
 	}
 	public static Factory(){
 		var directive = (
-			coreFormPartialsPath,pathBuilderConfig
-		)=>new SWFPropertyDisplay(coreFormPartialsPath,pathBuilderConfig);
-		directive.$inject = ['coreFormPartialsPath','pathBuilderConfig'];
+			coreFormPartialsPath,hibachiPathBuilder
+		)=>new SWFPropertyDisplay(coreFormPartialsPath,hibachiPathBuilder);
+		directive.$inject = ['coreFormPartialsPath','hibachiPathBuilder'];
 		return directive;
 	}
 	//@ngInject
-	constructor (coreFormPartialsPath,pathBuilderConfig ) {
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
+	constructor (coreFormPartialsPath,hibachiPathBuilder ) {
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'swfpropertydisplaypartial.html';
 	}
 }
 export{

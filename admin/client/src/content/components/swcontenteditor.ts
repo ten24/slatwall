@@ -10,7 +10,7 @@ class SWContentEditor{
 			$hibachi,
 			formService,
 			contentPartialsPath,
-            pathBuilderConfig
+            slatwallPathBuilder
         )=> new SWContentEditor(
             $log,
 			$location,
@@ -18,7 +18,7 @@ class SWContentEditor{
 			$hibachi,
 			formService,
 			contentPartialsPath,
-            pathBuilderConfig
+            slatwallPathBuilder
         );
         directive.$inject = [
             '$log',
@@ -27,7 +27,7 @@ class SWContentEditor{
 			'$hibachi',
 			'formService',
 			'contentPartialsPath',
-            'pathBuilderConfig'
+            'slatwallPathBuilder'
         ];
         return directive;
     }
@@ -38,14 +38,14 @@ class SWContentEditor{
 		$hibachi,
 		formService,
 		contentPartialsPath,
-            pathBuilderConfig
+            slatwallPathBuilder
     ){
         return {
 			restrict: 'EA',
 			scope:{
 				content:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(contentPartialsPath)+"contenteditor.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(contentPartialsPath)+"contenteditor.html",
 			link: function(scope, element,attrs){
                 scope.editorOptions = CKEDITOR.editorConfig;
 

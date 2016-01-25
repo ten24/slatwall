@@ -180,7 +180,7 @@ class SWTypeaheadSearchController {
 class SWTypeaheadSearch implements ng.IDirective{
 
 	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-			'pathBuilderConfig'];
+			'hibachiPathBuilder'];
 	public templateUrl;
     public transclude=true; 
 	public restrict = "EA";
@@ -203,8 +203,8 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
 
-	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
+	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
@@ -231,7 +231,7 @@ class SWTypeaheadSearch implements ng.IDirective{
             ,utilityService
 			,collectionConfigService
 			,corePartialsPath
-            ,pathBuilderConfig
+            ,hibachiPathBuilder
 
 		)=> new SWTypeaheadSearch(
 			$hibachi
@@ -240,10 +240,10 @@ class SWTypeaheadSearch implements ng.IDirective{
             ,utilityService
 			,collectionConfigService
 			,corePartialsPath
-            ,pathBuilderConfig
+            ,hibachiPathBuilder
 		);
 		directive.$inject = ["$hibachi", "$compile", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
-			'pathBuilderConfig'];
+			'hibachiPathBuilder'];
 		return directive;
 	}
 }

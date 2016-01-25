@@ -8,20 +8,20 @@ class SWSelection{
             selectionService,
             observerService,
             corePartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         )=>new SWSelection(
             $log,
             selectionService,
             observerService,
             corePartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         );
         directive.$inject = [
             '$log',
             'selectionService',
             'observerService',
             'corePartialsPath',
-            'pathBuilderConfig'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
@@ -30,11 +30,11 @@ class SWSelection{
         selectionService,
         observerService,
         corePartialsPath,
-        pathBuilderConfig
+        hibachiPathBuilder
     ){
         return {
 			restrict: 'E',
-			templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+"selection.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"selection.html",
             scope:{
                 selection:"=",
                 selectionid:"@",

@@ -9,7 +9,7 @@ class SWProductBundleGroups{
 			metadataService,
 			productBundlePartialsPath,
 			productBundleService,
-			pathBuilderConfig
+			slatwallPathBuilder
         )=> new SWProductBundleGroups(
             $http,
 			$log,
@@ -17,7 +17,7 @@ class SWProductBundleGroups{
 			metadataService,
 			productBundlePartialsPath,
 			productBundleService,
-			pathBuilderConfig
+			slatwallPathBuilder
         );
         directive.$inject = [
             '$http',
@@ -26,7 +26,7 @@ class SWProductBundleGroups{
 			'metadataService',
 			'productBundlePartialsPath',
 			'productBundleService',
-			'pathBuilderConfig'
+			'slatwallPathBuilder'
         ];
         return directive;
     }
@@ -37,12 +37,12 @@ class SWProductBundleGroups{
 		metadataService,
 		productBundlePartialsPath,
 		productBundleService,
-			pathBuilderConfig
+			slatwallPathBuilder
     ){
         return {
 			restrict: 'EA',
 
-			templateUrl:pathBuilderConfig.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html",
+			templateUrl:slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html",
 			scope:{
 				sku:"=",
 				productBundleGroups:"=",
