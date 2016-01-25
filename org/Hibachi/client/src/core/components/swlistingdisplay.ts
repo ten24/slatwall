@@ -48,7 +48,7 @@ class SWListingDisplayController{
     public tableID;
     public tableclass;
     public tableattributes;
-    public showSearch;
+    public showSearch:boolean = true;
 
 
 
@@ -87,10 +87,6 @@ class SWListingDisplayController{
     }
 
     private intialSetup = () => {
-        //default search is available
-        if(angular.isString(this.showSearch)){
-            this.showSearch = (this.showSearch.toLowerCase() === 'true');
-        }
 
         this.paginator = this.paginationService.createPagination();
 
@@ -454,6 +450,7 @@ class SWListingDisplayController{
         //Setup table class
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+        console.log("showSearch?",this.showSearch);
     }
 
     public setupColumns = ()=>{
