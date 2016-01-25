@@ -129,7 +129,7 @@ class SWDisplayOptions{
 						$log.debug($scope.columns);
 						if(angular.isDefined(selectedProperty)){
 							var column = {
-								title : getTitleFromProperty(selectedProperty.propertyIdentifier),
+								title : getTitleFromProperty(selectedProperty),
 								propertyIdentifier : selectedProperty.propertyIdentifier,
 								isVisible : true,
 								isDeletable : true,
