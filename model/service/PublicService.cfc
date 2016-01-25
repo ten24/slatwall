@@ -1,6 +1,6 @@
 /*
 
-    Slatwall - An Open source eCommedatae Platform
+    Slatwall - An Open Soudatae eCommedatae Platform
     Copyright (C) ten24, LLC
     
     This program is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@
 
     You may copy and distribute the modified version of this program that meets 
     the above guidelines as a combined work under the terms of GPL for this program, 
-    provided that you include the source code of that other code when and as the 
-    GNU GPL requires distribution of source code.
+    provided that you include the soudatae code of that other code when and as the 
+    GNU GPL requires distribution of soudatae code.
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
@@ -55,16 +55,64 @@ component extends="HibachiService"  accessors="true" output="false"
     property name="paymentService" type="any";
     property name="subscriptionService" type="any";
     property name="hibachiSessionService" type="any";
+    property name="hibachiUtilityService" type="any";
     property name="productService" type="any";
     property name="hibachiAuditService" type="any";
     property name="validationService" type="any";
+    
 
     variables.publicContexts = [];
     variables.responseType = "json";
     
+    
+    /**
+     * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
+     * and a 'profile name' that determines the size of that image.
+     * /api/scope/getResizedImageByProfileName&profileName=large&skuIDs=8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5
+     * ...should return three paths.
+     */
+    public any function getResizedImageByProfileName(required any data) {
+        
+        var imageHeight = 60;
+        var imageWidth  = 60;
+        
+        if(arguments.data.profileName == "medium"){
+            imageHeight = 90;
+            imageWidth  = 90;
+        }else if (arguments.data.profileName == "large"){
+            imageHeight = 150;
+            imageWidth  = 150;
+        }
+        else if (arguments.data.profileName == "xlarge"){
+            imageHeight = 250;
+            imageWidth  = 250;
+        }
+        else if (arguments.data.profileName == "listing"){
+            imageHeight = 263;
+            imageWidth  = 212;
+        }
+        arguments.data.ajaxResponse.content['resizedImagePaths'] = {};
+        arguments.data.ajaxResponse.content['resizedImagePaths']['resizedImagePaths'] = [];
+        var skus = [];
+        
+        //smart list to load up sku array
+        var skuSmartList = getService('skuService').getSkuSmartList();
+        skuSmartList.addInFilter('skuID',data.skuIDs);
+        
+        if( skuSmartList.getRecordsCount() > 0){
+            var skus = skuSmartList.getRecords();
+            
+            for  (var sku in skus){
+                ArrayAppend(arguments.data.ajaxResponse.content['resizedImagePaths']['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+            }
+        }
+        data.returnJsonObject = "";
+        data.ajaxResponse['resizedImagePaths'] = arguments.data.ajaxResponse.content['resizedImagePaths'];
+    }
+    
     /**
      @method Login <b>Log a user account into Slatwall given the users emailAddress and password</b>
-     @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resource.
+     @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resoudatae.
      @http-verb POST
      @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
      @param Required Header: emailAddress
@@ -137,7 +185,7 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** 
      * @method Logout <b>Log a user account outof Slatwall given the users request_token and deviceID</b>
-     * @http-context Logout Use this context in conjunction with the listed http-verb to use this resource.
+     * @http-context Logout Use this context in conjunction with the listed http-verb to use this resoudatae.
      * @http-verb POST
      * @http-return <b>(200)</b> Request Successful <b>(400)</b> Bad or Missing Input Data
      * @description  Logs a user out of the given device  
@@ -317,7 +365,7 @@ component extends="HibachiService"  accessors="true" output="false"
     /** 
      * @method verifyAccountEmailAddress
      * @http-context verifyAccountEmailAddress
-     * @http-resource /api/scope/verifyAccountEmailAddress
+     * @http-resoudatae /api/scope/verifyAccountEmailAddress
      * @description Account Email Address - Verify 
      * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
      */
@@ -387,6 +435,33 @@ component extends="HibachiService"  accessors="true" output="false"
             arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
         } else {
             arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", true ); 
+        }
+    }
+    
+    public any function addOrderShippingAddress(required data){
+        param name="data.saveAsAccountAddressFlag" default="1";
+        var utility = getHibachiUtilityService();
+        /** add a shipping address */
+        var shippingAddress = {};
+        if (!isNull(data)){
+            
+            //if we have that data and don't have any suggestions to make, than try to populate the address
+            shippingAddress = getService('AddressService').newAddress();    
+            
+            //get a new address populated with the data.
+            
+            var savedAddress = getService('AddressService').saveAddress(shippingAddress, data);
+            
+            if (isObject(savedAddress) && !savedAddress.hasErrors()){
+                //save the address at the order level.
+                var order = data.$.slatwall.cart();
+                order.setShippingAddress(savedAddress);
+                getOrderService().saveOrder(order);
+                
+            }else{
+                    this.addErrors(data, savedAddress.getErrors()); //add the basic errors
+                    arguments.data.$.slatwall.addActionResult( "public:cart.AddShippingAddress", savedAddress.hasErrors());
+            }
         }
     }
     
@@ -633,9 +708,48 @@ component extends="HibachiService"  accessors="true" output="false"
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
+        }else{
+            addErrors(data, data.$.slatwall.getCart().getProcessObject("addOrderItem").getErrors());
+        }
+        
+    }
+    /** 
+     * @http-context updateOrderItemQuantity
+     * @description Update Order Item on an Order
+     * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     */
+    public void function updateOrderItemQuantity(required any data) {
+        
+        var cart = data.$.slatwall.cart();
+        
+        // Check to see if we can attach the current account to this order, required to apply price group details
+        if( isNull(cart.getAccount()) && data.$.slatwall.getLoggedInFlag() ) {
+            cart.setAccount( data.$.slatwall.getAccount() );
+        }
+        
+        if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") && data.orderItem.qty > 0 ){
+            for (orderItem in cart.getOrderItems()){
+                if (orderItem.getSku().getSkuID() == data.orderItem.sku.skuID){
+                    orderItem.setQuantity(data.orderItem.qty);
+                }
+            }
+        }
+        arguments.data.$.slatwall.addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
+        
+        if(!cart.hasErrors()) {
+            //Persist the quantity change
+            getOrderService().saveOrder(cart);
+            
+            // Also make sure that this cart gets set in the session as the order
+            data.$.slatwall.getSession().setOrder( cart );
+            
+            // Make sure that the session is persisted
+            getHibachiSessionService().persistSession();
+            
+        }else{
+            addErrors(data, data.$.slatwall.getCart().getErrors());
         }
     }
-    
     /** 
      * @http-context removeOrderItem
      * @description Remove Order Item from an Order
@@ -658,78 +772,6 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.$.slatwall.addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
     
-    public void function addOrderShippingAddress(required data){
-        param name="data.saveAsAccountAddressFlag" default="0";
-        /** add a shipping address */
-        
-        if (!isNull(data)){
-            if (data.edit && data.addressID){
-                var shipping = getService('AddressService').getAddressByID(data.addressID);
-            }else{
-                var shipping = getService('AddressService').newAddress(data);   
-            }
-            if (!isNull(data.name)){
-                 shipping.setName(data.name);   
-            }
-            if (!isNull(data.firstName)){
-                 shipping.setFirstName(data.firstName);     
-            }
-            if (!isNull(data.lastName)){
-                 shipping.setLastName(data.lastName);   
-            }
-            if (!isNull(data.streetAddress)){
-                 shipping.setStreetAddress(data.streetAddress);
-            }
-            if (!isNull(data.street2Address)){
-                 shipping.setStreet2Address(data.street2Address);
-            }
-            if (!isNull(data.city)){
-                 shipping.setCity(data.city);
-            }
-            if (!isNull(data.state)){
-                shipping.setStateCode(data.state);
-            }
-            if (!isNull(data.zip)){
-                shipping.setPostalCode(data.zip);
-            }
-            if (!isNull(data.phoneNumber)){
-                shipping.setPhoneNumber(data.phoneNumber);
-            }
-            if (!isNull(data.country)){
-                shipping.setCountryCode(data.country);
-            }else{
-                shipping.setCountryCode("US");
-            }
-            //get a new address populated with the data.
-            var newAddress = getService('AddressService').saveAddress(shipping);
-            
-            if (!shipping.hasErrors()){
-                //save the address at the order level.
-                var order = data.$.slatwall.cart();
-                order.setShippingAddress(newAddress);
-                getOrderService().saveOrder(order);
-                
-                //do we want to save as the account address as well?
-                /*if (!isNull(data.saveAsAccountAddressFlag) && data.saveAsAccountAddressFlag){
-                     var newAddress = getService('AddressService').saveAddress(shipping);
-                     order.setShippingAccountAddress(newAddress);
-                     getOrderService().saveOrder(order);
-                }
-                
-                //do we want to save this as the billing address as well?
-                if (!isNull(data.saveAsAccountAddressFlag) && data.saveAsAccountAddressFlag){
-                     var newAddress = getService('AddressService').saveAddress(shipping);
-                     order.setShippingAccountAddress(newAddress);
-                     getOrderService().saveOrder(order);
-                }*/
-                
-            }else{
-                for (var error in shipping.getErrors()){
-                    arrayAppend(arguments.data['ajaxRequest']['errors'], error);
-                }
-            }
-       }
-    }
     /** 
      * @http-context addPromotionCode
      * @description Add Promotion Code
@@ -766,7 +808,11 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="data.newOrderPayment.orderPaymentID" default="";
         param name="data.accountAddressID" default="";
         param name="data.accountPaymentMethodID" default="";
+        param name="data.newOrderPayment.orderPaymentType.typeID"  default='444df2f0fed139ff94191de8fcd1f61b';
         param name="data.newOrderPayment.paymentMethod.paymentMethodID" default="444df303dedc6dab69dd7ebcc9b8036a";
+        param name="data.newOrderPayment.expirationMonth" default="DEC";
+        param name="data.newOrderPayment.expirationYear" default="2018";
+        
         // Make sure that someone isn't trying to pass in another users orderPaymentID
         if(len(data.newOrderPayment.orderPaymentID)) {
             var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);
@@ -776,12 +822,25 @@ component extends="HibachiService"  accessors="true" output="false"
         }
         
         data.newOrderPayment.order.orderID = data.$.slatwall.cart().getOrderID();
-        data.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
+        //why is the billing not saving?
+        var billingAddress = getService('AddressService').newAddress();    
         
-        var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'addOrderPayment');
+        //get a new address populated with the data.
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.addOrderPayment", cart.hasErrors() );
+        var savedAddress = getService('AddressService').saveAddress(billingAddress, data.billingAddress);
+        
+        if (isObject(savedAddress) && !savedAddress.hasErrors()){
+            //save the address at the order level.
+            var order = data.$.slatwall.cart();
+            order.setBillingAddress(savedAddress);
+            getOrderService().saveOrder(order);
+        }
+        
+        var addOrderPayment = getService('OrderService').processOrder( data.$.slatwall.cart(), arguments.data, 'addOrderPayment');
+        arguments.data.$.slatwall.addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
+        
     }
+    
     
     /** 
      * @http-context removeOrderPayment

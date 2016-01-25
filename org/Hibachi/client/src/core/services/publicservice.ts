@@ -15,6 +15,8 @@ class PublicService {
     public http:ng.IHttpService;
     public header:any;
     private baseActionPath = "";
+    public months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    public years = {};
     public shippingAddress = "";
     public billingAddress = "";
     ///index.cfm/api/scope/
@@ -27,6 +29,10 @@ class PublicService {
         
     }
     
+    /** grab the valid expiration years for credit cards  */
+    public getExpirationYears=():any =>{
+        
+    }
     /** accessors for account */
     public getAccount=():any =>  {
         let urlBase = '/index.cfm/api/scope/getAccount/';
