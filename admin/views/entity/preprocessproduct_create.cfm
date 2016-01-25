@@ -218,6 +218,7 @@ Notes:
 								data-collection="preprocessproduct_createCtrl.collection"
 								data-multiselect-field-name="options"
 								data-edit="true"
+							    data-show-search="'true'"
 							>
 							</sw-listing-display>
 							<!--<sw-listing-display

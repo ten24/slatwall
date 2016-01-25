@@ -48,7 +48,7 @@ class SWListingDisplayController{
     public tableID;
     public tableclass;
     public tableattributes;
-    public hasSearch:boolean;
+    public showSearch:boolean;
 
 
 
@@ -88,8 +88,8 @@ class SWListingDisplayController{
 
     private intialSetup = () => {
         //default search is available
-        if(angular.isUndefined(this.hasSearch)){
-            this.hasSearch = true;
+        if(angular.isString(this.showSearch)){
+            this.showSearch = (this.showSearch.toLowerCase() === 'true');
         }
 
         this.paginator = this.paginationService.createPagination();
@@ -162,6 +162,7 @@ class SWListingDisplayController{
     private setupDefaultGetCollection = () =>{
         this.collectionPromise = this.collectionConfig.getEntity();
         return ()=>{
+            this.collectionConfig.setKeywords(this.searchText);
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
             this.collectionConfig.getEntity().then((data)=>{
@@ -170,6 +171,7 @@ class SWListingDisplayController{
                 this.setupColumns();
                 this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                 this.paginator.setPageRecordsInfo(this.collectionData);
+                this.searching = false; 
             });
         };
     };
@@ -619,7 +621,7 @@ class SWListingDisplay implements ng.IDirective{
             exportAction:"@",
 
             getChildCount:"=",
-            hasSearch:"="
+            showSearch:"="
     };
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";

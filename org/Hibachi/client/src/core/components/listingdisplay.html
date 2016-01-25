@@ -9,9 +9,11 @@
 	</div>
 	<!-- search begin -->
 	<sw-listing-global-search
-		ng-if="swListingDislay.hasSearch && swListingDislay.hasSearch === true"
+		ng-if="swListingDislay.showSearch"
+		data-collection-config="swListingDisplay.collectionConfig"
+		data-paginator="swListingDisplay.paginator"
 		data-get-collection="swListingDisplay.getCollection"
-		data-search-text="swListingDisplay.collectionConfig.keywords"
+		data-search-text="swListingDisplay.searchText"
 		data-searching="swListingDisplay.searching">
 	</sw-listing-global-search> 
 </div><!--- reyjay's class --->
