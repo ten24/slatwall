@@ -48,7 +48,7 @@ class SWListingDisplayController{
     public tableID;
     public tableclass;
     public tableattributes;
-    public showSearch:boolean = true;
+    public showSearch:boolean;
 
 
 
@@ -87,6 +87,10 @@ class SWListingDisplayController{
     }
 
     private intialSetup = () => {
+
+        if(angular.isUndefined(this.showSearch)){
+            this.showSearch = true; 
+        }
 
         this.paginator = this.paginationService.createPagination();
 
