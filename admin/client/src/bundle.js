@@ -887,7 +887,13 @@
 	var swprocesscaller_1 = __webpack_require__(56);
 	var swsortable_1 = __webpack_require__(57);
 	var swlistingglobalsearch_1 = __webpack_require__(58);
-	var coremodule = angular.module('hibachi.core', []).config(['$provide', 'hibachiPathBuilder', 'appConfig', function ($provide, hibachiPathBuilder, appConfig) {
+	var coremodule = angular.module('hibachi.core', [
+	    //Angular Modules
+	    'ngAnimate',
+	    'ngSanitize',
+	    //3rdParty modules
+	    'ui.bootstrap'
+	]).config(['$provide', 'hibachiPathBuilder', 'appConfig', function ($provide, hibachiPathBuilder, appConfig) {
 	        hibachiPathBuilder.setBaseURL(appConfig.baseURL);
 	        hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 	        $provide.decorator('$hibachi', [
@@ -6358,9 +6364,6 @@
 	//filters
 	var swcurrency_1 = __webpack_require__(183);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
-	    //Angular Modules
-	    'ngAnimate',
-	    'ngSanitize',
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
 	    entity_module_1.entitymodule.name,
@@ -6370,9 +6373,7 @@
 	    orderitem_module_1.orderitemmodule.name,
 	    product_module_1.productmodule.name,
 	    productbundle_module_1.productbundlemodule.name,
-	    workflow_module_1.workflowmodule.name,
-	    //3rdParty modules
-	    'ui.bootstrap'
+	    workflow_module_1.workflowmodule.name
 	])
 	    .constant("baseURL", $.slatwall.getConfig().baseURL)
 	    .constant('slatwallPathBuilder', new slatwallpathbuilder_1.SlatwallPathBuilder())
