@@ -25,7 +25,7 @@
 								<td ng-if-start="$index==swGiftCardHistory.transactions.length-1"><i class="fa fa-plus"></i></td>
 								<td>Card Purchased </td>
 								<td ng-bind="swGiftCardHistory.order.orderOpenDateTime"></td>
-								<td>Customer: <a href="?slatAction=admin:entity.detailAccount&accountID={{swGiftCardHistory.order.account_accountID}}"><span ng-bind="swGiftCardHistory.order.account_firstName"></span> <span ng-bind="swGiftCardHistory.order.account_lastName"></span> (<span ng-bind="swGiftCardHistory.order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
+								<td>Customer: <a href="{{$root.buildUrl('admin:entity.detailAccount')}}&accountID={{swGiftCardHistory.order.account_accountID}}"><span ng-bind="swGiftCardHistory.order.account_firstName"></span> <span ng-bind="swGiftCardHistory.order.account_lastName"></span> (<span ng-bind="swGiftCardHistory.order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
 								<td>
 									+ <span class="s-bold" ng-bind-html="transaction.creditAmount | swcurrency:swGiftCardHistory.giftCard.currencyCode"></span>
 								</td>

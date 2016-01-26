@@ -17,16 +17,13 @@ import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
 //directives
 import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
-import {EntityRBKey} from "./filters/entityrbkey";
+
 import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
 declare var $:SlatwallJQueryStatic;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
-  //Angular Modules
-  'ngAnimate',
-  'ngSanitize',
   //custom modules
   hibachimodule.name,
   entitymodule.name,
@@ -36,10 +33,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   orderitemmodule.name,
   productmodule.name,
   productbundlemodule.name,
-  workflowmodule.name,
-  //3rdParty modules
-  'ui.bootstrap'
-
+  workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
 .constant('slatwallPathBuilder', new SlatwallPathBuilder())
@@ -106,7 +100,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 
         // $rootScope.loadedResourceBundle = false;
         // $rootScope.loadedResourceBundle = $hibachi.hasResourceBundle();
-        $rootScope.buildUrl = $hibachi.buildUrl;
         $rootScope.createID = utilityService.createID;
 
         // var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
@@ -122,7 +115,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //filters
-.filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
+
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
 
 ;
