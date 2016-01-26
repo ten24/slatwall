@@ -43,7 +43,7 @@ class SWTooltip implements ng.IDirective{
 	public controllerAs="swTooltip";
 
     // @ngInject
-	constructor( public $document, private utilityService, private corePartialsPath, hibachiPathBuilder){
+	constructor( public $document, private corePartialsPath, hibachiPathBuilder){
 	   this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tooltip.html";
     }
 
