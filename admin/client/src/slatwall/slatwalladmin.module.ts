@@ -24,9 +24,6 @@ import {SWCurrency} from "./filters/swcurrency";
 declare var $:SlatwallJQueryStatic;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
-  //Angular Modules
-  'ngAnimate',
-  'ngSanitize',
   //custom modules
   hibachimodule.name,
   entitymodule.name,
@@ -36,10 +33,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   orderitemmodule.name,
   productmodule.name,
   productbundlemodule.name,
-  workflowmodule.name,
-  //3rdParty modules
-  'ui.bootstrap'
-
+  workflowmodule.name
 ])
 .constant("baseURL", $.slatwall.getConfig().baseURL)
 .constant('slatwallPathBuilder', new SlatwallPathBuilder())
