@@ -80,7 +80,7 @@ class SWChildOrderItem{
               },
               {
                 "title":"Sku Price",
-                "propertyIdentifier":"_orderitem.sku.price",
+                "propertyIdentifier":"_orderitem.skuPrice",
                 "isVisible":true,
                 "isDeletable":true
               },
