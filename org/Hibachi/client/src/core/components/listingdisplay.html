@@ -1,4 +1,3 @@
-
 <div class="s-table-header-nav s-listing-head-margin">
 	<div class="col-xs-6 s-no-padding-left" ng-if="swListingDisplay.title">
 		<ul class="list-inline list-unstyled">
@@ -9,9 +8,11 @@
 	</div>
 	<!-- search begin -->
 	<sw-listing-global-search
-		ng-if="swListingDislay.hasSearch && swListingDislay.hasSearch === true"
+		ng-if="swListingDisplay.showSearch"
+		data-collection-config="swListingDisplay.collectionConfig"
+		data-paginator="swListingDisplay.paginator"
 		data-get-collection="swListingDisplay.getCollection"
-		data-search-text="swListingDisplay.collectionConfig.keywords"
+		data-search-text="swListingDisplay.searchText"
 		data-searching="swListingDisplay.searching">
 	</sw-listing-global-search> 
 </div><!-- reyjay's class -->
