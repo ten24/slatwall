@@ -19,6 +19,7 @@ import {GlobalSearchController} from "./controllers/globalsearch";
 
 //filters
 import {PercentageFilter} from "./filters/percentage";
+import {EntityRBKey} from "./filters/entityrbkey";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
@@ -1139,6 +1140,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPa
 .controller('globalSearch',GlobalSearchController)
 //filters
 .filter('percentage',[PercentageFilter.Factory])
+.filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 //directives
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
 .directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())

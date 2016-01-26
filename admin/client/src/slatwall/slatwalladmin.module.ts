@@ -17,7 +17,7 @@ import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
 //directives
 import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 //filters
-import {EntityRBKey} from "./filters/entityrbkey";
+
 import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
@@ -121,7 +121,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //filters
-.filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
+
 .filter('swcurrency',['$sce','$log','$hibachi',SWCurrency.Factory])
 
 ;
