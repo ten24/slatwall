@@ -88,7 +88,7 @@ component output="false" accessors="true" extends="HibachiController" {
     public void function login(required struct rc){
         if(!getHibachiScope().getLoggedInFlag()){
             //if account doesn't exist than one is create
-            var account = getService('AccountService').processAccount(rc.$.slatwall.getAccount(), rc, "login");
+            var account = getService('AccountService').processAccount(getHibachiScope().getAccount(), rc, "login");
             var authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login").populate(arguments.rc);
             arguments.rc.apiResponse.content['messages'] = [];
             var updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword");
