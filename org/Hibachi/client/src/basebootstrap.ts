@@ -22,7 +22,7 @@ export class BaseBootStrapper{
                 && localStorage.getItem('resourceBundles')
                 && localStorage.getItem('resourceBundles') !== 'undefined'
             ){
-                 return $http.get('index.cfm/?slatAction=api:main.getInstantiationKey')
+                 return $http.get('/index.cfm/?slatAction=api:main.getInstantiationKey')
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
                     if(resp.data.data === appConfig.instantiationKey){
@@ -49,7 +49,7 @@ export class BaseBootStrapper{
     }
 
     getData=()=>{
-        return this.$http.get('index.cfm/?slatAction=api:main.getConfig')
+        return this.$http.get('/index.cfm/?slatAction=api:main.getConfig')
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));

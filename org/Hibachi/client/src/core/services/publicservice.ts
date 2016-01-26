@@ -13,6 +13,7 @@ class PublicService {
     public hasErrors:boolean;
     public errors:string;
     public http:ng.IHttpService;
+    public loading = false;
     public header:any;
     private baseActionPath = "";
     public months = [{name:'JAN',value:1},{name:'FEB',value:2},{name:'MAR',value:3},{name:'APR',value:4},{name:'MAY',value:5},{name:'JUN',value:6},{name:'JUL',value:7},{name:'AUG',value:8},{name:'SEP',value:9},{name:'OCT',value:10},{name:'NOV',value:11},{name:'DEC',value:12}];
@@ -20,6 +21,7 @@ class PublicService {
     public shippingAddress = "";
     public billingAddress = "";
     ///index.cfm/api/scope/
+    
     //@ngInject
     constructor(public $http:ng.IHttpService, public $q:ng.IQService) { 
         
@@ -72,6 +74,7 @@ class PublicService {
     
     /** accessors for states */
     public getData=(url, setter, param):any =>  {
+        this.loading = true;
         let urlBase = url + this.ajaxRequestParam + param;
         var deferred = this.$q.defer();
         this.$http.get(urlBase).success((result:any)=>{
@@ -82,11 +85,13 @@ class PublicService {
                 console.log("Result Sans", result);
             }
             this[setter] = result;
-            console.log("Data:", this[setter]);
+            this.loading = false;
             deferred.resolve(result);
         }).error((reason)=>{
+            this.loading = false;
             deferred.reject(reason);  
         });
+        
         return deferred.promise;
     }
     
@@ -101,11 +106,12 @@ class PublicService {
     }
     
     /** this is the generic method used to call all server side actions.
-        *  @param action {string} the name of the action (method) to call in the public service.
-        *  @param data   {object} the params as key value pairs to pass in the post request.
-        *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
-        */
+    *  @param action {string} the name of the action (method) to call in the public service.
+    *  @param data   {object} the params as key value pairs to pass in the post request.
+    *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
+    */
     public doAction=(action:string, data?:any) => {
+        this.loading = true;
         let method = "";
         if (!action) {throw "Action is required exception";}
         
@@ -142,9 +148,11 @@ class PublicService {
                     this.hasErrors = true;
                     console.log("Errors:", result.data.errors);
                 }
+                this.loading = false;
                 deferred.resolve(result);
             }).catch((response)=>{
                 console.log("There was an error making this http call", response.status, response.data);
+                this.loading = false;
                 deferred.reject(response);
             });
             return deferred.promise;
