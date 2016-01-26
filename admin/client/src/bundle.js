@@ -887,7 +887,7 @@
 	var swsortable_1 = __webpack_require__(56);
 	var swlistingglobalsearch_1 = __webpack_require__(57);
 	var coremodule = angular.module('hibachi.core', []).config(['$provide', 'hibachiPathBuilder', 'appConfig', function ($provide, hibachiPathBuilder, appConfig) {
-	        hibachiPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
+	        hibachiPathBuilder.setBaseURL(appConfig.baseURL);
 	        hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
 	        $provide.decorator('$hibachi', [
 	            "$delegate",
@@ -15285,8 +15285,8 @@
 	var swdetail_1 = __webpack_require__(143);
 	var swlist_1 = __webpack_require__(144);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute'])
-	    .config(['$routeProvider', '$injector', '$locationProvider',
-	    function ($routeProvider, $injector, $locationProvider) {
+	    .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
+	    function ($routeProvider, $injector, $locationProvider, appConfig) {
 	        //detect if we are in hashbang mode
 	        var vars = {};
 	        var parts = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, function (m, key, value) {
@@ -15319,7 +15319,7 @@
 	            controller: 'routerController',
 	        }).otherwise({
 	            //controller:'otherwiseController'
-	            templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
+	            templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
 	        });
 	    }])
 	    .constant('coreEntityPartialsPath', 'entity/components/')

@@ -55,7 +55,7 @@ import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 declare var $:any;
 
 var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPathBuilder','appConfig',($provide,hibachiPathBuilder,appConfig)=>{
-    hibachiPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
+    hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
     $provide.decorator('$hibachi',[
         "$delegate",
