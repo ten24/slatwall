@@ -78,7 +78,7 @@ Notes:
 						</div>
 					</div>
 				<cfelse>
-					<div class="alert alert-info deafult-margin" role="alert" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
+					<div class="alert alert-info deafult-margin" role="alert"> #$.Slatwall.rbkey('entity.Product.process.image.norecordsfound')# : #imageFile#</div>
 					<div class="col-xs-3">
 						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-primary" icon="plus" iconOnly="false"  modal="true" />
 					</div>
