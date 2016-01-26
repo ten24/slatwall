@@ -22,8 +22,8 @@
 			</li>
 			<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
 				<ul>
-					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.productBundleGroupPercentage | currency"></span> (Base Price)</li>
-					<li>+<span ng-bind="(orderItem.data.productBundlePrice - orderItem.data.skuPrice) * orderItem.data.productBundleGroupPercentage | currency"></span> (Extras)</li>
+					<li>+<span ng-bind="orderItem.data.sku.data.price * orderItem.data.productBundleGroupPercentage | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="(orderItem.data.productBundlePrice - orderItem.data.sku.data.price) * orderItem.data.productBundleGroupPercentage | currency"></span> (Extras)</li>
 				</ul>
 			</li> 
 		</ul>
@@ -40,8 +40,8 @@
 			</li>
 			<li ng-show="orderItem.data.sku.data.baseProductType == 'productBundle'" class="s-price-list">
 				<ul>
-					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity * orderItem.data.productBundleGroupPercentage | currency"></span> (Base Price)</li>
-					<li>+<span ng-bind="(orderItem.data.productBundlePrice - orderItem.data.skuPrice) * orderItem.data.quantity * orderItem.data.productBundleGroupPercentage | currency"></span> (Extras)</li>
+					<li>+<span ng-bind="orderItem.data.sku.data.price * orderItem.data.quantity * orderItem.data.productBundleGroupPercentage | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="(orderItem.data.productBundlePrice - orderItem.data.sku.data.price) * orderItem.data.quantity * orderItem.data.productBundleGroupPercentage | currency"></span> (Extras)</li>
 				</ul>
 			</li>
 		</ul>

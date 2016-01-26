@@ -86,19 +86,19 @@
 				</li>
 				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
 					<ul>
-						<li>+<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
-						<li>+<span ng-bind-html="orderItem.data.skuPrice - orderItem.data.extendedPrice / orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
+						<li>+<span ng-bind-html="orderItem.data.sku.data.price | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
+						<li>+<span ng-bind-html="orderItem.data.sku.data.price - orderItem.data.extendedPrice / orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
 					</ul>
 				</li>
 			</ul>
 		</span>
 		<span ng-if="orderItem.onWaitlist === true && !orderItem.eligible">
 			<span class="s-price"></span><span ng-bind-html="'0  (Deposit)' | swcurrency:orderItem.data.currencyCode"></span><br>
-			<span class="s-price-list" ng-bind-html="orderItem.data.skuPrice + ' (Event Price)' | swcurrency:orderItem.data.currencyCode"></span>
+			<span class="s-price-list" ng-bind-html="orderItem.data.sku.data.price + ' (Event Price)' | swcurrency:orderItem.data.currencyCode"></span>
 		</span>
 	</td>
 	
-	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
+	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.sku.data.price | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
 	
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	
@@ -112,8 +112,8 @@
 			<li class="s-price-total" ng-bind-html="orderItem.data.itemTotal | swcurrency:orderItem.data.currencyCode"></li>
 			<li ng-show="orderItem.data.sku.data.baseProductType == 'productBundle'" class="s-price-list">
 				<ul>
-					<li>+<span ng-bind-html="orderItem.data.skuPrice * orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
-					<li>+<span ng-bind-html="orderItem.data.skuPrice * orderItem.data.quantity - orderItem.data.extendedPrice | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
+					<li>+<span ng-bind-html="orderItem.data.sku.data.price * orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
+					<li>+<span ng-bind-html="orderItem.data.sku.data.price * orderItem.data.quantity - orderItem.data.extendedPrice | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
 				</ul>
 			</li>
 		</ul>
