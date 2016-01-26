@@ -9,13 +9,10 @@
         </span> -->
         <span ng-bind="propertyDisplay.title || object.metaData.$$getPropertyTitle(property)"></span>:
         <span ng-if="propertyDisplay.object.validations.properties[propertyDisplay.property][0].required && propertyDisplay.fieldType === 'text'">*</span>
-        <span class="j-tool-tip-item"
+        <span sw-tooltip class="j-tool-tip-item"
               ng-if="propertyDisplay.hint"
-              popover="{{propertyDisplay.hint}}"
-              popover-trigger="mouseenter"
-              popover-placement="top"
-              popover-popup-delay="50"
-              popover-append-to-body="true"
+              data-text="{{propertyDisplay.hint}}"
+              data-position="right"
                 >
             <i class="fa fa-question-circle"></i>
         </span>
