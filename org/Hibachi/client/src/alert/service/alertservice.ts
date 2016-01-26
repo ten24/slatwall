@@ -45,7 +45,7 @@ class AlertService implements IAlertService{
 
     addAlerts = (alerts:Alert[]):void =>{
 
-        alerts.forEach(alert => {
+        angular.forEach((alert) => {
             this.addAlert(alert);
         });
     }
