@@ -493,8 +493,8 @@ component output="false" accessors="true" extends="HibachiController" {
         param name="arguments.rc.propertyIdentifiers" default="";
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
-            arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-            arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
+            arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
+            arguments.rc.apiResponse.content['cart'] = getHibachiScope().invokeMethod("getCartData");
         } else {
             //get entity service by entity name
             var currentPage = 1;
