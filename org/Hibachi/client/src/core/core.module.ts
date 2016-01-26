@@ -41,6 +41,7 @@ import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
+import {SWTooltip} from "./components/swtooltip";
 import {SWRbKey} from "./components/swrbkey";
 import {SWOptions} from "./components/swoptions";
 import {SWSelection} from "./components/swselection";
@@ -1159,6 +1160,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPa
 .directive('swRbkey',SWRbKey.Factory())
 .directive('swOptions',SWOptions.Factory())
 .directive('swSelection',SWSelection.Factory())
+.directive('swTooltip', SWTooltip.Factory())
 .directive('swClickOutside',SWClickOutside.Factory())
 .directive('swDirective',SWDirective.Factory())
 .directive('swExportAction',SWExportAction.Factory())

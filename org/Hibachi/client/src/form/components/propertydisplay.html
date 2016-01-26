@@ -11,11 +11,9 @@
         <span ng-if="propertyDisplay.object.validations.properties[propertyDisplay.property][0].required && propertyDisplay.fieldType === 'text'">*</span>
         <span class="j-tool-tip-item"
               ng-if="propertyDisplay.hint"
-              popover="{{propertyDisplay.hint}}"
-              popover-trigger="mouseenter"
-              popover-placement="top"
-              popover-popup-delay="50"
-              popover-append-to-body="true"
+              sw-tooltip
+              data-text="{{propertyDisplay.hint}}"
+              data-position="top"
                 >
             <i class="fa fa-question-circle"></i>
         </span>

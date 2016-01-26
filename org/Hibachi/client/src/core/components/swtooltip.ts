@@ -9,20 +9,26 @@ class SWTooltipController {
 
     // @ngInject
 	constructor(public rbkeyService){
-        this.text = rbkeyService.getRBKey(this.rbKey);
+        if(angular.isDefined(this.rbKey)){
+            this.text = rbkeyService.getRBKey(this.rbKey);
+        }
+        if(angular.isUndefined(this.position)){
+            this.position = "top";
+        }
 	}
 }
 
 class SWTooltip implements ng.IDirective{
 
 	public templateUrl;
-    public transclude=false;
-	public restrict = "E";
+    public transclude=true;
+	public restrict = "EA";
 	public scope = {}
 
 	public bindToController = {
-        rbKey:"@",
-        position:"@",
+        rbKey:"@?",
+        text:"@?",
+        position:"@?",
         showTooltip:"=?"
 	}
 	public controller=SWTooltipController;
@@ -34,11 +40,12 @@ class SWTooltip implements ng.IDirective{
     }
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-	   this.$document.on("mouseenter", ()=>{
+	   console.log("link", scope, element, transclude);
+       this.$document.on("mouseenter", ()=>{
            scope.swTooltip.showTooltip = true;
        });
        
-       this.$document.exit("mouseenter", ()=>{
+       this.$document.on("mouseexit", ()=>{
            scope.swTooltip.showTooltip = false;
        });
     }
