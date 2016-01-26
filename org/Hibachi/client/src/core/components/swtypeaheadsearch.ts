@@ -14,9 +14,10 @@ class SWTypeaheadSearchController {
 	public searchText:string  = "";
 	public results = [];
 	public addFunction;
+    public validateRequired:boolean; 
     public displayList = [];
 	public addButtonFunction;
-	public hideSearch = true;
+	public hideSearch:boolean;
 	public clickOutsideArguments;
     public resultsPromise;
     public resultsDeferred; 
@@ -31,6 +32,13 @@ class SWTypeaheadSearchController {
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
+        
+        if(angular.isUndefined(this.validateRequired)){
+            this.validateRequired = false; 
+        }
+        if(angular.isUndefined(this.hideSearch)){ 
+            this.hideSearch = true; 
+        }
 
         if(angular.isDefined(this.collectionConfig)){
             this.typeaheadCollectionConfig = this.collectionConfig; 
@@ -58,7 +66,6 @@ class SWTypeaheadSearchController {
 		} else {
 			this.typeaheadCollectionConfig.setAllRecords(true);
 		}
-        
 	}
     
     public clearSearch = () =>{
@@ -89,52 +96,29 @@ class SWTypeaheadSearchController {
             this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
          
-		if(search.length > 2){
-			this._timeoutPromise = this.$timeout(()=>{
+        this._timeoutPromise = this.$timeout(()=>{
 
-				var promise = this.typeaheadCollectionConfig.getEntity();
+            var promise = this.typeaheadCollectionConfig.getEntity();
 
-				promise.then( (response) =>{
-						if(angular.isDefined(this.allRecords) && this.allRecords == false){
-                            this.results = response.pageRecords;
-						} else {
-							this.results = response.records;
-						}
-                        
-						//Custom method for gravatar on accounts (non-persistant-property)
-						//if(angular.isDefined(this.results) && this.entity == "Account"){
-						//	angular.forEach(this.results,(account)=>{
-						//		account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-						//	});
-						//}
-
-				}).finally(()=>{
-                      this.resultsDeferred.resolve();
-                      this.hideSearch = false;
-                });
-			}, 500);
-		}  else if(search.length == 0){
-            this._timeoutPromise = this.$timeout(()=>{ 
-
-                var promise = this.typeaheadCollectionConfig.getEntity();
-
-                promise.then( (response) =>{
-                    
+            promise.then( (response) =>{
                     if(angular.isDefined(this.allRecords) && this.allRecords == false){
                         this.results = response.pageRecords;
                     } else {
                         this.results = response.records;
                     }
+                    
+                    //Custom method for gravatar on accounts (non-persistant-property)
+                    //if(angular.isDefined(this.results) && this.entity == "Account"){
+                    //	angular.forEach(this.results,(account)=>{
+                    //		account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+                    //	});
+                    //}
 
-                }).finally(()=>{
-                    this.resultsDeferred.resolve();
-                    this.hideSearch = false;
-                });
-			});
-       } else {
-			this.results = [];
-			this.hideSearch = true;
-		}
+            }).finally(()=>{
+                this.resultsDeferred.resolve();
+                this.hideSearch = (this.results.length == 0);
+            });
+        }, 500);
 	}
 
 	public addItem = (item)=>{
@@ -197,8 +181,9 @@ class SWTypeaheadSearch implements ng.IDirective{
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
-		hideSearch:"=",
-		clickOutsideArguments:"=?"
+        validateRequired:"=?",
+        clickOutsideArguments:"=?",
+		hideSearch:"="
 	}
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
@@ -208,7 +193,6 @@ class SWTypeaheadSearch implements ng.IDirective{
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-
         var target = element.find(".dropdown-menu");
         var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
         var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');

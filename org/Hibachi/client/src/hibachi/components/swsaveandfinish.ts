@@ -7,6 +7,7 @@ class SWSaveAndFinishController{
    public redirectUrl; 
    public redirectAction; 
    public redirectQueryString;
+   public customErrorRbkey;
    public finish;
    public openNewDialog;
    public partial;
@@ -14,7 +15,7 @@ class SWSaveAndFinishController{
    public saving = false;
     
    //@ngInject
-   constructor(public $hibachi, public dialogService, public alertService, public $log){
+   constructor(public $hibachi, public dialogService, public alertService, public rbkeyService, public $log){
        if(!angular.isFunction(this.entity.$$save)){
            throw("Your entity does not have the $$save function.");
        }
@@ -55,14 +56,20 @@ class SWSaveAndFinishController{
                     }
             }
        }).catch((data)=>{
-           var alert = this.alertService.newAlert();
-           alert.msg = data; 
-           alert.type = "error"; 
-           alert.fade = true; 
-           console.log("ALERT???",alert)
-           this.alertService.addAlert(alert);
+            if(angular.isDefined(this.customErrorRbkey)){
+                data = this.rbkeyService.getRBKey(this.customErrorRbkey)
+            } 
+            if(angular.isString(data)){
+                var alert = this.alertService.newAlert();
+                alert.msg = data; 
+                alert.type = "error"; 
+                alert.fade = true; 
+                this.alertService.addAlert(alert);
+            } else { 
+                this.alertService.addAlerts(data);
+            }   
        }).finally(()=>{
-           this.saving = false;
+            this.saving = false;
        });
    }
 }
@@ -81,7 +88,8 @@ class SWSaveAndFinish{
        redirectAction:"@?",
        redirectQueryString:"@?",
        finish:"@?",
-       partial:"@?"
+       partial:"@?",
+       customErrorRbkey:"@?"
    }
    //@ngInject
    constructor(private hibachiPartialsPath,hibachiPathBuilder){
