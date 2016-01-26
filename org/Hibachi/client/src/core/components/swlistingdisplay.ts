@@ -180,7 +180,7 @@ class SWListingDisplayController{
 
         //setup export action
         if(angular.isDefined(this.exportAction)){
-            this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
+            this.exportAction = this.$hibachi.buildUrl('main.collectionExport')+'&collectionExportID=';
         }
 
         //Setup Select

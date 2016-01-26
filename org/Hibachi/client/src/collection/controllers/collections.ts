@@ -13,7 +13,8 @@ class CollectionController{
 		metadataService,
 		selectionService,
 		paginationService,
-		collectionConfigService
+		collectionConfigService,
+        appConfig
 	){
 		//init values
 		//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
@@ -262,7 +263,7 @@ class CollectionController{
         //export action
         $scope.exportCollection = function(){
 
-            var url = '/?slatAction=main.collectionExport&collectionExportID='+$scope.collectionID+'&downloadReport=1';
+            var url = '/?'+appConfig.action+'=main.collectionExport&collectionExportID='+$scope.collectionID+'&downloadReport=1';
             var data = {"ids":selectionService.getSelections('collectionSelection')};
             var target="downloadCollection";
             $('body').append('<form action="'+url+'" method="post" target="'+target+'" id="postToIframe"></form>');

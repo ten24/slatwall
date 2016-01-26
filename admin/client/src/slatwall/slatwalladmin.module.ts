@@ -106,7 +106,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 
         // $rootScope.loadedResourceBundle = false;
         // $rootScope.loadedResourceBundle = $hibachi.hasResourceBundle();
-        $rootScope.buildUrl = $hibachi.buildUrl;
         $rootScope.createID = utilityService.createID;
 
         // var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
