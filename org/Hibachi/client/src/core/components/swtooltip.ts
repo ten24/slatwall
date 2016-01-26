@@ -16,6 +16,14 @@ class SWTooltipController {
             this.position = "top";
         }
 	}
+    
+    public show = () =>{
+        this.showTooltip = true; 
+    }
+    
+    public hide = () =>{
+        this.showTooltip = false; 
+    }
 }
 
 class SWTooltip implements ng.IDirective{
@@ -35,24 +43,37 @@ class SWTooltip implements ng.IDirective{
 	public controllerAs="swTooltip";
 
     // @ngInject
-	constructor( public $document, private corePartialsPath, hibachiPathBuilder){
+	constructor( public $document, private utilityService, private corePartialsPath, hibachiPathBuilder){
 	   this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "tooltip.html";
     }
 
-	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-	   console.log("link", scope, element, transclude);
-       this.$document.on("mouseenter", ()=>{
-           scope.swTooltip.showTooltip = true;
-       });
-       
-       this.$document.on("mouseexit", ()=>{
-           scope.swTooltip.showTooltip = false;
-       });
+	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) => {
+      var tooltip = element.find(".tooltip");
+      var elementPosition= element.position(); 
+      var tooltipStyle = tooltip[0].style; 
+      switch(attrs.position.toLowerCase()){
+          case 'top':
+            tooltipStyle.top = "0px"; 
+            tooltipStyle.left = "0px"; 
+            break; 
+          case 'bottom':
+            //where the element is rendered to begin with
+            break;
+          case 'left': 
+            tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5)  + "px"; 
+            tooltipStyle.left = (-1 * (elementPosition.left + element[0].offsetLeft - 5)) + "px";
+            element.find(".tooltip-inner")[0].style.maxWidth = "none";
+            break;
+          default: 
+          //right is the default
+            tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5) + "px"; 
+            tooltipStyle.left = (elementPosition.left + element[0].offsetWidth - 5) + "px";
+      }      
     }
     
 	public static Factory(){
-		var directive:ng.IDirectiveFactory = ($document,corePartialsPath,hibachiPathBuilder) => new SWTooltip($document,corePartialsPath,hibachiPathBuilder);
-		directive.$inject = ["$document","corePartialsPath","hibachiPathBuilder"];
+		var directive:ng.IDirectiveFactory = ($document,utilityService,corePartialsPath,hibachiPathBuilder) => new SWTooltip($document,utilityService,corePartialsPath,hibachiPathBuilder);
+		directive.$inject = ["$document","utilityService","corePartialsPath","hibachiPathBuilder"];
 		return directive;
 	}
 }
