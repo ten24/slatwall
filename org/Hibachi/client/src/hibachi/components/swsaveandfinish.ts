@@ -14,7 +14,7 @@ class SWSaveAndFinishController{
    public saving = false;
     
    //@ngInject
-   constructor(public $hibachi, public dialogService, public $log){
+   constructor(public $hibachi, public dialogService, public alertService, public $log){
        if(!angular.isFunction(this.entity.$$save)){
            throw("Your entity does not have the $$save function.");
        }
@@ -35,25 +35,34 @@ class SWSaveAndFinishController{
    }
    
    public save = () => {
-       this.saving = true; 
-       this.entity.$$save().then((data)=>{
-           this.dialogService.removeCurrentDialog(); 
-       }).finally((data)=>{
-           this.saving = false;
-           if(this.openNewDialog && angular.isDefined(this.partial)){
-               this.dialogService.addPageDialog(this.partial);
-           } else { 
-                if(angular.isDefined(this.redirectUrl)){
-                    window.location = this.redirectUrl;
-                } else if(angular.isDefined(this.redirectAction)) { 
-                    if(angular.isUndefined(this.redirectQueryString)){
-                        this.redirectQueryString = "";
+       this.saving = true;
+       var savePromise =  this.entity.$$save() 
+       
+       savePromise.then((data)=>{
+            this.dialogService.removeCurrentDialog(); 
+            if(this.openNewDialog && angular.isDefined(this.partial)){
+                this.dialogService.addPageDialog(this.partial);
+            } else { 
+                    if(angular.isDefined(this.redirectUrl)){
+                        window.location = this.redirectUrl;
+                    } else if(angular.isDefined(this.redirectAction)) { 
+                        if(angular.isUndefined(this.redirectQueryString)){
+                            this.redirectQueryString = "";
+                        }
+                        window.location = this.$hibachi.buildURL(this.redirectAction, this.redirectQueryString);
+                    } else { 
+                        this.$log.debug("You did not specify a redirect for swSaveAndFinish");
                     }
-                    window.location = this.$hibachi.buildURL(this.redirectAction, this.redirectQueryString);
-                } else { 
-                    this.$log.debug("You did not specify a redirect for swSaveAndFinish");
-                }
-           }
+            }
+       }).catch((data)=>{
+           var alert = this.alertService.newAlert();
+           alert.msg = data; 
+           alert.type = "error"; 
+           alert.fade = true; 
+           console.log("ALERT???",alert)
+           this.alertService.addAlert(alert);
+       }).finally(()=>{
+           this.saving = false;
        });
    }
 }
