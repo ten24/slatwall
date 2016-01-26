@@ -50,7 +50,7 @@ class SWSaveAndFinishController{
                         if(angular.isUndefined(this.redirectQueryString)){
                             this.redirectQueryString = "";
                         }
-                        window.location = this.$hibachi.buildURL(this.redirectAction, this.redirectQueryString);
+                        window.location = this.$hibachi.buildUrl(this.redirectAction, this.redirectQueryString);
                     } else { 
                         this.$log.debug("You did not specify a redirect for swSaveAndFinish");
                     }
