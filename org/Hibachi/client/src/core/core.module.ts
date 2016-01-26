@@ -19,6 +19,7 @@ import {GlobalSearchController} from "./controllers/globalsearch";
 
 //filters
 import {PercentageFilter} from "./filters/percentage";
+import {EntityRBKey} from "./filters/entityrbkey";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
@@ -41,6 +42,7 @@ import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
+import {SWTooltip} from "./components/swtooltip";
 import {SWRbKey} from "./components/swrbkey";
 import {SWOptions} from "./components/swoptions";
 import {SWSelection} from "./components/swselection";
@@ -52,10 +54,16 @@ import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 
+declare var $:any;
 
-
-var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPathBuilder','appConfig',($provide,hibachiPathBuilder,appConfig)=>{
-    hibachiPathBuilder.setBaseURL($.slatwall.getConfig().baseURL);
+var coremodule = angular.module('hibachi.core',[
+  //Angular Modules
+  'ngAnimate',
+  'ngSanitize',
+  //3rdParty modules
+  'ui.bootstrap'
+]).config(['$provide','hibachiPathBuilder','appConfig',($provide,hibachiPathBuilder,appConfig)=>{
+    hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
     $provide.decorator('$hibachi',[
         "$delegate",
@@ -193,7 +201,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPa
 
                     this.metaData.$$getDetailTabs = function(){
                         var deferred = $q.defer();
-                        var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getDetailTabs&entityName='+this.className;
+                        var urlString = _config.baseURL+'/index.cfm/?'+appConfig.action+'=api:main.getDetailTabs&entityName='+this.className;
                         var detailTabs = [];
                         $http.get(urlString)
                         .success(function(data){
@@ -1120,7 +1128,11 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPa
             return $delegate;
         }
     ]);
-}]).constant('hibachiPathBuilder',new HibachiPathBuilder())
+}])
+.run(['$rootScope','$hibachi',($rootScope,$hibachi)=>{
+    $rootScope.buildUrl = $hibachi.buildUrl;    
+}])    
+.constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
 .service('publicService',PublicService)
@@ -1135,6 +1147,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPa
 .controller('globalSearch',GlobalSearchController)
 //filters
 .filter('percentage',[PercentageFilter.Factory])
+.filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 //directives
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
 .directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
@@ -1159,6 +1172,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide','hibachiPa
 .directive('swRbkey',SWRbKey.Factory())
 .directive('swOptions',SWOptions.Factory())
 .directive('swSelection',SWSelection.Factory())
+.directive('swTooltip', SWTooltip.Factory())
 .directive('swClickOutside',SWClickOutside.Factory())
 .directive('swDirective',SWDirective.Factory())
 .directive('swExportAction',SWExportAction.Factory())

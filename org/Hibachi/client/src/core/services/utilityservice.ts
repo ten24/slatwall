@@ -177,6 +177,17 @@ class UtilityService extends BaseService{
               return array.join();
           }
       }
+      
+      public isDescendantElement = (parent, child) => {
+        var node = child.parentNode;
+        while (node != null) {
+            if (node == parent) {
+                return true;
+            }
+            node = node.parentNode;
+        }
+        return false;
+    }
 
      public listFind = (list:string='',value:string,delimiter:string=','):number =>{
           var splitString = list.split(delimiter);

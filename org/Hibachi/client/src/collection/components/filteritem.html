@@ -36,7 +36,7 @@
       <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
         <ul class="list-inline">
             <li class="s-comparison-operator" ng-bind="filterItem.comparisonOperator"></li>
-            <li class="s-filter-value" ng-bind="filterItem.displayValue | truncate:19" popover="{{filterItem.value}}" popover-trigger="mouseenter"></li>
+            <li class="s-filter-value" ng-bind="filterItem.displayValue | truncate:19" sw-tooltip data.text="{{filterItem.value}}"></li>
         </ul>
       </div>
     </div>
