@@ -223,7 +223,7 @@ class SWOrderItem{
 						"isDeletable":true
 						},
 						{
-							"propertyIdentifier":"_orderitem.sku.price",
+							"propertyIdentifier":"_orderitem.skuPrice",
 							"ormtype":"string"
 						},
 						{
