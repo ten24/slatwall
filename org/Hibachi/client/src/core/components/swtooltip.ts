@@ -72,8 +72,8 @@ class SWTooltip implements ng.IDirective{
     }
     
 	public static Factory(){
-		var directive:ng.IDirectiveFactory = ($document,utilityService,corePartialsPath,hibachiPathBuilder) => new SWTooltip($document,utilityService,corePartialsPath,hibachiPathBuilder);
-		directive.$inject = ["$document","utilityService","corePartialsPath","hibachiPathBuilder"];
+		var directive:ng.IDirectiveFactory = ($document,corePartialsPath,hibachiPathBuilder) => new SWTooltip($document,corePartialsPath,hibachiPathBuilder);
+		directive.$inject = ["$document","corePartialsPath","hibachiPathBuilder"];
 		return directive;
 	}
 }
