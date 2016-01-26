@@ -42,7 +42,7 @@ class ExceptionHandler {
 
 
         var requestConfig: ng.IRequestConfig = {
-            url : "?slatAction=api:main.log",
+            url : "?'+hibachiConfig.action+'=api:main.log",
             method : "POST",
             data : serializer({exception: exception, cause: cause, apiRequest: true}),
             headers : {'Content-Type' : "application/x-www-form-urlencoded"}

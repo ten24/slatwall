@@ -81,7 +81,7 @@
 	        var _this = this;
 	        this._resourceBundle = {};
 	        this.getData = function () {
-	            return _this.$http.get('index.cfm/?slatAction=api:main.getConfig')
+	            return _this.$http.get('index.cfm/?' + hibachiConfig.action + '=api:main.getConfig')
 	                .then(function (resp) {
 	                core_module_1.coremodule.constant('appConfig', resp.data.data);
 	                localStorage.setItem('appConfig', JSON.stringify(resp.data.data));
@@ -95,7 +95,7 @@
 	            if (_this._resourceBundle[locale]) {
 	                return _this._resourceBundle[locale];
 	            }
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
 	            _this.$http({
 	                url: urlString,
 	                method: "GET"
@@ -144,7 +144,7 @@
 	                    && localStorage.getItem('appConfig') !== 'undefined'
 	                    && localStorage.getItem('resourceBundles')
 	                    && localStorage.getItem('resourceBundles') !== 'undefined') {
-	                    return $http.get('index.cfm/?slatAction=api:main.getInstantiationKey')
+	                    return $http.get('index.cfm/?' + hibachiConfig.action + '=api:main.getInstantiationKey')
 	                        .then(function (resp) {
 	                        var appConfig = JSON.parse(localStorage.getItem('appConfig'));
 	                        if (resp.data.data === appConfig.instantiationKey) {
@@ -990,7 +990,7 @@
 	                        };
 	                        this.metaData.$$getDetailTabs = function () {
 	                            var deferred = $q.defer();
-	                            var urlString = _config.baseURL + '/index.cfm/?slatAction=api:main.getDetailTabs&entityName=' + this.className;
+	                            var urlString = _config.baseURL + '/index.cfm/?' + appConfig.action + '=api:main.getDetailTabs&entityName=' + this.className;
 	                            var detailTabs = [];
 	                            $http.get(urlString)
 	                                .success(function (data) {
@@ -1797,7 +1797,11 @@
 	                return $delegate;
 	            }
 	        ]);
-	    }]).constant('hibachiPathBuilder', new hibachipathbuilder_1.HibachiPathBuilder())
+	    }])
+	    .run(['$rootScope', '$hibachi', function ($rootScope, $hibachi) {
+	        $rootScope.buildUrl = $hibachi.buildUrl;
+	    }])
+	    .constant('hibachiPathBuilder', new hibachipathbuilder_1.HibachiPathBuilder())
 	    .constant('corePartialsPath', 'core/components/')
 	    .service('publicService', publicservice_1.PublicService)
 	    .service('utilityService', utilityservice_1.UtilityService)
@@ -2939,7 +2943,7 @@
 	            }
 	            var params = {};
 	            if (typeof options === 'string') {
-	                var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName + '&entityID=' + options;
+	                var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.get&entityName=' + entityName + '&entityID=' + options;
 	            }
 	            else {
 	                params['P:Current'] = options.currentPage || 1;
@@ -2957,7 +2961,7 @@
 	                params.processContext = options.processContext || '';
 	                console.log(_this.appConfig);
 	                console.log(_this.appConfig);
-	                var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName;
+	                var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.get&entityName=' + entityName;
 	            }
 	            var deferred = _this.$q.defer();
 	            if (angular.isDefined(options.id)) {
@@ -3005,7 +3009,7 @@
 	        };
 	        this.getResizedImageByProfileName = function (profileName, skuIDs) {
 	            var deferred = _this.$q.defer();
-	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3014,7 +3018,7 @@
 	        };
 	        this.getEventOptions = function (entityName) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName=' + entityName;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getEventOptionsByEntityName&entityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3024,20 +3028,20 @@
 	            return deferred.promise;
 	        };
 	        this.checkUniqueOrNullValue = function (object, property, value) {
-	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 	                '&value=' + escape(value)).then(function (results) {
 	                return results.data.uniqueStatus;
 	            });
 	        };
 	        this.checkUniqueValue = function (object, property, value) {
-	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 	                '&value=' + escape(value)).then(function (results) {
 	                return results.data.uniqueStatus;
 	            });
 	        };
 	        this.getPropertyDisplayData = function (entityName, options) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName=' + entityName;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getPropertyDisplayData&entityName=' + entityName;
 	            var params = {};
 	            params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 	            _this.$http.get(urlString, { params: params })
@@ -3050,7 +3054,7 @@
 	        };
 	        this.getPropertyDisplayOptions = function (entityName, options) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName=' + entityName;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getPropertyDisplayOptions&entityName=' + entityName;
 	            var params = {};
 	            params.property = options.property || '';
 	            if (angular.isDefined(options.argument1)) {
@@ -3067,7 +3071,7 @@
 	        this.saveEntity = function (entityName, id, params, context) {
 	            //$log.debug('save'+ entityName);
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.post';
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.post';
 	            if (angular.isDefined(entityName)) {
 	                params.entityName = entityName;
 	            }
@@ -3092,7 +3096,7 @@
 	        };
 	        this.getExistingCollectionsByBaseEntity = function (entityName) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3103,7 +3107,7 @@
 	        };
 	        this.getFilterPropertiesByBaseEntityName = function (entityName) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3131,7 +3135,7 @@
 	            if (_this._resourceBundle[locale]) {
 	                return _this._resourceBundle[locale];
 	            }
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
 	            _this.$http({
 	                url: urlString,
 	                method: "GET"
@@ -3146,7 +3150,7 @@
 	        };
 	        this.getCurrencies = function () {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + _this.appConfig.instantiationKey;
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getCurrencies&instantiationKey=' + _this.appConfig.instantiationKey;
 	            _this.$http.get(urlString).success(function (response) {
 	                deferred.resolve(response);
 	            }).error(function (response) {
@@ -3239,8 +3243,6 @@
 	var GlobalSearchController = (function () {
 	    //@ngInject
 	    function GlobalSearchController($scope, $log, $window, $timeout, $hibachi, rbkeyService) {
-	        console.log('test');
-	        console.log(rbkeyService);
 	        $scope.keywords = '';
 	        $scope.searchResultsOpen = false;
 	        $scope.sidebarClass = 'sidebar';
@@ -3316,7 +3318,7 @@
 	                                for (var i in data.pageRecords) {
 	                                    $scope.searchResults[entityName].results.push({
 	                                        'name': $scope.searchResults[entityName].resultNameFilter(data.pageRecords[i]),
-	                                        'link': '?slatAction=entity.detail' + entityName + '&' + entityName + 'ID=' + $scope.searchResults[entityName].id(data.pageRecords[i]),
+	                                        'link': $hibachi.buildUrl('entity.detail' + entityName) + '&' + entityName + 'ID=' + $scope.searchResults[entityName].id(data.pageRecords[i]),
 	                                    });
 	                                }
 	                                // Increment Down The Loading Count
@@ -4881,7 +4883,7 @@
 	            _this.collectionConfig.setCurrentPage(_this.paginator.currentPage);
 	            //setup export action
 	            if (angular.isDefined(_this.exportAction)) {
-	                _this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
+	                _this.exportAction = _this.$hibachi.buildUrl('main.collectionExport') + '&collectionExportID=';
 	            }
 	            //Setup Select
 	            if (_this.selectFieldName && _this.selectFieldName.length) {
@@ -6403,7 +6405,6 @@
 	        };
 	        // $rootScope.loadedResourceBundle = false;
 	        // $rootScope.loadedResourceBundle = $hibachi.hasResourceBundle();
-	        $rootScope.buildUrl = $hibachi.buildUrl;
 	        $rootScope.createID = utilityService.createID;
 	        // var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
 	        //     if(newValue !== oldValue){
@@ -7384,7 +7385,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var CollectionController = (function () {
 	    //@ngInject
-	    function CollectionController($scope, $location, $log, $timeout, $hibachi, collectionService, metadataService, selectionService, paginationService, collectionConfigService) {
+	    function CollectionController($scope, $location, $log, $timeout, $hibachi, collectionService, metadataService, selectionService, paginationService, collectionConfigService, appConfig) {
 	        //init values
 	        //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 	        $scope.$id = "collectionsController";
@@ -7594,7 +7595,7 @@
 	        $scope.filterCount = collectionService.getFilterCount;
 	        //export action
 	        $scope.exportCollection = function () {
-	            var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
+	            var url = '/?' + appConfig.action + '=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
 	            var data = { "ids": selectionService.getSelections('collectionSelection') };
 	            var target = "downloadCollection";
 	            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
@@ -8046,7 +8047,7 @@
 	                            $log.debug($scope.columns);
 	                            if (angular.isDefined(selectedProperty)) {
 	                                var column = {
-	                                    title: getTitleFromProperty(selectedProperty.propertyIdentifier),
+	                                    title: getTitleFromProperty(selectedProperty),
 	                                    propertyIdentifier: selectedProperty.propertyIdentifier,
 	                                    isVisible: true,
 	                                    isDeletable: true,
