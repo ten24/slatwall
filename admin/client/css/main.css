@@ -295,6 +295,10 @@ body.s-login-screen .form-group {
     padding: 0px /*Remove for responsive*/;
   }
 }
+.s-image-wrapper > img {
+  border: 3px solid #eee;
+  border-radius: 3px;
+}
 .no-records-found {
   font-style: italic;
   text-align: center;
