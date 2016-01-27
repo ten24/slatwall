@@ -54,6 +54,7 @@ Notes:
 
 <cfoutput>
 <hb:HibachiEntityActionBar type="listing" object="#rc.categorySmartList#" showCreate="false">
+</hb:HibachiEntityActionBar>
 <hb:HibachiListingDisplay smartList="#rc.categorySmartList#"
 						   recordDetailAction="admin:entity.detailcategory"
 						   recordDetailModal="true"

@@ -2769,6 +2769,7 @@ tabel .s-table-header {
 .s-body-nav .navbar h1 {
   padding: 0px;
   margin: 0px;
+  margin-top: 14px;
   font-size: 18px;
   font-weight: normal;
   vertical-align: middle;
