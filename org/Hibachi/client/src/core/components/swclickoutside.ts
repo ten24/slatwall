@@ -8,18 +8,18 @@ class SWClickOutside{
     
     public static Factory(){
         var directive = (
-            $document,$timeout
+            $document,$timeout,utilityService
         )=>new SWClickOutside(
-            $document,$timeout
+            $document,$timeout,utilityService
         );
         directive.$inject =[
-            '$document','$timeout'
+            '$document','$timeout','utilityService'
         ];
         return directive;
     }
     //@ngInject
     constructor(
-        public $document, public $timeout
+        public $document, public $timeout, public utilityService
     ){
         
     }
@@ -32,7 +32,7 @@ class SWClickOutside{
             if(angular.element(elem).hasClass("ng-hide")){
                 return;
             }
-            if(e.target !== elem && ! this.isDescendant(elem,e.target)){
+            if(e.target !== elem && ! this.utilityService.isDescendantElement(elem,e.target)){
                 this.$timeout(()=>{
                     $scope.swClickOutside();
                 });
@@ -40,16 +40,7 @@ class SWClickOutside{
         });
     }
     
-    private isDescendant = (parent, child) => {
-        var node = child.parentNode;
-        while (node != null) {
-            if (node == parent) {
-                return true;
-            }
-            node = node.parentNode;
-        }
-        return false;
-    }
+    
 }
     
 export{
