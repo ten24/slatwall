@@ -90,12 +90,16 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	
 	public void function onUpdateRequest() {
 		// Setup Default Data... Not called on soft reloads.
-		getBeanFactory().getBean("dataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
+		getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = ExpandPath("/Slatwall/config/dbdata"));
 		writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		
 		// Clear the setting cache so that it can be reloaded
 		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
 		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
+		
+		// Clear the setting meta cache so that it can be reloaded
+        	getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('settingService_');
+        	writeLog(file="Slatwall", text="General Log - Setting Meta cache has been cleared because of updated request");
 		
 		// Run Scripts
 		getBeanFactory().getBean("updateService").runScripts();

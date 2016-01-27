@@ -1,0 +1,70 @@
+
+  <div class="row" ng-if="column">
+    <div class="col-xs-5 s-pannel-name" j-column-index="{{columnIndex}}" data-test="$index">
+      <span ng-bind="columnIndex + 1"></span>
+      <i class="fa fa-arrows-v"></i>
+      <span class="s-pannel-title" title="{{column.title}}" ng-bind="column.displayTitle || column.title"></span>
+      <a class="s-pannel-title-edit" ng-click="editDisplayTitle()">edit</a>
+      <span class="s-title-edit-menu" ng-show="editingDisplayTitle">
+          <input type="text" class="form-control" ng-model="column.displayTitle">
+          <button ng-click="saveDisplayTitle()" type="button" class="btn btn-xs btn-primary s-save-btn">Save</button>
+          <button ng-click="cancelDisplayTitle()" type="button" class="btn btn-xs btn-default s-cancel-btn">Cancel</button>
+      </span>
+    </div>
+    <div class="col-xs-7 s-pannel-body">
+
+      <div class="btn-group">
+       <span class="s-sort-num">
+         <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" 
+         	title="Edit" 
+         	ng-show="column.sorting.active" 
+         	ng-bind="column.sorting.priority"
+         	ng-click="prioritize(column)"
+         >
+         </a>
+       </span>
+       <a 	data-no-drag 
+       		class="btn btn-default s-sort j-tool-tip-item" 
+       		title="Sort Order"
+       		ng-click="toggleSortable(column)"
+       	>
+       		<i  
+       		class="fa fa-sort"
+       			ng-class="{
+       				's-not-active':column.sorting.active === false,
+       				'fa-sort-amount-asc':column.sorting.sortOrder === 'asc',
+       				'fa-sort-amount-desc':column.sorting.sortOrder === 'desc'
+       			}"
+       			
+       		></i>
+       </a>
+        <a data-no-drag	class="btn btn-default j-tool-tip-item" title="Visible" 
+        	ng-class="{active:column.isVisible}"
+        	ng-click="toggleVisible(column)"
+        >
+        	<i class="fa fa-eye"></i>
+        </a>
+        <a data-no-drag	class="btn btn-default j-tool-tip-item" title="Search" 
+        	ng-class="{active:column.isSearchable && column.ormtype !== 'boolean',disabled:column.ormtype === 'boolean'}"
+        	ng-click="toggleSearchable(column)"	
+        >
+        	<i class="fa fa-search"></i>
+        </a>
+        <a data-no-drag	class="btn btn-default j-tool-tip-item" title="Export" 
+        	ng-class="{active:column.isExportable}"
+        	ng-click="toggleExportable(column)"	
+        >
+        	<i class="fa fa-download"></i>
+        </a> 
+        <a  ng-disabled="!column.isDeletable"
+        	data-no-drag	
+        	class="btn btn-default s-remove j-tool-tip-item" 
+        	title="Remove"
+        	ng-click="removeColumn(columnIndex)"
+        >
+        	<i class="fa fa-times"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>

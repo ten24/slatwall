@@ -50,7 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="contentDAO" type="any";
 
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="productService" type="any";
 	property name="settingService" type="any";
 	property name="skuService" type="any";
@@ -78,7 +78,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function getCMSTemplateOptions(required any content){
 		var templateDirectory = arguments.content.getSite().getTemplatesPath();
 		if(directoryExists(templateDirectory)) {
-			var directoryList = directoryList(templateDirectory,false,"query");
+			var directoryList = directoryList(templateDirectory,false,"query","*.cfm|*.html");
 			var templates = [];
 			for(var directory in directoryList){
 				var template ={};
@@ -173,7 +173,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			product.setProductType( productType );
 			product.setProductName( arguments.content.getTitle() );
 			product.setProductCode( arguments.processObject.getProductCode() );
-			product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.content.getTitle(), tableName="SwProduct") );
+			product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.content.getTitle(), tableName="SwProduct") );
 		}
 
 		// Find the sku

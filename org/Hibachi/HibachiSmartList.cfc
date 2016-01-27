@@ -744,6 +744,10 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	
 	public string function getBaseEntityPrimaryAliase() {
+		var idColumnNames = getService("hibachiService").getEntityORMMetaDataObject( getBaseEntityName() ).getIdentifierColumnNames();
+		if( arrayLen(idColumnNames) > 1) {
+			return getAliasedProperty( getService("hibachiService").getPrimaryIDPropertyNameByEntityName( getBaseEntityName() ) );
+		}
 		return "#variables.entities[ getBaseEntityName() ].entityAlias#.id";
 	}
 	

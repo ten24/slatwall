@@ -1,0 +1,45 @@
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].firstName" ng-value="recipient.firstName">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].lastName" ng-value="recipient.lastName">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].emailAddress" ng-value="recipient.emailAddress">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].giftMessage" ng-value="recipient.giftMessage">
+<input type="hidden" name="recipients[{{giftRecipientRowControl.index + 1}}].quantity" ng-value="recipient.quantity">
+
+<td ng-bind="recipient.firstName" ng-hide="recipient.editing" ng-if="!recipient.account"></td>
+<td ng-bind="recipient.lastName" ng-hide="recipient.editing" ng-if="!recipient.account"></td>
+<td ng-bind="recipient.emailAddress"  ng-hide="recipient.editing" ng-if="!recipient.account"></td>
+<td ng-bind="recipient.firstName" ng-if="recipient.account"></td>
+<td ng-bind="recipient.lastName"  ng-if="recipient.account"></td>
+<td ng-bind="recipient.emailAddress" ng-if="recipient.account"></td>
+<td ng-bind="recipient.giftMessage"  ng-hide="recipient.editing"></td>
+<td ng-bind="recipient.quantity"  ng-hide="recipient.editing"></td>
+<td class="admin admin2"  ng-hide="recipient.editing">
+	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
+	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
+	<input type="text" name="_rowRecipientFirstName" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName">
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
+	<input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName">
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
+	<input type="email" name="_rowRecipientEmail" class="form-control" ng-model="giftRecipientRowControl.recipient.emailAddress" required>
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing">
+	<textarea rows="4" cols="20" type="text" name="_rowRecipientGiftMessage" maxlength="250" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false"></textarea>
+	<div class="s-message-count"><strong>{{giftRecipientRowControl.getMessageCharactersLeft()}}</strong>/250</div>
+</td>
+
+<td class="s-table-input-element" ng-hide="!recipient.editing">
+	<select class="form-control" 
+		name="_rowRecipientQuantity"
+		ng-model="giftRecipientRowControl.recipient.quantity"
+		ng-options="quantity for quantity in giftRecipientRowControl.getUnassignedCountArray() track by quantity"
+		required>
+	</select>
+</td>
+<td class="admin admin2" ng-hide="!recipient.editing">
+	<a class="btn btn-default btn-xs btn-save" href="##" ng-click="giftRecipientRowControl.saveGiftRecipient(giftRecipientRowControl.recipient)" sw-rbkey="'define.save'"></a>
+</td>
+
+ 

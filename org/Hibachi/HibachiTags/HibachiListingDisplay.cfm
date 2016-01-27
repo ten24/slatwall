@@ -331,7 +331,7 @@
 				<ul class="list-inline list-unstyled">
 					<li class="s-table-header-search">
 						<cfif not thistag.expandable>
-							<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+							<input type="text" name="search" class="form-control general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
 						</cfif>
 					</li>
 					<li>

@@ -80,6 +80,28 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		ormFlush();
 	}
 
+	public void function password_reset_test() {
+
+		var accountData = {
+			accountID=lcase(Replace(createUUID(), '-', '', "All")),
+			accountAuthentications = [
+				{
+					accountAuthenticationID=lcase(Replace(createUUID(), '-', '', "All")),
+					expirationDateTime=dateAdd("d", 7, now())
+				},
+				{
+					accountAuthenticationID=lcase(Replace(createUUID(), '-', '', "All")),
+					expirationDateTime=dateAdd("d", -7, now())
+				}
+			]
+		};
+		var account = createPersistedTestEntity('account', accountData);
+		var accountID = account.getAccountID();
+		var auth1ID = account.getAccountAuthentications()[1].getAccountAuthenticationID();
+
+		assertEquals(lcase("#accountID##hash(auth1ID & accountID)#"), account.getPasswordResetID() );
+	}
+
 	public void function test_gift_card_relation(){
 		var accountData = {
 			accountID=""

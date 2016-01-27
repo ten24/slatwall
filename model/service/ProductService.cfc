@@ -53,7 +53,7 @@ component extends="HibachiService" accessors="true" {
 	property name="skuDAO" type="any";
 	property name="productTypeDAO" type="any";
 
-	property name="dataService" type="any";
+	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
 	property name="hibachiEventService" type="any";
@@ -656,6 +656,7 @@ component extends="HibachiService" accessors="true" {
 			newSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 		}
 		newSku.setProduct( arguments.product );
+		newSku.setRenewalSku( arguments.processObject.getRenewalSku());
 		newSku.setImageFile( newSku.generateImageFileName() );
 
 		return arguments.product;
@@ -813,10 +814,12 @@ component extends="HibachiService" accessors="true" {
 				var thisSku = this.newSku();
 				thisSku.setProduct(arguments.product);
 				thisSku.setPrice(arguments.processObject.getPrice());
-				thisSku.setRenewalPrice(arguments.processObject.getPrice());
+				if(!isNull(arguments.processObject.getRenewalPrice())){
+					thisSku.setRenewalPrice(arguments.processObject.getRenewalPrice());
+				}
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
 				thisSku.setSkuCode(product.getProductCode() & "-#i#");
-
+				thisSku.setRenewalSku(arguments.processObject.getRenewalSku());
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}
@@ -824,7 +827,9 @@ component extends="HibachiService" accessors="true" {
 					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 				}
 				if(i==1) {
-					product.setDefaultSku( thisSku );
+					arguments.product.setDefaultSku( thisSku );
+					arguments.product.setRenewalSku( arguments.processObject.getRenewalSku() );
+
 				}
 				thisSku.setImageFile(thisSku.generateImageFileName());
 			}
@@ -834,7 +839,7 @@ component extends="HibachiService" accessors="true" {
 		}
 
 		// Generate the URL Title
-		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
@@ -857,7 +862,7 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
 
-		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 
 		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
@@ -992,20 +997,19 @@ component extends="HibachiService" accessors="true" {
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productName, tableName="SwProduct");
 			} else if (!isNull(arguments.product.getProductName()) && len(arguments.product.getProductName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getProductName(), tableName="SwProduct");
 			}
 		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
-
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
 		}
 		if(isNull(arguments.product.getURLTitle())){
-			arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+			arguments.product.setURLTitle( getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		}
 		// Generate Image Files
 		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
@@ -1017,9 +1021,9 @@ component extends="HibachiService" accessors="true" {
 	public any function saveProductType(required any productType, struct data={}) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productTypeName") && len(arguments.data.productTypeName)) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");
 			} else if (!isNull(arguments.productType.getProductTypeName()) && len(arguments.productType.getProductTypeName())) {
-				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
+				data.urlTitle = getHibachiUtilityService().createUniqueURLTitle(titleString=arguments.productType.getProductTypeName(), tableName="SwProductType");
 			}
 		}
 
@@ -1075,6 +1079,12 @@ component extends="HibachiService" accessors="true" {
 		smartList.addKeywordProperty(propertyIdentifier="productType.productTypeName", weight=1);
 
 		return smartList;
+	}
+	
+	public any function getProductCollectionList(struct data={}, currentURL="") {
+		arguments.entityName = "Product";
+		var collectionList = getHibachiDAO().getCollectionList(argumentCollection=arguments);
+		return collectionList;
 	}
 
 	// ====================  END: Smart List Overrides ========================

@@ -1,0 +1,52 @@
+<div class="s-md-content-block-inner">
+	<div class="s-title">
+		Recipient Info
+		<div class="dropdown s-action">
+			<a href="##" class="dropdown-toggle hide" id="dropdownMenu" data-toggle="dropdown">
+				<i class="fa fa-ellipsis-h" title="actions"></i>
+			</a>
+			<ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
+				<li><a href="#">Change/Edit Recipient</a></li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="s-body">
+		<ul class="list-unstyled">
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-4 s-title">First Name:</div>
+					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_firstName"></div>
+				</div>
+			</li>
+
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-4 s-title">Last Name:</div>
+					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_lastName"></div>
+				</div>
+			</li>
+
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-4 s-title">Email:</div>
+					<div class="col-xs-8 s-value" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_emailAddress"></div>
+				</div>
+			</li>
+
+			<li>
+				<div class="row s-line-item">
+					<div class="col-xs-4 s-title">Message:</div>
+					<div class="col-xs-8 s-value">
+						<a href="##" data-toggle="collapse" data-target="#j-recipient-message" aria-expanded="false" aria-controls="collapseExample">View Message</a>
+					</div>
+				</div>
+				<div>
+					<div class="collapse" id="j-recipient-message">
+						<textarea class="form-control s-recipient-message" ng-bind="swGiftCardRecipientInfo.giftCard.orderItemGiftRecipient_giftMessage" disabled></textarea>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

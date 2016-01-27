@@ -11,11 +11,11 @@
     		"newOrderPayment":{"method":"isReturnWithGiftCardOrderPayment"}
     	}, 
     	"giftCardPayment":{
-    		"newOrderPayment.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}, 
+    		"newOrderPayment.paymentMethod.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}, 
     		"saveGiftCardToAccountFlag":{"eq":"false"}
     	},
     	"redeemGiftCardToAccount":{
-    		"newOrderPayment.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}, 
+    		"newOrderPayment.paymentMethod.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}, 
     		"saveGiftCardToAccountFlag":{"eq":"true"}
     	}
 	},

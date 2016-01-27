@@ -620,11 +620,11 @@
 				// Otherwise just remove the cmsAccountID & account authentication
 				} else {
 					
-					slatwallAccount.setCMSAccountID( javaCase("null", "") );
+					slatwallAccount.setCMSAccountID( javaCast("null", "") );
 					
-					for(var i=arrayLen(account.getAccountAuthentications()); i>=1; i--) {
-						if(!isNull(account.getAccountAuthentications()[i].getIntegration()) && account.getAccountAuthentications()[i].getIntegration().getIntegrationPackage() eq "mura") {
-							$.slatwall.getService("accountService").deleteAccountAuthentication(account.getAccountAuthentications()[i]);
+					for(var i=arrayLen(slatwallAccount.getAccountAuthentications()); i>=1; i--) {
+						if(!isNull(slatwallAccount.getAccountAuthentications()[i].getIntegration()) && slatwallAccount.getAccountAuthentications()[i].getIntegration().getIntegrationPackage() eq "mura") {
+							$.slatwall.getService("accountService").deleteAccountAuthentication(slatwallAccount.getAccountAuthentications()[i]);
 						}
 					}
 				}
@@ -722,7 +722,7 @@
 				if(slatwallSiteWasNew) {
 					slatwallSite.setSiteName( cmsSiteName );
 					slatwallSite.setSiteCode( 
-						$.slatwall.getService('DataService').createUniqueColumn(titleString='mura-#cmsSiteID#', tableName="SwSite",columnName="siteCode")	 
+						$.slatwall.getService('hibachiUtilityService').createUniqueColumn(titleString='mura-#cmsSiteID#', tableName="SwSite",columnName="siteCode")	 
 					);
 					$.slatwall.getService("siteService").saveSite( slatwallSite );
 					slatwallSite.setCMSSiteID( cmsSiteID );
@@ -1092,7 +1092,8 @@
 				SELECT
 					tcontentcategories.categoryID,
 					tcontentcategories.parentID,
-					tcontentcategories.name
+					tcontentcategories.name,
+					tcontentcategories.urltitle
 				FROM
 					tcontentcategories
 				  LEFT JOIN
@@ -1122,13 +1123,15 @@
 							categoryIDPath,
 							siteID,
 							cmsCategoryID,
-							categoryName
+							categoryName,
+							urlTitle
 						) VALUES (
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#newCategoryID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#newCategoryID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.categoryID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.urltitle#" />
 						)
 					</cfquery>
 				<!--- Creating Internal Page, or resetting if parent can't be found --->	
@@ -1155,7 +1158,8 @@
 								parentCategoryID,
 								siteID,
 								cmsCategoryID,
-								categoryName
+								categoryName,
+								urlTitle
 							) VALUES (
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#newCategoryID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#parentMappingCache[ missingCategoryQuery.parentID ].categoryIDPath#,#newCategoryID#" />,
@@ -1163,6 +1167,7 @@
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.categoryID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.urltitle#" />
 							)
 						</cfquery>
 					</cfif>

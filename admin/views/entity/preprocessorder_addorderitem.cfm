@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	
+
 	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
 
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
@@ -72,17 +72,31 @@ Notes:
 								<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
 							</cfif>
 							<input type="hidden" name="orderItemTypeSystemCode" value="#rc.processObject.getOrderItemTypeSystemCode()#" />
-	
+
 							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.itemDetails')#</h5>
 							<!--- Sku Properties --->
 							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuCode" edit="false">
 							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku().getProduct()#" property="productName" edit="false">
 							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
-	
+
 							<!--- Order Item Details --->
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#" fieldAttributes="ng-model='giftRecipientControl.quantity' sw-numbers-only min-number='giftRecipientControl.getAssignedCount()'">
+							<cfif rc.processObject.getSku().isGiftCardSku()>
+								<div ng-form="giftRecipientControl.quantityForm">
+									<div class="alert alert-error" ng-show="giftRecipientControl.quantityForm.$invalid"
+										 sw-rbkey="'admin.processorder_addorderitem.quantity.invalid'"></div>
+									<div class="form-group ">
+										<label for="quantity" class="control-label col-sm-4" style="text-align:left;">Quantity</label>
+										<div class="col-sm-8">
+											<input type="text" name="quantity" ng-bind="giftRecipientControl.quantity" readonly class="hide">
+											<input type="number" class="form-control" ng-value="#rc.processObject.getQuantity()#" ng-model="giftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" max-number="1000">
+										</div>
+									</div>
+								</div>
+							<cfelse>
+								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
+							</cfif>
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-	
+
 							<!--- Add form fields to add registrant accounts --->
 							<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
 								<cfset currentRegistrantCount = rc.processObject.getSku().getService("EventRegistrationService").getUnavailableSeatCountBySku(rc.processObject.getSku()) />
@@ -112,222 +126,112 @@ Notes:
 									<br>
 								</cfloop>
 							</cfif>
-	
+
 							<!--- Order Item Custom Attributes --->
 							<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
 								<hr />
 								<h5>#attributeSet.getAttributeSetName()#</h5>
 								<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
 							</cfloop>
-	
+
 							<!--- Order Fulfillment --->
 							<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
 								<hr />
 								<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.fulfillmentDetails')#</h5>
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
-	
+
 								<!--- New Order Fulfillment --->
 								<hb:HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
-	
+
 									<!--- Fulfillment Method --->
 									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
-	
+
 									<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
 									<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
 										<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
 											<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
 										</cfif>
 									</cfloop>
-	
+
 									<!--- Email Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
-	
+										<cfif !rc.processObject.getSku().isGiftCardSku()>
 										<!--- Email Address --->
-										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
+											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
+										</cfif>
 									</hb:HibachiDisplayToggle>
-	
+
 									<!--- Pickup Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
-	
+
 										<!--- Pickup Location --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" />
 									</hb:HibachiDisplayToggle>
-	
+
 									<!--- Shipping Fulfillment Details --->
 									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
-	
+
 										<!--- Setup the primary address as the default account address --->
 										<cfset defaultValue = "" />
-									
+
 									<cfif !isNull(rc.order.getAccount())>
 										<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
 											<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
 											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 										</cfif>
-	
+
 										<!--- Account Address --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
 									</cfif>
-	
+
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
-	
+
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
-	
+
 										<cfif !isNull(rc.order.getAccount())>
 											<!--- Save New Address --->
 											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
-	
+
 											<!--- Save New Address Name --->
 											<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
 												<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
 											</hb:HibachiDisplayToggle>
 										</cfif>
-	
+
 										</hb:HibachiDisplayToggle>
-	
+
 									</hb:HibachiDisplayToggle>
-	
-	
-	
+
+
+
 								</hb:HibachiDisplayToggle>
 							<cfelse>
 								<!--- Order Return --->
 								<hr />
 								<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.returnDetails')#</h5>
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
-	
+
 								<!--- New Order Return --->
 								<hb:HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
-	
+
 									<!--- Return Location --->
 									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">
-	
+
 									<!--- Fulfillment Refund Amount --->
 									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-	
+
 								</hb:HibachiDisplayToggle>
 							</cfif>
 						</hb:HibachiPropertyList>
-	
+
 					</hb:HibachiPropertyRow>
-	
+
 					<cfif rc.processObject.getSku().isGiftCardSku()>
-					<div>
-						<!--- Process Add Order Item Gift Recipient --->
-						<hr/>
-						<h5>Assign Gift Cards</h5>
-                        <input type="hidden" name="assignedGiftRecipientQuantity" ng-value="giftRecipientControl.getAssignedCount()" /> 
-						<div class="table-responsive s-gift-card-table">			
-							<div ng-show="giftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{giftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="giftRecipientControl.getUnassignedCount() == 1">s</span> to assign</strong></div>
-							<div ng-show="giftRecipientControl.getUnassignedCount() != giftRecipientControl.quantity">
-								<table class="table table-bordered table-hover">
-							        <thead>
-							            <tr>
-							                <th>#$.slatwall.rbKey('define.firstName')#</th>
-                                            <th>#$.slatwall.rbKey('define.lastName')#</th>
-									        <th>#$.slatwall.rbKey('define.email')#</th>
-									        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
-									        <th>#$.slatwall.rbKey('define.quantity')#</th>
-									        <th></th>
-							            </tr>
-							        </thead>
-							        <tbody>
-							        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" index="$index" recipients="giftRecipientControl.orderItemGiftRecipients" quantity="giftRecipientControl.quantity">
-	                        
-							        	</tr>
-							        </tbody>
-							    </table>
-							</div>
-						</div>
-	
-						<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
-							<div class="s-search-filter s-gift-card">
-		                        <div class="input-group">
-									<form>
-										<div class="s-search">
-		                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="giftRecipientControl.searchText" ng-change="giftRecipientControl.updateResults(giftRecipientControl.searchText)">
-											<i class="fa fa-search"></i>
-										</div>
-									</form>
-									
-	                				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
-	  									<!-- Item-->
-	  									<li ng-repeat="account in collection.pageRecords">
-	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
-	  											<div class="row">
-	  												<div class="col-xs-2 s-photo">
-	  													<img src="{{account.gravatar}}">
-	  												</div>
-	  												<div class="col-xs-10 s-info">
-	  													<div class="s-name">
-															<span ng-bind="account.firstName"></span> 
-															<span ng-bind="account.lastName"></span>
-														</div>
-	  													<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
-	  												</div>
-	  											</div>
-	  										</a>
-	  									</li>
-	  									<!-- //Item-->
-		                			</ul>
-	
-		                        </div>
-		                        <div>
-		                            <!-- Only show if there is text -->
-		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText != ''" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
-		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
-		                            </button>
-		                        </div>
-								<div class="s-add-info-dropdown" ng-hide="!giftRecipientControl.adding">
-									<div class="s-add-info-dropdown-inner">
-								
-										<h5>Create New Recipient</h5>
-										<div class="form-group">
-											<label>First Name<i class="fa fa-asterisk"></i></label>
-											<input name="_recipientFirstName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.firstName" required>
-										</div>
-										<div class="form-group">
-											<label>Last Name<i class="fa fa-asterisk"></i></label>
-											<input name="_recipientLastName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.lastName" required>
-										</div>
-										<div class="form-group">
-											<label>Email<i class="fa fa-asterisk"></i></label>
-											<input name="_recipientEmail" type="email" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.email" required>
-										</div>
-										<div class="form-group">
-											<label>Message (limited to 250)</label>
-											<textarea name="_recipientMessage" class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage" ng-trim="false"></textarea>
-											<div class="s-character-count">
-												Remaining characters: <strong><span ng-bind="giftRecipientControl.getMessageCharactersLeft()"></span></strong>
-											</div>
-										</div>
-										<div class="form-group">
-											<label>Qty</label>
-											<select class="form-control"
-                                                    name="_recipientQuantity"
-                                                    type="number"
-													ng-model="giftRecipientControl.currentGiftRecipient.quantity"
-													ng-options="quantity for quantity in giftRecipientControl.getUnassignedCountArray() track by quantity"
-                                                    required
-											>
-											</select>
-										</div>
-										<div>
-											<button type="button" class="btn btn-sm btn-primary" ng-click="giftRecipientControl.addGiftRecipient()">Add Recipient</button>
-        									<button type="button" class="btn btn-sm btn-default">Cancel</button>
-										</div>
-									</div>
-								</div>
-							</div>
-	            			<!---End Search--->
-						</div>
-						<!---End Gift Recipient--->
-	
-					</div>
-				</cfif>
+						<div sw-add-order-item-gift-recipient quantity="giftRecipientControl.quantity" order-item-gift-recipients="giftRecipientControl.orderItemGiftRecipients"></div>
+					</cfif>
 			</span>
 		<cfelse>
 			<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>

@@ -2,45 +2,45 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
+
+    You should have received a copy of the GNU General Public License 
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
@@ -51,24 +51,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
-		
-		variables.entityService = request.slatwallScope.getService("collectionService");
+
+		variables.entityService = request.slatwallScope.getService("hibachiCollectionService");
 		variables.entity = variables.entityService.newCollection();
 		variables.entity.setCollectionObject('Account');
-		
+
+
 	}
-	
+
 //	tests need default data inserted before asserting
 //	public void function addFilterTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
-//		
+//
 //		myCollection.addFilter('asdf','tester444');
 //		myCollection.addFilter('productName','tester444');
 //		myCollection.addFilter('activeFlag','YES');
 //		var pageRecords = myCollection.getPageRecords();
 //		request.debug(myCollection.getHQL());
 //	}
-//	
+//
 //	public void function displayPropertyTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
 //		myCollection.setDisplayProperties('productCode,activeFlag');
@@ -86,23 +87,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		request.debug(pageRecords);
 //	}
 
-	
 
-	public void function addDisplayAggregateTest(){
 
-		
+//	public void function addDisplayAggregateTest(){
+//
+//
+//
+//		var myCollection = variables.entityService.getSkuCollectionList();
+//		myCollection.setDisplayProperties('product.productName,price');
+//		myCollection.addFilter('skuID','402828904e79c0a5014e8dc30190060c');
+//		myCollection.addDisplayAggregate('product','count','productCount');
+//		var aggregateHQL = myCollection.getHQL();
+//		//debug(aggregateHQL);
+//		var pageRecords = myCollection.getPageRecords();
+//		//debug(pageRecords);
+//		assertEquals(1,pageRecords[1]['productCount']);
+//	}
 
-		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.setDisplayProperties('product.productName,price');
-		myCollection.addFilter('skuID','402828904e79c0a5014e8dc30190060c');
-		myCollection.addDisplayAggregate('product','count','productCount');
-		var aggregateHQL = myCollection.getHQL();
-		//debug(aggregateHQL);
-		var pageRecords = myCollection.getPageRecords();
-		//debug(pageRecords);
-		assertEquals(1,pageRecords[1]['productCount']);		
-	}
-	
 //	public void function addDisplayAggregate_one_to_manyTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
 //		myCollection.setDisplayProperties('productName');
@@ -112,11 +113,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		debug(aggregateHQL);
 //		var pageRecords = myCollection.getPageRecords();
 //		debug(pageRecords);
-//		//assertEquals(1,pageRecords[1]['skuCount']);		
-//	
+//		//assertEquals(1,pageRecords[1]['skuCount']);
+//
 //	}
-	
-	public void function addDisplayAggregateSUMTest(){
+
+	/*public void function addDisplayAggregateSUMTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.setDisplayProperties('skuID,price');
 		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
@@ -124,20 +125,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var aggregateHQL = myCollection.getHQL();
 		var pageRecords = myCollection.getPageRecords();
 
-		assertEquals(30.00,pageRecords[1]['productPriceTotal']);	
+		assertEquals(30.00,pageRecords[1]['productPriceTotal']);
 	}
-	
+
 	public void function addDisplayAggregateAVGTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
 		myCollection.addDisplayAggregate('price','avg','productMinPrice');
 
 		var pageRecords = myCollection.getPageRecords();
-
-		assertEquals(15.00,pageRecords[1]['productMinPrice']);	
+		request.debug(pageRecords);
+		assertEquals(15.00,pageRecords[1]['productMinPrice']);
 	}
-	
-	
+
+
 	public void function addDisplayAggregateMINTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
@@ -145,9 +146,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getPageRecords();
 
-		assertEquals(10.00,pageRecords[1]['productMaxPrice']);	
+		assertEquals(10.00,pageRecords[1]['productMaxPrice']);
 	}
-	
+
 	public void function addDisplayAggregateMAXTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
@@ -155,9 +156,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getPageRecords();
 
-		assertEquals(20.00,pageRecords[1]['productPriceTotal']);	
+		assertEquals(20.00,pageRecords[1]['productPriceTotal']);
 	}
-	
+
 	public void function addDisplayAggregateCOUNTTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
@@ -165,32 +166,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var pageRecords = myCollection.getPageRecords();
 		assertEquals(2,pageRecords[1]['productCountTotal']);
-		
+
 		myCollection = variables.entityService.getContentCollectionList();
 		myCollection.setDisplayProperties('site.siteName,title');
 		myCollection.addFilter('parentContent','NULL','IS');
 		myCollection.addDisplayAggregate('childContents','count','childContentsCountTotal');
-		
+
 		pageRecords = myCollection.getPageRecords();
-		
-	}
 
-		
+	}*/
 
-//	
+
+
+//
 //	public void function loopOverCollectionTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
 //
 //		myCollection.addFilter('productCode','tester444');
 //		myCollection.setDisplayProperties('productName,productCode,activeFlag');
-//		
+//
 //		myCollection.setOrderBy('activeFlag|desc,productCode|asc');
 //		var pageRecords = myCollection.getPageRecords();
 //		request.debug(pageRecords);
 //	}
 
-	
-	
+
+
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
 		var propertyIdentifier = "Account.firstName";
@@ -198,11 +199,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			aggregateFunction = "count",
 			aggregateAlias = "Account_firstName"
 		};
-		request.debug(lcase(replace(createUUID(),'-','')));
+		//request.debug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
-		assertFalse(Compare("COUNT(Account.firstName) as Account_firstName",trim(aggregateHQL)));
+		//request.debug(aggregateHQL);
+		assertFalse(Compare("COUNT(DISTINCT Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
-	
+
 	public void function addHQLParamTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -213,16 +215,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionObject = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		
+
 		collectionEntity.addHQLParam('testKey','testValue');
 		var HQLParams = collectionEntity.getHQLParams();
-		
+
 		assertTrue(structKeyExists(HQLParams,'testKey'));
 		assertEquals(HQLParams['testKey'],'testValue');
 	}
-	
+
 	public void function addHQLParamsFromNestedCollectionTest(){
-		
+
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'RyansAccountOrders',
@@ -230,12 +232,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionConfig = '{}
 			',
 			collectionObject = "SlatwallAccount"
-			
+
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		collectionEntity.getHQLParams()['testKey'] = 'testValue';
 		collectionEntity.getHQLParams()['testKey2'] = 'testValue2';
-		
+
 		var collectionEntityData2 = {
 			collectionid = '',
 			collectionCode = 'RyansAccountOrders2',
@@ -243,22 +245,22 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionConfig = '{}
 			',
 			baseEntityName = "SlatwallAccount"
-			
+
 		};
 		var collectionEntity2 = createPersistedTestEntity('collection',collectionEntityData2);
 		collectionEntity2.getHQLParams()['testKey3'] = 'testValue3';
 		collectionEntity2.getHQLParams()['testKey4'] = 'testValue4';
-		
-		
+
+
 		assertEquals(2,structCount(collectionEntity2.getHQLParams()));
 		makePublic(collectionEntity2,'addHQLParamsFromNestedCollection');
 		collectionEntity2.addHQLParamsFromNestedCollection(collectionEntity.getHQLParams());
-		
+
 		assertEquals(2,structCount(collectionEntity.getHQLParams()));
 		assertEquals(4,structCount(collectionEntity2.getHQLParams()));
 	}
-	
-	
+
+
 	/* TODO:write complete test data to verify getRecords and getRecordsCount methods*/
 	/*
 	public void function getRecordsCountTest(){
@@ -272,17 +274,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 			',
 			baseEntityName = "SlatwallAccount"
-			
+
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		
+
 		var recordsCount = collectionEntity.getRecordsCount();
-		
+
 		//request.debug(recordsCount);
 		//request.debug(collectionEntity.getHQL());
-		
+
 	}
-	
+
 	public void function getRecords(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -294,16 +296,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 			',
 			baseEntityName = "SlatwallAccount"
-			
+
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		
+
 		var records = collectionEntity.getRecords();
-		
+
 		//request.debug(records);
 	}
 	*/
-	
+
 	public void function deserializeCollectionConfigTest(){
 		makePublic(variables.entity,'deserializeCollectionConfig');
 		var collectionEntityData = {
@@ -336,7 +338,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"groupBy":[
 						{
-							"propertyIdentifier":"accountID" 
+							"propertyIdentifier":"accountID"
 						}
 					],
 					"filterGroups":[
@@ -348,10 +350,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"Ryan"
 								}
 							]
-							
+
 						}
 					]
-					
+
 				}
 			',
 			collectionObject = "SlatwallAccount"
@@ -361,8 +363,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(isJSON(deserializedCollectionConfig));
 		assertTrue(isStruct(deserializedCollectionConfig));
 	}
-	
-	
+
+
 	public void function getHQLFilteringWithOtherCollectionTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -395,7 +397,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"groupBy":[
 						{
-							"propertyIdentifier":"accountID" 
+							"propertyIdentifier":"accountID"
 						}
 					],
 					"filterGroups":[
@@ -409,13 +411,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							]
 						}
 					]
-					
+
 				}
 			',
 			baseEntityName = "SlatwallAccount"
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		
+
 		var collectionEntityData2 = {
 			collectionid = '',
 			collectionCode = 'AccountOrders',
@@ -447,7 +449,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"groupBy":[
 						{
-							"propertyIdentifier":"accountID" 
+							"propertyIdentifier":"accountID"
 						}
 					],
 					"filterGroups":[
@@ -459,18 +461,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"Ryan"
 								}
 							]
-							
+
 						}
 					]
-					
+
 				}
 			'
 		};
 		var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
-		
+
 		var collectionEntityHQL = collectionEntity.getHQL();
 		var testquery = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
-		
+
 	}
 	/* TODO: need default data for the pagination record to be correct*/
 	/*public void function getPageRecordsTest(){
@@ -485,9 +487,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"columns":[
 						{
 							"propertyIdentifier":"_Order.orderID"
-							
+
 						}
-						
+
 					]
 				}
 			'
@@ -498,13 +500,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(10,arrayLen(pageRecords));
 		//request.debug(pageRecords);
 	}*/
-	
+
 	public void function validate_as_save_for_a_new_instance_doesnt_pass(){
-		
+
 	}
-	
+
 	public void function getHQLNestedFilterTest(){
-		
+
 		var collectionEntityData = {
 			collectionid = '',
 			collectionCode = 'BestAccounts',
@@ -517,7 +519,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"columns":[
 						{
 							"propertyIdentifier":"Account.firstName"
-							
+
 						},
 						{
 							"propertyIdentifier":"Account.lastName"
@@ -528,9 +530,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						{
 							"propertyIdentifier":"Account_accountEmailAddresses_accountEmailType.type"
 						}
-						
+
 					],
-					
+
 					"orderBy":[
 						{
 							"propertyIdentifier":"Account.firstName",
@@ -590,20 +592,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							]
 						}
 					]
-					
+
 				}
 			'
 		};
 
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		
+
 		//creating a post filter group struct
 		var postOrderBy = {
 				"propertyIdentifier":"Account_accountEmailAddresses.emailAddress",
 				"direction":"DESC"
 			};
-		
-		
+
+
 		var postFilterGroup = {
 			logicalOperator = "AND",
 			filterGroup = [
@@ -614,41 +616,41 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			]
 		};
-		
+
 		//collectionEntity.addPostOrderBy(postOrderBy);
 		////request.debug(collectionEntity.getPostOrderBys());
-		
+
 		//collectionEntity.addPostFilterGroup(postFilterGroup);
-		
+
 		////request.debug(collectionEntity.getPostFilterGroups());
-		
+
 		//var collectionEntityHQL = collectionEntity.getHQL();
-		
+
 		////request.debug(collectionEntityHQL);
 		////request.debug(collectionEntity);
 		////request.debug(collectionEntity.gethqlParams());
 		//ORMExecuteQuery('FROM SlatwallAccount where accountID = :p1',{p1='2'});
-		
+
 		//var query = collectionEntity.executeHQL();
 		//var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
-		
+
 	}
 	/*
 	public any function getProductSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallProduct";
-		
+
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
-		
+
 		smartList.joinRelatedProperty("SlatwallProduct", "productType");
 		smartList.joinRelatedProperty("SlatwallProduct", "defaultSku");
 		smartList.joinRelatedProperty("SlatwallProduct", "brand", "left");
-		
+
 		smartList.addKeywordProperty(propertyIdentifier="calculatedTitle", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="brand.brandName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="productCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="productType.productTypeName", weight=1);
-		
+
 		return smartList;
 	}*/
 	public void function productSmartList_test(){
@@ -665,9 +667,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					propertyIdentifier="_product.productName"
 				}
 			],
-			"filterGroups":[  
-			      {  
-			         "filterGroup":[  
+			"filterGroups":[
+			      {
+			         "filterGroup":[
 						{
 							propertyIdentifier="_product.productID",
 							comparisonOperator="=",
@@ -678,20 +680,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			]
 		};
 		productCollection.setCollectionConfig(serializeJson(collectionConfig));
-		
-		
+
+
 	}
-	
+
 	public void function getHQLTest_date_in_range(){
 		var collectionData = {
 			collectionid = '',
 			collectionName='dateInRange',
 			collectionConfig = '
-				{  
+				{
 				   "baseEntityName":"SlatwallAccount",
 				   "baseEntityAlias":"_account",
-				   "columns":[  
-				      {  
+				   "columns":[
+				      {
 				         "isDeletable":false,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.accountID",
@@ -699,13 +701,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":false,
 				         "isSearchable":true,
 				         "title":"accountID",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.superUserFlag",
@@ -713,13 +715,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Super User",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.firstName",
@@ -727,13 +729,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"First Name",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.lastName",
@@ -741,13 +743,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Last Name",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.company",
@@ -755,13 +757,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Company",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.loginLockExpiresDateTime",
@@ -769,13 +771,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Account Locked",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.failedLoginAttemptCount",
@@ -783,13 +785,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Failed Login Attempts",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.cmsAccountID",
@@ -797,13 +799,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"CMS Account ID",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.remoteEmployeeID",
@@ -811,13 +813,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Remote Employee ID",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.remoteCustomerID",
@@ -825,13 +827,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Remote Customer ID",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.remoteContactID",
@@ -839,13 +841,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Remote Contact ID",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.createdByAccountID",
@@ -853,13 +855,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Created By AccountID",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "isDeletable":true,
 				         "isExportable":true,
 				         "propertyIdentifier":"_account.modifiedByAccountID",
@@ -867,33 +869,33 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         "isVisible":true,
 				         "isSearchable":true,
 				         "title":"Modified By AccountID",
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      },
-				      {  
+				      {
 				         "title":"Created Date Time",
 				         "propertyIdentifier":"_account.createdDateTime",
 				         "isVisible":true,
 				         "isDeletable":true,
-				         "sorting":{  
+				         "sorting":{
 				            "active":false,
 				            "sortOrder":"asc",
 				            "priority":0
 				         }
 				      }
 				   ],
-				   "filterGroups":[  
-				      {  
-				         "filterGroup":[  
-				            {  
+				   "filterGroups":[
+				      {
+				         "filterGroup":[
+				            {
 				               "displayPropertyIdentifier":"Created Date Time",
 				               "propertyIdentifier":"_account.createdDateTime",
 				               "comparisonOperator":"between",
-				               "breadCrumbs":[  
-				                  {  
+				               "breadCrumbs":[
+				                  {
 				                     "rbKey":"Account",
 				                     "entityAlias":"_account",
 				                     "cfc":"_account",
@@ -908,13 +910,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				         ]
 				      }
 				   ]
-				}	
+				}
 			'
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionData);
 		//request.debug(collectionEntity.getPageRecords());
 	}
-	
+
 	public void function getHQLTest_Contains(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -925,7 +927,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					"baseEntityName":"SlatwallAccount",
 					"baseEntityAlias":"Account",
 					"columns":[{"propertyIdentifier":"Account.accountID"},{"propertyIdentifier":"Account.superUserFlag"},{"propertyIdentifier":"Account.firstName"},{"propertyIdentifier":"Account.lastName"},{"propertyIdentifier":"Account.company"},{"propertyIdentifier":"Account.cmsAccountID"},{"propertyIdentifier":"Account.remoteEmployeeID"},{"propertyIdentifier":"Account.remoteCustomerID"},{"propertyIdentifier":"Account.remoteContactID"},{"propertyIdentifier":"Account.createdByAccountID"},{"propertyIdentifier":"Account.modifiedByAccountID"}]
-		
+
 					"filterGroups":[
 						{
 							"filterGroup":[
@@ -935,18 +937,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"Ryan%"
 								}
 							]
-							
+
 						}
 					]
-					
+
 				}
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		
+
 		//request.debug(collectionBestAcountEmailAddresses.getPageRecords());
 	}
-	
+
 	public void function getHQLTest_dateFilter(){
 		var collectionBestAcountEmailAddressesData = {
 		collectionid = '',
@@ -986,11 +988,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			  ]
 			}'
 		};
-		
+
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
 		var items = ormExecuteQUery("FROM SlatwallAccount as Account where ( Account.superUserFlag = true OR Account.firstName = 'Ryan' AND Account.createdDateTime BETWEEN 1407556800000 AND 1407643199999 )");
 	}
-	
+
 	public void function getHQLTest(){
 		/*var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -1000,7 +1002,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					"baseEntityName":"SlatwallAccountEmailAddress",
 					"baseEntityAlias":"AccountEmailAddress",
-					
+
 					"filterGroups":[
 						{
 							"filterGroup":[
@@ -1010,16 +1012,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
-							
+
 						}
 					]
-					
+
 				}
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
 		*/
-		
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'BestAccounts',
@@ -1041,21 +1043,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			]
 		}*/
-		/*//request.debug(ORMExecuteQuery("SELECT attributeValue 
+		/*//request.debug(ORMExecuteQuery("SELECT attributeValue
 					FROM SlatwallAttributeValue
 					WHERE attribute.attributeID = '2c909fea47fa423b014884fd8eea0919'"));*/
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
-		
-		
-		
+
+
+
 	}
-	
+
 	public void function getHQLTest_exists_in_collection(){
-		
-		
-		
+
+
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'BestAccounts',
@@ -1077,15 +1079,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
-		
-		
-		
+
+
+
 	}
-	
+
 	public void function getHQLTest_list(){
-		
-		
-		
+
+
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'BestAccounts',
@@ -1105,20 +1107,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
-		
-		
-		
+
+
+
 	}
-	
+
 	public void function getHQLTest_keywords_with_filterGroup(){
-		
+
 		//acount data
-	
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'keywordAccount',
 			collectionObject = 'account',
-			
+
 			collectionConfig = '
 				{
 				  "baseEntityName": "SlatwallAccount",
@@ -1164,24 +1166,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			'
 		};
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		
-		
+
+
 		collectionEntity.setKeywords('Ryan Marchand');
 		//request.debug(collectionEntity.getHQL());
 		request.debug(collectionEntity.getRecords());
 	}
-	
+
 	public void function getHQLTest_keywords_without_filterGroup(){
-		
+
 		//acount data
-	
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'keywordAccount',
 			collectionObject = 'account',
-			
+
 			collectionConfig = '
 				{
 				  "baseEntityName": "SlatwallAccount",
@@ -1209,8 +1211,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			'
 		};
-		
-		
+
+
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		collectionEntity.setKeywords('Ryan Marchand');
 		request.debug(collectionEntity.getHQL());
@@ -1281,14 +1283,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(collectionEntity.getHQL());
 	}
 
-	
+
 	public void function getHQLTest_notpersistent(){
-	
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'BestAccounts',
 			collectionObject = 'orderItem',
-			
+
 			collectionConfig = '
 				{
 				  "baseEntityName": "SlatwallOrderItem",
@@ -1328,7 +1330,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var orderItem = request.slatwallScope.getService( 'hibachiService' ).newOrderItem();
-		
+
 		var sku = request.slatwallScope.getService( 'skuService' ).newSku();
 		sku.setPrice(9.50);
 		orderItem.setQuantity(5);
@@ -1336,18 +1338,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//var test = '';
 		//test = orderItem.getitemTotal();
 		//request.debug(test);
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
 	}
-	
+
 	public void function hasNonPersistentColumn(){
-	
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'BestAccounts',
 			collectionObject = 'orderItem',
-			
+
 			collectionConfig = '
 				{
 				  "baseEntityName": "SlatwallOrderItem",
@@ -1386,13 +1388,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			'
 		};
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		//MakePublic(collectionEntity,'hasNonPersistentColumn');
-		
+
 		//request.debug(collectionEntity.getNonPersistentColumn());
 	}
-	
+
 	public void function getHQLTest_emptyFilterGroup(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
@@ -1433,15 +1435,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		
-		
+
+
 		//ormexecutequery('FROM SlatwallAccount as Account where   (  (  Account.superUserFlag = "true"  OR Account.firstName = "true" ) )');
 		////request.debug(collectionEntity.getHQL());
-		 
+
 	}
-	
+
 	public void function getHQLTest_joins(){
-		
+
 		var collectionEntityData = {
 			collectionid = '12',
 			collectionCode = 'BestAccounts',
@@ -1463,15 +1465,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				}
 			]
 		}*/
-		/*//request.debug(ORMExecuteQuery("SELECT attributeValue 
+		/*//request.debug(ORMExecuteQuery("SELECT attributeValue
 					FROM SlatwallAttributeValue
 					WHERE attribute.attributeID = '2c909fea47fa423b014884fd8eea0919'"));*/
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
-		
+
 	}
-	
+
 	public void function getSelectionsHQLTest(){
 		MakePublic(variables.entity,'getSelectionsHQL');
 		var selectionsJSON = '	[
@@ -1484,13 +1486,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									}
 								]';
 		var selections = deserializeJSON(selectionsJSON);
-		
+
 		var selectionsHQL = variables.entity.getSelectionsHQL(selections);
 		//request.debug(selectionsHQL);
 		assertFalse(Compare("SELECT  new Map( firstName as firstName, accountID as accountID)",trim(selectionsHQL)));
-		
+
 	}
-	
+
 	public void function getFilterHQLTest(){
 		MakePublic(variables.entity,'getFilterHQL');
 		var filterGroupsJSON = '	[
@@ -1508,7 +1510,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
-							
+
 						},
 						{
 							"logicalOperator":"OR",
@@ -1528,13 +1530,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						}
 					]';
 		var filterGroups = deserializeJSON(filterGroupsJSON);
-		
+
 		var filterHQL = variables.entity.getFilterHQL(filterGroups);
 		//request.debug(filterHQL);
 	}
-	
-	
-	
+
+
+
 	public void function getFilterGroupHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupHQL');
 		var filterGroupJSON = '	[
@@ -1582,12 +1584,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									]
 								}
 							]';
-							
+
 		var filterGroup = deserializeJSON(filterGroupJSON);
-		
+
 		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
 	}
-	
+
 	public void function getFilterGroupsHQLTest(){
 		MakePublic(variables.entity,'getFilterGroupsHQL');
 		var filterGroupsJSON = '	[
@@ -1605,14 +1607,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
-							
+
 						}
 					]';
 		var filterGroups = deserializeJSON(filterGroupsJSON);
-		
+
 		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
 	}
-	
+
 	public void function getOrderByHQLTest(){
 		makePublic(variables.entity,"getOrderByHQL");
 		var orderBy = [
@@ -1629,16 +1631,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				direction="ASC"
 			}
 		];
-		
+
 		var orderByHQL = variables.entity.getOrderByHQL(orderBy);
 		//not truly false, using Compare to test case-sensitive strings 1 is greater, 0 is equal, -1 is less than. Coldfusion saying 0 is equal, i know awesome! :)
 		assertFalse(Compare(" ORDER BY Account.lastName DESC ,Account.company DESC ,Account.firstName ASC ",orderByHQL));
-		
-		//request.debug(orderByHQL); 
+
+		//request.debug(orderByHQL);
 	}
-	
-	
-	
+
+
+
 	public void function addJoinHQLTest(){
 		makePublic(variables.entity,'addJoinHQL');
 		var joinJSON = '
@@ -1657,9 +1659,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var joinHQL = variables.entity.addJoinHQL('Account',join);
 		assertFalse(Compare(" left join Account.primaryEmailAddress as Account_primaryEmailAddress  left join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType ",joinHQL));
 	}
-	
+
 	/*public void function HQLTestWithExistingCollection(){
-			
+
 		var CollectionEntityData = {
 			collectionid = '',
 			collectionCode = 'RyansTen24Accounts',
@@ -1707,9 +1709,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
-							
+
 						},
-						
+
 						{
 							"logicalOperator":"AND",
 							"filterGroup":[
@@ -1721,16 +1723,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							]
 						}
 					]
-					
+
 				}'
 		};
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//request.debug(collectionEntity.getHQL());
 	}*/
-	
+
 	public void function HQLTestJoins(){
-			
+
 		var CollectionEntityData = {
 			collectionid = '',
 			collectionCode = 'RyansTen24Product',
@@ -1756,10 +1758,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							]
 						}
 					]
-					
+
 				}'
 		};
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
 	}
@@ -1782,14 +1784,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						"setting":true
 					}
 				]
-				
+
 			}'
 		};
-		
+
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
 	}
-	
+
 	public void function getHQLForCollectionFilterSkuTest(){
 		var collectionBestSkuData = {
 			collectionid = '',
@@ -1803,8 +1805,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			'
 		};
 		var collectionBestSkuData = createPersistedTestEntity('collection',collectionBestSkuData);
-		
-		
+
+
 		var filter = {
 						propertyIdentifier="_orderItem.sku.product.skus",
 						collectionID=collectionBestSkuData.getCollectionID(),
@@ -1821,20 +1823,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
 	}
-	
+
 	public void function testest(){
-		var test = ormexecuteQuery("SELECT new Map( _order.orderID as orderID, _order.orderNumber as orderNumber, _order.currencyCode as currencyCode, _order.orderOpenDateTime as orderOpenDateTime, _order.orderOpenIPAddress as orderOpenIPAddress, _order.orderCloseDateTime as orderCloseDateTime, _order.referencedOrderType as referencedOrderType, _order.estimatedDeliveryDateTime as estimatedDeliveryDateTime, _order.estimatedFulfillmentDateTime as estimatedFulfillmentDateTime, _order.calculatedTotal as calculatedTotal) 
-		FROM SlatwallOrder as _order 
-		left join _order.promotionCodes as _order_promotionCodes
-		where ( 
-			EXISTS ( 
-				FROM SlatwallPromotionCode as __promotioncode 
-				where ( __promotioncode.promotionCode = 'testlove2'  ) 
-				AND __promotioncode.id = _order_promotionCodes.id ) 
-			) ORDER BY _order.createdDateTime desc");
+		var test = ormexecuteQuery("SELECT _orderitem FROM SlatwallOrderItem as _orderitem left join _orderitem.order as _orderitem_order where (_orderitem_order.orderID = 'ff80808151a223aa0151a735438e014a') GROUP BY _orderitem ORDER BY _orderitem.createdDateTime desc",false,{maxresults=1});
+ 		request.debug('test');
 		request.debug(test);
 	}
-	
+
 	public void function getHQLForCollectionFilterManyToManyTest(){
 		var collectionPromotionRewardData = {
 			collectionid = '',
@@ -1850,17 +1845,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionPromotionReward = createPersistedTestEntity('collection',collectionPromotionRewardData);
 		variables.entity = variables.entityService.newCollection();
 		variables.entity.setCollectionObject('PromotionReward');
-		
+
 		var filter = {
 						propertyIdentifier="_product.defautlSku.product.promotionRewards",
 						collectionID=collectionPromotionReward.getCollectionID(),
 						criteria="One"
 					};
-						
+
 		MakePublic(variables.entity,'getHQLForCollectionFilter');
 		var HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
-		
+
 		filter = {
 						propertyIdentifier="_product.defautlSku.product.promotionRewards",
 						collectionID=collectionPromotionReward.getCollectionID(),
@@ -1868,7 +1863,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					};
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
-		
+
 		filter = {
 						propertyIdentifier="_product.defautlSku.product.promotionRewards",
 						collectionID=collectionPromotionReward.getCollectionID(),
@@ -1876,7 +1871,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					};
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
-		
+
 		filter = {
 						propertyIdentifier="_product.defautlSku.product.promotionRewards",
 						collectionID=collectionPromotionReward.getCollectionID(),
@@ -1885,9 +1880,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
 	}
-	
+
 	public void function getHQLForCollectionFilterOneToManyTest(){
-		
+
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
 			collectionCode = 'BestAccountEmailAddresses#createUUID()#',
@@ -1896,23 +1891,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				{
 					"baseEntityName":"SlatwallAccountEmailAddress",
 					"baseEntityAlias":"_accountemailaddress"
-					
+
 				}
 			'
 		};
 		var collectionBestAcountEmailAddresses = createPersistedTestEntity('collection',collectionBestAcountEmailAddressesData);
-		
-		
+
+
 		var filter = {
 						propertyIdentifier="_account.accountEmailAddresses",
 						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
 						criteria="One"
 					};
-						
+
 		MakePublic(variables.entity,'getHQLForCollectionFilter');
 		var HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
-		
+
 		filter = {
 						propertyIdentifier="_account.accountEmailAddresses",
 						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
@@ -1920,7 +1915,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					};
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
-		
+
 		filter = {
 						propertyIdentifier="_account.accountEmailAddresses",
 						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
@@ -1928,7 +1923,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					};
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
-		
+
 		filter = {
 						propertyIdentifier="_account.accountEmailAddresses",
 						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
@@ -1937,7 +1932,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		HQL = variables.entity.getHQLForCollectionFilter(filter);
 		request.debug(HQL);
 	}
-	
+
 	/*public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user
 		var collectionEntityData = {
@@ -1986,14 +1981,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
-							
+
 						}
 					]
-					
+
 				}'
 		};
 		var collectionEntity = createTestEntity('collection',collectionEntityData);
-		
+
 		var parentCollectionEntityData = {
 			collectionid = '',
 			collectionCode = 'RyansAccounts',
@@ -2040,15 +2035,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
-							
+
 						}
 					]
-					
+
 				}'
 		};
 		var parentCollectionEntity = createTestEntity('collection',parentCollectionEntityData);
 		parentCollectionEntity.setParentCollection(collectionEntity);
-		
+
 		var parentOfParentCollectionEntityData = {
 			collectionid = '',
 			collectionCode = 'RyansTen24Accounts',
@@ -2082,7 +2077,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					],
 					"groupBy":[
 						{
-							"propertyIdentifier":"accountID" 
+							"propertyIdentifier":"accountID"
 						}
 					],
 					"filterGroups":[
@@ -2100,9 +2095,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 									"value":"false"
 								}
 							]
-							
+
 						},
-						
+
 						{
 							"logicalOperator":"AND",
 							"filterGroup":[
@@ -2114,18 +2109,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							]
 						}
 					]
-					
+
 				}'
 		};
-		
+
 		var parentOfParentCollectionEntity = createTestEntity('collection',parentOfParentCollectionEntityData);
 		parentOfParentCollectionEntity.setCollectionObject(parentCollectionEntity);
-		
-		
+
+
 		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
 		//request.debug(result);
 	}*/
-	
+
 }
 
 /*
@@ -2143,7 +2138,7 @@ collectionConfig = '
 								"aggregateFunction":"count",
 								"aggregateAlias":"accountAmount"
 							}
-							
+
 						},
 						{
 							"propertyIdentifier":"Account_primaryEmailAddress.emailAddress"
@@ -2179,7 +2174,7 @@ collectionConfig = '
 					],
 					"groupBy":[
 						{
-							"propertyIdentifier":"accountID" 
+							"propertyIdentifier":"accountID"
 						}
 					],
 					"filterGroups":[
@@ -2197,7 +2192,7 @@ collectionConfig = '
 									"value":"false"
 								}
 							]
-							
+
 						},
 						{
 							"logicalOperator":"OR",
@@ -2216,7 +2211,7 @@ collectionConfig = '
 							]
 						}
 					]
-					
+
 				}
 			'
 

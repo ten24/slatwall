@@ -263,7 +263,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}else{
 			//Check if a custom property exists
 			if (getService("hibachiService").getEntityHasPropertyByEntityName(getClassName(),arguments.attribute)){
-				invokeMethod("get#arguments.attribute#", {1=arguments.value});
+				invokeMethod("set#arguments.attribute#", {1=arguments.value});
 				return '';
 				
 			}
@@ -388,7 +388,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public string function getShortReferenceID( boolean createNewFlag=false ) {
 		if(len(getPrimaryIDValue())) {
-			return getService("dataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	
+			return getService("hibachiDataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	
 		}
 		return '';
 	}

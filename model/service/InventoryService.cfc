@@ -316,14 +316,17 @@ component extends="HibachiService" accessors="true" output="false" {
 				returnStruct.skus[ skuID ][ arguments.inventoryType ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 				
 				// Add location to sku if it exists
-				for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
-					locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
-				
-					if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
-						returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+				if(structKeyExists(arguments.inventoryArray[i],'locationIDPath')){
+					for(var l=1; l<=listLen(arguments.inventoryArray[i]["locationIDPath"]); l++) {
+						locationID = listGetAt(arguments.inventoryArray[i]["locationIDPath"], l);
+					
+						if(!structKeyExists(returnStruct.skus[ skuID ].locations, locationID)) {
+							returnStruct.skus[ skuID ].locations[ locationID ] = 0;
+						}
+						returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 					}
-					returnStruct.skus[ skuID ].locations[ locationID ] += arguments.inventoryArray[i][ arguments.inventoryType ];
 				}
+				
 
 			}
 			

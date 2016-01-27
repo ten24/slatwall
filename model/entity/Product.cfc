@@ -70,6 +70,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID" fetch="join";
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
+	property name="renewalSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="renewalSkuID" cascade="delete" fetch="join";
 
 	// Related Object Properties (one-to-many)
 	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
@@ -117,8 +118,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
+	property name="totalImageCount" type="numeric" persistent="false";
 	property name="nextSkuCodeCount" persistent="false";
 	property name="optionGroupCount" type="numeric" persistent="false";
+	property name="productBundleGroupsCount" type="numeric" persistent="false";
+	property name="defaultProductImageFilesCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
@@ -133,6 +137,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
+	property name="renewalMethodOptions" type="array" persistent="false";
 	property name="renewalPrice" hb_formatType="currency" persistent="false";
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
@@ -167,6 +172,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			variables.productTypeOptions = [];
 
+			if(arrayLen(records) > 1){
+				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().getRbKey('processObject.Product_Create.selectProductType'),value=""});
+			}
+
 			for(var i=1; i<=arrayLen(records); i++) {
 				var recordStruct = {};
 				recordStruct['name'] = records[i].getSimpleRepresentation();
@@ -187,6 +196,24 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.listingPagesOptionsSmartList = smartList;
 		}
 		return variables.listingPagesOptionsSmartList;
+    }
+
+	public numeric function getProductBundleGroupsCount(){
+		var count=0;
+		for(var sku in this.getSkus()){
+			count = count + ArrayLen(sku.getProductBundleGroups());
+		}
+		return count;
+	}
+
+    public any function getSubscriptionSkuSmartList(){
+    	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
+    		var smartList = getService("ProductService").getSkuSmartList();
+    		smartList.joinRelatedProperty("SlatwallSku", "SubscriptionTerm", "inner");
+    		smartList.addWhereCondition("aslatwallsku.renewalSku is null");
+    		variables.subscriptionSkuSmartList = smartList;
+    	}
+    	return variables.subscriptionSkuSmartList;
     }
 
 	public array function getSkus(boolean sorted=false, boolean fetchOptions=false) {
@@ -214,6 +241,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public any function getImages() {
 		return variables.productImages;
+	}
+
+	public numeric function getTotalImageCount(){
+		return this.getProductImagesCount() + this.getDefaultProductImageFilesCount();
 	}
 
 	public struct function getSkuSalePriceDetails( required any skuID) {
@@ -409,6 +440,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		smartList.addFilter("skus.product.productID",this.getProductID());
 		smartList.addOrder("sortOrder|ASC");
 		return smartList.getRecords();
+	}
+
+	public array function getRenewalMethodOptions(){
+		if(!structKeyExists(variables, "renewalMethodOptions")){
+			variables.renewalMethodOptions = [];
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectRenewalSku'), value="renewalsku"});
+			ArrayAppend(variables.renewalMethodOptions, {name=rbKey('admin.entity.processproduct.create.selectCustomRenewal'), value="custom"});
+		}
+		return variables.renewalMethodOptions;
 	}
 
 	public any function getSkuBySelectedOptions(string selectedOptions="") {
@@ -647,7 +687,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	// ============ START: Non-Persistent Property Methods =================
 
 	public any function getBaseProductType() {
-		return getProductType().getBaseProductType();
+		if(!isNull(getProductType())){
+			return getProductType().getBaseProductType();
+		}
 	}
 
 	public any function getBundleSkusSmartList() {
@@ -677,6 +719,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 		}
 		return variables.defaultProductImageFiles;
+	}
+
+	public numeric function getDefaultProductImageFilesCount() {
+		if(!structKeyExists(variables,"defaultProductImageFilesCount")){
+			variables.defaultProductImageFilesCount = 0;
+			for(var imageFile in this.getDefaultProductImageFiles()){
+				if(fileExists(expandPath(this.getHibachiScope().getBaseImageURL() & "/product/default/#imageFile#"))){
+					variables.defaultProductImageFilesCount++;
+				}
+			}
+		}
+		return variables.defaultProductImageFilesCount;
 	}
 
 	public struct function getSalePriceDetailsForSkus() {
@@ -887,31 +941,26 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getNumberOfUnusedProductOptionCombinations(){
 
 		var optionGroups = [];
-		var usedCombinations = [];
 		var unusedOptions = [];
 		var first = true;
 
-		for(var sku in this.getSkus()){
-			var combination = [];
-			for(var option in sku.getOptions()){
-				if(first){
-					ArrayAppend(optionGroups, option.getOptionGroup());
-					ArrayAppend(combination, option);
-				} else {
-					ArrayAppend(combination, option);
-				}
-			}
-			first = false;
-			ArrayAppend(usedCombinations, combination);
+		var optionGroupIDs = getDAO("OptionDAO").getAllUsedProductOptionGroupIDs(this.getProductID());
+		var numberOfUsedProductOptions = getDAO("OptionDAO").getNumberOfUsedProductOptions(this.getProductID());
+
+		if(ArrayLen(optionGroupIDs) > 0){
+			var usedCombinations = numberOfUsedProductOptions / ArrayLen(optionGroupIDs);
+		} else {
+			var usedCombinations = 1;
 		}
 
 		var possibilities = 1;
 
-		for(var optionGroup in optionGroups){
-			possibilities = possibilities * ArrayLen(optionGroup.getOptions());
+		for(var optionGroupID in optionGroupIDs){
+			possibilities = possibilities * getDAO("OptionDAO").getNumberOfOptionsForOptionGroup(OptionGroupID);
+
 		}
 
-		return possibilities - ArrayLen(usedCombinations);
+		return possibilities - usedCombinations;
 	}
 
 	public array function getUnusedProductOptionGroups() {
@@ -988,6 +1037,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
+		//if sku code is null then create one automatically
+		if(this.getNewFlag() && isNull(arguments.sku.getSkuCode())){
+			var skusCount = arraylen(this.getSkus());
+			var skuCode = this.getProductCode() & "-#skusCount + 1#";
+			arguments.sku.setSkuCode(skuCode);
+		}
+
 		arguments.sku.setProduct( this );
 	}
 	public void function removeSku(required any sku) {
