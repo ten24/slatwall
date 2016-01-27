@@ -49,16 +49,23 @@ Notes:
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
 
 	property name="scheduleService";
+	property name="workflowService";
 	
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'executeScheduledTasks');
-	
+	this.publicMethods=listAppend(this.publicMethods, 'executeScheduledWorkflows');
+
 	this.anyAdminMethods='';
 	
 	this.secureMethods='';
 	
 	public void function executeScheduledTasks() {
 		getScheduleService().executeScheduledTasks( );
+		abort;
+	}
+
+	public void function executeScheduledWorkflows() {
+		getWorkflowService().runAllWorkflowsByScheduleTrigger();
 		abort;
 	}
 	

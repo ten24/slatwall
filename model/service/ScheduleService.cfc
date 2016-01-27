@@ -55,6 +55,10 @@ component extends="HibachiService" output="false" accessors="true"{
 	public query function getDueTasks(numeric maxCount = 5){
 		return getScheduleDAO().getDueTasks(maxCount);
 	}
+
+	public query function getDueWorkflows(){
+		return getScheduleDAO().getDueWorkflows();
+	}
 	
 	public void function executeScheduledTasks() {
 		// Get the scheduled Tasks
