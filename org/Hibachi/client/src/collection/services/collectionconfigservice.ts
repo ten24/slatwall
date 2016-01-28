@@ -146,7 +146,7 @@ class CollectionConfig {
         return this;
     };
 
-public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
+    public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
         this.filterGroups = filterGroupsConfig;
         return this;
     };
@@ -156,7 +156,7 @@ public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):Col
         return this; 
     };
 
-public getCollectionConfig= ():any =>{
+    public getCollectionConfig= ():any =>{
         return {
             baseEntityAlias: this.baseEntityAlias,
             baseEntityName: this.baseEntityName,
@@ -260,7 +260,7 @@ public getCollectionConfig= ():any =>{
         return propertyIdentifier;
     };
 
-public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
+    public addColumn= (column: string, title: string = '', options:any = {}):CollectionConfig =>{
         if(!this.columns || this.utilityService.ArrayFindByPropertyValue(this.columns,'propertyIdentifier',column) === -1){
             var isVisible = true,
                 isDeletable = true,
@@ -406,7 +406,7 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
     public removeFilter = (propertyIdentifier: string, value: any, comparisonOperator: string = '=')=>{
         this.removeFilterHelper(this.filterGroups, propertyIdentifier, value, comparisonOperator);
         return this; 
-    }
+    };
     
     public removeFilterHelper = (filter:any, propertyIdentifier:string, value:any, comparisonOperator:string, currentGroup?)=>{
         if(angular.isUndefined(currentGroup)){
@@ -497,6 +497,10 @@ public addColumn= (column: string, title: string = '', options:any = {}):Collect
 
     public hasFilters=():boolean=>{
         return (this.filterGroups.length && this.filterGroups[0].filterGroup.length);
+    };
+
+    public hasColumns=():boolean=>{
+        return (this.columns.length > 0);
     };
 
     public clearFilters=():CollectionConfig =>{

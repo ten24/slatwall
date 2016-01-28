@@ -36,7 +36,7 @@ class SWListingDisplayController{
     public recordAddAction;
     public recordDetailAction;
     public recordEditAction;
-    public recordDeleteAction
+    public recordDeleteAction;
     public recordProcessButtonDisplayFlag;
     public searching:boolean = false;
     public searchText;
@@ -122,8 +122,10 @@ class SWListingDisplayController{
 
         this.setupColumns();
 
-        this.exampleEntity = this.$hibachi.newEntity(this.collectionObject);
-        this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
+        this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
+        if(this.collectionConfig.hasColumns()){
+            this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
+        }
 
 
         this.initData();
@@ -132,7 +134,11 @@ class SWListingDisplayController{
                 this.$q.when(this.collectionPromise).then((data)=>{
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
-                    this.setupColumns();
+                    if(this.collectionConfig.hasColumns()){
+                        this.setupColumns();
+                    }else{
+                        this.collectionConfig.loadJson(data.collectionConfig);
+                    }
                     this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                     this.paginator.setPageRecordsInfo(this.collectionData);
                     this.searching = false;

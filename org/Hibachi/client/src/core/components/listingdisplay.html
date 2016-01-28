@@ -174,7 +174,7 @@
                     
                 </td>
 				
-				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
+				<td class="admin admin{{swListingDisplay.administrativeCount}}" ng-if="swListingDisplay.administrativeCount">
 					<!-- Detail -->
 					<sw-action-caller 
 						ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
@@ -249,7 +249,7 @@
 </div><!-- table-responsive -->
 
 <sw-pagination-bar
-    ng-if="swListingDisplay.paginator && !swListingDisplay.expandable && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
+                ng-if="swListingDisplay.paginator && swListingDisplay.collectionData.recordsCount"
 	data-paginator="swListingDisplay.paginator"
 	>
 </sw-pagination-bar>

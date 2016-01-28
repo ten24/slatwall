@@ -94,7 +94,7 @@ var coremodule = angular.module('hibachi.core',[
         {
             var _deferred = {};
             console.log($delegate);
-                console.log(appConfig);
+            console.log(appConfig);
             var _config = appConfig;
 
             var _jsEntities = {};
@@ -124,7 +124,7 @@ var coremodule = angular.module('hibachi.core',[
                         promise:entityDataPromise,
                         value:entityInstance
                     }
-                }
+                };
 
 
                 $delegate['get'+entity.className] = function(options){
@@ -146,15 +146,15 @@ var coremodule = angular.module('hibachi.core',[
                         promise:entityDataPromise,
                         value:entityInstance
                     }
-                }
+                };
 
                 $delegate['new'+entity.className] = function(){
                     return $delegate.newEntity(entity.className);
-                }
+                };
 
                 entity.isProcessObject = entity.className.indexOf('_') >= 0;
 
-                    _jsEntities[ entity.className ]=function() {
+                _jsEntities[ entity.className ]=function() {
 
                     this.validations = validations[entity.className];
 
@@ -174,11 +174,11 @@ var coremodule = angular.module('hibachi.core',[
 
                     this.metaData.$$getPropertyTitle = function(propertyName){
                         return _getPropertyTitle(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getPropertyHint = function(propertyName){
                         return _getPropertyHint(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getManyToManyName = function(singularname){
                         var metaData = this;
@@ -187,17 +187,17 @@ var coremodule = angular.module('hibachi.core',[
                                 return metaData[i].name;
                             }
                         }
-                    }
+                    };
 
 
 
                     this.metaData.$$getPropertyFieldType = function(propertyName){
                         return _getPropertyFieldType(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getPropertyFormatType = function(propertyName){
                         return _getPropertyFormatType(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getDetailTabs = function(){
                         var deferred = $q.defer();
@@ -211,11 +211,11 @@ var coremodule = angular.module('hibachi.core',[
                         });
 
                         return deferred.promise;
-                    }
+                    };
 
                     this.$$getFormattedValue = function(propertyName,formatType){
                         return _getFormattedValue(propertyName,formatType,this);
-                    }
+                    };
 
                     this.data = {};
                     this.modifiedData = {};
@@ -244,16 +244,12 @@ var coremodule = angular.module('hibachi.core',[
                     });
 
                 };
-                    _jsEntities[ entity.className ].prototype = {
+                _jsEntities[ entity.className ].prototype = {
                     $$getPropertyByName:function(propertyName){
                         return this['$$get'+propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
                     },
                     $$isPersisted:function(){
-                        if(this.$$getID() === ''){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return this.$$getID() !== '';
                     },
                     $$init:function( data ) {
 
@@ -263,8 +259,7 @@ var coremodule = angular.module('hibachi.core',[
                         return _save(this);
                     },
                     $$delete:function(){
-                        var deletePromise =_delete(this)
-                        return deletePromise;
+                        return _delete(this);
                     },
 
                     $$getValidationsByProperty:function(property){
@@ -278,12 +273,12 @@ var coremodule = angular.module('hibachi.core',[
                             var listFirst = utilityService.listFirst(propertyIdentifier,'.');
                             var relatedEntityName = this.metaData[listFirst].cfc;
                             var exampleEntity = $delegate.newEntity(relatedEntityName);
-                            return exampleEntity = exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst,''));
+                            return exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst,''));
                         }
                         return this.metaData.$$getPropertyTitle(propertyIdentifier);
-                    }
+                    },
 
-                    ,$$getMetaData:function( propertyName ) {
+                    $$getMetaData:function( propertyName ) {
                         if(propertyName === undefined) {
                             return this.metaData
                         }else{
@@ -379,7 +374,7 @@ var coremodule = angular.module('hibachi.core',[
                                                 entityInstance.children = [];
                                             }
 
-                                            var child = entityInstance.metaData[manyToManyName];;
+                                            var child = entityInstance.metaData[manyToManyName];
 
                                             if(entityInstance.children.indexOf(child) === -1){
                                                 entityInstance.children.push(child);
@@ -446,61 +441,61 @@ var coremodule = angular.module('hibachi.core',[
 
                                     _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
 
-                                    var thisEntityInstance = this;
-                                    if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
-                                        var options = {
-                                            filterGroupsConfig:angular.toJson([{
-                                                "filterGroup":[
-                                                    {
-                                                        "propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
-                                                        "comparisonOperator":"=",
-                                                        "value":this.$$getID()
+                                        var thisEntityInstance = this;
+                                        if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
+                                            var options = {
+                                                filterGroupsConfig:angular.toJson([{
+                                                    "filterGroup":[
+                                                        {
+                                                            "propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
+                                                            "comparisonOperator":"=",
+                                                            "value":this.$$getID()
+                                                        }
+                                                    ]
+                                                }]),
+                                                allRecords:true
+                                            };
+
+                                            var collectionPromise = $delegate.getEntity(property.cfc,options);
+                                            collectionPromise.then(function(response){
+
+                                                for(var i in response.records){
+
+                                                    var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData[property.name].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData[property.name].singularname.slice(1)]();
+                                                    entityInstance.$$init(response.records[i]);
+                                                    if(angular.isUndefined(thisEntityInstance[property.name])){
+                                                        thisEntityInstance[property.name] = [];
                                                     }
-                                                ]
-                                            }]),
-                                            allRecords:true
+                                                    thisEntityInstance[property.name].push(entityInstance);
+                                                }
+                                            });
+                                            return collectionPromise;
+                                        }
+                                    };
+                                }else{
+
+                                    if(['id'].indexOf(property.fieldtype)>= 0){
+                                        _jsEntities[ entity.className ].prototype['$$getID']=function(){
+                                            //this should retreive id from the metadata
+                                            return this.data[this.$$getIDName()];
                                         };
 
-                                        var collectionPromise = $delegate.getEntity(property.cfc,options);
-                                        collectionPromise.then(function(response){
-
-                                            for(var i in response.records){
-
-                                                var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData[property.name].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData[property.name].singularname.slice(1)]();
-                                                entityInstance.$$init(response.records[i]);
-                                                if(angular.isUndefined(thisEntityInstance[property.name])){
-                                                    thisEntityInstance[property.name] = [];
-                                                }
-                                                thisEntityInstance[property.name].push(entityInstance);
-                                            }
-                                        });
-                                        return collectionPromise;
+                                        _jsEntities[ entity.className ].prototype['$$getIDName']=function(){
+                                            var IDNameString = property.name;
+                                            return IDNameString;
+                                        };
                                     }
-                                };
-                            }else{
-
-                                if(['id'].indexOf(property.fieldtype)>= 0){
-                                    _jsEntities[ entity.className ].prototype['$$getID']=function(){
-                                        //this should retreive id from the metadata
-                                        return this.data[this.$$getIDName()];
-                                    };
-
-                                    _jsEntities[ entity.className ].prototype['$$getIDName']=function(){
-                                        var IDNameString = property.name;
-                                        return IDNameString;
-                                    };
-                                }
 
                                     _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(){
+                                        return this.data[property.name];
+                                    };
+                                }
+                            }else{
+                                _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
                                     return this.data[property.name];
                                 };
                             }
-                        }else{
-                            _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
-                                return this.data[property.name];
-                            };
                         }
-                    }
                     }
                 });
 
@@ -578,7 +573,7 @@ var coremodule = angular.module('hibachi.core',[
                     return keyValue;
                 }
                 return '';
-            }
+            };
 
 
 
@@ -648,15 +643,9 @@ var coremodule = angular.module('hibachi.core',[
 
             var _isSimpleValue = function(value){
 
-                if(
-                    angular.isString(value) || angular.isNumber(value)
-                    || angular.isDate(value) || value === false || value === true
-                ){
-                    return true;
-                }else{
-                    return false;
-                }
-            }
+                return !!(angular.isString(value) || angular.isNumber(value)
+                || angular.isDate(value) || value === false || value === true);
+            };
 
 
             var _getFormattedValue = function(propertyName,formatType,entityInstance){
@@ -698,9 +687,8 @@ var coremodule = angular.module('hibachi.core',[
                 var entityName = entityInstance.metaData.className;
                 var entityID = entityInstance.$$getID();
                 var context = 'delete';
-                var deletePromise = $delegate.saveEntity(entityName,entityID,{},context);
-                return deletePromise;
-            }
+                return $delegate.saveEntity(entityName, entityID, {}, context);
+            };
 
             var _setValueByPropertyPath = function (obj,path, value) {
                 var a = path.split('.');
@@ -723,22 +711,22 @@ var coremodule = angular.module('hibachi.core',[
                 else context[a[a.length - 1]] = value;
 
 
-            }
+            };
 
             var _getValueByPropertyPath = function(obj,path) {
-                    var paths = path.split('.')
-                    , current = obj
-                    , i;
+                var paths = path.split('.'),
+                    current = obj,
+                    i;
 
-                    for (i = 0; i < paths.length; ++i) {
+                for (i = 0; i < paths.length; ++i) {
                     if (current[paths[i]] == undefined) {
                         return undefined;
                     } else {
                         current = current[paths[i]];
                     }
-                    }
-                    return current;
-            }
+                }
+                return current;
+            };
 
             var _addReturnedIDs = function(returnedIDs,entityInstance){
 
@@ -759,7 +747,7 @@ var coremodule = angular.module('hibachi.core',[
                         entityInstance.data[key] = returnedIDs[key];
                     }
                 }
-            }
+            };
 
 
             var _save = function(entityInstance){
@@ -820,13 +808,13 @@ var coremodule = angular.module('hibachi.core',[
 
 
                 */
-            }
+            };
 
             var _getModifiedData = function(entityInstance){
                 var modifiedData:any = {};
                 modifiedData = getModifiedDataByInstance(entityInstance);
                 return modifiedData;
-            }
+            };
 
             var getObjectSaveLevel = function(entityInstance){
                 var objectLevel:any = entityInstance;
@@ -846,7 +834,7 @@ var coremodule = angular.module('hibachi.core',[
                 });
 
                 return objectLevel;
-            }
+            };
 
             var validateObject = function(entityInstance){
 
@@ -1047,69 +1035,65 @@ var coremodule = angular.module('hibachi.core',[
             }
 
             var getDataFromChildren = function(entityInstance){
-                        var data = {};
+                var data = {};
 
-                        //$log.debug('childrenFound');
-                        //$log.debug(entityInstance.children);
-                        for(var c in entityInstance.children){
-                            var childMetaData = entityInstance.children[c];
-                            var children = entityInstance.data[childMetaData.name];
-                            //$log.debug(childMetaData);
-                            //$log.debug(children);
-                            if(angular.isArray(entityInstance.data[childMetaData.name])){
-                                if(angular.isUndefined(data[childMetaData.name])){
-                                    data[childMetaData.name] = [];
-                                }
-                                angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
-                                    //$log.debug('process child array item')
-                                    var childData = processChild(child,entityInstance);
-                                    //$log.debug('process child return');
-                                    //$log.debug(childData);
-                                    data[childMetaData.name].push(childData);
-                                });
-                            }else{
-                                if(angular.isUndefined(data[childMetaData.name])){
-                                    data[childMetaData.name] = {};
-                                }
-                                var child = entityInstance.data[childMetaData.name];
-                                //$log.debug('begin process child');
-                                var childData = processChild(child,entityInstance);
-                                //$log.debug('process child return');
-                                //$log.debug(childData);
-                                angular.extend(data,childData);
-                            }
-
+                //$log.debug('childrenFound');
+                //$log.debug(entityInstance.children);
+                for(var c in entityInstance.children){
+                    var childMetaData = entityInstance.children[c];
+                    var children = entityInstance.data[childMetaData.name];
+                    //$log.debug(childMetaData);
+                    //$log.debug(children);
+                    if(angular.isArray(entityInstance.data[childMetaData.name])){
+                        if(angular.isUndefined(data[childMetaData.name])){
+                            data[childMetaData.name] = [];
                         }
-                        //$log.debug('returning child data');
-                        //$log.debug(data);
-
-                        return data;
-                    }
-
-                    var getModifiedDataByInstance = function(entityInstance){
-                        var modifiedData:any = {};
-
-
-
-
-
-                        var objectSaveLevel = getObjectSaveLevel(entityInstance);
-                        //$log.debug('objectSaveLevel : ' + objectSaveLevel );
-                        var valueStruct = validateObject(objectSaveLevel);
-                        //$log.debug('validateObject data');
-                        //$log.debug(valueStruct.value);
-
-                        modifiedData = {
-                            objectLevel:objectSaveLevel,
-                            value:valueStruct.value,
-                            valid:valueStruct.valid
+                        angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
+                            //$log.debug('process child array item')
+                            var childData = processChild(child,entityInstance);
+                            //$log.debug('process child return');
+                            //$log.debug(childData);
+                            data[childMetaData.name].push(childData);
+                        });
+                    }else{
+                        if(angular.isUndefined(data[childMetaData.name])){
+                            data[childMetaData.name] = {};
                         }
-                        return modifiedData;
+                        var child = entityInstance.data[childMetaData.name];
+                        //$log.debug('begin process child');
+                        var childData = processChild(child,entityInstance);
+                        //$log.debug('process child return');
+                        //$log.debug(childData);
+                        angular.extend(data,childData);
                     }
 
-                    var _getValidationsByProperty = function(entityInstance,property){
-                        return entityInstance.validations.properties[property];
-                    }
+                }
+                //$log.debug('returning child data');
+                //$log.debug(data);
+
+                return data;
+            }
+
+            var getModifiedDataByInstance = function(entityInstance){
+                var modifiedData:any = {};
+
+                var objectSaveLevel = getObjectSaveLevel(entityInstance);
+                //$log.debug('objectSaveLevel : ' + objectSaveLevel );
+                var valueStruct = validateObject(objectSaveLevel);
+                //$log.debug('validateObject data');
+                //$log.debug(valueStruct.value);
+
+                modifiedData = {
+                    objectLevel:objectSaveLevel,
+                    value:valueStruct.value,
+                    valid:valueStruct.valid
+                };
+                return modifiedData;
+            };
+
+            var _getValidationsByProperty = function(entityInstance,property){
+                return entityInstance.validations.properties[property];
+            };
 
             var _getValidationByPropertyAndContext = function(entityInstance,property,context){
                 var validations = _getValidationsByProperty(entityInstance,property);
