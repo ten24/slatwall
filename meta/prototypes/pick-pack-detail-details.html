@@ -54,107 +54,154 @@
 							</div>
 							<div class="col-md-6">
 								<div class="btn-toolbar">
-									
-									<div class="btn-group btn-group-sm">
-										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> Actions <span class="caret"></span></button>
+                                    
+                                    <div class="btn-group btn-group-sm">
+										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="fa fa-envelope"></i></button>
 										<ul class="dropdown-menu pull-right">
 											<li>
-												<a  href="##" class="s-remove" target="_self">Delete</a>
-												<a  href="##" target="_self">Print Picking List</a>
+												<a  href="##" target="_self">Order Confirmation</a>
+                                                <a  href="##" target="_self">Order Status</a>
+                                                <a  href="##" target="_self">...</a>
 											</li> 
-											
 										</ul>
 									</div>
+                                    
+                                    <div class="btn-group btn-group-sm">
+										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="fa fa-print"></i></button>
+										<ul class="dropdown-menu pull-right">
+											<li>
+												<a  href="##" target="_self">Standard Packing Slip All</a>
+                                                <a  href="##" target="_self">Picking List All</a>
+                                                <a  href="##" target="_self">...</a>
+											</li> 
+										</ul>
+									</div>
+                                    
+                                    <div class="btn-group btn-group-sm">
+										<button class="btn dropdown-toggle btn-default s-remove" data-toggle="dropdown"><i class="fa fa-trash"></i> Delete</button>
+									</div>
+                                    
+                                    <div class="btn-group s-btn-dropdown" role="group"> 
+                                        <button type="button" class="btn btn-primary btn-sm">
+					                    	<span>Capture &amp; Fulfill All</span> 
+					                    </button>
+                                        <ul class="dropdown-menu" role="menu">
+											<li><a href="#">Capture Payment All</a></li>
+					                    </ul>
+                                        <button type="button" class="btn btn-primary s-btn-select btn-sm" data-toggle="dropdown">
+											<span class="caret"></span>
+					                    </button>
+                                    </div>
+                                    
 								</div>
                             </div>
                         </nav>
                     </div>
                     <div class="row s-detail-modules-wrapper">
-						<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
-                            <div class="s-md-content-block-inner">
-                                <div class="s-title">Details</div>
-                                <div class="s-body">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <div class="row s-line-item s-strong">
-                                                <div class="col-xs-6 s-title">ID:</div>
-                                                <div class="col-xs-6 s-value" >34534252345</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="row s-line-item">
-                                                <div class="col-xs-6 s-title s-select">Assigned To:</div>
-                                                <div class="col-xs-6 s-value">
-													
-													<div class="s-select-list-wrapper s-small-select s-search" id="j-single-location-view">
-													    <div class="form-group">
-													        <!-- Option select field wrapper -->
-													        <div class="input-group">
-													            <div class="s-input-btn">
-													            
-													                <input id="searchinput" type="search" value="Tom Evens" disabled="" class="input-sm form-control" placeholder="Search...">
-													                <span class="glyphicon glyphicon-remove"></span>
-													            
-													            </div>
-													            <div class="input-group-btn">
-													                <button class="btn btn-xs btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
-													            </div>
-													        </div>
-													    </div>
-													    <!-- Dropdown wrapper -->
-													    <div class="dropdown s-search-results-wrapper" style="display: none;">
-													        <ul class="dropdown-menu" style="">
-													            <!-- Item-->
-													            <li>
-													                <a>
-													                    <div class="row">
-													                        <div class="col-xs-2 s-photo">
-													                            <img src="http://placehold.it/350x350">	
-													                        </div>
-													                        <div class="col-xs-10 s-info">
-													                            <div class="s-name">Reyjay Solares</div>
-													                            <div class="s-email">reinaldosolares@gmail.com</div>
-													                        </div>
-													                    </div>
-													                </a>
-													            </li>
-													            <!-- //Item-->
-													            <!-- Item-->
-													            <li>
-													                <a>
-													                    <div class="row">
-													                        <div class="col-xs-2 s-photo">
-													                            <img src="http://placehold.it/350x350">	
-													                        </div>
-													                        <div class="col-xs-10 s-info">
-													                            <div class="s-name">Reyjay Solares</div>
-													                            <div class="s-email">reinaldosolares@gmail.com</div>
-													                        </div>
-													                    </div>
-													                </a>
-													            </li>
-													            <!-- //Item-->
-													        </ul>
-													    </div>
-													</div>
+                
+                        <div class="col-sm-6 col-md-6 col-lg-4 s-detail-module">
+                            <div class="s-sm-content-block">
+                            	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+                            		<i class="fa fa-shopping-basket"></i>
+                            	</div>
+                            	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+                            		<div class="s-title">
+                            			Batch ID
+                            		</div>
+                            		<div class="s-body">
+                            			<span title="JLUITQL9IXE1OG4O">44TY675JH</span>
+                            		</div>
+                            	</div>
+                            </div>
 
-												</div>
-                                            </div>
-                                        </li>
-										<li>
-                                            <div class="row s-line-item">
-                                                <div class="col-xs-6 s-title">Location:</div>
-                                                <div class="col-xs-6 s-value">San Diego</div>
-                                            </div>
-                                        </li>
-										<li>
-                                            <div class="row s-line-item">
-                                                <div class="col-xs-6 s-title">Date Created:</div>
-                                                <div class="col-xs-6 s-value">05/23/15 - 3:30pm EST</div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <!--Small content block-->
+                            <div class="s-sm-content-block s-status s-active">
+                            	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+                            		<i class="fa fa-user"></i>
+                            	</div>
+                            	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+                            		
+                                    <div class="s-select-list-wrapper s-search">
+									    <div class="form-group">
+									        <!-- Option select field wrapper -->
+									        <div class="input-group">
+									            <div class="s-input-btn">
+													
+													<!--- VIEW CHANGE: Location selected --->
+									                <input id="searchinput" type="search" class="form-control" placeholder="Search..." value="Tom Evens" disabled title="Tom Evens - tome.evens@gmail.com">
+													<span class="glyphicon glyphicon-remove"></span>
+													
+													<!--- VIEW CHANGE: No location selected --->
+													<!-- <input id="searchinput" type="search" class="form-control" placeholder="Search..." value="" title="">
+													<i class="fa fa-search"></i> -->
+													
+													<!--- Loading Icon if ajax request is required --->
+									                <!--<i class="fa fa-refresh fa-spin"></i>-->
+									            </div>
+									            <div class="input-group-btn">
+									                <button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
+									            </div>
+									        </div>
+									    </div>
+										
+									    <!-- Dropdown wrapper -->
+									    <div class="dropdown s-search-results-wrapper" style="display: none;">
+											<ul class="dropdown-menu" style="display: block;">
+    
+												<!-- Item-->
+												<li>
+													<a>
+														<div class="row">
+															<div class="col-xs-2 s-photo">
+																<img src="http://placehold.it/350x350">	
+															</div>
+															<div class="col-xs-10 s-info">
+																<div class="s-name">Reyjay Solares</div>
+																<div class="s-email">reinaldosolares@gmail.com</div>
+															</div>
+														</div>
+													</a>
+												</li>
+												<!-- //Item-->
+												<!-- Item-->
+												<li>
+													<a>
+														<div class="row">
+															<div class="col-xs-2 s-photo">
+																<img src="http://placehold.it/350x350">	
+															</div>
+															<div class="col-xs-10 s-info">
+																<div class="s-name">Reyjay Solares</div>
+																<div class="s-email">reinaldosolares@gmail.com</div>
+															</div>
+														</div>
+													</a>
+												</li>
+												<!-- //Item-->
+												
+				                            </ul>
+									    </div>
+										
+									</div>
+                                    
+                            	</div>
+                            </div>
+
+                            <!--Small content block-->
+                            <div class="s-sm-content-block">
+                            	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+                            		<i class="fa fa-building-o"></i>
+                            	</div>
+                            	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+                            		<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+                            			<div class="s-title">
+                            				Location
+                            			</div>
+                            			<div class="s-body">
+                            				<span title="San Diego / Encinitas / D-Street">D-Street</span>
+                            			</div>
+                            		</div>
+                            	</div>
                             </div>
                         </div>
 						
@@ -647,36 +694,51 @@
                         <div class="col-xs-8 s-results-detail">
                             <div class="s-detail-body s-arrow">
                                 <div class="s-content-header">
-                                    <h2>
-                                        Order #383745
-                                        <!-- <a role="button" data-toggle="collapse" href="#j-comments" aria-expanded="false" aria-controls="j-comments">
-                                            <i class="fa fa-comment"></i>
-                                        </a> -->
-                                    </h2>
+                                    <h2>Order #383745</h2>
                                     <span class="pull-right">
                                         
                                         <div class="btn-toolbar" role="toolbar"> 
                                             <div class="btn-group" role="group"> 
                                                 <button class="btn btn-xs btn-default" role="button" data-toggle="collapse" data-target="#j-comments" aria-expanded="false" aria-controls="j-comments">2 <i class="fa fa-comment"></i></button>
-                                        </a>
                                             </div> 
+                                            
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-print"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">Picking List</a></li>
+                                                    <li><a href="#">Standard Packing List</a></li>
+                                                </ul>
+                                            </div>
+                                            
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-envelope"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a href="#">Cancellation</a></li>
+                                                    <li><a href="#">Confirmation</a></li>
+                                                    <li><a href="#">Order Stutus</a></li>
+                                                </ul>
+                                            </div>
+                                            
                                             <div class="btn-group" role="group"> 
-                                                <button class="btn btn-xs btn-default"><i class="fa fa-envelope"></i> Email</button>
-                                                <button class="btn btn-xs btn-default"><i class="fa fa-print"></i> Picklist</button>
+                                                <button class="btn btn-xs btn-default s-remove"><i class="fa fa-trash"></i> Delete</button>
                                             </div> 
+                                            
                                             <div class="btn-group s-btn-dropdown" role="group"> 
                                                 <button type="button" class="btn btn-primary btn-xs">
-    						                    	<span>Capture & Fulfill</span> 
+    						                    	<span>Capture &amp; Fulfill</span> 
     						                    </button>
                                                 <ul class="dropdown-menu" role="menu">
-    												<li><a href="#">Fulfill Order</a></li>
     												<li><a href="#">Capture Payment</a></li>
     						                    </ul>
                                                 <button type="button" class="btn btn-primary s-btn-select btn-xs" data-toggle="dropdown">
     												<span class="caret"></span>
     						                    </button>
-                                            </div> 
-                                            
+                                            </div>
+                                             
                                         </div>
                                     </span>
                                 </div>
@@ -794,9 +856,77 @@
                                 <div class="s-content-block-wrapper">
                                     <div class="s-header">
                                         <h3>Fulfillment Items <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
-                                        <a href="##" class="s-toggle"><!--- populated with css ---></a>
                                     </div>
+                                    
+                                    <style>
+                                        .s-table-toolbar {
+                                            padding: 10px;
+                                            border-bottom: 1px solid #DDD;
+                                            background: #FBFBFB;
+                                        }
+                                    
+                                        /* do not group these rules */
+                                        .s-table-toolbar input.s-sku::-webkit-input-placeholder {
+                                            font-family: FontAwesome;
+                                            font-style: normal;
+                                            text-decoration: inherit;
+                                            font-size: 23px;
+                                            padding-top: 1px;
+    
+                                        }
+                                        .s-table-toolbar input.s-sku:-moz-placeholder {
+                                            font-family: FontAwesome;
+                                            font-style: normal;
+                                            text-decoration: inherit;
+                                            font-size: 23px;
+                                            padding-top: 1px;
+    
+                                        }
+                                        .s-table-toolbar input.s-sku::-moz-placeholder {
+                                            font-family: FontAwesome;
+                                            font-style: normal;
+                                            text-decoration: inherit;
+                                            font-size: 23px;
+                                            padding-top: 1px;
+    
+                                        }
+                                        .s-table-toolbar input.s-sku:-ms-input-placeholder {
+                                            font-family: FontAwesome;
+                                            font-style: normal;
+                                            text-decoration: inherit;
+                                            font-size: 23px;
+                                            padding-top: 1px;
+                                        }
+                                    </style>
                                     <div class="s-body">
+                                        <div class="s-table-toolbar">
+                                            
+                                            
+                                            
+                                            <div class="s-select-list-wrapper s-search">
+													    <div class="form-group">
+													        <!-- Option select field wrapper -->
+													        <div class="input-group">
+													            <div class="s-input-btn">
+													            
+													                <input type="text" value="" class="form-control s-sku" placeholder="&#xf02a;">
+													                <span class="glyphicon glyphicon-remove"></span>
+													            
+													            </div>
+													            <div class="input-group-btn">
+													                <button class="btn btn-sm btn-default" type="submit">Fulfill All</button>
+													            </div>
+													        </div>
+													    </div>
+													    
+													</div>
+                                            
+                                            
+                                    
+                                        </div>
+                                        
+                                        
+                                        
                                         <div class="table-responsive">
                                             <table class="table table-bordered">
                                                 <thead>
@@ -815,7 +945,7 @@
                                                         <td>GH675R</td>
                                                         <td>1</td>
                                                         <td>
-                                                            <input class="form-control" value="1">
+                                                            <input class="form-control" value="0">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -824,7 +954,7 @@
                                                         <td>GH675R</td>
                                                         <td>1</td>
                                                         <td>
-                                                            <input class="form-control" value="1">
+                                                            <input class="form-control" value="0">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -833,7 +963,7 @@
                                                         <td>GH675R</td>
                                                         <td>1</td>
                                                         <td>
-                                                            <input class="form-control" value="1">
+                                                            <input class="form-control" value="0">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -842,7 +972,7 @@
                                                         <td>GH675R</td>
                                                         <td>1</td>
                                                         <td>
-                                                            <input class="form-control" value="1">
+                                                            <input class="form-control" value="0">
                                                         </td>
                                                     </tr>
                                                     
@@ -905,6 +1035,7 @@
                                                                     <th>Width</th>
                                                                     <th>Depth</th>
                                                                     <th>Weight</th>
+                                                                    <th></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -930,6 +1061,11 @@
                                                                     <td>
                                                                         <input type="text" class="form-control" type="button" name="name" value="456" placeholder="Weight">
                                                                     </td>
+                                                                    <td>
+                                                                        <button class="btn btn-default btn-xs s-remove">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </button>
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>2</td>
@@ -952,6 +1088,11 @@
                                                                     </td>
                                                                     <td>
                                                                         <input type="text" class="form-control" type="button" name="name" value="167" placeholder="Weight">
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="btn btn-default btn-xs s-remove">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </button>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -976,6 +1117,11 @@
                                                                     <td>
                                                                         <input type="text" class="form-control" type="button" name="name" value="30" placeholder="Weight">
                                                                     </td>
+                                                                    <td>
+                                                                        <button class="btn btn-default btn-xs s-remove">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </button>
+                                                                    </td>
                                                                 </tr>
                                                                 <tr class="s-new-box">
                                                                     <td>-</td>
@@ -999,6 +1145,11 @@
                                                                     </td>
                                                                     <td>
                                                                         <input type="text" class="form-control" type="button" name="name" value="" placeholder="Weight">
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="btn btn-default btn-xs s-remove">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </button>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -1051,34 +1202,38 @@
                             <div class="s-detail-body s-arrow">
                                 <div class="s-content-block-wrapper">
                                     <div class="s-header">
-                                        <h3>Gift Card Custom Attributes <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
+                                        <h3>Order Delivery Custom Attributes <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
                                         <a href="##" class="s-toggle"><!--- populated with css ---></a>
                                     </div>
                                     <div class="s-body">
-                                        <div class="s-content-wrapper">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="input" class=" control-label">Nick Name: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
-                                                        <input type="text" class="form-control">
-                                                    </div>    
-                                                    <div class="form-group">
-                                                        <label for="input" class=" control-label">Holiday: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
-                                                        <select class="form-control">
-                                                            <option value="" disabled selected>-Select Holiday-</option>
-                                                            <option value="">Christmas</option>
-                                                            <option value="">Easter</option>
-                                                            <option value="">Birthday</option>
-                                                        </select>
-                                                    </div>    
+                                        <div class="s-content-wrapper form-horizontal">
+                                                    
+                                            <div class="form-group">
+                                                <label for="input" class="col-xs-3 control-label">Packer Name: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="form-control">
                                                 </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="input" class=" control-label">Shipping Message: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
-                                                        <textarea class="form-control" rows="3"></textarea>
-                                                    </div>    
-                                                </div>    
                                             </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="input" class="col-xs-3 control-label">Carrier Pickup Time: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                                <div class="col-sm-9">
+                                                    <select class="form-control">
+                                                        <option value="" disabled selected>-Select-</option>
+                                                        <option value="">Example</option>
+                                                        <option value="">Example</option>
+                                                        <option value="">Example</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="input" class="col-xs-3 control-label">Estimated Arrival Date:</label>
+                                                <div class="col-sm-9">
+                                                    <textarea class="form-control" rows="3"></textarea>
+                                                </div>
+                                            </div>
+  
                                         </div>
                                     </div>
                                 </div>
@@ -1116,7 +1271,6 @@
             						                    	<span>Capture &amp; Fulfill</span> 
             						                    </button>
                                                         <ul class="dropdown-menu" role="menu">
-            												<li><a href="#">Fulfill Order</a></li>
             												<li><a href="#">Capture Payment</a></li>
             						                    </ul>
                                                         <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
