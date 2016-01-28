@@ -1,6 +1,7 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 
+import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
@@ -1181,6 +1182,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .provider('$hibachi',$Hibachi)
+.service('hibachiInterceptor', HibachiInterceptor.Factory())
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

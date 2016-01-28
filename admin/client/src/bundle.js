@@ -1840,6 +1840,7 @@
 	                return $delegate;
 	            }
 	        ]);
+	        $httpProvider.interceptors.push('hibachiInterceptor');
 	    }])
 	    .run(['$rootScope', '$hibachi', function ($rootScope, $hibachi) {
 	        $rootScope.buildUrl = $hibachi.buildUrl;
@@ -6282,8 +6283,6 @@
 	            swClickOutside: '&'
 	        };
 	        this.link = function (scope, elem, attr) {
-	            console.log('testhere');
-	            console.log(elem);
 	            $document.on('click', function (e) {
 	                if (!e || !e.target)
 	                    return;
@@ -6291,7 +6290,6 @@
 	                if (angular.element(elem).hasClass("ng-hide")) {
 	                    return;
 	                }
-	                console.log(utilityService);
 	                if (e.target !== elem && !utilityService.isDescendantElement(elem, e.target)) {
 	                    $timeout(function () {
 	                        scope.swClickOutside();
