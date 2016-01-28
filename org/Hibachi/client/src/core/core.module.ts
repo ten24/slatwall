@@ -1165,6 +1165,7 @@ var coremodule = angular.module('hibachi.core',[
             return $delegate;
         }
     ]);
+     $httpProvider.interceptors.push('hibachiInterceptor');
 }])
 .run(['$rootScope','$hibachi',($rootScope,$hibachi)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;    
