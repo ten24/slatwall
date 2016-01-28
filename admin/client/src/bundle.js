@@ -6274,7 +6274,6 @@
 	var SWClickOutside = (function () {
 	    //@ngInject
 	    function SWClickOutside($document, $timeout, utilityService) {
-	        var _this = this;
 	        this.$document = $document;
 	        this.$timeout = $timeout;
 	        this.utilityService = utilityService;
@@ -6282,21 +6281,27 @@
 	        this.scope = {
 	            swClickOutside: '&'
 	        };
-	        this.link = function ($scope, elem, attr) {
-	            _this.$document.on('click', function (e) {
+	        this.link = function (scope, elem, attr) {
+	            console.log('testhere');
+	            console.log(elem);
+	            $document.on('click', function (e) {
 	                if (!e || !e.target)
 	                    return;
 	                //check if our element already hiden
 	                if (angular.element(elem).hasClass("ng-hide")) {
 	                    return;
 	                }
-	                if (e.target !== elem && !this.utilityService.isDescendantElement(elem, e.target)) {
-	                    this.$timeout(function () {
-	                        $scope.swClickOutside();
+	                console.log(utilityService);
+	                if (e.target !== elem && !utilityService.isDescendantElement(elem, e.target)) {
+	                    $timeout(function () {
+	                        scope.swClickOutside();
 	                    });
 	                }
 	            });
 	        };
+	        this.$document = $document;
+	        this.$timeout = $timeout;
+	        this.utilityService = utilityService;
 	    }
 	    SWClickOutside.Factory = function () {
 	        var directive = function ($document, $timeout, utilityService) {
