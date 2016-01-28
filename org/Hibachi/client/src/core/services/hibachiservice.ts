@@ -302,6 +302,19 @@ class HibachiService{
 
 		return deferred.promise;
 	}
+    getProcessOptions= (entityName) => {
+        var deferred = this.$q.defer();
+        var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getProcessOptionsByEntityName&entityName='+entityName;
+
+        this.$http.get(urlString)
+            .success((data) => {
+                deferred.resolve(data);
+            }).error((reason) => {
+                deferred.reject(reason);
+            });
+
+        return deferred.promise;
+    }
 	checkUniqueOrNullValue = (object, property, value) => {
 		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?'+this.appConfig.action+'=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(

@@ -154,7 +154,7 @@
 	                        </div>
 	                        <!-- //Filter Criteria End -->
 	                        <!-- Filter Criteria Start -->
-	                        <div 	class="s-filter-group-item" 
+	                        <div 	class="s-filter-group-item"
 	                            ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'update'"
 	                            >
 	                            <h4>Update Data</h4>
@@ -167,21 +167,52 @@
 	                        <!-- Filter Criteria Start -->
 	                        <div 	class="s-filter-group-item"
 									ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'process'">
-	                            <h4>Dynamic Numeric</h4>
-	                            <div class="row">
-	                                <div class="col-md-6 form-group form-group-sm">
-	                                    <select class="form-control input-sm">
-	                                        <option value="1">Dynamic Numeric Value</option>
-	                                        <option value="2">Add 'N'</option>
-	                                        <option value="3">Set value to '0'</option>
-	                                        <option value="4">Subtract 'N'</option>
-	                                    </select>
-	                                </div>
-	                                <div class="col-md-6 form-group form-group-sm">
-	                                    <input type="number" class="form-control" placeholder="" value="4">
-	                                    <!-- <p class="help-block">Help text here.</p> -->
-	                                </div>
-	                            </div>
+                                <!--- search --->
+                                <div class="s-select-list-wrapper s-search">
+                                    <div class="form-group">
+                                        <!-- Option select field wrapper -->
+                                        <div class="input-group">
+                                            <div class="s-input-btn">
+                                                <!-- Need to display the workflow event name if it exists -->
+                                                <input type="search" class="form-control" placeholder="Search&hellip;" ng-model="searchProcess.name" ng-focus="searchProcess.name = ''">
+                                                <!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
+                                                <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
+
+                                            </div>
+                                            <div class="input-group-btn" ng-if="workflowTask.data.workflow.data.workflowObject">
+                                                <button class="btn btn-sm btn-default" ng-click="getProcessOptions(workflowTask.data.workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Dropdown wrapper -->
+                                    <div class="dropdown s-search-results-wrapper" ng-show="showProcessOptions">
+                                        <ul class="dropdown-menu">
+                                            <li ng-repeat="processOption in processOptions | filter:searchProcess.name">
+                                                <a ng-click="selectProcess(processOption)">{{processOption.name}}</a>
+                                            </li>
+                                            <li ng-show="(processOptions | filter:searchProcess.name).length == 0">
+                                                <a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                <!--- // search --->
+	                            <!--<h4>Dynamic Numeric</h4>-->
+	                            <!--<div class="row">-->
+	                                <!--<div class="col-md-6 form-group form-group-sm">-->
+	                                    <!--<select class="form-control input-sm">-->
+	                                        <!--<option value="1">Dynamic Numeric Value</option>-->
+	                                        <!--<option value="2">Add 'N'</option>-->
+	                                        <!--<option value="3">Set value to '0'</option>-->
+	                                        <!--<option value="4">Subtract 'N'</option>-->
+	                                    <!--</select>-->
+	                                <!--</div>-->
+	                                <!--<div class="col-md-6 form-group form-group-sm">-->
+	                                    <!--<input type="number" class="form-control" placeholder="" value="4">-->
+	                                    <!--&lt;!&ndash; <p class="help-block">Help text here.</p> &ndash;&gt;-->
+	                                <!--</div>-->
+	                            <!--</div>-->
 	                        </div>
 	                        <!-- //Filter Criteria End -->
 	                        <!-- Filter Criteria Start -->

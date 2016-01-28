@@ -189,6 +189,48 @@ class SWWorkflowTaskActions{
                         }
                     });
                 };
+
+                scope.searchProcess = {
+                    name:''
+                };
+
+                /**
+                 * Watches for changes in the proccess
+                 */
+                scope.showProcessOptions = false;
+                scope.processOptions = [];
+                scope.$watch('searchProcess.name', function(newValue, oldValue){
+                    if(newValue !== oldValue){
+                        scope.getProcessOptions(scope.workflowTask.data.workflow.data.workflowObject);
+                    }
+                });
+
+                /**
+                 * Retrieves the proccess options for a workflow trigger action.
+                 */
+                scope.getProcessOptions = function(objectName){
+                    if(!scope.processOptions.length){
+                        var proccessOptionsPromise = $hibachi.getProcessOptions(objectName);
+
+                        proccessOptionsPromise.then(function(value){
+                            $log.debug('getProcessOptions');
+                            scope.processOptions = value.data;
+                        });
+                    }
+                    scope.showProcessOptions = !scope.showProcessOptions;
+                };
+
+                /**
+                 * Changes the selected process option value.
+                 */
+                scope.selectProcess = function(processOption){
+                    scope.workflowTaskActions.selectedTaskAction.data.processMethod = processOption.value;
+                    //scope.searchProcess.name = processOption.name;
+
+                    scope.workflowTaskActions.selectedTaskAction.forms.selectedTaskAction.$setDirty();
+                    console.warn(scope.workflowTaskActions.selectedTaskAction);
+
+                };
             }
         };
     }

@@ -377,9 +377,24 @@ component output="false" accessors="true" extends="HibachiController" {
     }
     
     public void function getEventOptionsByEntityName(required struct rc){
-        var eventNameOptions = getService('hibachiEventService').getEventNameOptionsForObject(rc.entityName);
+        var eventNameOptions = getService('hibachiEventService').getEventNameOptionsForObject(arguments.rc.entityName);
         arguments.rc.apiResponse.content['data'] = eventNameOptions;
     }
+
+	public void function getProcessMethodOptionsByEntityName(required struct rc){
+		var processOptions = [];
+		var allProcessMethods = getHibachiService().getEntitiesProcessContexts();
+
+		if(structKeyExists(allProcessMethods, arguments.rc.entityName)){
+			for(var processMethod in allProcessMethods[arguments.rc.entityName]){
+				arrayAppend(processOptions, {
+					'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
+					'value' = 'process#arguments.rc.entityName#_#processMethod#'
+				});
+			}
+		}
+		arguments.rc.apiResponse.content['data'] = processOptions;
+	}
     
     private void function formatEntity(required any entity, required any model){
         

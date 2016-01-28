@@ -127,7 +127,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 
-
+//writeDump(var=workflowTriggers, top=1); abort;
 		// Loop Due workflowTriggers
 		for(var workflowTrigger in workflowTriggers) {
 
@@ -253,9 +253,12 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			//PROCESS
 			case 'process' :
-				// TODO: Impliment This
+				var entityService = getServiceByEntityName( entityName=arguments.entity.getClassName());
+				var processMethod = entityService.invokeMethod(workflowTaskAction.getProcessMethod(), {'1'=arguments.entity});
+				if(!processMethod.hasErrors()) {
+					actionSuccess = true;
+				}
 				break;
-
 			//IMPORT
 			case 'import' :
 				// TODO: Impliment This
