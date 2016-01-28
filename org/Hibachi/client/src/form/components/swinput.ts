@@ -32,6 +32,11 @@ class SWInput{
 			var name = propertyDisplay.property;
 			var form = propertyDisplay.form.$$swFormInfo;
 			$log.debug("Name is:" + name + " and form is: " + form);
+            if(angular.isUndefined(propertyDisplay.object.validations )
+                || angular.isUndefined(propertyDisplay.object.validations.properties)
+                || angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])){
+                return '';
+            }
 			var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 			$log.debug("Validations: ", validations);
             $log.debug(propertyDisplay.form.$$swFormInfo)
