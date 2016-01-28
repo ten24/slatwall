@@ -6272,7 +6272,6 @@
 	var SWClickOutside = (function () {
 	    //@ngInject
 	    function SWClickOutside($document, $timeout, utilityService) {
-	        var _this = this;
 	        this.$document = $document;
 	        this.$timeout = $timeout;
 	        this.utilityService = utilityService;
@@ -6280,21 +6279,27 @@
 	        this.scope = {
 	            swClickOutside: '&'
 	        };
-	        this.link = function ($scope, elem, attr) {
-	            _this.$document.on('click', function (e) {
+	        this.link = function (scope, elem, attr) {
+	            console.log('testhere');
+	            console.log(elem);
+	            $document.on('click', function (e) {
 	                if (!e || !e.target)
 	                    return;
 	                //check if our element already hiden
 	                if (angular.element(elem).hasClass("ng-hide")) {
 	                    return;
 	                }
-	                if (e.target !== elem && !this.utilityService.isDescendantElement(elem, e.target)) {
-	                    this.$timeout(function () {
-	                        $scope.swClickOutside();
+	                console.log(utilityService);
+	                if (e.target !== elem && !utilityService.isDescendantElement(elem, e.target)) {
+	                    $timeout(function () {
+	                        scope.swClickOutside();
 	                    });
 	                }
 	            });
 	        };
+	        this.$document = $document;
+	        this.$timeout = $timeout;
+	        this.utilityService = utilityService;
 	    }
 	    SWClickOutside.Factory = function () {
 	        var directive = function ($document, $timeout, utilityService) {
@@ -16101,18 +16106,16 @@
 	        //this.getCollection(false);
 	        this.loadingCollection = false;
 	        this.searchCollection = function () {
-	            _this.loadingCollection = false;
-	            _this.searchCollection = function () {
-	                $log.debug('search with keywords');
-	                $log.debug(_this.keywords);
-	                $('.childNode').remove();
-	                //Set current page here so that the pagination does not break when getting collection
-	                _this.loadingCollection = true;
-	                var promise = _this.getCollection(true);
-	                promise.then(function () {
-	                    _this.collection.collectionConfig = _this.collectionConfig;
-	                });
-	            };
+	            $log.debug('search with keywords');
+	            $log.debug(_this.keywords);
+	            $('.childNode').remove();
+	            //Set current page here so that the pagination does not break when getting collection
+	            _this.loadingCollection = true;
+	            var promise = _this.getCollection(true);
+	            promise.then(function () {
+	                _this.collection.collectionConfig = _this.collectionConfig;
+	                _this.loadingCollection = false;
+	            });
 	        };
 	        var siteChanged = function (selectedSiteOption) {
 	            _this.selectedSite = selectedSiteOption;
