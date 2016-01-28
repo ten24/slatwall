@@ -20,7 +20,7 @@ import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
-declare var $:SlatwallJQueryStatic;
+declare var $:any;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
   //custom modules
