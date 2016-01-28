@@ -55,6 +55,7 @@ class SWFormFieldRadio implements ng.IDirective {
 							value:0
 						}
 					];
+
 					if(angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
 
 						for(var i in scope.propertyDisplay.options){
