@@ -3,7 +3,6 @@
 import {hibachimodule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.module";
 import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
 import {entitymodule} from "../../../../org/Hibachi/client/src/entity/entity.module";
-import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
 import {contentmodule} from "../content/content.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
 import {optiongroupmodule} from "../optiongroup/optiongroup.module";
@@ -81,7 +80,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
          };
      });
 
-     $httpProvider.interceptors.push('slatwallInterceptor');
 
      // route provider configuration
 
@@ -111,7 +109,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 
     }])
  //services
-.service('slatwallInterceptor', SlatwallInterceptor.Factory())
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //filters

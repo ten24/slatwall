@@ -1,17 +1,17 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-interface ISlatwallConfig{
+interface IHibachiConfig{
     baseURL;
     debugFlag;
 	instantiationKey;
 }
-interface ISlatwall{
-    getConfig():ISlatwallConfig;
+interface IHibachi{
+    getConfig():IHibachiConfig;
 }
-interface SlatwallJQueryStatic extends JQueryStatic{
-    slatwall:ISlatwall
+interface HibachiJQueryStatic extends JQueryStatic{
+    hibachi:IHibachi
 }
-declare var $:SlatwallJQueryStatic;
+declare var $:HibachiJQueryStatic;
 
 interface IInterceptor {
     request: Function;
@@ -26,13 +26,13 @@ interface IParams{
 
 }
 
-interface ISlatwallInterceptorPromise<T> extends ng.IPromise<any>{
+interface IHibachiInterceptorPromise<T> extends ng.IPromise<any>{
 	data:any;
 }
 
 
 
-class SlatwallInterceptor implements IInterceptor{
+class HibachiInterceptor implements IInterceptor{
 
 	public static Factory() {
         var eventHandler = (
@@ -42,18 +42,18 @@ class SlatwallInterceptor implements IInterceptor{
 			$log:ng.ILogService,
 			$injector:ng.auto.IInjectorService,
 			alertService,
-			baseURL:string,
+			appConfig:string,
 			dialogService,
 			utilityService,
             hibachiPathBuilder
-		)=> new SlatwallInterceptor(
+		)=> new HibachiInterceptor(
 			$location,
 			$window,
 			$q,
 			$log,
 			$injector,
 			alertService,
-			baseURL,
+			appConfig,
 			dialogService,
 			utilityService,
             hibachiPathBuilder
@@ -65,7 +65,7 @@ class SlatwallInterceptor implements IInterceptor{
 			'$log',
 			'$injector',
 			'alertService',
-			'baseURL',
+			'appConfig',
 			'dialogService',
 			'utilityService',
             'hibachiPathBuilder'
@@ -76,6 +76,7 @@ class SlatwallInterceptor implements IInterceptor{
     public urlParam = null;
     public authHeader = 'Authorization';
     public authPrefix = 'Bearer ';
+    public baseUrl:string;
 	//@ngInject
     constructor(
         public $location:ng.ILocationService,
@@ -84,7 +85,7 @@ class SlatwallInterceptor implements IInterceptor{
 		public $log:ng.ILogService,
 		public $injector:ng.auto.IInjectorService,
 		public alertService,
-		public baseURL:string,
+		public appConfig:any,
 		public dialogService,
         public utilityService,
         public hibachiPathBuilder
@@ -95,7 +96,8 @@ class SlatwallInterceptor implements IInterceptor{
 		this.$log = $log;
 		this.$injector = $injector;
 		this.alertService = alertService;
-		this.baseURL = baseURL;
+		this.appConfig = appConfig;
+        this.baseUrl = appConfig.baseUrl;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
@@ -109,7 +111,7 @@ class SlatwallInterceptor implements IInterceptor{
         }
         if(config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
             //all partials are bound to instantiation key
-            config.url = config.url + '?instantiationKey='+$.slatwall.getConfig().instantiationKey;
+            config.url = config.url + '?instantiationKey='+$.hibachi.getConfig().instantiationKey;
             return config;
         }
         config.cache = true;
@@ -119,7 +121,7 @@ class SlatwallInterceptor implements IInterceptor{
             config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
         }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
-		if(config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')){
+		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
             this.$log.debug(config);
 			config.method = 'POST';
 			config.data = {};
@@ -175,7 +177,7 @@ class SlatwallInterceptor implements IInterceptor{
 					//open dialog
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
-                    return $http.get(this.baseURL+'/index.cfm/api/auth/login').then((loginResponse:ISlatwallInterceptorPromise<any>)=>{
+                    return $http.get(this.baseUrl+'/index.cfm/api/auth/login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
                         this.$window.localStorage.setItem('token',loginResponse.data.token);
                         rejection.config.headers = rejection.config.headers || {};
                         rejection.config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
@@ -193,9 +195,9 @@ class SlatwallInterceptor implements IInterceptor{
 
 }
 export{
-	SlatwallInterceptor,
+	HibachiInterceptor,
 	IInterceptor,
-	ISlatwall,
-	ISlatwallConfig,
-	SlatwallJQueryStatic
+	IHibachi,
+	IHibachiConfig,
+	HibachiJQueryStatic
 };
