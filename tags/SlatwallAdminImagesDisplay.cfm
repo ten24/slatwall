@@ -53,7 +53,7 @@
 		<div class="row s-image-uploader">
 			<cfif arrayLen(attributes.object.getImages())>
 				<cfloop array="#attributes.object.getImages()#" index="image">
-					<div class="col-xs-3">
+					<div class="col-xs-2">
 						<div class="thumbnail">
 							<div class="s-image">
 								<a href="#image.getResizedImagePath()#" target="_blank">
@@ -61,9 +61,9 @@
 									<span class="s-zoom"><i class="fa fa-search"></i></span>
 								</a>
 							</div>
-							<div class="s-caption">
+							<!--- <div class="s-caption">
 								<h4 title="#image.getImageFile()#">#image.getImageFile()#</h4>
-							</div>
+							</div> --->
 							<div class="s-controlls">
 								<div class="btn-group btn-group-justified" role="group">
 									<div class="btn-group" role="group">
@@ -78,11 +78,15 @@
 					</div>
 				</cfloop>
 			<cfelse>
-				<div class="alert alert-info deafult-margin" role="alert" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
+				<div class="alert alert-info deafult-margin" style="text-align:center;" role="alert">#attributes.hibachiScope.rbKey("entity.Product.process.image.norecordsfound")#</div>
 			</cfif>
-			<div class="col-xs-3">
-				<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-primary" icon="plus" />
+			
+			<div class="col-xs-2 s-upload-image s-new-image">
+				<div class="thumbnail">
+					<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" icon="picture" />
+				</div>
 			</div>
+
 		</div>
 
 	</cfoutput>
