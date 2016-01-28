@@ -3,11 +3,12 @@
 
 class SWListingDisplayController{
     /* local state variables */
-
+    public  actions = [];
     public adminattributes;
     public administrativeCount;
     public allpropertyidentifiers:string = "";
     public allprocessobjectproperties:string = "false";
+    public aggregates = [];
     public buttonGroup = [];
     public collectionID;
     public collectionPromise;
@@ -16,11 +17,13 @@ class SWListingDisplayController{
     public collectionConfig;
     public collection;
     public childPropertyName;
+    public colorFilters = [];
     public columns = [];
     public columnCount;
     public expandable:boolean;
     public exampleEntity:any = "";
     public exportAction;
+    public filters = [];
     public getCollection;
     public getChildCount;
     public hasCollectionPromise;
@@ -30,6 +33,9 @@ class SWListingDisplayController{
     public multiselectPropertyIdentifier;
     public multiselectValues;
     public norecordstext;
+    public orderBys = [];
+    public  orderByStates = {}; 
+    public  orderByIndices = {};
     public paginator;
     public parentPropertyName;
     public processObjectProperties;
@@ -43,12 +49,14 @@ class SWListingDisplayController{
     public savedSearchText;
     public selectFieldName;
     public selectable:boolean = false;
+    private showSearch;
+    private showTopPagination;
     public sortable:boolean = false;
     public sortProperty;
     public tableID;
     public tableclass;
     public tableattributes;
-    public showSearch:boolean;
+    public hasSearch:boolean;
 
 
 
@@ -61,7 +69,6 @@ class SWListingDisplayController{
         public $timeout,
         public $q,
         public $hibachi,
-        public partialsPath,
         public utilityService,
         public collectionConfigService,
         public paginationService,
@@ -69,11 +76,12 @@ class SWListingDisplayController{
         public observerService,
         public rbkeyService
     ){
+        console.log('here');
+        console.log(this);
         this.$q = $q;
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.$transclude = $transclude;
-        this.partialsPath = partialsPath;
         this.utilityService = utilityService;
         this.$scope = $scope;
         this.$element = $element;
@@ -83,14 +91,24 @@ class SWListingDisplayController{
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
         this.intialSetup();
-
+        this.$scope.$on('$destroy',()=>{
+            this.observerService.detachById(this.$scope.collection);
+        });
     }
 
     private intialSetup = () => {
-
-        if(angular.isUndefined(this.showSearch)){
-            this.showSearch = true; 
+        //default search is available
+        if(angular.isUndefined(this.hasSearch)){
+            this.hasSearch = true;
         }
+        
+        if(angular.isString(this.showSearch)){
+            this.showSearch = (this.showSearch.toLowerCase() === 'true');
+        }
+        
+        if(angular.isString(this.showTopPagination)){
+            this.showTopPagination = (this.showTopPagination.toLowerCase() === 'true');
+        };
 
         this.paginator = this.paginationService.createPagination();
 
@@ -117,10 +135,37 @@ class SWListingDisplayController{
 
         //if a collectionConfig was not passed in then we can run run swListingColumns
         //this is performed early to populate columns with swlistingcolumn info
-        this.$transclude = this.$transclude;
         this.$transclude(this.$scope,()=>{});
-
+        
+         //add filters
         this.setupColumns();
+        angular.forEach(this.filters, (filter)=>{
+            this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator);
+        }); 
+        //add order bys
+        angular.forEach(this.orderBys, (orderBy)=>{
+            this.collectionConfig.addOrderBy(orderBy.orderBy);
+        });
+        
+        angular.forEach(this.aggregates, (aggregate)=>{
+            this.collectionConfig.addDisplayAggregate(aggregate.propertyIdentifier, aggregate.aggregateFunction, aggregate.aggregateAlias);
+        });
+        
+         //make sure we have necessary properties to make the actions 
+        angular.forEach(this.actions, (action)=>{
+            if(angular.isDefined(action.queryString)){
+                var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
+                if(parsedProperties && parsedProperties.length){
+                    this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                }
+            }
+        });
+        //also make sure we have necessary color filter properties
+        angular.forEach(this.colorFilters,(colorFilter)=>{
+            if(angular.isDefined(colorFilter.propertyToCompare)){
+                this.collectionConfig.addDisplayProperty(colorFilter.propertyToCompare, "", {isVisible:false});
+            }
+        });
 
         this.exampleEntity = this.$hibachi.newEntity(this.collectionObject);
         this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
@@ -162,7 +207,6 @@ class SWListingDisplayController{
     private setupDefaultGetCollection = () =>{
         this.collectionPromise = this.collectionConfig.getEntity();
         return ()=>{
-            this.collectionConfig.setKeywords(this.searchText);
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
             this.collectionConfig.getEntity().then((data)=>{
@@ -171,7 +215,6 @@ class SWListingDisplayController{
                 this.setupColumns();
                 this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                 this.paginator.setPageRecordsInfo(this.collectionData);
-                this.searching = false; 
             });
         };
     };
@@ -454,7 +497,6 @@ class SWListingDisplayController{
         //Setup table class
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
-        console.log("showSearch?",this.showSearch);
     }
 
     public setupColumns = ()=>{
@@ -467,6 +509,32 @@ class SWListingDisplayController{
             if(angular.isUndefined(column.isVisible)){
                 column.isVisible = true;
             }
+            var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
+            if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
+                column.type = metadata.hb_formattype;
+            } else { 
+                column.type = "none";
+            }
+            if(angular.isDefined(column.tooltip)){
+               
+                var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
+                
+                if(parsedProperties && parsedProperties.length){
+              
+                    this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                }
+            } else { 
+                column.tooltip = '';
+            }
+            if(angular.isDefined(column.queryString)){
+                var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
+                if(parsedProperties && parsedProperties.length){
+                    this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                }
+            }
+            this.columnOrderBy(column);
+            
+            
             this.collectionConfig.addDisplayProperty(column.propertyIdentifier,title,column);
         });
         //if the passed in collection has columns perform some formatting
@@ -481,6 +549,60 @@ class SWListingDisplayController{
                 }
             });
         }
+    }
+    
+    public getColorFilterNGClassObject = (pageRecord)=>{
+        var classObjectString = "{"; 
+        angular.forEach(this.colorFilters, (colorFilter, index)=>{
+            classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
+            if(index<this.colorFilters.length-1){
+                classObjectString = classObjectString.concat(",");
+            }
+        }); 
+        return classObjectString + "}"; 
+    }
+    
+    private getColorFilterConditionString = (colorFilter, pageRecord)=>{
+       if(angular.isDefined(colorFilter.comparisonProperty)){
+            return pageRecord[colorFilter.propertyToCompare.replace('.','_')] + colorFilter.comparisonOperator + pageRecord[colorFilter.comparisonProperty.replace('.','_')];
+       } else { 
+            return pageRecord[colorFilter.propertyToCompare.replace('.','_')] + colorFilter.comparisonOperator + colorFilter.comparisonValue;
+       }
+    }
+    
+    public toggleOrderBy = (column) => {
+        this.collectionConfig.toggleOrderBy(column.propertyIdentifier);
+        this.getCollection();
+    }
+    
+    public columnOrderBy = (column) => {
+        var found = false; 
+        
+        angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
+             if(column.propertyIdentifier == orderBy.propertyIdentifier){
+                   found = true; 
+                   this.orderByStates[column.propertyIdentifier] = orderBy.direction;
+             }
+        });
+        if(!found){
+            this.orderByStates[column.propertyIdentifier] = '';
+        }
+        return this.orderByStates[column.propertyIdentifier];
+    }
+    
+    public columnOrderByIndex = (column) =>{
+        var found = false; 
+        
+        angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
+             if(column.propertyIdentifier == orderBy.propertyIdentifier){
+                   found = true; 
+                   this.orderByIndices[column.propertyIdentifier] = index + 1;
+             }
+        });
+        if(!found){
+            this.orderByIndices[column.propertyIdentifier] = '';
+        }
+        return this.orderByIndices[column.propertyIdentifier];
     }
 
     public updateMultiselectValues = ()=>{
@@ -536,6 +658,7 @@ class SWListingDisplay implements ng.IDirective{
             isRadio:"=",
             //angularLink:true || false
             angularLinks:"=",
+            name:"@",
 
             /*required*/
             collection:"=",
@@ -548,6 +671,7 @@ class SWListingDisplay implements ng.IDirective{
             title:"@",
 
             /*Admin Actions*/
+            actions:"=",
             recordEditAction:"@",
             recordEditActionProperty:"@",
             recordEditQueryString:"@",
@@ -614,6 +738,8 @@ class SWListingDisplay implements ng.IDirective{
 
             /* Settings */
             showheader:"=",
+            showSearch:"=?",
+            showTopPagination:"=?",
 
             /* Basic Action Caller Overrides*/
             createModal:"=",
@@ -622,7 +748,7 @@ class SWListingDisplay implements ng.IDirective{
             exportAction:"@",
 
             getChildCount:"=",
-            showSearch:"="
+            hasSearch:"="
     };
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";
@@ -631,37 +757,26 @@ class SWListingDisplay implements ng.IDirective{
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
-            observerService,
-			hibachiPathBuilder
+            hibachiPathBuilder
         ) => new SWListingDisplay(
             corePartialsPath,
-            observerService,
-			hibachiPathBuilder
+            hibachiPathBuilder
         );
         directive.$inject =[
             'corePartialsPath',
-            'observerService',
-			'hibachiPathBuilder'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
     //@ngInject
     constructor(
         public corePartialsPath,
-        public observerService,
-		public hibachiPathBuilder
+        public hibachiPathBuilder
     ){
         this.corePartialsPath = corePartialsPath;
-        this.observerService = observerService;
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplay.html';
     }
 
-    public link:ng.IDirectiveLinkFn = (scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
-        scope.$on('$destroy',()=>{
-            this.observerService.detachByID(scope.collection);
-        });
-
-    }
 }
 export{
     SWListingDisplay

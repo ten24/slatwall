@@ -149,6 +149,34 @@ class UtilityService extends BaseService{
         var end = start + count;
         return stringItem.substring(start,end);
     }
+    
+    public getPropertiesFromString = (stringItem:string):Array<string> =>{
+            if(!stringItem) return;
+            var capture = false;
+            var property = '';
+            var results = [];
+            for(var i=0; i < stringItem.length; i++){
+                if(!capture && stringItem.substr(i,2) == "${"){
+                    property = '';
+                    capture = true;
+                    i = i+1;//skip the ${
+                } else if(capture && stringItem[i] != '}'){
+                    property = property.concat(stringItem[i]);
+                } else if(capture) {
+                    results.push(property);
+                    capture = false;
+                }
+            }
+            return results;
+        }
+
+        public replacePropertiesWithData = (stringItem:string, data)=>{
+            var results = this.getPropertiesFromString(stringItem);
+            for(var i=0; i < results.length; i++){ 
+                stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
+            }
+            return stringItem;
+        }
 
     public replaceAll = (stringItem:string, find:string, replace:string):string => {
         return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
