@@ -4078,7 +4078,7 @@
 	        this.restrict = "EA";
 	        this.scope = {};
 	        this.bindToController = {
-	            collectionConfig: "=",
+	            collectionConfig: "=?",
 	            entity: "@?",
 	            properties: "@?",
 	            propertiesToDisplay: "@?",
@@ -4088,7 +4088,7 @@
 	            results: "=?",
 	            addFunction: "&?",
 	            addButtonFunction: "&?",
-	            hideSearch: "=",
+	            hideSearch: "=?",
 	            clickOutsideArguments: "=?"
 	        };
 	        this.controller = SWTypeaheadSearchController;
@@ -8646,9 +8646,9 @@
 	            scope: {
 	                collection: "=",
 	                collectionConfig: "=",
-	                isRadio: "=",
+	                isRadio: "=?",
 	                //angularLink:true || false
-	                angularLinks: "="
+	                angularLinks: "=?"
 	            },
 	            link: function (scope, element, attrs) {
 	                if (angular.isUndefined(scope.angularLinks)) {
@@ -11445,12 +11445,12 @@
 	        return {
 	            restrict: 'EA',
 	            scope: {
-	                collectionConfig: "=",
-	                filterGroupItem: "=",
-	                filterPropertiesList: "=",
+	                collectionConfig: "=?",
+	                filterGroupItem: "=?",
+	                filterPropertiesList: "=?",
 	                saveCollection: "&",
-	                filterGroup: "=",
-	                comparisonType: "="
+	                filterGroup: "=?",
+	                comparisonType: "=?"
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
 	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {

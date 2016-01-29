@@ -187,7 +187,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public scope = {}
 
 	public bindToController = {
-        collectionConfig:"=",
+        collectionConfig:"=?",
 		entity:"@?",
 		properties:"@?",
 		propertiesToDisplay:"@?",
@@ -197,7 +197,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
-		hideSearch:"=",
+		hideSearch:"=?",
 		clickOutsideArguments:"=?"
 	}
 	public controller=SWTypeaheadSearchController;
