@@ -655,42 +655,42 @@ class SWListingDisplay implements ng.IDirective{
     public transclude=true;
     public bindToController={
 
-            isRadio:"=",
+            isRadio:"=?",
             //angularLink:true || false
-            angularLinks:"=",
-            name:"@",
+            angularLinks:"=?",
+            name:"@?",
 
             /*required*/
-            collection:"=",
-            collectionConfig:"=",
+            collection:"=?",
+            collectionConfig:"=?",
             getCollection:"&?",
-            collectionPromise:"=",
-            edit:"=",
+            collectionPromise:"=?",
+            edit:"=?",
 
             /*Optional*/
-            title:"@",
+            title:"@?",
 
             /*Admin Actions*/
-            actions:"=",
-            recordEditAction:"@",
-            recordEditActionProperty:"@",
-            recordEditQueryString:"@",
-            recordEditModal:"=",
-            recordEditDisabled:"=",
-            recordDetailAction:"@",
-            recordDetailActionProperty:"@",
-            recordDetailQueryString:"@",
-            recordDetailModal:"=",
-            recordDeleteAction:"@",
-            recordDeleteActionProperty:"@",
-            recordDeleteQueryString:"@",
-            recordAddAction:"@",
-            recordAddActionProperty:"@",
-            recordAddQueryString:"@",
-            recordAddModal:"=",
-            recordAddDisabled:"=",
+            actions:"=?",
+            recordEditAction:"@?",
+            recordEditActionProperty:"@?",
+            recordEditQueryString:"@?",
+            recordEditModal:"=?",
+            recordEditDisabled:"=?",
+            recordDetailAction:"@?",
+            recordDetailActionProperty:"@?",
+            recordDetailQueryString:"@?",
+            recordDetailModal:"=?",
+            recordDeleteAction:"@?",
+            recordDeleteActionProperty:"@?",
+            recordDeleteQueryString:"@?",
+            recordAddAction:"@?",
+            recordAddActionProperty:"@?",
+            recordAddQueryString:"@?",
+            recordAddModal:"=?",
+            recordAddDisabled:"=?",
 
-            recordProcessesConfig:"=",
+            recordProcessesConfig:"=?",
             /* record processes config is an array of actions. Example:
             [
             {
@@ -707,48 +707,48 @@ class SWListingDisplay implements ng.IDirective{
             */
 
             /*Hierachy Expandable*/
-            parentPropertyName:"@",
+            parentPropertyName:"@?",
             //booleans
-            expandable:"=",
-            expandableOpenRoot:"=",
+            expandable:"=?",
+            expandableOpenRoot:"=?",
 
             /*Searching*/
-            searchText:"=",
+            searchText:"=?",
 
             /*Sorting*/
-            sortProperty:"@",
-            sortContextIDColumn:"@",
-            sortContextIDValue:"@",
+            sortProperty:"@?",
+            sortContextIDColumn:"@?",
+            sortContextIDValue:"@?",
 
             /*Single Select*/
-            selectFiledName:"@",
-            selectValue:"@",
-            selectTitle:"@",
+            selectFiledName:"@?",
+            selectValue:"@?",
+            selectTitle:"@?",
 
             /*Multiselect*/
-            multiselectFieldName:"@",
-            multiselectPropertyIdentifier:"@",
-            multiselectIdPaths:"@",
-            multiselectValues:"@",
+            multiselectFieldName:"@?",
+            multiselectPropertyIdentifier:"@?",
+            multiselectIdPaths:"@?",
+            multiselectValues:"@?",
 
             /*Helper / Additional / Custom*/
-            tableattributes:"@",
-            tableclass:"@",
-            adminattributes:"@",
+            tableattributes:"@?",
+            tableclass:"@?",
+            adminattributes:"@?",
 
             /* Settings */
-            showheader:"=",
+            showheader:"=?",
             showSearch:"=?",
             showTopPagination:"=?",
 
             /* Basic Action Caller Overrides*/
-            createModal:"=",
-            createAction:"@",
-            createQueryString:"@",
-            exportAction:"@",
+            createModal:"=?",
+            createAction:"@?",
+            createQueryString:"@?",
+            exportAction:"@?",
 
-            getChildCount:"=",
-            hasSearch:"="
+            getChildCount:"=?",
+            hasSearch:"=?"
     };
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";
