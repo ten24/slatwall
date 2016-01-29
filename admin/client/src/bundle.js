@@ -5770,15 +5770,15 @@
 	        this.scope = true;
 	        this.bindToController = {
 	            propertyIdentifier: "@",
-	            processObjectProperty: "@",
-	            title: "@",
-	            tdclass: "@",
-	            search: "=",
-	            sort: "=",
-	            filter: "=",
-	            range: "=",
-	            editable: "=",
-	            buttonGroup: "="
+	            processObjectProperty: "@?",
+	            title: "@?",
+	            tdclass: "@?",
+	            search: "=?",
+	            sort: "=?",
+	            filter: "=?",
+	            range: "=?",
+	            editable: "=?",
+	            buttonGroup: "=?"
 	        };
 	        this.controller = SWListingColumnController;
 	        this.controllerAs = "swListingColumn";
