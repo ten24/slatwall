@@ -8,6 +8,7 @@ import {dialogmodule} from "../dialog/dialog.module";
 import {paginationmodule} from "../pagination/pagination.module";
 import {formmodule} from "../form/form.module";
 import {validationmodule} from "../validation/validation.module";
+import {workflowmodule} from "../workflow/workflow.module";
 //directives
 import {SWSaveAndFinish} from "./components/swsaveandfinish";
 
@@ -18,7 +19,8 @@ var hibachimodule = angular.module('hibachi',[
     dialogmodule.name,
     paginationmodule.name,
     formmodule.name,
-    validationmodule.name
+    validationmodule.name,
+    workflowmodule.name
 ])
 .constant('hibachiPartialsPath','hibachi/components/')
 .directive('swSaveAndFinish',SWSaveAndFinish.Factory())

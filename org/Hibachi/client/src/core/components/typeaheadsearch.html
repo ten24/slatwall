@@ -1,5 +1,4 @@
 <div class="s-select-list-wrapper s-search" sw-click-outside="swTypeaheadSearch.closeThis(swTypeaheadSearch.clickOutsideArguments)" >
-    
     <div class="form-group">
         <div class="input-group">
             <div class="s-input-btn">
@@ -9,7 +8,7 @@
             <div class="input-group-btn">
                 <button class="btn btn-sm btn-default" type='button' ng-if="swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.toggleOptions()"><i class="fa fa-caret-down" ></i></button>
                 <button class="btn btn-sm btn-default" type='button' ng-if="!swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.toggleOptions()"><i class="fa fa-caret-up"></i></button>
-				<button class="btn btn-sm btn-primary" type='button' ng-click="swTypeaheadSearch.addButtonItem()"><i class="fa fa-plus"></i></button>
+				<button class="btn btn-sm btn-primary" type='button' ng-if="swTypeaheadSearch.showAddButton" ng-click="swTypeaheadSearch.addButtonItem()"><i class="fa fa-plus"></i></button>
             </div>
         </div>
     </div>

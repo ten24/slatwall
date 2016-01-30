@@ -11,7 +11,7 @@ class SWTypeaheadSearchController {
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
 	public placeholderText:string;
-	public searchText:string  = "";
+	public searchText:string;
 	public results = [];
 	public addFunction;
     public displayList = [];
@@ -19,7 +19,8 @@ class SWTypeaheadSearchController {
 	public hideSearch = true;
 	public clickOutsideArguments;
     public resultsPromise;
-    public resultsDeferred; 
+    public resultsDeferred;
+    public showAddButton;
     
 	private _timeoutPromise; 
 	private entityList;
@@ -42,7 +43,11 @@ class SWTypeaheadSearchController {
         
 		if(angular.isDefined(this.propertiesToDisplay)){
 			this.displayList = this.propertiesToDisplay.split(",");
-		} 
+		}
+
+        if(angular.isDefined(this.addButtonFunction)){
+            this.showAddButton = true;
+        }
 
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
@@ -64,7 +69,7 @@ class SWTypeaheadSearchController {
     public clearSearch = () =>{
         this.searchText = "";
         this.hideSearch = true; 
-    }
+    };
     
     public toggleOptions = () =>{
         if(this.hideSearch && !this.searchText.length){
@@ -72,7 +77,7 @@ class SWTypeaheadSearchController {
         } else { 
             this.hideSearch = !this.hideSearch; 
         }
-    }
+    };
 
 	public search = (search:string)=>{
         
@@ -89,7 +94,7 @@ class SWTypeaheadSearchController {
             this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
          
-		if(search.length > 2){
+		if(search.length){
 			this._timeoutPromise = this.$timeout(()=>{
 
 				var promise = this.typeaheadCollectionConfig.getEntity();
@@ -100,13 +105,6 @@ class SWTypeaheadSearchController {
 						} else {
 							this.results = response.records;
 						}
-                        
-						//Custom method for gravatar on accounts (non-persistant-property)
-						//if(angular.isDefined(this.results) && this.entity == "Account"){
-						//	angular.forEach(this.results,(account)=>{
-						//		account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-						//	});
-						//}
 
 				}).finally(()=>{
                       this.resultsDeferred.resolve();
@@ -135,7 +133,7 @@ class SWTypeaheadSearchController {
 			this.results = [];
 			this.hideSearch = true;
 		}
-	}
+	};
 
 	public addItem = (item)=>{
 
@@ -150,18 +148,18 @@ class SWTypeaheadSearchController {
 		if(angular.isDefined(this.addFunction)){
 			this.addFunction()(item);
 		}
-	}
+	};
 
 	public addButtonItem = ()=>{
 
 		if(!this.hideSearch){
 			this.hideSearch = true;
 		}
-        
+
 		if(angular.isDefined(this.addButtonFunction)){
 			this.addButtonFunction()(this.searchText);
 		}
-	}
+	};
 
 	public closeThis = (clickOutsideArgs) =>{
 
@@ -193,7 +191,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 		propertiesToDisplay:"@?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
-		searchText:"=?",
+		searchText:"=",
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
