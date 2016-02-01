@@ -99,7 +99,7 @@ Notes:
 					  	  LEFT JOIN 
 					  	  	stock.location location
 						WHERE
-							orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced,ostClosed,ostCanceled')
+							orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitSale'
 						  AND 
@@ -167,7 +167,7 @@ Notes:
 					  	  LEFT JOIN
 					  	  	stock.location location
 						WHERE
-							orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced,ostClosed,ostCanceled')
+							orderItem.order.orderStatusType.systemCode NOT IN ('ostNotPlaced','ostClosed','ostCanceled')
 						  AND
 						  	orderItem.orderItemType.systemCode = 'oitReturn'
 						  AND
