@@ -166,7 +166,7 @@
 					data-query-string="column.queryString"
 					data-expandable="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
 					data-auto-open="swListingDisplay.expandableOpenRoot"
-					data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)}}"
+					data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}"
 					data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
 					data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
 					data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
@@ -178,16 +178,18 @@
 					data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
 				>
 					<!--indent the primary for expandable-->
-                    
-					<span ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" 
-                          style="margin-left:{{(pageRecord.depth*15)||0}}px"
-                          ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
-                          popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                          popover-trigger="mouseenter"
-                          popover-placement="bottom"
-                          popover-popup-delay="50"
-                          popover-append-to-body="true"  
-                    ></span>
+                    <a 	ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" class="s-contents-page-title"
+						href="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}">
+					
+						<span style="margin-left:{{(pageRecord.depth*15)||0}}px"
+	                          ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+	                          popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+	                          popover-trigger="mouseenter"
+	                          popover-placement="bottom"
+	                          popover-popup-delay="50"
+	                          popover-append-to-body="true"  
+	                    ></span>
+                    </a>
 					<span ng-if="!swListingDisplay.expandable || !column.tdclass || column.tdclass !== 'primary'">
 						<span ng-if="(!column.action || !column.queryString) && (!column.type || column.type==='none')" 
                               ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
