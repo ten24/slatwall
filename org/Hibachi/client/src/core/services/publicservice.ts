@@ -13,22 +13,28 @@ class PublicService {
     public hasErrors:boolean;
     public errors:string;
     public http:ng.IHttpService;
+    public confirmationUrl:string;
     public loading = false;
     public header:any;
+    public window:any;
     private baseActionPath = "";
-    public months = [{name:'JAN',value:1},{name:'FEB',value:2},{name:'MAR',value:3},{name:'APR',value:4},{name:'MAY',value:5},{name:'JUN',value:6},{name:'JUL',value:7},{name:'AUG',value:8},{name:'SEP',value:9},{name:'OCT',value:10},{name:'NOV',value:11},{name:'DEC',value:12}];
+    public months = [{name:'01 - JAN',value:1},{name:'02 - FEB',value:2},{name:'03 - MAR',value:3},{name:'04 - APR',value:4},{name:'05 - MAY',value:5},{name:'06 - JUN',value:6},{name:'07 - JUL',value:7},{name:'08 - AUG',value:8},{name:'09 - SEP',value:9},{name:'10 - OCT',value:10},{name:'11 - NOV',value:11},{name:'12 - DEC',value:12}];
     public years = [];
     public shippingAddress = "";
     public billingAddress = "";
     ///index.cfm/api/scope/
     
     //@ngInject
-    constructor(public $http:ng.IHttpService, public $q:ng.IQService) { 
+    constructor(public $http:ng.IHttpService, public $q:ng.IQService, public $window:any) { 
         
         this.baseActionPath = "/index.cfm/api/scope/"; //default path
+        this.confirmationUrl = "/order-confirmation";
         this.$http = $http;
         this.$q = $q
         this.getExpirationYears();
+        this.window = $window;
+        console.log("Window: ", $window);
+        
     }
     
     /** grab the valid expiration years for credit cards  */
@@ -65,6 +71,7 @@ class PublicService {
        let urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
        return this.getData(urlBase, "states", "&countryCode="+countryCode);
     }
+    
     /** accessors for states */
     public getAddressOptions=(countryCode:string):any =>  {
        if (!angular.isDefined(countryCode)) countryCode = "US";
@@ -143,6 +150,13 @@ class PublicService {
                 //if the action that was called was successful, then success is true.
                 if (result.data.successfulActions.length){
                     this.success = true;
+                    for (var action in result.data.successfulActions){
+                       
+                        if (result.data.successfulActions[action].indexOf('public:cart.placeOrder') !== -1){
+                            this.window.location.href = this.confirmationUrl;
+                            console.log(this.window);
+                        }
+                    }
                 }
                 if (result.data.failureActions.length){
                     this.hasErrors = true;

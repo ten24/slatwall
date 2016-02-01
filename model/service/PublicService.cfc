@@ -440,42 +440,16 @@ component extends="HibachiService"  accessors="true" output="false"
     
     public any function addOrderShippingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="1";
-        param name="data.saveShippingAsBilling" default="0";
+        param name="data.saveShippingAsBilling" default="1";
         
-        var utility = getHibachiUtilityService();
+        
         /** add a shipping address */
         var shippingAddress = {};
         if (!isNull(data)){
-            if (!utility.hasPropertyWithDefinedValue(data, "locality")){
-                //Check if the required data is available and if we can give suggestion if postal code exists
-                if (!utility.hasPropertiesWithDefinedValues(data, "stateCode,countryCode,city") && utility.hasPropertyWithDefinedValue(data, "postalCode")){
-                    //add address suggestions based on postal code if available.
-               
-                    //get suggestions for address.
-                    var suggestions = getAddressService().getStateAndCountryCodesByPostalCode(data.postalCode);
-                    
-                    if (!isNull(suggestions) && isStruct(suggestions)){
-                        if (utility.hasPropertyWithDefinedValue(suggestions, "city") && isNull(data.city)){
-                            arguments.data['ajaxResponse']['errors']['city'] = ["did you mean <i>#suggestions['city']#?</i>"];
-                        }
-                        if (utility.hasPropertyWithDefinedValue(suggestions, "state") && isNull(data.stateCode)){
-                            arguments.data['ajaxResponse']['errors']['stateCode'] = ["did you mean <i>#suggestions['state']#?</i>"];
-                        }
-                        if (utility.hasPropertyWithDefinedValue(suggestions, "country") && isNull(data.countryCode)){
-                            arguments.data['ajaxResponse']['errors']['country'] = ["did you mean <i>#suggestions['country']#?</i>"];
-                        }
-                        if (structKeyExists(suggestions, "data") && isStruct(suggestions.data)){
-                            arguments.data['ajaxResponse']['messages']['suggestions'] = [suggestions.data];
-                        }
-                        arguments.data.$.slatwall.addActionResult( "public:cart.AddShippingAddress", true);
-                        return;
-                    }
-                }
-            } 
             //if we have that data and don't have any suggestions to make, than try to populate the address
             shippingAddress = getService('AddressService').newAddress();    
             //get a new address populated with the data.
-            var savedAddress = getService('AddressService').saveAddress(shippingAddress, data);
+            var savedAddress = getService('AddressService').saveAddress(shippingAddress, data, "full");
             
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
@@ -486,9 +460,25 @@ component extends="HibachiService"  accessors="true" output="false"
                     order.setBillingAddress(savedAddress);
                 }
                 
+                if (structKeyExists(data, "saveAsAccountAddressFlag") && data.saveAsAccountAddressFlag){
+                
+                    var accountAddress = getService('AddressService').getAccountAddress(data.$.slatwall.account().getAccountAddresses()[1].getAccountAddressID());
+                    
+                    accountAddress.setAccountAddressName(data.name); 
+                    //get new saved address
+                    var newAddress = getService("AddressService").newAddress();
+                    var savedNewAddress = getService('AddressService').saveAddress(newAddress, data);
+                    
+                    //set the new address on the account address entity.
+                    accountAddress.setAddress(savedNewAddress);
+                    var savedNewAccountAddress = getService('AddressService').saveAccountAddress(accountAddress);
+                
+                }
+                
                 getOrderService().saveOrder(order);
                 
             }else{
+                    
                     this.addErrors(data, savedAddress.getErrors()); //add the basic errors
                     arguments.data.$.slatwall.addActionResult( "public:cart.AddShippingAddress", savedAddress.hasErrors());
             }
@@ -497,16 +487,18 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** adds a billing address to an order. */
     public void function addBillingAddress(required data, required slatwall){
+        param name="data.saveAsAccountAddressFlag" default="1"; 
         //if we have that data and don't have any suggestions to make, than try to populate the address
             billingAddress = getService('AddressService').newAddress();    
             
             //get a new address populated with the data.
-            var savedAddress = getService('AddressService').saveAddress(billingAddress, arguments.data);
+            var savedAddress = getService('AddressService').saveAddress(billingAddress, arguments.data, "billing");
             
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
                 var order = slatwall.cart();
                 order.setBillingAddress(savedAddress);
+                
                 getOrderService().saveOrder(order);
             }
             if(savedAddress.hasErrors()){
@@ -872,7 +864,7 @@ component extends="HibachiService"  accessors="true" output="false"
         
         if (!data.newOrderPayment.saveShippingAsBilling){
             //use this billing information
-            this.addBillingAddress(data.newOrderPayment.billingAddress, arguments.data.$.slatwall);
+            this.addBillingAddress(data.newOrderPayment.billingAddress, arguments.data.$.slatwall, "billing");
         }
         
         var addOrderPayment = getService('OrderService').processOrder( data.$.slatwall.cart(), arguments.data, 'addOrderPayment');
