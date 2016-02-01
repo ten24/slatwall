@@ -1942,7 +1942,7 @@ tabel .s-table-header {
   position: absolute;
   width: 16px;
   height: 16px;
-  left: 3px;
+  left: 2px;
   top: 0;
   padding-right: 1px;
   padding-top: 2px;
@@ -1968,6 +1968,13 @@ tabel .s-table-header {
 .s-checkbox input[type=checkbox]:disabled + label:before {
   background-color: #f2f2f2;
   cursor: not-allowed;
+}
+.s-property .s-checkbox {
+  display: inline-block;
+  margin-right: 15px;
+}
+.s-property .s-checkbox label {
+  font-family: "open_sansregular", Helvetica, Arial, sans-serif;
 }
 .radio {
   margin-top: 0px !important;
