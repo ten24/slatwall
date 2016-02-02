@@ -16,6 +16,7 @@ class SWActionCallerController{
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
     public formCtrl:any;
+    public isPublic:string;
     //@ngInject
     constructor(
         private $scope,
@@ -49,20 +50,18 @@ class SWActionCallerController{
     public init = ():void =>{
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
-
-            if (this.type == "button"){
+        if (this.type == "button" || this.type== "submit" || this.isPublic){
                 //handle submit.
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
+                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.formController; }, (newValue, oldValue) => {
                     if (newValue !== undefined){
                         this.formCtrl = newValue;
-
+                        unbindWatcher();
                     }
-
-                    unbindWatcher();
                 });
 
             }
+            
 //			this.actionItem = this.getActionItem();
 //			this.actionItemEntityName = this.getActionItemEntityName();
 //			this.text = this.getText();
@@ -86,11 +85,10 @@ class SWActionCallerController{
         </cfif>
         */
     }
-
+    /** submit function delegates back to the form */
     public submit = () => {
-
-            this.formCtrl.submit(this.action);
-        }
+        this.formCtrl.submit(this.action);
+    }
 
     public getAction = ():string =>{
 
@@ -236,6 +234,10 @@ class SWActionCallerController{
     }
 }
 
+
+interface IActionCallerScope extends ng.IScope {
+    formController: ng.IFormController
+}
 class SWActionCaller implements ng.IDirective{
     public restrict:string = 'EA';
     public scope:any={};
@@ -255,43 +257,30 @@ class SWActionCaller implements ng.IDirective{
         disabledtext:"@",
         modal:"=",
         modalFullWidth:"=",
-        id:"@"
+        id:"@",
+        isPublic: "@?"
     };
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
+    public require="^?swForm"
     public templateUrl;
+    
     public static Factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (
-            partialsPath,
-            utiltiyService,
-            $hibachi
-        ) => new SWActionCaller(
-            partialsPath,
-            utiltiyService,
-            $hibachi
-        );
-        directive.$inject = [
-            'partialsPath',
-            'utilityService',
-            '$hibachi'
-        ];
+        var directive:ng.IDirectiveFactory = () => new SWActionCaller();
         return directive;
     }
 
-    constructor(
-        public partialsPath,
-        public utiltiyService,
-        public $hibachi
-        ){
-    }
+    constructor(){}
 
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+    public link:ng.IDirectiveLinkFn = (scope: IActionCallerScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>{
+        if (angular.isDefined(formController)){
+            scope.formController = formController;    
+        }
     }
 }
+
 export{
     SWActionCaller,
     SWActionCallerController
 }
-	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
-
 
