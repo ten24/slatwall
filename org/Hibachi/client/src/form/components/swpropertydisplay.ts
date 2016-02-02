@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 class SWPropertyDisplay{
 	public static Factory(){
@@ -7,18 +7,18 @@ class SWPropertyDisplay{
 			$log,
 			$filter,
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWPropertyDisplay(
 			$log,
 			$filter,
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'$filter',
 			'coreFormPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -26,7 +26,7 @@ class SWPropertyDisplay{
 		$log,
 		$filter,
 		coreFormPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			require:'^form',
@@ -48,7 +48,7 @@ class SWPropertyDisplay{
 				noValidate:"="
 
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+"propertydisplay.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
 				//if the item is new, then all fields at the object level are dirty
 				$log.debug('editingproper');

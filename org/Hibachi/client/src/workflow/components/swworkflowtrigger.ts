@@ -1,6 +1,6 @@
 
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTrigger{
 	public static Factory(){
 		var directive = (
@@ -8,20 +8,20 @@ class SWWorkflowTrigger{
 			$hibachi,
 			metadataService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWWorkflowTrigger(
 			$log,
 			$hibachi,
 			metadataService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'$hibachi',
 			'metadataService',
 			'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -30,7 +30,7 @@ class SWWorkflowTrigger{
 		$hibachi,
 		metadataService,
 		workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 	){
 		return {
 			restrict: 'A',
@@ -39,7 +39,7 @@ class SWWorkflowTrigger{
 				workflowTrigger:"=",
 				workflowTriggers:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtrigger.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflow trigger init');
 

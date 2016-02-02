@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * <------------------------------------------------------------------------------------------------------------------------------------>
  *   This directive can be used to prompt the user with a confirmation dialog.

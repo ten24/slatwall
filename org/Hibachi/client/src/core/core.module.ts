@@ -1,5 +1,10 @@
-/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
+
+import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
+//constant
+import {HibachiPathBuilder} from "./services/hibachipathbuilder";
+
 //services
 import {PublicService} from "./services/publicservice";
 import {UtilityService} from "./services/utilityservice";
@@ -9,27 +14,36 @@ import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
+
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
 //filters
 import {PercentageFilter} from "./filters/percentage";
+import {EntityRBKey} from "./filters/entityrbkey";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
+import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
 import {SWConfirm} from "./components/swconfirm";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
+import {SWGravatar} from "./components/swgravatar"; 
 import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingAggregate} from "./components/swlistingaggregate";
+import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
+import {SWListingFilter} from "./components/swlistingfilter";
+import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
+import {SWTooltip} from "./components/swtooltip";
 import {SWRbKey} from "./components/swrbkey";
 import {SWOptions} from "./components/swoptions";
 import {SWSelection} from "./components/swselection";
@@ -41,32 +55,54 @@ import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 
+declare var $:any;
 
-class PathBuilderConfig{
-    public baseURL:string;
-    public basePartialsPath:string;
-    constructor(){
+var coremodule = angular.module('hibachi.core',[
+  //Angular Modules
+  'ngAnimate',
+  'ngSanitize',
+  //3rdParty modules
+  'ui.bootstrap'
+]).config(['$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+    hibachiPathBuilder.setBaseURL(appConfig.baseURL);
+    hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
+    
+    $logProvider.debugEnabled( appConfig.debugFlag );
+     $filterProvider.register('likeFilter',function(){
+         return function(text){
+             if(angular.isDefined(text) && angular.isString(text)){
+                 return text.replace(new RegExp('%', 'g'), '');
 
-    }
+             }
+         };
+     });
 
-    public setBaseURL = (baseURL:string):void=>{
-        this.baseURL = baseURL;
-    }
-
-    public setBasePartialsPath = (basePartialsPath:string):void=>{
-        this.basePartialsPath = basePartialsPath
-    }
-
-    public buildPartialsPath = (componentsPath:string):string=>{
-        if(angular.isDefined(this.baseURL) && angular.isDefined(this.basePartialsPath)){
-            return this.baseURL + this.basePartialsPath + componentsPath;
-         }else{
-            throw('need to define baseURL and basePartialsPath in pathBuilderConfig. Inject pathBuilderConfig into module and configure it there');
-        }
-    }
-}
-
-var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)=>{
+     $filterProvider.register('truncate',function(){
+         return function (input, chars, breakOnWord) {
+             if (isNaN(chars)) return input;
+             if (chars <= 0) return '';
+             if (input && input.length > chars) {
+                 input = input.substring(0, chars);
+                 if (!breakOnWord) {
+                     var lastspace = input.lastIndexOf(' ');
+                     //get last space
+                     if (lastspace !== -1) {
+                         input = input.substr(0, lastspace);
+                     }
+                 }else{
+                     while(input.charAt(input.length-1) === ' '){
+                         input = input.substr(0, input.length -1);
+                     }
+                 }
+                 return input + '...';
+             }
+             return input;
+         };
+     });
+    
+    
+    hibachiPathBuilder.setBaseURL(appConfig.baseURL);
+    hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
     $provide.decorator('$hibachi',[
         "$delegate",
         '$http',
@@ -203,7 +239,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 
                     this.metaData.$$getDetailTabs = function(){
                         var deferred = $q.defer();
-                        var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getDetailTabs&entityName='+this.className;
+                        var urlString = _config.baseURL+'/index.cfm/?'+appConfig.action+'=api:main.getDetailTabs&entityName='+this.className;
                         var detailTabs = [];
                         $http.get(urlString)
                         .success(function(data){
@@ -1130,7 +1166,12 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
             return $delegate;
         }
     ]);
-}]).constant('pathBuilderConfig',new PathBuilderConfig())
+     $httpProvider.interceptors.push('hibachiInterceptor');
+}])
+.run(['$rootScope','$hibachi',($rootScope,$hibachi)=>{
+    $rootScope.buildUrl = $hibachi.buildUrl;    
+}])    
+.constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
 .service('publicService',PublicService)
@@ -1141,12 +1182,15 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .provider('$hibachi',$Hibachi)
+.service('hibachiInterceptor', HibachiInterceptor.Factory())
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters
 .filter('percentage',[PercentageFilter.Factory])
+.filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 //directives
-.directive('swTypeahedSearch',SWTypeaheadSearch.Factory())
+.directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
+.directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
 .directive('swColumnSorter',SWColumnSorter.Factory())
@@ -1154,8 +1198,13 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .directive('swEntityActionBar',SWEntityActionBar.Factory())
 .directive('swEntityActionBarButtonGroup',SWEntityActionBarButtonGroup.Factory())
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
+.directive('swGravatar', SWGravatar.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
+.directive('swListingAggregate',SWListingAggregate.Factory())
+.directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
+.directive('swListingFilter',SWListingFilter.Factory())
+.directive('swListingOrderBy',SWListingOrderBy.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
 .directive('swLoading',SWLoading.Factory())
@@ -1163,6 +1212,7 @@ var coremodule = angular.module('hibachi.core',[]).config(['$provide',($provide)
 .directive('swRbkey',SWRbKey.Factory())
 .directive('swOptions',SWOptions.Factory())
 .directive('swSelection',SWSelection.Factory())
+.directive('swTooltip', SWTooltip.Factory())
 .directive('swClickOutside',SWClickOutside.Factory())
 .directive('swDirective',SWDirective.Factory())
 .directive('swExportAction',SWExportAction.Factory())

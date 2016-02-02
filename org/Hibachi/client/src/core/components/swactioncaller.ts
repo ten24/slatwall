@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 
 class SWActionCallerController{
@@ -14,7 +14,7 @@ class SWActionCallerController{
     public text:string;
     public disabled:boolean;
     public actionItemEntityName:string;
-    public pathBuilderConfig:any;
+    public hibachiPathBuilder:any;
     public formCtrl:any;
     public isPublic:string;
     //@ngInject
@@ -27,7 +27,7 @@ class SWActionCallerController{
         private utilityService,
         private $hibachi,
         private rbkeyService,
-        pathBuilderConfig
+        hibachiPathBuilder
     ){
         this.$scope = $scope;
         this.$element = $element;
@@ -36,9 +36,9 @@ class SWActionCallerController{
         this.rbkeyService = rbkeyService;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
-        this.pathBuilderConfig = pathBuilderConfig;
+        this.hibachiPathBuilder = hibachiPathBuilder;
 
-        this.$templateRequest(this.pathBuilderConfig.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
+        this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"actioncaller.html").then((html)=>{
             var template = angular.element(html);
             this.$element.parent().append(template);
             $compile(template)($scope);

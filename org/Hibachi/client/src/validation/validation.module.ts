@@ -1,5 +1,5 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+/// <reference path="../../typings/hibachiTypescript.d.ts" />
 
 import {SWValidate} from "./components/swvalidate";
 import {SWValidationMinLength} from "./components/swvalidationminlength";

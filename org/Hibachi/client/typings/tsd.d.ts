@@ -11,4 +11,7 @@
 /// <reference path="datejs/datejs.d.ts" />
 /// <reference path="md5/md5.d.ts" />
 /// <reference path="bootstrap/bootstrap.d.ts" />
+interface String {
+    startsWith(str: string): boolean;
+}
 

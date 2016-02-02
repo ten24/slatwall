@@ -742,34 +742,36 @@
 		<cfargument name="templatePath" default="" />
 		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
-
-		<cfif generalLog>
-			<cfset var logText = "General Log" />
-		<cfelse>
-			<cfset var logText = "Detail Log" />
+		
+		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
+			<cfif generalLog>
+				<cfset var logText = "General Log" />
+			<cfelse>
+				<cfset var logText = "Detail Log" />
+			</cfif>
+			
+			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
+				<cfset logText &= " - #arguments.messageType#" />
+			</cfif>
+			<cfif arguments.messageCode neq "" and isSimpleValue(arguments.messageCode)>
+				<cfset logText &= " - #arguments.messageCode#" />
+			</cfif>
+			<cfif arguments.templatePath neq "" and isSimpleValue(arguments.templatePath)>
+				<cfset logText &= " - #arguments.templatePath#" />
+			</cfif>
+			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
+				<cfset logText &= " - #arguments.message#" />
+			</cfif>
+			
+			<!--- Verify that the log type was correct --->
+			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
+				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
+				<cfset arguments.logType = "Information" />
+			</cfif>
+			
+			<cflog file="#getApplicationValue('applicationKey')#" text="#logText#" type="#arguments.logType#" />
 		</cfif>
-
-		<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
-			<cfset logText &= " - #arguments.messageType#" />
-		</cfif>
-		<cfif arguments.messageCode neq "" and isSimpleValue(arguments.messageCode)>
-			<cfset logText &= " - #arguments.messageCode#" />
-		</cfif>
-		<cfif arguments.templatePath neq "" and isSimpleValue(arguments.templatePath)>
-			<cfset logText &= " - #arguments.templatePath#" />
-		</cfif>
-		<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
-			<cfset logText &= " - #arguments.message#" />
-		</cfif>
-
-		<!--- Verify that the log type was correct --->
-		<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
-			<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
-			<cfset arguments.logType = "Information" />
-		</cfif>
-
-		<cflog file="#getApplicationValue('applicationKey')#" text="#logText#" type="#arguments.logType#" />
-
+		
 	</cffunction>
 
 	<cffunction name="compareLists" access="public" returntype="struct" output="false" hint="Given two versions of a list, I return a struct containing the values that were added, the values that were removed, and the values that stayed the same.">

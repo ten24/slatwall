@@ -1,7 +1,9 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 declare var hibachiConfig:any;
+
 class CreateCollection{
+
     //@ngInject
     constructor(
         $scope, $log, $timeout, $hibachi, collectionService, formService,
@@ -39,7 +41,7 @@ class CreateCollection{
             $scope.newCollection.data.collectionID = $scope.params.entityId;
             $timeout(function(){
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
-                
+
             });
         }
 
@@ -47,7 +49,7 @@ class CreateCollection{
             $scope.newCollection.data.collectionName = $scope.params.collectionName;
             $timeout(function(){
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
-               
+
             });
         }
 

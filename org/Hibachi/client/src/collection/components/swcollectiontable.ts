@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCollectionTable{
 
@@ -7,7 +7,7 @@ class SWCollectionTable{
 			$http,
 			$compile,
 			$log,
-			pathBuilderConfig,
+			hibachiPathBuilder,
 			collectionPartialsPath,
 			paginationService,
 			selectionService,
@@ -16,7 +16,7 @@ class SWCollectionTable{
 			$http,
             $compile,
             $log,
-            pathBuilderConfig,
+            hibachiPathBuilder,
             collectionPartialsPath,
             paginationService,
             selectionService,
@@ -26,7 +26,7 @@ class SWCollectionTable{
 			'$http',
             '$compile',
             '$log',
-            'pathBuilderConfig',
+            'hibachiPathBuilder',
             'collectionPartialsPath',
             'paginationService',
             'selectionService',
@@ -39,7 +39,7 @@ class SWCollectionTable{
 		$http,
         $compile,
         $log,
-        pathBuilderConfig,
+        hibachiPathBuilder,
         collectionPartialsPath,
         paginationService,
         selectionService,
@@ -47,13 +47,13 @@ class SWCollectionTable{
 	){
 		return {
 			restrict: 'E',
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"collectiontable.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"collectiontable.html",
 			scope:{
 				collection:"=",
 				collectionConfig:"=",
-				isRadio:"=",
+				isRadio:"=?",
                 //angularLink:true || false
-                angularLinks:"="
+                angularLinks:"=?"
 			},
 			link: function(scope,element,attrs){
 

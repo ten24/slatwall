@@ -1,4 +1,4 @@
-/// <reference path='../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 //services
 // import {AccountService} from "./services/accountservice";
@@ -15,13 +15,12 @@ import {RouterController} from "./controllers/routercontroller";
 import {SWDetailTabs} from "./components/swdetailtabs";
 import {SWDetail} from "./components/swdetail";
 import {SWList} from "./components/swlist";
-import {SlatwallJQueryStatic} from "../slatwall/services/slatwallinterceptor";
 
-declare var $:SlatwallJQueryStatic;
+declare var $:any;
 
 var entitymodule = angular.module('hibachi.entity',['ngRoute'])
-.config(['$routeProvider','$injector','$locationProvider',
-($routeProvider,$injector,$locationProvider)=>{
+.config(['$routeProvider','$injector','$locationProvider','appConfig',
+($routeProvider,$injector,$locationProvider,appConfig)=>{
      //detect if we are in hashbang mode
      var vars:any = {};
      var parts:any = window.location.href.replace(/[?&]+([^=&]+)#([^/]*)/gi, (m:any,key:string,value:string):any=> {
@@ -54,7 +53,7 @@ var entitymodule = angular.module('hibachi.entity',['ngRoute'])
          controller: 'routerController',
      }).otherwise({
          //controller:'otherwiseController'
-         templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
+         templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
      });
 }])
 .constant('coreEntityPartialsPath','entity/components/')

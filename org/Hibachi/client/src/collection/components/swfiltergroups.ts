@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFilterGroups{
 	public static Factory(){
@@ -8,14 +8,14 @@ class SWFilterGroups{
 			$templateCache,
 			$log,
 			collectionPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWFilterGroups(
 			$http,
 			$compile,
 			$templateCache,
 			$log,
 			collectionPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$http',
@@ -23,7 +23,7 @@ class SWFilterGroups{
 			'$templateCache',
 			'$log',
 			'collectionPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -33,19 +33,19 @@ class SWFilterGroups{
 		$templateCache,
 		$log,
 		collectionPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'EA',
 			scope:{
-				collectionConfig:"=",
-				filterGroupItem: "=",
-				filterPropertiesList:"=",
+				collectionConfig:"=?",
+				filterGroupItem: "=?",
+				filterPropertiesList:"=?",
 				saveCollection:"&",
-				filterGroup:"=",
-				comparisonType:"="
+				filterGroup:"=?",
+				comparisonType:"=?"
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
 				//if the filter group comparisontype is not specified, then assume we are doing filters
 				if(!angular.isDefined($scope.comparisonType)){

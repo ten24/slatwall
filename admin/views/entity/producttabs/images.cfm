@@ -53,8 +53,8 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiTabGroup tabLocation="top">
-		<hb:HibachiTab view="admin:entity/producttabs/defaultimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.defaultImages')#" count="#ArrayLen(rc.product.getDefaultProductImageFiles())#" />
-		<hb:HibachiTab view="admin:entity/producttabs/alternateimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.alternateImages')#" count="#ArrayLen(rc.product.getImages())#"/>
+		<hb:HibachiTab view="admin:entity/producttabs/defaultimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.defaultImages')#" count="#rc.product.getDefaultProductImageFilesCount()#" />
+		<hb:HibachiTab view="admin:entity/producttabs/alternateimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.alternateImages')#" count="#rc.product.getProductImagesCount()#"/>
 	</hb:HibachiTabGroup>
 </cfoutput>
 

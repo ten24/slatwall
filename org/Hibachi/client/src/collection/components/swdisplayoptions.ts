@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWDisplayOptions{
 	public static Factory():ng.IDirectiveFactory{
@@ -9,7 +9,7 @@ class SWDisplayOptions{
 			$log,
 			$hibachi,
 			collectionService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
 			collectionPartialsPath,
             rbkeyService
 
@@ -20,7 +20,7 @@ class SWDisplayOptions{
 			$log,
 			$hibachi,
 			collectionService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
 			collectionPartialsPath,
             rbkeyService
 		);
@@ -31,7 +31,7 @@ class SWDisplayOptions{
 			'$log',
 			'$hibachi',
 			'collectionService',
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
 			'collectionPartialsPath',
             'rbkeyService'
 		];
@@ -46,7 +46,7 @@ class SWDisplayOptions{
 		$log,
 		$hibachi,
 		collectionService,
-		pathBuilderConfig,
+		hibachiPathBuilder,
 		collectionPartialsPath,
         rbkeyService
 	){
@@ -62,7 +62,7 @@ class SWDisplayOptions{
 				baseEntityAlias:"=",
 				baseEntityName:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"displayoptions.html",
 			controller: ['$scope','$element','$attrs',function($scope,$element,$attrs){
 				$log.debug('display options initialize');
 
@@ -129,7 +129,7 @@ class SWDisplayOptions{
 						$log.debug($scope.columns);
 						if(angular.isDefined(selectedProperty)){
 							var column = {
-								title : getTitleFromProperty(selectedProperty.propertyIdentifier),
+								title : getTitleFromProperty(selectedProperty),
 								propertyIdentifier : selectedProperty.propertyIdentifier,
 								isVisible : true,
 								isDeletable : true,

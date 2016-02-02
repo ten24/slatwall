@@ -1,13 +1,13 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowBasic{
 	public static Factory(){
 		var directive=(
 			$log, $location, $hibachi, formService, workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWWorkflowBasic(
 			$log, $location, $hibachi, formService, workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -15,19 +15,19 @@ class SWWorkflowBasic{
 			'$hibachi',
 			'formService',
 			'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor($log, $location, $hibachi, formService, workflowPartialsPath,
-			pathBuilderConfig){
+			hibachiPathBuilder){
 
 		return {
 			restrict : 'A',
 			scope : {
 				workflow : "="
 			},
-			templateUrl : pathBuilderConfig.buildPartialsPath(workflowPartialsPath)
+			templateUrl : hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)
 					+ "workflowbasic.html",
 			link : function(scope, element, attrs) {
 				console.log('workflowtest');

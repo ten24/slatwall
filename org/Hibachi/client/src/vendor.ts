@@ -1,4 +1,5 @@
-
+/// <reference path='../typings/hibachiTypescript.d.ts' />
+/// <reference path='../typings/tsd.d.ts' />
 
 export =  ()=> {
 
@@ -11,5 +12,4 @@ export =  ()=> {
   require('angular-sanitize');
   require('angular-lazy-bootstrap');
   require('metismenu');
-
 };

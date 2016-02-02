@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 import {PageDialog} from "../model/pagedialog";
 
 interface IDialogService {
@@ -8,14 +8,14 @@ interface IDialogService {
 
 class DialogService{
     public static $inject = [
-        'pathBuilderConfig'
+        'hibachiPathBuilder'
     ];
     private _pageDialogs;
     constructor(
-         private pathBuilderConfig
+         private hibachiPathBuilder
     ){
         this._pageDialogs = [];
-        this.pathBuilderConfig = pathBuilderConfig;
+        this.hibachiPathBuilder = hibachiPathBuilder;
     }
 
     get = (): PageDialog[] =>{

@@ -1,23 +1,23 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWAdminCreateSuperUser{
 	public static Factory(){
 		var directive = (
 			$log,
 			$hibachi,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWAdminCreateSuperUser(
 			$log,
 			$hibachi,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'$hibachi',
 			'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -25,13 +25,13 @@ class SWAdminCreateSuperUser{
 		$log,
 		$hibachi,
 		workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
 			scope:{
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"admincreatesuperuser.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"admincreatesuperuser.html",
 			link: function(scope, element,attrs){
                 scope.Account_SetupInitialAdmin = $hibachi.newAccount_SetupInitialAdmin();
 			}

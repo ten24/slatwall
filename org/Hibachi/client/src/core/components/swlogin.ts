@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 
 class SWLoginController{
@@ -40,7 +40,7 @@ class SWLogin implements ng.IDirective{
             corePartialsPath,
             $hibachi,
             dialogService,
-			pathBuilderConfig
+			hibachiPathBuilder
         )=>new SWLogin(
             $route,
             $log,
@@ -48,7 +48,7 @@ class SWLogin implements ng.IDirective{
             corePartialsPath,
             $hibachi,
             dialogService,
-			pathBuilderConfig
+			hibachiPathBuilder
         );
         directive.$inject = [
             '$route',
@@ -57,14 +57,14 @@ class SWLogin implements ng.IDirective{
             'corePartialsPath',
             '$hibachi',
             'dialogService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
         ]
         return directive;
     }
 
     constructor(private $route,private $log:ng.ILogService, private $window:ng.IWindowService, private corePartialsPath, private $hibachi, private dialogService,
-			pathBuilderConfig ){
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(this).corePartialsPath+'/login.html';
+			hibachiPathBuilder ){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this).corePartialsPath+'/login.html';
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

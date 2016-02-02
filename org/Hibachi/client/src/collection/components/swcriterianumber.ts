@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCriteriaNumber{
 	public static Factory(){
@@ -9,7 +9,7 @@ class SWCriteriaNumber{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWCriteriaNumber(
 			$log,
 			$hibachi,
@@ -17,7 +17,7 @@ class SWCriteriaNumber{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -26,7 +26,7 @@ class SWCriteriaNumber{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -37,11 +37,11 @@ class SWCriteriaNumber{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criterianumber.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criterianumber.html',
 			link: function(scope, element, attrs){
 				var getNumberOptions = function(type){
 					if(angular.isUndefined(type)){

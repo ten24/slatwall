@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWCriteria{
@@ -10,7 +10,7 @@ class SWCriteria{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		) => new SWCriteria(
 			$log,
 			$hibachi,
@@ -18,7 +18,7 @@ class SWCriteria{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -27,7 +27,7 @@ class SWCriteria{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -38,7 +38,7 @@ class SWCriteria{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
@@ -50,7 +50,7 @@ class SWCriteria{
 		        comparisonType:"=",
                 collectionConfig: "="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteria.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteria.html',
 			link: function(scope, element, attrs){
 			}
 		};

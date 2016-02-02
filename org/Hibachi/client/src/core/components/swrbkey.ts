@@ -1,3 +1,5 @@
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWRbKey{
 	public static Factory(){
 		var directive = (
@@ -40,16 +42,16 @@ class SWRbKey{
 			},
 			link: function(scope, element, attrs){
 				var rbKeyValue = scope.swRbkey;
-				
+
 				var bindRBKey = ()=>{
 					if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
 						element.text(rbkeyService.getRBKey(rbKeyValue));
 					}
 				}
-				
-				
+
+
 				bindRBKey();
-				
+
 			}
 		};
 	}

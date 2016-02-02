@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 /**
  * Handles adding, editing, and deleting Workflows Tasks.
  */
@@ -12,7 +12,7 @@ class SWWorkflowTasks{
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWWorkflowTasks(
 			$log,
 			$location,
@@ -20,7 +20,7 @@ class SWWorkflowTasks{
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -29,7 +29,7 @@ class SWWorkflowTasks{
 			'metadataService',
 			'collectionService',
 			'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -40,16 +40,16 @@ class SWWorkflowTasks{
 		metadataService,
 		collectionService,
 		workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 	){
 		return {
 			restrict: 'A',
 			scope:{
 				workflow:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtasks.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtasks.html",
 			link: function(scope, element,attrs){
-				scope.workflowPartialsPath = pathBuilderConfig.buildPartialsPath(workflowPartialsPath);
+				scope.workflowPartialsPath = hibachiPathBuilder.buildPartialsPath(workflowPartialsPath);
 				scope.propertiesList = {};
 
 				function logger(context, message){

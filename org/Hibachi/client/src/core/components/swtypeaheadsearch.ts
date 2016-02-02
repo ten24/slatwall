@@ -1,94 +1,137 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 
 class SWTypeaheadSearchController {
 
-	public static $inject=["$hibachi", "$timeout", "collectionConfigService"];
+	public collectionConfig; 
 	public entity:string;
 	public properties:string;
 	public propertiesToDisplay:string;
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
 	public placeholderText:string;
-	public searchText:string;
-	public results;
+	public searchText:string  = "";
+	public results = [];
 	public addFunction;
+    public displayList = [];
 	public addButtonFunction;
-	public hideSearch;
-	public modelBind;
-	public clickOutsideArgs;
-
-	private _timeoutPromise;
-	private displayList;
+	public hideSearch = true;
+	public clickOutsideArguments;
+    public resultsPromise;
+    public resultsDeferred; 
+    
+	private _timeoutPromise; 
 	private entityList;
 	private typeaheadCollectionConfig;
 	private typeaheadCollectionConfigs;
+    
+    // @ngInject
+	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
 
-	constructor(private $hibachi, private $timeout:ng.ITimeoutService, private collectionConfigService){
+        this.resultsDeferred = $q.defer();
+        this.resultsPromise = this.resultsDeferred.promise;
 
-		this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-		this.typeaheadCollectionConfig.setDisplayProperties(this.properties);
-
+        if(angular.isDefined(this.collectionConfig)){
+            this.typeaheadCollectionConfig = this.collectionConfig; 
+        } else if (angular.isDefined(this.entity)){ 
+            this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+        } else { 
+            throw("You did not pass the correct collection config data to swTypeaheadSearch");
+        }
+        
 		if(angular.isDefined(this.propertiesToDisplay)){
 			this.displayList = this.propertiesToDisplay.split(",");
-		}
+		} 
+
+        //init timeoutPromise for link
+        this._timeoutPromise = this.$timeout(()=>{},500);
+
+        //populate the displayList
+        this.$transclude = this.$transclude;
+        this.$transclude($scope,()=>{});
+        
+        this.typeaheadCollectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
 
 		if(angular.isDefined(this.allRecords)){
 			this.typeaheadCollectionConfig.setAllRecords(this.allRecords);
 		} else {
 			this.typeaheadCollectionConfig.setAllRecords(true);
 		}
+        
 	}
+    
+    public clearSearch = () =>{
+        this.searchText = "";
+        this.hideSearch = true; 
+    }
+    
+    public toggleOptions = () =>{
+        if(this.hideSearch && !this.searchText.length){
+            this.search(this.searchText); 
+        } else { 
+            this.hideSearch = !this.hideSearch; 
+        }
+    }
 
 	public search = (search:string)=>{
-
-		if(angular.isDefined(this.modelBind)){
-			this.modelBind = search;
+        
+        if(this._timeoutPromise){
+			this.$timeout.cancel(this._timeoutPromise);
 		}
 
+        this.typeaheadCollectionConfig.setKeywords(search);
+
+        if(angular.isDefined(this.filterGroupsConfig)){
+            //allows for filtering on search text
+            var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
+            filterConfig = filterConfig.trim();
+            this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
+        }
+         
 		if(search.length > 2){
-
-			if(this._timeoutPromise){
-				this.$timeout.cancel(this._timeoutPromise);
-			}
-
 			this._timeoutPromise = this.$timeout(()=>{
-
-				if(this.hideSearch){
-					this.hideSearch = false;
-				}
-
-				this.results = new Array();
-				this.typeaheadCollectionConfig.setKeywords(search);
-
-				if(angular.isDefined(this.filterGroupsConfig)){
-					//allows for filtering on search text
-					var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
-					filterConfig = filterConfig.trim();
-					this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
-				}
 
 				var promise = this.typeaheadCollectionConfig.getEntity();
 
 				promise.then( (response) =>{
-
 						if(angular.isDefined(this.allRecords) && this.allRecords == false){
-							this.results = response.pageRecords;
+                            this.results = response.pageRecords;
 						} else {
 							this.results = response.records;
 						}
-
+                        
 						//Custom method for gravatar on accounts (non-persistant-property)
-						if(angular.isDefined(this.results) && this.entity == "Account"){
-							angular.forEach(this.results,(account)=>{
-								account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-							});
-						}
+						//if(angular.isDefined(this.results) && this.entity == "Account"){
+						//	angular.forEach(this.results,(account)=>{
+						//		account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+						//	});
+						//}
 
-				});
+				}).finally(()=>{
+                      this.resultsDeferred.resolve();
+                      this.hideSearch = false;
+                });
 			}, 500);
-		} else {
+		}  else if(search.length == 0){
+            this._timeoutPromise = this.$timeout(()=>{ 
+
+                var promise = this.typeaheadCollectionConfig.getEntity();
+
+                promise.then( (response) =>{
+                    
+                    if(angular.isDefined(this.allRecords) && this.allRecords == false){
+                        this.results = response.pageRecords;
+                    } else {
+                        this.results = response.records;
+                    }
+
+                }).finally(()=>{
+                    this.resultsDeferred.resolve();
+                    this.hideSearch = false;
+                });
+			});
+       } else {
 			this.results = [];
 			this.hideSearch = true;
 		}
@@ -103,9 +146,9 @@ class SWTypeaheadSearchController {
 		if(angular.isDefined(this.displayList)){
 			this.searchText = item[this.displayList[0]];
 		}
-
+        
 		if(angular.isDefined(this.addFunction)){
-			this.addFunction({item: item});
+			this.addFunction()(item);
 		}
 	}
 
@@ -114,15 +157,9 @@ class SWTypeaheadSearchController {
 		if(!this.hideSearch){
 			this.hideSearch = true;
 		}
-
-		if(angular.isDefined(this.modelBind)){
-			this.searchText = this.modelBind;
-		} else {
-			this.searchText = "";
-		}
-
+        
 		if(angular.isDefined(this.addButtonFunction)){
-			this.addButtonFunction({searchString: this.searchText});
+			this.addButtonFunction()(this.searchText);
 		}
 	}
 
@@ -143,14 +180,16 @@ class SWTypeaheadSearchController {
 class SWTypeaheadSearch implements ng.IDirective{
 
 	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-			'pathBuilderConfig'];
+			'hibachiPathBuilder'];
 	public templateUrl;
+    public transclude=true; 
 	public restrict = "EA";
 	public scope = {}
 
 	public bindToController = {
-		entity:"@",
-		properties:"@",
+        collectionConfig:"=?",
+		entity:"@?",
+		properties:"@?",
 		propertiesToDisplay:"@?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
@@ -158,39 +197,53 @@ class SWTypeaheadSearch implements ng.IDirective{
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
-		hideSearch:"=",
-		modelBind:"=?",
-		clickOutsideArgs:"@"
+		hideSearch:"=?",
+		clickOutsideArguments:"=?"
 	}
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
 
-
-	constructor(private $hibachi, private $timeout:ng.ITimeoutService, private collectionConfigService, private corePartialsPath,pathBuilderConfig){
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
+	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
 
-	public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
 
+        var target = element.find(".dropdown-menu");
+        var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
+        var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
+        var transcludeContent = transclude(scope,()=>{});
+        actionTemplate.append(transcludeContent); 
+        listItemTemplate.append(actionTemplate); 
+        
+        scope.swTypeaheadSearch.resultsPromise.then(()=>{
+            target.append(this.$compile(listItemTemplate)(scope));
+        });
 	}
+    
+ 
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
 			$hibachi
+            ,$compile
 			,$timeout
+            ,utilityService
 			,collectionConfigService
-			,corePartialsPath,
-			pathBuilderConfig
+			,corePartialsPath
+            ,hibachiPathBuilder
 
 		)=> new SWTypeaheadSearch(
 			$hibachi
+            ,$compile
 			,$timeout
+            ,utilityService
 			,collectionConfigService
-			,corePartialsPath,
-			pathBuilderConfig
+			,corePartialsPath
+            ,hibachiPathBuilder
 		);
-		directive.$inject = ["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-			'pathBuilderConfig'];
+		directive.$inject = ["$hibachi", "$compile", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
+			'hibachiPathBuilder'];
 		return directive;
 	}
 }

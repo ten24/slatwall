@@ -1,23 +1,26 @@
 /// <reference path="../../typings/tsd.d.ts" />
-/// <reference path="../../typings/slatwallTypeScript.d.ts" />
+/// <reference path="../../typings/hibachiTypescript.d.ts" />
 //modules
 import {hibachimodule} 	from "../hibachi/hibachi.module";
-import {formmodule} 	from "../form/form.module";
 //controllers
 import {FrontendController} from './controllers/frontend';
 //directives
 import {SWFDirective} 		from "./components/swfdirective";
 
+
 //need to inject the public service into the rootscope for use in the directives.
 //Also, we set the initial value for account and cart.
+
 var frontendmodule = angular.module('frontend', [hibachimodule.name])
-.config(['pathBuilderConfig',(pathBuilderConfig)=>{
-    /** set the baseURL */ 
-    pathBuilderConfig.setBaseURL('/');
-    pathBuilderConfig.setBasePartialsPath('custom/client/src/');//org/hibachi/client/src/ 
-                    
+.config(['hibachiPathBuilder',(hibachiPathBuilder)=>{
+                    /** set the baseURL */ 
+					hibachiPathBuilder.setBaseURL('/');
+                    hibachiPathBuilder.setBasePartialsPath('custom/assets/');
+
 }])
-.run(['$rootScope', '$hibachi', 'publicService', function($rootScope, $hibachi, publicService) {
+
+.run(['$rootScope', '$hibachi','publicService','hibachiPathBuilder', function($rootScope, $hibachi, publicService,hibachiPathBuilder) {
+
 
     $rootScope.hibachiScope = publicService;
 	$rootScope.hibachiScope.getAccount(); 

@@ -1,5 +1,5 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 
 //import pagination = require('../services/paginationservice');
 //var PaginationService = pagination.PaginationService;
@@ -26,16 +26,16 @@ class SWPaginationBarController{
     public controllerAs="swPaginationBar";
     public templateUrl;
     public static Factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = (pathBuilderConfig,partialsPath) => new SWPaginationBar(pathBuilderConfig,partialsPath);
-        directive.$inject = ['pathBuilderConfig','partialsPath'];
+        var directive:ng.IDirectiveFactory = (hibachiPathBuilder,partialsPath) => new SWPaginationBar(hibachiPathBuilder,partialsPath);
+        directive.$inject = ['hibachiPathBuilder','partialsPath'];
         return directive;
     }
 
     //@ngInject
-    constructor(pathBuilderConfig,partialsPath){
+    constructor(hibachiPathBuilder,partialsPath){
 
 
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(partialsPath)+'paginationbar.html';
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(partialsPath)+'paginationbar.html';
     }
 
 

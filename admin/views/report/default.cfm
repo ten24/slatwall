@@ -53,8 +53,6 @@ Notes:
 	<div class="row s-body-nav" style="margin-bottom: 30px;">
 	    <nav class="navbar navbar-default" role="navigation">
 	      	<div class="col-md-4 s-header-info">
-				<ul class="list-unstyled list-inline">
-				</ul>
 				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.report')#</h1>
 			</div>
 

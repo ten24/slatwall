@@ -114,46 +114,6 @@ Notes:
 	@ http://cflib.org/udf/queryTreeSort
 	@ modified by Tony Garcia September 27, 2007
 	--->
-	<cffunction name="logMessage" returntype="void" access="public">
-		<cfargument name="message" default="" />
-		<cfargument name="messageType" default="" />
-		<cfargument name="messageCode" default="" />
-		<cfargument name="templatePath" default="" />
-		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
-		<cfargument name="generalLog" type="boolean" default="false" />
-		
-		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
-			<cfif generalLog>
-				<cfset var logText = "General Log" />
-			<cfelse>
-				<cfset var logText = "Detail Log" />
-			</cfif>
-			
-			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
-				<cfset logText &= " - #arguments.messageType#" />
-			</cfif>
-			<cfif arguments.messageCode neq "" and isSimpleValue(arguments.messageCode)>
-				<cfset logText &= " - #arguments.messageCode#" />
-			</cfif>
-			<cfif arguments.templatePath neq "" and isSimpleValue(arguments.templatePath)>
-				<cfset logText &= " - #arguments.templatePath#" />
-			</cfif>
-			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
-				<cfset logText &= " - #arguments.message#" />
-			</cfif>
-			
-			<!--- Verify that the log type was correct --->
-			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
-				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
-				<cfset arguments.logType = "Information" />
-			</cfif>
-			
-			<cflog file="#getApplicationValue('applicationKey')#" text="#logText#" type="#arguments.logType#" />
-		</cfif>
-		
-	</cffunction>
-	
-	
 	<cffunction name="queryTreeSort" access="public" output="false" returntype="query">
 		<cfargument name="theQuery" type="query" required="true" hint="the query to sort" />
 		<cfargument name="ParentID" type="string" default="ParentID" hint="the name of the column in the table containing the ID of the item's parent" />

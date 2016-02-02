@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFCreateAccountController{
     //@ngInject
@@ -18,22 +18,22 @@ class SWFCreateAccount implements ng.IDirective {
     
     public static Factory():ng.IDirectiveFactory{
     var directive:ng.IDirectiveFactory = (
-        pathBuilderConfig,
+        hibachiPathBuilder,
         frontendPartialsPath
     ) => new SWFCreateAccount(
-        pathBuilderConfig,
+        hibachiPathBuilder,
         frontendPartialsPath
     );
     
     directive.$inject = [
-        'pathBuilderConfig',
+        'hibachiPathBuilder',
         'frontendPartialsPath'
     ];
     return directive;
     }
     //@ngInject
-    constructor(private pathBuilderConfig, private frontendPartialsPath:any){
-        this.templateUrl = this.templateUrl = pathBuilderConfig.buildPartialsPath(frontendPartialsPath)+'createaccountpartial.html';
+    constructor(private hibachiPathBuilder, private frontendPartialsPath:any){
+        this.templateUrl = this.templateUrl = hibachiPathBuilder.buildPartialsPath(frontendPartialsPath)+'createaccountpartial.html';
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{}

@@ -1,57 +1,52 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+/// <reference path='../../../typings/tsd.d.ts' />
 class SWClickOutside{
+    restrict = 'A';
+    scope = {
+        swClickOutside: '&'
+    };
+    
     public static Factory(){
         var directive = (
-            $document,$timeout
+            $document,$timeout,utilityService
         )=>new SWClickOutside(
-            $document,$timeout
+            $document,$timeout,utilityService
         );
         directive.$inject =[
-            '$document','$timeout'
+            '$document','$timeout','utilityService'
         ];
         return directive;
     }
     //@ngInject
     constructor(
-        $document,$timeout
+        public $document, 
+        public $timeout, 
+        public utilityService
     ){
-        return {
-            restrict: 'A',
-            scope: {
-                swClickOutside: '&'
-            },
-            link: function ($scope, elem, attr) {
-                var classList = (attr.outsideIfNot !== undefined) ? attr.outsideIfNot.replace(', ', ',').split(',') : [];
-                if (attr.id !== undefined) classList.push(attr.id);
-
-                $document.on('click', function (e) {
-                    var i = 0,
-                        element;
-
-                    if (!e.target) return;
-
-                    for (element = e.target; element; element = element.parentNode) {
-                        var id = element.id;
-                        var classNames = element.className;
-
-                        if (id !== undefined) {
-                            for (i = 0; i < classList.length; i++) {
-                                if (id.indexOf(classList[i]) > -1 || classNames.indexOf(classList[i]) > -1) {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                $timeout( function(){
-                    $scope.swClickOutside();
-                });
-
+        this.$document = $document;
+        this.$timeout = $timeout;
+        this.utilityService = utilityService;
+    }
+    
+    public link:ng.IDirectiveLinkFn = (scope:any, elem:any, attr:any) => {     
+        $document.on('click', function (e) {
+            if (!e || !e.target) return;
+            
+            //check if our element already hiden
+            if(angular.element(elem).hasClass("ng-hide")){
+                return;
+            }
+            if(e.target !== elem && ! utilityService.isDescendantElement(elem,e.target)){
+                $timeout(()=>{
+                    scope.swClickOutside();
                 });
             }
-        };
+        });
     }
+    
+    
 }
+    
 export{
     SWClickOutside
 }

@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFDirectiveController{
     private hibachiScope;
@@ -26,9 +26,9 @@ class SWFDirective implements ng.IDirective{
 	public path:string;
 	
     // @ngInject
-    constructor(pathBuilderConfig, private frontendPartialsPath:any, $compile){
-        this.templatePath = pathBuilderConfig.buildPartialsPath(frontendPartialsPath);
-        this.url = pathBuilderConfig.buildPartialsPath(frontendPartialsPath)+'swfdirectivepartial.html';
+    constructor(hibachiPathBuilder, private frontendPartialsPath:any, $compile){
+        this.templatePath = hibachiPathBuilder.buildPartialsPath(frontendPartialsPath);
+        this.url = hibachiPathBuilder.buildPartialsPath(frontendPartialsPath)+'swfdirectivepartial.html';
 		this.$compile = $compile;
     }
     
@@ -74,16 +74,16 @@ class SWFDirective implements ng.IDirective{
     
     public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
-		    pathBuilderConfig,
+		    hibachiPathBuilder,
 			frontendPartialsPath,
 			$compile
         ) => new SWFDirective(
-            pathBuilderConfig,
+            hibachiPathBuilder,
 			frontendPartialsPath,
 			$compile
         );
         directive.$inject = [
-            'pathBuilderConfig',
+            'hibachiPathBuilder',
             'frontendPartialsPath',
             '$compile'
         ];
