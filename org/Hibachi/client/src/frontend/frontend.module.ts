@@ -30,6 +30,7 @@ var frontendmodule = angular.module('frontend', [hibachimodule.name])
 	$rootScope.slatwall = $rootScope.hibachiScope;
     $rootScope.slatwall.getProcessObject = $hibachi.newEntity;
     
+    
 }])
 
 //constants
