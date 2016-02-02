@@ -11,7 +11,7 @@ class SWTypeaheadSearchController {
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
 	public placeholderText:string;
-	public searchText:string  = "";
+	public searchText;
 	public results = [];
 	public addFunction;
     public displayList = [];
@@ -38,6 +38,10 @@ class SWTypeaheadSearchController {
             this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
         } else { 
             throw("You did not pass the correct collection config data to swTypeaheadSearch");
+        }
+        
+        if(!angular.isUndefined(this.searchText)){
+            this.searchText = "";
         }
         
 		if(angular.isDefined(this.propertiesToDisplay)){
