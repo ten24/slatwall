@@ -1,6 +1,7 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 
+import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
@@ -62,7 +63,44 @@ var coremodule = angular.module('hibachi.core',[
   'ngSanitize',
   //3rdParty modules
   'ui.bootstrap'
-]).config(['$provide','hibachiPathBuilder','appConfig',($provide,hibachiPathBuilder,appConfig)=>{
+]).config(['$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
+    hibachiPathBuilder.setBaseURL(appConfig.baseURL);
+    hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
+    
+    $logProvider.debugEnabled( appConfig.debugFlag );
+     $filterProvider.register('likeFilter',function(){
+         return function(text){
+             if(angular.isDefined(text) && angular.isString(text)){
+                 return text.replace(new RegExp('%', 'g'), '');
+
+             }
+         };
+     });
+
+     $filterProvider.register('truncate',function(){
+         return function (input, chars, breakOnWord) {
+             if (isNaN(chars)) return input;
+             if (chars <= 0) return '';
+             if (input && input.length > chars) {
+                 input = input.substring(0, chars);
+                 if (!breakOnWord) {
+                     var lastspace = input.lastIndexOf(' ');
+                     //get last space
+                     if (lastspace !== -1) {
+                         input = input.substr(0, lastspace);
+                     }
+                 }else{
+                     while(input.charAt(input.length-1) === ' '){
+                         input = input.substr(0, input.length -1);
+                     }
+                 }
+                 return input + '...';
+             }
+             return input;
+         };
+     });
+    
+    
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
     $provide.decorator('$hibachi',[
@@ -1128,6 +1166,7 @@ var coremodule = angular.module('hibachi.core',[
             return $delegate;
         }
     ]);
+     $httpProvider.interceptors.push('hibachiInterceptor');
 }])
 .run(['$rootScope','$hibachi',($rootScope,$hibachi)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;    
@@ -1143,6 +1182,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .provider('$hibachi',$Hibachi)
+.service('hibachiInterceptor', HibachiInterceptor.Factory())
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

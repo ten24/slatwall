@@ -205,22 +205,20 @@ class SWContentListController{
             //this.getCollection(false);
 
             this.loadingCollection = false;
+            
             this.searchCollection = ()=>{
 
-                this.loadingCollection = false;
-                this.searchCollection = ()=>{
-                  
-                   $log.debug('search with keywords');
-                   $log.debug(this.keywords);
-                   $('.childNode').remove();
-                   //Set current page here so that the pagination does not break when getting collection
-                   this.loadingCollection = true;
-                   var promise = this.getCollection(true);
-                   promise.then(()=>{
-                       this.collection.collectionConfig = this.collectionConfig;
-                        
-                   });
-               };
+               
+               $log.debug('search with keywords');
+               $log.debug(this.keywords);
+               $('.childNode').remove();
+               //Set current page here so that the pagination does not break when getting collection
+               this.loadingCollection = true;
+               var promise = this.getCollection(true);
+               promise.then(()=>{
+                   this.collection.collectionConfig = this.collectionConfig;
+                   this.loadingCollection = false;
+               });
             };
 
 

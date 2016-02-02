@@ -3,7 +3,6 @@
 	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
 	      	<div class="col-md-6 s-header-info">
-				<ul class="list-unstyled list-inline"></ul>
 				<h1 class="actionbar-title" sw-rbkey="'entity.'+entityName.toLowerCase()+'_plural'"></h1>
 			</div>
 			<div class="col-md-6">
@@ -32,7 +31,7 @@
 										placeholder="Search"
 										name="srch-term"
 										ng-model="swContentList.keywords"
-										ng-model-options='{ debounce: 500 }'
+										ng-model-options="{ debounce: 500}"
 										ng-change="swContentList.searchCollection()"
 										/>
 									<i ng-show="swContentList.loadingCollection" class="fa fa-refresh fa-spin"></i>

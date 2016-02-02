@@ -10,8 +10,8 @@
 	<hb:HibachiPropertyRow>
 		
 		<hb:HibachiPropertyList divclass="col-md-6">
-			<div class="well">
-				#rc.sku.getImage(width=100, height=100)#
+			<div class="s-image-wrapper">
+				#rc.sku.getImage(width=200, height=200)#
 			</div>
 			<hr />
 			<cfif !isnull(rc.orderItem.getAppliedPriceGroup())>

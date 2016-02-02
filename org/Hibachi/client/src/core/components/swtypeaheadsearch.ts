@@ -171,7 +171,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public scope = {}
 
 	public bindToController = {
-        collectionConfig:"=",
+        collectionConfig:"=?",
 		entity:"@?",
 		properties:"@?",
 		propertiesToDisplay:"@?",

@@ -15,7 +15,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     public any function before( required struct rc ) {
         getFW().setView("public:main.blank");
         arguments.rc.requestHeaderData = getHTTPRequestData();
-        arguments.rc.ajaxRequest = true;
+        arguments.rc['ajaxRequest'] = true;
         param name="rc.headers.contentType" default="application/json"; 
         arguments.rc.headers["Content-Type"] = rc.headers.contentType; 
     }

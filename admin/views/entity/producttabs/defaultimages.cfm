@@ -76,7 +76,7 @@ Notes:
 								</div>
 							</div>
 						</div>
-					</div>
+					</div> 
 				<cfelse>
 					<div class="alert alert-info deafult-margin" role="alert" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
 					<div class="col-xs-3">

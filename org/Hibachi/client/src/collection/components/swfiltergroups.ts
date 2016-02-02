@@ -38,12 +38,12 @@ class SWFilterGroups{
 		return {
 			restrict: 'EA',
 			scope:{
-				collectionConfig:"=",
-				filterGroupItem: "=",
-				filterPropertiesList:"=",
+				collectionConfig:"=?",
+				filterGroupItem: "=?",
+				filterPropertiesList:"=?",
 				saveCollection:"&",
-				filterGroup:"=",
-				comparisonType:"="
+				filterGroup:"=?",
+				comparisonType:"=?"
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){

@@ -1,11 +1,11 @@
 <div>
     <!-- Figure out which type of element we have and display it .-->
     <ng-switch on="swfFormField.propertyDisplay.type">
-    	<input type="text" ng-switch-when="text" ng-model="swfFormField.propertyDisplay.object" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
-    	<input type="email" ng-switch-when="email" ng-model="swfFormField.propertyDisplay.object" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
-    	<input type="password" ng-switch-when="password" ng-model="swfFormField.propertyDisplay.object" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
-    	<input type="file" ng-switch-when="file" ng-model="swfFormField.propertyDisplay.object"  class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
-    	<textarea ng-switch-when="textarea" class="{{swfFormField.propertyDisplay.class}}"  id="{{swfFormField.propertyDisplay.name}}TextArea" ng-model="swfFormField.propertyDisplay.value" name="{{swfFormField.propertyDisplay.name}}"></textarea>
+    	<input type="text" ng-switch-when="text" ng-model="swfFormField.propertyDisplay.object[swfFormField.propertyDisplay.name]" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
+    	<input type="email" ng-switch-when="email" ng-model="swfFormField.propertyDisplay.object[swfFormField.propertyDisplay.name]" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
+    	<input type="password" ng-switch-when="password" ng-model="swfFormField.propertyDisplay.object[swfFormField.propertyDisplay.name]" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
+    	<input type="file" ng-switch-when="file" ng-model="swfFormField.propertyDisplay.object[swfFormField.propertyDisplay.name]"  class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
+    	<textarea ng-switch-when="textarea" class="{{swfFormField.propertyDisplay.class}}"  id="{{swfFormField.propertyDisplay.name}}TextArea" ng-model="swfFormField.propertyDisplay.object[swfFormField.propertyDisplay.name]" name="{{swfFormField.propertyDisplay.name}}"></textarea>
     	<input type="checkbox" ng-switch-when="checkbox" value="{{swfFormField.propertyDisplay.value}}" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}"></input>
     	
     	<select ng-switch-when="multiselect" class="{{swfFormField.propertyDisplay.class}}" name="{{swfFormField.propertyDisplay.name}}" multiple="true">
