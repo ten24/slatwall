@@ -70,7 +70,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1454008626925',
+									auditDateTime:'1454509557954',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -130,7 +130,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'3cb45ce89515f11f0a06ff994d7f0316',
+									verificationCode:'25cb686f9a2fec002ea847d31d065ca9',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -857,7 +857,7 @@
                 	entities['ProductBundleGroup'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"skuCollectionConfig":{"length":8000,"hb_formfieldtype":"json","hb_auditable":false,"ormtype":"string","name":"skuCollectionConfig"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"amount":{"hb_formfieldtype":"number","ormtype":"big_decimal","default":0,"name":"amount"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"minimumQuantity":{"hb_formfieldtype":"number","ormtype":"integer","default":1,"name":"minimumQuantity"},"amountType":{"hb_formfieldtype":"select","ormtype":"string","hb_formattype":"rbKey","name":"amountType"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"maximumQuantity":{"hb_formfieldtype":"number","ormtype":"integer","default":1,"name":"maximumQuantity"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"productBundleGroupID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"productBundleGroupID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"amountTypeOptions":{"persistent":false,"name":"amountTypeOptions"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"productBundleGroupType":{"cfc":"Type","fieldtype":"many-to-one","hb_optionssmartlistdata":"f:parentType.systemCode=productBundleGroupType","fkcolumn":"productBundleGroupTypeID","name":"productBundleGroupType"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","hb_populateenabled":false,"name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"activeFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"activeFlag"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"attributeValues":{"cfc":"AttributeValue","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","fkcolumn":"productBundleGroupID","inverse":true,"name":"attributeValues"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"productBundleSku":{"cfc":"Sku","fieldtype":"many-to-one","fkcolumn":"productBundleSkuID","name":"productBundleSku"}};
                 	entities['ProductBundleGroup'].className = 'ProductBundleGroup';
                 	
-                	validations['ProductBundleGroup'] = {"properties":{"minimumQuantity":[{"contexts":"save","dataType":"numeric","required":true,"minValue":1}],"productBundleGroupType":[{"contexts":"save","required":true}],"maximumQuantity":[{"contexts":"save","dataType":"numeric","required":true,"minValue":1}],"skuCollectionConfig":[{"contexts":"save","required":true}]}};
+                	validations['ProductBundleGroup'] = {"properties":{}};
                 	defaultValues['ProductBundleGroup'] = {
                 	productBundleGroupID:'',
 										activeFlag:1,
@@ -2029,7 +2029,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"abb02889b20b48358ed7c11d1d6e677d",
+									accountPasswordResetID:"a63c9e22bcfa608fc7a72a89f8857648",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
