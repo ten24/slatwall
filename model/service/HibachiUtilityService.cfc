@@ -587,6 +587,15 @@ Notes:
            return true;
        }
     }
+    
+    public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+		if(
+			getHibachiScope().onSlatwallCMS()
+		){
+			arguments.removeMissingKeys = true;
+		}
+		return super.replaceStringTemplate(argumentCollection=arguments);	
+	}
 	</cfscript>
 	
 </cfcomponent>
