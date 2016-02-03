@@ -527,7 +527,7 @@ component extends="HibachiService" accessors="true" {
 
 				// Set up new bundle data
 				var newBundleData = {
-					skuCode = "#product.getProductCode()#-#arrayLen(product.getSkus()) + 1#",
+					skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
 					price = 0,
 					skus = skus
 				};

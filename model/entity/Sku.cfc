@@ -980,11 +980,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 				case "merchandise":
 					for(var option in getOptions()) {
 		    			variables.skuDefinition = listAppend(variables.skuDefinition, " #option.getOptionGroup().getOptionGroupName()#: #option.getOptionName()#", ",");
-		    			}
+	    			}
 		    		break;
 
 		    	case "subscription":
-					variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+		    		if(!isNull(getSubscriptionTerm()) && !isNull(getSubscriptionTerm().getSubscriptionTermName())){
+		    			variables.skuDefinition = "#rbKey('entity.subscriptionTerm')#: #getSubscriptionTerm().getSubscriptionTermName()#";
+		    		}
 					break;
 
 				case "event":
