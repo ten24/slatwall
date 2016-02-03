@@ -137,7 +137,27 @@ class SWInput{
 				' />';
             } else if(propertyDisplay.fieldType === 'time'){
                 template = '<input type="text" class="form-control" '+
-                    'datetime-picker data-time-only="true" '+ // date-format="MMM DD, YYYY hh:mm tt"
+                    'datetime-picker data-time-only="true" '+ // date-format="hh:mm"
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
+            } else if(propertyDisplay.fieldType === 'date'){
+                template = '<input type="text" class="form-control" '+
+                    'datetime-picker data-date-only="true" '+ // date-format="MMM DD, YYYY"
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
+            } else if(propertyDisplay.fieldType === 'dateTime'){
+                template = '<input type="text" class="form-control" '+
+                    'datetime-picker '+ // date-format="MMM DD, YYYY hh:mm"
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
                     'ng-show="propertyDisplay.editing" '+
