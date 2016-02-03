@@ -564,28 +564,6 @@ component extends="HibachiService"  accessors="true" output="false"
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.clear", cart.hasErrors() );
 	}
-	
-	/** adds a billing address to an order. uses the billing context. */
-    public void function addBillingAddress(required data, required slatwall){
-        param name="data.saveAsAccountAddressFlag" default="1"; 
-        //if we have that data and don't have any suggestions to make, than try to populate the address
-            billingAddress = getService('AddressService').newAddress();    
-            
-            //get a new address populated with the data.
-            var savedAddress = getService('AddressService').saveAddress(billingAddress, arguments.data, "billing");
-            
-            if (isObject(savedAddress) && !savedAddress.hasErrors()){
-                //save the address at the order level.
-                var order = slatwall.cart();
-                order.setBillingAddress(savedAddress);
-                
-                getOrderService().saveOrder(order);
-            }
-            if(savedAddress.hasErrors()){
-                    this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
-                    arguments.slatwall.addActionResult( "public:cart.AddBillingAddress", savedAddress.hasErrors());
-            }
-    }
     
 	/** 
 	 * @http-context changeOrder
