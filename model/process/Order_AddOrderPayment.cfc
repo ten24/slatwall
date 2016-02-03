@@ -130,8 +130,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getGiftCard(){
-		if(!isNull(getNewOrderPayment().getGiftCardNumberEncrypted())){
-			return getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumberEncrypted()));
+		if(!isNull(getNewOrderPayment().getGiftCardNumber())){
+			return getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(newOrderPayment.getGiftCardNumber()));
 		} else {
 			return;
 		}
