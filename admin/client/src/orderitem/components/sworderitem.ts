@@ -2,7 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWOrderItem{
 	public static Factory(){
-		var directive = ($log,
+		var directive = (
+            $log,
 			$compile,
 			$http,
 			$templateCache,
@@ -29,6 +30,7 @@ class SWOrderItem{
 		];
 		return directive;
 	}
+    //@ngInject
 	constructor(
 		$log,
 		$compile,
@@ -43,7 +45,8 @@ class SWOrderItem{
 			scope:{
 				orderItem:"=",
 				orderId:"@",
-				attributes:"="
+				attributes:"=",
+                paginator:"=?"
 			},
 			templateUrl:slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath)+"orderitem.html",
 			link : function(scope, element, attr) {
@@ -389,6 +392,7 @@ class SWOrderItem{
 					var deletePromise = scope.orderItem.$$delete();
 					deletePromise.then(function(){
 						delete scope.orderItem;
+                        scope.paginator.getCollection();
 					});
 
 				};

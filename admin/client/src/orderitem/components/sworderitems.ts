@@ -36,6 +36,7 @@ class SWOrderItems{
 		];
 		return directive;
 	}
+    //@ngInject
 	constructor(
 		$log,
 		$timeout,
