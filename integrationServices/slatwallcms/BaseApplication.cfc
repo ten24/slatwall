@@ -172,8 +172,11 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			arguments.slatwallScope.setContent(content);
 		}
 		var $ = getApplicationScope(argumentCollection=arguments);
-		savecontent variable="templateData"{
+		savecontent variable="contentData"{
 			include "#contentPath#";
+		}
+		savecontent variable="templateData"{
+			writeOutput(contentData);
 		}
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(templateData),arguments.slatwallScope.getContent());
 		
