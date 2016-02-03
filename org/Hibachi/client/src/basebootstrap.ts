@@ -1,8 +1,10 @@
-/// <reference path='../typings/slatwallTypescript.d.ts' />
+/// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
 require('./vendor.ts')();
 import {coremodule} from "./core/core.module";
 declare var angular:any;
+declare var hibachiConfig:any;
+
 //generic bootstrapper
 export class BaseBootStrapper{
     public myApplication:any;
@@ -23,7 +25,9 @@ export class BaseBootStrapper{
                 && localStorage.getItem('resourceBundles')
                 && localStorage.getItem('resourceBundles') !== 'undefined'
             ){
-                 return $http.get('index.cfm/?slatAction=api:main.getInstantiationKey')
+
+                 return $http.get('/index.cfm/?'+hibachiConfig.action+'=api:main.getInstantiationKey')
+
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
                     if(resp.data.data === appConfig.instantiationKey){
@@ -50,7 +54,9 @@ export class BaseBootStrapper{
     }
 
     getData=()=>{
-        return this.$http.get('index.cfm/?slatAction=api:main.getConfig')
+
+        return this.$http.get('/index.cfm/?'+hibachiConfig.action+'=api:main.getConfig')
+
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);
             localStorage.setItem('appConfig',JSON.stringify(resp.data.data));
@@ -68,7 +74,7 @@ export class BaseBootStrapper{
             return this._resourceBundle[locale];
         }
 
-        var urlString = this.appConfig.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
+        var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
 
         this.$http(
             {

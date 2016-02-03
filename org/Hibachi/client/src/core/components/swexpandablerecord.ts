@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWExpandableRecordController{
@@ -98,14 +98,14 @@ class SWExpandableRecord implements ng.IDirective{
             $timeout:ng.ITimeoutService,
             corePartialsPath,
             utilityService,
-			pathBuilderConfig
+			hibachiPathBuilder
         ) => new SWExpandableRecord(
             $compile,
             $templateRequest,
             $timeout,
             corePartialsPath,
             utilityService,
-			pathBuilderConfig
+			hibachiPathBuilder
         );
         directive.$inject = [
             '$compile',
@@ -113,7 +113,7 @@ class SWExpandableRecord implements ng.IDirective{
             '$timeout',
             'corePartialsPath',
             'utilityService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
         ];
         return directive;
     }
@@ -121,21 +121,21 @@ class SWExpandableRecord implements ng.IDirective{
     public controller=SWExpandableRecordController;
     public controllerAs="swExpandableRecord";
     public static $inject = ['$compile','$templateRequest','$timeout','corePartialsPath','utilityService',
-			'pathBuilderConfig'];
+			'hibachiPathBuilder'];
     constructor(
         public $compile:ng.ICompileService,
         public $templateRequest:ng.ITemplateRequestService,
         public $timeout:ng.ITimeoutService,
         public corePartialsPath,
         public utilityService,
-		public pathBuilderConfig
+		public hibachiPathBuilder
      ){
         this.$compile = $compile;
         this.$templateRequest = $templateRequest;
         this.corePartialsPath = corePartialsPath;
         this.$timeout = $timeout;
         this.utilityService = utilityService;
-        this.pathBuilderConfig = pathBuilderConfig;
+        this.hibachiPathBuilder = hibachiPathBuilder;
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
@@ -154,7 +154,7 @@ class SWExpandableRecord implements ng.IDirective{
                 }
             }
 
-            this.$templateRequest(this.pathBuilderConfig.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
+            this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
                 var template = angular.element(html);
 
                 //get autoopen reference to ensure only the root is autoopenable

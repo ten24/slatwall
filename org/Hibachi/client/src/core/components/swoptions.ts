@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWOptions{
     public static Factory(){
@@ -7,20 +7,20 @@ class SWOptions{
             $hibachi,
             observerService,
             corePartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         )=> new SWOptions(
             $log,
             $hibachi,
             observerService,
             corePartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         );
         directive.$inject = [
             '$log',
             '$hibachi',
             'observerService',
             'corePartialsPath',
-            'pathBuilderConfig'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
@@ -29,7 +29,7 @@ class SWOptions{
         $hibachi,
         observerService,
         corePartialsPath,
-        pathBuilderConfig
+        hibachiPathBuilder
     ){
 
         return {
@@ -37,7 +37,7 @@ class SWOptions{
 			scope:{
 				objectName:'@'
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+"options.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(corePartialsPath)+"options.html",
 			link: function(scope, element,attrs){
                 scope.swOptions = {};
                 scope.swOptions.objectName=scope.objectName;

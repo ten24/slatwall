@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCriteriaBoolean{
 	public static Factory(){
@@ -9,7 +9,7 @@ class SWCriteriaBoolean{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWCriteriaBoolean(
 			$log,
 			$hibachi,
@@ -17,7 +17,7 @@ class SWCriteriaBoolean{
 			collectionPartialsPath,
 			collectionService,
 			metadataService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -26,7 +26,7 @@ class SWCriteriaBoolean{
 			'collectionPartialsPath',
 			'collectionService',
 			'metadataService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -37,11 +37,11 @@ class SWCriteriaBoolean{
 		collectionPartialsPath,
 		collectionService,
 		metadataService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriaboolean.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriaboolean.html',
 			link: function(scope, element, attrs){
 				 var getBooleanOptions = function(type){
 				 	if(angular.isUndefined(type)){

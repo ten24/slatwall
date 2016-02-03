@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFilterGroupItem{
 	public static Factory(){
@@ -9,7 +9,7 @@ class SWFilterGroupItem{
 			$log,
 			collectionService,
 			collectionPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWFilterGroupItem(
 			$http,
 			$compile,
@@ -17,7 +17,7 @@ class SWFilterGroupItem{
 			$log,
 			collectionService,
 			collectionPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$http',
@@ -26,7 +26,7 @@ class SWFilterGroupItem{
 			'$log',
 			'collectionService',
 			'collectionPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -37,7 +37,7 @@ class SWFilterGroupItem{
 		$log,
 		collectionService,
 		collectionPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'A',
@@ -52,7 +52,7 @@ class SWFilterGroupItem{
 				comparisonType:"="
 			},
 			link: function(scope, element,attrs,filterGroupsController){
-				var Partial = pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"filtergroupitem.html";
+				var Partial = hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroupitem.html";
 				var templateLoader = $http.get(Partial,{cache:$templateCache});
 				var promise = templateLoader.success(function(html){
 					element.html(html);

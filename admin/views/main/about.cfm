@@ -54,8 +54,6 @@ Notes:
 	      <div class="col-md-4 s-header-info">
 
 				<!--- Page Title --->
-				<ul class="list-unstyled list-inline">
-				</ul>
 				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.about')#</h1>
 			</div>
 		 </div>

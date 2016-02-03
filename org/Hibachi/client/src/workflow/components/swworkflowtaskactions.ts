@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTaskActions{
     public static Factory(){
@@ -8,14 +8,14 @@ class SWWorkflowTaskActions{
             metadataService,
             collectionService,
             workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
         )=> new SWWorkflowTaskActions(
             $log,
             $hibachi,
             metadataService,
             collectionService,
             workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
         );
         directive.$inject = [
             '$log',
@@ -23,7 +23,7 @@ class SWWorkflowTaskActions{
             'metadataService',
             'collectionService',
             'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
         ];
         return directive;
     }
@@ -33,14 +33,14 @@ class SWWorkflowTaskActions{
         metadataService,
         collectionService,
         workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
     ){
         return {
             restrict: 'AE',
             scope: {
                 workflowTask: "="
             },
-            templateUrl: pathBuilderConfig.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
+            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
             link: function (scope, element, attrs) {
                 $log.debug('Workflow Task Actions Init');
                 $log.debug(scope.workflowTask);

@@ -1,104 +1,76 @@
-	component output="false" accessors="true" extends="HibachiService" {
+component output="false" accessors="true" extends="HibachiService" {
 	
 	variables.validationStructs = {};
 	variables.validationByContextStructs = {};
 	
-	public struct function getValidationStruct(required any object) {
-		if(!structKeyExists(variables.validationStructs, arguments.object.getClassName())) {
-			
-			// Get CORE Validations
-			var coreValidationFile = expandPath('/#getApplicationValue('applicationKey')#/model/validation/#arguments.object.getClassName()#.json'); 
-			var validation = {};
-			if(fileExists( coreValidationFile )) {
-				var rawCoreJSON = fileRead( coreValidationFile );
-				if(isJSON( rawCoreJSON )) {
-					validation = deserializeJSON( rawCoreJSON );
-				} else {
-					throw("The Validation File: #coreValidationFile# is not a valid JSON object");
-				}
+	public struct function getCoreValidation(required objectName){
+		// Get CORE Validations
+		var coreValidationFile = expandPath('/#getApplicationValue('applicationKey')#/model/validation/#arguments.objectName#.json'); 
+		
+		if(fileExists( coreValidationFile )) {
+			var rawCoreJSON = fileRead( coreValidationFile );
+			if(isJSON( rawCoreJSON )) {
+				return deserializeJSON( rawCoreJSON );
+			} else {
+				throw("The Validation File: #coreValidationFile# is not a valid JSON object");
 			}
-			
-			// Get Custom Validations
-			var customValidationFile = expandPath('/#getApplicationValue('applicationKey')#/custom/model/validation/#arguments.object.getClassName()#.json');
-			var customValidation = {};
-			if(fileExists( customValidationFile )) {
-				var rawCustomJSON = fileRead( customValidationFile );
-				if(isJSON( rawCustomJSON )) {
-					customValidation = deserializeJSON( rawCustomJSON );
-				} else {
-					logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
-				}
+		}
+		return {};
+	}
+	
+	public struct function getCustomValidation(required objectName){
+		// Get Custom Validations
+		var customValidationFile = expandPath('/#getApplicationValue('applicationKey')#/custom/model/validation/#arguments.objectName#.json');
+		if(fileExists( customValidationFile )) {
+			var rawCustomJSON = fileRead( customValidationFile );
+			if(isJSON( rawCustomJSON )) {
+				return deserializeJSON( rawCustomJSON );
+			} else {
+				logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
 			}
-			
-			// Make sure that the validation struct has contexts & properties
-			param name="validation.properties" default="#structNew()#";
-			
-			// Add any additional rules
-			if(structKeyExists(customValidation, "properties")) {
-				for(var key in customValidation.properties) {
-					if(!structKeyExists(validation.properties, key)) {
-						validation.properties[ key ] = customValidation.properties[ key ];
-					} else {
-						for(var r=1; r<=arrayLen(customValidation.properties[ key ]); r++) {
-							arrayAppend(validation.properties[ key ],customValidation.properties[ key ][r]);	
+		}
+		return {};
+	}
+	
+	private struct function getValidationByCoreAndCustom(required struct coreValidation, required struct customValidation){
+		// Make sure that the validation struct has contexts & properties
+		for(var customValidationKey in arguments.customValidation){
+			if(!structKeyExists(arguments.coreValidation,customValidationKey)){
+				arguments.coreValidation[customValidationKey] = arguments.customValidation[customValidationKey];
+				continue;
+			}
+			for(var key in arguments.customValidation[customValidationKey]) {
+				if(!structKeyExists(validation[customValidationKey], key)) {
+					validation[customValidationKey][ key ] = arguments.customValidation[customValidationKey][ key ];
+				} else {
+					if(isArray(arguments.customValidation[customValidationKey][ key ])){
+						for(var r=1; r<=arrayLen(arguments.customValidation[customValidationKey][ key ]); r++) {
+							arrayAppend(validation[customValidationKey][ key ],arguments.customValidation[customValidationKey][ key ][r]);	
+						}
+					}else{
+						for(var item in arguments.customValidation[customValidationKey][ key ]) {
+							structAppend(arguments.coreValidation[customValidationKey][ key ], customValidation[customValidationKey][ key ] [item]);	
 						}
 					}
 				}
 			}
-			
-			variables.validationStructs[ arguments.object.getClassName() ] = validation;
 		}
-		
-		return variables.validationStructs[ arguments.object.getClassName() ];
+		return arguments.coreValidation;
+	}
+	
+	public struct function getValidationStruct(required any object) {
+		return getValidationStructByName(arguments.object.getClassName());
 	}
 	
 	public struct function getValidationStructByName(required string objectName) {
-		if(!structKeyExists(variables.validationStructs, objectName)) {
+		if(!structKeyExists(variables.validationStructs, arguments.objectName)) {
+			var validation = getCoreValidation(arguments.objectName);
+			var customValidation = getCustomValidation(arguments.objectName);
 			
-			// Get CORE Validations
-			var coreValidationFile = expandPath('/#getApplicationValue('applicationKey')#/model/validation/#objectName#.json'); 
-			var validation = {};
-			if(fileExists( coreValidationFile )) {
-				var rawCoreJSON = fileRead( coreValidationFile );
-				if(isJSON( rawCoreJSON )) {
-					validation = deserializeJSON( rawCoreJSON );
-				} else {
-					throw("The Validation File: #coreValidationFile# is not a valid JSON object");
-				}
-			}
-			
-			// Get Custom Validations
-			var customValidationFile = expandPath('/#getApplicationValue('applicationKey')#/custom/model/validation/#objectName#.json');
-			var customValidation = {};
-			if(fileExists( customValidationFile )) {
-				var rawCustomJSON = fileRead( customValidationFile );
-				if(isJSON( rawCustomJSON )) {
-					customValidation = deserializeJSON( rawCustomJSON );
-				} else {
-					logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
-				}
-			}
-			
-			// Make sure that the validation struct has contexts & properties
-			param name="validation.properties" default="#structNew()#";
-			
-			// Add any additional rules
-			if(structKeyExists(customValidation, "properties")) {
-				for(var key in customValidation.properties) {
-					if(!structKeyExists(validation.properties, key)) {
-						validation.properties[ key ] = customValidation.properties[ key ];
-					} else {
-						for(var r=1; r<=arrayLen(customValidation.properties[ key ]); r++) {
-							arrayAppend(validation.properties[ key ],customValidation.properties[ key ][r]);	
-						}
-					}
-				}
-			}
-			
-			variables.validationStructs[ objectName ] = validation;
+			variables.validationStructs[ arguments.objectName ] = getValidationByCoreAndCustom(validation,customValidation);
 		}
 		
-		return variables.validationStructs[ objectName ];
+		return variables.validationStructs[ arguments.objectName ];
 	}
 	
 	public struct function getValidationsByContext(required any object, string context="") {
@@ -108,35 +80,38 @@
 			var contextValidations = {};
 			var validationStruct = getValidationStruct(object=arguments.object);
 			
-			// Loop over each proeprty in the validation struct looking for rule structures
-			for(var property in validationStruct.properties) {
-				
-				// For each array full of rules for the property, loop over them and check for the context
-				for(var r=1; r<=arrayLen(validationStruct.properties[property]); r++) {
+			if(structKeyExists(validationStruct,'properties')){
+				// Loop over each proeprty in the validation struct looking for rule structures
+				for(var property in validationStruct.properties) {
 					
-					var rule = validationStruct.properties[property][r];
-					
-					// Verify that either context doesn't exist, or that the context passed in is in the list of contexts for this rule
-					if(!structKeyExists(rule, "contexts") || listFindNoCase(rule.contexts, arguments.context)) {
+					// For each array full of rules for the property, loop over them and check for the context
+					for(var r=1; r<=arrayLen(validationStruct.properties[property]); r++) {
 						
-						if(!structKeyExists(contextValidations, property)) {
-							contextValidations[ property ] = [];
-						}
+						var rule = validationStruct.properties[property][r];
 						
-						for(var constraint in rule) {
-							if(constraint != "contexts" && constraint != "conditions") {
-								var constraintDetails = {};
-								constraintDetails['constraintType'] = constraint;
-								constraintDetails['constraintValue'] = rule[ constraint ];
-								if(structKeyExists(rule, "conditions")) {
-									constraintDetails['conditions'] = rule.conditions;
+						// Verify that either context doesn't exist, or that the context passed in is in the list of contexts for this rule
+						if(!structKeyExists(rule, "contexts") || listFindNoCase(rule.contexts, arguments.context)) {
+							
+							if(!structKeyExists(contextValidations, property)) {
+								contextValidations[ property ] = [];
+							}
+							
+							for(var constraint in rule) {
+								if(constraint != "contexts" && constraint != "conditions") {
+									var constraintDetails = {};
+									constraintDetails['constraintType'] = constraint;
+									constraintDetails['constraintValue'] = rule[ constraint ];
+									if(structKeyExists(rule, "conditions")) {
+										constraintDetails['conditions'] = rule.conditions;
+									}
+									arrayAppend(contextValidations[ property ], constraintDetails);
 								}
-								arrayAppend(contextValidations[ property ], constraintDetails);
 							}
 						}
 					}
 				}
 			}
+			
 			variables.validationByContextStructs["#arguments.object.getClassName()#-#arguments.context#"] = contextValidations;
 		}
 		return variables.validationByContextStructs["#arguments.object.getClassName()#-#arguments.context#"];

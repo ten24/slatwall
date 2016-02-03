@@ -13,7 +13,7 @@
           		ng-change="selectedCriteriaChanged(selectedFilterProperty.selectedCriteriaType)" 
           		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
           					for filterProperty in filterPropertiesList[selectedFilterProperty.propertyIdentifier].data 
-          					track by filterProperty.propertyIdentifier
+          					| orderBy:['displayPropertyIdentifier'] track by filterProperty.propertyIdentifier
           					" 
           		class="form-control input-sm">
             <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>

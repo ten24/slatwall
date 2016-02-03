@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWEntityActionBarController{
@@ -52,16 +52,16 @@ class SWEntityActionBar implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            corePartialsPath,pathBuilderConfig
-        ) => new SWEntityActionBar(corePartialsPath,pathBuilderConfig);
-        directive.$inject = ['corePartialsPath','pathBuilderConfig'];
+            corePartialsPath,hibachiPathBuilder
+        ) => new SWEntityActionBar(corePartialsPath,hibachiPathBuilder);
+        directive.$inject = ['corePartialsPath','hibachiPathBuilder'];
         return directive;
 
     }
 
     //@ngInject
-    constructor(private corePartialsPath,pathBuilderConfig){
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(corePartialsPath)+'entityactionbar.html';
+    constructor(private corePartialsPath,hibachiPathBuilder){
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'entityactionbar.html';
     }
 
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{

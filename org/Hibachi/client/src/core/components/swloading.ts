@@ -1,32 +1,32 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWLoading{
     public static Factory(){
         var directive = (
             $log,
             corePartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         )=> new SWLoading(
             $log,
             corePartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         );
         directive.$inject = [
             '$log',
             'corePartialsPath',
-            'pathBuilderConfig'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
     constructor(
         $log,
         corePartialsPath,
-        pathBuilderConfig
+        hibachiPathBuilder
     ){
         return {
             restrict: 'A',
             transclude:true,
-            templateUrl:pathBuilderConfig.buildPartialsPath(corePartialsPath)+'loading.html',
+            templateUrl:hibachiPathBuilder.buildPartialsPath(corePartialsPath)+'loading.html',
             scope:{
                 swLoading:'='
             },

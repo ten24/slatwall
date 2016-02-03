@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFormFieldSelect implements ng.IDirective {
 	public static Factory(){
@@ -8,14 +8,14 @@ class SWFormFieldSelect implements ng.IDirective {
 			formService,
 			coreFormPartialsPath,
 			utilityService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWFormFieldSelect(
 			$log,
 			$hibachi,
 			formService,
 			coreFormPartialsPath,
 			utilityService,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -23,7 +23,7 @@ class SWFormFieldSelect implements ng.IDirective {
 			'formService',
 			'coreFormPartialsPath',
 			'utilityService',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -34,10 +34,10 @@ class SWFormFieldSelect implements ng.IDirective {
 		formService,
 		coreFormPartialsPath,
 		utilityService,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return{
-			templateUrl:pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+'select.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+'select.html',
 			require:"^form",
 			restrict: 'E',
 			scope:{

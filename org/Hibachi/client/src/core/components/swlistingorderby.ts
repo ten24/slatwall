@@ -1,7 +1,8 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWListingOrderByController{
+    //@ngInject
     constructor(
 
     ){
@@ -32,7 +33,7 @@ class SWListingOrderBy implements ng.IDirective{
         ];
         return directive;
     }
-
+    //@ngInject
     constructor(private utilityService){
 
     }

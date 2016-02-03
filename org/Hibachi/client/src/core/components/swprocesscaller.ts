@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 
@@ -7,9 +7,9 @@ class SWProcessCallerController{
 	public type:string;
 	public queryString:string;
 	public static $inject = ['$templateRequest','$compile','corePartialsPath','$scope','$element','$transclude','utilityService',
-			'pathBuilderConfig'];
+			'hibachiPathBuilder'];
 	constructor(public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public corePartialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService,
-			pathBuilderConfig){
+			hibachiPathBuilder){
 		this.$templateRequest = $templateRequest;
 		this.$compile = $compile;
 		this.corePartialsPath = corePartialsPath;
@@ -19,7 +19,7 @@ class SWProcessCallerController{
 		this.$scope = $scope;
 		this.$element = $element;
 		this.$transclude = this.$transclude;
-		this.$templateRequest(pathBuilderConfig.buildPartialsPath(this.corePartialsPath)+"processcaller.html").then((html)=>{
+		this.$templateRequest(hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"processcaller.html").then((html)=>{
 			var template = angular.element(html);
 			this.$element.parent().append(template);
 			$compile(template)(this.$scope);

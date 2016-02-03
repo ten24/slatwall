@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowTask{
 	public static Factory(){
@@ -10,7 +10,7 @@ class SWWorkflowTask{
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWWorkflowTask(
 			$log,
 			$location,
@@ -19,7 +19,7 @@ class SWWorkflowTask{
 			metadataService,
 			collectionService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
@@ -29,7 +29,7 @@ class SWWorkflowTask{
 			'metadataService',
 			'collectionService',
 			'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -41,7 +41,7 @@ class SWWorkflowTask{
 		metadataService,
 		collectionService,
 		workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
@@ -50,7 +50,7 @@ class SWWorkflowTask{
 				workflowTasks:"=",
 
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowtask.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtask.html",
 			link: function(scope, element,attrs){
 
 				scope.removeWorkflowTask = function(workflowTask){

@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWFormFieldSearchSelect{
@@ -9,14 +9,14 @@ class SWFormFieldSearchSelect{
 			$hibachi,
 			formService,
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWFormFieldSearchSelect(
 			$http,
 			$log,
 			$hibachi,
 			formService,
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$http',
@@ -24,7 +24,7 @@ class SWFormFieldSearchSelect{
 			'$hibachi',
 			'formService',
 			'coreFormPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -34,10 +34,10 @@ class SWFormFieldSearchSelect{
 		$hibachi,
 		formService,
 		coreFormPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return{
-			templateUrl:pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+'search-select.html',
+			templateUrl:hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+'search-select.html',
 			require:"^form",
 			restrict: 'E',
 			scope:{

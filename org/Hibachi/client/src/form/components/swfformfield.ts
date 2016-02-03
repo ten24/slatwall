@@ -32,12 +32,18 @@
  *********************************************************************************************
  *********************************************************************************************
  */
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 /** declare an interface so we don't get errors using vm */
 interface IFormFieldControllerVM{
-	propertyDisplay:Object
+	propertyDisplay:Object,
+    name:string,
+    class:string,
+    errorClass:string,
+    type:string,
+    object:Object,
+    propertyIdentifier
 }
 
 /**
@@ -52,9 +58,22 @@ class SWFFormFieldController {
 		*/
 	public static $inject = ['$scope'];
 	constructor ( public $scope:ng.IScope ) {
-
 		let vm:IFormFieldControllerVM = this;
-		vm.propertyDisplay = this.propertyDisplay;
+        
+        if (this.propertyDisplay){
+            vm.propertyDisplay = this.propertyDisplay;   
+        }else{
+            vm.propertyDisplay =  {
+                name: vm.name,
+                class: vm.class,
+                errorClass: vm.errorClass,
+                type: vm.type,
+                object: vm.object,
+                propertyIdentifier: vm.propertyIdentifier 
+            };
+            //console.log("Built a property display");
+        }
+		
 	}
 }
 
@@ -63,13 +82,18 @@ class SWFFormFieldController {
 	*/
 class SWFFormField {
 	public restrict = "E";
-	public require = "^swfPropertyDisplay";
+	public require = "^?swfPropertyDisplay";
 	public controller = SWFFormFieldController;
 	public templateUrl;
 	public controllerAs = "swfFormField";
 	public scope = true;
 	public bindToController = {
-			propertyDisplay : "=?"
+			propertyDisplay : "=?",
+            propertyIdentifier: "@?",
+            name : "@?",
+            class: "@?",
+            errorClass: "@?",
+            type: "@?"
 	};
 	public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController:any, transcludeFn:ng.ITranscludeFunction) =>{
 
@@ -80,22 +104,22 @@ class SWFFormField {
 	public static Factory(){
 		var directive = (
 		 	coreFormPartialsPath,
-				pathBuilderConfig
+				hibachiPathBuilder
 		)=>new SWFFormField(
 			coreFormPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'coreFormPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
 	constructor (
 		coreFormPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	) {
-		this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath)+ 'swfformfield.html';
+		this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+ 'swfformfield.html';
 	}
 }
 

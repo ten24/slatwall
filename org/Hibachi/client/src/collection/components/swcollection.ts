@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCollection{
 	public static Factory():ng.IDirectiveFactory{
@@ -6,7 +6,7 @@ class SWCollection{
 			$http,
 			$compile,
 			$log,
-			pathBuilderConfig,
+			hibachiPathBuilder,
 			collectionPartialsPath,
 			collectionService
 			) => new SWCollection(
@@ -14,7 +14,7 @@ class SWCollection{
 				$http,
 				$compile,
 				$log,
-				pathBuilderConfig,
+				hibachiPathBuilder,
 				collectionPartialsPath,
 				collectionService
 			);
@@ -23,7 +23,7 @@ class SWCollection{
             '$http',
 			'$compile',
 			'$log',
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
 			'collectionPartialsPath',
 			'collectionService'
         ];
@@ -34,12 +34,12 @@ class SWCollection{
 			$http,
 			$compile,
 			$log,
-			pathBuilderConfig,
+			hibachiPathBuilder,
 			collectionPartialsPath,
 			collectionService){
 		return {
 			restrict: 'A',
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"collection.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"collection.html",
 			link: function(scope,$element,$attrs){
 
 				scope.tabsUniqueID = Math.floor(Math.random()*999);

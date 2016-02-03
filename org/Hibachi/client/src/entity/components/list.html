@@ -2,7 +2,6 @@
 	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
 	      <div class="col-md-6 s-header-info">
-				<ul class="list-unstyled list-inline"></ul>
 				<h1 class="actionbar-title" sw-rbkey="'entity.'+entityName.toLowerCase()"></h1>
 			</div>
 
@@ -29,14 +28,14 @@
 			<ul class="list-inline list-unstyled">
 				<li>
 					<form class="s-table-header-search ng-pristine ng-valid" novalidate="novalidate">
-						<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="Search" value="" tableid="LD45E2A51ABB8FAA1277509A46B2857887">
+						<input type="text" name="search" class="form-control general-listing-search" placeholder="Search" value="" tableid="LD45E2A51ABB8FAA1277509A46B2857887">
 					</form>
 				</li>
 				<li>
 					<div class="btn-group navbar-left dropdown">
 						<button type="button" class="btn btn-sm s-btn-dgrey dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i></button>
 						<ul class="dropdown-menu pull-right" role="menu">
-							<li><a title="Export List" class="adminentityexportSlatwallCollection " target="_self" href="?slatAction=entity.exportSlatwallCollection">Export List</a></li> 
+							<li><a title="Export List" class="adminentityexportSlatwallCollection " target="_self" href="{{$root.buildUrl('entity.exportSlatwallCollection')}}">Export List</a></li> 
 						</ul>
 					</div>
 				</li>

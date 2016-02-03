@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWWorkflowConditionGroups{
 	public static Factory(){
@@ -6,18 +6,18 @@ class SWWorkflowConditionGroups{
 			$log,
 			workflowConditionService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWWorkflowConditionGroups(
 			$log,
 			workflowConditionService,
 			workflowPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'workflowConditionService',
 			'workflowPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -25,7 +25,7 @@ class SWWorkflowConditionGroups{
 		$log,
 		workflowConditionService,
 		workflowPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'E',
@@ -35,7 +35,7 @@ class SWWorkflowConditionGroups{
 				workflow:"=",
 				filterPropertiesList:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroups.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowconditiongroups.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflowconditiongroups init');
 

@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWFormFieldJsonController implements ng.IDirective {
@@ -25,23 +25,23 @@ class SWFormFieldJson implements ng.IDirective {
     public static Factory(){
         var directive = (
             coreFormPartialsPath,
-        pathBuilderConfig
+        hibachiPathBuilder
         )=> new SWFormFieldJson(
             coreFormPartialsPath,
-            pathBuilderConfig
+            hibachiPathBuilder
         );
         directive.$inject = [
             'coreFormPartialsPath',
-            'pathBuilderConfig'
+            'hibachiPathBuilder'
         ];
         return directive;
     }
 
     constructor(
         coreFormPartialsPath,
-        pathBuilderConfig
+        hibachiPathBuilder
     ) {
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "json.html";
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "json.html";
     }
 
 }

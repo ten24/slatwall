@@ -290,10 +290,17 @@ body.s-login-screen .form-group {
   display: inline-block;
   width: 100%;
 }
+.s-bold {
+  font-weight: 600;
+}
 @media only screen and (max-width: 992px) {
   body {
     padding: 0px /*Remove for responsive*/;
   }
+}
+.s-image-wrapper > img {
+  border: 3px solid #eee;
+  border-radius: 3px;
 }
 .no-records-found {
   font-style: italic;
@@ -2251,7 +2258,7 @@ tabel .s-table-header {
   position: absolute;
   width: 16px;
   height: 16px;
-  left: 3px;
+  left: 2px;
   top: 0;
   padding-right: 1px;
   padding-top: 2px;
@@ -2277,6 +2284,13 @@ tabel .s-table-header {
 .s-checkbox input[type=checkbox]:disabled + label:before {
   background-color: #f2f2f2;
   cursor: not-allowed;
+}
+.s-property .s-checkbox {
+  display: inline-block;
+  margin-right: 15px;
+}
+.s-property .s-checkbox label {
+  font-family: "open_sansregular", Helvetica, Arial, sans-serif;
 }
 .radio {
   margin-top: 0px !important;
@@ -3080,6 +3094,7 @@ tabel .s-table-header {
 .s-body-nav .navbar h1 {
   padding: 0px;
   margin: 0px;
+  margin-top: 14px;
   font-size: 18px;
   font-weight: normal;
   vertical-align: middle;
@@ -5450,6 +5465,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-image-uploader .thumbnail .s-image {
   position: relative;
+  padding: 5px;
 }
 .s-image-uploader h4::-webkit-scrollbar {
   display: none;
@@ -5472,7 +5488,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   height: 100%;
   top: 0px;
   text-align: center;
-  padding-top: 20%;
+  padding-top: 38%;
   font-size: 45px;
 }
 .s-image-uploader .s-zoom:hover {
@@ -5506,6 +5522,54 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-image-uploader .s-controlls .btn-group .btn:hover {
   border: none !important;
+}
+.s-upload-image .thumbnail:hover {
+  -webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
+  -webkit-transition: all .1s linear;
+  -o-transition: all .1s linear;
+  -moz-transition: all .1s linear;
+  -ms-transition: all .1s linear;
+  -kthtml-transition: all .1s linear;
+  transition: all .1s linear;
+}
+.s-upload-image .thumbnail {
+  display: table;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+.s-upload-image .thumbnail .s-image-info {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  pointer-events: none;
+  width: 100%;
+  background: #eee;
+  padding: 10px;
+}
+.s-upload-image .thumbnail .s-image-info .s-name {
+  font-weight: 600;
+  font-style: italic;
+}
+.s-upload-image a {
+  height: 229px;
+  display: table-cell;
+  width: 100%;
+  vertical-align: middle;
+}
+.s-upload-image a {
+  text-decoration: none;
+}
+.s-upload-image a i {
+  display: block;
+  font-size: 90px;
+  margin-bottom: 5px;
+  margin-top: -52px;
+}
+.s-upload-image.s-new-image a i {
+  margin-top: 0px;
 }
 /*-- Gift Card Detail Page --*/
 .s-detail-modules-wrapper .s-detail-module {
@@ -5727,15 +5791,23 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-detail-content-wrapper .s-content-header .btn-toolbar {
   margin-top: -3px;
 }
+.s-detail-content-wrapper .s-content-header h2 {
+  border: none;
+  padding: 0px;
+  padding-left: 5px;
+  display: inline-block;
+}
 .s-detail-content-wrapper .s-content-header .s-default-search {
   position: relative;
   display: inline-block;
   margin: 0px;
   float: right;
-  margin-top: -7px;
+  margin-top: -22px;
+  left: 5px;
 }
 .s-detail-content-wrapper .s-content-header .s-default-search input {
   max-width: 200px;
+  border-color: #eee;
 }
 .s-detail-content-wrapper .s-content-header .s-default-search .s-search-action {
   position: absolute;
@@ -5754,19 +5826,14 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-detail-content-wrapper h2 {
   color: #000;
   font-size: 14px;
+  background-color: #fff;
+  padding: 10px;
+  border-bottom: 2px solid #e9e9e9;
   margin-top: 0px;
   margin-bottom: 0px;
-  display: inline-block;
 }
 .s-detail-content-wrapper .s-content-header span {
   font-size: 12px;
-}
-.s-detail-content-wrapper .s-content-header .s-default-search {
-  position: relative;
-  left: 5px;
-}
-.s-detail-content-wrapper .s-content-header .s-default-search input {
-  border-color: #eee;
 }
 .s-detail-content-wrapper .s-detail-header-table {
   margin-top: -35px;

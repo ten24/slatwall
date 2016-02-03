@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWFilterItem{
 	public static Factory(){
@@ -6,18 +6,18 @@ class SWFilterItem{
 			$log,
 			collectionService,
 			collectionPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=>new SWFilterItem(
 			$log,
 			collectionService,
 			collectionPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
 			'collectionService',
 			'collectionPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -25,7 +25,7 @@ class SWFilterItem{
 		$log,
 		collectionService,
 		collectionPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 			restrict: 'A',
@@ -39,7 +39,7 @@ class SWFilterItem{
 				saveCollection:"&",
 				comparisonType:"="
 			},
-			templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+"filteritem.html",
+			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
 				scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
 

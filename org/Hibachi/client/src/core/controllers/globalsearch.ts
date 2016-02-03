@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class GlobalSearchController{
 	//@ngInject
@@ -10,9 +10,6 @@ class GlobalSearchController{
 		$hibachi,
         rbkeyService
 	){
-
-        console.log('test');
-        console.log(rbkeyService);
 		$scope.keywords = '';
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
@@ -103,7 +100,7 @@ class GlobalSearchController{
 								for(var i in data.pageRecords) {
 									$scope.searchResults[ entityName ].results.push({
 										'name': $scope.searchResults[ entityName ].resultNameFilter( data.pageRecords[i] ),
-										'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
+										'link': $hibachi.buildUrl('entity.detail'+entityName)+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
 									});
 								}
 

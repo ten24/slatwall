@@ -88,7 +88,7 @@ component output="false" accessors="true" extends="HibachiController" {
     public void function login(required struct rc){
         if(!getHibachiScope().getLoggedInFlag()){
             //if account doesn't exist than one is create
-            var account = getService('AccountService').processAccount(rc.$.slatwall.getAccount(), rc, "login");
+            var account = getService('AccountService').processAccount(getHibachiScope().getAccount(), rc, "login");
             var authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login").populate(arguments.rc);
             arguments.rc.apiResponse.content['messages'] = [];
             var updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword");
@@ -164,7 +164,7 @@ component output="false" accessors="true" extends="HibachiController" {
             var skus = [];
             
             //smart list to load up sku array
-            var skuSmartList = request.slatwallScope.getService('skuService').getSkuSmartList();
+            var skuSmartList = getHibachiScope().getService('skuService').getSkuSmartList();
             skuSmartList.addInFilter('skuID',rc.skuIDs);
             
             if( skuSmartList.getRecordsCount() > 0){
@@ -179,7 +179,7 @@ component output="false" accessors="true" extends="HibachiController" {
     
     public any function getValidationPropertyStatus(required struct rc){
             
-        var service = request.slatwallScope.getService("hibachiValidationService");
+        var service = getHibachiScope().getService("hibachiValidationService");
         var objectName = arguments.rc.object;
         var propertyIdentifier = arguments.rc.propertyIdentifier;
         var value = arguments.rc.value;
@@ -451,7 +451,7 @@ component output="false" accessors="true" extends="HibachiController" {
     
     private any function getModel(required struct rc){
         var model = {};
-        if(!request.slatwallScope.hasApplicationValue('objectModel')){
+        if(!getHibachiScope().hasApplicationValue('objectModel')){
             var entities = [];
             var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
             var entitiesListArray = listToArray(structKeyList(rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesMetaData()));
@@ -479,9 +479,9 @@ component output="false" accessors="true" extends="HibachiController" {
             }
             
             ORMClearSession();
-            request.slatwallScope.setApplicationValue('objectModel',model);
+            getHibachiScope().setApplicationValue('objectModel',model);
         }
-        model = request.slatwallScope.getApplicationValue('objectModel');
+        model = getHibachiScope().getApplicationValue('objectModel');
         return model;
     }
     
@@ -493,8 +493,8 @@ component output="false" accessors="true" extends="HibachiController" {
         param name="arguments.rc.propertyIdentifiers" default="";
         //first check if we have an entityName value
         if(!structKeyExists(arguments.rc, "entityName")) {
-            arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-            arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
+            arguments.rc.apiResponse.content['account'] = getHibachiScope().invokeMethod("getAccountData");
+            arguments.rc.apiResponse.content['cart'] = getHibachiScope().invokeMethod("getCartData");
         } else {
             //get entity service by entity name
             var currentPage = 1;

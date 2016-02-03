@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWCriteriaOneToMany{
     public static Factory(){
@@ -11,7 +11,7 @@ class SWCriteriaOneToMany{
             metadataService,
             dialogService,
             observerService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
         )=> new SWCriteriaOneToMany(
             $log,
@@ -22,7 +22,7 @@ class SWCriteriaOneToMany{
             metadataService,
             dialogService,
             observerService,
-			pathBuilderConfig,
+			hibachiPathBuilder,
             rbkeyService
         );
         directive.$inject = [
@@ -34,7 +34,7 @@ class SWCriteriaOneToMany{
             'metadataService',
             'dialogService',
             'observerService',
-			'pathBuilderConfig',
+			'hibachiPathBuilder',
             'rbkeyService'
         ];
         return directive;
@@ -48,12 +48,12 @@ class SWCriteriaOneToMany{
         metadataService,
         dialogService,
         observerService,
-        pathBuilderConfig,
+        hibachiPathBuilder,
             rbkeyService
     ){
         return {
             restrict: 'E',
-            templateUrl:pathBuilderConfig.buildPartialsPath(collectionPartialsPath)+'criteriaonetomany.html',
+            templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+'criteriaonetomany.html',
             link: function(scope, element, attrs){
                 scope.data ={};
                 scope.collectionOptionsOpen = false;

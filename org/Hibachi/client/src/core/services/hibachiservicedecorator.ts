@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class HibachiServiceDecorator{
@@ -124,7 +124,7 @@ class HibachiServiceDecorator{
 
                 this.metaData.$$getDetailTabs = function(){
                     var deferred = $q.defer();
-                    var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getDetailTabs&entityName='+this.className;
+                    var urlString = _config.baseURL+'/index.cfm/?'+appConfig.action+'=api:main.getDetailTabs&entityName='+this.className;
                     var detailTabs = [];
                     $http.get(urlString)
                     .success(function(data){

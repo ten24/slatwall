@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWDetail{
 	public static Factory(){
@@ -7,20 +7,20 @@ class SWDetail{
 			$log,
 			$hibachi,
 			coreEntityPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		)=> new SWDetail(
 			$location,
 			$log,
 			$hibachi,
 			coreEntityPartialsPath,
-			pathBuilderConfig
+			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$location',
 			'$log',
 			'$hibachi',
 			'coreEntityPartialsPath',
-			'pathBuilderConfig'
+			'hibachiPathBuilder'
 		];
 		return directive;
 	}
@@ -29,11 +29,11 @@ class SWDetail{
 		$log,
 		$hibachi,
 		coreEntityPartialsPath,
-		pathBuilderConfig
+		hibachiPathBuilder
 	){
 		return {
 	        restrict: 'E',
-	        templateUrl:pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath)+'/detail.html',
+	        templateUrl:hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath)+'/detail.html',
 	        link: function (scope, element, attr) {
 	        	scope.$id="slatwallDetailController";
 	        	$log.debug('slatwallDetailController');
@@ -57,7 +57,7 @@ class SWDetail{
 
 	        	var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
 
-	        	scope.tabPartialPath = pathBuilderConfig.buildPartialsPath(coreEntityPartialsPath);
+	        	scope.tabPartialPath = hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath);
 
 	        	scope.getEntity = function(){
 

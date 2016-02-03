@@ -1,4 +1,4 @@
-/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class swFormFieldPasswordController implements ng.IDirective {
@@ -23,17 +23,17 @@ class SWFormFieldPassword implements ng.IDirective {
     public link = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs: ng.IAttributes, formController: ng.IFormController) => {}
     public static Factory(){
         var directive = (
-            coreFormPartialsPath,pathBuilderConfig
+            coreFormPartialsPath,hibachiPathBuilder
         )=>new SWFormFieldPassword(
-            coreFormPartialsPath,pathBuilderConfig
+            coreFormPartialsPath,hibachiPathBuilder
         );
-        directive.$inject = ['coreFormPartialsPath','pathBuilderConfig'];
+        directive.$inject = ['coreFormPartialsPath','hibachiPathBuilder'];
         return directive;
     }
 
     //@ngInject
-    public constructor(coreFormPartialsPath,pathBuilderConfig) {
-        this.templateUrl = pathBuilderConfig.buildPartialsPath(coreFormPartialsPath) + "password.html";
+    public constructor(coreFormPartialsPath,hibachiPathBuilder) {
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "password.html";
     }
 
 }

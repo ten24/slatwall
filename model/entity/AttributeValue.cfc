@@ -202,7 +202,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 	// Account Address (many-to-one)
 	public void function setAccountAddress(required any accountAddress) {
-		variables.account = arguments.account;
+		variables.accountAddress = arguments.accountAddress;
 		if(isNew() or !arguments.accountAddress.hasAttributeValue( this )) {
 			arrayAppend(arguments.accountAddress.getAttributeValues(), this);
 		}
