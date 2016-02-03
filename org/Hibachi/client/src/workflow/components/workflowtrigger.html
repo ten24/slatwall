@@ -10,6 +10,12 @@
 		<li ng-show="workflowTrigger.data.triggerType === 'Schedule'" class="j-tool-tip-item s-bundle-details" ng-bind="workflowTrigger.data.scheduleCollection.data.collectionName + ' - ' + workflowTrigger.data.schedule.data.scheduleName"></li>
 	</ul>
 	<ul class="list-unstyled list-inline s-last">
+        <li class="col-xs-1 j-tool-tip-item s-bundle-details-add"  ng-show="workflowTrigger.data.triggerType === 'Schedule'">
+            <a class="btn s-btn-lgrey s-edit">
+                <i 	class="fa fa-play"></i>
+            </a>
+        </li>
+
 		<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTrigger(workflowTrigger); setHidden(workflowTrigger);">
 			<a class="btn s-btn-lgrey s-edit" data-target="#s-add-obj-1">
 				<i 	class="fa fa-pencil"
@@ -30,5 +36,6 @@
 		    <i class="fa fa-trash"></i>
             </a>
 		</li>
+
 	</ul>
 </div>

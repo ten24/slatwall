@@ -13,6 +13,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getExistingCollectionsByBaseEntity');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getFilterPropertiesByBaseEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessObject');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessMethodOptionsByEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
@@ -384,7 +385,6 @@ component output="false" accessors="true" extends="HibachiController" {
 	public void function getProcessMethodOptionsByEntityName(required struct rc){
 		var processOptions = [];
 		var allProcessMethods = getHibachiService().getEntitiesProcessContexts();
-
 		if(structKeyExists(allProcessMethods, arguments.rc.entityName)){
 			for(var processMethod in allProcessMethods[arguments.rc.entityName]){
 				arrayAppend(processOptions, {

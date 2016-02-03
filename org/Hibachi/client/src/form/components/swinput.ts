@@ -39,7 +39,7 @@ class SWInput{
             }
 			var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 			$log.debug("Validations: ", validations);
-            $log.debug(propertyDisplay.form.$$swFormInfo)
+            $log.debug(propertyDisplay.form.$$swFormInfo);
 			var validationsForContext = [];
 
 			//get the form context and the form name.
@@ -135,6 +135,16 @@ class SWInput{
 				validations +
 				'id="swinput'+utilityService.createID(26)+'"'+
 				' />';
+            } else if(propertyDisplay.fieldType === 'time'){
+                template = '<input type="text" class="form-control" '+
+                    'datetime-picker data-time-only="true" '+ // date-format="MMM DD, YYYY hh:mm tt"
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
             }
 
 			return template;

@@ -159,7 +159,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
 					var currentThreadName = "thread_#i#";
 
-					//thread action="run" name="#currentThreadName#" currentObject="#currentObject#" currentObjectID="#currentObjectID#" workflowTrigger="#workflowTrigger#"{
+					thread action="run" name="#currentThreadName#" currentObject="#currentObject#" currentObjectID="#currentObjectID#" workflowTrigger="#workflowTrigger#"{
 						//load Object by id
 						var processData = {
 							entity = getHibachiScope().getEntity(currentObject, currentObjectID),
@@ -167,17 +167,17 @@ component extends="HibachiService" accessors="true" output="false" {
 						};
 						//Call proccess method to execute Tasks
 						this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
-					//}
+					}
 
 
-					//thread action="join";
+					threadJoin(currentThreadName);
 
 					//if there was any errors inside of the thread, propagate to catch
-					//if(structKeyExists(evaluate(currentThreadName), 'error')){
-						//writeDump(evaluate(currentThreadName).error); abort;
-						//throw(evaluate(currentThreadName).error.message);
-						//break;
-					//}
+					if(structKeyExists(evaluate(currentThreadName), 'error')){
+						writeDump(evaluate(currentThreadName).error); abort;
+						throw(evaluate(currentThreadName).error.message);
+						break;
+					}
 				}
 
 
