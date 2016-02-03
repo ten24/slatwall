@@ -560,7 +560,42 @@ Notes:
 			return newNode ;
 		}
 	}
-	
+	/** This is a helper method that allows one to check that a property exists and that it has a value in one
+        go by passing in a single property name or a list of list of propertyNames */
+    public boolean function hasPropertyWithDefinedValue(required struct data={}, any propertyName=""){
+       //simple case   
+       if (structKeyExists(arguments, "data") && structKeyExists(arguments.data, "#arguments.propertyName#") && !isNull(arguments.data['#propertyName#']) && isStruct(arguments.data)) {
+            return true;
+       }
+       return false;
+    }
+    
+    /** This is a helper method that allows one to check that a list of properties exists and that they all have a value in one
+        go by passing in a list of list of propertyNames  and the struct to check against */
+    public boolean function hasPropertiesWithDefinedValues(required struct data={}, any propertyList=""){
+       //simple case
+       if (structKeyExists(arguments, "data") && 
+             !isNull(arguments.data) && 
+             structKeyExists(arguments, "propertyList") && 
+             !isNull(arguments.propertyList) && 
+             isStruct(arguments.data)){
+           for (key in ListToArray(arguments.propertyList)){
+               if (!structKeyExists(arguments.data, "#key#") || isNull(arguments.data['#key#'])) {
+                    return false;
+               }
+           }
+           return true;
+       }
+    }
+    
+    public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
+		if(
+			getHibachiScope().onSlatwallCMS()
+		){
+			arguments.removeMissingKeys = true;
+		}
+		return super.replaceStringTemplate(argumentCollection=arguments);	
+	}
 	</cfscript>
 	
 </cfcomponent>

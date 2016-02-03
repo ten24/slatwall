@@ -885,12 +885,14 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-checkbox label {padding-left: 0px;margin-top:2px; cursor:pointer;font-weight:normal !important;}
 .s-checkbox label{display:block;position:relative;}
 .s-checkbox label:before{content:"";display:inline-block;width:15px;height:15px;border:1px solid @black-20;.border-radius();background-color:@white;-webkit-transition:border 0.15s ease-in-out, color 0.15s ease-in-out;transition:border 0.15s ease-in-out, color 0.15s ease-in-out;vertical-align:text-top;}
-.s-checkbox label:after{display:inline-block;position:absolute;width:16px;height:16px;left:3px;top:0;padding-right:1px;padding-top:2px;font-size:9px;color:#555555;vertical-align:text-top;}
+.s-checkbox label:after{display:inline-block;position:absolute;width:16px;height:16px;left:2px;top:0;padding-right:1px;padding-top:2px;font-size:9px;color:#555555;vertical-align:text-top;}
 @-moz-document url-prefix() {.s-checkbox label:after {padding-top:2px;}}
 .s-checkbox input[type=checkbox]{display:none;}
 .s-checkbox input[type=checkbox]:checked + label:after{font-family:'Glyphicons Halflings';content:"\e013";}
 .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
 .s-checkbox input[type=checkbox]:disabled + label:before{background-color:@black-5;cursor:not-allowed;}
+.s-property .s-checkbox {display: inline-block;margin-right: 15px;}
+.s-property .s-checkbox label {font-family: @font-family-regular;}
 .radio {margin-top:0px !important;margin-bottom:5px;margin-right: 20px;display: inline-block;}
 .radio label{display:inline-block;position:relative;margin-left:5px;font-weight:normal !important;padding-left:0px;}
 .radio label:before{content:"";display:inline-block;position:absolute;width:17px;height:17px;left:0;border:1px solid @black-20;.border-radius(50%);background-color:@white;-webkit-transition:border .15s ease-in-out;-o-transition:border .15s ease-in-out;transition:border .15s ease-in-out;position: relative;left: -3px;top: 3px;}
@@ -1952,7 +1954,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-upload-image .thumbnail .s-image-info .s-name {font-weight: 600;font-style: italic;}
 .s-upload-image a {height: 229px;display: table-cell;width: 100%;vertical-align: middle;}
 .s-upload-image a {text-decoration: none;}
-.s-upload-image a i {display: block;font-size: 90px;margin-bottom: 5px;margin-top: -72px;}
+.s-upload-image a i {display: block;font-size: 90px;margin-bottom: 5px;margin-top: -52px;}
 .s-upload-image.s-new-image a i {margin-top: 0px;}
 
 /*-- Gift Card Detail Page --*/
