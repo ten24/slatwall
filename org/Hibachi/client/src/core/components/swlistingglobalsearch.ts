@@ -20,21 +20,15 @@ class SWListingGlobalSearchController{
     }
 
     public search = () =>{
-        if(this.searchText.length >= 2){
-            this.searching = true;
+        this.searching = true;
 
-            if(this._timeoutPromise){
-                this.$timeout.cancel(this._timeoutPromise);
-            }
-
-            this._timeoutPromise = this.$timeout(()=>{
-                this.getCollection();
-            }, 500);
-        }else if(this.searchText.length === 0){
-            this.$timeout(()=>{
-                this.getCollection();
-            });
+        if(this._timeoutPromise){
+            this.$timeout.cancel(this._timeoutPromise);
         }
+
+        this._timeoutPromise = this.$timeout(()=>{
+            this.getCollection();
+        }, 500);
     }
 }
 

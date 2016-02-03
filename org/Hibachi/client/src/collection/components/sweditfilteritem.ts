@@ -252,20 +252,11 @@ class SWEditFilterItem{
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
                                     filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-                                    filterItem.displayValue = filterItem.value;
-                                }else{
-                                    //if has a pattern then we need to evaluate where to add % for like statement
-                                    if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
-                                        filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
-                                        
-                                        filterItem.displayValue = filterItem.value;
-                                    }else{
-                                        filterItem.value = filterItem.value;
-                                        if(angular.isUndefined(filterItem.displayValue)){
-                                            filterItem.displayValue = filterItem.value;
-                                        }
-                                    }
+                                //if has a pattern then we need to evaluate where to add % for like statement
+							    }else if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
+                                    filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
                                 }
+                                filterItem.displayValue = filterItem.value;
                                 
                                 break;
                                 //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value

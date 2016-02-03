@@ -563,8 +563,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var attributeValueStruct = this.getAttributeValuesByCodeStruct();
 		if(!isnull(attributeValueStruct)){
 			for(key in attributeValueStruct){
-				if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
-					return false;
+				if( structKeyExists(arguments.orderItem.getAttributeValuesByAttributeCodeStruct(), key) ){
+					if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
+						return false;
+					}
+				}else{
+					if(attributeValueStruct[key] != arguments.orderItem.getAttributeValue(key)){
+						return false;
+					}
 				}
 			}
 		}

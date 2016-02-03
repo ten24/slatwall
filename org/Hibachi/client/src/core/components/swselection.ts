@@ -52,14 +52,18 @@ class SWSelection{
                 }
                 
 				scope.toggleSelection = function(toggleValue,selectionid,selection){
+                    console.log('selected!');
+                    console.log(toggleValue);
+                    console.log(selectionid);
+                    console.log(selection);
                     if(scope.isRadio){
                         selectionService.radioSelection(selectionid,selection);
-                        return;
-                    }
-                    if(toggleValue){
-                        selectionService.addSelection(selectionid,selection);
                     }else{
-                        selectionService.removeSelection(selectionid,selection);
+                        if(toggleValue){
+                            selectionService.addSelection(selectionid,selection);
+                        }else{
+                            selectionService.removeSelection(selectionid,selection);
+                        }
                     }
                     observerService.notify('swSelectionToggleSelection',{selectionid,selection});
                 }

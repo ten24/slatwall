@@ -3,7 +3,6 @@
 import {hibachimodule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.module";
 import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
 import {entitymodule} from "../../../../org/Hibachi/client/src/entity/entity.module";
-import {SlatwallInterceptor,ISlatwall,ISlatwallConfig,SlatwallJQueryStatic} from "./services/slatwallinterceptor";
 import {contentmodule} from "../content/content.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
 import {optiongroupmodule} from "../optiongroup/optiongroup.module";
@@ -21,7 +20,7 @@ import {SWCurrencyFormatter} from "./components/swcurrencyformatter"
 import {SWCurrency} from "./filters/swcurrency";
 
 //declare variables out of scope
-declare var $:SlatwallJQueryStatic;
+declare var $:any;
 
 var slatwalladminmodule = angular.module('slatwalladmin',[
   //custom modules
@@ -48,40 +47,8 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
      datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
      datepickerPopupConfig.toggleWeeksText = null;
 
-     $logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
-     $filterProvider.register('likeFilter',function(){
-         return function(text){
-             if(angular.isDefined(text) && angular.isString(text)){
-                 return text.replace(new RegExp('%', 'g'), '');
+     
 
-             }
-         };
-     });
-
-     $filterProvider.register('truncate',function(){
-         return function (input, chars, breakOnWord) {
-             if (isNaN(chars)) return input;
-             if (chars <= 0) return '';
-             if (input && input.length > chars) {
-                 input = input.substring(0, chars);
-                 if (!breakOnWord) {
-                     var lastspace = input.lastIndexOf(' ');
-                     //get last space
-                     if (lastspace !== -1) {
-                         input = input.substr(0, lastspace);
-                     }
-                 }else{
-                     while(input.charAt(input.length-1) === ' '){
-                         input = input.substr(0, input.length -1);
-                     }
-                 }
-                 return input + '...';
-             }
-             return input;
-         };
-     });
-
-     $httpProvider.interceptors.push('slatwallInterceptor');
 
      // route provider configuration
 
@@ -111,7 +78,6 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
 
     }])
  //services
-.service('slatwallInterceptor', SlatwallInterceptor.Factory())
 //directives
 .directive('swCurrencyFormatter',SWCurrencyFormatter.Factory())
 //filters

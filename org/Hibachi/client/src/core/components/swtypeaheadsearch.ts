@@ -72,7 +72,7 @@ class SWTypeaheadSearchController {
     };
     
     public toggleOptions = () =>{
-        if(this.hideSearch && !this.searchText.length){
+        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
             this.search(this.searchText); 
         } else { 
             this.hideSearch = !this.hideSearch; 
@@ -94,7 +94,7 @@ class SWTypeaheadSearchController {
             this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
          
-		if(search.length){
+		if(search && search.length){
 			this._timeoutPromise = this.$timeout(()=>{
 
 				var promise = this.typeaheadCollectionConfig.getEntity();
@@ -111,7 +111,7 @@ class SWTypeaheadSearchController {
                       this.hideSearch = false;
                 });
 			}, 500);
-		}  else if(search.length == 0){
+		}  else if(!search || search.length == 0){
             this._timeoutPromise = this.$timeout(()=>{ 
 
                 var promise = this.typeaheadCollectionConfig.getEntity();
@@ -185,7 +185,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public scope = {}
 
 	public bindToController = {
-        collectionConfig:"=",
+        collectionConfig:"=?",
 		entity:"@?",
 		properties:"@?",
 		propertiesToDisplay:"@?",
@@ -195,7 +195,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
-		hideSearch:"=",
+		hideSearch:"=?",
 		clickOutsideArguments:"=?"
 	}
 	public controller=SWTypeaheadSearchController;
