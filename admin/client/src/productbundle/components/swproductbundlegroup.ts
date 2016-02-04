@@ -333,10 +333,7 @@ class SWProductBundleGroupController {
         } else { 
             //Removes the filter item from the left hand search result
             this.productBundleGroupFilters.value.splice(index,1);
-        }
-        
-        this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();   
-        this.checkSkuCollectionConfigValidity();    
+        }  
 	}
 
 	public removeProductBundleGroupFilter = (index) =>{
@@ -371,18 +368,9 @@ class SWProductBundleGroupController {
         } else { 
             this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
         }
-        
-        this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-        this.checkSkuCollectionConfigValidity(); 
     }    
     
-    private checkSkuCollectionConfigValidity = () =>{
-        if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.length > 0){
-            this.formService.getForms()[this.formName].skuCollectionConfig.setValidity("skuCollectionConfig", true);
-        } else { 
-            this.formService.getForms()[this.formName].skuCollectionConfig.setValidity("skuCollectionConfig", false);
-        }
-    }
+
      
 }
 
