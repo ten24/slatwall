@@ -11,8 +11,8 @@ class SWTypeaheadSearchController {
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
 	public placeholderText:string;
-	public searchText:string  = "";
-	public results = [];
+	public searchText:string;
+	public results;
 	public addFunction;
     public validateRequired:boolean; 
     public displayList = [];
@@ -32,6 +32,14 @@ class SWTypeaheadSearchController {
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
+        
+        if(angular.isUndefined(this.searchText)){
+            this.searchText = "";
+        }
+        
+        if(angular.isUndefined(this.results)){
+            this.results = []; 
+        }
         
         if(angular.isUndefined(this.validateRequired)){
             this.validateRequired = false; 
@@ -101,19 +109,11 @@ class SWTypeaheadSearchController {
             var promise = this.typeaheadCollectionConfig.getEntity();
 
             promise.then( (response) =>{
-                    if(angular.isDefined(this.allRecords) && this.allRecords == false){
-                        this.results = response.pageRecords;
-                    } else {
-                        this.results = response.records;
-                    }
-                    
-                    //Custom method for gravatar on accounts (non-persistant-property)
-                    //if(angular.isDefined(this.results) && this.entity == "Account"){
-                    //	angular.forEach(this.results,(account)=>{
-                    //		account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-                    //	});
-                    //}
-
+                if(angular.isDefined(this.allRecords) && this.allRecords == false){
+                    this.results = response.pageRecords;
+                } else {
+                    this.results = response.records;
+                }
             }).finally(()=>{
                 this.resultsDeferred.resolve();
                 this.hideSearch = (this.results.length == 0);
