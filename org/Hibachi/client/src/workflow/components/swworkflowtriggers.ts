@@ -169,11 +169,12 @@ class SWWorkflowTriggers{
 					saveWorkflowTriggerPromise.then(function(){
                         //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
                         if (context == 'add'){
-                    			console.warn("Save and New");
-                    			scope.addWorkflowTrigger();
-                    			scope.finished = false;
+                            console.warn("Save and New");
+                            scope.addWorkflowTrigger();
+                            scope.finished = false;
                         }else if (context == "finish"){
-                        		scope.finished = true;
+                            scope.finished = true;
+                            scope.workflowTriggers.selectedTrigger.hidden = true;
                         }
 					});
 				};

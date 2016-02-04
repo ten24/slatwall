@@ -49,7 +49,8 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 	
 	property name="workflowDAO" type="any";
-	
+
+
 	// ===================== START: Logical Methods ===========================
 	
 	public any function runAllWorkflowsByEventTrigger( required any eventName, required any entity, required struct eventData={} ) {
@@ -60,17 +61,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arrayFind(allWorkflowTriggerEventsArray, arguments.eventName)) {
 			
 			// Run all workflows inside of a thread
-			//thread action="run" name="#createUUID()#" eventName=arguments.eventName entity=arguments.entity {
-				
-				var workflowTriggers = getWorkflowDAO().getWorkflowTriggersForEvent( eventName=arguments.eventName );
-				
-				for(var workflowTrigger in workflowTriggers) {
+			//thread action="run" name="#createUUID()#" application="#application#" eventName="#arguments.eventName#" entity="#arguments.entity#" {
+
+				var workflowTriggers = getWorkflowDAO().getWorkflowTriggersForEvent(eventName = arguments.eventName);
+
+				for (var workflowTrigger in workflowTriggers) {
 
 					// Create a new workflowTriggerHistory to be logged
 					var workflowTriggerHistory = this.newWorkflowTriggerHistory();
-
-					//Change WorkflowTrigger runningFlag to TRUE
-					getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
 
 					//Attach workflowTrigger to workflowTriggerHistory
 					workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
@@ -79,6 +77,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					// Persist the info to the DB
 					workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 					getHibachiDAO().flushORMSession();
+
 					try {
 						var processData = {};
 
@@ -97,28 +96,29 @@ component extends="HibachiService" accessors="true" output="false" {
 							processData.workflowTrigger = workflowTrigger;
 
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
+
+							if(!processData.entity.hasErrors()) {
+								application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
+							}
 						}
 
 						// Update the workflowTriggerHistory
-						workflowTriggerHistory.setSuccessFlag( true );
-						workflowTriggerHistory.setResponse( "" );
-					}catch(any e){
+						workflowTriggerHistory.setSuccessFlag(true);
+						workflowTriggerHistory.setResponse("");
+					} catch (any e){
 						// Update the workflowTriggerHistory
-						workflowTriggerHistory.setSuccessFlag( false );
-						workflowTriggerHistory.setResponse( e.Message );
+						workflowTriggerHistory.setSuccessFlag(false);
+						workflowTriggerHistory.setResponse(e.Message);
 					}
 
-						//Change WorkflowTrigger runningFlag to FALSE
-						getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
+					// Set the end for history
+					workflowTriggerHistory.setEndTime(now());
 
-						// Set the end for history
-						workflowTriggerHistory.setEndTime(now());
-
-						// Persist the info to the DB
-						workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-						getHibachiDAO().flushORMSession();
+					// Persist the info to the DB
+					workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+					getHibachiDAO().flushORMSession();
 				}
-				
+			//}
 		}
 		
 	}
@@ -126,6 +126,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public void function runWorkflowTriggerById(required string workflowTriggerID){
 
 	}
+
 	public any function runAllWorkflowsByScheduleTrigger() {
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
 		for(var workflowTrigger in workflowTriggers) {
@@ -133,92 +134,92 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 	}
 
-	public any function runWorkflowsByScheduleTrigger(workflowTriggers) {
+	public any function runWorkflowsByScheduleTrigger(required any workflowTrigger) {
+		// Create a new workflowTriggerHistory to be logged
 
-//writeDump(var=workflowTriggers, top=1); abort;
-		// Loop Due workflowTriggers
-
-
-			// Create a new workflowTriggerHistory to be logged
-			var workflowTriggerHistory = this.newWorkflowTriggerHistory();
-
-			//Change WorkflowTrigger runningFlag to TRUE
-			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
-
-			//Attach workflowTrigger to workflowTriggerHistory
-			workflowTriggerHistory.setWorkflowTrigger(workflowTrigger);
-			workflowTriggerHistory.setStartTime(now());
-
-			// Persist the info to the DB
-			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
-			getHibachiDAO().flushORMSession();
-
-			try{
-
-				//get workflowTriggers Object
-				var currentObject = workflowTrigger.getScheduleCollection().getCollectionObject();
-				//execute Collection and return only the IDs
-				var triggerCollectionResult = workflowTrigger.getScheduleCollection().getPrimaryIDs();
-
-				//Loop Collection Data
-				for(i=1; i <= ArrayLen(triggerCollectionResult); i++){
-
-					//get current ObjectID
-					var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
-					var currentThreadName = "thread_#i#";
-
-					thread action="run" name="#currentThreadName#" currentObject="#currentObject#" currentObjectID="#currentObjectID#" workflowTrigger="#workflowTrigger#"{
-						//load Object by id
-						var processData = {
-							entity = getHibachiScope().getEntity(currentObject, currentObjectID),
-							workflowTrigger = workflowTrigger
-						};
-						//Call proccess method to execute Tasks
-						this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
-					}
+		var workflowTriggerHistory = this.newWorkflowTriggerHistory();
 
 
-					threadJoin(currentThreadName);
 
-					//if there was any errors inside of the thread, propagate to catch
-					if(structKeyExists(evaluate(currentThreadName), 'error')){
-						writeDump(evaluate(currentThreadName).error); abort;
-						throw(evaluate(currentThreadName).error.message);
-						break;
+		//Change WorkflowTrigger runningFlag to TRUE
+		//getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
+
+		//Attach workflowTrigger to workflowTriggerHistory
+		workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
+		workflowTriggerHistory.setStartTime(now());
+
+		// Persist the info to the DB
+		workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+		getHibachiDAO().flushORMSession();
+
+		try{
+
+			//get workflowTriggers Object
+			var currentObject = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+			//execute Collection and return only the IDs
+			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs();
+
+			//Loop Collection Data
+			for(i=1; i <= ArrayLen(triggerCollectionResult); i++){
+				//get current ObjectID
+				var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
+				var currentThreadName = "thread_#i#";
+
+				thread action="run" name="#currentThreadName#" application="#application#" currentObject="#currentObject#" currentObjectID="#currentObjectID#" workflowTriggerID="#arguments.workflowTrigger.getWorkflowTriggerID()#"{
+					//load Objects by id
+
+					var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
+					var processData = {
+						entity = getHibachiScope().getEntity(currentObject, currentObjectID),
+						workflowTrigger = workflowTrigger
+					};
+
+					//Call proccess method to execute Tasks
+					this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
+
+					if(!processData.entity.hasErrors()) {
+						application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
 					}
 				}
+				threadJoin(currentThreadName);
 
-
-				// Update the workflowTriggerHistory
-				workflowTriggerHistory.setSuccessFlag( true );
-				workflowTriggerHistory.setResponse( "" );
-
-			} catch(any e){
-				// Update the workflowTriggerHistory
-				workflowTriggerHistory.setSuccessFlag( false );
-				workflowTriggerHistory.setResponse( e.Message );
+				//if there was any errors inside of the thread, propagate to catch
+				if(structKeyExists(evaluate(currentThreadName), 'error')){
+					throw(evaluate(currentThreadName).error.message);
+					break;
+				}
 			}
 
-			//Change WorkflowTrigger runningFlag to FALSE
-			getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
 
-			// Set the end for history
-			workflowTriggerHistory.setEndTime(now());
+			// Update the workflowTriggerHistory
+			workflowTriggerHistory.setSuccessFlag( true );
+			workflowTriggerHistory.setResponse( "" );
 
-			// Persist the info to the DB
-			workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+		} catch(any e){
+			// Update the workflowTriggerHistory
+			workflowTriggerHistory.setSuccessFlag( false );
+			workflowTriggerHistory.setResponse( e.Message );
+		}
 
-			// Update the taskSechedules nextRunDateTime
-			workflowTrigger.setNextRunDateTime( workflowTrigger.getSchedule().getNextRunDateTime(DateFormat(DateAdd('yyyy', -1, now()),'mmmm dd, yyyy'), DateFormat(DateAdd('yyyy', 1, now()),'mmmm dd, yyyy') ) );
+		//Change WorkflowTrigger runningFlag to FALSE
+		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=false);
 
-			// Flush the DB again to persist all updates
-			getHibachiDAO().flushORMSession();
+		// Set the end for history
+		workflowTriggerHistory.setEndTime(now());
+
+		// Persist the info to the DB
+		workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
+
+		// Update the taskSechedules nextRunDateTime
+		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(DateFormat(DateAdd('yyyy', -1, now()),'mmmm dd, yyyy'), DateFormat(DateAdd('yyyy', 1, now()),'mmmm dd, yyyy') ) );
+
+		// Flush the DB again to persist all updates
+		getHibachiDAO().flushORMSession();
 
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, required any entity){
 		var actionSuccess = false;
-
 
 		switch (workflowTaskAction.getActionType()) {
 			// EMAIL

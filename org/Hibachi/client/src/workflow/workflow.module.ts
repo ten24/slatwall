@@ -14,6 +14,7 @@ import {SWWorkflowTaskActions} from "./components/swworkflowtaskactions";
 import {SWWorkflowTasks} from "./components/swworkflowtasks";
 import {SWWorkflowTrigger} from "./components/swworkflowtrigger";
 import {SWWorkflowTriggers} from "./components/swworkflowtriggers";
+import {SWWorkflowTriggerHistory} from "./components/swworkflowtriggerHistory";
 
 //filters
 
@@ -35,6 +36,7 @@ var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).c
 .directive('swWorkflowTasks',SWWorkflowTasks.Factory())
 .directive('swWorkflowTrigger',SWWorkflowTrigger.Factory())
 .directive('swWorkflowTriggers',SWWorkflowTriggers.Factory())
+.directive('swWorkflowTriggerHistory',SWWorkflowTriggerHistory.Factory())
 //filters
 
 ;

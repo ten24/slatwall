@@ -69,26 +69,16 @@ Notes:
 	</cffunction>
 
 	<cffunction name="getDueWorkflows" access="public" returntype="array">
-		<cfreturn ORMExecuteQuery('FROM SlatwallWorkflowTrigger where (nextRunDateTime IS NULL OR nextRunDateTime <= CURRENT_TIMESTAMP())')/>
-		<!---<cfquery name="local.workflows">--->
-			<!---SELECT--->
-                <!---SwWorkflowTrigger.workflowID,--->
-                <!---SwWorkflowTrigger.workflowTriggerID--->
-			<!---FROM--->
-                <!---SwWorkflowTrigger--->
-			<!---INNER JOIN--->
-				<!---SwWorkflow ON SwWorkflowTrigger.workflowID = SwWorkflow.workflowID--->
-			<!---WHERE--->
-				<!---SwWorkflow.activeflag = 1--->
-			<!---AND--->
-				<!---(--->
-					<!---SwWorkflowTrigger.nextRunDateTime IS NULL--->
-				<!---OR--->
-					<!---SwWorkflowTrigger.nextRunDateTime <= 	<cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" >--->
-				<!---)--->
-		<!---</cfquery>--->
+		<cfreturn ORMExecuteQuery('FROM
+										SlatwallWorkflowTrigger
+									WHERE
+										triggerType = :triggerType
+									AND
+										(runningFlag is NULL or runningFlag = false)
+									AND
+										(nextRunDateTime IS NULL OR nextRunDateTime <= CURRENT_TIMESTAMP())
+								',{triggerType='Schedule'})/>
 
-		<!---<cfreturn local.workflows/>--->
 	</cffunction>
 
 	<cffunction name="updateWorkflowTriggerRunning">

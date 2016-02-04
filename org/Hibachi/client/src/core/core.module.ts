@@ -817,6 +817,7 @@ var coremodule = angular.module('hibachi.core',[
                         savePromise.then(function(response){
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
+                                console.warn('SAVED', returnedIDs, modifiedData.objectLevel)
                                 _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
                                 deferred.resolve(returnedIDs);
                             }else{
@@ -891,19 +892,19 @@ var coremodule = angular.module('hibachi.core',[
                             if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                                 var inputField = form[key];
 
-                                console.log('FIELD', key, form[key].$modelValue);
-                                if(form[key].$modelValue && form[key].$modelValue.length){
+                                if(inputField.$modelValue){
                                     inputField.$dirty = true;
                                 }
-                                if(angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
+                                console.warn('CURRENT', inputField);
 
+                                if(angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
 
                                     if(angular.isDefined(entityInstance.metaData[key])
                                     && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
                                     && entityInstance.metaData[key].hb_formfieldtype === 'json'){
-                                        modifiedData[key] = angular.toJson(form[key].$modelValue);
+                                        modifiedData[key] = angular.toJson(inputField.$modelValue);
                                     }else{
-                                        modifiedData[key] = form[key].$modelValue;
+                                        modifiedData[key] = inputField.$modelValue;
                                     }
                                 }
                             }

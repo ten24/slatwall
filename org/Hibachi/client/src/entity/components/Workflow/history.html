@@ -1,7 +1,2 @@
-<sw-listing-display ng-if="workflow.data.workflowID"
-        data-collection="'WorkflowTriggerHistory'"
-        data-edit="false"
-        data-show-search="true">
-    <sw-listing-filter property-identifier="workflowTrigger.workflow.workflowID" comparison-operator="=" comparison-value="{{workflow.data.workflowID}}"></sw-listing-filter>
-</sw-listing-display>
-<h3 class="text-center" ng-if="!workflow.data.workflowID">No trigger history...</h3>
+<span sw-workflow-trigger-history workflow="workflow"></span>
+

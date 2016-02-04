@@ -52,7 +52,7 @@ class SWActionCallerController{
     public init = ():void =>{
 
         //Check if is NOT a ngRouter
-        if(/![\?&]ng#!/.test(window.location.href)){
+        if(this.utilityService.isAngularRoute()){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
