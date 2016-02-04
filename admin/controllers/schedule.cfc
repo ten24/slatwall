@@ -68,6 +68,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getWorkflowService().runAllWorkflowsByScheduleTrigger();
 		abort;
 	}
+
+	public void function executeWorkflowTrigger(required any rc){
+		if(structKeyExists(arguments.rc, 'workflowTriggerID')){
+			getWorkflowService().runWorkflowTriggerById(arguments.rc.workflowTriggerID);
+		}
+	}
 	
 	
 	

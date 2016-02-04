@@ -128,18 +128,18 @@ component output="false" accessors="true" extends="HibachiController" {
     public any function getDetailTabs(required struct rc){
         var detailTabs = [];
         var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & '/org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
-        var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
-        for(var tabFile in tabFilesList){
-            var tab = {};
-            tab['tabName']='#tabFile.name#';
-            if(tabFile.name == 'basic.html'){
-                tab['openTab'] = true;
-            }else{
-                tab['openTab'] = false;
-            }
-            arrayAppend(detailTabs,tab);
-        }    
-        
+	    if(FileExists(tabsDirectory & 'tabsConfig.json')){
+		    detailTabs =  DeserializeJSON(FileRead(tabsDirectory & 'tabsConfig.json'));
+	    }else{
+		    var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
+		    for(var tabFile in tabFilesList){
+			    var tab = {
+				    "tabName" = tabFile.name,
+				    "openTab" = (tabFile.name == 'basic.html')
+			    };
+			    arrayAppend(detailTabs,tab);
+		    }
+	    }
         arguments.rc.apiResponse.content['data'] = detailTabs;
     }
     

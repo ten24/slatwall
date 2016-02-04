@@ -123,13 +123,21 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 
-	public any function runAllWorkflowsByScheduleTrigger() {
+	public void function runWorkflowTriggerById(required string workflowTriggerID){
 
+	}
+	public any function runAllWorkflowsByScheduleTrigger() {
 		var workflowTriggers = getWorkflowDAO().getDueWorkflows();
+		for(var workflowTrigger in workflowTriggers) {
+			runWorkflowsByScheduleTrigger(workflowTrigger);
+		}
+	}
+
+	public any function runWorkflowsByScheduleTrigger(workflowTriggers) {
 
 //writeDump(var=workflowTriggers, top=1); abort;
 		// Loop Due workflowTriggers
-		for(var workflowTrigger in workflowTriggers) {
+
 
 			// Create a new workflowTriggerHistory to be logged
 			var workflowTriggerHistory = this.newWorkflowTriggerHistory();
@@ -205,7 +213,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			// Flush the DB again to persist all updates
 			getHibachiDAO().flushORMSession();
-		}
+
 	}
 
 	private boolean function executeTaskAction(required any workflowTaskAction, required any entity){
