@@ -73,7 +73,12 @@
 							<th></th>
 						</tr>
 					</thead>
-					<tbody ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId">
+					<tbody 	ng-repeat="orderItem in orderItems" 
+							sw-order-item data-order-item="orderItem" 
+							data-attributes="attributes" 
+							data-order-id="orderId"
+							data-paginator="paginator"
+					>
 						<!-- Begin Merchandise Row -->
 					</tbody>
 				</table>

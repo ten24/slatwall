@@ -527,7 +527,7 @@ component extends="HibachiService" accessors="true" {
 
 				// Set up new bundle data
 				var newBundleData = {
-					skuCode = "#product.getProductCode()#-#arrayLen(product.getSkus()) + 1#",
+					skuCode = "#product.getProductCode()#-#product.getNextSkuCodeCount()#",
 					price = 0,
 					skus = skus
 				};
@@ -1086,7 +1086,52 @@ component extends="HibachiService" accessors="true" {
 		var collectionList = getHibachiDAO().getCollectionList(argumentCollection=arguments);
 		return collectionList;
 	}
-
+    
+    /**
+     * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
+     * and a 'profile name' that determines the size of that image.
+     * getResizedImageByProfileName
+     * profileName="xlarge" 
+     * skuIDList = "8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5"
+     * ...should return three paths.
+     */
+    public any function getResizedImageByProfileName(any profileName="", any skuIDList="") {
+        
+        var imageHeight = 60;
+        var imageWidth  = 60;
+        
+        if(arguments.profileName == "medium"){
+            imageHeight = 90;
+            imageWidth  = 90;
+        }else if (arguments.profileName == "large"){
+            imageHeight = 150;
+            imageWidth  = 150;
+        }
+        else if (arguments.profileName == "xlarge"){
+            imageHeight = 250;
+            imageWidth  = 250;
+        }
+        else if (arguments.profileName == "listing"){
+            imageHeight = 263;
+            imageWidth  = 212;
+        }
+       
+        var resizedImagePaths = [];
+        var skus = [];
+        
+        //smart list to load up sku array
+        var skuSmartList = getService('skuService').getSkuSmartList();
+        skuSmartList.addInFilter('skuID', arguments.skuIDList);
+        
+        if( skuSmartList.getRecordsCount() > 0){
+            var skus = skuSmartList.getRecords();
+            
+            for  (var sku in skus){
+                ArrayAppend(resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+            }
+        }
+        return resizedImagePaths;
+    }    
 	// ====================  END: Smart List Overrides ========================
 
 	// ====================== START: Get Overrides ============================

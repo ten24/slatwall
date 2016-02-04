@@ -81,7 +81,7 @@
 	        var _this = this;
 	        this._resourceBundle = {};
 	        this.getData = function () {
-	            return _this.$http.get('index.cfm/?' + hibachiConfig.action + '=api:main.getConfig')
+	            return _this.$http.get('/index.cfm/?' + hibachiConfig.action + '=api:main.getConfig')
 	                .then(function (resp) {
 	                core_module_1.coremodule.constant('appConfig', resp.data.data);
 	                localStorage.setItem('appConfig', JSON.stringify(resp.data.data));
@@ -144,7 +144,7 @@
 	                    && localStorage.getItem('appConfig') !== 'undefined'
 	                    && localStorage.getItem('resourceBundles')
 	                    && localStorage.getItem('resourceBundles') !== 'undefined') {
-	                    return $http.get('index.cfm/?' + hibachiConfig.action + '=api:main.getInstantiationKey')
+	                    return $http.get('/index.cfm/?' + hibachiConfig.action + '=api:main.getInstantiationKey')
 	                        .then(function (resp) {
 	                        var appConfig = JSON.parse(localStorage.getItem('appConfig'));
 	                        if (resp.data.data === appConfig.instantiationKey) {
@@ -2079,74 +2079,165 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var PublicService = (function () {
+	    ///index.cfm/api/scope/
 	    //@ngInject
-	    function PublicService($http, $q) {
+	    function PublicService($http, $q, $window) {
 	        var _this = this;
 	        this.$http = $http;
 	        this.$q = $q;
+	        this.$window = $window;
 	        this.formType = { 'Content-Type': "application/x-www-form-urlencoded" };
 	        this.ajaxRequestParam = "?ajaxRequest=1";
-	        this.baseUrl = "";
+	        this.loading = false;
+	        this.baseActionPath = "";
+	        this.months = [{ name: '01 - JAN', value: 1 }, { name: '02 - FEB', value: 2 }, { name: '03 - MAR', value: 3 }, { name: '04 - APR', value: 4 }, { name: '05 - MAY', value: 5 }, { name: '06 - JUN', value: 6 }, { name: '07 - JUL', value: 7 }, { name: '08 - AUG', value: 8 }, { name: '09 - SEP', value: 9 }, { name: '10 - OCT', value: 10 }, { name: '11 - NOV', value: 11 }, { name: '12 - DEC', value: 12 }];
+	        this.years = [];
+	        this.shippingAddress = "";
+	        this.billingAddress = "";
+	        /** grab the valid expiration years for credit cards  */
+	        this.getExpirationYears = function () {
+	            var baseDate = new Date();
+	            var today = baseDate.getFullYear();
+	            var start = today;
+	            for (var i = 0; i <= 5; i++) {
+	                console.log("I:", start + i);
+	                _this.years.push(start + i);
+	            }
+	            console.log("This Years", _this.years);
+	        };
 	        /** accessors for account */
-	        this.getAccount = function (refresh) {
-	            var urlBase = _this.baseUrl + 'getAccount/' + _this.ajaxRequestParam + "&returnJsonObject=cart,account";
-	            var deferred = _this.$q.defer();
-	            _this.$http.get(urlBase).success(function (result) {
-	                _this.account = result;
-	                console.log("Account:", _this.account);
-	                deferred.resolve(result);
-	            }).error(function (reason) {
-	                deferred.reject(reason);
-	            });
-	            return deferred.promise;
+	        this.getAccount = function () {
+	            var urlBase = '/index.cfm/api/scope/getAccount/';
+	            return _this.getData(urlBase, "account", "");
 	        };
 	        /** accessors for cart */
-	        this.getCart = function (refresh) {
-	            var urlBase = _this.baseUrl + 'getCart/' + _this.ajaxRequestParam;
+	        this.getCart = function () {
+	            var urlBase = '/index.cfm/api/scope/getCart/';
+	            return _this.getData(urlBase, "cart", "");
+	        };
+	        /** accessors for countries */
+	        this.getCountries = function () {
+	            var urlBase = '/index.cfm/api/scope/getCountries/';
+	            return _this.getData(urlBase, "countries", "");
+	        };
+	        /** accessors for states */
+	        this.getStates = function (countryCode) {
+	            if (!angular.isDefined(countryCode))
+	                countryCode = "US";
+	            var urlBase = '/index.cfm/api/scope/getStateCodeOptionsByCountryCode/';
+	            return _this.getData(urlBase, "states", "&countryCode=" + countryCode);
+	        };
+	        /** accessors for states */
+	        this.getAddressOptions = function (countryCode) {
+	            if (!angular.isDefined(countryCode))
+	                countryCode = "US";
+	            var urlBase = '/index.cfm/api/scope/getAddressOptionsByCountryCode/';
+	            return _this.getData(urlBase, "addressOptions", "&countryCode=" + countryCode);
+	        };
+	        /** accessors for states */
+	        this.getData = function (url, setter, param) {
+	            _this.loading = true;
+	            var urlBase = url + _this.ajaxRequestParam + param;
 	            var deferred = _this.$q.defer();
 	            _this.$http.get(urlBase).success(function (result) {
-	                _this.cart = result;
-	                console.log("Cart:", _this.cart);
+	                //don't need account and cart for anything other than account and cart calls.
+	                if (setter.indexOf('account') == -1 || setter.indexOf('cart') == -1) {
+	                    if (result['account']) {
+	                        delete result['account'];
+	                    }
+	                    if (result['cart']) {
+	                        delete result['cart'];
+	                    }
+	                    console.log("Result Sans", result);
+	                }
+	                _this[setter] = result;
+	                _this.loading = false;
 	                deferred.resolve(result);
 	            }).error(function (reason) {
+	                _this.loading = false;
 	                deferred.reject(reason);
 	            });
 	            return deferred.promise;
 	        };
+	        /** sets the current shipping address */
+	        this.setShippingAddress = function (shippingAddress) {
+	            _this.shippingAddress = shippingAddress;
+	        };
+	        /** sets the current shipping address */
+	        this.setBillingAddress = function (billingAddress) {
+	            _this.billingAddress = billingAddress;
+	        };
 	        /** this is the generic method used to call all server side actions.
-	            *  @param action {string} the name of the action (method) to call in the public service.
-	            *  @param data   {object} the params as key value pairs to pass in the post request.
-	            *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
-	            */
+	        *  @param action {string} the name of the action (method) to call in the public service.
+	        *  @param data   {object} the params as key value pairs to pass in the post request.
+	        *  @return a deferred promise that resolves server response or error. also includes updated account and cart.
+	        */
 	        this.doAction = function (action, data) {
+	            _this.loading = true;
+	            var method = "";
+	            if (!action) {
+	                throw "Action is required exception";
+	            }
+	            if (action != undefined && data == undefined) {
+	                method = "get";
+	            }
+	            else {
+	                method = "post";
+	            }
+	            //check if the caller is defining a path to hit, otherwise use the public scope.
+	            if (action.indexOf("/") !== -1) {
+	                _this.baseActionPath = action; //any path
+	            }
+	            else {
+	                _this.baseActionPath = "/index.cfm/api/scope/" + action; //public path
+	            }
 	            _this.hasErrors = false;
 	            _this.success = false;
 	            _this.errors = undefined;
 	            _this.header = { headers: _this.formType };
 	            var deferred = _this.$q.defer();
-	            if (!action) {
-	                throw "Action is required exception";
+	            var urlBase = _this.baseActionPath + _this.ajaxRequestParam;
+	            if (method == "post") {
+	                data.returnJsonObjects = "cart,account";
+	                //post
+	                var promise = _this.$http.post(urlBase, _this.toFormParams(data), _this.header).then(function (result) {
+	                    /** update the account and the cart */
+	                    _this.account = result.data.account;
+	                    _this.cart = result.data.cart;
+	                    //if the action that was called was successful, then success is true.
+	                    if (result.data.successfulActions.length) {
+	                        _this.success = true;
+	                        for (var action in result.data.successfulActions) {
+	                            if (result.data.successfulActions[action].indexOf('public:cart.placeOrder') !== -1) {
+	                                _this.window.location.href = _this.confirmationUrl;
+	                                console.log(_this.window);
+	                            }
+	                        }
+	                    }
+	                    if (result.data.failureActions.length) {
+	                        _this.hasErrors = true;
+	                        console.log("Errors:", result.data.errors);
+	                    }
+	                    _this.loading = false;
+	                    deferred.resolve(result);
+	                }).catch(function (response) {
+	                    console.log("There was an error making this http call", response.status, response.data);
+	                    _this.loading = false;
+	                    deferred.reject(response);
+	                });
+	                return deferred.promise;
 	            }
-	            data.returnJsonObjects = "cart,account";
-	            var urlBase = _this.baseUrl + action + _this.ajaxRequestParam;
-	            var promise = _this.$http.post(urlBase, _this.toFormParams(data), _this.header).then(function (result) {
-	                /** update the account and the cart */
-	                _this.account = result.data.account;
-	                _this.cart = result.data.cart;
-	                //if the action that was called was successful, then success is true.
-	                if (result.data.successfulActions.length) {
-	                    _this.success = true;
-	                }
-	                if (result.data.failureActions.length) {
-	                    _this.hasErrors = true;
-	                    console.log("Errors:", result.data.errors);
-	                }
-	                deferred.resolve(result);
-	            }).catch(function (response) {
-	                console.log("There was an error making this http call", response.status, response.data);
-	                deferred.reject(response);
-	            });
-	            return deferred.promise;
+	            else {
+	                //get
+	                var url = urlBase + "&returnJsonObject=cart,account";
+	                var deferred = _this.$q.defer();
+	                _this.$http.get(url).success(function (result) {
+	                    deferred.resolve(result);
+	                }).error(function (reason) {
+	                    deferred.reject(reason);
+	                });
+	                return deferred.promise;
+	            }
 	        };
 	        /** used to turn data into a correct format for the post */
 	        this.toFormParams = function (data) {
@@ -2170,53 +2261,13 @@
 	            }
 	            return {};
 	        };
-	        /**
-	         * Helper method to get orderitems
-	         */
-	        this.getOrderItems = function () {
-	            var orderItems = [];
-	            if (_this.cart.orderitems !== undefined && _this.cart.orderitems.length) {
-	                for (var item in _this.cart.orderitems) {
-	                    orderItems.push(item);
-	                }
-	            }
-	            return orderItems;
-	        };
-	        /**
-	         * Helper method to get order fulfillments
-	         */
-	        this.getOrderFulfillments = function () {
-	            var orderFulfillments = [];
-	            if (_this.cart.orderfulfillments !== undefined && _this.cart.orderfulfillments.length) {
-	                for (var item in _this.cart.orderfulfillments) {
-	                    orderFulfillments.push(item);
-	                }
-	            }
-	            return orderFulfillments;
-	        };
-	        /**
-	         * Helper method to get promotion codes
-	         */
-	        this.getPromotionCodeList = function () {
-	            if (_this.cart && _this.cart.promotionCodeList !== undefined) {
-	                return _this.cart.promotionCodeList;
-	            }
-	        };
-	        /**
-	         * Helper method to get promotion codes
-	         */
-	        this.getPromotionCodes = function () {
-	            var promoCodes = [];
-	            if (_this.cart && _this.cart.promotionCodes.length) {
-	                for (var p in _this.cart.promotionCodes) {
-	                    promoCodes.push(_this.cart.promotionCodes[p].promotionCode);
-	                }
-	                return promoCodes;
-	            }
-	        };
-	        this.baseUrl = "/index.cfm/api/scope/";
+	        this.baseActionPath = "/index.cfm/api/scope/"; //default path
+	        this.confirmationUrl = "/order-confirmation";
 	        this.$http = $http;
 	        this.$q = $q;
+	        this.getExpirationYears();
+	        this.window = $window;
+	        console.log("Window: ", $window);
 	    }
 	    return PublicService;
 	})();
@@ -3685,14 +3736,14 @@
 	        this.init = function () {
 	            //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
 	            _this.type = _this.type || 'link';
-	            if (_this.type == "button") {
+	            if (_this.type == "button" || _this.type == "submit" || _this.isPublic) {
 	                //handle submit.
 	                /** in order to attach the correct controller to local vm, we need a watch to bind */
-	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.frmController; }, function (newValue, oldValue) {
+	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.formController; }, function (newValue, oldValue) {
 	                    if (newValue !== undefined) {
 	                        _this.formCtrl = newValue;
+	                        unbindWatcher();
 	                    }
-	                    unbindWatcher();
 	                });
 	            }
 	            //			this.actionItem = this.getActionItem();
@@ -3717,6 +3768,7 @@
 	            </cfif>
 	            */
 	        };
+	        /** submit function delegates back to the form */
 	        this.submit = function () {
 	            _this.formCtrl.submit(_this.action);
 	        };
@@ -3875,10 +3927,7 @@
 	})();
 	exports.SWActionCallerController = SWActionCallerController;
 	var SWActionCaller = (function () {
-	    function SWActionCaller(partialsPath, utiltiyService, $hibachi) {
-	        this.partialsPath = partialsPath;
-	        this.utiltiyService = utiltiyService;
-	        this.$hibachi = $hibachi;
+	    function SWActionCaller() {
 	        this.restrict = 'EA';
 	        this.scope = {};
 	        this.bindToController = {
@@ -3897,28 +3946,25 @@
 	            disabledtext: "@",
 	            modal: "=",
 	            modalFullWidth: "=",
-	            id: "@"
+	            id: "@",
+	            isPublic: "@?"
 	        };
 	        this.controller = SWActionCallerController;
 	        this.controllerAs = "swActionCaller";
-	        this.link = function (scope, element, attrs) {
+	        this.require = "^?swForm";
+	        this.link = function (scope, element, attrs, formController) {
+	            if (angular.isDefined(formController)) {
+	                scope.formController = formController;
+	            }
 	        };
 	    }
 	    SWActionCaller.Factory = function () {
-	        var directive = function (partialsPath, utiltiyService, $hibachi) {
-	            return new SWActionCaller(partialsPath, utiltiyService, $hibachi);
-	        };
-	        directive.$inject = [
-	            'partialsPath',
-	            'utilityService',
-	            '$hibachi'
-	        ];
+	        var directive = function () { return new SWActionCaller(); };
 	        return directive;
 	    };
 	    return SWActionCaller;
 	})();
 	exports.SWActionCaller = SWActionCaller;
-	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
 
 
 /***/ },
@@ -12248,7 +12294,19 @@
 	    function SWFFormFieldController($scope) {
 	        this.$scope = $scope;
 	        var vm = this;
-	        vm.propertyDisplay = this.propertyDisplay;
+	        if (this.propertyDisplay) {
+	            vm.propertyDisplay = this.propertyDisplay;
+	        }
+	        else {
+	            vm.propertyDisplay = {
+	                name: vm.name,
+	                class: vm.class,
+	                errorClass: vm.errorClass,
+	                type: vm.type,
+	                object: vm.object,
+	                propertyIdentifier: vm.propertyIdentifier
+	            };
+	        }
 	    }
 	    /**
 	        * Handles the logic for the frontend version of the property display.
@@ -12262,12 +12320,17 @@
 	var SWFFormField = (function () {
 	    function SWFFormField(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.restrict = "E";
-	        this.require = "^swfPropertyDisplay";
+	        this.require = "^?swfPropertyDisplay";
 	        this.controller = SWFFormFieldController;
 	        this.controllerAs = "swfFormField";
 	        this.scope = true;
 	        this.bindToController = {
-	            propertyDisplay: "=?"
+	            propertyDisplay: "=?",
+	            propertyIdentifier: "@?",
+	            name: "@?",
+	            class: "@?",
+	            errorClass: "@?",
+	            type: "@?"
 	        };
 	        this.link = function (scope, element, attrs, formController, transcludeFn) {
 	        };
@@ -12319,7 +12382,7 @@
 	        }
 	        this.isProcessForm = this.isProcessForm || "false";
 	        if (this.isProcessForm == "true") {
-	            this.handleSelfInspection(this);
+	            this.handleForm(this, $scope);
 	        }
 	    }
 	    /**
@@ -12328,11 +12391,11 @@
 	     * method that can be called by any subclasses that inject formCtrl. On submit,
 	     * this class will attach any errors to the correspnding form element.
 	     */
-	    SWFormController.prototype.handleSelfInspection = function (context) {
+	    SWFormController.prototype.handleForm = function (context, $scope) {
 	        var _this = this;
-	        console.log("Context", context);
+	        //console.log("Context", context);
 	        /** local variables */
-	        this.processObject = this.object || "";
+	        this.processObject = this.name || "";
 	        var vm = context;
 	        vm.hiddenFields = this.hiddenFields;
 	        vm.entityName = this.entityName;
@@ -12364,10 +12427,10 @@
 	        if (this.processObject == undefined || vm.entityName == undefined) {
 	            throw ("ProcessObject Undefined Exception");
 	        }
-	        try {
-	            vm.actionFn = this.$hibachi.newEntity(vm.processObject);
+	        if (angular.isDefined(this.object) && this.object.name) {
+	            vm.actionFn = this.object;
 	        }
-	        catch (e) {
+	        else {
 	            vm.postOnly = true;
 	        }
 	        /** We use these for our models */
@@ -12375,10 +12438,11 @@
 	        /** returns all the data from the form by iterating the form elements */
 	        vm.getFormData = function () {
 	            var _this = this;
-	            angular.forEach(vm["formCtrl"][vm.processObject], function (val, key) {
+	            //console.log("Form Data:", this.object);
+	            angular.forEach(this.object, function (val, key) {
 	                /** Check for form elements that have a name that doesn't start with $ */
-	                if (key.toString().indexOf('$') == -1) {
-	                    _this.formData[key] = val.$viewValue || val.$modelValue || val.$rawModelValue;
+	                if (angular.isString(val)) {
+	                    _this.formData[key] = val;
 	                }
 	            });
 	            return vm.formData || "";
@@ -12389,16 +12453,20 @@
 	          ***/
 	        vm.parseErrors = function (result) {
 	            var _this = this;
-	            if (angular.isDefined(result.errors) && result.errors.length != 0) {
+	            //console.log("Resultant Errors: ", result);
+	            if (angular.isDefined(result.errors) && result.errors) {
 	                angular.forEach(result.errors, function (val, key) {
-	                    if (angular.isDefined(vm["formCtrl"][vm.processObject][key])) {
-	                        var primaryElement = _this.$element.find("[error-for='" + key + "']");
-	                        vm.$timeout(function () {
-	                            primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
-	                        }, 0);
-	                        vm["formCtrl"][vm.processObject][key].$setValidity(key, false); //set field invalid
-	                        vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
-	                    }
+	                    //console.log("Parsing Rule: ", result.errors[key]);
+	                    //console.log(this.object, key, this.object[key]);
+	                    //console.log("Yes, is defined...");
+	                    var primaryElement = _this.$element.find("[error-for='" + key + "']");
+	                    //console.log("Primary Element: ", primaryElement);
+	                    vm.$timeout(function () {
+	                        //console.log("Appending");
+	                        primaryElement.append("<span name='" + key + "Error'>" + result.errors[key] + "</span>");
+	                    }, 0);
+	                    //vm["formCtrl"][vm.processObject][key].$setValidity(key, false);//set field invalid
+	                    //vm["formCtrl"][vm.processObject][key].$setPristine(key, false);
 	                }, this);
 	            }
 	        };
@@ -12446,6 +12514,10 @@
 	        vm.update = function (params) {
 	            //stub
 	        };
+	        /** clears this directive on event */
+	        vm.clear = function (params) {
+	            //stub
+	        };
 	        vm.parseEvents = function (str, evntType) {
 	            if (str == undefined)
 	                return;
@@ -12475,7 +12547,7 @@
 	            _this.$timeout(function () {
 	                var errorElements = _this.$element.find("[error-for]");
 	                errorElements.empty();
-	                vm["formCtrl"][vm.processObject].$setPristine(true);
+	                //vm["formCtrl"][vm.processObject].$setPristine(true);
 	            }, 0);
 	        };
 	        /** iterates through the factory submitting data */
@@ -12485,6 +12557,7 @@
 	            }
 	            var submitFn = vm.hibachiScope.doAction;
 	            vm.formData = vm.formData || {};
+	            //console.log("Calling Final Submit");
 	            submitFn(submitFunction, vm.formData).then(function (result) {
 	                if (vm.hibachiScope.hasErrors) {
 	                    vm.parseErrors(result.data);
@@ -12496,6 +12569,7 @@
 	                    observerService.notify("onSuccess", { "caller": _this.processObject, "events": vm.events.events || "" });
 	                }
 	            }, angular.noop);
+	            //console.log("Leaving iterateFactory.");
 	        };
 	        /** does either a single or multiple actions */
 	        vm.doAction = function (actionObject) {
@@ -13265,6 +13339,7 @@
 	    //@ngInject
 	    function SWFPropertyDisplayController($scope) {
 	        this.$scope = $scope;
+	        this.optionValues = [];
 	        var vm = this;
 	        vm.processObject = {};
 	        vm.valueObjectProperty = this.valueObjectProperty;
@@ -13277,10 +13352,9 @@
 	        vm.labelClass = this.labelClass || "";
 	        vm.name = this.name || "unnamed";
 	        vm.options = this.options;
-	        vm.optionValues = this.optionValues;
+	        vm.valueOptions = this.valueOptions;
 	        vm.errorClass = this.errorClass;
 	        vm.errorText = this.errorText;
-	        vm.formCtrl = {};
 	        vm.object = this.object; //this is the process object
 	        vm.propertyIdentifier = this.propertyIdentifier; //this is the property
 	        vm.loader = this.loader;
@@ -13295,10 +13369,24 @@
 	                    name: "",
 	                    value: ""
 	                };
-	                newOption.name = o.name;
-	                newOption.value = o.value;
-	                vm.optionValues.push(newOption);
+	                newOption.name = o;
+	                newOption.value = o;
+	                this.optionValues.push(newOption);
 	            }, vm);
+	        }
+	        if (angular.isDefined(vm.valueOptions) && angular.isObject(vm.valueOptions)) {
+	            vm.optionsValues = [];
+	            angular.forEach(vm.valueOptions, function (o) {
+	                var newOption = {
+	                    name: "",
+	                    value: ""
+	                };
+	                if (angular.isDefined(o.name) && angular.isDefined(o.value)) {
+	                    newOption.name = o.name;
+	                    newOption.value = o.value;
+	                    vm.optionValues.push(newOption);
+	                }
+	            });
 	        }
 	        /** handle turning the options into an array of objects */
 	        /** handle setting the default value for the yes / no element  */
@@ -13320,9 +13408,10 @@
 	            optionValues: vm.optionValues,
 	            edit: vm.editting,
 	            title: vm.title,
-	            value: vm.value,
+	            value: vm.value || "",
 	            errorText: vm.errorText,
 	        };
+	        //console.log("Property Display", this.propertyDisplay);
 	    }
 	    return SWFPropertyDisplayController;
 	})();
@@ -13348,7 +13437,9 @@
 	            hint: "@?",
 	            valueObject: "=?",
 	            valueObjectProperty: "=?",
+	            propertyIdentifier: "@?",
 	            options: "@?",
+	            valueOptions: "=?",
 	            fieldAttributes: "@?",
 	            object: "=",
 	            label: "@?",
@@ -17811,13 +17902,15 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItem = (function () {
+	    //@ngInject
 	    function SWOrderItem($log, $compile, $http, $templateCache, $hibachi, orderItemPartialsPath, slatwallPathBuilder) {
 	        return {
 	            restrict: "A",
 	            scope: {
 	                orderItem: "=",
 	                orderId: "@",
-	                attributes: "="
+	                attributes: "=",
+	                paginator: "=?"
 	            },
 	            templateUrl: slatwallPathBuilder.buildPartialsPath(orderItemPartialsPath) + "orderitem.html",
 	            link: function (scope, element, attr) {
@@ -18162,6 +18255,7 @@
 	                    var deletePromise = scope.orderItem.$$delete();
 	                    deletePromise.then(function () {
 	                        delete scope.orderItem;
+	                        scope.paginator.getCollection();
 	                    });
 	                };
 	                /**
@@ -18374,6 +18468,7 @@
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWOrderItems = (function () {
+	    //@ngInject
 	    function SWOrderItems($log, $timeout, $location, $hibachi, collectionConfigService, formService, orderItemPartialsPath, slatwallPathBuilder, paginationService) {
 	        return {
 	            restrict: 'E',
