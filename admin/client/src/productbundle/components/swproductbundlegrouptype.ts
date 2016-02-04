@@ -75,6 +75,7 @@ class SWProductBundleGroupType{
 				 */
 				$scope.productBundleGroupTypes.setAdding = function(){
                     $scope.productBundleGroupTypes.$$adding = !$scope.productBundleGroupTypes.$$adding;
+                    
                     if(!$scope.productBundleGroupTypes.$$adding){
                         var productBundleGroupType = $hibachi.newType();
                         var parentType = $hibachi.newType();
@@ -163,6 +164,8 @@ class SWProductBundleGroupType{
 				 * Saves product bundle group type
 				 */
 				$scope.saveProductBundleGroupType = function(){
+                    //insure that the search text gets picked up by the save
+                    $scope.productBundleGroup.data.productBundleGroupType.forms["form.addProductBundleGroupType"].typeName.$setDirty(); 
                     $scope.productBundleGroupTypeSaving = true;
                     //Gets the promise from save                    
                     var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
