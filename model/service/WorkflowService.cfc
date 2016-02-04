@@ -124,7 +124,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 
 	public void function runWorkflowTriggerById(required string workflowTriggerID){
-
+		runWorkflowsByScheduleTrigger(getHibachiScope().getEntity('WorkflowTrigger', arguments.workflowTriggerID));
 	}
 
 	public any function runAllWorkflowsByScheduleTrigger() {
@@ -379,7 +379,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 			getHibachiCacheService().resetCachedKey('workflowDAO_getWorkflowTriggerEventsArray');
 		}
-		
+
 		return deleteResult;
 	}
 	

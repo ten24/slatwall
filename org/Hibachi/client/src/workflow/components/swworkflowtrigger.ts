@@ -9,14 +9,16 @@ class SWWorkflowTrigger{
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            collectionConfigService
+            collectionConfigService,
+            $http
 		)=> new SWWorkflowTrigger(
 			$log,
 			$hibachi,
 			metadataService,
 			workflowPartialsPath,
 			hibachiPathBuilder,
-            collectionConfigService
+            collectionConfigService,
+            $http
 		);
 		directive.$inject = [
 			'$log',
@@ -24,7 +26,8 @@ class SWWorkflowTrigger{
 			'metadataService',
 			'workflowPartialsPath',
 			'hibachiPathBuilder',
-            'collectionConfigService'
+            'collectionConfigService',
+            '$http'
 		];
 		return directive;
 	}
@@ -33,8 +36,9 @@ class SWWorkflowTrigger{
 		$hibachi,
 		metadataService,
 		workflowPartialsPath,
-			hibachiPathBuilder,
-        collectionConfigService
+        hibachiPathBuilder,
+        collectionConfigService,
+        $http
 	){
 		return {
 			restrict: 'A',
@@ -72,6 +76,22 @@ class SWWorkflowTrigger{
 
                     });
 				};
+
+
+
+
+
+                var executingTrigger = false;
+                scope.executeWorkflowTrigger = function(workflowTrigger){
+                    if(executingTrigger) return;
+                    executingTrigger = true;
+
+                    var appConfig = $hibachi.getConfig();
+                    var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID;
+                    $http.get(urlString).finally(function(){
+                        executingTrigger = false;
+                    })
+                };
 
 				/**
 				 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.

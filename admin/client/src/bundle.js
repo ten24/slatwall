@@ -1909,6 +1909,7 @@
 	                            savePromise.then(function (response) {
 	                                var returnedIDs = response.data;
 	                                if (angular.isDefined(response.SUCCESS) && response.SUCCESS === true) {
+	                                    console.warn('SAVED', returnedIDs, modifiedData.objectLevel);
 	                                    _addReturnedIDs(returnedIDs, modifiedData.objectLevel);
 	                                    deferred.resolve(returnedIDs);
 	                                }
@@ -1972,18 +1973,18 @@
 	                                //$log.debug('key:'+key);
 	                                if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                                    var inputField = form[key];
-	                                    console.log('FIELD', key, form[key].$modelValue);
-	                                    if (form[key].$modelValue && form[key].$modelValue.length) {
+	                                    if (inputField.$modelValue) {
 	                                        inputField.$dirty = true;
 	                                    }
+	                                    console.warn('CURRENT', inputField);
 	                                    if (angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
 	                                        if (angular.isDefined(entityInstance.metaData[key])
 	                                            && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
 	                                            && entityInstance.metaData[key].hb_formfieldtype === 'json') {
-	                                            modifiedData[key] = angular.toJson(form[key].$modelValue);
+	                                            modifiedData[key] = angular.toJson(inputField.$modelValue);
 	                                        }
 	                                        else {
-	                                            modifiedData[key] = form[key].$modelValue;
+	                                            modifiedData[key] = inputField.$modelValue;
 	                                        }
 	                                    }
 	                                }
@@ -2675,6 +2676,9 @@
 	                }
 	            }
 	            return query_string;
+	        };
+	        this.isAngularRoute = function () {
+	            return /![\?&]ng#!/.test(window.location.href);
 	        };
 	        this.ArrayFindByPropertyValue = function (arr, property, value) {
 	            var currentIndex = -1;
@@ -3623,7 +3627,7 @@
 	            };
 	            //check if we are using a service to transform the request
 	            if(angular.isDefined(options.transformRequest)) => {
-	                transformRequest=options.trasformRequest;
+	                transformRequest=options.transformRequest;
 	            }*/
 	            var transformResponse = function (data) {
 	                if (angular.isString(data)) {
@@ -4099,7 +4103,7 @@
 	        this.rbkeyService = rbkeyService;
 	        this.init = function () {
 	            //Check if is NOT a ngRouter
-	            if (/![\?&]ng#!/.test(window.location.href)) {
+	            if (_this.utilityService.isAngularRoute()) {
 	                _this.actionUrl = _this.$hibachi.buildUrl(_this.action, _this.queryString);
 	            }
 	            else {
@@ -5534,6 +5538,7 @@
 	            //add filters
 	            _this.setupColumns();
 	            angular.forEach(_this.filters, function (filter) {
+	                console.warn('FILTER', filter);
 	                _this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator);
 	            });
 	            //add order bys
@@ -7196,19 +7201,19 @@
 	/// <reference path="../../typings/slatwallTypescript.d.ts" />
 	var hibachi_module_1 = __webpack_require__(63);
 	var workflow_module_1 = __webpack_require__(131);
-	var entity_module_1 = __webpack_require__(144);
-	var content_module_1 = __webpack_require__(150);
-	var giftcard_module_1 = __webpack_require__(155);
-	var optiongroup_module_1 = __webpack_require__(166);
-	var orderitem_module_1 = __webpack_require__(169);
-	var product_module_1 = __webpack_require__(176);
-	var productbundle_module_1 = __webpack_require__(178);
+	var entity_module_1 = __webpack_require__(145);
+	var content_module_1 = __webpack_require__(151);
+	var giftcard_module_1 = __webpack_require__(156);
+	var optiongroup_module_1 = __webpack_require__(167);
+	var orderitem_module_1 = __webpack_require__(170);
+	var product_module_1 = __webpack_require__(177);
+	var productbundle_module_1 = __webpack_require__(179);
 	//constant
-	var slatwallpathbuilder_1 = __webpack_require__(184);
+	var slatwallpathbuilder_1 = __webpack_require__(185);
 	//directives
-	var swcurrencyformatter_1 = __webpack_require__(185);
+	var swcurrencyformatter_1 = __webpack_require__(186);
 	//filters
-	var swcurrency_1 = __webpack_require__(186);
+	var swcurrency_1 = __webpack_require__(187);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
@@ -7370,7 +7375,7 @@
 	var validation_module_1 = __webpack_require__(115);
 	var workflow_module_1 = __webpack_require__(131);
 	//directives
-	var swsaveandfinish_1 = __webpack_require__(143);
+	var swsaveandfinish_1 = __webpack_require__(144);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -15072,6 +15077,7 @@
 	var swworkflowtasks_1 = __webpack_require__(140);
 	var swworkflowtrigger_1 = __webpack_require__(141);
 	var swworkflowtriggers_1 = __webpack_require__(142);
+	var swworkflowtriggerHistory_1 = __webpack_require__(143);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
@@ -15086,7 +15092,8 @@
 	    .directive('swWorkflowTaskActions', swworkflowtaskactions_1.SWWorkflowTaskActions.Factory())
 	    .directive('swWorkflowTasks', swworkflowtasks_1.SWWorkflowTasks.Factory())
 	    .directive('swWorkflowTrigger', swworkflowtrigger_1.SWWorkflowTrigger.Factory())
-	    .directive('swWorkflowTriggers', swworkflowtriggers_1.SWWorkflowTriggers.Factory());
+	    .directive('swWorkflowTriggers', swworkflowtriggers_1.SWWorkflowTriggers.Factory())
+	    .directive('swWorkflowTriggerHistory', swworkflowtriggerHistory_1.SWWorkflowTriggerHistory.Factory());
 	exports.workflowmodule = workflowmodule;
 
 
@@ -15934,7 +15941,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTrigger = (function () {
-	    function SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService) {
+	    function SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http) {
 	        return {
 	            restrict: 'A',
 	            replace: true,
@@ -15964,6 +15971,17 @@
 	                        scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTrigger.data.workflow.data.workflowObject);
 	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTrigger.data.workflow.data.workflowObject], scope.workflowTrigger.data.workflow.data.workflowObject);
 	                        scope.workflowTriggers.selectedTrigger = workflowTrigger;
+	                    });
+	                };
+	                var executingTrigger = false;
+	                scope.executeWorkflowTrigger = function (workflowTrigger) {
+	                    if (executingTrigger)
+	                        return;
+	                    executingTrigger = true;
+	                    var appConfig = $hibachi.getConfig();
+	                    var urlString = appConfig.baseURL + '/index.cfm/?' + appConfig.action + '=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID=' + workflowTrigger.data.workflowTriggerID;
+	                    $http.get(urlString).finally(function () {
+	                        executingTrigger = false;
 	                    });
 	                };
 	                /**
@@ -16000,8 +16018,8 @@
 	        };
 	    }
 	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService) {
-	            return new SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService);
+	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http) {
+	            return new SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -16009,7 +16027,8 @@
 	            'metadataService',
 	            'workflowPartialsPath',
 	            'hibachiPathBuilder',
-	            'collectionConfigService'
+	            'collectionConfigService',
+	            '$http'
 	        ];
 	        return directive;
 	    };
@@ -16143,6 +16162,7 @@
 	                        }
 	                        else if (context == "finish") {
 	                            scope.finished = true;
+	                            scope.workflowTriggers.selectedTrigger.hidden = true;
 	                        }
 	                    });
 	                };
@@ -16266,6 +16286,45 @@
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWWorkflowTriggerHistory = (function () {
+	    function SWWorkflowTriggerHistory($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggerhistory.html",
+	            link: function (scope, element, attrs) {
+	                $rootScope.workflowID = scope.workflow.data.workflowID;
+	            }
+	        };
+	    }
+	    SWWorkflowTriggerHistory.Factory = function () {
+	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope) {
+	            return new SWWorkflowTriggerHistory($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$hibachi',
+	            'formService',
+	            'workflowPartialsPath',
+	            'hibachiPathBuilder',
+	            '$rootScope'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTriggerHistory;
+	})();
+	exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
+
+
+/***/ },
+/* 144 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSaveAndFinishController = (function () {
 	    //@ngInject
 	    function SWSaveAndFinishController($hibachi, dialogService, $log) {
@@ -16352,7 +16411,7 @@
 
 
 /***/ },
-/* 144 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
@@ -16366,12 +16425,12 @@
 	// import {FormService} from "./services/formservice";
 	// import {MetaDataService} from "./services/metadataservice";
 	//controllers
-	var otherwisecontroller_1 = __webpack_require__(145);
-	var routercontroller_1 = __webpack_require__(146);
+	var otherwisecontroller_1 = __webpack_require__(146);
+	var routercontroller_1 = __webpack_require__(147);
 	//directives
-	var swdetailtabs_1 = __webpack_require__(147);
-	var swdetail_1 = __webpack_require__(148);
-	var swlist_1 = __webpack_require__(149);
+	var swdetailtabs_1 = __webpack_require__(148);
+	var swdetail_1 = __webpack_require__(149);
+	var swlist_1 = __webpack_require__(150);
 	var core_module_1 = __webpack_require__(12);
 	var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
 	    .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
@@ -16421,7 +16480,7 @@
 
 
 /***/ },
-/* 145 */
+/* 146 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16437,7 +16496,7 @@
 
 
 /***/ },
-/* 146 */
+/* 147 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16465,7 +16524,7 @@
 
 
 /***/ },
-/* 147 */
+/* 148 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16498,7 +16557,7 @@
 
 
 /***/ },
-/* 148 */
+/* 149 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16572,7 +16631,7 @@
 
 
 /***/ },
-/* 149 */
+/* 150 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16619,7 +16678,7 @@
 
 
 /***/ },
-/* 150 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -16627,10 +16686,10 @@
 	//services
 	//filters
 	//directives
-	var swcontentbasic_1 = __webpack_require__(151);
-	var swcontenteditor_1 = __webpack_require__(152);
-	var swcontentlist_1 = __webpack_require__(153);
-	var swcontentnode_1 = __webpack_require__(154);
+	var swcontentbasic_1 = __webpack_require__(152);
+	var swcontenteditor_1 = __webpack_require__(153);
+	var swcontentlist_1 = __webpack_require__(154);
+	var swcontentnode_1 = __webpack_require__(155);
 	var contentmodule = angular.module('hibachi.content', []).config(function () {
 	})
 	    .constant('contentPartialsPath', 'content/components/')
@@ -16642,7 +16701,7 @@
 
 
 /***/ },
-/* 151 */
+/* 152 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16718,7 +16777,7 @@
 
 
 /***/ },
-/* 152 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16778,7 +16837,7 @@
 
 
 /***/ },
-/* 153 */
+/* 154 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17009,7 +17068,7 @@
 
 
 /***/ },
-/* 154 */
+/* 155 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17151,7 +17210,7 @@
 
 
 /***/ },
-/* 155 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -17159,16 +17218,16 @@
 	//modules
 	var core_module_1 = __webpack_require__(12);
 	//controllers
-	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(156);
+	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(157);
 	//directives
-	var swaddorderitemgiftrecipient_1 = __webpack_require__(158);
-	var swgiftcardbalance_1 = __webpack_require__(159);
-	var swgiftcarddetail_1 = __webpack_require__(160);
-	var swgiftcardhistory_1 = __webpack_require__(161);
-	var swgiftcardoverview_1 = __webpack_require__(162);
-	var swgiftcardorderinfo_1 = __webpack_require__(163);
-	var swgiftcardrecipientinfo_1 = __webpack_require__(164);
-	var sworderitemgiftrecipientrow_1 = __webpack_require__(165);
+	var swaddorderitemgiftrecipient_1 = __webpack_require__(159);
+	var swgiftcardbalance_1 = __webpack_require__(160);
+	var swgiftcarddetail_1 = __webpack_require__(161);
+	var swgiftcardhistory_1 = __webpack_require__(162);
+	var swgiftcardoverview_1 = __webpack_require__(163);
+	var swgiftcardorderinfo_1 = __webpack_require__(164);
+	var swgiftcardrecipientinfo_1 = __webpack_require__(165);
+	var sworderitemgiftrecipientrow_1 = __webpack_require__(166);
 	var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -17187,12 +17246,12 @@
 
 
 /***/ },
-/* 156 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(157);
+	var giftrecipient_1 = __webpack_require__(158);
 	var OrderItemGiftRecipientControl = (function () {
 	    //@ngInject
 	    function OrderItemGiftRecipientControl($scope, $hibachi) {
@@ -17234,7 +17293,7 @@
 
 
 /***/ },
-/* 157 */
+/* 158 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17260,12 +17319,12 @@
 
 
 /***/ },
-/* 158 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(157);
+	var giftrecipient_1 = __webpack_require__(158);
 	var SWAddOrderItemRecipientController = (function () {
 	    function SWAddOrderItemRecipientController($hibachi) {
 	        var _this = this;
@@ -17408,7 +17467,7 @@
 
 
 /***/ },
-/* 159 */
+/* 160 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17486,7 +17545,7 @@
 
 
 /***/ },
-/* 160 */
+/* 161 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17544,7 +17603,7 @@
 
 
 /***/ },
-/* 161 */
+/* 162 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17673,7 +17732,7 @@
 
 
 /***/ },
-/* 162 */
+/* 163 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17713,7 +17772,7 @@
 
 
 /***/ },
-/* 163 */
+/* 164 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17772,7 +17831,7 @@
 
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17812,7 +17871,7 @@
 
 
 /***/ },
-/* 165 */
+/* 166 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17919,7 +17978,7 @@
 
 
 /***/ },
-/* 166 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -17928,8 +17987,8 @@
 	var core_module_1 = __webpack_require__(12);
 	//controllers
 	//directives
-	var swaddoptiongroup_1 = __webpack_require__(167);
-	var swoptionsforoptiongroup_1 = __webpack_require__(168);
+	var swaddoptiongroup_1 = __webpack_require__(168);
+	var swoptionsforoptiongroup_1 = __webpack_require__(169);
 	var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -17941,7 +18000,7 @@
 
 
 /***/ },
-/* 167 */
+/* 168 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18109,7 +18168,7 @@
 
 
 /***/ },
-/* 168 */
+/* 169 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18180,19 +18239,19 @@
 
 
 /***/ },
-/* 169 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypescript.d.ts" />
 	var core_module_1 = __webpack_require__(12);
 	//directives
-	var swchildorderitem_1 = __webpack_require__(170);
-	var sworderitem_1 = __webpack_require__(171);
-	var swoishippinglabelstamp_1 = __webpack_require__(172);
-	var sworderitemdetailstamp_1 = __webpack_require__(173);
-	var sworderitems_1 = __webpack_require__(174);
-	var swresizedimage_1 = __webpack_require__(175);
+	var swchildorderitem_1 = __webpack_require__(171);
+	var sworderitem_1 = __webpack_require__(172);
+	var swoishippinglabelstamp_1 = __webpack_require__(173);
+	var sworderitemdetailstamp_1 = __webpack_require__(174);
+	var sworderitems_1 = __webpack_require__(175);
+	var swresizedimage_1 = __webpack_require__(176);
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -18207,7 +18266,7 @@
 
 
 /***/ },
-/* 170 */
+/* 171 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18497,7 +18556,7 @@
 
 
 /***/ },
-/* 171 */
+/* 172 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18919,7 +18978,7 @@
 
 
 /***/ },
-/* 172 */
+/* 173 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18962,7 +19021,7 @@
 
 
 /***/ },
-/* 173 */
+/* 174 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19063,7 +19122,7 @@
 
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19214,7 +19273,7 @@
 
 
 /***/ },
-/* 175 */
+/* 176 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19257,7 +19316,7 @@
 
 
 /***/ },
-/* 176 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -19266,7 +19325,7 @@
 	var core_module_1 = __webpack_require__(12);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(177);
+	var preprocessproduct_create_1 = __webpack_require__(178);
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -19277,7 +19336,7 @@
 
 
 /***/ },
-/* 177 */
+/* 178 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19350,7 +19409,7 @@
 
 
 /***/ },
-/* 178 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -19358,13 +19417,13 @@
 	//modules
 	var core_module_1 = __webpack_require__(12);
 	//services
-	var productbundleservice_1 = __webpack_require__(179);
+	var productbundleservice_1 = __webpack_require__(180);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(180);
+	var create_bundle_controller_1 = __webpack_require__(181);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(181);
-	var swproductbundlegroups_1 = __webpack_require__(182);
-	var swproductbundlegroup_1 = __webpack_require__(183);
+	var swproductbundlegrouptype_1 = __webpack_require__(182);
+	var swproductbundlegroups_1 = __webpack_require__(183);
+	var swproductbundlegroup_1 = __webpack_require__(184);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -19378,7 +19437,7 @@
 
 
 /***/ },
-/* 179 */
+/* 180 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19463,7 +19522,7 @@
 
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19535,7 +19594,7 @@
 
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19707,7 +19766,7 @@
 
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19767,7 +19826,7 @@
 
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -20113,7 +20172,7 @@
 
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -20144,7 +20203,7 @@
 
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -20202,7 +20261,7 @@
 
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
