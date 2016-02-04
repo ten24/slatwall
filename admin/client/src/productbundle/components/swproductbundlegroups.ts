@@ -59,7 +59,6 @@ class SWProductBundleGroups{
 				});
 
 				$scope.removeProductBundleGroup = function(index){
-                    console.log("skusme",$scope.productBundleGroups[index]);
                     if(angular.isDefined($scope.productBundleGroups[index])&&$scope.productBundleGroups[index].$$isPersisted()){ 
                         $scope.productBundleGroups[index].$$delete().then((data)=>{
                             //no more logic to run     
