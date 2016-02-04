@@ -161,7 +161,7 @@ class SWProductBundleGroupController {
 		if (angular.isNumber(type)){
             this.removeProductBundleGroupFilter(type);
         }else{
-            this.removeProductBundleGroup(this.index);  
+            this.removeProductBundleGroup({index:this.index});  
             this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
             
         }

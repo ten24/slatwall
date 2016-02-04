@@ -37,7 +37,7 @@ class SWProductBundleGroups{
 		metadataService,
 		productBundlePartialsPath,
 		productBundleService,
-			slatwallPathBuilder
+	   slatwallPathBuilder
     ){
         return {
 			restrict: 'EA',
@@ -59,11 +59,9 @@ class SWProductBundleGroups{
 				});
 
 				$scope.removeProductBundleGroup = function(index){
-					$scope.productBundleGroups.splice(index,1);
-					$log.debug("Deleting PBG #" + index);
-					$log.debug($scope.productBundleGroups);
-
-
+                    $scope.productBundleGroups[index].$$delete().then((data)=>{
+                        $scope.productBundleGroups.splice(index,1);
+                    });
 				};
 				$scope.addProductBundleGroup = function(){
 
