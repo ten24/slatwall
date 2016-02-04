@@ -72,8 +72,7 @@ class SWProductBundleGroupController {
         this.showAdvanced = false;
         this.currentPage = 1;
         this.pageShow = 10;
-        this.searchAllCollectionConfigs = [];
-        console.log("FORM CONTROLLER", formService);        
+        this.searchAllCollectionConfigs = [];       
         
         if(angular.isUndefined(this.filterPropertiesList)){
             this.filterPropertiesList = {};
@@ -150,9 +149,6 @@ class SWProductBundleGroupController {
 				columnsConfig:this.productBundleGroup.data.skuCollectionConfig.columns,
 		};
         
-        //initialize the collectionConfig to invalid
-        //this.formService.getForms()[this.formName].skuCollectionConfig.setValidity("skuCollectionConfig", false);
-
 		this.getCollection(); 
 	}
 
