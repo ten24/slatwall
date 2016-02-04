@@ -51,7 +51,7 @@ Notes:
 	<cffunction name="getUniquePreviousSubscriptionOrderPayments">
 		<cfargument name="subscriptionUsageID" type="string" required="true" />
 
-		<cfreturn ormExecuteQuery("SELECT DISTINCT op FROM SlatwallSubscriptionOrderItem soi INNER JOIN soi.orderItem oi INNER JOIN oi.order o INNER JOIN o.orderPayments op WHERE soi.subscriptionUsage.subscriptionUsageID = :subscriptionUsageID AND op.referencedOrderPayment IS NULL AND activeFlag is true", {subscriptionUsageID=arguments.subscriptionUsageID}) />
+		<cfreturn ormExecuteQuery("SELECT DISTINCT op FROM SlatwallSubscriptionOrderItem soi INNER JOIN soi.orderItem oi INNER JOIN oi.order o INNER JOIN o.orderPayments op WHERE soi.subscriptionUsage.subscriptionUsageID = :subscriptionUsageID AND op.referencedOrderPayment IS NULL AND op.orderPaymentStatusType.systemCode = 'opstActive'", {subscriptionUsageID=arguments.subscriptionUsageID}) />
 	</cffunction>
 
 	<cffunction name="getSubscriptionCurrentStatus">
