@@ -410,8 +410,8 @@ class SWProductBundleGroup implements ng.IDirective{
 				private productBundleService, 
                 private metadataService, 
                 private utilityService, 
-                private formService
-				private $hibachi, 
+                private formService,
+				private $hibachi,
                 private productBundlePartialsPath,
 			    slatwallPathBuilder){
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";

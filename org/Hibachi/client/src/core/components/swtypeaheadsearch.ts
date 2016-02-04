@@ -90,7 +90,6 @@ class SWTypeaheadSearchController {
     }
 
 	public search = (search:string)=>{
-        
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
 		}
@@ -183,7 +182,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 		addButtonFunction:"&?",
         validateRequired:"=?",
         clickOutsideArguments:"=?",
-		hideSearch:"="
+		hideSearch:"=?"
 	}
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
