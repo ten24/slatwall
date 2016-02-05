@@ -564,7 +564,7 @@ component extends="HibachiService"  accessors="true" output="false"
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.clear", cart.hasErrors() );
 	}
-	
+    
 	/** 
 	 * @http-context changeOrder
 	 * @description Change Order
