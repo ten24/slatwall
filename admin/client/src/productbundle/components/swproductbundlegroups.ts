@@ -37,7 +37,7 @@ class SWProductBundleGroups{
 		metadataService,
 		productBundlePartialsPath,
 		productBundleService,
-			slatwallPathBuilder
+	   slatwallPathBuilder
     ){
         return {
 			restrict: 'EA',
@@ -59,11 +59,12 @@ class SWProductBundleGroups{
 				});
 
 				$scope.removeProductBundleGroup = function(index){
-					$scope.productBundleGroups.splice(index,1);
-					$log.debug("Deleting PBG #" + index);
-					$log.debug($scope.productBundleGroups);
-
-
+                    if(angular.isDefined($scope.productBundleGroups[index])&&$scope.productBundleGroups[index].$$isPersisted()){ 
+                        $scope.productBundleGroups[index].$$delete().then((data)=>{
+                            //no more logic to run     
+                        });
+                    } 
+                    $scope.productBundleGroups.splice(index,1);
 				};
 				$scope.addProductBundleGroup = function(){
 
