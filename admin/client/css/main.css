@@ -478,7 +478,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 .input-sm {
-  height: 23px !important;
+  height: 31px !important;
   padding: 5px 5px !important;
   font-size: 11px !important;
   line-height: 1.5 !important;
@@ -1618,7 +1618,7 @@ table .s-edit-elements a:hover {
 }
 .form-control {
   color: #767676;
-  height: 30px;
+  height: 31px;
   box-shadow: none;
   font-weight: normal;
   font-size: 12px;
@@ -1628,6 +1628,7 @@ table .s-edit-elements a:hover {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  border-color: #dddddd;
 }
 /*Custom CSS*/
 .s-pannel-group .panel {
@@ -2496,6 +2497,7 @@ tabel .s-table-header {
 }
 .s-table-footer .s-table-footer-right ul li {
   vertical-align: top;
+  border-radius: 2px;
 }
 .s-table-footer .s-table-footer-right ul li .pagination {
   margin: 0px;
