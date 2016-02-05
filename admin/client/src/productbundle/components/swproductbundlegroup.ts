@@ -18,7 +18,6 @@ class CollectionFilterItem{
 
 class SWProductBundleGroupController {
 
-	public static $inject=["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath"];
 	public $id;
 	public showAdvanced;
 	public productBundleGroup;
@@ -52,10 +51,16 @@ class SWProductBundleGroupController {
 	public removeProductBundleGroup;
 
 
-	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService,
+    // @ngInject
+	constructor(private $log:ng.ILogService, 
+                private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
-				private productBundleService,  private metadataservice, private utilityservice,
-				private $hibachi, private productBundlePartialsPath){
+				private productBundleService,  
+                private metadataService, 
+                private utilityService, 
+                private formService,
+				private $hibachi, 
+                private productBundlePartialsPath){
 
 		this.$id = 'productBundleGroup';
         this.maxRecords = 10;
@@ -67,15 +72,15 @@ class SWProductBundleGroupController {
         this.showAdvanced = false;
         this.currentPage = 1;
         this.pageShow = 10;
-        this.searchAllCollectionConfigs = [];
+        this.searchAllCollectionConfigs = [];       
         
         if(angular.isUndefined(this.filterPropertiesList)){
             this.filterPropertiesList = {};
             var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
             filterPropertiesPromise.then((value)=>{
-                metadataservice.setPropertiesList(value,'_sku');
-                this.filterPropertiesList['_sku'] = metadataservice.getPropertiesListByBaseEntityAlias('_sku');
-                metadataservice.formatPropertiesList(this.filterPropertiesList['_sku'],'_sku');
+                metadataService.setPropertiesList(value,'_sku');
+                this.filterPropertiesList['_sku'] = metadataService.getPropertiesListByBaseEntityAlias('_sku');
+                metadataService.formatPropertiesList(this.filterPropertiesList['_sku'],'_sku');
             });
         }
         
@@ -143,10 +148,8 @@ class SWProductBundleGroupController {
 				filterGroupsConfig:this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup,
 				columnsConfig:this.productBundleGroup.data.skuCollectionConfig.columns,
 		};
-
-		
-
-		this.getCollection();
+        
+		this.getCollection(); 
 	}
 
 	public openCloseAndRefresh = () => {
@@ -245,7 +248,7 @@ class SWProductBundleGroupController {
                                 // If the loadingCount drops to 0, then we can update scope
                                 if(_loadingCount == 0){
                                     //This sorts the array of objects by the objects' "type" property alphabetically
-                                    this.productBundleGroupFilters.value = this.utilityservice.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
+                                    this.productBundleGroupFilters.value = this.utilityService.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
                                     this.$log.debug(this.productBundleGroupFilters.value);
                                     if(this.productBundleGroupFilters.value.length == 0){
                                         this.currentPage = 0;
@@ -323,7 +326,6 @@ class SWProductBundleGroupController {
         
         //Adds filter item to designated filtergroup
         this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.push(collectionFilterItem);
-        this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
         
         //reload the list to correct pagination show all takes too long for this to be graceful
         if(!this.showAll){
@@ -331,14 +333,14 @@ class SWProductBundleGroupController {
         } else { 
             //Removes the filter item from the left hand search result
             this.productBundleGroupFilters.value.splice(index,1);
-        }
+        }  
 	}
 
 	public removeProductBundleGroupFilter = (index) =>{
 		//Pushes item back into array
         this.productBundleGroupFilters.value.push(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup[index]);
         //Sorts Array
-        this.productBundleGroupFilters.value = this.utilityservice.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
+        this.productBundleGroupFilters.value = this.utilityService.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
         //Removes the filter item from the filtergroup
         var collectionFilterItem = this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.splice(index,1)[0];
         
@@ -366,8 +368,10 @@ class SWProductBundleGroupController {
         } else { 
             this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
         }
-        this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-    }       
+    }    
+    
+
+     
 }
 
 class SWProductBundleGroup implements ng.IDirective{
@@ -387,29 +391,33 @@ class SWProductBundleGroup implements ng.IDirective{
 	public controller=SWProductBundleGroupController;
 	public controllerAs="swProductBundleGroup";
 
-
-	constructor(private $log:ng.ILogService, private $timeout:ng.ITimeoutService,
+    // @ngInject
+	constructor(private $log:ng.ILogService, 
+                private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
-				private productBundleService,  private metadataservice, private utilityservice,
-				private $hibachi, private productBundlePartialsPath,
-			slatwallPathBuilder){
+				private productBundleService, 
+                private metadataService, 
+                private utilityService, 
+                private formService,
+				private $hibachi,
+                private productBundlePartialsPath,
+			    slatwallPathBuilder){
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	}
 
-	public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
-	}
+	public link:ng.IDirectiveLinkFn = ($scope:any, element:any, attrs:any, ctrl:any) =>{
+    }
 
 	public static Factory(){
 		var directive = (
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath,
+            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath,
 			slatwallPathBuilder
         )=> new SWProductBundleGroup(
-            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath,
+            $log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
-            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath",
+            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
 			"slatwallPathBuilder"
         ];
         return directive;

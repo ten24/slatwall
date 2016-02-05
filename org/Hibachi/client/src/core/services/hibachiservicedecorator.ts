@@ -735,7 +735,7 @@ class HibachiServiceDecorator{
                     target.focus();
                     var targetID = target.attr('id');
                     $anchorScroll();
-                    deferred.reject('input is invalid');
+                    deferred.reject('Input is invalid.');
                 }
             });
             //return timeoutPromise;

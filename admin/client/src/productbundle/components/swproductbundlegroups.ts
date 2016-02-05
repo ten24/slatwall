@@ -68,10 +68,7 @@ class SWProductBundleGroups{
 				$scope.addProductBundleGroup = function(){
 
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-                    console.log('testpro');
-                    console.log(productBundleGroup);
 					productBundleService.decorateProductBundleGroup(productBundleGroup);
-
 					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
 				};
 			}]

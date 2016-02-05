@@ -225,7 +225,7 @@
 									<div class="s-bundle-add-items" ng-show="swProductBundleGroup.productBundleGroupFilters.keyword.length">
 										<div class="col-xs-12 s-bundle-add-items-inner">
 											<h4  class="s-no-items"
-												ng-show="!swProductBundleGroup.productBundleGroupFilters.value.length"
+												ng-if="!swProductBundleGroup.productBundleGroupFilters.value.length"
 												>
 												There are no items selected
 											</h4>
