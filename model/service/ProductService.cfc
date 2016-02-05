@@ -56,7 +56,8 @@ component extends="HibachiService" accessors="true" {
 	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
-	property name="hibachiEventService" type="any";
+	property name="imageService" type="any";
+ 	property name="hibachiEventService" type="any";
 	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productScheduleService" type="any";
@@ -1088,6 +1089,14 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	// ====================  END: Smart List Overrides ========================
+
+	//  ====================  START: Wrapper Methods ========================
+
+	public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
+		return this.getImageService.getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
+	}
+
+	//  ====================  END: Wrapper Methods ========================
 
 	// ====================== START: Get Overrides ============================
 
