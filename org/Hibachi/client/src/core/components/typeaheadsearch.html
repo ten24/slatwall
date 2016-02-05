@@ -2,7 +2,8 @@
     <div class="form-group">
         <div class="input-group">
             <div class="s-input-btn">
-                <input id="searchinput" placeholder="{{swTypeaheadSearch.placeholderText}}" ng-model="swTypeaheadSearch.searchText" ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)" type="search" class="form-control">
+                <input id="searchinput" ng-if="swTypeaheadSearch.validateRequired" placeholder="{{swTypeaheadSearch.placeholderText}}" ng-model="swTypeaheadSearch.searchText" ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)" type="search" class="form-control" required>
+                <input id="searchinput" ng-if="!swTypeaheadSearch.validateRequired" placeholder="{{swTypeaheadSearch.placeholderText}}" ng-model="swTypeaheadSearch.searchText" ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)" type="search" class="form-control">
                 <span class="glyphicon glyphicon-remove" ng-if="swTypeaheadSearch.searchText.length" ng-click="swTypeaheadSearch.clearSearch()"></span>
             </div>
             <div class="input-group-btn">

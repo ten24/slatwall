@@ -435,17 +435,35 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return attributes;
 	}
 	
-	public any function getAttributesProperties(){
+	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+		var properties = super.getFilterProperties(argumentCollection=arguments);
+		var attributeProperties = getAttributesProperties(properties);
+		getService('hibachiUtilityService').arrayConcat(properties,attributeProperties);
+		return properties;
+	}
+	
+	public any function getAttributesProperties(array properties=[]){
 		var attributesProperties = [];
-		for(var attribute in getAttributesArray()){
-			var attributeProperty = {};
-			attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
-			attributeProperty['name'] = attribute.getAttributeCode();
-			attributeProperty['attributeID'] = attribute.getAttributeID();
-			attributeProperty['attributeSetObject'] = ReReplace(attribute.getAttributeSet().getAttributeSetObject(),"\b(\w)","\L\1","ALL");
-			//TODO: normalize attribute types to separate table
-			attributeProperty['ormtype'] = 'string';
-			ArrayAppend(attributesProperties,attributeProperty);
+		var attributesArray = getAttributesArray();
+		for(var i = arrayLen(attributesArray); i > 1 ;i=i-1){
+			var attribute = attributesArray[i];
+			if(!structKeyExists(this,'get#attribute.getAttributeCode()#')){
+				var attributeProperty = {};
+				attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
+				attributeProperty['name'] = attribute.getAttributeCode();
+				attributeProperty['attributeID'] = attribute.getAttributeID();
+				attributeProperty['attributeSetObject'] = ReReplace(attribute.getAttributeSet().getAttributeSetObject(),"\b(\w)","\L\1","ALL");
+				//TODO: normalize attribute types to separate table
+				attributeProperty['ormtype'] = 'string';
+				ArrayAppend(attributesProperties,attributeProperty);
+			}else if(arraylen(arguments.properties)){
+				for(var property in arguments.properties){
+					if(property.name == attribute.getAttributeCode()){
+						property['displayPropertyIdentifier'] = attribute.getAttributeName();
+						arrayDeleteAt(attributesArray,i);
+					}
+				}
+			}
 		}
 		return attributesProperties;
 	}

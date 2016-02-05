@@ -12,11 +12,12 @@ class SWTypeaheadSearchController {
 	public allRecords:boolean;
 	public placeholderText:string;
 	public searchText:string;
-	public results = [];
+	public results;
 	public addFunction;
+    public validateRequired:boolean; 
     public displayList = [];
 	public addButtonFunction;
-	public hideSearch = true;
+	public hideSearch:boolean;
 	public clickOutsideArguments;
     public resultsPromise;
     public resultsDeferred;
@@ -32,6 +33,21 @@ class SWTypeaheadSearchController {
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
+        
+        if(angular.isUndefined(this.searchText)){
+            this.searchText = "";
+        }
+        
+        if(angular.isUndefined(this.results)){
+            this.results = []; 
+        }
+        
+        if(angular.isUndefined(this.validateRequired)){
+            this.validateRequired = false; 
+        }
+        if(angular.isUndefined(this.hideSearch)){ 
+            this.hideSearch = true; 
+        }
 
         if(angular.isDefined(this.collectionConfig)){
             this.typeaheadCollectionConfig = this.collectionConfig; 
@@ -43,7 +59,7 @@ class SWTypeaheadSearchController {
         
 		if(angular.isDefined(this.propertiesToDisplay)){
 			this.displayList = this.propertiesToDisplay.split(",");
-		}
+		} 
 
         if(angular.isDefined(this.addButtonFunction)){
             this.showAddButton = true;
@@ -63,7 +79,6 @@ class SWTypeaheadSearchController {
 		} else {
 			this.typeaheadCollectionConfig.setAllRecords(true);
 		}
-        
 	}
     
     public clearSearch = () =>{
@@ -80,7 +95,6 @@ class SWTypeaheadSearchController {
     };
 
 	public search = (search:string)=>{
-        
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
 		}
@@ -94,46 +108,22 @@ class SWTypeaheadSearchController {
             this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
          
-		if(search && search.length){
-			this._timeoutPromise = this.$timeout(()=>{
+        this._timeoutPromise = this.$timeout(()=>{
 
-				var promise = this.typeaheadCollectionConfig.getEntity();
+            var promise = this.typeaheadCollectionConfig.getEntity();
 
-				promise.then( (response) =>{
-						if(angular.isDefined(this.allRecords) && this.allRecords == false){
-                            this.results = response.pageRecords;
-						} else {
-							this.results = response.records;
-						}
-
-				}).finally(()=>{
-                      this.resultsDeferred.resolve();
-                      this.hideSearch = false;
-                });
-			}, 500);
-		}  else if(!search || search.length == 0){
-            this._timeoutPromise = this.$timeout(()=>{ 
-
-                var promise = this.typeaheadCollectionConfig.getEntity();
-
-                promise.then( (response) =>{
-                    
-                    if(angular.isDefined(this.allRecords) && this.allRecords == false){
-                        this.results = response.pageRecords;
-                    } else {
-                        this.results = response.records;
-                    }
-
-                }).finally(()=>{
-                    this.resultsDeferred.resolve();
-                    this.hideSearch = false;
-                });
-			});
-       } else {
-			this.results = [];
-			this.hideSearch = true;
-		}
-	};
+            promise.then( (response) =>{
+                if(angular.isDefined(this.allRecords) && this.allRecords == false){
+                    this.results = response.pageRecords;
+                } else {
+                    this.results = response.records;
+                }
+            }).finally(()=>{
+                this.resultsDeferred.resolve();
+                this.hideSearch = (this.results.length == 0);
+            });
+        }, 500);
+	}
 
 	public addItem = (item)=>{
 
@@ -191,12 +181,13 @@ class SWTypeaheadSearch implements ng.IDirective{
 		propertiesToDisplay:"@?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
-		searchText:"=",
+		searchText:"=?",
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
-		hideSearch:"=?",
-		clickOutsideArguments:"=?"
+        validateRequired:"=?",
+        clickOutsideArguments:"=?",
+		hideSearch:"=?"
 	}
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
@@ -206,7 +197,6 @@ class SWTypeaheadSearch implements ng.IDirective{
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-
         var target = element.find(".dropdown-menu");
         var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
         var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
