@@ -1579,7 +1579,7 @@
 	                            target.focus();
 	                            var targetID = target.attr('id');
 	                            $anchorScroll();
-	                            deferred.reject('input is invalid');
+	                            deferred.reject('Input is invalid.');
 	                        }
 	                    });
 	                    //return timeoutPromise;
@@ -3984,10 +3984,7 @@
 	        this.$timeout = $timeout;
 	        this.utilityService = utilityService;
 	        this.collectionConfigService = collectionConfigService;
-	        this.searchText = "";
-	        this.results = [];
 	        this.displayList = [];
-	        this.hideSearch = true;
 	        this.clearSearch = function () {
 	            _this.searchText = "";
 	            _this.hideSearch = true;
@@ -4011,48 +4008,20 @@
 	                filterConfig = filterConfig.trim();
 	                _this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
 	            }
-	            if (search.length > 2) {
-	                _this._timeoutPromise = _this.$timeout(function () {
-	                    var promise = _this.typeaheadCollectionConfig.getEntity();
-	                    promise.then(function (response) {
-	                        if (angular.isDefined(_this.allRecords) && _this.allRecords == false) {
-	                            _this.results = response.pageRecords;
-	                        }
-	                        else {
-	                            _this.results = response.records;
-	                        }
-	                        //Custom method for gravatar on accounts (non-persistant-property)
-	                        //if(angular.isDefined(this.results) && this.entity == "Account"){
-	                        //	angular.forEach(this.results,(account)=>{
-	                        //		account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-	                        //	});
-	                        //}
-	                    }).finally(function () {
-	                        _this.resultsDeferred.resolve();
-	                        _this.hideSearch = false;
-	                    });
-	                }, 500);
-	            }
-	            else if (search.length == 0) {
-	                _this._timeoutPromise = _this.$timeout(function () {
-	                    var promise = _this.typeaheadCollectionConfig.getEntity();
-	                    promise.then(function (response) {
-	                        if (angular.isDefined(_this.allRecords) && _this.allRecords == false) {
-	                            _this.results = response.pageRecords;
-	                        }
-	                        else {
-	                            _this.results = response.records;
-	                        }
-	                    }).finally(function () {
-	                        _this.resultsDeferred.resolve();
-	                        _this.hideSearch = false;
-	                    });
+	            _this._timeoutPromise = _this.$timeout(function () {
+	                var promise = _this.typeaheadCollectionConfig.getEntity();
+	                promise.then(function (response) {
+	                    if (angular.isDefined(_this.allRecords) && _this.allRecords == false) {
+	                        _this.results = response.pageRecords;
+	                    }
+	                    else {
+	                        _this.results = response.records;
+	                    }
+	                }).finally(function () {
+	                    _this.resultsDeferred.resolve();
+	                    _this.hideSearch = (_this.results.length == 0);
 	                });
-	            }
-	            else {
-	                _this.results = [];
-	                _this.hideSearch = true;
-	            }
+	            }, 500);
 	        };
 	        this.addItem = function (item) {
 	            if (!_this.hideSearch) {
@@ -4083,6 +4052,18 @@
 	        };
 	        this.resultsDeferred = $q.defer();
 	        this.resultsPromise = this.resultsDeferred.promise;
+	        if (angular.isUndefined(this.searchText)) {
+	            this.searchText = "";
+	        }
+	        if (angular.isUndefined(this.results)) {
+	            this.results = [];
+	        }
+	        if (angular.isUndefined(this.validateRequired)) {
+	            this.validateRequired = false;
+	        }
+	        if (angular.isUndefined(this.hideSearch)) {
+	            this.hideSearch = true;
+	        }
 	        if (angular.isDefined(this.collectionConfig)) {
 	            this.typeaheadCollectionConfig = this.collectionConfig;
 	        }
@@ -4134,8 +4115,9 @@
 	            results: "=?",
 	            addFunction: "&?",
 	            addButtonFunction: "&?",
-	            hideSearch: "=?",
-	            clickOutsideArguments: "=?"
+	            validateRequired: "=?",
+	            clickOutsideArguments: "=?",
+	            hideSearch: "=?"
 	        };
 	        this.controller = SWTypeaheadSearchController;
 	        this.controllerAs = "swTypeaheadSearch";
@@ -7063,7 +7045,7 @@
 	            }, 3500);
 	        };
 	        this.addAlerts = function (alerts) {
-	            alerts.forEach(function (alert) {
+	            angular.forEach(alerts, function (alert) {
 	                _this.addAlert(alert);
 	            });
 	        };
@@ -14588,10 +14570,12 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWSaveAndFinishController = (function () {
 	    //@ngInject
-	    function SWSaveAndFinishController($hibachi, dialogService, $log) {
+	    function SWSaveAndFinishController($hibachi, dialogService, alertService, rbkeyService, $log) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.dialogService = dialogService;
+	        this.alertService = alertService;
+	        this.rbkeyService = rbkeyService;
 	        this.$log = $log;
 	        this.saving = false;
 	        this.initialSetup = function () {
@@ -14610,10 +14594,9 @@
 	        };
 	        this.save = function () {
 	            _this.saving = true;
-	            _this.entity.$$save().then(function (data) {
+	            var savePromise = _this.entity.$$save();
+	            savePromise.then(function (data) {
 	                _this.dialogService.removeCurrentDialog();
-	            }).finally(function (data) {
-	                _this.saving = false;
 	                if (_this.openNewDialog && angular.isDefined(_this.partial)) {
 	                    _this.dialogService.addPageDialog(_this.partial);
 	                }
@@ -14625,12 +14608,28 @@
 	                        if (angular.isUndefined(_this.redirectQueryString)) {
 	                            _this.redirectQueryString = "";
 	                        }
-	                        window.location = _this.$hibachi.buildURL(_this.redirectAction, _this.redirectQueryString);
+	                        window.location = _this.$hibachi.buildUrl(_this.redirectAction, _this.redirectQueryString);
 	                    }
 	                    else {
 	                        _this.$log.debug("You did not specify a redirect for swSaveAndFinish");
 	                    }
 	                }
+	            }).catch(function (data) {
+	                if (angular.isDefined(_this.customErrorRbkey)) {
+	                    data = _this.rbkeyService.getRBKey(_this.customErrorRbkey);
+	                }
+	                if (angular.isString(data)) {
+	                    var alert = _this.alertService.newAlert();
+	                    alert.msg = data;
+	                    alert.type = "error";
+	                    alert.fade = true;
+	                    _this.alertService.addAlert(alert);
+	                }
+	                else {
+	                    _this.alertService.addAlerts(data);
+	                }
+	            }).finally(function () {
+	                _this.saving = false;
 	            });
 	        };
 	        if (!angular.isFunction(this.entity.$$save)) {
@@ -14655,7 +14654,8 @@
 	            redirectAction: "@?",
 	            redirectQueryString: "@?",
 	            finish: "@?",
-	            partial: "@?"
+	            partial: "@?",
+	            customErrorRbkey: "@?"
 	        };
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
 	    }
@@ -19131,14 +19131,15 @@
 	                        obj.data.$$editing = false;
 	                    });
 	                    $scope.removeProductBundleGroup = function (index) {
+	                        if (angular.isDefined($scope.productBundleGroups[index]) && $scope.productBundleGroups[index].$$isPersisted()) {
+	                            $scope.productBundleGroups[index].$$delete().then(function (data) {
+	                                //no more logic to run     
+	                            });
+	                        }
 	                        $scope.productBundleGroups.splice(index, 1);
-	                        $log.debug("Deleting PBG #" + index);
-	                        $log.debug($scope.productBundleGroups);
 	                    };
 	                    $scope.addProductBundleGroup = function () {
 	                        var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-	                        console.log('testpro');
-	                        console.log(productBundleGroup);
 	                        productBundleService.decorateProductBundleGroup(productBundleGroup);
 	                        $scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
 	                    };
@@ -19185,14 +19186,16 @@
 	    return CollectionFilterItem;
 	})();
 	var SWProductBundleGroupController = (function () {
-	    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $hibachi, productBundlePartialsPath) {
+	    // @ngInject
+	    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
 	        var _this = this;
 	        this.$log = $log;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
 	        this.productBundleService = productBundleService;
-	        this.metadataservice = metadataservice;
-	        this.utilityservice = utilityservice;
+	        this.metadataService = metadataService;
+	        this.utilityService = utilityService;
+	        this.formService = formService;
 	        this.$hibachi = $hibachi;
 	        this.productBundlePartialsPath = productBundlePartialsPath;
 	        this.openCloseAndRefresh = function () {
@@ -19206,7 +19209,7 @@
 	                _this.removeProductBundleGroupFilter(type);
 	            }
 	            else {
-	                _this.removeProductBundleGroup(_this.index);
+	                _this.removeProductBundleGroup({ index: _this.index });
 	                _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup = [];
 	            }
 	        };
@@ -19278,7 +19281,7 @@
 	                                    // If the loadingCount drops to 0, then we can update scope
 	                                    if (_loadingCount == 0) {
 	                                        //This sorts the array of objects by the objects' "type" property alphabetically
-	                                        _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
+	                                        _this.productBundleGroupFilters.value = _this.utilityService.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
 	                                        _this.$log.debug(_this.productBundleGroupFilters.value);
 	                                        if (_this.productBundleGroupFilters.value.length == 0) {
 	                                            _this.currentPage = 0;
@@ -19343,7 +19346,6 @@
 	            }
 	            //Adds filter item to designated filtergroup
 	            _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.push(collectionFilterItem);
-	            _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
 	            //reload the list to correct pagination show all takes too long for this to be graceful
 	            if (!_this.showAll) {
 	                _this.getFiltersByTerm(_this.keyword, _this.filterTerm);
@@ -19357,7 +19359,7 @@
 	            //Pushes item back into array
 	            _this.productBundleGroupFilters.value.push(_this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup[index]);
 	            //Sorts Array
-	            _this.productBundleGroupFilters.value = _this.utilityservice.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
+	            _this.productBundleGroupFilters.value = _this.utilityService.arraySorter(_this.productBundleGroupFilters.value, ["type", "name"]);
 	            //Removes the filter item from the filtergroup
 	            var collectionFilterItem = _this.productBundleGroup.data.skuCollectionConfig.filterGroups[_this.index].filterGroup.splice(index, 1)[0];
 	            if (angular.isDefined(_this.searchCollectionConfig)) {
@@ -19385,7 +19387,6 @@
 	            else {
 	                _this.productBundleGroupFilters.value.splice(index, 0, collectionFilterItem);
 	            }
-	            _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
 	        };
 	        this.$id = 'productBundleGroup';
 	        this.maxRecords = 10;
@@ -19402,9 +19403,9 @@
 	            this.filterPropertiesList = {};
 	            var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
 	            filterPropertiesPromise.then(function (value) {
-	                metadataservice.setPropertiesList(value, '_sku');
-	                _this.filterPropertiesList['_sku'] = metadataservice.getPropertiesListByBaseEntityAlias('_sku');
-	                metadataservice.formatPropertiesList(_this.filterPropertiesList['_sku'], '_sku');
+	                metadataService.setPropertiesList(value, '_sku');
+	                _this.filterPropertiesList['_sku'] = metadataService.getPropertiesListByBaseEntityAlias('_sku');
+	                metadataService.formatPropertiesList(_this.filterPropertiesList['_sku'], '_sku');
 	            });
 	        }
 	        this.skuCollectionConfig = {
@@ -19467,17 +19468,18 @@
 	        };
 	        this.getCollection();
 	    }
-	    SWProductBundleGroupController.$inject = ["$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath"];
 	    return SWProductBundleGroupController;
 	})();
 	var SWProductBundleGroup = (function () {
-	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataservice, utilityservice, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
+	    // @ngInject
+	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
 	        this.$log = $log;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
 	        this.productBundleService = productBundleService;
-	        this.metadataservice = metadataservice;
-	        this.utilityservice = utilityservice;
+	        this.metadataService = metadataService;
+	        this.utilityService = utilityService;
+	        this.formService = formService;
 	        this.$hibachi = $hibachi;
 	        this.productBundlePartialsPath = productBundlePartialsPath;
 	        this.restrict = "EA";
@@ -19491,16 +19493,16 @@
 	        };
 	        this.controller = SWProductBundleGroupController;
 	        this.controllerAs = "swProductBundleGroup";
-	        this.link = function ($scope, element, attrs) {
+	        this.link = function ($scope, element, attrs, ctrl) {
 	        };
 	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
 	    }
 	    SWProductBundleGroup.Factory = function () {
-	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
-	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, $hibachi, productBundlePartialsPath, slatwallPathBuilder);
+	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
+	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder);
 	        };
 	        directive.$inject = [
-	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath",
+	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
 	            "slatwallPathBuilder"
 	        ];
 	        return directive;
