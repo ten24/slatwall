@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="slatwalladmin">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Products | Slatwall</title>
+        <link rel="icon" href="/assets/images/favicon.png" type="image/png">
+        <link rel="shortcut icon" href="/assets/images/favicon.png" type="image/png">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
+        <link href="/admin/client/css/main.css" rel="stylesheet">
+        <link href="/assets/flags/css/flag-icon.min.css" rel="stylesheet">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="/client/lib/metismenu/metismenu.css" rel="stylesheet">
+        <link href="/client/lib/ngTagsInput/ng-tags-input.css" rel="stylesheet">
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-validate-1.9.0.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js"></script>
+        <script type="text/javascript" src="/client/lib/selectBoxIt/selectBoxIt.min.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script><script type="text/javascript">(function( $ ){$.slatwall = new Hibachi({"rbLocale":"en_us","timeFormat":"hh:mm tt","instantiationKey":"56F7EDDC-C8DE-E248-23C7259A2EC812D9","debugFlag":true,"action":"slatAction","dateFormat":"mmm dd, yyyy","baseURL":""});})( jQuery );</script> 
+        <script type="text/javascript">
+            var hibachiConfig = $.slatwall.getConfig();
+        </script>
+        <script type="text/javascript" src="/org/Hibachi/HibachiAssets/js/global.js"></script>
+        <script type="text/javascript" src="/assets/js/admin.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/ckeditor/ckeditor.js"></script>
+        <style>.cke{visibility:hidden;}</style>
+        <script type="text/javascript" src="/org/Hibachi/ckeditor/adapters/jquery.js"></script>
+        <script type="text/javascript" src="/org/Hibachi/ckfinder/ckfinder.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    </head>
+    <body>
+        <section class="s-ds-header">
+            <div class="container">
+                <h1>Pick Pack Ship Detail View</h1>
+                <p>Example prototype of the pick pack ship detail view.</p>
+            </div>
+        </section>
+        <section class="s-pick-pack-detail">
+            <div class="row">
+                
+                <!---******Start pick pack ship detail body******--->
+                <div class="col-md-12">
+                    <div class="row s-body-nav">
+                        <nav class="navbar navbar-default" role="navigation">
+                            <div class="container">
+                                <div class="col-md-6 s-header-info">
+                                    <ul class="list-unstyled list-inline">
+                                    </ul>
+                                    <h1 class="actionbar-title">Batch - <span>Overnight Orders</span> </h1>
+    							</div>
+    							<div class="col-md-6">
+    								<div class="btn-toolbar">
+                                        
+                                        <div class="btn-group btn-group-sm">
+    										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="fa fa-envelope"></i></button>
+    										<ul class="dropdown-menu pull-right">
+    											<li>
+    												<a  href="##" target="_self">Order Confirmation</a>
+                                                    <a  href="##" target="_self">Order Status</a>
+                                                    <a  href="##" target="_self">...</a>
+    											</li> 
+    										</ul>
+    									</div>
+                                        
+                                        <div class="btn-group btn-group-sm">
+    										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="fa fa-print"></i></button>
+    										<ul class="dropdown-menu pull-right">
+    											<li>
+    												<a  href="##" target="_self">Standard Packing Slip All</a>
+                                                    <a  href="##" target="_self">Picking List All</a>
+                                                    <a  href="##" target="_self">...</a>
+    											</li> 
+    										</ul>
+    									</div>
+                                        
+                                        <div class="btn-group btn-group-sm">
+    									    <a title="Delete" class="btn btn-default s-remove" target="_self" href="##"><i class="glyphicon glyphicon-trash icon-white"></i> Delete</a> 
+                                            <a title="Edit" class="btn btn-default" target="_self" href="##"><i class="glyphicon glyphicon-pencil icon-white"></i> Edit</a> 
+    								    </div>
+                                        
+    								</div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                    
+                    <div class="container">
+                        <div class="row s-detail-modules-wrapper">
+                    
+                            <div class="col-sm-6 col-md-6 col-lg-4 s-detail-module">
+                                <div class="s-sm-content-block">
+                                	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-2 s-icon">
+                                		<i class="fa fa-shopping-basket"></i>
+                                	</div>
+                                	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-10 s-content">
+                                		<div class="s-title">
+                                			Batch ID
+                                		</div>
+                                		<div class="s-body">
+                                			<span title="JLUITQL9IXE1OG4O">44TY675JH</span>
+                                		</div>
+                                	</div>
+                                </div>
+
+                                <!--Small content block-->
+                                <div class="s-sm-content-block s-status s-active">
+                                	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-2 s-icon">
+                                		<i class="fa fa-user"></i>
+                                	</div>
+                                	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-10 s-content">
+                                        
+                                        <div class="s-title">
+                                            User
+                                        </div>
+                                        <div class="s-body">
+                                            <span title="Tom Evens / tomevens@gmail.com">Tom Evens</span>
+                                        </div>
+                                        
+                                        <!-- <div class="s-select-list-wrapper s-search">
+    									    <div class="form-group">
+    									        <div class="input-group">
+    									            <div class="s-input-btn">
+    									                <input id="searchinput" type="search" class="form-control" placeholder="Search..." value="Tom Evens" disabled title="Tom Evens - tome.evens@gmail.com">
+    													<span class="glyphicon glyphicon-remove"></span>
+    									            </div>
+    									            <div class="input-group-btn">
+    									                <button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
+    									            </div>
+    									        </div>
+    									    </div>
+    										
+    									    <div class="dropdown s-search-results-wrapper" style="display: none;">
+    											<ul class="dropdown-menu" style="display: block;">
+
+    												<li>
+    													<a>
+    														<div class="row">
+    															<div class="col-xs-2 s-photo">
+    																<img src="http://placehold.it/350x350">	
+    															</div>
+    															<div class="col-xs-10 s-info">
+    																<div class="s-name">Reyjay Solares</div>
+    																<div class="s-email">reinaldosolares@gmail.com</div>
+    															</div>
+    														</div>
+    													</a>
+    												</li>
+    												
+    												<li>
+    													<a>
+    														<div class="row">
+    															<div class="col-xs-2 s-photo">
+    																<img src="http://placehold.it/350x350">	
+    															</div>
+    															<div class="col-xs-10 s-info">
+    																<div class="s-name">Reyjay Solares</div>
+    																<div class="s-email">reinaldosolares@gmail.com</div>
+    															</div>
+    														</div>
+    													</a>
+    												</li>
+    												
+    				                            </ul>
+    									    </div>
+    										
+    									</div> -->
+                                        
+                                	</div>
+                                </div>
+
+                                <!--Small content block-->
+                                <div class="s-sm-content-block">
+                                	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-2 s-icon">
+                                		<i class="fa fa-building-o"></i>
+                                	</div>
+                                	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-10 s-content">
+                                		<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+                                			<div class="s-title">
+                                				Location
+                                			</div>
+                                			<div class="s-body">
+                                				<span title="San Diego / Encinitas / D-Street">D-Street</span>
+                                			</div>
+                                		</div>
+                                	</div>
+                                </div>
+                            </div>
+    						
+    						<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
+                                <div class="s-md-content-block-inner">
+                                    <div class="s-title">Description</div>
+                                    <div class="s-body">
+                                        <!-- <textarea class="form-control s-recipient-message">Maecenas sed diam eget risus varius blandit sit amet non magna. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vestibulum id ligula porta felis euismod semper.</textarea> -->
+                                        Maecenas sed diam eget risus varius blandit sit amet non magna. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Vestibulum id ligula porta felis euismod semper.
+                                    </div>
+                                </div>
+                            </div>
+    						
+    						<div class="col-sm-6 col-md-6 col-lg-4 s-detail-module s-md-content-block">
+                                <div class="s-md-content-block-inner">
+                                    <div class="s-title">
+                                        Status
+                                        <div class="dropdown s-action">
+                                            <a href="##" class="dropdown-toggle hide" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-ellipsis-h" title="actions"></i>
+                                            </a>
+                                            <ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
+                                                <li><a href="#">Add Funds</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="s-body">
+                                        <ul class="list-unstyled">
+                                            <li>
+                                                <div class="row s-line-item s-strong">
+                                                    <div class="col-xs-6 s-title">Fulfillments:</div>
+                                                    <div class="col-xs-6 s-value" >200</div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="row s-line-item">
+                                                    <div class="col-xs-6 s-title">Completed:</div>
+                                                    <div class="col-xs-6 s-value">100</div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="row s-line-item">
+                                                    <div class="col-xs-12">
+                                                        <div class="progress">
+                                                            <div class="progress-bar" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                                                50% 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+    						
+                        </div>
+                        
+                        <div class="row s-detail-content-wrapper s-shrink-view"><!--- The s-shrink-view class can be removed to show expanded view --->
+                            <div class="col-xs-4 s-results-listing">
+                                <div class="s-detail-body">
+                                    <div class="s-content-header">
+                                        <h2>Fulfillments</h2>
+                                        <span class="pull-right s-expand-icon s-detail-show-content">
+                                            <a href="##" class="s-expand-table">
+                                                <i class="fa fa-expand"></i>
+                                            </a>
+                                        </span>
+                                        <span class="pull-right s-compress-icon s-detail-show-content">
+                                            <a href="##" class="s-compress-table">
+                                                <i class="fa fa-compress"></i>
+                                            </a>
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="s-table-inner-nav s-detail-hidden-content">
+                                        
+                                        <div class="s-search-wrapper">
+                                            <div class="input-group">
+                                                <div class="input-group-btn search-panel">
+                                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                                                    <span>All</span> <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a href="#">ID</a></li>
+                                                        <li><a href="#">Company</a></li>
+                                                        <li><a href="#">First Name</a></li>
+                                                        <li><a href="#">Last Name</a></li>
+                                                        <li><a href="#">Type</a></li>
+                                                        <li><a href="#">Status</a></li>
+                                                        <li><a href="#">Order</a></li>
+                                                        <li><a href="#">Created</a></li>
+                                                        <li><a href="#">Date Placed</a></li>
+                                                        <li><a href="#">Total</a></li>
+                                                    </ul>
+                                                </div>
+                                                <span class="s-search">
+                                                    <input type="text" class="form-control s-search" name="" placeholder="Search results...">
+                                                    <buttom class="btn btn-xs btn-default s-add-search-param">Save this search</buttom>
+                                                </span>
+                                                <span class="input-group-btn s-action">
+                                                <button class="btn btn-sm btn-default" type="button" data-toggle="collapse" data-target="#j-advanced-filter" aria-expanded="false" aria-controls="j-advanced-filter">
+                                                <i class="fa fa-filter"></i>
+                                                </button>
+                                                </span>
+                                                <span class="input-group-btn s-action">
+                                                <button class="btn btn-sm btn-default" type="button" data-toggle="collapse" data-target="#j-display-options" aria-expanded="false" aria-controls="j-display-options">
+                                                <i class="fa fa-th"></i>
+                                                </button>
+                                                </span>
+                                            </div>
+                                            
+                                            <!--- DISPLAY OPTIONS --->
+                                            <div class="collapse" id="j-display-options">
+                                                <div class="s-display-options">
+                                                    <a href="#j-display-options" class="s-close collapsed" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="j-display-options"><i class="fa fa-times"></i></a>
+                                                    
+                                                    <!-- Dragable List group -->
+                                                    <h4>Display Options</h4>
+                                                    <ul id="displayOptionsContainer" sortable="callbacks" class="list-group s-j-draggablePanelList ui-sortable">
+                                                        <li class="list-group-item">
+                                                            <div class="row">
+                                                                <div class="col-xs-5 s-pannel-name" j-column-index="5">
+                                                                    <span>1</span>
+                                                                    <i class="fa fa-arrows-v"></i>
+                                                                    <span class="s-pannel-title" title="Account Locked">Account Locked</span>
+                                                                    <a class="s-pannel-title-edit">edit</a>
+                                                                </div>
+                                                                <div class="col-xs-7 s-pannel-body">
+                                                                    <div class="btn-group">
+                                                                        <span class="s-sort-num">
+                                                                        <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" data-toggle="tooltip" data-placement="right" data-original-title="Edit">0</a>
+                                                                        </span>
+                                                                        <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order">
+                                                                        <i class="fa fa-sort s-not-active fa-sort-amount-asc"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible">
+                                                                        <i class="fa fa-eye"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Search">
+                                                                        <i class="fa fa-search"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
+                                                                        <i class="fa fa-download"></i>
+                                                                        </a> 
+                                                                        <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove">
+                                                                        <i class="fa fa-times"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="row">
+                                                                <div class="col-xs-5 s-pannel-name" j-column-index="5">
+                                                                    <span>2</span>
+                                                                    <i class="fa fa-arrows-v"></i>
+                                                                    <span class="s-pannel-title" title="Account Locked">Account Locked</span>
+                                                                    <a class="s-pannel-title-edit">edit</a>
+                                                                </div>
+                                                                <div class="col-xs-7 s-pannel-body">
+                                                                    <div class="btn-group">
+                                                                        <span class="s-sort-num">
+                                                                        <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" data-toggle="tooltip" data-placement="right" data-original-title="Edit">0</a>
+                                                                        </span>
+                                                                        <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order">
+                                                                        <i class="fa fa-sort s-not-active fa-sort-amount-asc"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible">
+                                                                        <i class="fa fa-eye"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Search">
+                                                                        <i class="fa fa-search"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
+                                                                        <i class="fa fa-download"></i>
+                                                                        </a> 
+                                                                        <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove">
+                                                                        <i class="fa fa-times"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <div class="row">
+                                                                <div class="col-xs-5 s-pannel-name" j-column-index="5">
+                                                                    <span>3</span>
+                                                                    <i class="fa fa-arrows-v"></i>
+                                                                    <span class="s-pannel-title" title="Account Locked">Account Locked</span>
+                                                                    <a class="s-pannel-title-edit">edit</a>
+                                                                    <span class="s-title-edit-menu">
+                                                                    <input type="text" class="form-control">
+                                                                    <button type="button" class="btn btn-xs btn-primary s-save-btn">Save</button>
+                                                                    <button type="button" class="btn btn-xs btn-default s-cancel-btn">Cancel</button>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="col-xs-7 s-pannel-body">
+                                                                    <div class="btn-group">
+                                                                        <span class="s-sort-num">
+                                                                        <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" data-toggle="tooltip" data-placement="right" data-original-title="Edit">0</a>
+                                                                        </span>
+                                                                        <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order">
+                                                                        <i class="fa fa-sort s-not-active fa-sort-amount-asc"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible">
+                                                                        <i class="fa fa-eye"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Search">
+                                                                        <i class="fa fa-search"></i>
+                                                                        </a>
+                                                                        <a class="btn btn-default j-tool-tip-item active" data-toggle="tooltip" data-placement="bottom" data-original-title="Export">
+                                                                        <i class="fa fa-download"></i>
+                                                                        </a> 
+                                                                        <a class="btn btn-default s-remove j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove">
+                                                                        <i class="fa fa-times"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="s-none-selected" style="display:none;">There are no fields selected</div>
+                                                    <!--- Add Display Option Btn --->
+                                                    <button type="button" class="btn btn-xs btn-primary" data-toggle="collapse" data-target="#j-add-display-option" aria-expanded="false" aria-controls="j-add-display-option">Add Display Field</button>
+                                                    <!--- ///Add Display Option Btn --->
+                                                    <div class="s-add-filter-box collapse clearfix" id="j-add-display-option">
+                                                        <!--- Edit Filter Box --->
+                                                        <div class="col-xs-12 s-add-filter s-add-filter-secondary-layout">
+                                                            <a href="##" class="s-close" data-toggle="collapse" data-target="#j-add-display-option" aria-expanded="false" aria-controls="j-add-display-option"><i class="fa fa-times"></i></a>
+                                                            <div class="row">
+                                                                <div class="col-xs-12">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-3">
+                                                                            <h4>Define Display Option</h4>
+                                                                            <div class="form-group form-group-sm s-option-group s-selected">
+                                                                                <label class="control-label">
+                                                                                <span>Select From</span> 
+                                                                                <strong>Product</strong>:
+                                                                                </label>
+                                                                                <div class="s-option-wrapper">
+                                                                                    <select class="form-control input-sm">
+                                                                                        <option value="" selected="selected">  Name</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xs-6 s-criteria" style="border-right: none;">
+                                                                            <h4>Save</h4>
+                                                                            <button class="btn btn-primary">Add Filter</button>
+                                                                        </div>
+                                                                        <div class="col-xs-3">
+                                                                            <!--- No Content  --->
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!--- //Edit Filter Box --->
+                                                    </div>
+                                                    <!-- /s-add-filter-box -->
+                                                </div>
+                                            </div>
+                                            <!--- //DISPLAY OPTIONS --->
+                                            
+                                            <!--- ADD FILTER --->
+                                            <div class="collapse" id="j-advanced-filter">
+                                                <div class="col-xs-12 s-add-filter s-add-filter-secondary-layout">
+                                                    <a href="##j-advanced-filter" class="s-close" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-times"></i></a>
+                                                    <div class="row">
+                                                        <div class="col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-xs-3">
+                                                                    <h4>Define Filter</h4>
+                                                                    <div class="form-group form-group-sm s-option-group">
+                                                                        <label class="control-label">
+                                                                        <span>Select From</span> 
+                                                                        <strong>Orders</strong>:
+                                                                        </label>
+                                                                        <div class="s-option-wrapper">
+                                                                            <select class="form-control input-sm">
+                                                                                <option value="" selected="selected">  Account</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group form-group-sm s-option-group s-selected">
+                                                                        <label class="control-label">
+                                                                        <span>Select From</span> 
+                                                                        <strong>Account</strong>:
+                                                                        </label>
+                                                                        <div class="s-option-wrapper s-right">
+                                                                            <select class="form-control input-sm s-selected">
+                                                                                <option value="" selected="selected">  Account:</option>
+                                                                                <option value="_account.accountAddresses" label="Addresses">Addresses</option>
+                                                                                <option value="_account.accountAuthentications" label="Account Authentications">Account Authentications</option>
+                                                                                <option value="_account.accountEmailAddresses" label="Account Email Addresses">Account Email Addresses</option>
+                                                                                <option value="_account.accountID" label="accountID">accountID</option>
+                                                                                <option value="_account.accountPhoneNumbers" label="Phone Numbers">Phone Numbers</option>
+                                                                                <option value="_account.cmsAccountID" label="CMS Account ID">CMS Account ID</option>
+                                                                                <option value="_account.company" label="Company">Company</option>
+                                                                                <option value="_account.createdByAccountID" label="Created By AccountID">Created By AccountID</option>
+                                                                                <option value="_account.createdDateTime" label="Created Date Time">Created Date Time</option>
+                                                                                <option value="_account.failedLoginAttemptCount" label="Failed Login Attempts">Failed Login Attempts</option>
+                                                                                <option value="_account.firstName" label="First Name" selected="selected">First Name</option>
+                                                                                <option value="_account.lastName" label="Last Name">Last Name</option>
+                                                                                <option value="_account.loginLockExpiresDateTime" label="Account Locked">Account Locked</option>
+                                                                                <option value="_account.modifiedByAccountID" label="Modified By AccountID">Modified By AccountID</option>
+                                                                                <option value="_account.modifiedDateTime" label="Modified Date Time">Modified Date Time</option>
+                                                                                <option value="_account.permissionGroups" label="Permission Groups">Permission Groups</option>
+                                                                                <option value="_account.primaryAddress" label="Primary Address">Primary Address</option>
+                                                                                <option value="_account.primaryEmailAddress" label="Account Primary Email Address">Account Primary Email Address</option>
+                                                                                <option value="_account.primaryPhoneNumber" label="Account Primary Phone Number">Account Primary Phone Number</option>
+                                                                                <option value="_account.superUserFlag" label="Super User">Super User</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-6 s-criteria">
+                                                                    <h4>Criteria</h4>
+                                                                    <div class="form-group form-group-sm s-option-group">
+                                                                        <label class="control-label">
+                                                                        <span>Condition:</span> 
+                                                                        </label>
+                                                                        <div class="s-option-wrapper">
+                                                                            <select class="form-control input-sm">
+                                                                                <option selected="selected" value="" class="">Select Condition</option>
+                                                                                <option value="" label="Equals" selected="selected">Equals</option>
+                                                                                <option value="" label="Doesn't Equal">Doesn't Equal</option>
+                                                                                <option value="" label="Contains">Contains</option>
+                                                                                <option value="" label="Doesn't Contain">Doesn't Contain</option>
+                                                                                <option value="" label="Starts With">Starts With</option>
+                                                                                <option value="" label="Doesn't Start With">Doesn't Start With</option>
+                                                                                <option value="" label="Ends With">Ends With</option>
+                                                                                <option value="" label="Doesn't End With">Doesn't End With</option>
+                                                                                <option value="" label="In List">In List</option>
+                                                                                <option value="" label="Not In List">Not In List</option>
+                                                                                <option value="" label="Defined">Defined</option>
+                                                                                <option value="" label="Not Defined">Not Defined</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group form-group-sm s-option-group s-selected">
+                                                                        <label class="control-label">
+                                                                        <span>Value:</span> 
+                                                                        </label>
+                                                                        <div class="s-option-wrapper">
+                                                                            <input type="text" class="form-control">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-3">
+                                                                    <h4>Preview &amp; Save</h4>
+                                                                    <div class="well well-sm">
+                                                                        <div>Preview:</div>
+                                                                        <div style="color: #666">
+                                                                            First Name = <strong>Reinaldo</strong>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button class="btn btn-primary">Add Filter</button>
+                                                                    <!--- Multi Option Button --->
+                                                                    <!-- <div class="btn-group s-multiple-option-btn">
+                                                                        <a href="#" class="btn btn-primary btn-small">Add Filter</a>
+                                                                        <button class="btn dropdown-toggle btn-primary btn-small" data-toggle="dropdown">
+                                                                        <span class="caret"></span>
+                                                                        </button>
+                                                                        <ul class="dropdown-menu">
+                                                                        	<li class="disabled">
+                                                                        		<a href="#">Add Filter</a>
+                                                                        	</li>
+                                                                        	<li>
+                                                                        		<a href="#">Save & Add Another Filter</a>
+                                                                        	</li>
+                                                                        </ul>
+                                                                        </div> -->
+                                                                    <!--- ///Multi Option Button --->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!---  //ADD FILTER --->
+                                        </div>
+                                        <div class="s-filter-wrapper">
+                                            <div class="s-filters">
+                                                <!--- Filter --->
+                                                <div class="btn-group">
+                                                    <button class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#j-example-filter" aria-expanded="false" aria-controls="j-example-filter">First Name = Reinaldo</button>
+                                                    <button type="button" class="btn btn-sm btn-primary s-remove">
+                                                    <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                                <!--- //Filter --->
+                                                <!--- Filter --->
+                                                <div class="btn-group">
+                                                    <button class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#j-example-filter" aria-expanded="false" aria-controls="j-example-filter">First Name = Reinaldo</button>
+                                                    <button type="button" class="btn btn-sm btn-primary s-remove">
+                                                    <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                                <!--- //Filter --->
+                                            </div>
+                                            <!--- ADD FILTER --->
+                                            <div class="col-xs-12 s-add-filter s-add-filter-secondary-layout collapse" id="j-example-filter">
+                                                <a href="##j-example-filter" class="s-close" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-times"></i></a>
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <div class="row">
+                                                            <div class="col-xs-3">
+                                                                <h4>Define Filter</h4>
+                                                                <div class="form-group form-group-sm s-option-group">
+                                                                    <label class="control-label">
+                                                                    <span>Select From</span> 
+                                                                    <strong>Orders</strong>:
+                                                                    </label>
+                                                                    <div class="s-option-wrapper">
+                                                                        <select class="form-control input-sm">
+                                                                            <option value="" selected="selected">  Account</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group form-group-sm s-option-group s-selected">
+                                                                    <label class="control-label">
+                                                                    <span>Select From</span> 
+                                                                    <strong>Account</strong>:
+                                                                    </label>
+                                                                    <div class="s-option-wrapper s-right">
+                                                                        <select class="form-control input-sm s-selected">
+                                                                            <option value="" selected="selected">  Account:</option>
+                                                                            <option value="_account.accountAddresses" label="Addresses">Addresses</option>
+                                                                            <option value="_account.accountAuthentications" label="Account Authentications">Account Authentications</option>
+                                                                            <option value="_account.accountEmailAddresses" label="Account Email Addresses">Account Email Addresses</option>
+                                                                            <option value="_account.accountID" label="accountID">accountID</option>
+                                                                            <option value="_account.accountPhoneNumbers" label="Phone Numbers">Phone Numbers</option>
+                                                                            <option value="_account.cmsAccountID" label="CMS Account ID">CMS Account ID</option>
+                                                                            <option value="_account.company" label="Company">Company</option>
+                                                                            <option value="_account.createdByAccountID" label="Created By AccountID">Created By AccountID</option>
+                                                                            <option value="_account.createdDateTime" label="Created Date Time">Created Date Time</option>
+                                                                            <option value="_account.failedLoginAttemptCount" label="Failed Login Attempts">Failed Login Attempts</option>
+                                                                            <option value="_account.firstName" label="First Name" selected="selected">First Name</option>
+                                                                            <option value="_account.lastName" label="Last Name">Last Name</option>
+                                                                            <option value="_account.loginLockExpiresDateTime" label="Account Locked">Account Locked</option>
+                                                                            <option value="_account.modifiedByAccountID" label="Modified By AccountID">Modified By AccountID</option>
+                                                                            <option value="_account.modifiedDateTime" label="Modified Date Time">Modified Date Time</option>
+                                                                            <option value="_account.permissionGroups" label="Permission Groups">Permission Groups</option>
+                                                                            <option value="_account.primaryAddress" label="Primary Address">Primary Address</option>
+                                                                            <option value="_account.primaryEmailAddress" label="Account Primary Email Address">Account Primary Email Address</option>
+                                                                            <option value="_account.primaryPhoneNumber" label="Account Primary Phone Number">Account Primary Phone Number</option>
+                                                                            <option value="_account.superUserFlag" label="Super User">Super User</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xs-6 s-criteria">
+                                                                <h4>Criteria</h4>
+                                                                <div class="form-group form-group-sm s-option-group">
+                                                                    <label class="control-label">
+                                                                    <span>Condition:</span> 
+                                                                    </label>
+                                                                    <div class="s-option-wrapper">
+                                                                        <select class="form-control input-sm">
+                                                                            <option selected="selected" value="" class="">Select Condition</option>
+                                                                            <option value="" label="Equals" selected="selected">Equals</option>
+                                                                            <option value="" label="Doesn't Equal">Doesn't Equal</option>
+                                                                            <option value="" label="Contains">Contains</option>
+                                                                            <option value="" label="Doesn't Contain">Doesn't Contain</option>
+                                                                            <option value="" label="Starts With">Starts With</option>
+                                                                            <option value="" label="Doesn't Start With">Doesn't Start With</option>
+                                                                            <option value="" label="Ends With">Ends With</option>
+                                                                            <option value="" label="Doesn't End With">Doesn't End With</option>
+                                                                            <option value="" label="In List">In List</option>
+                                                                            <option value="" label="Not In List">Not In List</option>
+                                                                            <option value="" label="Defined">Defined</option>
+                                                                            <option value="" label="Not Defined">Not Defined</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group form-group-sm s-option-group s-selected">
+                                                                    <label class="control-label">
+                                                                    <span>Value:</span> 
+                                                                    </label>
+                                                                    <div class="s-option-wrapper">
+                                                                        <input type="text" class="form-control">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xs-3">
+                                                                <h4>Preview &amp; Save</h4>
+                                                                <div class="well well-sm">
+                                                                    <div>Preview:</div>
+                                                                    <div style="color: #666">
+                                                                        First Name = <strong>Reinaldo</strong>
+                                                                    </div>
+                                                                </div>
+                                                                <button class="btn btn-primary">Add Filter</button>
+                                                                <!--- Multi Option Button --->
+                                                                <!-- <div class="btn-group s-multiple-option-btn">
+                                                                    <a href="#" class="btn btn-primary btn-small">Add Filter</a>
+                                                                    <button class="btn dropdown-toggle btn-primary btn-small" data-toggle="dropdown">
+                                                                    <span class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu">
+                                                                    	<li class="disabled">
+                                                                    		<a href="#">Add Filter</a>
+                                                                    	</li>
+                                                                    	<li>
+                                                                    		<a href="#">Save & Add Another Filter</a>
+                                                                    	</li>
+                                                                    </ul>
+                                                                    </div> -->
+                                                                <!--- ///Multi Option Button --->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!---  //ADD FILTER --->
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    
+                                    <div class="s-detail-notifications s-detail-hidden-content">
+    									<div class="row">
+    										<div class="col-sm-8 s-message">
+    											<span>All <b>50</b> items on this page are selected.</span> 
+    		                                    <a href="##">Select all <b>5,720</b> items</span></a>
+    										</div>
+    										<div class="col-sm-4" style="text-align:right;">
+                                                
+                                                <div class="btn-toolbar" style="margin:0px;">
+                                        
+                                                    <div class="btn-group btn-group-xs">
+                										<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-print"></i></button>
+                										<ul class="dropdown-menu pull-right">
+                											<li>
+                												<a href="##" target="_self">Order Confirmation</a>
+                                                                <a href="##" target="_self">Order Status</a>
+                                                                <a href="##" target="_self">...</a>
+                											</li> 
+                										</ul>
+                									</div>
+                                                    
+                                                    <div class="btn-group btn-group-xs">
+                										<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-envelope"></i></button>
+                										<ul class="dropdown-menu pull-right">
+                											<li>
+                												<a href="##" target="_self">Order Confirmation</a>
+                                                                <a href="##" target="_self">Order Status</a>
+                                                                <a href="##" target="_self">...</a>
+                											</li> 
+                										</ul>
+                									</div>
+                                                    
+                                                    <div class="btn-group btn-group-xs">
+                										<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">Action <span class="caret"></span></button>
+                										<ul class="dropdown-menu pull-right">
+                											<li>
+                												<a href="##" target="_self">Capture & Fulfill</a>
+                                                                <a href="##" target="_self">Fulfill</a>
+                                                                <a href="##" target="_self">....</a>
+                											</li> 
+                										</ul>
+                									</div>
+                                                    
+                								</div>
+                                                
+    										</div>
+    									</div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered s-detail-content-table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox" id="exampleID">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <span>Fulfillment</span>
+                                                        <a href="#" class="s-sort-arrows">
+            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+            													<g transform="translate(0.5, 0.5)"> 
+            														<polygon class="s-ascending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+            														<polygon class="s-descending s-active" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+            													</g>
+            												</svg>
+            											</a>
+                                                    </th>
+                                                    <th class="s-detail-hidden-content">
+                                                        <span>Date</span>
+                                                        <a href="#" class="s-sort-arrows">
+            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+            													<g transform="translate(0.5, 0.5)"> 
+            														<polygon class="s-ascending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+            														<polygon class="s-descending s-active" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+            													</g>
+            												</svg>
+            											</a>
+                                                    </th>
+                                                    <th class="s-detail-hidden-content">
+                                                        <span>Items</span>
+                                                        <a href="#" class="s-sort-arrows">
+            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+            													<g transform="translate(0.5, 0.5)"> 
+            														<polygon class="s-ascending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+            														<polygon class="s-descending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+            													</g>
+            												</svg>
+            											</a>
+                                                    </th>
+                                                    <th class="s-detail-hidden-content">
+                                                        <span>Shipping</span>
+                                                        <a href="#" class="s-sort-arrows">
+            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+            													<g transform="translate(0.5, 0.5)"> 
+            														<polygon class="s-ascending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+            														<polygon class="s-descending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+            													</g>
+            												</svg>
+            											</a>
+                                                    </th>
+                                                    <th class="s-detail-hidden-content">
+                                                        <span>State</span>
+                                                        <a href="#" class="s-sort-arrows">
+            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+            													<g transform="translate(0.5, 0.5)"> 
+            														<polygon class="s-ascending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+            														<polygon class="s-descending" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+            													</g>
+            												</svg>
+            											</a>
+                                                    </th>
+                                                    <th>Status</th>
+                                                    <th class="s-detail-hidden-content">
+                                                        
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="s-removed">
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-danger">
+                                                            Unfulfillable
+                                                        </span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                <tr class="s-done">
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                        <div class="s-comments-wrapper">
+                                                            <i class="fa fa-comment s-comments-link"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-success">Fulfilled</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                    
+                                                <tr class="s-active">
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                        <div class="s-comments-wrapper">
+                                                            <i class="fa fa-comment s-comments-link"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                        <div class="s-comments-wrapper">
+                                                            <i class="fa fa-comment s-comments-link"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                        <div class="s-comments-wrapper">
+                                                            <i class="fa fa-comment s-comments-link"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                        <div class="s-comments-wrapper">
+                                                            <i class="fa fa-comment s-comments-link"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                                
+                                                <tr>
+                                                    <td class="s-table-checkbox s-detail-hidden-content">
+                                                        <div class="s-checkbox">
+                                                            <input type="checkbox">
+                                                            <label for="exampleID"></label>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <a href="##">383745</a> 
+                                                        <div class="s-comments-wrapper">
+                                                            <i class="fa fa-comment s-comments-link"></i>
+                                                        </div>
+                                                    </td>
+                                                    <td class="s-detail-hidden-content">11/2/15</td>
+                                                    <td class="s-number s-detail-hidden-content">0</td>
+                                                    <td class="s-detail-hidden-content">Overnight</td>
+                                                    <td class="s-detail-hidden-content">California</td>
+                                                    <td>
+                                                        <span class="s-ready">Ready</span>
+                                                    </td>
+                                                    <td class="admin admin2 s-detail-hidden-content">
+                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                        <i class="fa fa-eye"></i> 
+                                                        </a> 
+                                                    </td>
+                                                </tr>
+                                        
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <div class="s-pagination-wrapper">
+                                    <ul class="pagination">
+                                        <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 2411)</span></a></li>
+                                        <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                        <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                        <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                        <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                        <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                        <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                        <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                        <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                        <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                        <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                        <li><a href="#" class="listing-pager page-option next" data-page="2">»</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xs-8 s-results-detail">
+                                <div class="s-detail-body s-arrow">
+                                    <div class="s-content-header">
+                                        <h2>Order #383745</h2>
+                                        <span class="pull-right">
+                                            
+                                            <div class="btn-toolbar" role="toolbar"> 
+                                                <div class="btn-group" role="group"> 
+                                                    <button class="btn btn-xs btn-default" role="button" data-toggle="collapse" data-target="#j-comments" aria-expanded="false" aria-controls="j-comments">2 <i class="fa fa-comment"></i></button>
+                                                </div> 
+                                                
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-print"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#">Picking List</a></li>
+                                                        <li><a href="#">Standard Packing List</a></li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-envelope"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#">Cancellation</a></li>
+                                                        <li><a href="#">Confirmation</a></li>
+                                                        <li><a href="#">Order Stutus</a></li>
+                                                    </ul>
+                                                </div>
+                                                
+                                                <div class="btn-group" role="group"> 
+                                                    <button class="btn btn-xs btn-default s-remove"><i class="fa fa-trash"></i></button>
+                                                </div> 
+                                                
+                                                <div class="btn-group s-btn-dropdown" role="group"> 
+                                                    <button type="button" class="btn btn-primary btn-xs">
+        						                    	<span>Capture &amp; Fulfill</span> 
+        						                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+        												<li><a href="#">Fulfill</a></li>
+        						                    </ul>
+                                                    <button type="button" class="btn btn-primary s-btn-select btn-xs" data-toggle="dropdown">
+        												<span class="caret"></span>
+        						                    </button>
+                                                </div>
+                                                 
+                                            </div>
+                                        </span>
+                                    </div>
+                                    
+                                    
+                                    <ul class="collapse s-item-comments list-unstyled" id="j-comments">
+                                        
+                                        <li class="s-comment-item">
+                                            <div class="s-info">
+                                                <span class="s-user">
+                                                    <a href="">Reinaldo Solares</a>
+                                                </span>
+                                                <span class="s-date"> 10 hours ago</span>
+                                                <!-- <span class="s-actions">
+                                                    <a href="#" type="button"><i class="fa fa-remove"></i></a>
+                                                    <a href="#" type="button"><i class="fa fa-pencil"></i></a>
+                                                </span> -->
+                                            </div>
+                                            <p>Integer posuere erat a ante venenatis dapibus posuere velit aliquet.</p>
+                                        </li>
+                                        
+                                        <li class="s-comment-item">
+                                            <div class="s-info">
+                                                <span class="s-user">
+                                                    <a href="">Tom Evens</a>
+                                                </span>
+                                                <span class="s-date"> 2/23/16</span>
+                                                <span class="s-actions">
+                                                    <a href="#" type="button"><i class="fa fa-remove"></i></a>
+                                                    <a href="#" type="button"><i class="fa fa-pencil"></i></a>
+                                                </span>
+                                            </div>
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                                        </li>
+                                        
+                                        <li class="s-comment-item">
+                                            <textarea class="form-control" name="name" rows="3" cols=""></textarea>
+                                            <button class="btn btn-sm btn-primary">Add Comment</button>
+                                        </li>
+                                        
+                                    </ul>
+                                    
+                                    <div class="s-item-detail">
+                                        
+                                        <!--- Item Header --->
+                                        <div class="s-item-detail-header">
+                                            <div class="col-xs-4">
+                                                <div class="s-item-detail-header-block">
+                                                    <h4>Basic</h4>
+                                                    <ul class="list-unstyled">
+                                                        <li>
+                                                            <div class="row s-line-item">
+                                                                <div class="col-xs-5 s-title">Account:</div>
+                                                                <div class="col-xs-7 s-value"><a href="##">Tom Evens</a></div>
+                                                            </div>
+                                                        </li>        
+                                                        <li>
+                                                            <div class="row s-line-item">
+                                                                <div class="col-xs-5 s-title">Date Placed:</div>
+                                                                <div class="col-xs-7 s-value">2/23/16</div>
+                                                            </div>
+                                                        </li>        
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="s-item-detail-header-block">
+                                                    <h4>Payment</h4>
+                                                    <ul class="list-unstyled">
+                                                        <li>
+                                                            <div class="row s-line-item">
+                                                                <div class="col-xs-5 s-title">Original Total:</div>
+                                                                <div class="col-xs-7 s-value">$100.34</div>
+                                                            </div>
+                                                        </li>        
+                                                        <li>
+                                                            <div class="row s-line-item">
+                                                                <div class="col-xs-5 s-title">Balance Due:</div>
+                                                                <div class="col-xs-7 s-value">$100.34</div>
+                                                            </div>
+                                                        </li>            
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-4">
+                                                <div class="s-item-detail-header-block">
+                                                    <h4>Shipping</h4>
+                                                    <ul class="list-unstyled">
+                                                        <li>
+                                                            <div class="row s-line-item">
+                                                                <div class="col-xs-5 s-title">Method:</div>
+                                                                <div class="col-xs-7 s-value">Ground</div>
+                                                            </div>
+                                                        </li>        
+                                                        <li>
+                                                            <div class="row s-line-item">
+                                                                <div class="col-xs-5 s-title">Location:</div>
+                                                                <div class="col-xs-7 s-value">
+                                                                    <div class="s-city-state">Encinitas CA.</div>
+                                                                </div>
+                                                            </div>
+                                                        </li>             
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--- //Item Header --->
+                                        
+                                    </div>
+                                    
+                                </div>
+                                
+                                <div class="s-detail-body s-arrow s-remove-manual-fulfill"><!--- ***Removing s-remove-manual-fulfill will show fulfill all and activate inputs*** --->
+                                    <div class="s-content-block-wrapper">
+                                        <div class="s-header">
+                                            <h3>Fulfillment Items <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
+                                        </div>
+                                        <div class="s-body">
+                                            <div class="s-table-toolbar">
+                                                <div class="s-select-list-wrapper s-search">
+    											    <div class="form-group">
+    											        <div class="input-group s-search-group">
+    											            <div class="s-input-btn">
+    											                <input type="text" value="" class="form-control s-sku" placeholder="&#xf02a;">
+    											                <span class="glyphicon glyphicon-remove"></span>
+    											            </div>
+    											            <div class="input-group-btn s-fulfill-all">
+    											                <button class="btn btn-sm btn-default" type="submit">Fulfill All</button>
+    											            </div>
+    											        </div>
+    											    </div>
+    											</div>
+                                            </div>
+
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><!--- Blank header for images ---></th>
+                                                            <th>Item Name</th>
+                                                            <th>Sku Code</th>
+                                                            <th>Qty</th>
+                                                            <th><!--- Blank header for fulfill count ---></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><img src="http://placehold.it/60x60"></td>
+                                                            <td>Fire Skateboard Deck</td>
+                                                            <td>GH675R</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <input class="form-control" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><img src="http://placehold.it/60x60"></td>
+                                                            <td>Fire Skateboard Deck</td>
+                                                            <td>GH675R</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <input class="form-control" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><img src="http://placehold.it/60x60"></td>
+                                                            <td>Fire Skateboard Deck</td>
+                                                            <td>GH675R</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <input class="form-control" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><img src="http://placehold.it/60x60"></td>
+                                                            <td>Fire Skateboard Deck</td>
+                                                            <td>GH675R</td>
+                                                            <td>1</td>
+                                                            <td>
+                                                                <input class="form-control" value="0">
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="s-detail-body s-arrow">
+                                    <div class="s-content-block-wrapper">
+                                        <div class="s-header">
+                                            <h3>Shipping Options</h3>
+                                            <a href="##" class="s-toggle"><!--- populated with css ---></a>
+                                        </div>
+                                        <div class="s-body">
+                                            
+                                            <div class="s-content-wrapper">
+                                                
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <label class="s-strong" style="margin-top: 4px;">Print Labels Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                                    </div>
+                                                    <div class="col-xs-9">
+                                                        <div class="row s-ladel-options">
+                                                            <div class="col-xs-4 radio">
+                                                                <input id="GenerateShippingLabel" type="radio" name="printOption" checked>
+                                                                <label for="GenerateShippingLabel" title="helper text should go here to describe item">Generate Shipping Label(s)</label>
+                                                            </div>
+                                                            <div class="col-xs-4 radio">
+                                                                <input id="ManualShipment" type="radio" name="printOption">
+                                                                <label for="ManualShipment" title="helper text should go here to describe item">Manual Shipment</label>
+                                                                <input class="form-control s-tracking-code" type="text" placeholder="tracking code...">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <script>
+                                                        $('.s-ladel-options input[type=radio]').change(function(){
+                                                             if($('#GenerateShippingLabel').is(':checked')) { 
+                                                                 $('.s-add-box-wrapper').parent().show();
+                                                                 $('.s-tracking-code').hide();
+                                                            }else{
+                                                                $('.s-add-box-wrapper').parent().hide();
+                                                                $('.s-tracking-code').show();
+                                                            };
+                                                            
+                                                        });
+                                                        
+                                                    </script>
+                                                    <div class="col-xs-12">
+                                                        <div class="s-add-box-wrapper">
+                                                                    
+                                                            <table class="table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Boxes</th>
+                                                                        <th>Type</th>
+                                                                        <th>Height</th>
+                                                                        <th>Width</th>
+                                                                        <th>Depth</th>
+                                                                        <th>Weight</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>1</td>
+                                                                        <td>
+                                                                            <select class="form-control" name="">
+                                                                                <option value="">Custom</option>
+                                                                                <option value="">10x12x4</option>
+                                                                                <option value="">10x10x10</option>
+                                                                                <option value="">45x10x34</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="667" placeholder="H">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="34" placeholder="W">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="604" placeholder="D">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="456" placeholder="Weight">
+                                                                        </td>
+                                                                        <td>
+                                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                                <i class="fa fa-remove"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>2</td>
+                                                                        <td>
+                                                                            <select class="form-control" name="">
+                                                                                <option value="">Custom</option>
+                                                                                <option value="">10x12x4</option>
+                                                                                <option value="">10x10x10</option>
+                                                                                <option value="" selected>45x10x34</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="45" placeholder="H">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="W">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="34" placeholder="D">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="167" placeholder="Weight">
+                                                                        </td>
+                                                                        <td>
+                                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                                <i class="fa fa-remove"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>3</td>
+                                                                        <td>
+                                                                            <select class="form-control" name="">
+                                                                                <option value="">Custom</option>
+                                                                                <option value="">10x12x4</option>
+                                                                                <option value="" selected>10x10x10</option>
+                                                                                <option value="">45x10x34</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="H">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="W">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="10" placeholder="D">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="30" placeholder="Weight">
+                                                                        </td>
+                                                                        <td>
+                                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                                <i class="fa fa-remove"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="s-new-box">
+                                                                        <td>-</td>
+                                                                        <td>
+                                                                            <select class="form-control" name="">
+                                                                                <option value="" disabled selected>-Select Size-</option>
+                                                                                <option value="">Custom</option>
+                                                                                <option value="">10x12x4</option>
+                                                                                <option value="">10x10x10</option>
+                                                                                <option value="">45x10x34</option>
+                                                                            </select>
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="H">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="W">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="D">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input type="text" class="form-control" type="button" name="name" value="" placeholder="Weight">
+                                                                        </td>
+                                                                        <td>
+                                                                            <button class="btn btn-default btn-xs s-remove">
+                                                                                <i class="fa fa-remove"></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr/>
+                                                <div class="row">
+                                                    <div class="col-xs-3">
+                                                        <label class="s-strong" style="margin-top: 4px;">Extra Print Options: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                                    </div>
+                                                    <div class="col-xs-9">
+                                                        <div class="row">
+                                                            <div class="col-xs-4 s-checkbox">
+                                                                <input id="ExtraPrintOptions1" type="checkbox" name="ExtraPrintOptions" checked>
+                                                                <label for="ExtraPrintOptions1" title="helper text should go here to describe item"> Standard Packing Slip</label>
+                                                            </div>
+                                                            <div class="col-xs-4 s-checkbox">
+                                                                <input id="ExtraPrintOptions2" type="checkbox" name="ExtraPrintOptions">
+                                                                <label for="ExtraPrintOptions2" title="helper text should go here to describe item"> Birthday Coupon</label>
+                                                            </div>
+                                                            <div class="col-xs-4 s-checkbox">
+                                                                <input id="ExtraPrintOptions3" type="checkbox" name="ExtraPrintOptions">
+                                                                <label for="ExtraPrintOptions3" title="helper text should go here to describe item"> 15% Off Next Purchase</label>
+                                                            </div>
+                                                            <div class="col-xs-4 s-checkbox">
+                                                                <input id="ExtraPrintOptions4" type="checkbox" name="ExtraPrintOptions">
+                                                                <label for="ExtraPrintOptions4" title="helper text should go here to describe item"> April Savings</label>
+                                                            </div>
+                                                            <div class="col-xs-4 s-checkbox">
+                                                                <input id="ExtraPrintOptions5" type="checkbox" name="ExtraPrintOptions">
+                                                                <label for="ExtraPrintOptions5" title="helper text should go here to describe item"> Christmas Savings</label>
+                                                            </div>
+                                                            <div class="col-xs-4 s-checkbox">
+                                                                <input id="ExtraPrintOptions6" type="checkbox" name="ExtraPrintOptions">
+                                                                <label for="ExtraPrintOptions6" title="helper text should go here to describe item"> Easter Savings</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="s-detail-body s-arrow">
+                                    <div class="s-content-block-wrapper">
+                                        <div class="s-header">
+                                            <h3>Order Delivery Custom Attributes <i class="fa fa-info-circle s-tooltip-hint"></i></h3>
+                                            <a href="##" class="s-toggle"><!--- populated with css ---></a>
+                                        </div>
+                                        <div class="s-body">
+                                            <div class="s-content-wrapper form-horizontal">
+                                                        
+                                                <div class="form-group">
+                                                    <label for="input" class="col-xs-3 control-label">Packer Name: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="input" class="col-xs-3 control-label">Carrier Pickup Time: <i class="fa fa-info-circle s-tooltip-hint"></i></label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control">
+                                                            <option value="" disabled selected>-Select-</option>
+                                                            <option value="">Example</option>
+                                                            <option value="">Example</option>
+                                                            <option value="">Example</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label for="input" class="col-xs-3 control-label">Estimated Arrival Date:</label>
+                                                    <div class="col-sm-9">
+                                                        <textarea class="form-control" rows="3"></textarea>
+                                                    </div>
+                                                </div>
+      
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="s-detail-body s-arrow">
+                                    <div class="s-content-block-wrapper">
+                                        <div class="s-header">
+                                            <h3>Payment Overview</h3>
+                                        </div>
+                                        <div class="s-body">
+                                            <div class="s-content-wrapper">
+                                                <div class="row">
+                                                    <div class="col-xs-2">
+                                                        <div class="s-title">Authorized</div>
+                                                        <div class="s-content">$100.34</div>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <div class="s-title">Fulfilled</div>
+                                                        <div class="s-content">$0.00</div>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <div class="s-title">Captured</div>
+                                                        <div class="s-content">$0.00</div>
+                                                    </div>
+                                                    <div class="col-xs-2 s-captured">
+                                                        <div class="s-title">To Capture</div>
+                                                        <input type="text" class="form-control" value="$100.34">
+                                                        <button class="btn btn-xs btn-success">Capture</button>
+                                                    </div>
+                                                    
+                                                    <div class="col-xs-4">
+                                                        <div class="btn-group s-btn-dropdown" role="group"> 
+                                                            <button type="button" class="btn btn-primary btn-lg">
+                						                    	<span>Capture &amp; Fulfill</span> 
+                						                    </button>
+                                                            <ul class="dropdown-menu" role="menu">
+                												<li><a href="#">Fulfill</a></li>
+                						                    </ul>
+                                                            <button type="button" class="btn btn-primary s-btn-select btn-lg" data-toggle="dropdown">
+                												<span class="caret"></span>
+                						                    </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <br/>
+                    <br/><br/><br/><br/><!--- remove these --->
+                    <script>
+                        $('.s-detail-modules-wrapper .s-click').click(function(){
+                        	$(this).find('.s-sm-content-block').toggleClass('s-selected');
+                        });
+                    </script>
+                </div>
+            </div>
+        </section>
+        
+        <script>
+            (function(){
+                $('.s-content-block-wrapper .s-toggle').click(function(){
+                    $(this).closest('.s-content-block-wrapper').toggleClass('s-closed');
+                });
+            })();
+        </script>
+        <script>
+            (function(){
+                $('.s-expand-table').click(function(){
+                    $(this).closest('.s-detail-content-wrapper').removeClass('s-shrink-view');
+                    $(this).closest('.s-results-listing').addClass('col-xs-12');
+                    $(this).closest('.s-results-listing').removeClass('col-xs-4');
+                });
+                
+                $('.s-detail-content-wrapper .s-detail-body table tr td .fa-eye').click(function(){
+                    $(this).closest('.s-detail-content-wrapper').addClass('s-shrink-view');
+                    $(this).closest('.s-results-listing').removeClass('col-xs-12');
+                    $(this).closest('.s-results-listing').addClass('col-xs-4');
+                });
+                
+                $('.s-compress-table').click(function(){
+                    $(this).closest('.s-detail-content-wrapper').addClass('s-shrink-view');
+                    $(this).closest('.s-results-listing').removeClass('col-xs-12');
+                    $(this).closest('.s-results-listing').addClass('col-xs-4');
+                });
+            }());
+        </script>
+        
+        <!-- For now I am leaving this css in the design system.  It's only use is to format the design systems layout, and not effect any elements within -->
+        <style>
+            /*Overwirtes*/
+            body {
+            padding:0px;
+            }
+            /*Header*/
+            .s-ds-header {
+            background: #F58620;
+            color: #fff;
+            padding: 30px;
+            }
+            .s-ds-header h1 {
+            margin-top:0px;
+            }
+            .s-ds-header a {
+            color: #fff;
+            text-decoration: underline;
+            }
+            .s-ds-header a:hover {
+            color: #eee;
+            }
+            /*Sidebar*/
+            .s-ds-sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 3px;
+            }
+            /*Type Object Group*/
+            .s-ds-type-group > h2 {
+            border-bottom: 2px solid #AAA;
+            font-weight: 600;
+            text-transform: uppercase;
+            }
+            .s-ds-obj-listing li {
+            margin-bottom: 10px;
+            }
+            .s-ds-type-item-objs .s-ds-type-item-obj {
+            padding: 20px;
+            background: #fff;
+            border-radius: 4px;
+            }
+        </style>
+        <script type="text/javascript" src="/client/lib/ngTagsInput/ng-tags-input.min.js"></script>
+        <script>
+            var app = angular.module('slatwalladmin', ['ngTagsInput']);
+            
+            app.controller('MainCtrl', function($scope, $http) {
+            	$scope.locations = [
+            	    { text: 'San Diego > ... > Floor c' },
+            	    { text: 'Tag2' },
+            	    { text: 'Tag3' }
+            	  ];
+            	 $scope.allLocations = [
+            	  { "text": "Tag1" },
+            	  { "text": "Tag2" },
+            	  { "text": "Tag3" },
+            	  { "text": "Tag4" },
+            	  { "text": "Tag5" },
+            	  { "text": "Tag6" },
+            	  { "text": "Tag7" },
+            	  { "text": "Tag8" },
+            	  { "text": "Tag9" },
+            	  { "text": "Tag10" }
+            	]
+            	$scope.loadLocations = function(query) {
+            		return $scope.allLocations;
+            	};
+            	$scope.placeholder = function(){
+            		if($scope.locations.length){
+            			
+            		};
+            	};
+            });
+            
+        </script>
+    </body>
+</html>

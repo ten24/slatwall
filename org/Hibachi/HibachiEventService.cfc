@@ -98,9 +98,9 @@ component output="false" update="true" extends="HibachiService" {
 				
 				// Stick the Hibachi Scope in with the rest of the event data
 				arguments.eventData[ "#getApplicationValue('applicationKey')#Scope" ] = getHibachiScope();
-				
 				// Attempt to evaluate this method
-				evaluate("object.#eventName#( argumentCollection=arguments.eventData )");	
+				
+				object.callEvent(eventName=arguments.eventName,eventData=arguments.eventData);
 				
 			}
 		}
@@ -154,14 +154,7 @@ component output="false" update="true" extends="HibachiService" {
 				}
 			}
 		}
-		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallcms/model/handler')) {
-			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallcms/model/handler');
-			for(var h=1; h<=arrayLen(dirList); h++) {
-				if(listLast(dirList[h], '.') eq 'cfc') {
-					registerEventHandler( "#getApplicationValue('applicationKey')#.integrationServices.slatwallcms.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
-				}
-			}
-		}
+		
 	}
 	
 	public any function getEventNameOptions() {
