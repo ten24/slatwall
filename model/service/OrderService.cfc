@@ -686,17 +686,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
             if(!len(arguments.processObject.getCopyFromType()) && !isNull(arguments.processObject.getGiftCard())){
-            	writeDump("1");
 	            var giftCard = arguments.processObject.getGiftCard();
             } else if(len(arguments.processObject.getAccountPaymentMethodID()) && getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).isGiftCardAccountPaymentMethod()) {
-            	writeDump("2");
             	var giftCard = getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).getGiftCard();
             }
   			if(!isNull(giftCard)){
             	newOrderPayment.setGiftCardNumberEncrypted(giftCard.getGiftCardCode());
             } else {
             	newOrderPayment.addError('giftCard', rbKey('validate.giftCardCode.invalid'));
-            	abort;
             }
         }
 
