@@ -4773,14 +4773,15 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 /*-- List Select Component With Dropdown --*/
 .s-search-results-wrapper {
-  width: 100%;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  top: -3px;
+  top: -15px;
+  display: inline-block;
+  width: 100%;
 }
 .s-search-results-wrapper .dropdown-menu {
   top: 3px;
@@ -4804,6 +4805,10 @@ a.disabled > i.hibachi-ui-radio-checked {
   color: #666666;
   border-bottom: 1px solid #f2f2f2;
   padding: 8px 15px;
+}
+.s-search-results-wrapper .dropdown-menu a > .s-wrapper {
+  display: inline-block;
+  width: 100%;
 }
 .s-search-results-wrapper .dropdown-menu li:last-child a {
   border-bottom: 0px;
