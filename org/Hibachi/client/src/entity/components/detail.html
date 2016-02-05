@@ -73,8 +73,7 @@
 			<div class="panel-heading">
 				<h4 class="panel-title">
 					<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.tabName.toLowerCase().replace('.html','')"></span>
-					<i ng-show="detailTab.openTab" class="s-accordion-toggle-icon fa fa-caret-down"></i>
-					<i ng-show="!detailTab.openTab" class="s-accordion-toggle-icon fa fa-caret-left"></i>
+					<i class="s-accordion-toggle-icon fa" ng-class="(detailTab.openTab)? 'fa-caret-down' : 'fa-caret-left'"></i>
 				</h4>
 			</div>
 		</a>
@@ -85,7 +84,7 @@
 			</content>
 		</div>
 	</div>
-	<div class="j-panel panel panel-default">
+	<div class="j-panel panel panel-default" data-ng-if="!createMode">
 		<a data-toggle="collapse" href="/#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
 			<div class="panel-heading">
 				<h4 class="panel-title">

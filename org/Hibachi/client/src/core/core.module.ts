@@ -817,7 +817,6 @@ var coremodule = angular.module('hibachi.core',[
                         savePromise.then(function(response){
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
-                                console.warn('SAVED', returnedIDs, modifiedData.objectLevel)
                                 _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
                                 deferred.resolve(returnedIDs);
                             }else{

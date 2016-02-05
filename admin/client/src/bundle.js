@@ -1046,7 +1046,7 @@
 	            }
 
 	            if (scope.timeOnly === true){
-	                element[0].querySelector('#adp-date').style.display = 'none';
+	                element[0].querySelector('.adp-month').style.display = 'none';
 	            }
 
 	            scope.$applyAsync( function() {
@@ -1909,7 +1909,6 @@
 	                            savePromise.then(function (response) {
 	                                var returnedIDs = response.data;
 	                                if (angular.isDefined(response.SUCCESS) && response.SUCCESS === true) {
-	                                    console.warn('SAVED', returnedIDs, modifiedData.objectLevel);
 	                                    _addReturnedIDs(returnedIDs, modifiedData.objectLevel);
 	                                    deferred.resolve(returnedIDs);
 	                                }
@@ -15664,12 +15663,12 @@
 	         * Watches for changes in the proccess
 	         */
 	        this.showProcessOptions = false;
-	        this.processOptions = [];
-	        this.$scope.$watch('searchProcess.name', function (newValue, oldValue) {
-	            if (newValue !== oldValue) {
-	                _this.getProcessOptions(_this.workflowTask.data.workflow.data.workflowObject);
-	            }
-	        });
+	        this.processOptions = {};
+	        //this.$scope.$watch('swWorkflowTaskActions.searchProcess.name', (newValue, oldValue)=>{
+	        //    if(newValue !== oldValue){
+	        //        this.getProcessOptions(this.workflowTask.data.workflow.data.workflowObject);
+	        //    }
+	        //});
 	        /**
 	         * Retrieves the proccess options for a workflow trigger action.
 	         */
@@ -15681,16 +15680,17 @@
 	                    _this.processOptions = value.data;
 	                });
 	            }
-	            _this.showProcessOptions = !_this.showProcessOptions;
+	            _this.showProcessOptions = true;
 	        };
 	        /**
 	         * Changes the selected process option value.
 	         */
 	        this.selectProcess = function (processOption) {
 	            _this.workflowTaskActions.selectedTaskAction.data.processMethod = processOption.value;
-	            //scope.searchProcess.name = processOption.name;
+	            _this.searchProcess.name = processOption.name;
 	            _this.workflowTaskActions.selectedTaskAction.forms.selectedTaskAction.$setDirty();
-	            console.warn(_this.workflowTaskActions.selectedTaskAction);
+	            //this.searchProcess = processOption.name;
+	            _this.showProcessOptions = false;
 	        };
 	        this.selectEmailTemplate = function (item) {
 	            if (angular.isDefined(_this.workflowTaskActions.selectedTaskAction.data.emailTemplate)) {
@@ -16056,7 +16056,7 @@
 	                scope.collectionCollectionConfig.setDisplayProperties("collectionID,collectionName");
 	                scope.collectionCollectionConfig.addFilter("collectionObject", scope.workflow.data.workflowObject);
 	                scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
-	                scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName");
+	                scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
 	                scope.daysOfweek = [];
 	                scope.daysOfMonth = [];
 	                scope.selectedSchedule = '';
@@ -16246,6 +16246,8 @@
 	                    }
 	                };
 	                scope.selectSchedule = function (item) {
+	                    console.warn(item);
+	                    buildSchedulePreview(item);
 	                    if (angular.isDefined(scope.workflowTriggers.selectedTrigger.data.schedule)) {
 	                        scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleID = item.scheduleID;
 	                        scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleName = item.scheduleName;
@@ -16257,6 +16259,36 @@
 	                        scope.workflowTriggers.selectedTrigger.$$setSchedule(_schedule);
 	                    }
 	                };
+	                function buildSchedulePreview(item) {
+	                    scope.schedulePreview = [];
+	                    var startTime = new Date().setTime(Date.parse(item.frequencyStartTime));
+	                    var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	                    var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	                    var monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+	                    var now = new Date();
+	                    // if(now.getTime() < startTime.)
+	                    switch (item.recuringType) {
+	                        case 'daily':
+	                            for (var i = 1; i <= 50; i++) {
+	                                var timeToadd = (item.frequencyInterval) ? (item.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
+	                                var currentDatetime = new Date(now.getTime() + timeToadd);
+	                                var scheduleItem = {
+	                                    day: currentDatetime.getDate(),
+	                                    month: month[currentDatetime.getMonth() + 1],
+	                                    year: currentDatetime.getFullYear(),
+	                                    weekday: weekday[currentDatetime.getDay()],
+	                                    time: currentDatetime.toLocaleTimeString()
+	                                };
+	                                scope.schedulePreview.push(scheduleItem);
+	                            }
+	                            console.warn('Preview', scope.schedulePreview);
+	                            break;
+	                        case 'weekly':
+	                            break;
+	                        case 'monthly':
+	                            break;
+	                    }
+	                }
 	            }
 	        };
 	    }

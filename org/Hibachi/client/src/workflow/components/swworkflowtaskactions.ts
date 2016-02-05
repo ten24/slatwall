@@ -209,12 +209,12 @@ class SWWorkflowTaskActionsController {
          * Watches for changes in the proccess
          */
         this.showProcessOptions = false;
-        this.processOptions = [];
-        this.$scope.$watch('searchProcess.name', (newValue, oldValue)=>{
-            if(newValue !== oldValue){
-                this.getProcessOptions(this.workflowTask.data.workflow.data.workflowObject);
-            }
-        });
+        this.processOptions = {};
+        //this.$scope.$watch('swWorkflowTaskActions.searchProcess.name', (newValue, oldValue)=>{
+        //    if(newValue !== oldValue){
+        //        this.getProcessOptions(this.workflowTask.data.workflow.data.workflowObject);
+        //    }
+        //});
 
         /**
          * Retrieves the proccess options for a workflow trigger action.
@@ -226,9 +226,11 @@ class SWWorkflowTaskActionsController {
                 proccessOptionsPromise.then((value)=>{
                     this.$log.debug('getProcessOptions');
                     this.processOptions = value.data;
+
                 });
             }
-            this.showProcessOptions = !this.showProcessOptions;
+            this.showProcessOptions = true;
+
         };
 
         /**
@@ -236,10 +238,11 @@ class SWWorkflowTaskActionsController {
          */
         this.selectProcess = (processOption)=>{
             this.workflowTaskActions.selectedTaskAction.data.processMethod = processOption.value;
-            //scope.searchProcess.name = processOption.name;
+            this.searchProcess.name = processOption.name;
 
             this.workflowTaskActions.selectedTaskAction.forms.selectedTaskAction.$setDirty();
-            console.warn(this.workflowTaskActions.selectedTaskAction);
+            //this.searchProcess = processOption.name;
+            this.showProcessOptions = false;
 
         };
 

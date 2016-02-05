@@ -204,7 +204,7 @@
             }
 
             if (scope.timeOnly === true){
-                element[0].querySelector('#adp-date').style.display = 'none';
+                element[0].querySelector('.adp-month').style.display = 'none';
             }
 
             scope.$applyAsync( function() {

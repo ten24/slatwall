@@ -62,6 +62,7 @@
 									</div>
 								</div>
                                 <span sw-property-display
+                                      ng-if="workflowTriggers.selectedTrigger.data.triggerType"
                                       data-object="workflowTriggers.selectedTrigger"
                                       data-property="startDateTime"
                                       data-editing="true"
@@ -69,6 +70,7 @@
                                                                 </span>
                                 <span sw-property-display
                                       data-object="workflowTriggers.selectedTrigger"
+                                      ng-if="workflowTriggers.selectedTrigger.data.triggerType"
                                       data-property="endDateTime"
                                       data-editing="true"
                                       data-editable="true">

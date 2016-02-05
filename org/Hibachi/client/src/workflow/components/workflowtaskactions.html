@@ -139,7 +139,7 @@
                                             <div class="input-group">
                                                 <div class="s-input-btn">
                                                     <!-- Need to display the workflow event name if it exists -->
-                                                    <input type="search" class="form-control" placeholder="Search&hellip;" ng-model="swWorkflowTaskActions.searchProcess.name" ng-focus="swWorkflowTaskActions.searchProcess.name = ''">
+                                                    <input type="search" class="form-control" placeholder="Search&hellip;" ng-model="swWorkflowTaskActions.searchProcess.name" ng-focus="swWorkflowTaskActions.searchProcess.name = ''" ng-change="swWorkflowTaskActions.getProcessOptions(swWorkflowTaskActions.workflowTask.data.workflow.data.workflowObject)">
                                                     <!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
                                                     <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
 

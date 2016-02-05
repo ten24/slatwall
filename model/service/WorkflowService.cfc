@@ -211,7 +211,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 
 		// Update the taskSechedules nextRunDateTime
-		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(DateFormat(DateAdd('yyyy', -1, now()),'mmmm dd, yyyy'), DateFormat(DateAdd('yyyy', 1, now()),'mmmm dd, yyyy') ) );
+		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(arguments.workflowTrigger.getStartDateTime(), arguments.workflowTrigger.getEndDateTime ) );
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
