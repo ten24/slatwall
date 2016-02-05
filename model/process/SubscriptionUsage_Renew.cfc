@@ -104,7 +104,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getOrder() {
 		if(!structKeyExists(variables, "order")) {
 			for(var subscriptionOrderItem in getSubscriptionUsage().getSubscriptionOrderItems()) {
-				if(subscriptionOrderItem.getSubscriptionOrderItemType().getSystemCode() == 'soitRenewal' && subscriptionOrderItem.getOrderItem().getOrder().getOrderStatusType().getSystemCode() != 'ostClosed') {
+				if(subscriptionOrderItem.getSubscriptionOrderItemType().getSystemCode() == 'soitRenewal' && subscriptionOrderItem.getOrderItem().getOrder().getStatusCode() != 'ostClosed' && subscriptionOrderItem.getOrderItem().getOrder().getStatusCode() != 'ostCanceled') {
 					variables.order = subscriptionOrderItem.getOrderItem().getOrder();
 					break;
 				}

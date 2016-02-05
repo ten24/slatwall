@@ -357,7 +357,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
         if(!isNull(requestBean.getBillingStreet2Address())) {
             httpRequest.addParam(type="formfield", name="card[address_line2]", value="#requestBean.getBillingStreet2Address()#");
         }
-        if(!isNull(requestBean.getBillingStreet2Address())) {
+        if(!isNull(requestBean.getBillingCity())) {
           httpRequest.addParam(type="formfield", name="card[address_city]", value="#requestBean.getBillingCity()#");
         }
         if(!isNull(requestBean.getBillingStateCode())) {

@@ -1086,7 +1086,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var newOrder = this.newOrder();
 
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
-
+        
+        //set the site placed so that it is available on return orders.
+        if (!isNull( arguments.order.getOrderPlacedSite() && isObject( arguments.order.getOrderPlacedSite() ))){
+            newOrder.setOrderPlacedSite( arguments.order.getOrderPlacedSite() );	
+        }
+        
 		if (referencedOrderFlag == true){
 			newOrder.setReferencedOrder(arguments.order);
 			newOrder.setReferencedOrderType('duplicate');
@@ -1919,7 +1924,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var emailData = {
 			emailTemplateID = emailTemplateID
 		};
-		emailData[emailTemplateObject.getEntityName()] = emailTemplateObject;
+		emailData[emailTemplateObject.getClassName()] = emailTemplateObject;
 		var email = getEmailService().processEmail_createFromTemplate(email, emailData);
 		email.setEmailTo(emailAddress);
 		email = getEmailService().sendEmail(email);

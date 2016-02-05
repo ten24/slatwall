@@ -30,4 +30,4 @@
         "postalCode":       [{"contexts":"billing,full,location","conditions":"postalCodeRequired","required":true}],
         "emailAddress":     [{"contexts":"save","dataType":"email"}]
     }
-}
+} 
