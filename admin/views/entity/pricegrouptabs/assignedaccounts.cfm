@@ -51,14 +51,8 @@ Notes:
 
 <cfparam name="rc.priceGroup" type="any" />
 
-<cfset selectedAccountDisplays = rc.priceGroup.getAccounts() />
-<cfset selectedAccountIDPaths = "" />
-<cfloop array="#selectedAccountDisplays#" index="local.account">
-	<cfset selectedAccountIDPaths = listAppend(selectedAccountIDPaths, local.account.getAccountID()) />
-</cfloop>
-
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#selectedAccountIDPaths#" edit="#rc.edit#">
+	<hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
 						      
 		<hb:HibachiListingColumn propertyIdentifier="firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="lastName" />
