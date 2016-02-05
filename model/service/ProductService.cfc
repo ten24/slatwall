@@ -1093,7 +1093,7 @@ component extends="HibachiService" accessors="true" {
 	//  ====================  START: Wrapper Methods ========================
 
 	public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
-		return this.getImageService.getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
+		return this.getImageService().getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
 	}
 
 	//  ====================  END: Wrapper Methods ========================
