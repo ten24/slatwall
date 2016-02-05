@@ -1737,6 +1737,7 @@ table .s-edit-elements a:hover {
   float: right;
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
+  cursor: pointer;
 }
 .s-setting-options li {
   display: inline;
