@@ -1923,7 +1923,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var emailData = {
 			emailTemplateID = emailTemplateID
 		};
-		emailData[emailTemplateObject.getClassName()] = emailTemplateObject;
+		emailData[emailTemplateObject.getEntityName()] = emailTemplateObject;
 		var email = getEmailService().processEmail_createFromTemplate(email, emailData);
 		email.setEmailTo(emailAddress);
 		email = getEmailService().sendEmail(email);
