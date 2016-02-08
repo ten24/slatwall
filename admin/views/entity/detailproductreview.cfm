@@ -61,6 +61,7 @@ Notes:
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="rating" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

@@ -57,6 +57,8 @@ Notes:
 						   recordeditaction="admin:entity.editproductreview"
 						   recordeditmodal="true">
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
+	<hb:HibachiListingColumn propertyIdentifier="rating" />
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 </hb:HibachiListingDisplay>

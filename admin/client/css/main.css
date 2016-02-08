@@ -3384,7 +3384,6 @@ tabel .s-table-header {
   margin-bottom: 15px;
 }
 .s-order-item-table {
-  font-size: 11px;
   margin-bottom: 0px;
 }
 .s-order-item-table ul {
@@ -3402,18 +3401,12 @@ tabel .s-table-header {
 .s-order-item-table .s-fullfilment {
   background: #ffffff;
 }
-.s-order-item-table .s-fullfilment .s-header {
-  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
-}
 .s-order-item-table .s-image {
   max-width: 80px;
   background: #ffffff;
 }
 .s-order-item-table .s-image img {
   width: 100%;
-}
-.s-order-item-table thead {
-  background-color: #f2f2f2;
 }
 .s-order-item-table thead th {
   font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
