@@ -449,6 +449,6 @@ Notes:
 			WHERE productTypeID = <cfqueryparam value="#arguments.fromProductTypeID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
 	</cffunction>
-
+	
 </cfcomponent>
 
