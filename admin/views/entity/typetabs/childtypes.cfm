@@ -60,7 +60,9 @@ Notes:
 							   recordEditAction="admin:entity.edittype"
 							   recordDetailAction="admin:entity.detailtype"
 							   parentPropertyName="false"
-							   sortProperty="sortOrder">
+							   sortProperty="sortOrder"
+							   sortContextIDColumn="parentTypeID"
+							   sortContextIDValue="#rc.type.getTypeID()#">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="typeCode" />
 		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
