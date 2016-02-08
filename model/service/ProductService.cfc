@@ -415,10 +415,6 @@ component extends="HibachiService" accessors="true" {
 		return getSkuDAO().getSkusBySelectedOptions( argumentCollection=arguments );
 	}
 
-	public any function getCategoryByCMSCategoryIDAndCMSSiteID( required string cmsCategoryID, required string cmsSiteID ) {
-		return getProductDAO().getCategoryByCMSCategoryIDAndCMSSiteID( argumentCollection=arguments );
-	}
-	
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================

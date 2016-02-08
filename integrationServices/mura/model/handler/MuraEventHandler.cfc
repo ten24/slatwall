@@ -475,13 +475,13 @@
 				var muraCategory = $.event('categoryBean');
 				
 				if (!muraCategory.getIsNew()){
-					var slatwallCategory = $.slatwall.getService("ProductService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getCategoryID(), muraCategory.getSiteID() );
+					var slatwallCategory = $.slatwall.getService("ContentService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getCategoryID(), muraCategory.getSiteID() );
 					
 					//Set the category to the updated name
 					slatwallCategory.setCategoryName( muraCategory.getName() );
 					
 					if(!muraCategory.getParent().getIsNew()) {
-						var parentCategory = $.slatwall.getService("ProductService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getParent().getcategoryID(), muraCategory.getSiteID() );
+						var parentCategory = $.slatwall.getService("ContentService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getParent().getcategoryID(), muraCategory.getSiteID() );
 						
 						//If the slatwallCategory's Parent and the parentCategory variable don't match then the parent has been updated. 
 						if( isNull(slatwallCategory.getParentCategory()) || slatwallCategory.getParentCategory().getCategoryID() != parentCategory.getCategoryID() ) {

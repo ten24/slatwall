@@ -150,7 +150,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDao().getContentBySiteIDAndUrlTitlePath(argumentCollection=arguments);
 	}
 
-	// ===================== START: DAO Passthrough ===========================
+	public any function getCategoryByCMSCategoryIDAndCMSSiteID( required string cmsCategoryID, required string cmsSiteID ) {
+		return getContentDAO().getCategoryByCMSCategoryIDAndCMSSiteID( argumentCollection=arguments );
+	}
+	
+	// ===================== END: DAO Passthrough ===========================
+	
 
 	// ===================== START: Process Methods ===========================
 
