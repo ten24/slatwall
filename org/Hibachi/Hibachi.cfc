@@ -298,12 +298,13 @@ component extends="FW1.framework" {
 		}
 		
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);	
+		// Get the hibachiConfig out of the application scope in case any changes were made to it
+		var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 		// Verify Authentication before anything happens
 		if(
 			!authorizationDetails.authorizedFlag 
 		) {
-			// Get the hibachiConfig out of the application scope in case any changes were made to it
-			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
+			
 			
 			// setup the success redirect URL as this current page
 			request.context.sRedirectURL = getHibachiScope().getURL();
@@ -316,32 +317,9 @@ component extends="FW1.framework" {
 			if(right(request.context.sRedirectURL, 1) == "?" || right(request.context.sRedirectURL, 1) == "&") {
 				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
 			}
-			//detect if we are on an angular hashbang page
-			if(structKeyExists(url,'ng')){
-			}else if(getSubsystem(request.context[ getAction() ]) == 'api'){
-				var context = getPageContext().getResponse();
-				if(!structKeyExists(request.context,'messages')){
-					request.context.messages = [];
-				}
-				
-				var message = {};
-				var message['messageType'] = 'error';
-				if(structKeyExists(authorizationDetails,'forbidden') && authorizationDetails.forbidden == true){
-					context.getResponse().setStatus(403, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
-					message['message'] = 'forbidden';
-				}else if(structKeyExists(authorizationDetails,'timeout') && authorizationDetails.timeout == true){
-					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
-					message['message'] = 'timeout';
-				}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
-					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
-					message['message'] = 'invalid_token';
-				}
-				arrayAppend(request.context.messages,message);
-				renderApiResponse();
-				
-			}
+			
 			//Route the user to the noaccess page if they are already logged in
-			else if( getHibachiScope().getLoggedInFlag() ) {
+			if( getHibachiScope().getLoggedInFlag() ) {
 				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.noaccessDefaultSection#.#hibachiConfig.noaccessDefaultItem#", preserve="swprid,sRedirectURL,entityName");
 			} else {
 					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem
@@ -358,6 +336,31 @@ component extends="FW1.framework" {
 			
 		} else if(authorizationDetails.authorizedFlag && authorizationDetails.publicAccessFlag) {
 			getHibachiScope().setPublicPopulateFlag( true );
+		}
+		
+		//detect if we are on an angular hashbang page
+		if(structKeyExists(url,'ng')){
+		}else if(getSubsystem(request.context[ getAction() ]) == 'api'){
+			var context = getPageContext().getResponse();
+			if(!structKeyExists(request.context,'messages')){
+				request.context.messages = [];
+			}
+			
+			var message = {};
+			var message['messageType'] = 'error';
+			if(structKeyExists(authorizationDetails,'forbidden') && authorizationDetails.forbidden == true){
+				context.getResponse().setStatus(403, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+				message['message'] = 'forbidden';
+			}else if(structKeyExists(authorizationDetails,'timeout') && authorizationDetails.timeout == true){
+				context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+				message['message'] = 'timeout';
+			}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
+				context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+				message['message'] = 'invalid_token';
+			}
+			arrayAppend(request.context.messages,message);
+			renderApiResponse();
+			
 		}
 		
 		// Setup structured Data if a request context exists meaning that a full action was called

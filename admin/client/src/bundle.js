@@ -1935,6 +1935,7 @@
 	            }
 	            config.cache = true;
 	            config.headers = config.headers || {};
+	            console.log('requestcache');
 	            if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
 	                config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
 	            }

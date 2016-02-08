@@ -116,6 +116,7 @@ class HibachiInterceptor implements IInterceptor{
         }
         config.cache = true;
         config.headers = config.headers || {};
+        console.log('requestcache');
         if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
 
             config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
