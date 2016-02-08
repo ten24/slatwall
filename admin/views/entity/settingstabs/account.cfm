@@ -55,6 +55,7 @@ Notes:
 		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" />
 		<swa:SlatwallSetting settingName="accountPaymentTerm" />
 		<swa:SlatwallSetting settingName="accountTermCreditLimit" />
+		<swa:SlatwallSetting settingName="accountTaxExempt" />
 		<swa:SlatwallSetting settingName="accountFailedAdminLoginAttemptCount" />
 		<swa:SlatwallSetting settingName="accountFailedPublicLoginAttemptCount" />
 		<swa:SlatwallSetting settingName="accountAdminForcePasswordResetAfterDays" />
