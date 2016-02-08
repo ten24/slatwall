@@ -476,6 +476,7 @@
 				
 				if (!muraCategory.getIsNew()){
 					var slatwallCategory = $.slatwall.getService("ContentService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getCategoryID(), muraCategory.getSiteID() );
+					var oldCategoryIDPath = slatwallCategory.getCategoryIDPath();
 					
 					//Set the category to the updated name
 					slatwallCategory.setCategoryName( muraCategory.getName() );
