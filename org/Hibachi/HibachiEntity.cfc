@@ -384,8 +384,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		if(!structKeyExists(variables, cacheKey)) {
 			variables[ cacheKey ] = "";
 			var arr = this.invokeMethod("get#arguments.propertyName#");
+			
 			for(var i=1; i<=arrayLen(arr); i++) {
-				variables[ cacheKey ] = listAppend(arr[i].getPrimaryIDValue(), arr[i].getPrimaryIDValue());
+				variables[ cacheKey ] = listAppend(variables[ cacheKey ], arr[i].getPrimaryIDValue());
 			}
 		}
 		return variables[ cacheKey ];
