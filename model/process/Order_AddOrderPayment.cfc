@@ -86,16 +86,16 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ======================== START: Defaults ============================
 	public boolean function getSaveGiftCardToAccountFlag(){
 
-	    if (structKeyExists(variables, "saveGiftCardToAccountFlag")){
-	
+	    if (structKeyExists(variables, "saveGiftCardToAccountFlag") && !isNull(newOrderPayment.getGiftCardNumber())){
+
 	    	return variables.saveGiftCardToAccountFlag;
-	
+
 	    }
 
     	return false;
 
     }
-	
+
 	public any function setupDefaults() {
 		variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
 		variables.copyFromType = '';
