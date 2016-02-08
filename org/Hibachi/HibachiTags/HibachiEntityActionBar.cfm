@@ -40,16 +40,7 @@
 
 			<div class="row s-body-nav">
 			    <nav class="navbar navbar-default" role="navigation">
-			      <div class="col-md-6 s-header-info">
-					<!---<div class="actionnav well well-sm">
-						<div class="row">
-							<div class="col-md-4">--->
-						<!--- Page Title --->
-						<ul class="list-unstyled list-inline">
-							<!--- <li><a href="##">Dashboard</a></li> --->
-							<!--- <li><a href="##">Order Items</a></li>
-							<li><a href="##">Order ##2635</a></li> --->
-						</ul>
+					<div class="col-md-6 s-header-info">
 						<cfif !len(attributes.pageTitle) && structKeyExists(request.context, "pageTitle")>
 							<cfset attributes.pageTitle = request.context.pageTitle />
 						</cfif>
