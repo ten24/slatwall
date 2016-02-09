@@ -1,6 +1,6 @@
 /*
 
-    Slatwall - An Open Soudatae eCommedatae Platform
+    Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
     
     This program is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@
 
     You may copy and distribute the modified version of this program that meets 
     the above guidelines as a combined work under the terms of GPL for this program, 
-    provided that you include the soudatae code of that other code when and as the 
-    GNU GPL requires distribution of soudatae code.
+	provided that you include the source code of that other code when and as the 
+	GNU GPL requires distribution of source code.
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.

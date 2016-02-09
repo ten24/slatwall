@@ -1623,6 +1623,9 @@
 	                                //$log.debug('key:'+key);
 	                                if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                                    var inputField = form[key];
+	                                    if (inputField.$modelValue) {
+	                                        inputField.$dirty = true;
+	                                    }
 	                                    if (angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
 	                                        if (angular.isDefined(entityInstance.metaData[key])
 	                                            && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
