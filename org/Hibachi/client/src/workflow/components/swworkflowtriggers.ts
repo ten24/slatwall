@@ -9,6 +9,7 @@ class SWWorkflowTriggers{
 			$hibachi,
 			workflowPartialsPath,
 			formService,
+            observerService,
 			hibachiPathBuilder,
             collectionConfigService
 		)=> new SWWorkflowTriggers(
@@ -17,6 +18,7 @@ class SWWorkflowTriggers{
 			$hibachi,
 			workflowPartialsPath,
 			formService,
+            observerService,
 			hibachiPathBuilder,
             collectionConfigService
 		);
@@ -26,6 +28,7 @@ class SWWorkflowTriggers{
 			'$hibachi',
 			'workflowPartialsPath',
 			'formService',
+            'observerService',
 			'hibachiPathBuilder',
             'collectionConfigService'
 		];
@@ -37,6 +40,7 @@ class SWWorkflowTriggers{
 		$hibachi,
 		workflowPartialsPath,
 		formService,
+        observerService,
         hibachiPathBuilder,
         collectionConfigService
 	){
@@ -52,6 +56,10 @@ class SWWorkflowTriggers{
                 scope.collectionCollectionConfig.setDisplayProperties("collectionID,collectionName");
                 scope.collectionCollectionConfig.addFilter("collectionObject",scope.workflow.data.workflowObject);
 
+                observerService.attach((item) =>{
+                    scope.collectionCollectionConfig.clearFilters();
+                    scope.collectionCollectionConfig.addFilter("collectionObject",item.value);
+                },'WorkflowWorkflowObjectOnChange');
 
                 scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
                 scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");

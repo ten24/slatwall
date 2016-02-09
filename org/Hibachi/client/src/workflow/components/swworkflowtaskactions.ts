@@ -34,12 +34,24 @@ class SWWorkflowTaskActionsController {
         public collectionService,
         public workflowPartialsPath,
         public hibachiPathBuilder,
-        public collectionConfigService
+        public collectionConfigService,
+        public observerService
     ){
 
         this.$log.debug('Workflow Task Actions Init');
         this.$log.debug(this.workflowTask);
         this.openActions = false;
+
+        this.observerService.attach((item) =>{
+            if(angular.isDefined(this.emailTemplateCollectionConfig)){
+                this.emailTemplateCollectionConfig.clearFilters();
+                this.emailTemplateCollectionConfig.addFilter("emailTemplateObject",item.value);
+            }
+            if(angular.isDefined(this.printTemplateCollectionConfig)){
+                this.printTemplateCollectionConfig.clearFilters();
+                this.printTemplateCollectionConfig.addFilter("printTemplateObject",item.value);
+            }
+        },'WorkflowWorkflowObjectOnChange');
 
 
         /**

@@ -814,14 +814,14 @@ var coremodule = angular.module('hibachi.core',[
                             entityName = modifiedData.objectLevel.metaData.className;
                         }
                         var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
-                        savePromise.then(function(response){
+                        savePromise.then((response)=>{
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
-                                _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
 
-                                if($location.url() == '/entity/'+entityName+'/null' && response.data[entityInstance.$$getIDName()]){
-                                    $location.path('/entity/'+entityName+'/'+response.data[entityInstance.$$getIDName()], false);
+                                if($location.url() == '/entity/'+entityName+'/null' && response.data[modifiedData.objectLevel.$$getIDName()]){
+                                    $location.path('/entity/'+entityName+'/'+response.data[modifiedData.objectLevel.$$getIDName()], false);
                                 }
+                                _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
 
                                 deferred.resolve(returnedIDs);
                             }else{
@@ -939,14 +939,17 @@ var coremodule = angular.module('hibachi.core',[
                             for(var key in form){
                                 if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                                     var inputField = form[key];
+                                    if(inputField.$modelValue){
+                                        inputField.$dirty = true;
+                                    }
                                     if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
 
                                         if(angular.isDefined(parentInstance.metaData[key])
                                         && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype)
                                         && parentInstance.metaData[key].hb_formfieldtype === 'json'){
-                                            modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);
+                                            modifiedData[parentObject.name][key] = angular.toJson(inputField.$modelValue);
                                         }else{
-                                            modifiedData[parentObject.name][key] = form[key].$modelValue;
+                                            modifiedData[parentObject.name][key] = inputField.$modelValue;
                                         }
                                     }
                                 }
@@ -1039,12 +1042,15 @@ var coremodule = angular.module('hibachi.core',[
                 for(var key in form){
                     if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                         var inputField = form[key];
+                        if(inputField.$modelValue){
+                            inputField.$dirty = true;
+                        }
                         if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
 
                             if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
-                                data[key] = angular.toJson(form[key].$modelValue);
+                                data[key] = angular.toJson(inputField.$modelValue);
                             }else{
-                                data[key] = form[key].$modelValue;
+                                data[key] = inputField.$modelValue;
                             }
 
                         }

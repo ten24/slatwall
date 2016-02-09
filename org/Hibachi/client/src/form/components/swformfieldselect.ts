@@ -8,6 +8,7 @@ class SWFormFieldSelect implements ng.IDirective {
 			formService,
 			coreFormPartialsPath,
 			utilityService,
+            observerService,
 			hibachiPathBuilder
 		)=>new SWFormFieldSelect(
 			$log,
@@ -15,6 +16,7 @@ class SWFormFieldSelect implements ng.IDirective {
 			formService,
 			coreFormPartialsPath,
 			utilityService,
+            observerService,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
@@ -23,6 +25,7 @@ class SWFormFieldSelect implements ng.IDirective {
 			'formService',
 			'coreFormPartialsPath',
 			'utilityService',
+            'observerService',
 			'hibachiPathBuilder'
 		];
 		return directive;
@@ -34,6 +37,7 @@ class SWFormFieldSelect implements ng.IDirective {
 		formService,
 		coreFormPartialsPath,
 		utilityService,
+        observerService,
 		hibachiPathBuilder
 	){
 		return{
@@ -67,9 +71,8 @@ class SWFormFieldSelect implements ng.IDirective {
 						}else if(selectType === 'string'){
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-
 						}
-
+                        observerService.notify(scope.propertyDisplay.object.metaData.className+scope.propertyDisplay.property.charAt(0).toUpperCase()+scope.propertyDisplay.property.slice(1)+'OnChange', option);
 					};
 
 
