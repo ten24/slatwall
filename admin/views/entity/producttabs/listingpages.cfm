@@ -59,12 +59,12 @@ Notes:
 </cfloop>
 <cfoutput>
 	<sw-listing-display
-		ng-if="$root.loadedResourceBundle"	
 		data-collection="'Content'"
 		data-multiselect-field-name="listingPages"
 		data-multiselect-id-paths="#selectedListingPageIDPaths#"
 		data-edit="#rc.edit#"
 		data-has-search="false"
+		data-record-edit-action="admin:entity.editcontent"
 	>
 		<sw-listing-column data-property-identifier="title" tdclass="primary" />
 		<sw-listing-column data-property-identifier="site.siteName" />

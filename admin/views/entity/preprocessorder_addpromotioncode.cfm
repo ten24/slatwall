@@ -54,7 +54,8 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectURL="#$.Slatwall.buildURL(action='admin:entity.detailorder', querystring='orderID='&rc.order.getOrderID())#">
+<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorder"
+																  fRedirectAction="admin:entity.detailorder">
 
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#" backAction="admin:entity.detailorder" backQueryString="orderID=#rc.order.getOrderID()#">
 	</hb:HibachiEntityActionBar>

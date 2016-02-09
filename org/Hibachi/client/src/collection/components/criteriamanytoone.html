@@ -1,0 +1,39 @@
+
+<!--- Filter Criteria Start --->
+<form action="index.html" method="post" ng-if="selectedFilterProperty">
+  <div class="s-filter-group-item">
+    <div class="s-options-group s-radio-block">
+      <div class="radio">
+        <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" ng-model="selectedFilterProperty.selectedCriteriaType"  ng-value="conditionOptions.drillEntity" >
+        <label for="radio1">
+            Use  {{selectedFilterProperty.displayPropertyIdentifier}} field:
+        </label>
+        <div class="s-radio-select" sw-loading="filterPropertiesList[selectedFilterProperty.propertyIdentifier].data">
+          <select ng-model="selectedFilterProperty.selectedCriteriaType" 
+          		ng-change="selectedCriteriaChanged(selectedFilterProperty.selectedCriteriaType)" 
+          		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
+          					for filterProperty in filterPropertiesList[selectedFilterProperty.propertyIdentifier].data 
+          					| orderBy:['displayPropertyIdentifier'] track by filterProperty.propertyIdentifier
+          					" 
+          		class="form-control input-sm">
+            <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
+          </select>
+        </div>
+      </div>
+      <div class="radio">
+        <input type="radio" name="radio1" id="radio2" ng-value="conditionOptions.hasEntity" ng-model="selectedFilterProperty.selectedCriteriaType" >
+        <label for="radio2">
+            Has {{selectedFilterProperty.displayPropertyIdentifier}}
+        </label>
+      </div>
+      <div class="radio">
+        <input type="radio" name="radio1" id="radio3" ng-value="conditionOptions.notHasEntity" ng-model="selectedFilterProperty.selectedCriteriaType" >
+        <label for="radio3">
+            Doesn't Have  {{selectedFilterProperty.displayPropertyIdentifier}}
+        </label>
+      </div>
+    </div>
+
+  </div>
+</form>
+<!--- //Filter Criteria End --->

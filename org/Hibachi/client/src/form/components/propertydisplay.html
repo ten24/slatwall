@@ -1,0 +1,40 @@
+<div ng-if="propertyDisplay" class="form-group">
+    <label class="control-label" ng-if="propertyDisplay.fieldType !== 'hidden'">
+    	
+    	<!-- <span ng-if="propertyDisplay.object.metaData.isProcessObject && !propertyDisplay.title" 
+            sw-rbkey="'processObject.'+object.metaData.className+'.'+property" >
+        </span>
+        <span ng-if="!propertyDisplay.object.metaData.isProcessObject && !propertyDisplay.title" 
+            sw-rbkey="'entity.'+object.metaData.className+'.'+property" >
+        </span> -->
+        <span ng-bind="propertyDisplay.title || object.metaData.$$getPropertyTitle(property)"></span>:
+        <span ng-if="propertyDisplay.object.validations.properties[propertyDisplay.property][0].required && propertyDisplay.fieldType === 'text'">*</span>
+        <span sw-tooltip class="j-tool-tip-item"
+              ng-if="propertyDisplay.hint"
+              data-text="{{propertyDisplay.hint}}"
+              data-position="right"
+                >
+            <i class="fa fa-question-circle"></i>
+        </span>
+    </label>
+    <div class="s-form-input">
+        <!-- Model-->
+        <span sw-form-field ng-if="editing"
+            data-property-display="propertyDisplay">
+        </span>
+        <!-- Display -->
+        <p  class="form-control-static"
+            ng-if="propertyDisplay.fieldType !== 'hidden' && propertyDisplay.fieldType !== 'select'"
+            ng-bind="(applyFilter(propertyDisplay.object.data[propertyDisplay.property], propertyDisplay.object.metaData[propertyDisplay.property].hb_formattype))"
+            ng-show="!propertyDisplay.editing">
+            <!-- property value -->
+        </p>
+        <p  class="form-control-static"
+            ng-if="propertyDisplay.fieldType === 'select'"
+            ng-bind="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"
+            ng-show="!propertyDisplay.editing"
+            >
+            <!-- property value -->
+        </p>
+    </div>
+</div>

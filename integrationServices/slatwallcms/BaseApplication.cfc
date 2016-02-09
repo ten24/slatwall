@@ -172,7 +172,6 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			arguments.slatwallScope.setContent(content);
 		}
 		var $ = getApplicationScope(argumentCollection=arguments);
-		
 		savecontent variable="templateData"{
 			include "#contentPath#";
 		}

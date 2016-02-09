@@ -1514,6 +1514,7 @@ function tableApplySort(event, ui) {
 		url: hibachiConfig.baseURL + '/',
 		async: false,
 		data: data,
+		method: 'post',
 		dataType: 'json',
 		beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
 		error: function(r) {

@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<span id="productCreate" ng-controller="preprocessproduct_create as preprocessproduct_createCtrl" ng-if="$root.loadedResourceBundle">
+	<span id="productCreate" ng-controller="preprocessproduct_create as preprocessproduct_createCtrl">
 		<hb:HibachiEntityProcessForm entity="#rc.processObject.getProduct()#"  edit="#rc.edit#">
 
 			<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></hb:HibachiEntityActionBar>
@@ -63,7 +63,7 @@ Notes:
 			<!--- Submit the baseProductType as well in case of a validation error --->
 			<input type="hidden" name="baseProductType" value="#rc.processObject.getBaseProductType()#" />
 			<!--- inject angular here --->
-			<cfset fieldAttributes = 'ng-model="preprocessproduct_createCtrl.selectedOption" ng-options="option.label for option in preprocessproduct_createCtrl.options track by option.value" ng-change="preprocessproduct_createCtrl.productTypeChanged(preprocessproduct_createCtrl.selectedOption)"'/>
+			<cfset fieldAttributes = 'ng-model="preprocessproduct_createCtrl.selectedOption.value" ng-change="preprocessproduct_createCtrl.productTypeChanged(preprocessproduct_createCtrl.selectedOption)"'/>
 			<hb:HibachiPropertyRow>
 				<hb:HibachiPropertyList divClass="col-md-6">
 					<!--- Select Product Type --->
@@ -208,31 +208,15 @@ Notes:
 					<hb:HibachiPropertyRow>
 						<hb:HibachiPropertyList>
 
-							<!--<hb:HibachiListingDisplay smartList="#optionsSmartList#" multiselectfieldname="options" edit="true">
-								<hb:HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
-								<hb:HibachiListingColumn propertyIdentifier="optionName" />
-							</hb:HibachiListingDisplay>-->
 							<sw-listing-display
-								ng-if="$root.loadedResourceBundle && preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"
+								ng-if="preprocessproduct_createCtrl.collectionListingPromise && preprocessproduct_createCtrl.collection"
 								data-collection-promise="preprocessproduct_createCtrl.collectionListingPromise"
 								data-collection="preprocessproduct_createCtrl.collection"
 								data-multiselect-field-name="options"
 								data-edit="true"
+							    data-show-search="true"
 							>
 							</sw-listing-display>
-							<!--<sw-listing-display
-								data-collection="'Option'"
-								data-multiselect-field-name="options"
-								data-edit="true"
-
-							>
-								<sw-listing-column
-									data-property-identifier="optionGroup.optionGroupName"
-								></sw-listing-column>
-								<sw-listing-column
-									data-property-identifier="optionName"
-								></sw-listing-column>
-							</sw-listing-display>-->
 
 						</hb:HibachiPropertyList>
 					</hb:HibachiPropertyRow>
