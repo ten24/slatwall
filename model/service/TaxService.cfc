@@ -61,7 +61,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		removeTaxesFromAllOrderItems(arguments.order);
 
 		// if account is tax exempt return after removing any tax previously applied to order
-		if(arguments.order.getAccount().setting('accountTaxExempt')) {
+		if(arguments.order.getAccount().getTaxExemptFlag()) {
 			return;
 		}
 
