@@ -56,7 +56,8 @@ component extends="HibachiService" accessors="true" {
 	property name="hibachiDataService" type="any";
 	property name="contentService" type="any";
 	property name="eventRegistrationService" type="any";
-	property name="hibachiEventService" type="any";
+	property name="imageService" type="any";
+ 	property name="hibachiEventService" type="any";
 	property name="locationService" type="any";
 	property name="optionService" type="any";
 	property name="productScheduleService" type="any";
@@ -1004,7 +1005,6 @@ component extends="HibachiService" accessors="true" {
 		}
 
 		arguments.product = super.save(arguments.product, arguments.data);
-
 		// Set default sku if no default sku was set
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
@@ -1082,7 +1082,21 @@ component extends="HibachiService" accessors="true" {
 		return smartList;
 	}
 
+	public any function getProductCollectionList(struct data={}, currentURL="") {
+		arguments.entityName = "Product";
+		var collectionList = getHibachiDAO().getCollectionList(argumentCollection=arguments);
+		return collectionList;
+	}
+
 	// ====================  END: Smart List Overrides ========================
+
+	//  ====================  START: Wrapper Methods ========================
+
+	public any function getResizedImageByProfileName(required any skuIDList="", any profileName="") {
+		return this.getImageService().getResizedImageByProfileName(arguments.skuIDList,arguments.profileName);
+	}
+
+	//  ====================  END: Wrapper Methods ========================
 
 	// ====================== START: Get Overrides ============================
 

@@ -118,8 +118,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
 	property name="eventRegistrations" type="array" persistent="false";
+	property name="totalImageCount" type="numeric" persistent="false";
 	property name="nextSkuCodeCount" persistent="false";
 	property name="optionGroupCount" type="numeric" persistent="false";
+	property name="productBundleGroupsCount" type="numeric" persistent="false";
+	property name="defaultProductImageFilesCount" type="numeric" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
@@ -169,6 +172,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			variables.productTypeOptions = [];
 
+			if(arrayLen(records) > 1){
+				arrayAppend(variables.productTypeOptions, {name=getHibachiScope().getRbKey('processObject.Product_Create.selectProductType'),value=""});
+			}
+
 			for(var i=1; i<=arrayLen(records); i++) {
 				var recordStruct = {};
 				recordStruct['name'] = records[i].getSimpleRepresentation();
@@ -190,6 +197,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return variables.listingPagesOptionsSmartList;
     }
+
+	public numeric function getProductBundleGroupsCount(){
+		var count=0;
+		for(var sku in this.getSkus()){
+			count = count + ArrayLen(sku.getProductBundleGroups());
+		}
+		return count;
+	}
 
     public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
@@ -226,6 +241,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	public any function getImages() {
 		return variables.productImages;
+	}
+
+	public numeric function getTotalImageCount(){
+		return this.getProductImagesCount() + this.getDefaultProductImageFilesCount();
 	}
 
 	public struct function getSkuSalePriceDetails( required any skuID) {
@@ -702,6 +721,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.defaultProductImageFiles;
 	}
 
+	public numeric function getDefaultProductImageFilesCount() {
+		if(!structKeyExists(variables,"defaultProductImageFilesCount")){
+			variables.defaultProductImageFilesCount = 0;
+			for(var imageFile in this.getDefaultProductImageFiles()){
+				if(fileExists(expandPath(this.getHibachiScope().getBaseImageURL() & "/product/default/#imageFile#"))){
+					variables.defaultProductImageFilesCount++;
+				}
+			}
+		}
+		return variables.defaultProductImageFilesCount;
+	}
+
 	public struct function getSalePriceDetailsForSkus() {
 		if(!structKeyExists(variables, "salePriceDetailsForSkus")) {
 			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID());
@@ -1006,6 +1037,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 	// Skus (one-to-many)
 	public void function addSku(required any sku) {
+		//if sku code is null then create one automatically
+		if(this.getNewFlag() && isNull(arguments.sku.getSkuCode())){
+			var skusCount = arraylen(this.getSkus());
+			var skuCode = this.getProductCode() & "-#skusCount + 1#";
+			arguments.sku.setSkuCode(skuCode);
+		}
+
 		arguments.sku.setProduct( this );
 	}
 	public void function removeSku(required any sku) {

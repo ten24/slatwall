@@ -369,7 +369,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
         if(!isNull(requestBean.getBillingCountryCode())) {
           httpRequest.addParam(type="formfield", name="card[address_country]", value="#requestBean.getBillingCountryCode()#");
         }
-    }
+	}
 	
 	private string function generateDescription(required any requestBean)
 	{

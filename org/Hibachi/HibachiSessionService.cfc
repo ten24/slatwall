@@ -7,6 +7,23 @@ component output="false" accessors="true" extends="HibachiService"  {
 	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
+	public struct function getConfig(){
+		var config = {};
+		config[ 'applicationKey' ] = getApplicationValue('applicationKey');
+		config[ 'baseURL' ] = getApplicationValue('baseURL');
+		config[ 'action' ] = getApplicationValue('action');
+		config[ 'dateFormat' ] = 'mmm dd, yyyy';
+		config[ 'timeFormat' ] = 'hh:mm tt';
+		var rbLocale = 'en_us';
+		if(!isNull(getHibachiScope().getSession().getRBLocale())){
+			rbLocale = '#getHibachiScope().getSession().getRBLocale()#';
+		}
+		config[ 'rbLocale' ] = rbLocale;
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
+		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
+		return config;
+	}
+	
 	public void function setPropperSession() {
 		var requestHeaders = getHTTPRequestData();
 		

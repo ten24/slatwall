@@ -157,11 +157,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// ==========================  END: ERRORS / MESSAGES ===========================================
 	// ======================= START: POPULATION & VALIDATION =======================================
-	
+
 	public any function beforePopulate( required struct data={} ) {
 		// Left Blank to be overridden by objects
 	}
-	
+
 	public any function afterPopulate( required struct data={} ) {
 		// Left Blank to be overridden by objects
 	}
@@ -239,13 +239,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							// Load the specifiv entity, if one doesn't exist, this will return a new entity
 							var currentEntity = this.invokeMethod("get#currentProperty.name#");
 							if(!isNull(currentEntity) && currentEntity.getPrimaryIDValue() == manyToOneStructData[primaryIDPropertyName]) {
-								var thisEntity = currentEntity;	
+								var thisEntity = currentEntity;
 							} else if (len(manyToOneStructData[primaryIDPropertyName])) {
 								var thisEntity = entityService.invokeMethod( "get#listLast(currentProperty.cfc,'.')#", {1=manyToOneStructData[primaryIDPropertyName],2=true});
 							} else {
 								var thisEntity = entityService.invokeMethod( "new#listLast(currentProperty.cfc,'.')#" );
 							}
-							
+
 							// Set the value of the property as the loaded entity
 							_setProperty(currentProperty.name, thisEntity );
 
@@ -269,7 +269,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 								if(!isNull(thisEntity)) {
 									// Set the value of the property as the loaded entity
-									_setProperty(currentProperty.name, thisEntity );	
+									_setProperty(currentProperty.name, thisEntity );
 								}
 
 							}
@@ -305,7 +305,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 								// Populate the sub property
 								thisEntity.populate(oneToManyArrayData[a]);
-								
+
 								addPopulatedSubProperty(currentProperty.name, thisEntity);
 							}
 						}
@@ -395,50 +395,50 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 				}
 			}
 		}
-		
+
 		// Call afterPopulate
 		afterPopulate(data=arguments.data);
 
 		// Return this object
 		return this;
 	}
-	
+
 	public void function addPopulatedSubProperty( required string propertyName, required any entity ) {
 		// Make sure the structure exists
 		if(!structKeyExists(variables, "populatedSubProperties")){
 			variables.populatedSubProperties = {};
 		}
-		
+
 		// Get the meta data from the objects property
 		var propertyMeta = getPropertyMetaData( arguments.propertyName );
-		
+
 		// If fieldtype = many-to-one
 		if(structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "many-to-one") {
 			variables.populatedSubProperties[ arguments.propertyName ] = arguments.entity;
-			
+
 		// If fieldtype = one-to-many
 		} else if (structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "one-to-many") {
 			if(!structKeyExists(variables.populatedSubProperties, arguments.propertyName)) {
-				variables.populatedSubProperties[ arguments.propertyName ] = [];			
+				variables.populatedSubProperties[ arguments.propertyName ] = [];
 			}
 			arrayAppend(variables.populatedSubProperties[ arguments.propertyName ], arguments.entity);
 		}
 	}
-	
+
 
 	// @hind public method to see all of the validations for a particular context
 	public struct function getValidations( string context="" ) {
 		return getService("hibachiValidationService").getValidationsByContext( object=this, context=arguments.context);
 	}
-	
+
 	// @hint pubic method to validate this object
 	public any function validate( string context="" ) {
-		
+
 		getService("hibachiValidationService").validate(object=this, context=arguments.context);
-		
+
 		// If there were sub properties that have been populated, then we should validate each of those
 		if(structKeyExists(variables, "populatedSubProperties")) {
-			
+
 			// Loop ove each property that was populated
 			for(var propertyName in variables.populatedSubProperties) {
 
@@ -622,7 +622,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		return validationClass;
 	}
-	
+
 	// @hint public method for getting the title to be used for a property from the rbFactory, this is used a lot by the HibachiPropertyDisplay
 	public string function getPropertyTitle(required string propertyName) {
 
@@ -798,7 +798,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public array function getProperties() {
 		if( !getHibachiScope().hasApplicationValue("classPropertyCache_#getClassFullname()#") ) {
 			var metaData = getMetaData(this);
-			
+
 			var hasExtends = structKeyExists(metaData, "extends");
 			var metaProperties = [];
 			do {
@@ -810,7 +810,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					metaData = metaData.extends;
 				}
 			} while( hasExtends );
-			
+
 			var metaPropertiesArrayCount = arraylen(metaProperties);
 			for(var i=1; i < metaPropertiesArrayCount;i++){
 				metaProperties[i] = convertStructToLowerCase(metaProperties[i]);
@@ -820,7 +820,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		return getApplicationValue("classPropertyCache_#getClassFullname()#");
 	}
-	
+
 	private struct function convertStructToLowerCase(struct st){
 		var aKeys = structKeyArray(st);
         var stN = structNew();
@@ -842,7 +842,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
         		stN['#lcase(i)#'] = st[i];
         	}
         }
-       
+
         return stn;
 	}
 

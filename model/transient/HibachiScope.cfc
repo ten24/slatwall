@@ -59,6 +59,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// Slatwall specific request smartList properties
 	property name="productSmartList" type="any";
+	// Slatwall specific request collectin properties
+	property name="productCollectionList" type="any";
 	
 	// Slatwall Specific queue properties
 	property name="emailQueue" type="array";
@@ -167,6 +169,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 			}
 		}
 		return variables.productSmartList;
+	}
+	
+	// Product Collection List
+	public any function getProductCollectionList() {
+		if(!structKeyExists(variables, "productCollectionList")) {
+			variables.productCollectionList = getService("productService").getProductCollectionList(data=url);
+			variables.productCollectionList.setDistinct(true);
+			variables.productCollectionList.addFilter('activeFlag',1);
+			variables.productCollectionList.addFilter('publishedFlag',1);
+			variables.productCollectionList.addFilter('calculatedQATS','1','>');
+			if(
+				isBoolean(getContent().getProductListingPageFlag()) 
+				&& getContent().getProductListingPageFlag() 
+				&& isBoolean(getContent().setting('contentIncludeChildContentProductsFlag')) 
+				&& getContent().setting('contentIncludeChildContentProductsFlag')
+			){
+				variables.productCollectionList.addFilter('listingPages.contentIDPath',getContent().getContentIDPath()&"%",'like');
+			}else if(isBoolean(getContent().getProductListingPageFlag()) && getContent().getProductListingPageFlag()){
+				variables.productCollectionList.addFilter('listingPages.contentID',getContent.getContentID());
+			}
+		}
+		return variables.productCollectionList;
 	}
 	
 	// ================= Queue Helper Methods =====================
@@ -374,6 +398,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function slatProcess(required string slatProcess){
 		return getService('sessionService').processSession(getSession(), arguments.slatProcess);
+	}
+	
+	public boolean function onSlatwallCMS(){
+		return !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
 	}
 	
 }

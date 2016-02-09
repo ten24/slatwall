@@ -171,6 +171,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				tables[ thisTableName ]["sourceIDColumns"] = "";
 				tables[ thisTableName ]["columns"] = {};
 				tables[ thisTableName ]["circularColumns"] = {};
+				tables[ thisTableName ]["compositeKeyOperator"] = "";
 			}
 			// get table primary key
 			tables[ thisTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(thisEntityName);
@@ -181,6 +182,11 @@ component accessors="true" output="false" extends="HibachiService" {
 			if(structKeyExists(mapping, "key") && mapping.key) {
 				tables[ thisTableName ].idColumns = listAppend(tables[ thisTableName ].idColumns, thisColumnName);
 				tables[ thisTableName ].sourceIDColumns = listAppend(tables[ thisTableName ].sourceIDColumns, mapping["sourceColumn"]);
+
+				if(structKeyExists(mapping, "compositeKeyOperator") && tables[ thisTableName ]["compositeKeyOperator"] == ""){
+					tables[ thisTableName ]["compositeKeyOperator"] = mapping["compositeKeyOperator"];
+				}
+
 			}
 			
 			// if this is a column then add it to the table columns struct
@@ -238,6 +244,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						tables[ newTableName ]["columns"] = {};
 						tables[ newTableName ]["circularColumns"] = {};
 						tables[ newTableName ]["depth"] = listLen(thisPropertyIdentifier, ".");
+						tables[ newTableName ]["compositeKeyOperator"] = "";
 					}
 					tables[ newTableName ]["primaryKeyColumn"] = getPrimaryIDPropertyNameByEntityName(newEntityName);
 					
@@ -261,6 +268,12 @@ component accessors="true" output="false" extends="HibachiService" {
 						} else if(newColumnInfo["fieldType"] == "many-to-one") {
 							var sourceColumn = "#tables[ newColumnInfo["fkTableName"] ]["primaryKeyColumn"]#_new";
 							tables[ newTableName ]["columns"][ sourceColumn ] = [tableMetaData];
+						} else if(newColumnInfo["fieldType"] == "many-to-many") {
+							var sourceColumn = tables[newColumnInfo["cfc"]]["primaryKeyColumn"] & "_new";
+							tables[ newTableName ]["columns"][ sourceColumn ] = [tableMetaData];
+							addedColumns = listAppend(addedColumns, sourceColumn);
+							var sourceColumn = "#tables[ newTableName ]["primaryKeyColumn"]#_new";
+							tables[ newTableName ]["columns"][ sourceColumn ] = [{"columnName"="#tables[ newTableName ]["primaryKeyColumn"]#"}];
 						} else {
 							var sourceColumn = newColumnName & "_new";
 							tables[ newTableName ]["columns"][ sourceColumn ] = [tableMetaData];
@@ -311,8 +324,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(tables[ tableName ][ "tableType" ] == "linktable" && listFindNoCase(qryColumns, "#tables[ tableName ][ "primaryKeyColumn" ]#_new")) {
 					selectList = listAppend(selectList, "#tables[ tableName ][ "primaryKeyColumn" ]#_new");
 				}
-				
-				// get distint values for this table
+			// get distinct values for this table
 				var qry = new Query( sql="SELECT DISTINCT #selectList# FROM query", query=arguments.query, dbtype="query" );
 				var thisTableData = qry.execute().getResult();
 				var generatedIDStruct = {};
@@ -345,8 +357,8 @@ component accessors="true" output="false" extends="HibachiService" {
 									tableData[ tableName ].insertData = {};
 									tableData[ tableName ].updateData = {};
 								}
-								
-								// loop thorugh each column for this source column
+
+								// loop through each column for this source column
 								for(var thisColumn in tables[ tableName ]["columns"][ column ]) {
 									// Create the column data details
 									var columnRecord = {
@@ -394,7 +406,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								// set the primary key ID for insert
 								primaryKeyValue = getHibachiScope().createHibachiUUID();
 								tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = primaryKeyValue, dataType = 'varchar'};
-								primaryKeyValue = getHibachiDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false, true, tables[ tableName ][ "primaryKeyColumn" ]);
+								primaryKeyValue = getHibachiDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false, true, tables[ tableName ][ "primaryKeyColumn" ],tables[ tableName ][ "compositeKeyOperator" ]);
 							}
 						}
 						
@@ -411,7 +423,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								}
 							}
 							var idKeyStruct = structGet("generatedIDStruct.#tableName#.#idKeyList#");
-							idKeyStruct["value"] = primaryKeyValue;
+						idKeyStruct["value"] = primaryKeyValue == ""?"null":primaryKeyValue;
 						} else if(tables[ tableName ][ "tableType" ] != "linktable") {
 							var idKeyStruct = structGet("generatedIDStruct.#tableName#");
 							idKeyStruct["value"] = primaryKeyValue;

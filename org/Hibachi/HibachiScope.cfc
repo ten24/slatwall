@@ -78,15 +78,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public string function renderJSObject() {
-		var config = {};
-		config[ 'baseURL' ] = getApplicationValue('baseURL');
-		config[ 'action' ] = getApplicationValue('action');
-		config[ 'dateFormat' ] = 'mmm dd, yyyy';
-		config[ 'timeFormat' ] = 'hh:mm tt';
-		config[ 'rbLocale' ] = '#getRBLocale()#';
-		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
-		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
-		
+		var config = getService('HibachiSessionService').getConfig();
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
 		returnHTML &= '<script type="text/javascript">(function( $ ){$.#lcase(getApplicationValue('applicationKey'))# = new Hibachi(#serializeJSON(config)#);})( jQuery );</script>';
