@@ -813,11 +813,16 @@ var coremodule = angular.module('hibachi.core',[
                         }else{
                             entityName = modifiedData.objectLevel.metaData.className;
                         }
-                        var savePromise = $delegate.saveEntity(entityName,entityInstance.$$getID(),params,context);
+                        var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
                         savePromise.then(function(response){
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
                                 _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
+
+                                if($location.url() == '/entity/'+entityName+'/null' && response.data[entityInstance.$$getIDName()]){
+                                    $location.path('/entity/'+entityName+'/'+response.data[entityInstance.$$getIDName()], false);
+                                }
+
                                 deferred.resolve(returnedIDs);
                             }else{
                                 deferred.reject(angular.isDefined(response.messages) ? response.messages : response);
@@ -1156,9 +1161,20 @@ var coremodule = angular.module('hibachi.core',[
     ]);
      $httpProvider.interceptors.push('hibachiInterceptor');
 }])
-.run(['$rootScope','$hibachi',($rootScope,$hibachi)=>{
+.run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;    
-}])    
+    var original = $location.path;
+    $location.path = function (path, reload) {
+        if (reload === false) {
+            var lastRoute = $route.current;
+            var un = $rootScope.$on('$locationChangeSuccess', function () {
+                $route.current = lastRoute;
+                un();
+            });
+        }
+        return original.apply($location, [path]);
+    };
+}])
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
