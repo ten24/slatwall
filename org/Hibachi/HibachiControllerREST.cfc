@@ -86,6 +86,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
     
     public void function login(required struct rc){
+    	
         if(!getHibachiScope().getLoggedInFlag()){
             //if account doesn't exist than one is create
             var account = getService('AccountService').processAccount(getHibachiScope().getAccount(), rc, "login");
@@ -107,9 +108,11 @@ component output="false" accessors="true" extends="HibachiController" {
                 return;
             }
         }
+        
         if(getHibachiScope().getLoggedinFlag()){
-            arguments.rc.apiResponse.content['token'] = getService('jwtService').createToken();
+            arguments.rc.apiResponse.content['token'] = getService('HibachiJWTService').createToken();
         }
+        
     }
     
     public void function noaccess(required struct rc){
