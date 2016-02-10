@@ -21,9 +21,11 @@ class SWExpandableRecordController{
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
         this.collectionConfigService = collectionConfigService;
+        this.recordID = this.parentId; //this is what parent is initalized to in the listing display
     }
     public toggleChild = ()=>{
         this.$timeout(()=>{
+            console.log("children expanding", this.childrenOpen, this.childrenLoaded, this.entity.$$getIDName(), this.recordIndex, this.parentId, this.records.length, this.collectionData);
             this.childrenOpen = !this.childrenOpen;
             if(!this.childrenLoaded){
                     var childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
@@ -51,6 +53,7 @@ class SWExpandableRecordController{
                     this.collectionPromise = childCollectionConfig.getEntity();
 
                     this.collectionPromise.then((data)=>{
+                        console.log("expanding get entity", data, this.recordID, this.recordIndex);
                         this.collectionData = data;
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                         if(this.collectionData.pageRecords.length){
@@ -58,6 +61,7 @@ class SWExpandableRecordController{
                                 pageRecord.dataparentID = this.recordID;
                                 pageRecord.depth = this.recordDepth || 0;
                                 pageRecord.depth++;
+                                //push the children into the listing display
                                 this.children.push(pageRecord);
                                 this.records.splice(this.recordIndex+1,0,pageRecord);
                             });
@@ -67,7 +71,17 @@ class SWExpandableRecordController{
             }
 
             angular.forEach(this.children,(child)=>{
+                console.log("expanding this is where the magic happens", child, this.childrenOpen, this.records, this.collectionData.pageRecords)
                 child.dataIsVisible=this.childrenOpen;
+                var entityPrimaryID = this.entity.$$getIDName();
+                var idToCheck = child[entityPrimaryID]
+                angular.forEach(this.records,(record)=>{
+                    if(record['dataparentID'] == idToCheck ){
+                        idToCheck = record[entityPrimaryID];
+                        record.dataIsVisible=this.childrenOpen;
+                        
+                    }
+                })
             });
         });
     }
@@ -148,11 +162,14 @@ class SWExpandableRecord implements ng.IDirective{
                         var position = this.utilityService.listFind(multiselectIdPath,id,'/');
                         var multiselectPathLength = multiselectIdPath.split('/').length;
                         if(position !== -1 && position < multiselectPathLength -1){
-                            scope.swExpandableRecord.toggleChild();
+                            console.log("Toggle?")
+                            //scope.swExpandableRecord.toggleChild();
                         }
                     });
                 }
             }
+            
+            console.log(scope.swExpandableRecord);
 
             this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
                 var template = angular.element(html);
@@ -160,11 +177,13 @@ class SWExpandableRecord implements ng.IDirective{
                 //get autoopen reference to ensure only the root is autoopenable
                 var autoOpen = angular.copy(scope.swExpandableRecord.autoOpen);
                 scope.swExpandableRecord.autoOpen = false;
+                console.log("expanding",scope.swExpandableRecord)
                 template = this.$compile(template)(scope);
                 element.html(template);
                 element.on('click',scope.swExpandableRecord.toggleChild);
                 if(autoOpen){
-                    scope.swExpandableRecord.toggleChild();
+                    console.log("AutoOpen")
+                    //scope.swExpandableRecord.toggleChild();
                 }
             });
         }
