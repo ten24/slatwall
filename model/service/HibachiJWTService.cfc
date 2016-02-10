@@ -46,36 +46,7 @@
 Notes:
 
 */
-component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
+component  output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiJWTService" 
 {
-	//list of supported algorithms
-	
-	public any function newJWT(required string key){
-		return new Slatwall.org.Hibachi.jwt.jwt(key);
-	}
-	
-	public any function getJwtByToken(required string token){
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		jwt.setTokenString(arguments.token);
-		return jwt;
-	}
-	
-	public string function createToken(){
-		//create token
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		//hard coded to 15 minutes
-		var tokenExpirationTime = 5;
-		var payload = {};
-		payload['iat'] = javaCast( "int", currentTime );
-		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
-		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
-		payload['encoding'] = "UTF-8";
-		var token = jwt.encode(payload);
-		
-		return token;
-	}
 	
 }

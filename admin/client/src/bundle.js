@@ -853,6 +853,7 @@
 	var metadataservice_1 = __webpack_require__(20);
 	var rbkeyservice_1 = __webpack_require__(21);
 	var hibachiservice_1 = __webpack_require__(22);
+	var hibachiscope_1 = __webpack_require__(185);
 	//controllers
 	var globalsearch_1 = __webpack_require__(23);
 	//filters
@@ -1862,6 +1863,7 @@
 	    .service('rbkeyService', rbkeyservice_1.RbKeyService)
 	    .provider('$hibachi', hibachiservice_1.$Hibachi)
 	    .service('hibachiInterceptor', hibachiinterceptor_1.HibachiInterceptor.Factory())
+	    .service('hibachiScope', hibachiscope_1.HibachiScope)
 	    .controller('globalSearch', globalsearch_1.GlobalSearchController)
 	    .filter('percentage', [percentage_1.PercentageFilter.Factory])
 	    .filter('entityRBKey', ['rbkeyService', entityrbkey_1.EntityRBKey.Factory])
@@ -1907,7 +1909,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var HibachiInterceptor = (function () {
 	    //@ngInject
-	    function HibachiInterceptor($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) {
+	    function HibachiInterceptor($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, corePartialsPath, hibachiScope) {
 	        var _this = this;
 	        this.$location = $location;
 	        this.$window = $window;
@@ -1919,9 +1921,12 @@
 	        this.dialogService = dialogService;
 	        this.utilityService = utilityService;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.corePartialsPath = corePartialsPath;
+	        this.hibachiScope = hibachiScope;
 	        this.urlParam = null;
 	        this.authHeader = 'Authorization';
 	        this.authPrefix = 'Bearer ';
+	        this.loginDisplayed = false;
 	        this.request = function (config) {
 	            _this.$log.debug('request');
 	            //bypass interceptor rules when checking template cache
@@ -1937,7 +1942,10 @@
 	            config.headers = config.headers || {};
 	            console.log('requestcache');
 	            if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
-	                config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+	                _this.hibachiScope.setToken(_this.$window.localStorage.getItem('token'));
+	                if (_this.hibachiScope.isValidToken) {
+	                    config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+	                }
 	            }
 	            var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
 	            if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
@@ -1992,11 +2000,17 @@
 	                    var $http = _this.$injector.get('$http');
 	                    if (rejection.data.messages[0].message === 'timeout') {
 	                        //open dialog
-	                        _this.dialogService.addPageDialog(_this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
+	                        //this will be implemented later
+	                        //                    if(this.hibachiScope.loginDisplayed === false){
+	                        //                       // this.hibachiScope.loginDisplayed=true;
+	                        //                        this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath+'preprocesslogin'),{} );
+	                        //                    }
+	                        location.href = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=main.logout';
 	                    }
 	                    else if (rejection.data.messages[0].message === 'invalid_token') {
 	                        return $http.get(_this.baseUrl + '/index.cfm/api/auth/login').then(function (loginResponse) {
 	                            _this.$window.localStorage.setItem('token', loginResponse.data.token);
+	                            _this.hibachiScope.setToken(loginResponse.data.token);
 	                            rejection.config.headers = rejection.config.headers || {};
 	                            rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
 	                            return $http(rejection.config).then(function (response) {
@@ -2017,14 +2031,18 @@
 	        this.$injector = $injector;
 	        this.alertService = alertService;
 	        this.appConfig = appConfig;
-	        this.baseUrl = appConfig.baseUrl;
+	        this.baseUrl = appConfig.baseURL;
 	        this.dialogService = dialogService;
 	        this.utilityService = utilityService;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.corePartialsPath = corePartialsPath;
+	        this.hibachiScope = hibachiScope;
+	        console.log('hibachiScope');
+	        console.log(hibachiScope);
 	    }
 	    HibachiInterceptor.Factory = function () {
-	        var eventHandler = function ($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) {
-	            return new HibachiInterceptor($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder);
+	        var eventHandler = function ($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, corePartialsPath, hibachiScope) {
+	            return new HibachiInterceptor($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, corePartialsPath, hibachiScope);
 	        };
 	        eventHandler.$inject = [
 	            '$location',
@@ -2036,7 +2054,9 @@
 	            'appConfig',
 	            'dialogService',
 	            'utilityService',
-	            'hibachiPathBuilder'
+	            'hibachiPathBuilder',
+	            'corePartialsPath',
+	            'hibachiScope'
 	        ];
 	        return eventHandler;
 	    };
@@ -5949,7 +5969,8 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWLoginController = (function () {
-	    function SWLoginController($route, $log, $window, corePartialsPath, $hibachi, dialogService) {
+	    //@ngInject
+	    function SWLoginController($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiScope) {
 	        var _this = this;
 	        this.$route = $route;
 	        this.$log = $log;
@@ -5957,24 +5978,29 @@
 	        this.corePartialsPath = corePartialsPath;
 	        this.$hibachi = $hibachi;
 	        this.dialogService = dialogService;
+	        this.hibachiScope = hibachiScope;
 	        this.login = function () {
 	            var loginPromise = _this.$hibachi.login(_this.account_login.data.emailAddress, _this.account_login.data.password);
 	            loginPromise.then(function (loginResponse) {
 	                if (loginResponse && loginResponse.data && loginResponse.data.token) {
 	                    _this.$window.localStorage.setItem('token', loginResponse.data.token);
+	                    _this.hibachiScope.loginDisplayed = false;
 	                    _this.$route.reload();
 	                    _this.dialogService.removeCurrentDialog();
 	                }
+	            }, function (rejection) {
 	            });
 	        };
 	        this.$hibachi = $hibachi;
 	        this.$window = $window;
 	        this.$route = $route;
+	        this.hibachiScope = hibachiScope;
 	        this.account_login = $hibachi.newEntity('Account_Login');
 	    }
 	    return SWLoginController;
 	})();
 	var SWLogin = (function () {
+	    //@ngInject
 	    function SWLogin($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) {
 	        this.$route = $route;
 	        this.$log = $log;
@@ -5989,7 +6015,7 @@
 	        this.controllerAs = "SwLogin";
 	        this.link = function (scope, element, attrs) {
 	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this).corePartialsPath + '/login.html';
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath + '/login.html');
 	    }
 	    SWLogin.Factory = function () {
 	        var directive = function ($route, $log, $window, corePartialsPath, $hibachi, dialogService, hibachiPathBuilder) {
@@ -15812,10 +15838,11 @@
 	                }
 	            },
 	            controller: 'routerController',
-	        }).otherwise({
-	            //controller:'otherwiseController'
-	            templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
 	        });
+	        //        .otherwise({
+	        //         //controller:'otherwiseController'
+	        //         templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
+	        //     });
 	    }])
 	    .constant('coreEntityPartialsPath', 'entity/components/')
 	    .controller('otherwiseController', otherwisecontroller_1.OtherWiseController)
@@ -19662,6 +19689,36 @@
 	    return SWCurrency;
 	})();
 	exports.SWCurrency = SWCurrency;
+
+
+/***/ },
+/* 185 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var HibachiScope = (function () {
+	    //@ngInject
+	    function HibachiScope(appConfig) {
+	        var _this = this;
+	        this.loginDisplayed = false;
+	        this.isValidToken = true;
+	        this.setToken = function (token) {
+	            _this.token = token;
+	            var stringArray = token.split('.');
+	            try {
+	                _this.jwtInfo = angular.fromJson(window.atob(stringArray[0]).trim());
+	                _this.session = angular.fromJson(window.atob(stringArray[1]).trim());
+	            }
+	            catch (err) {
+	                isValidToken = false;
+	            }
+	        };
+	        this.config = appConfig;
+	    }
+	    return HibachiScope;
+	})();
+	exports.HibachiScope = HibachiScope;
 
 
 /***/ }
