@@ -100,10 +100,16 @@ component displayname="Category" entityname="SlatwallCategory" table="SwCategory
 	}
 	
 	// Parent Category (many-to-one)
-	public void function setParentCategory(required any parentCategory) {
-		variables.parentCategory = arguments.parentCategory;
-		if(isNew() or !arguments.parentCategory.hasChildCategory( this )) {
-			arrayAppend(arguments.parentCategory.getChildCategories(), this);
+	public void function setParentCategory(any parentCategory) {
+		
+		if ( !isNull(arguments.parentCategory) ){
+			variables.parentCategory = arguments.parentCategory;
+			
+			if( isNew() || !arguments.parentCategory.hasChildCategory( this ) ) {
+				arrayAppend(arguments.parentCategory.getChildCategories(), this);
+			}
+		}else{
+			variables.parentCategory = javaCast('null', '');
 		}
 	}
 	public void function removeParentCategory(any parentCategory) {
