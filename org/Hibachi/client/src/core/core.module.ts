@@ -429,10 +429,11 @@ var coremodule = angular.module('hibachi.core',[
 
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
 
-                                    _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
+                                    _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){
 
-
-                                        var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+                                        if(angular.isUndefined(entityInstance)){
+                                            var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+                                        }
                                         var metaData = this.metaData;
 
                                         if(metaData[property.name].fieldtype === 'one-to-many'){

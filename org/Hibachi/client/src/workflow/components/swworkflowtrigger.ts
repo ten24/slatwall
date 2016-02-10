@@ -113,19 +113,6 @@ class SWWorkflowTrigger{
 					});
 				};
 
-				/**
-				 * Sets the editing state to show/hide the edit screen.
-				 */
-				scope.setHidden = function(trigger){
-					if(!angular.isObject(trigger) || angular.isUndefined(trigger.hidden)){
-						trigger.hidden=false;
-					}else{
-						console.warn("setHidden()", "Setting Hide Value To " + !trigger.hidden);
-						trigger.hidden = !trigger.hidden;
-					}
-				};
-
-
 			}
 		};
 	}

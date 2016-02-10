@@ -119,7 +119,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "ko-kp",
-  "localeID": "ko_KP",
   "pluralCat": function(n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

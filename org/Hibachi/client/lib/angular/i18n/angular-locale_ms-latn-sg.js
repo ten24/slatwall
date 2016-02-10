@@ -119,7 +119,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "ms-latn-sg",
-  "localeID": "ms_Latn_SG",
   "pluralCat": function(n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

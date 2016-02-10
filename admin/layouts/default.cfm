@@ -295,7 +295,6 @@ Notes:
 									<hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_gb&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-gb'></i> #$.slatwall.rbKey('define.language.en_gb')#" type="list">
 									<hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=fr_fr&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-fr'></i> #$.slatwall.rbKey('define.language.fr_fr')#" type="list">
 									<hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
-                                    <hb:HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=pt_br&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-pt'></i> #$.slatwall.rbKey('define.language.pt_br')#" type="list">
 								</hb:HibachiActionCallerDropdown>
 							</ul>
 						</div>

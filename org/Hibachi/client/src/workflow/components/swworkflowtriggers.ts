@@ -56,6 +56,21 @@ class SWWorkflowTriggers{
 			templateUrl:hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)+"workflowtriggers.html",
 			link: function(scope, element,attrs,formController){
 
+
+                scope.$watch('workflowTriggers.selectedTrigger', function(newValue, oldValue){
+                    if(newValue !== undefined && newValue !== oldValue){
+                        console.warn('Ooh watch me, watch me', newValue);
+                        if(newValue.data.triggerType == 'Schedule'){
+                            if(angular.isDefined(newValue.data.schedule)){
+                                scope.selectedSchedule = newValue.data.schedule.data.scheduleName;
+                            }
+                            if(angular.isDefined(newValue.data.scheduleCollection)){
+                                scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
+                            }
+                        }
+                    }
+                });
+
                 scope.collectionCollectionConfig = collectionConfigService.newCollectionConfig("Collection");
                 scope.collectionCollectionConfig.setDisplayProperties("collectionID,collectionName");
                 scope.collectionCollectionConfig.addFilter("collectionObject",scope.workflow.data.workflowObject);
@@ -70,8 +85,6 @@ class SWWorkflowTriggers{
 
                 scope.daysOfweek = [];
                 scope.daysOfMonth = [];
-
-                scope.selectedSchedule = '';
 
 
 				console.warn('Workflow triggers init');
@@ -156,6 +169,7 @@ class SWWorkflowTriggers{
 						scope.getEventOptions(scope.workflow.data.workflowObject);
 					}
 				});
+
 				/**
 				 * Retrieves the event options for a workflow trigger item.
 				 */
@@ -177,19 +191,24 @@ class SWWorkflowTriggers{
 				 * Saves the workflow triggers.
 				 */
 				scope.saveWorkflowTrigger = function(context){
+                    if(!scope.workflowTriggers.selectedTrigger.$$isPersisted()){
+                        scope.workflow.$$addWorkflowTrigger(scope.workflowTriggers.selectedTrigger);
+                    }
 					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 					saveWorkflowTriggerPromise.then(function(){
                         //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
                         if (context == 'add'){
                             console.warn("Save and New");
                             scope.addWorkflowTrigger();
-                            scope.finished = false;
                         }else if (context == "finish"){
-                            scope.finished = true;
-                            scope.workflowTriggers.selectedTrigger.hidden = true;
+                            scope.workflowTriggers.selectedTrigger = undefined;
                         }
 					});
 				};
+
+                scope.closeTrigger = function(){
+                    scope.workflowTriggers.selectedTrigger = undefined;
+                };
 
 				/**
 				 * Changes the selected trigger value.
@@ -242,9 +261,9 @@ class SWWorkflowTriggers{
 				 */
 				scope.addWorkflowTrigger = function(){
 					console.warn('addWorkflowTrigger');
-					var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
+					var newWorkflowTrigger = $hibachi.newWorkflowTrigger();//scope.workflow.$$addWorkflowTrigger();
 					scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
-					console.warn(scope.workflowTriggers);
+					//console.warn(scope.workflowTriggers);
 				};
 
 
@@ -282,7 +301,7 @@ class SWWorkflowTriggers{
 
                 scope.selectSchedule =  (item) => {
                     console.warn(item)
-                    scope.schedulePreview = scheduleService.buildSchedulePreview(item);
+                    scope.schedulePreview = scheduleService.buildSchedulePreview(item,6);
                     if(angular.isDefined(scope.workflowTriggers.selectedTrigger.data.schedule)){
                         scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleID = item.scheduleID;
                         scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleName = item.scheduleName;

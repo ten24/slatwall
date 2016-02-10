@@ -119,7 +119,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "zh-hans-hk",
-  "localeID": "zh_Hans_HK",
   "pluralCat": function(n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

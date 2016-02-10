@@ -119,7 +119,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "ta-sg",
-  "localeID": "ta_SG",
   "pluralCat": function(n, opt_precision) {  if (n == 1) {    return PLURAL_CATEGORY.ONE;  }  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

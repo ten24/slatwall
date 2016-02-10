@@ -119,7 +119,6 @@ $provide.value("$locale", {
     ]
   },
   "id": "in",
-  "localeID": "in",
   "pluralCat": function(n, opt_precision) {  return PLURAL_CATEGORY.OTHER;}
 });
 }]);

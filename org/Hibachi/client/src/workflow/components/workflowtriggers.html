@@ -16,7 +16,7 @@
 </div>
 
 <!--- Edit Filter Box --->
-<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger" ng-show="!workflowTriggers.selectedTrigger.hidden">
+<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger">
 		<sw-form name="selectedTrigger" 
 			data-object="workflowTriggers.selectedTrigger"	
 			data-context="save"
@@ -29,7 +29,7 @@
 					 <i class="fa fa-times" 
 					 	data-toggle="collapse" 
 					 	data-target="#j-create-new-trigger"
-					 	ng-click="workflowTriggers.selectedTrigger.hidden = true;"
+					 	ng-click="closeTrigger()"
 					 ></i>
 				</h4>
 				<div class="col-xs-12">
@@ -208,7 +208,7 @@
                                                      data-properties="collectionName"
                                                      data-placeholder-text="Search Collection..."
                                                      data-add-function="selectCollection"
-                                                     data-search-text="scheduleCollectionSelected">
+                                                     data-search-text="selectedCollection">
                                                     <span sw-typeahead-search-line-item
                                                           data-property-identifier="collectionName"
                                                           ng-bind="item.collectionName"></span>
@@ -388,20 +388,21 @@
 							<!--- //Filter Criteria End --->
 						</div>
 						<div class="col-xs-3">
-							<div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
-								<h4>Schedule:</h4>
-                                <sw-schedule-preview data-schedule="schedulePreview"></sw-schedule-preview>
-							</div>
+
 	
-							<div class="s-button-select-group" ng-show="workflowTriggers.selectedTrigger.data.triggerType">
+							<div class="s-button-select-group" ng-if="workflowTriggers.selectedTrigger.data.triggerType">
 								<button 
 										type="button" 
 										class="btn btn-sm s-btn-ten24 s-width-100"
-										ng-click="saveWorkflowTrigger('add')">
+										ng-click="saveWorkflowTrigger('finish')">
 									Save Trigger
 								</button>
 								
 							</div>
+                            <div class="s-default-list" ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
+                                <h4>Schedule Preview:</h4>
+                                <sw-schedule-preview data-schedule="schedulePreview"></sw-schedule-preview>
+                            </div>
 						</div>
 					</div>
 				</div>
@@ -410,10 +411,11 @@
 	</div>
 	<!--- //Edit Filter Box --->
 	
-	<button  class="btn btn-xs btn-primary" 
-		data-target="#j-create-new-trigger"
-		data-toggle="collapse"
-		ng-click="addWorkflowTrigger()">
+	<button class="btn btn-xs btn-primary"
+		    data-target="#j-create-new-trigger"
+		    data-toggle="collapse"
+		    ng-click="addWorkflowTrigger()"
+            ng-if="!workflowTriggers.selectedTrigger">
 		<i class="fa fa-plus"></i> Add Trigger
 	</button>
 </div>
