@@ -48,10 +48,11 @@
             options.day      && div.attr('day', parseInt(options.day));
             options.hour     && div.attr('hour', parseInt(options.hour));
             options.minute   && div.attr('minute', parseInt(options.minute));
-            if (options.dateOnly === '' || options.dateOnly === true) {
+            if (options.dateOnly) {
                 div.attr('date-only', 'true');
             }
-            if (options.timeOnly === '' || options.timeOnly === true) {
+            if (options.timeOnly) {
+
                 div.attr('time-only', 'true');
             }
             if (options.closeOnSelect === 'false') {
@@ -205,6 +206,7 @@
 
             if (scope.timeOnly === true){
                 element[0].querySelector('.adp-month').style.display = 'none';
+                element[0].querySelector('.adp-days').style.display = 'none';
             }
 
             scope.$applyAsync( function() {

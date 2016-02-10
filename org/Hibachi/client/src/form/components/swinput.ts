@@ -9,15 +9,18 @@ class SWInput{
 		var directive = (
 			$log,
 			$compile,
+            $hibachi,
 			utilityService
 		)=>new SWInput(
 			$log,
 			$compile,
+            $hibachi,
 			utilityService
 		);
 		directive.$inject = [
 			'$log',
 			'$compile',
+            '$hibachi',
 			'utilityService'
 		];
 		return directive
@@ -25,6 +28,7 @@ class SWInput{
 	constructor(
 		$log,
 		$compile,
+        $hibachi,
 		utilityService
 	){
 		var getValidationDirectives = function(propertyDisplay){
@@ -107,6 +111,8 @@ class SWInput{
                     currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
                 }
             }
+
+            var appConfig = $hibachi.getConfig();
            
 			if(propertyDisplay.fieldType === 'text'){
 				template = '<input type="text" class="form-control" '+
@@ -137,7 +143,7 @@ class SWInput{
 				' />';
             } else if(propertyDisplay.fieldType === 'time'){
                 template = '<input type="text" class="form-control" '+
-                    'datetime-picker data-time-only="true" '+ // date-format="hh:mm"
+                    'datetime-picker data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" '+
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
                     'ng-show="propertyDisplay.editing" '+
@@ -147,7 +153,7 @@ class SWInput{
                     ' />';
             } else if(propertyDisplay.fieldType === 'date'){
                 template = '<input type="text" class="form-control" '+
-                    'datetime-picker data-date-only="true" '+ // date-format="MMM DD, YYYY"
+                    'datetime-picker data-date-only="true" date-format="'+appConfig.dateFormat+'" '+
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
                     'ng-show="propertyDisplay.editing" '+

@@ -287,6 +287,10 @@ class UtilityService extends BaseService{
             }
             return returnArray;
       }
+
+        public minutesOfDay = (m):number=>{
+            return m.getMinutes() + m.getHours() * 60;
+        };
 }
 export {
     UtilityService

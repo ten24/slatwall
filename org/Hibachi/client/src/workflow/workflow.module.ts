@@ -2,6 +2,7 @@
 /// <reference path='../../typings/tsd.d.ts' />
 //services
 import {WorkflowConditionService} from "./services/workflowconditionservice";
+import {ScheduleService} from "./services/scheduleservice";
 
 //directives
 import {SWAdminCreateSuperUser} from "./components/swadmincreatesuperuser";
@@ -15,6 +16,7 @@ import {SWWorkflowTasks} from "./components/swworkflowtasks";
 import {SWWorkflowTrigger} from "./components/swworkflowtrigger";
 import {SWWorkflowTriggers} from "./components/swworkflowtriggers";
 import {SWWorkflowTriggerHistory} from "./components/swworkflowtriggerHistory";
+import {SWSchedulePreview} from "./components/swschedulepreview";
 
 //filters
 
@@ -25,6 +27,7 @@ var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).c
 .constant('workflowPartialsPath','workflow/components/')
 //services
 .service('workflowConditionService',WorkflowConditionService)
+.service('scheduleService',ScheduleService)
 //directives
 .directive('swAdminCreateSuperUser',SWAdminCreateSuperUser.Factory())
 .directive('swWorkflowBasic',SWWorkflowBasic.Factory())
@@ -37,6 +40,7 @@ var workflowmodule = angular.module('hibachi.workflow',['hibachi.collection']).c
 .directive('swWorkflowTrigger',SWWorkflowTrigger.Factory())
 .directive('swWorkflowTriggers',SWWorkflowTriggers.Factory())
 .directive('swWorkflowTriggerHistory',SWWorkflowTriggerHistory.Factory())
+.directive('swSchedulePreview',SWSchedulePreview.Factory())
 //filters
 
 ;

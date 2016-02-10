@@ -11,7 +11,8 @@ class SWWorkflowTriggers{
 			formService,
             observerService,
 			hibachiPathBuilder,
-            collectionConfigService
+            collectionConfigService,
+            scheduleService
 		)=> new SWWorkflowTriggers(
 			$log,
 			$location,
@@ -20,7 +21,8 @@ class SWWorkflowTriggers{
 			formService,
             observerService,
 			hibachiPathBuilder,
-            collectionConfigService
+            collectionConfigService,
+            scheduleService
 		);
 		directive.$inject = [
 			'$log',
@@ -30,7 +32,8 @@ class SWWorkflowTriggers{
 			'formService',
             'observerService',
 			'hibachiPathBuilder',
-            'collectionConfigService'
+            'collectionConfigService',
+            'scheduleService'
 		];
 		return directive;
 	}
@@ -42,7 +45,8 @@ class SWWorkflowTriggers{
 		formService,
         observerService,
         hibachiPathBuilder,
-        collectionConfigService
+        collectionConfigService,
+        scheduleService
 	){
 		return {
 			restrict: 'E',
@@ -117,27 +121,27 @@ class SWWorkflowTriggers{
 
 				scope.showCollections = false;
 				scope.collections = [];
-				scope.getCollectionByWorkflowObject = function(){
-					var filterGroupsConfig ='['+
-						'{'+
-		                 	'"filterGroup":['+
-					            '{'+
-					               '"propertyIdentifier":"_collection.collectionObject",'+
-					               '"comparisonOperator":"=",'+
-					               '"value":"'+ scope.workflow.data.workflowObject +'"'+
-					           '}'+
-					         ']'+
-						'}'+
-					']';
-					var collectionsPromise = $hibachi.getEntity('Collection',{filterGroupsConfig:filterGroupsConfig});
-
-					collectionsPromise.then(function(value){
-						console.warn('getcollections');
-						scope.collections = value.pageRecords;
-						console.warn(scope.collections);
-
-					});
-				};
+				//scope.getCollectionByWorkflowObject = function(){
+				//	var filterGroupsConfig ='['+
+				//		'{'+
+		         //        	'"filterGroup":['+
+				//	            '{'+
+				//	               '"propertyIdentifier":"_collection.collectionObject",'+
+				//	               '"comparisonOperator":"=",'+
+				//	               '"value":"'+ scope.workflow.data.workflowObject +'"'+
+				//	           '}'+
+				//	         ']'+
+				//		'}'+
+				//	']';
+				//	var collectionsPromise = $hibachi.getEntity('Collection',{filterGroupsConfig:filterGroupsConfig});
+                //
+				//	collectionsPromise.then(function(value){
+				//		console.warn('getcollections');
+				//		scope.collections = value.pageRecords;
+				//		console.warn(scope.collections);
+                //
+				//	});
+				//};
 				scope.searchEvent = {
 					name:''
 				};
@@ -278,7 +282,7 @@ class SWWorkflowTriggers{
 
                 scope.selectSchedule =  (item) => {
                     console.warn(item)
-                    buildSchedulePreview(item);
+                    scope.schedulePreview = scheduleService.buildSchedulePreview(item);
                     if(angular.isDefined(scope.workflowTriggers.selectedTrigger.data.schedule)){
                         scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleID = item.scheduleID;
                         scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleName = item.scheduleName;
@@ -289,41 +293,6 @@ class SWWorkflowTriggers{
                         scope.workflowTriggers.selectedTrigger.$$setSchedule(_schedule);
                     }
                 };
-
-                function buildSchedulePreview(item){
-                    scope.schedulePreview = [];
-                    var startTime = new Date().setTime(Date.parse(item.frequencyStartTime));
-                    var weekday =  [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                    var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-                    var monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-
-                    var now = new Date();
-
-                   // if(now.getTime() < startTime.)
-
-                    switch(item.recuringType){
-                        case 'daily':
-                            for(var i = 1; i<= 50; i++){
-                                var timeToadd = (item.frequencyInterval) ? (item.frequencyInterval * i)*60000 : i * 24 * 60 * 60 * 1000;
-                                var currentDatetime = new Date(now.getTime() + timeToadd);
-                                var scheduleItem = {
-                                    day : currentDatetime.getDate(),
-                                    month: month[currentDatetime.getMonth()+1],
-                                    year: currentDatetime.getFullYear(),
-                                    weekday: weekday[currentDatetime.getDay()],
-                                    time: currentDatetime.toLocaleTimeString()
-                                };
-                                scope.schedulePreview.push(scheduleItem);
-                            }
-                            console.warn('Preview',scope.schedulePreview );
-                        break;
-                        case 'weekly':
-                        break;
-                        case 'monthly':
-
-                        break;
-                    }
-                }
 
 
 			}

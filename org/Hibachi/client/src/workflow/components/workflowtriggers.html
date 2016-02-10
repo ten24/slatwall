@@ -390,71 +390,14 @@
 						<div class="col-xs-3">
 							<div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
 								<h4>Schedule:</h4>
-								<div class="agenda">
-							        <div class="table-responsive">
-							            <table class="table table-condensed table-bordered">
-							                <tbody>
-							                    <!-- Multiple events in a single day (note the rowspan) -->
-							                    <tr>
-							                        <td class="agenda-date active" rowspan="2">
-							                            <div class="dayofmonth">26</div>
-							                            <div class="shortdate">July, 2014</div>
-							                            <div class="dayofweek text-muted">Monday</div>
-							                        </td>
-							                        <td class="agenda-time">
-							                            9:00 AM
-							                        </td>
-							                    </tr>
-							                    <tr>
-							                        <td class="agenda-time">
-							                            5:00 PM
-							                        </td>
-							                    </tr>
-							                    <!-- //Multiple events in a single day -->
-
-							                    <!-- Multiple events in a single day (note the rowspan) -->
-							                    <tr>
-							                        <td class="agenda-date active" rowspan="2">
-							                            <div class="dayofmonth">27</div>
-							                            <div class="shortdate">July, 2014</div>
-							                            <div class="dayofweek text-muted">Tuesday</div>
-							                        </td>
-							                        <td class="agenda-time">
-							                            9:00 AM
-							                        </td>
-							                    </tr>
-							                    <tr>
-							                        <td class="agenda-time">
-							                            5:00 PM
-							                        </td>
-							                    </tr>
-							                    <!-- //Multiple events in a single day -->
-
-                                                <!-- Single events (note the rowspan) -->
-												<tr>
-													<td class="agenda-date active" rowspan="1">
-														<div class="dayofmonth">28</div>
-														<div class="shortdate">July, 2014</div>
-														<div class="dayofweek text-muted">Wednesday</div>
-													</td>
-													<td class="agenda-time">
-														9:00 AM
-													</td>
-												</tr>
-                                                <!-- //Single events -->
-							                </tbody>
-							            </table>
-							            <button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>
-							        </div>
-							    </div>
-
+                                <sw-schedule-preview data-schedule="schedulePreview"></sw-schedule-preview>
 							</div>
 	
 							<div class="s-button-select-group" ng-show="workflowTriggers.selectedTrigger.data.triggerType">
 								<button 
 										type="button" 
 										class="btn btn-sm s-btn-ten24 s-width-100"
-										ng-click="saveWorkflowTrigger('finish')">
+										ng-click="saveWorkflowTrigger('add')">
 									Save Trigger
 								</button>
 								
