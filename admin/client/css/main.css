@@ -494,9 +494,6 @@ a:hover {
   margin-top: 0;
   margin-bottom: 0;
 }
-.content {
-  padding: 12px 3px;
-}
 .row-height {
   display: table;
   table-layout: fixed;
