@@ -160,15 +160,20 @@ class SWExpandableRecord implements ng.IDirective{
                 var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
                 if(scope.swExpandableRecord.multiselectIdPaths && scope.swExpandableRecord.multiselectIdPaths.length){
                     var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
-                    angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
-                        var position = this.utilityService.listFind(multiselectIdPath,id,'/');
-                        var multiselectPathLength = multiselectIdPath.split('/').length;
-                        if(position !== -1 && position < multiselectPathLength -1){
-                            console.log("expanding Toggle?", position, multiselectPathLength, multiselectIdPath, multiselectIdPathsArray);
-                            //this was calling toggle multiple times on the same record? 
-                            //scope.swExpandableRecord.toggleChild();
-                        }
-                    });
+                    if(scope.swExpandableRecord.childrenLoaded){
+                        angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
+                            var position = this.utilityService.listFind(multiselectIdPath,id,'/');
+                            var multiselectPathLength = multiselectIdPath.split('/').length;
+                            if(position !== -1 && position < multiselectPathLength -1){
+                                console.log("expanding Toggle?", position, multiselectPathLength, multiselectIdPath, multiselectIdPathsArray);
+                                //this was calling toggle multiple times on the same record? 
+                                scope.swExpandableRecord.toggleChild();
+                            }
+                        });
+                    }else{
+                        scope.swExpandableRecord.toggleChild();
+                    }
+                    
                 }
             }
             
@@ -184,6 +189,7 @@ class SWExpandableRecord implements ng.IDirective{
                 element.html(template);
                 element.on('click',scope.swExpandableRecord.toggleChild);
                 if(autoOpen){
+                    console.log("expanding auto open")
                     scope.swExpandableRecord.toggleChild();
                 }
             });
