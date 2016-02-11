@@ -59,8 +59,7 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.sku#" edit="#rc.edit#" saveActionQueryString="skuID=#rc.sku.getSkuID()#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.sku#" edit="#rc.edit#"
 					backAction="admin:entity.detailproduct"
-					backQueryString="productID=#rc.product.getProductID()#"
-					deleteQueryString="redirectAction=admin:entity.detailproduct&productID=#rc.product.getProductID()#">
+					backQueryString="productID=#rc.product.getProductID()#">
 			<cfif rc.sku.getBundleFlag() eq true>		
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="makeupBundledSkus" type="list" modal="true" />
 				<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="breakupBundledSkus" type="list" modal="true" />
