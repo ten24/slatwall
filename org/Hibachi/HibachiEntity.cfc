@@ -382,11 +382,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#AssignedIDList";
 			
 		if(!structKeyExists(variables, cacheKey)) {
-			variables[ cacheKey ] = "";
-			var arr = this.invokeMethod("get#arguments.propertyName#");
-			
-			for(var i=1; i<=arrayLen(arr); i++) {
-				variables[ cacheKey ] = listAppend(variables[ cacheKey ], arr[i].getPrimaryIDValue());
+			var variables[ cacheKey ] = '';
+			var smartList = this.getPropertySmartList(arguments.propertyName);
+			smartList.addSelect(propertyIdentifier=getService("hibachiService").getPrimaryIDPropertyNameByEntityName(listLast(getPropertyMetaData( arguments.propertyName ).cfc,'.')), alias="value");
+			//Set array to string
+			for(var i=1; i<=arrayLen(smartList.getRecords()); i++) {
+				
+				variables[ cacheKey ] = listAppend(variables[ cacheKey ], smartList.getRecords()[i]['value'] );
 			}
 		}
 		return variables[ cacheKey ];

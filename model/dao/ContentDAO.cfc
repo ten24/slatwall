@@ -183,4 +183,17 @@ Notes:
 		}
 	</cfscript>
 	
+	<cffunction name="getCategoryByCMSCategoryIDAndCMSSiteID" access="public">
+		<cfargument name="cmsCategoryID" type="string" required="true">
+		<cfargument name="cmsSiteID" type="string" required="true">
+		
+		<cfset var contents = ormExecuteQuery(" FROM SlatwallCategory c WHERE c.cmsCategoryID = ? AND c.site.cmsSiteID = ?", [ arguments.cmsCategoryID, arguments.cmsSiteID ] ) />
+		
+		<cfif arrayLen(contents)>
+			<cfreturn contents[1] />
+		</cfif>
+		
+		<cfreturn entityNew("SlatwallCategory") />
+	</cffunction>
+	
 </cfcomponent>
