@@ -25,7 +25,6 @@ class SWExpandableRecordController{
     }
     public toggleChild = ()=>{
         this.$timeout(()=>{
-            console.log("children expanding", this.childrenOpen, this.childrenLoaded, this.entity.$$getIDName(), this.recordIndex, this.parentId, this.records.length, this.collectionData);
             this.childrenOpen = !this.childrenOpen;
             if(!this.childrenLoaded){
                     var childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
@@ -53,7 +52,6 @@ class SWExpandableRecordController{
                     this.collectionPromise = childCollectionConfig.getEntity();
 
                     this.collectionPromise.then((data)=>{
-                        console.log("expanding get entity", data, this.recordID, this.recordIndex);
                         this.collectionData = data;
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                         if(this.collectionData.pageRecords.length){
@@ -73,16 +71,25 @@ class SWExpandableRecordController{
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
                 var entityPrimaryID = this.entity.$$getIDName();
-                var idToCheck = child[entityPrimaryID]
+                var idsToCheck = [];
+                idsToCheck.push(child[entityPrimaryID]);
                 //close all children of the child if we are closing
-                if(!this.childrenOpen){
-                    angular.forEach(this.records,(record)=>{
+                var childrenTraversed = false; 
+                var recordLength = this.records.length; 
+                while(!childrenTraversed && idsToCheck.length > 0){
+                    var found = false; 
+                    var idToCheck = idsToCheck.pop();
+                    for(var i=0; i < recordLength; i++){
+                        var record = this.records[i]; 
                         if(record['dataparentID'] == idToCheck ){
-                            idToCheck = record[entityPrimaryID];
+                            idsToCheck.push(record[entityPrimaryID]);
                             record.dataIsVisible=this.childrenOpen;
-                            
+                            found=true; 
                         }
-                    });
+                    }
+                    if(!found){
+                        childrenTraversed = true; 
+                    }
                 }
             });
         });
@@ -165,8 +172,6 @@ class SWExpandableRecord implements ng.IDirective{
                             var position = this.utilityService.listFind(multiselectIdPath,id,'/');
                             var multiselectPathLength = multiselectIdPath.split('/').length;
                             if(position !== -1 && position < multiselectPathLength -1){
-                                console.log("expanding Toggle?", position, multiselectPathLength, multiselectIdPath, multiselectIdPathsArray);
-                                //this was calling toggle multiple times on the same record? 
                                 scope.swExpandableRecord.toggleChild();
                             }
                         });
@@ -176,8 +181,7 @@ class SWExpandableRecord implements ng.IDirective{
                     
                 }
             }
-            
-            console.log(scope.swExpandableRecord);
+           
 
             this.$templateRequest(this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+"expandablerecord.html").then((html)=>{
                 var template = angular.element(html);
@@ -189,7 +193,6 @@ class SWExpandableRecord implements ng.IDirective{
                 element.html(template);
                 element.on('click',scope.swExpandableRecord.toggleChild);
                 if(autoOpen){
-                    console.log("expanding auto open")
                     scope.swExpandableRecord.toggleChild();
                 }
             });
