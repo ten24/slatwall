@@ -100,7 +100,12 @@ component output="false" update="true" extends="HibachiService" {
 				arguments.eventData[ "#getApplicationValue('applicationKey')#Scope" ] = getHibachiScope();
 				// Attempt to evaluate this method
 				
-				object.callEvent(eventName=arguments.eventName,eventData=arguments.eventData);
+				if(structKeyExists(object,'callEvent')){
+					object.callEvent(eventName=arguments.eventName,eventData=arguments.eventData);
+				//support legacy event handlers
+				}else if(structKeyExists(object,'onEvent')){
+					object.onEvent(eventName=arguments.eventName,eventData=arguments.eventData);
+				}
 				
 			}
 		}
