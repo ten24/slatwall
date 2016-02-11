@@ -28,7 +28,7 @@
 	      </div>
 	      
 	      <div class="col-xs-6 s-criteria" ng-if="selectedFilterProperty.ormType !== 'undefined'">
-	        <h4 sw-rbkey="'admin.editfilteritem.criteria'"></h4>
+	        <h4 sw-rbkey="'admin.editfilteritem.criteria'" ng-class="{'disabled' : selectedFilterProperty == null}"></h4>
 			<!--- Alert if no filter has been selected --->
 			<div class="alert alert-info" ng-if="selectedFilterProperty == null" sw-rbkey="'entity.Collection.missingFilter'"><!--- Populated via js ---></div>
 	       	<sw-criteria 
@@ -42,7 +42,8 @@
 	       	></sw-criteria>
 	      </div>
 	      <div class="col-xs-3">
-	        <div class="s-button-select-group" ng-class="selectedFilterProperty.selectedCriteriaType ? '' : 'disabled'">
+			  
+	        <div class="s-button-select-group" ng-class="{'disabled' : selectedFilterProperty.selectedCriteriaType == null}">
 	          <button 	type="button" 
 	         			ng-click="saveFilter(selectedFilterProperty,filterItem,addFilterItem)"
 	          			class="btn btn-sm btn-primary" 
