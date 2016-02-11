@@ -666,6 +666,9 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			&& len(getAttribute().getAttributeCode())
 			&& !isNull(getAttribute().getAttributeInputType())
 			&& getAttribute().getAttributeInputType() == 'file') {
+			
+			var preExistingFilePath = getAttribute().getAttributeValueUploadDirectory() & arguments.attributeValue;
+			writeLog(file="Slatwall", text="Detail Log - FilePath > #preExistingFilePath#");
 
 			// Make sure that a new value was passed in to be set
 			if(structKeyExists(form, getAttribute().getAttributeCode()) && len(form[getAttribute().getAttributeCode()])) {
@@ -689,6 +692,10 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 					// Add an error if there were any hard errors during upload
 					this.addError('attributeValue', rbKey('validate.fileUpload'));
 				}
+			} elseif ( fileExists(preExistingFilePath) ) {
+				
+				// condition where file has already been uploaded to the default upload dir
+				variables.attributeValue = arguments.attributeValue;
 			}
 		} else {
 			// Set the value
