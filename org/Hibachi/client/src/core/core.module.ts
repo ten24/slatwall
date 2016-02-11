@@ -14,7 +14,7 @@ import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
-
+import {HibachiScope} from "./services/hibachiscope";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
@@ -1194,6 +1194,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('rbkeyService',RbKeyService)
 .provider('$hibachi',$Hibachi)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
+.service('hibachiScope',HibachiScope)
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters

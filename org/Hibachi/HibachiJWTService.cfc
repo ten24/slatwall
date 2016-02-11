@@ -46,12 +46,36 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
-	public void function setUp() {
-		super.setup();
+component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
+{
+	//list of supported algorithms
+	
+	public any function newJWT(required string key){
+		return getHibachiScope().getTransient('HibachiJWT').setup(arguments.key);
+	}
+	
+	public any function getJwtByToken(required string token){
+		var key = getService('settingService').getSettingValue('globalClientSecret');
+		var jwt = newJwt(key);
+		jwt.setTokenString(arguments.token);
+		return jwt;
+	}
+	
+	public string function createToken(){
+		//create token
+		var key = getService('settingService').getSettingValue('globalClientSecret');
+		var jwt = newJwt(key);
+		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+		//hard coded to 15 minutes
+		var tokenExpirationTime = 900;
+		var payload = {};
+		payload['iat'] = javaCast( "int", currentTime );
+		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
+		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
+		payload['encoding'] = "UTF-8";
+		var token = jwt.encode(payload);
 		
-		variables.service = request.slatwallScope.getBean("hibachiDataService");
+		return token;
 	}
 	
 }

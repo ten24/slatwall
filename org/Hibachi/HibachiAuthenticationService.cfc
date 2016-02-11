@@ -19,8 +19,15 @@ component output="false" accessors="true" extends="HibachiService" {
 			anyAdminAccessFlag = false,
 			publicAccessFlag = false,
 			entityPermissionAccessFlag = false,
-			actionPermissionAccessFlag = false
+			actionPermissionAccessFlag = false,
+			forbidden = false,
+			invalidToken = false,
+			timeout = false
 		};
+		
+		if(!(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify())){
+			authDetails.invalidToken = true;
+		}
 		
 		// Check if the user is a super admin, if true no need to worry about security
 		//Here superuser when not logged in is still false
@@ -148,8 +155,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					}else{
 						authDetails.forbidden = true;
 					}
-				}else{
-					authDetails.invalidToken = true;
+					
 				}
 			}
 		}else{

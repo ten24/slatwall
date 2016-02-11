@@ -52,10 +52,11 @@ var entitymodule = angular.module('hibachi.entity',['ngRoute',coremodule.name])
              }
          },
          controller: 'routerController',
-     }).otherwise({
-         //controller:'otherwiseController'
-         templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
-     });
+     })
+//        .otherwise({
+//         //controller:'otherwiseController'
+//         templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
+//     });
 }])
 .constant('coreEntityPartialsPath','entity/components/')
 //services
