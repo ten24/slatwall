@@ -2625,6 +2625,10 @@ tabel .s-table-header {
   text-align: center;
   margin-bottom: 20px;
 }
+.s-add-filter .s-button-select-group.disabled .btn {
+  pointer-events: none;
+  opacity: .3;
+}
 .s-add-filter .s-or-box {
   margin-bottom: 10px;
   margin-top: 10px;

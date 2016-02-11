@@ -21,8 +21,6 @@
 	            					"
 	            		class="form-control input-sm j-custom-select">
 	              	<option value="">  {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
-
-
 	            </select>
 	          </div>
 	          <div class="clearfix"></div>
@@ -31,6 +29,8 @@
 	      
 	      <div class="col-xs-6 s-criteria" ng-if="selectedFilterProperty.ormType !== 'undefined'">
 	        <h4 sw-rbkey="'admin.editfilteritem.criteria'"></h4>
+			<!--- Alert if no filter has been selected --->
+			<div class="alert alert-info" ng-if="selectedFilterProperty == null" sw-rbkey="'entity.Collection.missingFilter'"><!--- Populated via js ---></div>
 	       	<sw-criteria 
 	       			ng-if="selectedFilterProperty !== null"
 	       			data-filter-item="filterItem"
@@ -40,11 +40,9 @@
 	       			data-comparison-type="comparisonType"
 					data-collection-config="collectionConfig"
 	       	></sw-criteria>
-	        <!-- //Filter Criteria End -->
-	
 	      </div>
 	      <div class="col-xs-3">
-	        <div class="s-button-select-group">
+	        <div class="s-button-select-group" ng-class="selectedFilterProperty.selectedCriteriaType ? '' : 'disabled'">
 	          <button 	type="button" 
 	         			ng-click="saveFilter(selectedFilterProperty,filterItem,addFilterItem)"
 	          			class="btn btn-sm btn-primary" 
