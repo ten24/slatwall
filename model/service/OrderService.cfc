@@ -1088,7 +1088,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 
         //set the site placed so that it is available on return orders.
-        if (!isNull( arguments.order.getOrderPlacedSite() && isObject( arguments.order.getOrderPlacedSite() ))){
+        if (!isNull( arguments.order.getOrderPlacedSite()) && isObject( arguments.order.getOrderPlacedSite())){
             newOrder.setOrderPlacedSite( arguments.order.getOrderPlacedSite() );
         }
 
