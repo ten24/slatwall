@@ -167,34 +167,34 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return maxQTY;
 	}
 
-	//gets the quantity of orderItems that use the same sku on the order but excludes the current orderItem.
-    public any function getQuantityAlreadyOnOrder(){
-        var qtyAlreadyOnOrder = 0;
-        for (var orderItem in getOrder().getOrderItems()){
-            if (orderItem.getOrderItemID() != "" && !isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-                qtyAlreadyOnOrder += orderItem.getQuantity();
-            }
-        }
-        return qtyAlreadyOnOrder;
-    }
+	public boolean function hasQuantityWithinMaxOrderQuantity() {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
+			var quantity = getQuantity();
+			if(!isNull(getOrder()) && !getOrder().getNewFlag() && !isNull(getSku())){
+				if(OrmExecuteQuery('SELECT count(orderItemID) FROM SlatwallOrderItem where order=:order and sku=:sku',{order=getOrder(),sku=getSku()},true) > 1){
+					
+					quantity += OrmExecuteQuery('SELECT sum(quantity) FROM SlatwallOrderItem where order=:order and sku=:sku and orderItemID <> :orderItemID',{order=getOrder(),sku=getSku(),orderItemID=getOrderItemID()},true);
+				}
+				
+			}
+			return quantity <= getMaximumOrderQuantity();
+		}
+		return true;
+	}
 
-    public any function getQuantityPlusQuantityAlreadyOnOrder(){
-        return getQuantity() + getQuantityAlreadyOnOrder();
-    }
-
-    public boolean function hasQuantityWithinMaxOrderQuantity() {
-        if(getOrderItemType().getSystemCode() == 'oitSale') {
-            return getQuantityPlusQuantityAlreadyOnOrder() <= getMaximumOrderQuantity();
-        }
-        return true;
-    }
-
-    public boolean function hasQuantityWithinMinOrderQuantity() {
-        if(getOrderItemType().getSystemCode() == 'oitSale') {
-            return getQuantityPlusQuantityAlreadyOnOrder() >= getSku().setting('skuOrderMinimumQuantity');
-        }
-        return true;
-    }
+	public boolean function hasQuantityWithinMinOrderQuantity() {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
+			var quantity = getQuantity();
+			if(!isNull(getOrder()) && !getOrder().getNewFlag() && !isNull(getSku())){
+				if(OrmExecuteQuery('SELECT count(orderItemID) FROM SlatwallOrderItem where order=:order and sku=:sku',{order=getOrder(),sku=getSku()},true) > 1){
+					
+					quantity += OrmExecuteQuery('SELECT sum(quantity) FROM SlatwallOrderItem where order=:order and sku=:sku and orderItemID <> :orderItemID',{order=getOrder(),sku=getSku(),orderItemID=getOrderItemID()},true);
+				}
+			}
+			return quantity >= getSku().setting('skuOrderMinimumQuantity');
+		}
+		return true;
+	}
 
 	public string function getOrderStatusCode(){
 		return getOrder().getStatusCode();
