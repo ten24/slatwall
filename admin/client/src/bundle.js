@@ -53,7 +53,7 @@
 	/// <reference path='../typings/tsd.d.ts' />
 	/*jshint browser:true */
 	var basebootstrap_1 = __webpack_require__(1);
-	var slatwalladmin_module_1 = __webpack_require__(62);
+	var slatwalladmin_module_1 = __webpack_require__(63);
 	//custom bootstrapper
 	var bootstrapper = (function (_super) {
 	    __extends(bootstrapper, _super);
@@ -74,7 +74,7 @@
 	/// <reference path='../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../typings/tsd.d.ts' />
 	__webpack_require__(2)();
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//generic bootstrapper
 	var BaseBootStrapper = (function () {
 	    function BaseBootStrapper() {
@@ -191,6 +191,7 @@
 	    __webpack_require__(8);
 	    __webpack_require__(9);
 	    __webpack_require__(10);
+	    __webpack_require__(11);
 	};
 
 
@@ -837,61 +838,423 @@
 
 /***/ },
 /* 11 */
+/***/ function(module, exports) {
+
+	(function() {
+	    'use strict';
+
+	    angular.module('angularjs-datetime-picker', []);
+
+	    var getTimezoneOffset = function(date) {
+	        (typeof date == 'string')  && (date = new Date(date));
+	        var jan = new Date(date.getFullYear(), 0, 1);
+	        var jul = new Date(date.getFullYear(), 6, 1);
+	        var stdTimezoneOffset = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+	        var isDST = date.getTimezoneOffset() < stdTimezoneOffset;
+	        var offset = isDST ? stdTimezoneOffset - 60 : stdTimezoneOffset;
+	        var diff = offset >=0 ? '-' : '+';
+	        return diff +
+	            ("0"+ (offset / 60)).slice(-2) + ':' +
+	            ("0"+ (offset % 60)).slice(-2);
+	    };
+
+	    var DatetimePicker = function($compile, $document, $controller){
+	        var datetimePickerCtrl = $controller('DatetimePickerCtrl'); //directive controller
+	        return {
+	            open: function(options) {
+	                datetimePickerCtrl.openDatetimePicker(options);
+	            },
+	            close: function() {
+	                datetimePickerCtrl.closeDatetimePicker();
+	            }
+	        };
+	    };
+	    DatetimePicker.$inject = ['$compile', '$document', '$controller'];
+	    angular.module('angularjs-datetime-picker').factory('DatetimePicker', DatetimePicker);
+
+	    var DatetimePickerCtrl = function($compile, $document) {
+	        var datetimePickerEl;
+	        var _this = this;
+	        var removeEl = function(el) {
+	            el && el.remove();
+	            $document[0].body.removeEventListener('click', _this.closeDatetimePicker);
+	        };
+
+	        this.openDatetimePicker = function(options) {
+	            this.closeDatetimePicker();
+	            var div = angular.element('<div datetime-picker-popup ng-cloak></div>');
+	            options.dateFormat && div.attr('date-format', options.dateFormat);
+	            options.ngModel  && div.attr('ng-model', options.ngModel);
+	            options.year     && div.attr('year', parseInt(options.year));
+	            options.month    && div.attr('month', parseInt(options.month));
+	            options.day      && div.attr('day', parseInt(options.day));
+	            options.hour     && div.attr('hour', parseInt(options.hour));
+	            options.minute   && div.attr('minute', parseInt(options.minute));
+	            if (options.dateOnly) {
+	                div.attr('date-only', 'true');
+	            }
+	            if (options.timeOnly) {
+
+	                div.attr('time-only', 'true');
+	            }
+	            if (options.closeOnSelect === 'false') {
+	                div.attr('close-on-select', 'false');
+	            }
+
+	            var triggerEl = options.triggerEl;
+	            options.scope = options.scope || angular.element(triggerEl).scope();
+	            datetimePickerEl = $compile(div)(options.scope)[0];
+	            datetimePickerEl.triggerEl = options.triggerEl;
+
+	            $document[0].body.appendChild(datetimePickerEl);
+
+	            //show datetimePicker below triggerEl
+	            var bcr = triggerEl.getBoundingClientRect();
+
+
+	            options.scope.$apply();
+
+	            var datePickerElBcr = datetimePickerEl.getBoundingClientRect();
+
+	            datetimePickerEl.style.position='absolute';
+	            if(bcr.width > datePickerElBcr.width){
+	                datetimePickerEl.style.left= (bcr.left + bcr.width - datePickerElBcr.width + window.scrollX) + 'px';
+	            } else {
+	                datetimePickerEl.style.left= (bcr.left + window.scrollX) + 'px';
+	            }
+
+	            if (bcr.top < 300 || window.innerHeight - bcr.bottom > 300) {
+	                datetimePickerEl.style.top = (bcr.bottom + window.scrollY) + 'px';
+	            } else {
+	                datetimePickerEl.style.top = (bcr.top - datePickerElBcr.height + window.scrollY) + 'px';
+	            }
+
+	            $document[0].body.addEventListener('click', this.closeDatetimePicker);
+	        };
+
+	        this.closeDatetimePicker = function(evt) {
+	            var target = evt && evt.target;
+	            var popupEl = $document[0].querySelector('div[datetime-picker-popup]');
+	            if (evt && target) {
+	                if (target.hasAttribute('datetime-picker')) {  // element with datetimePicker behaviour
+	                    // do nothing
+	                } else if (popupEl && popupEl.contains(target)) { // datetimePicker itself
+	                    // do nothing
+	                } else {
+	                    removeEl(popupEl);
+	                }
+	            } else {
+	                removeEl(popupEl);
+	            }
+	        }
+	    };
+	    DatetimePickerCtrl.$inject = ['$compile', '$document'];
+	    angular.module('angularjs-datetime-picker').controller('DatetimePickerCtrl', DatetimePickerCtrl);
+
+	    var tmpl = [
+	        '<div class="angularjs-datetime-picker">' ,
+	        '  <div class="adp-month">',
+	        '    <button type="button" class="adp-prev" ng-click="addMonth(-1)">&laquo;</button>',
+	        '    <span title="{{months[mv.month].fullName}}">{{months[mv.month].shortName}}</span> {{mv.year}}',
+	        '    <button type="button" class="adp-next" ng-click="addMonth(1)">&raquo;</button>',
+	        '  </div>',
+	        '  <div class="adp-days" ng-click="setDate($event)">',
+	        '    <div class="adp-day-of-week" ng-repeat="dayOfWeek in ::daysOfWeek" title="{{dayOfWeek.fullName}}">{{::dayOfWeek.firstLetter}}</div>',
+	        '    <div class="adp-day" ng-show="mv.leadingDays.length < 7" ng-repeat="day in mv.leadingDays">{{::day}}</div>',
+	        '    <div class="adp-day selectable" ng-repeat="day in mv.days" ',
+	        '      today="{{today}}" d2="{{mv.year + \'-\' + (mv.month + 1) + \'-\' + day}}"',
+	        '      ng-class="{',
+	        '        selected: (day == selectedDay),',
+	        '        today: (today == (mv.year + \'-\' + (mv.month + 1) + \'-\' + day)),',
+	        '        weekend: (mv.leadingDays.length + day)%7 == 1 || (mv.leadingDays.length + day)%7 == 0',
+	        '      }">',
+	        '      {{::day}}',
+	        '    </div>',
+	        '    <div class="adp-day" ng-show="mv.trailingDays.length < 7" ng-repeat="day in mv.trailingDays">{{::day}}</div>',
+	        '  </div>',
+	        '  <div class="adp-days" id="adp-time"> ',
+	        '    <label class="timeLabel">Time:</label> <span class="timeValue">{{("0"+inputHour).slice(-2)}} : {{("0"+inputMinute).slice(-2)}}</span><br/>',
+	        '    <label class="hourLabel">Hour:</label> <input class="hourInput" type="range" min="0" max="23" ng-model="inputHour" ng-change="updateNgModel()" />',
+	        '    <label class="minutesLabel">Min:</label> <input class="minutesInput" type="range" min="0" max="59" ng-model="inputMinute"  ng-change="updateNgModel()"/> ',
+	        '  </div> ',
+	        '</div>'].join("\n");
+
+	    var datetimePickerPopup = function($locale, dateFilter){
+	        var days, months, daysOfWeek, firstDayOfWeek;
+
+	        var initVars = function() {
+	            days =[], months=[]; daysOfWeek=[], firstDayOfWeek=0;
+	            for (var i = 1; i <= 31; i++) {
+	                days.push(i);
+	            }
+
+	            for (var i = 0; i < 12; i++) { //jshint ignore:line
+	                months.push({
+	                    fullName: $locale.DATETIME_FORMATS.MONTH[i],
+	                    shortName: $locale.DATETIME_FORMATS.SHORTMONTH[i]
+	                });
+	            }
+
+	            for (var i = 0; i < 7; i++) { //jshint ignore:line
+	                var day = $locale.DATETIME_FORMATS.DAY[(i + firstDayOfWeek) % 7];
+
+	                daysOfWeek.push({
+	                    fullName: day,
+	                    firstLetter: day.substr(0, 1)
+	                });
+	            }
+	            firstDayOfWeek = 0;
+	        };
+
+	        var getMonthView = function(year, month) {
+	            if (month>11) {
+	                year++;
+	            } else if (month < 0) {
+	                year--;
+	            }
+	            month = (month + 12) % 12;
+	            var firstDayOfMonth = new Date(year, month, 1),
+	                lastDayOfMonth = new Date(year, month + 1, 0),
+	                lastDayOfPreviousMonth = new Date(year, month, 0),
+	                daysInMonth = lastDayOfMonth.getDate(),
+	                daysInLastMonth = lastDayOfPreviousMonth.getDate(),
+	                dayOfWeek = firstDayOfMonth.getDay(),
+	                leadingDays = (dayOfWeek - firstDayOfWeek + 7) % 7 || 7, // Ensure there are always leading days to give context
+	                trailingDays = days.slice(0, 6 * 7 - (leadingDays + daysInMonth));
+	            if (trailingDays.length > 7) {
+	                trailingDays = trailingDays.slice(0, trailingDays.length-7);
+	            }
+
+	            return {
+	                year: year,
+	                month: month,
+	                days: days.slice(0, daysInMonth),
+	                leadingDays: days.slice(- leadingDays - (31 - daysInLastMonth), daysInLastMonth),
+	                trailingDays: trailingDays
+	            };
+	        };
+
+	        var linkFunc = function(scope, element, attrs, ctrl) { //jshint ignore:line
+	            initVars(); //initialize days, months, daysOfWeek, and firstDayOfWeek;
+	            var dateFormat = attrs.dateFormat || 'short';
+	            scope.months = months;
+	            scope.daysOfWeek = daysOfWeek;
+	            scope.inputHour;
+	            scope.inputMinute;
+
+	            if (scope.dateOnly === true){
+	                element[0].querySelector('#adp-time').style.display = 'none';
+	            }
+
+	            if (scope.timeOnly === true){
+	                element[0].querySelector('.adp-month').style.display = 'none';
+	                element[0].querySelector('.adp-days').style.display = 'none';
+	            }
+
+	            scope.$applyAsync( function() {
+	                ctrl.triggerEl = angular.element(element[0].triggerEl);
+	                if (attrs.ngModel) { // need to parse date string
+	                    var dateStr = ''+ctrl.triggerEl.scope().$eval(attrs.ngModel);
+	                    if (dateStr) {
+	                        if (!dateStr.match(/[0-9]{2}:/)) {  // if no time is given, add 00:00:00 at the end
+	                            dateStr += " 00:00:00";
+	                        }
+	                        dateStr = dateStr.replace(/([0-9]{2}-[0-9]{2})-([0-9]{4})/,'$2-$1');      //mm-dd-yyyy to yyyy-mm-dd
+	                        dateStr = dateStr.replace(/([\/-][0-9]{2,4})\ ([0-9]{2}\:[0-9]{2}\:)/,'$1T$2'); //reformat for FF
+	                        dateStr = dateStr.replace(/EDT|EST|CDT|CST|MDT|PDT|PST|UT|GMT/g,''); //remove timezone
+	                        dateStr = dateStr.replace(/\s*\(\)\s*/,'');                          //remove timezone
+	                        dateStr = dateStr.replace(/[\-\+][0-9]{2}:?[0-9]{2}$/,'');           //remove timezone
+	                        dateStr += getTimezoneOffset(dateStr);
+	                        var d = new Date(dateStr);
+	                        scope.selectedDate = new Date(
+	                            d.getFullYear(),
+	                            d.getMonth(),
+	                            d.getDate(),
+	                            d.getHours(),
+	                            d.getMinutes(),
+	                            d.getSeconds()
+	                        );
+	                    }
+	                }
+
+	                if (!scope.selectedDate || isNaN(scope.selectedDate.getTime())) { // no predefined date
+	                    var today = new Date();
+	                    var year = scope.year || today.getFullYear();
+	                    var month = scope.month ? (scope.month-1) : today.getMonth();
+	                    var day = scope.day || today.getDate();
+	                    var hour = scope.hour || today.getHours();
+	                    var minute = scope.minute || today.getMinutes();
+	                    scope.selectedDate = new Date(year, month, day, hour, minute, 0);
+	                }
+	                scope.inputHour   = scope.selectedDate.getHours();
+	                scope.inputMinute = scope.selectedDate.getMinutes();
+
+	                // Default to current year and month
+	                scope.mv = getMonthView(scope.selectedDate.getFullYear(), scope.selectedDate.getMonth());
+	                scope.today = dateFilter(new Date(), 'yyyy-M-d');
+	                if (scope.mv.year == scope.selectedDate.getFullYear() && scope.mv.month == scope.selectedDate.getMonth()) {
+	                    scope.selectedDay = scope.selectedDate.getDate();
+	                } else {
+	                    scope.selectedDay = null;
+	                }
+	            });
+
+	            scope.addMonth = function (amount) {
+	                scope.mv = getMonthView(scope.mv.year, scope.mv.month + amount);
+	            };
+
+	            scope.setDate = function (evt) {
+	                var target = angular.element(evt.target)[0];
+	                if (target.className.indexOf('selectable') !== -1) {
+	                    scope.updateNgModel(parseInt(target.innerHTML));
+	                    if (scope.closeOnSelect !== false) {
+	                        ctrl.closeDatetimePicker();
+	                    }
+	                }
+	            };
+
+	            scope.updateNgModel = function(day) {
+	                day = day ? day : scope.selectedDate.getDate();
+	                scope.selectedDate = new Date(
+	                    scope.mv.year, scope.mv.month, day, scope.inputHour, scope.inputMinute, 0
+	                );
+	                scope.selectedDay = scope.selectedDate.getDate();
+	                if (attrs.ngModel) {
+	                    //console.log('attrs.ngModel',attrs.ngModel);
+	                    var elScope = ctrl.triggerEl.scope(), dateValue;
+	                    if (elScope.$eval(attrs.ngModel) && elScope.$eval(attrs.ngModel).constructor.name === 'Date') {
+	                        dateValue = new Date(dateFilter(scope.selectedDate, dateFormat));
+	                    } else {
+	                        dateValue = dateFilter(scope.selectedDate, dateFormat);
+	                    }
+	                    elScope.$eval(attrs.ngModel + '= date', {date: dateValue});
+	                }
+	            };
+
+	            scope.$on('$destroy', ctrl.closeDatetimePicker);
+	        };
+
+	        return {
+	            restrict: 'A',
+	            template: tmpl,
+	            controller: 'DatetimePickerCtrl',
+	            replace: true,
+	            scope: {
+	                year: '=',
+	                month: '=',
+	                day: '=',
+	                hour: '=',
+	                minute: '=',
+	                dateOnly: '=',
+	                timeOnly: '=',
+	                closeOnSelect: '='
+	            },
+	            link: linkFunc
+	        };
+	    };
+	    datetimePickerPopup.$inject = ['$locale', 'dateFilter'];
+	    angular.module('angularjs-datetime-picker').directive('datetimePickerPopup', datetimePickerPopup);
+
+	    var datetimePicker  = function($parse, DatetimePicker) {
+	        return {
+	            // An ngModel is required to get the controller argument
+	            require: 'ngModel',
+	            link: function(scope, element, attrs, ctrl) {
+	                // Attach validation watcher
+	                scope.$watch(attrs.ngModel, function(value) {
+	                    if( !value || value == '' ){
+	                        return;
+	                    }
+	                    // The value has already been cleaned by the above code
+	                    var date = new Date(value);
+	                    ctrl.$setValidity('date', !date? false : true);
+	                    var now = new Date();
+	                    if( attrs.hasOwnProperty('futureOnly') ){
+	                        ctrl.$setValidity('future-only', date < now? false : true);
+	                    }
+	                });
+
+	                element[0].addEventListener('click', function() {
+	                    DatetimePicker.open({
+	                        triggerEl: element[0],
+	                        dateFormat: attrs.dateFormat,
+	                        ngModel: attrs.ngModel,
+	                        year: attrs.year,
+	                        month: attrs.month,
+	                        day: attrs.day,
+	                        hour: attrs.hour,
+	                        minute: attrs.minute,
+	                        dateOnly: attrs.dateOnly,
+	                        timeOnly: attrs.timeOnly,
+	                        futureOnly: attrs.futureOnly,
+	                        closeOnSelect: attrs.closeOnSelect
+	                    });
+	                });
+	            }
+	        };
+	    };
+	    datetimePicker.$inject=['$parse', 'DatetimePicker'];
+	    angular.module('angularjs-datetime-picker').directive('datetimePicker', datetimePicker);
+
+	})();
+
+/***/ },
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
-	var hibachiinterceptor_1 = __webpack_require__(12);
+	var hibachiinterceptor_1 = __webpack_require__(13);
 	//constant
-	var hibachipathbuilder_1 = __webpack_require__(13);
+	var hibachipathbuilder_1 = __webpack_require__(14);
 	//services
-	var publicservice_1 = __webpack_require__(14);
-	var utilityservice_1 = __webpack_require__(15);
-	var selectionservice_1 = __webpack_require__(17);
-	var observerservice_1 = __webpack_require__(18);
-	var formservice_1 = __webpack_require__(19);
-	var metadataservice_1 = __webpack_require__(20);
-	var rbkeyservice_1 = __webpack_require__(21);
-	var hibachiservice_1 = __webpack_require__(22);
-	var hibachiscope_1 = __webpack_require__(23);
+	var publicservice_1 = __webpack_require__(15);
+	var utilityservice_1 = __webpack_require__(16);
+	var selectionservice_1 = __webpack_require__(18);
+	var observerservice_1 = __webpack_require__(19);
+	var formservice_1 = __webpack_require__(20);
+	var metadataservice_1 = __webpack_require__(21);
+	var rbkeyservice_1 = __webpack_require__(22);
+	var hibachiservice_1 = __webpack_require__(23);
+	var hibachiscope_1 = __webpack_require__(24);
 	//controllers
-	var globalsearch_1 = __webpack_require__(24);
+	var globalsearch_1 = __webpack_require__(25);
 	//filters
-	var percentage_1 = __webpack_require__(25);
-	var entityrbkey_1 = __webpack_require__(26);
+	var percentage_1 = __webpack_require__(26);
+	var entityrbkey_1 = __webpack_require__(27);
 	//directives
 	//  components
-	var swactioncaller_1 = __webpack_require__(27);
-	var swtypeaheadsearch_1 = __webpack_require__(28);
-	var swtypeaheadsearchlineitem_1 = __webpack_require__(29);
-	var swactioncallerdropdown_1 = __webpack_require__(30);
-	var swcolumnsorter_1 = __webpack_require__(31);
-	var swconfirm_1 = __webpack_require__(32);
-	var swentityactionbar_1 = __webpack_require__(33);
-	var swentityactionbarbuttongroup_1 = __webpack_require__(34);
-	var swexpandablerecord_1 = __webpack_require__(35);
-	var swgravatar_1 = __webpack_require__(36);
-	var swlistingdisplay_1 = __webpack_require__(41);
-	var swlistingaggregate_1 = __webpack_require__(42);
-	var swlistingcolorfilter_1 = __webpack_require__(43);
-	var swlistingcolumn_1 = __webpack_require__(44);
-	var swlistingfilter_1 = __webpack_require__(45);
-	var swlistingorderby_1 = __webpack_require__(46);
-	var swlogin_1 = __webpack_require__(47);
-	var swnumbersonly_1 = __webpack_require__(48);
-	var swloading_1 = __webpack_require__(49);
-	var swscrolltrigger_1 = __webpack_require__(50);
-	var swtooltip_1 = __webpack_require__(51);
-	var swrbkey_1 = __webpack_require__(52);
-	var swoptions_1 = __webpack_require__(53);
-	var swselection_1 = __webpack_require__(54);
-	var swclickoutside_1 = __webpack_require__(55);
-	var swdirective_1 = __webpack_require__(56);
-	var swexportaction_1 = __webpack_require__(57);
-	var swhref_1 = __webpack_require__(58);
-	var swprocesscaller_1 = __webpack_require__(59);
-	var swsortable_1 = __webpack_require__(60);
-	var swlistingglobalsearch_1 = __webpack_require__(61);
+	var swactioncaller_1 = __webpack_require__(28);
+	var swtypeaheadsearch_1 = __webpack_require__(29);
+	var swtypeaheadsearchlineitem_1 = __webpack_require__(30);
+	var swactioncallerdropdown_1 = __webpack_require__(31);
+	var swcolumnsorter_1 = __webpack_require__(32);
+	var swconfirm_1 = __webpack_require__(33);
+	var swentityactionbar_1 = __webpack_require__(34);
+	var swentityactionbarbuttongroup_1 = __webpack_require__(35);
+	var swexpandablerecord_1 = __webpack_require__(36);
+	var swgravatar_1 = __webpack_require__(37);
+	var swlistingdisplay_1 = __webpack_require__(42);
+	var swlistingaggregate_1 = __webpack_require__(43);
+	var swlistingcolorfilter_1 = __webpack_require__(44);
+	var swlistingcolumn_1 = __webpack_require__(45);
+	var swlistingfilter_1 = __webpack_require__(46);
+	var swlistingorderby_1 = __webpack_require__(47);
+	var swlogin_1 = __webpack_require__(48);
+	var swnumbersonly_1 = __webpack_require__(49);
+	var swloading_1 = __webpack_require__(50);
+	var swscrolltrigger_1 = __webpack_require__(51);
+	var swtooltip_1 = __webpack_require__(52);
+	var swrbkey_1 = __webpack_require__(53);
+	var swoptions_1 = __webpack_require__(54);
+	var swselection_1 = __webpack_require__(55);
+	var swclickoutside_1 = __webpack_require__(56);
+	var swdirective_1 = __webpack_require__(57);
+	var swexportaction_1 = __webpack_require__(58);
+	var swhref_1 = __webpack_require__(59);
+	var swprocesscaller_1 = __webpack_require__(60);
+	var swsortable_1 = __webpack_require__(61);
+	var swlistingglobalsearch_1 = __webpack_require__(62);
 	var coremodule = angular.module('hibachi.core', [
 	    //Angular Modules
 	    'ngAnimate',
@@ -1079,12 +1442,7 @@
 	                            return this['$$get' + propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
 	                        },
 	                        $$isPersisted: function () {
-	                            if (this.$$getID() === '') {
-	                                return false;
-	                            }
-	                            else {
-	                                return true;
-	                            }
+	                            return this.$$getID() !== '';
 	                        },
 	                        $$init: function (data) {
 	                            _init(this, data);
@@ -1093,8 +1451,7 @@
 	                            return _save(this);
 	                        },
 	                        $$delete: function () {
-	                            var deletePromise = _delete(this);
-	                            return deletePromise;
+	                            return _delete(this);
 	                        },
 	                        $$getValidationsByProperty: function (property) {
 	                            return _getValidationsByProperty(this, property);
@@ -1107,7 +1464,7 @@
 	                                var listFirst = utilityService.listFirst(propertyIdentifier, '.');
 	                                var relatedEntityName = this.metaData[listFirst].cfc;
 	                                var exampleEntity = $delegate.newEntity(relatedEntityName);
-	                                return exampleEntity = exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst, ''));
+	                                return exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst, ''));
 	                            }
 	                            return this.metaData.$$getPropertyTitle(propertyIdentifier);
 	                        },
@@ -1195,7 +1552,6 @@
 	                                                    entityInstance.children = [];
 	                                                }
 	                                                var child = entityInstance.metaData[manyToManyName];
-	                                                ;
 	                                                if (entityInstance.children.indexOf(child) === -1) {
 	                                                    entityInstance.children.push(child);
 	                                                }
@@ -1208,8 +1564,10 @@
 	                                        };
 	                                    }
 	                                    else if (['one-to-many', 'many-to-many'].indexOf(property.fieldtype) >= 0) {
-	                                        _jsEntities[entity.className].prototype['$$add' + property.singularname.charAt(0).toUpperCase() + property.singularname.slice(1)] = function () {
-	                                            var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+	                                        _jsEntities[entity.className].prototype['$$add' + property.singularname.charAt(0).toUpperCase() + property.singularname.slice(1)] = function (entityInstance) {
+	                                            if (angular.isUndefined(entityInstance)) {
+	                                                var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+	                                            }
 	                                            var metaData = this.metaData;
 	                                            if (metaData[property.name].fieldtype === 'one-to-many') {
 	                                                entityInstance.data[metaData[property.name].fkcolumn.slice(0, -2)] = this;
@@ -1436,13 +1794,8 @@
 	                    return 'none';
 	                };
 	                var _isSimpleValue = function (value) {
-	                    if (angular.isString(value) || angular.isNumber(value)
-	                        || angular.isDate(value) || value === false || value === true) {
-	                        return true;
-	                    }
-	                    else {
-	                        return false;
-	                    }
+	                    return !!(angular.isString(value) || angular.isNumber(value)
+	                        || angular.isDate(value) || value === false || value === true);
 	                };
 	                var _getFormattedValue = function (propertyName, formatType, entityInstance) {
 	                    var value = entityInstance.$$getPropertyByName(propertyName);
@@ -1478,8 +1831,7 @@
 	                    var entityName = entityInstance.metaData.className;
 	                    var entityID = entityInstance.$$getID();
 	                    var context = 'delete';
-	                    var deletePromise = $delegate.saveEntity(entityName, entityID, {}, context);
-	                    return deletePromise;
+	                    return $delegate.saveEntity(entityName, entityID, {}, context);
 	                };
 	                var _setValueByPropertyPath = function (obj, path, value) {
 	                    var a = path.split('.');
@@ -1558,10 +1910,13 @@
 	                            else {
 	                                entityName = modifiedData.objectLevel.metaData.className;
 	                            }
-	                            var savePromise = $delegate.saveEntity(entityName, entityInstance.$$getID(), params, context);
+	                            var savePromise = $delegate.saveEntity(entityName, entityID, params, context);
 	                            savePromise.then(function (response) {
 	                                var returnedIDs = response.data;
 	                                if (angular.isDefined(response.SUCCESS) && response.SUCCESS === true) {
+	                                    if ($location.url() == '/entity/' + entityName + '/create' && response.data[modifiedData.objectLevel.$$getIDName()]) {
+	                                        $location.path('/entity/' + entityName + '/' + response.data[modifiedData.objectLevel.$$getIDName()], false);
+	                                    }
 	                                    _addReturnedIDs(returnedIDs, modifiedData.objectLevel);
 	                                    deferred.resolve(returnedIDs);
 	                                }
@@ -1631,10 +1986,10 @@
 	                                        if (angular.isDefined(entityInstance.metaData[key])
 	                                            && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
 	                                            && entityInstance.metaData[key].hb_formfieldtype === 'json') {
-	                                            modifiedData[key] = angular.toJson(form[key].$modelValue);
+	                                            modifiedData[key] = angular.toJson(inputField.$modelValue);
 	                                        }
 	                                        else {
-	                                            modifiedData[key] = form[key].$modelValue;
+	                                            modifiedData[key] = inputField.$modelValue;
 	                                        }
 	                                    }
 	                                }
@@ -1664,14 +2019,17 @@
 	                                    for (var key in form) {
 	                                        if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                                            var inputField = form[key];
+	                                            if (inputField.$modelValue) {
+	                                                inputField.$dirty = true;
+	                                            }
 	                                            if (angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
 	                                                if (angular.isDefined(parentInstance.metaData[key])
 	                                                    && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype)
 	                                                    && parentInstance.metaData[key].hb_formfieldtype === 'json') {
-	                                                    modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);
+	                                                    modifiedData[parentObject.name][key] = angular.toJson(inputField.$modelValue);
 	                                                }
 	                                                else {
-	                                                    modifiedData[parentObject.name][key] = form[key].$modelValue;
+	                                                    modifiedData[parentObject.name][key] = inputField.$modelValue;
 	                                                }
 	                                            }
 	                                        }
@@ -1742,12 +2100,15 @@
 	                    for (var key in form) {
 	                        if (key.charAt(0) !== '$' && angular.isObject(form[key])) {
 	                            var inputField = form[key];
+	                            if (inputField.$modelValue) {
+	                                inputField.$dirty = true;
+	                            }
 	                            if (angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))) {
 	                                if (angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json') {
-	                                    data[key] = angular.toJson(form[key].$modelValue);
+	                                    data[key] = angular.toJson(inputField.$modelValue);
 	                                }
 	                                else {
-	                                    data[key] = form[key].$modelValue;
+	                                    data[key] = inputField.$modelValue;
 	                                }
 	                            }
 	                        }
@@ -1849,8 +2210,19 @@
 	        ]);
 	        $httpProvider.interceptors.push('hibachiInterceptor');
 	    }])
-	    .run(['$rootScope', '$hibachi', function ($rootScope, $hibachi) {
+	    .run(['$rootScope', '$hibachi', '$route', '$location', function ($rootScope, $hibachi, $route, $location) {
 	        $rootScope.buildUrl = $hibachi.buildUrl;
+	        var original = $location.path;
+	        $location.path = function (path, reload) {
+	            if (reload === false) {
+	                var lastRoute = $route.current;
+	                var un = $rootScope.$on('$locationChangeSuccess', function () {
+	                    $route.current = lastRoute;
+	                    un();
+	                });
+	            }
+	            return original.apply($location, [path]);
+	        };
 	    }])
 	    .constant('hibachiPathBuilder', new hibachipathbuilder_1.HibachiPathBuilder())
 	    .constant('corePartialsPath', 'core/components/')
@@ -1902,7 +2274,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2066,7 +2438,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2097,7 +2469,7 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2299,7 +2671,7 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __extends = (this && this.__extends) || function (d, b) {
@@ -2310,7 +2682,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	/*services return promises which can be handled uniquely based on success or failure by the controller*/
-	var baseservice_1 = __webpack_require__(16);
+	var baseservice_1 = __webpack_require__(17);
 	var UtilityService = (function (_super) {
 	    __extends(UtilityService, _super);
 	    function UtilityService() {
@@ -2346,6 +2718,9 @@
 	                }
 	            }
 	            return query_string;
+	        };
+	        this.isAngularRoute = function () {
+	            return /![\?&]ng#!/.test(window.location.href);
 	        };
 	        this.ArrayFindByPropertyValue = function (arr, property, value) {
 	            var currentIndex = -1;
@@ -2580,6 +2955,9 @@
 	            }
 	            return returnArray;
 	        };
+	        this.minutesOfDay = function (m) {
+	            return m.getMinutes() + m.getHours() * 60;
+	        };
 	    }
 	    return UtilityService;
 	})(baseservice_1.BaseService);
@@ -2587,7 +2965,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2601,7 +2979,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2612,7 +2990,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(16);
+	var baseservice_1 = __webpack_require__(17);
 	var SelectionService = (function (_super) {
 	    __extends(SelectionService, _super);
 	    function SelectionService() {
@@ -2663,7 +3041,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2681,7 +3059,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var baseservice_1 = __webpack_require__(16);
+	var baseservice_1 = __webpack_require__(17);
 	var ObserverService = (function (_super) {
 	    __extends(ObserverService, _super);
 	    //@ngInject
@@ -2774,14 +3152,11 @@
 	            }
 	        };
 	        this.notifyById = function (event, eventId, parameters) {
-	            console.log('event called:' + event);
-	            for (var id in _this.observers[event]) {
-	                if (id != eventId)
-	                    continue;
-	                angular.forEach(_this.observers[event][id], function (callback) {
-	                    callback(parameters);
-	                });
-	            }
+	            if (!_this.observers[event] || !_this.observers[event][eventId])
+	                return;
+	            angular.forEach(_this.observers[event][eventId], function (callback) {
+	                callback(parameters);
+	            });
 	        };
 	        this.observers = {};
 	    }
@@ -2791,7 +3166,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2881,7 +3256,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -2977,7 +3352,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3084,7 +3459,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3294,7 +3669,7 @@
 	            };
 	            //check if we are using a service to transform the request
 	            if(angular.isDefined(options.transformRequest)) => {
-	                transformRequest=options.trasformRequest;
+	                transformRequest=options.transformRequest;
 	            }*/
 	            var transformResponse = function (data) {
 	                if (angular.isString(data)) {
@@ -3340,6 +3715,17 @@
 	        this.getEventOptions = function (entityName) {
 	            var deferred = _this.$q.defer();
 	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getEventOptionsByEntityName&entityName=' + entityName;
+	            _this.$http.get(urlString)
+	                .success(function (data) {
+	                deferred.resolve(data);
+	            }).error(function (reason) {
+	                deferred.reject(reason);
+	            });
+	            return deferred.promise;
+	        };
+	        this.getProcessOptions = function (entityName) {
+	            var deferred = _this.$q.defer();
+	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getProcessMethodOptionsByEntityName&entityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3556,7 +3942,7 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3575,7 +3961,7 @@
 	                _this.session = angular.fromJson(window.atob(stringArray[1]).trim());
 	            }
 	            catch (err) {
-	                isValidToken = false;
+	                _this.isValidToken = false;
 	            }
 	        };
 	        this.config = appConfig;
@@ -3586,7 +3972,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3722,7 +4108,7 @@
 
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3746,7 +4132,7 @@
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3770,7 +4156,7 @@
 
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -3788,16 +4174,23 @@
 	        this.$hibachi = $hibachi;
 	        this.rbkeyService = rbkeyService;
 	        this.init = function () {
+	            //Check if is NOT a ngRouter
+	            if (_this.utilityService.isAngularRoute()) {
+	                _this.actionUrl = _this.$hibachi.buildUrl(_this.action, _this.queryString);
+	            }
+	            else {
+	                _this.actionUrl = '#!/entity/' + _this.action + '/' + _this.queryString.split('=')[1];
+	            }
 	            //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
 	            _this.type = _this.type || 'link';
-	            if (_this.type == "button" || _this.type == "submit" || _this.isPublic) {
+	            if (_this.type == "button") {
 	                //handle submit.
 	                /** in order to attach the correct controller to local vm, we need a watch to bind */
-	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.formController; }, function (newValue, oldValue) {
+	                var unbindWatcher = _this.$scope.$watch(function () { return _this.$scope.frmController; }, function (newValue, oldValue) {
 	                    if (newValue !== undefined) {
 	                        _this.formCtrl = newValue;
-	                        unbindWatcher();
 	                    }
+	                    unbindWatcher();
 	                });
 	            }
 	            //			this.actionItem = this.getActionItem();
@@ -3822,7 +4215,6 @@
 	            </cfif>
 	            */
 	        };
-	        /** submit function delegates back to the form */
 	        this.submit = function () {
 	            _this.formCtrl.submit(_this.action);
 	        };
@@ -3981,7 +4373,10 @@
 	})();
 	exports.SWActionCallerController = SWActionCallerController;
 	var SWActionCaller = (function () {
-	    function SWActionCaller() {
+	    function SWActionCaller(partialsPath, utiltiyService, $hibachi) {
+	        this.partialsPath = partialsPath;
+	        this.utiltiyService = utiltiyService;
+	        this.$hibachi = $hibachi;
 	        this.restrict = 'EA';
 	        this.scope = {};
 	        this.bindToController = {
@@ -4000,29 +4395,32 @@
 	            disabledtext: "@",
 	            modal: "=",
 	            modalFullWidth: "=",
-	            id: "@",
-	            isPublic: "@?"
+	            id: "@"
 	        };
 	        this.controller = SWActionCallerController;
 	        this.controllerAs = "swActionCaller";
-	        this.require = "^?swForm";
-	        this.link = function (scope, element, attrs, formController) {
-	            if (angular.isDefined(formController)) {
-	                scope.formController = formController;
-	            }
+	        this.link = function (scope, element, attrs) {
 	        };
 	    }
 	    SWActionCaller.Factory = function () {
-	        var directive = function () { return new SWActionCaller(); };
+	        var directive = function (partialsPath, utiltiyService, $hibachi) {
+	            return new SWActionCaller(partialsPath, utiltiyService, $hibachi);
+	        };
+	        directive.$inject = [
+	            'partialsPath',
+	            'utilityService',
+	            '$hibachi'
+	        ];
 	        return directive;
 	    };
 	    return SWActionCaller;
 	})();
 	exports.SWActionCaller = SWActionCaller;
+	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
 
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4044,7 +4442,7 @@
 	            _this.hideSearch = true;
 	        };
 	        this.toggleOptions = function () {
-	            if (_this.hideSearch && !_this.searchText.length) {
+	            if (_this.hideSearch && (!_this.searchText || !_this.searchText.length)) {
 	                _this.search(_this.searchText);
 	            }
 	            else {
@@ -4055,15 +4453,15 @@
 	            if (_this._timeoutPromise) {
 	                _this.$timeout.cancel(_this._timeoutPromise);
 	            }
-	            _this.typeaheadCollectionConfig.setKeywords(search);
+	            _this.collectionConfig.setKeywords(search);
 	            if (angular.isDefined(_this.filterGroupsConfig)) {
 	                //allows for filtering on search text
 	                var filterConfig = _this.filterGroupsConfig.replace("replaceWithSearchString", search);
 	                filterConfig = filterConfig.trim();
-	                _this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
+	                _this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
 	            }
 	            _this._timeoutPromise = _this.$timeout(function () {
-	                var promise = _this.typeaheadCollectionConfig.getEntity();
+	                var promise = _this.collectionConfig.getEntity();
 	                promise.then(function (response) {
 	                    if (angular.isDefined(_this.allRecords) && _this.allRecords == false) {
 	                        _this.results = response.pageRecords;
@@ -4118,29 +4516,30 @@
 	        if (angular.isUndefined(this.hideSearch)) {
 	            this.hideSearch = true;
 	        }
-	        if (angular.isDefined(this.collectionConfig)) {
-	            this.typeaheadCollectionConfig = this.collectionConfig;
+	        if (angular.isUndefined(this.collectionConfig)) {
+	            if (angular.isDefined(this.entity)) {
+	                this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+	            }
+	            else {
+	                throw ("You did not pass the correct collection config data to swTypeaheadSearch");
+	            }
 	        }
-	        else if (angular.isDefined(this.entity)) {
-	            this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-	        }
-	        else {
-	            throw ("You did not pass the correct collection config data to swTypeaheadSearch");
-	        }
-	        if (angular.isDefined(this.propertiesToDisplay)) {
-	            this.displayList = this.propertiesToDisplay.split(",");
+	        if (angular.isDefined(this.addButtonFunction)) {
+	            this.showAddButton = true;
 	        }
 	        //init timeoutPromise for link
 	        this._timeoutPromise = this.$timeout(function () { }, 500);
 	        //populate the displayList
-	        this.$transclude = this.$transclude;
 	        this.$transclude($scope, function () { });
-	        this.typeaheadCollectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
+	        if (angular.isDefined(this.propertiesToDisplay)) {
+	            this.displayList = this.propertiesToDisplay.split(",");
+	            this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
+	        }
 	        if (angular.isDefined(this.allRecords)) {
-	            this.typeaheadCollectionConfig.setAllRecords(this.allRecords);
+	            this.collectionConfig.setAllRecords(this.allRecords);
 	        }
 	        else {
-	            this.typeaheadCollectionConfig.setAllRecords(true);
+	            this.collectionConfig.setAllRecords(true);
 	        }
 	    }
 	    return SWTypeaheadSearchController;
@@ -4204,7 +4603,7 @@
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4250,7 +4649,7 @@
 
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4298,7 +4697,7 @@
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4345,7 +4744,7 @@
 
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4497,7 +4896,7 @@
 
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4562,7 +4961,7 @@
 
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4600,7 +4999,7 @@
 
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -4754,12 +5153,12 @@
 
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var md5 = __webpack_require__(37);
+	var md5 = __webpack_require__(38);
 	var SWGravatarController = (function () {
 	    // @ngInject
 	    function SWGravatarController() {
@@ -4795,14 +5194,14 @@
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function(){
-	  var crypt = __webpack_require__(38),
-	      utf8 = __webpack_require__(39).utf8,
-	      isBuffer = __webpack_require__(40),
-	      bin = __webpack_require__(39).bin,
+	  var crypt = __webpack_require__(39),
+	      utf8 = __webpack_require__(40).utf8,
+	      isBuffer = __webpack_require__(41),
+	      bin = __webpack_require__(40).bin,
 
 	  // The core
 	  md5 = function (message, options) {
@@ -4961,7 +5360,7 @@
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports) {
 
 	(function() {
@@ -5063,7 +5462,7 @@
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports) {
 
 	var charenc = {
@@ -5102,7 +5501,7 @@
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/**
@@ -5125,7 +5524,7 @@
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5222,15 +5621,22 @@
 	                    _this.collectionConfig.addDisplayProperty(colorFilter.propertyToCompare, "", { isVisible: false });
 	                }
 	            });
-	            _this.exampleEntity = _this.$hibachi.newEntity(_this.collectionObject);
-	            _this.collectionConfig.addDisplayProperty(_this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
+	            _this.exampleEntity = _this.$hibachi.getEntityExample(_this.collectionObject);
+	            if (_this.collectionConfig.hasColumns()) {
+	                _this.collectionConfig.addDisplayProperty(_this.exampleEntity.$$getIDName(), undefined, { isVisible: false });
+	            }
 	            _this.initData();
 	            _this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
 	                if (newValue) {
 	                    _this.$q.when(_this.collectionPromise).then(function (data) {
 	                        _this.collectionData = data;
 	                        _this.setupDefaultCollectionInfo();
-	                        _this.setupColumns();
+	                        if (_this.collectionConfig.hasColumns()) {
+	                            _this.setupColumns();
+	                        }
+	                        else {
+	                            _this.collectionConfig.loadJson(data.collectionConfig);
+	                        }
 	                        _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
 	                        _this.paginator.setPageRecordsInfo(_this.collectionData);
 	                        _this.searching = false;
@@ -5723,7 +6129,7 @@
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5771,7 +6177,7 @@
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5829,7 +6235,7 @@
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5898,7 +6304,7 @@
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5946,7 +6352,7 @@
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -5993,7 +6399,7 @@
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6068,7 +6474,7 @@
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6124,7 +6530,7 @@
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6159,7 +6565,7 @@
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6250,7 +6656,7 @@
 
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6331,7 +6737,7 @@
 
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6374,7 +6780,7 @@
 
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6439,7 +6845,7 @@
 
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6504,7 +6910,7 @@
 
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6512,6 +6918,7 @@
 	var SWClickOutside = (function () {
 	    //@ngInject
 	    function SWClickOutside($document, $timeout, utilityService) {
+	        var _this = this;
 	        this.$document = $document;
 	        this.$timeout = $timeout;
 	        this.utilityService = utilityService;
@@ -6520,23 +6927,20 @@
 	            swClickOutside: '&'
 	        };
 	        this.link = function (scope, elem, attr) {
-	            $document.on('click', function (e) {
+	            _this.$document.on('click', function (e) {
 	                if (!e || !e.target)
 	                    return;
-	                //check if our element already hiden
+	                //check if our element already hidden
 	                if (angular.element(elem).hasClass("ng-hide")) {
 	                    return;
 	                }
-	                if (e.target !== elem && !utilityService.isDescendantElement(elem, e.target)) {
-	                    $timeout(function () {
+	                if (e.target !== elem && !_this.utilityService.isDescendantElement(elem, e.target)) {
+	                    _this.$timeout(function () {
 	                        scope.swClickOutside();
 	                    });
 	                }
 	            });
 	        };
-	        this.$document = $document;
-	        this.$timeout = $timeout;
-	        this.utilityService = utilityService;
 	    }
 	    SWClickOutside.Factory = function () {
 	        var directive = function ($document, $timeout, utilityService) {
@@ -6553,7 +6957,7 @@
 
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6597,7 +7001,7 @@
 
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6630,7 +7034,7 @@
 
 
 /***/ },
-/* 58 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6663,7 +7067,7 @@
 
 
 /***/ },
-/* 59 */
+/* 60 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6743,7 +7147,7 @@
 
 
 /***/ },
-/* 60 */
+/* 61 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6797,7 +7201,7 @@
 
 
 /***/ },
-/* 61 */
+/* 62 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -6851,26 +7255,26 @@
 
 
 /***/ },
-/* 62 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypescript.d.ts" />
-	var hibachi_module_1 = __webpack_require__(63);
-	var workflow_module_1 = __webpack_require__(131);
-	var entity_module_1 = __webpack_require__(143);
-	var content_module_1 = __webpack_require__(149);
-	var giftcard_module_1 = __webpack_require__(154);
-	var optiongroup_module_1 = __webpack_require__(165);
-	var orderitem_module_1 = __webpack_require__(168);
-	var product_module_1 = __webpack_require__(175);
-	var productbundle_module_1 = __webpack_require__(177);
+	var hibachi_module_1 = __webpack_require__(64);
+	var workflow_module_1 = __webpack_require__(132);
+	var entity_module_1 = __webpack_require__(148);
+	var content_module_1 = __webpack_require__(154);
+	var giftcard_module_1 = __webpack_require__(159);
+	var optiongroup_module_1 = __webpack_require__(170);
+	var orderitem_module_1 = __webpack_require__(173);
+	var product_module_1 = __webpack_require__(180);
+	var productbundle_module_1 = __webpack_require__(182);
 	//constant
-	var slatwallpathbuilder_1 = __webpack_require__(183);
+	var slatwallpathbuilder_1 = __webpack_require__(188);
 	//directives
-	var swcurrencyformatter_1 = __webpack_require__(184);
+	var swcurrencyformatter_1 = __webpack_require__(189);
 	//filters
-	var swcurrency_1 = __webpack_require__(185);
+	var swcurrency_1 = __webpack_require__(190);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
@@ -7017,21 +7421,22 @@
 
 
 /***/ },
-/* 63 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//import alertmodule = require('./alert/alert.module');
-	var alert_module_1 = __webpack_require__(64);
-	var collection_module_1 = __webpack_require__(68);
-	var core_module_1 = __webpack_require__(11);
-	var dialog_module_1 = __webpack_require__(93);
-	var pagination_module_1 = __webpack_require__(96);
-	var form_module_1 = __webpack_require__(99);
-	var validation_module_1 = __webpack_require__(114);
+	var alert_module_1 = __webpack_require__(65);
+	var collection_module_1 = __webpack_require__(69);
+	var core_module_1 = __webpack_require__(12);
+	var dialog_module_1 = __webpack_require__(94);
+	var pagination_module_1 = __webpack_require__(97);
+	var form_module_1 = __webpack_require__(100);
+	var validation_module_1 = __webpack_require__(116);
+	var workflow_module_1 = __webpack_require__(132);
 	//directives
-	var swsaveandfinish_1 = __webpack_require__(130);
+	var swsaveandfinish_1 = __webpack_require__(147);
 	var hibachimodule = angular.module('hibachi', [
 	    alert_module_1.alertmodule.name,
 	    core_module_1.coremodule.name,
@@ -7039,7 +7444,8 @@
 	    dialog_module_1.dialogmodule.name,
 	    pagination_module_1.paginationmodule.name,
 	    form_module_1.formmodule.name,
-	    validation_module_1.validationmodule.name
+	    validation_module_1.validationmodule.name,
+	    workflow_module_1.workflowmodule.name
 	])
 	    .constant('hibachiPartialsPath', 'hibachi/components/')
 	    .directive('swSaveAndFinish', swsaveandfinish_1.SWSaveAndFinish.Factory());
@@ -7047,15 +7453,15 @@
 
 
 /***/ },
-/* 64 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//controllers
-	var alertcontroller_1 = __webpack_require__(65);
+	var alertcontroller_1 = __webpack_require__(66);
 	//services
-	var alertService_1 = __webpack_require__(66);
+	var alertService_1 = __webpack_require__(67);
 	var alertmodule = angular.module('hibachi.alert', [])
 	    .controller('alertController', alertcontroller_1.AlertController)
 	    .service('alertService', alertService_1.AlertService);
@@ -7063,7 +7469,7 @@
 
 
 /***/ },
-/* 65 */
+/* 66 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7080,13 +7486,13 @@
 
 
 /***/ },
-/* 66 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	//import Alert = require('../model/alert');
-	var alert_1 = __webpack_require__(67);
+	var alert_1 = __webpack_require__(68);
 	var AlertService = (function () {
 	    function AlertService($timeout, alerts) {
 	        var _this = this;
@@ -7154,7 +7560,7 @@
 
 
 /***/ },
-/* 67 */
+/* 68 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7175,40 +7581,40 @@
 
 
 /***/ },
-/* 68 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//services
-	var collectionconfigservice_1 = __webpack_require__(69);
-	var collectionservice_1 = __webpack_require__(70);
+	var collectionconfigservice_1 = __webpack_require__(70);
+	var collectionservice_1 = __webpack_require__(71);
 	//controllers
-	var collections_1 = __webpack_require__(71);
-	var createcollection_1 = __webpack_require__(72);
-	var confirmationcontroller_1 = __webpack_require__(73);
+	var collections_1 = __webpack_require__(72);
+	var createcollection_1 = __webpack_require__(73);
+	var confirmationcontroller_1 = __webpack_require__(74);
 	//directives
-	var swcollection_1 = __webpack_require__(74);
-	var swaddfilterbuttons_1 = __webpack_require__(75);
-	var swdisplayoptions_1 = __webpack_require__(76);
-	var swdisplayitem_1 = __webpack_require__(77);
-	var swcollectiontable_1 = __webpack_require__(78);
-	var swcolumnitem_1 = __webpack_require__(79);
-	var swconditioncriteria_1 = __webpack_require__(80);
-	var swcriteria_1 = __webpack_require__(81);
-	var swcriteriaboolean_1 = __webpack_require__(82);
-	var swcriteriadate_1 = __webpack_require__(83);
-	var swcriteriamanytomany_1 = __webpack_require__(84);
-	var swcriteriamanytoone_1 = __webpack_require__(85);
-	var swcriterianumber_1 = __webpack_require__(86);
-	var swcriteriaonetomany_1 = __webpack_require__(87);
-	var swcriteriastring_1 = __webpack_require__(88);
-	var sweditfilteritem_1 = __webpack_require__(89);
-	var swfiltergroups_1 = __webpack_require__(90);
-	var swfilteritem_1 = __webpack_require__(91);
-	var swfiltergroupitem_1 = __webpack_require__(92);
+	var swcollection_1 = __webpack_require__(75);
+	var swaddfilterbuttons_1 = __webpack_require__(76);
+	var swdisplayoptions_1 = __webpack_require__(77);
+	var swdisplayitem_1 = __webpack_require__(78);
+	var swcollectiontable_1 = __webpack_require__(79);
+	var swcolumnitem_1 = __webpack_require__(80);
+	var swconditioncriteria_1 = __webpack_require__(81);
+	var swcriteria_1 = __webpack_require__(82);
+	var swcriteriaboolean_1 = __webpack_require__(83);
+	var swcriteriadate_1 = __webpack_require__(84);
+	var swcriteriamanytomany_1 = __webpack_require__(85);
+	var swcriteriamanytoone_1 = __webpack_require__(86);
+	var swcriterianumber_1 = __webpack_require__(87);
+	var swcriteriaonetomany_1 = __webpack_require__(88);
+	var swcriteriastring_1 = __webpack_require__(89);
+	var sweditfilteritem_1 = __webpack_require__(90);
+	var swfiltergroups_1 = __webpack_require__(91);
+	var swfilteritem_1 = __webpack_require__(92);
+	var swfiltergroupitem_1 = __webpack_require__(93);
 	var collectionmodule = angular.module('hibachi.collection', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -7242,7 +7648,7 @@
 
 
 /***/ },
-/* 69 */
+/* 70 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -7647,6 +8053,9 @@
 	        this.hasFilters = function () {
 	            return (_this.filterGroups.length && _this.filterGroups[0].filterGroup.length);
 	        };
+	        this.hasColumns = function () {
+	            return (_this.columns.length > 0);
+	        };
 	        this.clearFilters = function () {
 	            _this.filterGroups = [{ filterGroup: [] }];
 	            return _this;
@@ -7675,7 +8084,7 @@
 
 
 /***/ },
-/* 70 */
+/* 71 */
 /***/ function(module, exports) {
 
 	var CollectionService = (function () {
@@ -7876,7 +8285,7 @@
 
 
 /***/ },
-/* 71 */
+/* 72 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8136,7 +8545,7 @@
 
 
 /***/ },
-/* 72 */
+/* 73 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8341,7 +8750,7 @@
 
 
 /***/ },
-/* 73 */
+/* 74 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8377,7 +8786,7 @@
 
 
 /***/ },
-/* 74 */
+/* 75 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8423,7 +8832,7 @@
 
 
 /***/ },
-/* 75 */
+/* 76 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8469,7 +8878,7 @@
 
 
 /***/ },
-/* 76 */
+/* 77 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8640,7 +9049,7 @@
 
 
 /***/ },
-/* 77 */
+/* 78 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8720,7 +9129,7 @@
 
 
 /***/ },
-/* 78 */
+/* 79 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8787,7 +9196,7 @@
 
 
 /***/ },
-/* 79 */
+/* 80 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -8987,7 +9396,7 @@
 
 
 /***/ },
-/* 80 */
+/* 81 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -9877,7 +10286,7 @@
 
 
 /***/ },
-/* 81 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -9920,7 +10329,7 @@
 
 
 /***/ },
-/* 82 */
+/* 83 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -10020,7 +10429,7 @@
 
 
 /***/ },
-/* 83 */
+/* 84 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -10429,7 +10838,7 @@
 
 
 /***/ },
-/* 84 */
+/* 85 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -10572,7 +10981,7 @@
 
 
 /***/ },
-/* 85 */
+/* 86 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -10735,7 +11144,7 @@
 
 
 /***/ },
-/* 86 */
+/* 87 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -10900,7 +11309,7 @@
 
 
 /***/ },
-/* 87 */
+/* 88 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11039,7 +11448,7 @@
 
 
 /***/ },
-/* 88 */
+/* 89 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11221,7 +11630,7 @@
 
 
 /***/ },
-/* 89 */
+/* 90 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11523,7 +11932,7 @@
 
 
 /***/ },
-/* 90 */
+/* 91 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11622,7 +12031,7 @@
 
 
 /***/ },
-/* 91 */
+/* 92 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11688,7 +12097,7 @@
 
 
 /***/ },
-/* 92 */
+/* 93 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11760,15 +12169,15 @@
 
 
 /***/ },
-/* 93 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var dialogservice_1 = __webpack_require__(94);
+	var dialogservice_1 = __webpack_require__(95);
 	//controllers
-	var pagedialog_1 = __webpack_require__(95);
+	var pagedialog_1 = __webpack_require__(96);
 	var dialogmodule = angular.module('hibachi.dialog', []).config(function () {
 	})
 	    .service('dialogService', dialogservice_1.DialogService)
@@ -11778,7 +12187,7 @@
 
 
 /***/ },
-/* 94 */
+/* 95 */
 /***/ function(module, exports) {
 
 	var DialogService = (function () {
@@ -11819,7 +12228,7 @@
 
 
 /***/ },
-/* 95 */
+/* 96 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -11842,15 +12251,15 @@
 
 
 /***/ },
-/* 96 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
 	//services
-	var paginationservice_1 = __webpack_require__(97);
-	var swpaginationbar_1 = __webpack_require__(98);
-	var core_module_1 = __webpack_require__(11);
+	var paginationservice_1 = __webpack_require__(98);
+	var swpaginationbar_1 = __webpack_require__(99);
+	var core_module_1 = __webpack_require__(12);
 	var paginationmodule = angular.module('hibachi.pagination', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -11861,7 +12270,7 @@
 
 
 /***/ },
-/* 97 */
+/* 98 */
 /***/ function(module, exports) {
 
 	/// <reference path="../../../typings/tsd.d.ts" />
@@ -12039,7 +12448,7 @@
 
 
 /***/ },
-/* 98 */
+/* 99 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12098,7 +12507,7 @@
 
 
 /***/ },
-/* 99 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
@@ -12114,21 +12523,22 @@
 	//directives
 	//  components
 	//form
-	var swinput_1 = __webpack_require__(100);
-	var swfformfield_1 = __webpack_require__(101);
-	var swform_1 = __webpack_require__(102);
-	var swformfield_1 = __webpack_require__(103);
-	var swformfieldjson_1 = __webpack_require__(104);
-	var swformfieldnumber_1 = __webpack_require__(105);
-	var swformfieldpassword_1 = __webpack_require__(106);
-	var swformfieldradio_1 = __webpack_require__(107);
-	var swformfieldsearchselect_1 = __webpack_require__(108);
-	var swformfieldselect_1 = __webpack_require__(109);
-	var swformfieldtext_1 = __webpack_require__(110);
-	var swformregistrar_1 = __webpack_require__(111);
-	var swfpropertydisplay_1 = __webpack_require__(112);
-	var swpropertydisplay_1 = __webpack_require__(113);
-	var formmodule = angular.module('hibachi.form', []).config(function () {
+	var swinput_1 = __webpack_require__(101);
+	var swfformfield_1 = __webpack_require__(102);
+	var swform_1 = __webpack_require__(103);
+	var swformfield_1 = __webpack_require__(104);
+	var swformfieldjson_1 = __webpack_require__(105);
+	var swformfieldnumber_1 = __webpack_require__(106);
+	var swformfieldpassword_1 = __webpack_require__(107);
+	var swformfieldradio_1 = __webpack_require__(108);
+	var swformfieldsearchselect_1 = __webpack_require__(109);
+	var swformfieldselect_1 = __webpack_require__(110);
+	var swformfieldtext_1 = __webpack_require__(111);
+	var swformfielddate_1 = __webpack_require__(112);
+	var swformregistrar_1 = __webpack_require__(113);
+	var swfpropertydisplay_1 = __webpack_require__(114);
+	var swpropertydisplay_1 = __webpack_require__(115);
+	var formmodule = angular.module('hibachi.form', ['angularjs-datetime-picker']).config(function () {
 	})
 	    .constant('coreFormPartialsPath', 'form/components/')
 	    .directive('swInput', swinput_1.SWInput.Factory())
@@ -12142,6 +12552,7 @@
 	    .directive('swFormFieldSearchSelect', swformfieldsearchselect_1.SWFormFieldSearchSelect.Factory())
 	    .directive('swFormFieldSelect', swformfieldselect_1.SWFormFieldSelect.Factory())
 	    .directive('swFormFieldText', swformfieldtext_1.SWFormFieldText.Factory())
+	    .directive('swFormFieldDate', swformfielddate_1.SWFormFieldDate.Factory())
 	    .directive('swFormRegistrar', swformregistrar_1.SWFormRegistrar.Factory())
 	    .directive('swfPropertyDisplay', swfpropertydisplay_1.SWFPropertyDisplay.Factory())
 	    .directive('swPropertyDisplay', swpropertydisplay_1.SWPropertyDisplay.Factory());
@@ -12149,7 +12560,7 @@
 
 
 /***/ },
-/* 100 */
+/* 101 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12159,12 +12570,17 @@
 	 * validate based on that context as defined in the validation properties object.
 	 */
 	var SWInput = (function () {
-	    function SWInput($log, $compile, utilityService) {
+	    function SWInput($log, $compile, $hibachi, utilityService) {
 	        var getValidationDirectives = function (propertyDisplay) {
 	            var spaceDelimitedList = '';
 	            var name = propertyDisplay.property;
 	            var form = propertyDisplay.form.$$swFormInfo;
 	            $log.debug("Name is:" + name + " and form is: " + form);
+	            if (angular.isUndefined(propertyDisplay.object.validations)
+	                || angular.isUndefined(propertyDisplay.object.validations.properties)
+	                || angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])) {
+	                return '';
+	            }
 	            var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 	            $log.debug("Validations: ", validations);
 	            $log.debug(propertyDisplay.form.$$swFormInfo);
@@ -12226,6 +12642,7 @@
 	                    currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
 	                }
 	            }
+	            var appConfig = $hibachi.getConfig();
 	            if (propertyDisplay.fieldType === 'text') {
 	                template = '<input type="text" class="form-control" ' +
 	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
@@ -12256,6 +12673,39 @@
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
 	            }
+	            else if (propertyDisplay.fieldType === 'time') {
+	                template = '<input type="text" class="form-control" ' +
+	                    'datetime-picker data-time-only="true" date-format="' + appConfig.timeFormat.replace('tt', 'a') + '" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            else if (propertyDisplay.fieldType === 'date') {
+	                template = '<input type="text" class="form-control" ' +
+	                    'datetime-picker data-date-only="true" date-format="' + appConfig.dateFormat + '" ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
+	            else if (propertyDisplay.fieldType === 'dateTime') {
+	                template = '<input type="text" class="form-control" ' +
+	                    'datetime-picker ' +
+	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
+	                    'ng-disabled="!propertyDisplay.editable" ' +
+	                    'ng-show="propertyDisplay.editing" ' +
+	                    'name="' + propertyDisplay.property + '" ' +
+	                    validations +
+	                    'id="swinput' + utilityService.createID(26) + '"' +
+	                    ' />';
+	            }
 	            return template;
 	        };
 	        return {
@@ -12274,12 +12724,13 @@
 	        };
 	    }
 	    SWInput.Factory = function () {
-	        var directive = function ($log, $compile, utilityService) {
-	            return new SWInput($log, $compile, utilityService);
+	        var directive = function ($log, $compile, $hibachi, utilityService) {
+	            return new SWInput($log, $compile, $hibachi, utilityService);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$compile',
+	            '$hibachi',
 	            'utilityService'
 	        ];
 	        return directive;
@@ -12290,7 +12741,7 @@
 
 
 /***/ },
-/* 101 */
+/* 102 */
 /***/ function(module, exports) {
 
 	/**********************************************************************************************
@@ -12334,21 +12785,22 @@
 	    */
 	var SWFFormFieldController = (function () {
 	    function SWFFormFieldController($scope) {
+	        //let vm:IFormFieldControllerVM = this;
+	        //
+	        //if (this.propertyDisplay){
+	        //    vm.propertyDisplay = this.propertyDisplay;
+	        //}else{
+	        //    vm.propertyDisplay =  {
+	        //        name: vm.name,
+	        //        class: vm.class,
+	        //        errorClass: vm.errorClass,
+	        //        type: vm.type,
+	        //        object: vm.object,
+	        //        propertyIdentifier: vm.propertyIdentifier
+	        //    };
+	        //    //console.log("Built a property display");
+	        //}
 	        this.$scope = $scope;
-	        var vm = this;
-	        if (this.propertyDisplay) {
-	            vm.propertyDisplay = this.propertyDisplay;
-	        }
-	        else {
-	            vm.propertyDisplay = {
-	                name: vm.name,
-	                class: vm.class,
-	                errorClass: vm.errorClass,
-	                type: vm.type,
-	                object: vm.object,
-	                propertyIdentifier: vm.propertyIdentifier
-	            };
-	        }
 	    }
 	    /**
 	        * Handles the logic for the frontend version of the property display.
@@ -12397,7 +12849,7 @@
 
 
 /***/ },
-/* 102 */
+/* 103 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12709,7 +13161,7 @@
 
 
 /***/ },
-/* 103 */
+/* 104 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12756,7 +13208,7 @@
 
 
 /***/ },
-/* 104 */
+/* 105 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12798,7 +13250,7 @@
 
 
 /***/ },
-/* 105 */
+/* 106 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12838,7 +13290,7 @@
 
 
 /***/ },
-/* 106 */
+/* 107 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12877,7 +13329,7 @@
 
 
 /***/ },
-/* 107 */
+/* 108 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -12904,7 +13356,7 @@
 	                if (scope.propertyDisplay.fieldType === 'yesno') {
 	                    //format value
 	                    scope.selectedRadioFormName = makeRandomID(26);
-	                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
+	                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = (scope.propertyDisplay.object.data[scope.propertyDisplay.property].length && scope.propertyDisplay.object.data[scope.propertyDisplay.property].toLowerCase().trim() === 'yes') || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
 	                    scope.formFieldChanged = function (option) {
 	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
@@ -12954,7 +13406,7 @@
 
 
 /***/ },
-/* 108 */
+/* 109 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -13075,14 +13527,14 @@
 
 
 /***/ },
-/* 109 */
+/* 110 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFormFieldSelect = (function () {
 	    //@ngInject
-	    function SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, hibachiPathBuilder) {
+	    function SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, observerService, hibachiPathBuilder) {
 	        return {
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + 'select.html',
 	            require: "^form",
@@ -13113,6 +13565,7 @@
 	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
 	                    }
+	                    observerService.notify(scope.propertyDisplay.object.metaData.className + scope.propertyDisplay.property.charAt(0).toUpperCase() + scope.propertyDisplay.property.slice(1) + 'OnChange', option);
 	                };
 	                scope.getOptions = function () {
 	                    if (angular.isUndefined(scope.propertyDisplay.options)) {
@@ -13190,8 +13643,8 @@
 	        }; //<--end return
 	    }
 	    SWFormFieldSelect.Factory = function () {
-	        var directive = function ($log, $hibachi, formService, coreFormPartialsPath, utilityService, hibachiPathBuilder) {
-	            return new SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, hibachiPathBuilder);
+	        var directive = function ($log, $hibachi, formService, coreFormPartialsPath, utilityService, observerService, hibachiPathBuilder) {
+	            return new SWFormFieldSelect($log, $hibachi, formService, coreFormPartialsPath, utilityService, observerService, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -13199,6 +13652,7 @@
 	            'formService',
 	            'coreFormPartialsPath',
 	            'utilityService',
+	            'observerService',
 	            'hibachiPathBuilder'
 	        ];
 	        return directive;
@@ -13209,7 +13663,7 @@
 
 
 /***/ },
-/* 110 */
+/* 111 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -13218,6 +13672,7 @@
 	    //@ngInject
 	    function SWFormFieldTextController(formService) {
 	        this.formService = formService;
+	        console.warn('this.propertyDisplay', this.propertyDisplay);
 	        if (this.propertyDisplay.isDirty == undefined)
 	            this.propertyDisplay.isDirty = false;
 	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
@@ -13258,7 +13713,54 @@
 
 
 /***/ },
-/* 111 */
+/* 112 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWFormFieldDateController = (function () {
+	    //@ngInject
+	    function SWFormFieldDateController(formService) {
+	        this.formService = formService;
+	        if (this.propertyDisplay.isDirty == undefined)
+	            this.propertyDisplay.isDirty = false;
+	        this.propertyDisplay.form.$dirty = this.propertyDisplay.isDirty;
+	        this.formService.setPristinePropertyValue(this.propertyDisplay.property, this.propertyDisplay.object.data[this.propertyDisplay.property]);
+	    }
+	    return SWFormFieldDateController;
+	})();
+	var SWFormFieldDate = (function () {
+	    function SWFormFieldDate(coreFormPartialsPath, hibachiPathBuilder) {
+	        this.restrict = 'E';
+	        this.require = "^form";
+	        this.controller = SWFormFieldDateController;
+	        this.controllerAs = "ctrl";
+	        this.scope = true;
+	        this.bindToController = {
+	            propertyDisplay: "="
+	        };
+	        //@ngInject
+	        this.link = function (scope, element, attr, formController) {
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "date.html";
+	    }
+	    SWFormFieldDate.Factory = function () {
+	        var directive = function (coreFormPartialsPath, hibachiPathBuilder) {
+	            return new SWFormFieldDate(coreFormPartialsPath, hibachiPathBuilder);
+	        };
+	        directive.$inject = [
+	            'coreFormPartialsPath',
+	            'hibachiPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWFormFieldDate;
+	})();
+	exports.SWFormFieldDate = SWFormFieldDate;
+
+
+/***/ },
+/* 113 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -13324,7 +13826,7 @@
 
 
 /***/ },
-/* 112 */
+/* 114 */
 /***/ function(module, exports) {
 
 	/**********************************************************************************************
@@ -13509,7 +14011,7 @@
 
 
 /***/ },
-/* 113 */
+/* 115 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -13552,9 +14054,9 @@
 	                    options: scope.options,
 	                    property: scope.property,
 	                    errors: {},
-	                    editing: scope.editing,
-	                    editable: scope.editable,
-	                    isHidden: scope.isHidden,
+	                    editing: scope.editing || false,
+	                    editable: scope.editable || true,
+	                    isHidden: scope.isHidden || false,
 	                    fieldType: scope.fieldType || scope.object.metaData.$$getPropertyFieldType(scope.property),
 	                    title: scope.title,
 	                    hint: scope.hint || scope.object.metaData.$$getPropertyHint(scope.property),
@@ -13562,20 +14064,9 @@
 	                    eagerLoadOptions: scope.eagerLoadOptions || true,
 	                    isDirty: scope.isDirty,
 	                    onChange: scope.onChange,
-	                    noValidate: scope.noValidate
+	                    noValidate: scope.noValidate || false,
+	                    form: formController
 	                };
-	                if (angular.isUndefined(scope.propertyDisplay.noValidate)) {
-	                    scope.propertyDisplay.noValidate = false;
-	                }
-	                if (angular.isUndefined(scope.propertyDisplay.editable)) {
-	                    scope.propertyDisplay.editable = true;
-	                }
-	                if (angular.isUndefined(scope.editing)) {
-	                    scope.propertyDisplay.editing = false;
-	                }
-	                if (angular.isUndefined(scope.propertyDisplay.isHidden)) {
-	                    scope.propertyDisplay.isHidden = false;
-	                }
 	                scope.applyFilter = function (model, filter) {
 	                    try {
 	                        return $filter(filter)(model);
@@ -13585,8 +14076,6 @@
 	                    }
 	                };
 	                scope.$id = 'propertyDisplay:' + scope.property;
-	                /* register form that the propertyDisplay belongs to*/
-	                scope.propertyDisplay.form = formController;
 	                $log.debug(scope.propertyDisplay);
 	                $log.debug('propertyDisplay');
 	                $log.debug(scope.propertyDisplay);
@@ -13611,26 +14100,26 @@
 
 
 /***/ },
-/* 114 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/hibachiTypescript.d.ts" />
-	var swvalidate_1 = __webpack_require__(115);
-	var swvalidationminlength_1 = __webpack_require__(116);
-	var swvalidationdatatype_1 = __webpack_require__(117);
-	var swvalidationeq_1 = __webpack_require__(118);
-	var swvalidationgte_1 = __webpack_require__(119);
-	var swvalidationlte_1 = __webpack_require__(120);
-	var swvalidationmaxlength_1 = __webpack_require__(121);
-	var swvalidationmaxvalue_1 = __webpack_require__(122);
-	var swvalidationminvalue_1 = __webpack_require__(123);
-	var swvalidationneq_1 = __webpack_require__(124);
-	var swvalidationnumeric_1 = __webpack_require__(125);
-	var swvalidationregex_1 = __webpack_require__(126);
-	var swvalidationrequired_1 = __webpack_require__(127);
-	var swvalidationunique_1 = __webpack_require__(128);
-	var swvalidationuniqueornull_1 = __webpack_require__(129);
+	var swvalidate_1 = __webpack_require__(117);
+	var swvalidationminlength_1 = __webpack_require__(118);
+	var swvalidationdatatype_1 = __webpack_require__(119);
+	var swvalidationeq_1 = __webpack_require__(120);
+	var swvalidationgte_1 = __webpack_require__(121);
+	var swvalidationlte_1 = __webpack_require__(122);
+	var swvalidationmaxlength_1 = __webpack_require__(123);
+	var swvalidationmaxvalue_1 = __webpack_require__(124);
+	var swvalidationminvalue_1 = __webpack_require__(125);
+	var swvalidationneq_1 = __webpack_require__(126);
+	var swvalidationnumeric_1 = __webpack_require__(127);
+	var swvalidationregex_1 = __webpack_require__(128);
+	var swvalidationrequired_1 = __webpack_require__(129);
+	var swvalidationunique_1 = __webpack_require__(130);
+	var swvalidationuniqueornull_1 = __webpack_require__(131);
 	var validationmodule = angular.module('hibachi.validation', [])
 	    .run([function () {
 	    }])
@@ -13653,7 +14142,7 @@
 
 
 /***/ },
-/* 115 */
+/* 117 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14039,7 +14528,7 @@
 
 
 /***/ },
-/* 116 */
+/* 118 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14080,7 +14569,7 @@
 
 
 /***/ },
-/* 117 */
+/* 119 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14139,7 +14628,7 @@
 
 
 /***/ },
-/* 118 */
+/* 120 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14181,7 +14670,7 @@
 
 
 /***/ },
-/* 119 */
+/* 121 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14219,7 +14708,7 @@
 
 
 /***/ },
-/* 120 */
+/* 122 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14258,7 +14747,7 @@
 
 
 /***/ },
-/* 121 */
+/* 123 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14295,7 +14784,7 @@
 
 
 /***/ },
-/* 122 */
+/* 124 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14332,7 +14821,7 @@
 
 
 /***/ },
-/* 123 */
+/* 125 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14369,7 +14858,7 @@
 
 
 /***/ },
-/* 124 */
+/* 126 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14404,7 +14893,7 @@
 
 
 /***/ },
-/* 125 */
+/* 127 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14443,7 +14932,7 @@
 
 
 /***/ },
-/* 126 */
+/* 128 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14483,7 +14972,7 @@
 
 
 /***/ },
-/* 127 */
+/* 129 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14519,7 +15008,7 @@
 
 
 /***/ },
-/* 128 */
+/* 130 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14571,7 +15060,7 @@
 
 
 /***/ },
-/* 129 */
+/* 131 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14623,138 +15112,33 @@
 
 
 /***/ },
-/* 130 */
-/***/ function(module, exports) {
-
-	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
-	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWSaveAndFinishController = (function () {
-	    //@ngInject
-	    function SWSaveAndFinishController($hibachi, dialogService, alertService, rbkeyService, $log) {
-	        var _this = this;
-	        this.$hibachi = $hibachi;
-	        this.dialogService = dialogService;
-	        this.alertService = alertService;
-	        this.rbkeyService = rbkeyService;
-	        this.$log = $log;
-	        this.saving = false;
-	        this.initialSetup = function () {
-	            if (!angular.isDefined(_this.finish)) {
-	                _this.openNewDialog = false;
-	            }
-	            else {
-	                _this.openNewDialog = (_this.finish.toLowerCase() == 'true') ? false : true;
-	            }
-	            if (_this.openNewDialog) {
-	                _this.rbKey = 'admin.define.saveandnew';
-	            }
-	            else {
-	                _this.rbKey = 'admin.define.saveandfinish';
-	            }
-	        };
-	        this.save = function () {
-	            _this.saving = true;
-	            var savePromise = _this.entity.$$save();
-	            savePromise.then(function (data) {
-	                _this.dialogService.removeCurrentDialog();
-	                if (_this.openNewDialog && angular.isDefined(_this.partial)) {
-	                    _this.dialogService.addPageDialog(_this.partial);
-	                }
-	                else {
-	                    if (angular.isDefined(_this.redirectUrl)) {
-	                        window.location = _this.redirectUrl;
-	                    }
-	                    else if (angular.isDefined(_this.redirectAction)) {
-	                        if (angular.isUndefined(_this.redirectQueryString)) {
-	                            _this.redirectQueryString = "";
-	                        }
-	                        window.location = _this.$hibachi.buildUrl(_this.redirectAction, _this.redirectQueryString);
-	                    }
-	                    else {
-	                        _this.$log.debug("You did not specify a redirect for swSaveAndFinish");
-	                    }
-	                }
-	            }).catch(function (data) {
-	                if (angular.isDefined(_this.customErrorRbkey)) {
-	                    data = _this.rbkeyService.getRBKey(_this.customErrorRbkey);
-	                }
-	                if (angular.isString(data)) {
-	                    var alert = _this.alertService.newAlert();
-	                    alert.msg = data;
-	                    alert.type = "error";
-	                    alert.fade = true;
-	                    _this.alertService.addAlert(alert);
-	                }
-	                else {
-	                    _this.alertService.addAlerts(data);
-	                }
-	            }).finally(function () {
-	                _this.saving = false;
-	            });
-	        };
-	        if (!angular.isFunction(this.entity.$$save)) {
-	            throw ("Your entity does not have the $$save function.");
-	        }
-	        this.initialSetup();
-	    }
-	    return SWSaveAndFinishController;
-	})();
-	exports.SWSaveAndFinishController = SWSaveAndFinishController;
-	var SWSaveAndFinish = (function () {
-	    //@ngInject
-	    function SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder) {
-	        this.hibachiPartialsPath = hibachiPartialsPath;
-	        this.restrict = "EA";
-	        this.scope = {};
-	        this.controller = SWSaveAndFinishController;
-	        this.controllerAs = "swSaveAndFinish";
-	        this.bindToController = {
-	            entity: "=",
-	            redirectUrl: "@?",
-	            redirectAction: "@?",
-	            redirectQueryString: "@?",
-	            finish: "@?",
-	            partial: "@?",
-	            customErrorRbkey: "@?"
-	        };
-	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
-	    }
-	    SWSaveAndFinish.Factory = function () {
-	        var directive = function (hibachiPartialsPath, hibachiPathBuilder) {
-	            return new SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder);
-	        };
-	        directive.$inject = ["hibachiPartialsPath", "hibachiPathBuilder"];
-	        return directive;
-	    };
-	    return SWSaveAndFinish;
-	})();
-	exports.SWSaveAndFinish = SWSaveAndFinish;
-
-
-/***/ },
-/* 131 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//services
-	var workflowconditionservice_1 = __webpack_require__(132);
+	var workflowconditionservice_1 = __webpack_require__(133);
+	var scheduleservice_1 = __webpack_require__(134);
 	//directives
-	var swadmincreatesuperuser_1 = __webpack_require__(133);
-	var swworkflowbasic_1 = __webpack_require__(134);
-	var swworkflowcondition_1 = __webpack_require__(135);
-	var swworkflowconditiongroupitem_1 = __webpack_require__(136);
-	var swworkflowconditiongroups_1 = __webpack_require__(137);
-	var swworkflowtask_1 = __webpack_require__(138);
-	var swworkflowtaskactions_1 = __webpack_require__(139);
-	var swworkflowtasks_1 = __webpack_require__(140);
-	var swworkflowtrigger_1 = __webpack_require__(141);
-	var swworkflowtriggers_1 = __webpack_require__(142);
+	var swadmincreatesuperuser_1 = __webpack_require__(135);
+	var swworkflowbasic_1 = __webpack_require__(136);
+	var swworkflowcondition_1 = __webpack_require__(137);
+	var swworkflowconditiongroupitem_1 = __webpack_require__(138);
+	var swworkflowconditiongroups_1 = __webpack_require__(139);
+	var swworkflowtask_1 = __webpack_require__(140);
+	var swworkflowtaskactions_1 = __webpack_require__(141);
+	var swworkflowtasks_1 = __webpack_require__(142);
+	var swworkflowtrigger_1 = __webpack_require__(143);
+	var swworkflowtriggers_1 = __webpack_require__(144);
+	var swworkflowtriggerHistory_1 = __webpack_require__(145);
+	var swschedulepreview_1 = __webpack_require__(146);
 	//filters
 	var workflowmodule = angular.module('hibachi.workflow', ['hibachi.collection']).config(function () {
 	})
 	    .constant('workflowPartialsPath', 'workflow/components/')
 	    .service('workflowConditionService', workflowconditionservice_1.WorkflowConditionService)
+	    .service('scheduleService', scheduleservice_1.ScheduleService)
 	    .directive('swAdminCreateSuperUser', swadmincreatesuperuser_1.SWAdminCreateSuperUser.Factory())
 	    .directive('swWorkflowBasic', swworkflowbasic_1.SWWorkflowBasic.Factory())
 	    .directive('swWorkflowCondition', swworkflowcondition_1.SWWorkflowCondition.Factory())
@@ -14764,12 +15148,14 @@
 	    .directive('swWorkflowTaskActions', swworkflowtaskactions_1.SWWorkflowTaskActions.Factory())
 	    .directive('swWorkflowTasks', swworkflowtasks_1.SWWorkflowTasks.Factory())
 	    .directive('swWorkflowTrigger', swworkflowtrigger_1.SWWorkflowTrigger.Factory())
-	    .directive('swWorkflowTriggers', swworkflowtriggers_1.SWWorkflowTriggers.Factory());
+	    .directive('swWorkflowTriggers', swworkflowtriggers_1.SWWorkflowTriggers.Factory())
+	    .directive('swWorkflowTriggerHistory', swworkflowtriggerHistory_1.SWWorkflowTriggerHistory.Factory())
+	    .directive('swSchedulePreview', swschedulepreview_1.SWSchedulePreview.Factory());
 	exports.workflowmodule = workflowmodule;
 
 
 /***/ },
-/* 132 */
+/* 133 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14824,7 +15210,95 @@
 
 
 /***/ },
-/* 133 */
+/* 134 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var ScheduleService = (function () {
+	    function ScheduleService(utilityService) {
+	        var _this = this;
+	        this.utilityService = utilityService;
+	        this.schedulePreview = {};
+	        this.clearSchedulePreview = function () {
+	            _this.schedulePreview = {};
+	        };
+	        this.addSchedulePreviewItem = function (cdate, longMonthName) {
+	            if (longMonthName === void 0) { longMonthName = true; }
+	            var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+	            var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+	            var monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+	            var currentDate = (cdate.getMonth() + 1) + '-' + cdate.getDate() + '-' + cdate.getFullYear();
+	            if (_this.schedulePreview[currentDate] === undefined) {
+	                _this.schedulePreview[currentDate] = {
+	                    day: cdate.getDate(),
+	                    month: (longMonthName) ? month[cdate.getMonth() + 1] : monthShort[cdate.getMonth() + 1],
+	                    year: cdate.getFullYear(),
+	                    weekday: weekday[cdate.getDay()],
+	                    times: []
+	                };
+	            }
+	            _this.schedulePreview[currentDate].times.push(cdate.toLocaleTimeString());
+	        };
+	        this.buildSchedulePreview = function (scheduleObject, totalOfPreviews) {
+	            if (totalOfPreviews === void 0) { totalOfPreviews = 10; }
+	            _this.clearSchedulePreview();
+	            var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
+	            var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
+	            var now = new Date();
+	            var daysToRun = [];
+	            if (scheduleObject.recuringType == 'weekly') {
+	                daysToRun = scheduleObject.daysOfWeekToRun.split(',');
+	                if (!daysToRun.length)
+	                    return;
+	            }
+	            if (scheduleObject.recuringType == 'monthly') {
+	                daysToRun = scheduleObject.daysOfMonthToRun.split(',');
+	                if (!daysToRun.length)
+	                    return;
+	            }
+	            var datesAdded = 0;
+	            for (var i = 0;; i++) {
+	                var timeToadd = (scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
+	                var currentDatetime = new Date(now.getTime() + timeToadd);
+	                if (scheduleObject.recuringType == 'weekly') {
+	                    if (daysToRun.indexOf((currentDatetime.getDay() + 1).toString()) == -1)
+	                        continue;
+	                }
+	                else if (scheduleObject.recuringType == 'monthly') {
+	                    if (daysToRun.indexOf(currentDatetime.getDate().toString()) == -1)
+	                        continue;
+	                }
+	                if (!endTime) {
+	                    currentDatetime.setHours(startTime.getHours());
+	                    currentDatetime.setMinutes(startTime.getMinutes());
+	                    currentDatetime.setSeconds(startTime.getSeconds());
+	                    if (currentDatetime > now) {
+	                        _this.addSchedulePreviewItem(currentDatetime);
+	                        datesAdded++;
+	                    }
+	                }
+	                else {
+	                    if (_this.utilityService.minutesOfDay(startTime) <= _this.utilityService.minutesOfDay(currentDatetime)
+	                        && _this.utilityService.minutesOfDay(endTime) >= _this.utilityService.minutesOfDay(currentDatetime)) {
+	                        _this.addSchedulePreviewItem(currentDatetime);
+	                        datesAdded++;
+	                    }
+	                }
+	                if (datesAdded >= totalOfPreviews || i >= 500)
+	                    break;
+	            }
+	            return _this.schedulePreview;
+	        };
+	    }
+	    ScheduleService.$inject = ["utilityService"];
+	    return ScheduleService;
+	})();
+	exports.ScheduleService = ScheduleService;
+
+
+/***/ },
+/* 135 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14858,7 +15332,7 @@
 
 
 /***/ },
-/* 134 */
+/* 136 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -14870,8 +15344,7 @@
 	            scope: {
 	                workflow: "="
 	            },
-	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath)
-	                + "workflowbasic.html",
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowbasic.html",
 	            link: function (scope, element, attrs) {
 	                console.log('workflowtest');
 	                console.log(scope.workflow);
@@ -14898,7 +15371,7 @@
 
 
 /***/ },
-/* 135 */
+/* 137 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15020,7 +15493,7 @@
 
 
 /***/ },
-/* 136 */
+/* 138 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15059,7 +15532,7 @@
 
 
 /***/ },
-/* 137 */
+/* 139 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15108,7 +15581,7 @@
 
 
 /***/ },
-/* 138 */
+/* 140 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15160,189 +15633,275 @@
 
 
 /***/ },
-/* 139 */
+/* 141 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var SWWorkflowTaskActions = (function () {
-	    function SWWorkflowTaskActions($log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
-	        return {
-	            restrict: 'AE',
-	            scope: {
-	                workflowTask: "="
-	            },
-	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtaskactions.html",
-	            link: function (scope, element, attrs) {
-	                $log.debug('Workflow Task Actions Init');
-	                $log.debug(scope.workflowTask);
-	                scope.openActions = false;
-	                /**
-	                    * Returns the correct object based on the selected object type.
-	                    */
-	                var getObjectByActionType = function (workflowTaskAction) {
-	                    if (workflowTaskAction.data.actionType === 'email') {
-	                        workflowTaskAction.$$getEmailTemplate();
-	                    }
-	                    else if (workflowTaskAction.data.actionType === 'print') {
-	                        workflowTaskAction.$$getPrintTemplate();
-	                    }
-	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Returns workflow task action, and saves them to the scope variable workflowtaskactions
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.getWorkflowTaskActions = function () {
-	                    /***
-	                    Note:
-	                    This conditional is checking whether or not we need to be retrieving to
-	                    items all over again. If we already have them, we won't make another
-	                    trip to the database.
+	var SWWorkflowTaskActionsController = (function () {
+	    function SWWorkflowTaskActionsController($scope, $log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, observerService) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$log = $log;
+	        this.$hibachi = $hibachi;
+	        this.metadataService = metadataService;
+	        this.collectionService = collectionService;
+	        this.workflowPartialsPath = workflowPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.collectionConfigService = collectionConfigService;
+	        this.observerService = observerService;
+	        this.$log.debug('Workflow Task Actions Init');
+	        this.$log.debug(this.workflowTask);
+	        this.openActions = false;
+	        this.observerService.attach(function (item) {
+	            if (angular.isDefined(_this.emailTemplateCollectionConfig)) {
+	                _this.emailTemplateCollectionConfig.clearFilters();
+	                _this.emailTemplateCollectionConfig.addFilter("emailTemplateObject", item.value);
+	            }
+	            if (angular.isDefined(_this.printTemplateCollectionConfig)) {
+	                _this.printTemplateCollectionConfig.clearFilters();
+	                _this.printTemplateCollectionConfig.addFilter("printTemplateObject", item.value);
+	            }
+	        }, 'WorkflowWorkflowObjectOnChange');
+	        /**
+	         * Returns the correct object based on the selected object type.
+	         */
+	        var getObjectByActionType = function (workflowTaskAction) {
+	            if (workflowTaskAction.data.actionType === 'email') {
+	                workflowTaskAction.$$getEmailTemplate();
+	            }
+	            else if (workflowTaskAction.data.actionType === 'print') {
+	                workflowTaskAction.$$getPrintTemplate();
+	            }
+	        };
+	        /**
+	         * --------------------------------------------------------------------------------------------------------
+	         * Returns workflow task action, and saves them to the scope variable workflowtaskactions
+	         * --------------------------------------------------------------------------------------------------------
+	         */
+	        this.getWorkflowTaskActions = function () {
+	            /***
+	             Note:
+	             This conditional is checking whether or not we need to be retrieving to
+	             items all over again. If we already have them, we won't make another
+	             trip to the database.
 
-	                ***/
-	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
-	                        var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
-	                        workflowTaskPromise.then(function () {
-	                            scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
-	                            angular.forEach(scope.workflowTaskActions, function (workflowTaskAction) {
-	                                getObjectByActionType(workflowTaskAction);
-	                            });
-	                            $log.debug(scope.workflowTaskActions);
-	                        });
-	                    }
-	                    else {
-	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
-	                    }
-	                    if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
-	                        scope.workflowTask.data.workflowTaskActions = [];
-	                        scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
-	                    }
-	                };
-	                scope.getWorkflowTaskActions(); //Call get
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Saves the workflow task actions by calling the objects $$save method.
-	                    * @param taskAction
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.saveWorkflowTaskAction = function (taskAction, context) {
-	                    $log.debug("Context: " + context);
-	                    $log.debug("saving task action and parent task");
-	                    $log.debug(taskAction);
-	                    var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
-	                    savePromise.then(function () {
-	                        var taSavePromise = taskAction.$$save;
-	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
-	                        if (context == 'add') {
-	                            $log.debug("Save and New");
-	                            scope.addWorkflowTaskAction(taskAction);
-	                            scope.finished = false;
-	                        }
-	                        else if (context == "finish") {
-	                            scope.finished = true;
-	                        }
+	             ***/
+	            if (angular.isUndefined(_this.workflowTask.data.workflowTaskActions)) {
+	                var workflowTaskPromise = _this.workflowTask.$$getWorkflowTaskActions();
+	                workflowTaskPromise.then(function () {
+	                    _this.workflowTaskActions = _this.workflowTask.data.workflowTaskActions;
+	                    angular.forEach(_this.workflowTaskActions, function (workflowTaskAction) {
+	                        getObjectByActionType(workflowTaskAction);
 	                    });
-	                }; //<--end save
-	                /**
-	                    * Sets the editing state to show/hide the edit screen.
-	                    */
-	                scope.setHidden = function (task) {
-	                    if (!angular.isObject(task)) {
-	                        task = {};
-	                    }
-	                    if (angular.isUndefined(task.hidden)) {
-	                        task.hidden = false;
-	                    }
-	                    else {
-	                        $log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
-	                        task.hidden = !task.hidden;
-	                    }
+	                    _this.$log.debug(_this.workflowTaskActions);
+	                });
+	            }
+	            else {
+	                _this.workflowTaskActions = _this.workflowTask.data.workflowTaskActions;
+	            }
+	            if (angular.isUndefined(_this.workflowTask.data.workflowTaskActions)) {
+	                _this.workflowTask.data.workflowTaskActions = [];
+	                _this.workflowTaskActions = _this.workflowTask.data.workflowTaskActions;
+	            }
+	        };
+	        this.getWorkflowTaskActions(); //Call get
+	        /**
+	         * --------------------------------------------------------------------------------------------------------
+	         * Saves the workflow task actions by calling the objects $$save method.
+	         * @param taskAction
+	         * --------------------------------------------------------------------------------------------------------
+	         */
+	        this.saveWorkflowTaskAction = function (taskAction, context) {
+	            _this.$log.debug("Context: " + context);
+	            _this.$log.debug("saving task action and parent task");
+	            _this.$log.debug(taskAction);
+	            var savePromise = _this.workflowTaskActions.selectedTaskAction.$$save();
+	            savePromise.then(function () {
+	                var taSavePromise = taskAction.$$save;
+	                //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+	                if (context == 'add') {
+	                    _this.$log.debug("Save and New");
+	                    _this.addWorkflowTaskAction(taskAction);
+	                    _this.finished = false;
+	                }
+	                else if (context == "finish") {
+	                    _this.finished = true;
+	                }
+	            });
+	        }; //<--end save
+	        /**
+	         * Sets the editing state to show/hide the edit screen.
+	         */
+	        this.setHidden = function (task) {
+	            if (!angular.isObject(task)) {
+	                task = {};
+	            }
+	            if (angular.isUndefined(task.hidden)) {
+	                task.hidden = false;
+	            }
+	            else {
+	                _this.$log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
+	                task.hidden = !task.hidden;
+	            }
+	        };
+	        /**
+	         * --------------------------------------------------------------------------------------------------------
+	         * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
+	         * and sets the result to scope.
+	         * @param taskAction
+	         * --------------------------------------------------------------------------------------------------------
+	         */
+	        this.addWorkflowTaskAction = function (taskAction) {
+	            var workflowTaskAction = _this.workflowTask.$$addWorkflowTaskAction();
+	            _this.selectWorkflowTaskAction(workflowTaskAction);
+	            _this.$log.debug(_this.workflow);
+	        };
+	        /**
+	         * --------------------------------------------------------------------------------------------------------
+	         * Selects a new task action and populates the task action properties.
+	         * --------------------------------------------------------------------------------------------------------
+	         */
+	        this.selectWorkflowTaskAction = function (workflowTaskAction) {
+	            _this.$log.debug("Selecting new task action for editing: ");
+	            _this.$log.debug(workflowTaskAction);
+	            _this.finished = false;
+	            _this.workflowTaskActions.selectedTaskAction = undefined;
+	            var filterPropertiesPromise = _this.$hibachi.getFilterPropertiesByBaseEntityName(_this.workflowTask.data.workflow.data.workflowObject);
+	            filterPropertiesPromise.then(function (value) {
+	                _this.filterPropertiesList = {
+	                    baseEntityName: _this.workflowTask.data.workflow.data.workflowObject,
+	                    baseEntityAlias: "_" + _this.workflowTask.data.workflow.data.workflowObject
 	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
-	                    * and sets the result to scope.
-	                    * @param taskAction
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.addWorkflowTaskAction = function (taskAction) {
-	                    var workflowTaskAction = scope.workflowTask.$$addWorkflowTaskAction();
-	                    scope.selectWorkflowTaskAction(workflowTaskAction);
-	                    $log.debug(scope.workflow);
-	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Selects a new task action and populates the task action properties.
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.selectWorkflowTaskAction = function (workflowTaskAction) {
-	                    $log.debug("Selecting new task action for editing: ");
-	                    $log.debug(workflowTaskAction);
-	                    scope.finished = false;
-	                    scope.workflowTaskActions.selectedTaskAction = undefined;
-	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTask.data.workflow.data.workflowObject);
-	                    filterPropertiesPromise.then(function (value) {
-	                        scope.filterPropertiesList = {
-	                            baseEntityName: scope.workflowTask.data.workflow.data.workflowObject,
-	                            baseEntityAlias: "_" + scope.workflowTask.data.workflow.data.workflowObject
-	                        };
-	                        metadataService.setPropertiesList(value, scope.workflowTask.data.workflow.data.workflowObject);
-	                        scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflowTask.data.workflow.data.workflowObject);
-	                        metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject], scope.workflowTask.data.workflow.data.workflowObject);
-	                        scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-	                    });
-	                };
-	                /**
-	                    * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
-	                    */
-	                scope.deleteEntity = function (entity) {
-	                    scope.removeWorkflowTaskAction(entity);
-	                };
-	                /**
-	                    * --------------------------------------------------------------------------------------------------------
-	                    * Removes a workflow task action by calling the selected tasks $$delete method
-	                    * and reindexes the list.
-	                    * --------------------------------------------------------------------------------------------------------
-	                    */
-	                scope.removeWorkflowTaskAction = function (workflowTaskAction) {
-	                    var deletePromise = workflowTaskAction.$$delete();
-	                    deletePromise.then(function () {
-	                        if (workflowTaskAction === scope.workflowTaskActions.selectedTaskAction) {
-	                            delete scope.workflowTaskActions.selectedTaskAction;
-	                        }
-	                        $log.debug("removeWorkflowTaskAction");
-	                        $log.debug(workflowTaskAction);
-	                        scope.workflowTaskActions.splice(workflowTaskAction.$$actionIndex, 1);
-	                        for (var i in scope.workflowTaskActions) {
-	                            scope.workflowTaskActions[i].$$actionIndex = i;
-	                        }
-	                    });
-	                };
+	                _this.metadataService.setPropertiesList(value, _this.workflowTask.data.workflow.data.workflowObject);
+	                _this.filterPropertiesList[_this.workflowTask.data.workflow.data.workflowObject] = _this.metadataService.getPropertiesListByBaseEntityAlias(_this.workflowTask.data.workflow.data.workflowObject);
+	                _this.metadataService.formatPropertiesList(_this.filterPropertiesList[_this.workflowTask.data.workflow.data.workflowObject], _this.workflowTask.data.workflow.data.workflowObject);
+	                _this.workflowTaskActions.selectedTaskAction = workflowTaskAction;
+	                _this.emailTemplateSelected = (_this.workflowTaskActions.selectedTaskAction.data.emailTemplate) ? _this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateName : '';
+	                _this.emailTemplateCollectionConfig = _this.collectionConfigService.newCollectionConfig("EmailTemplate");
+	                _this.emailTemplateCollectionConfig.setDisplayProperties("emailTemplateID,emailTemplateName");
+	                _this.emailTemplateCollectionConfig.addFilter("emailTemplateObject", _this.workflowTask.data.workflow.data.workflowObject);
+	                _this.printTemplateSelected = (_this.workflowTaskActions.selectedTaskAction.data.printTemplate) ? _this.workflowTaskActions.selectedTaskAction.data.printTemplate.data.printTemplateName : '';
+	                _this.printTemplateCollectionConfig = _this.collectionConfigService.newCollectionConfig("PrintTemplate");
+	                _this.printTemplateCollectionConfig.setDisplayProperties("printTemplateID,printTemplateName");
+	                _this.printTemplateCollectionConfig.addFilter("printTemplateObject", _this.workflowTask.data.workflow.data.workflowObject);
+	            });
+	        };
+	        /**
+	         * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
+	         */
+	        this.deleteEntity = function (entity) {
+	            _this.removeWorkflowTaskAction(entity);
+	        };
+	        /**
+	         * --------------------------------------------------------------------------------------------------------
+	         * Removes a workflow task action by calling the selected tasks $$delete method
+	         * and reindexes the list.
+	         * --------------------------------------------------------------------------------------------------------
+	         */
+	        this.removeWorkflowTaskAction = function (workflowTaskAction) {
+	            var deletePromise = workflowTaskAction.$$delete();
+	            deletePromise.then(function () {
+	                if (workflowTaskAction === _this.workflowTaskActions.selectedTaskAction) {
+	                    delete _this.workflowTaskActions.selectedTaskAction;
+	                }
+	                _this.$log.debug("removeWorkflowTaskAction");
+	                _this.$log.debug(workflowTaskAction);
+	                _this.workflowTaskActions.splice(workflowTaskAction.$$actionIndex, 1);
+	                for (var i in _this.workflowTaskActions) {
+	                    _this.workflowTaskActions[i].$$actionIndex = i;
+	                }
+	            });
+	        };
+	        this.searchProcess = {
+	            name: ''
+	        };
+	        /**
+	         * Watches for changes in the proccess
+	         */
+	        this.showProcessOptions = false;
+	        this.processOptions = {};
+	        //this.$scope.$watch('swWorkflowTaskActions.searchProcess.name', (newValue, oldValue)=>{
+	        //    if(newValue !== oldValue){
+	        //        this.getProcessOptions(this.workflowTask.data.workflow.data.workflowObject);
+	        //    }
+	        //});
+	        /**
+	         * Retrieves the proccess options for a workflow trigger action.
+	         */
+	        this.getProcessOptions = function (objectName) {
+	            if (!_this.processOptions.length) {
+	                var proccessOptionsPromise = _this.$hibachi.getProcessOptions(objectName);
+	                proccessOptionsPromise.then(function (value) {
+	                    _this.$log.debug('getProcessOptions');
+	                    _this.processOptions = value.data;
+	                });
+	            }
+	            _this.showProcessOptions = true;
+	        };
+	        /**
+	         * Changes the selected process option value.
+	         */
+	        this.selectProcess = function (processOption) {
+	            _this.workflowTaskActions.selectedTaskAction.data.processMethod = processOption.value;
+	            _this.searchProcess.name = processOption.name;
+	            _this.workflowTaskActions.selectedTaskAction.forms.selectedTaskAction.$setDirty();
+	            //this.searchProcess = processOption.name;
+	            _this.showProcessOptions = false;
+	        };
+	        this.selectEmailTemplate = function (item) {
+	            if (angular.isDefined(_this.workflowTaskActions.selectedTaskAction.data.emailTemplate)) {
+	                _this.workflowTaskActions.selectedTaskAction.data.emailTemplate.data.emailTemplateID = item.emailTemplateID;
+	            }
+	            else {
+	                var templateEmail = _this.$hibachi.newEmailTemplate();
+	                templateEmail.data.emailTemplateID = item.emailTemplateID;
+	                _this.workflowTaskActions.selectedTaskAction.$$setEmailTemplate(templateEmail);
+	            }
+	        };
+	        this.selectPrintTemplate = function (item) {
+	            if (angular.isDefined(_this.workflowTaskActions.selectedTaskAction.data.printTemplate)) {
+	                _this.workflowTaskActions.selectedTaskAction.data.printTemplate.data.printTemplateID = item.printTemplateID;
+	            }
+	            else {
+	                var templatePrint = _this.$hibachi.newPrintTemplate();
+	                templatePrint.data.printTemplateID = item.printTemplateID;
+	                _this.workflowTaskActions.selectedTaskAction.$$setPrintTemplate(templatePrint);
 	            }
 	        };
 	    }
-	    SWWorkflowTaskActions.Factory = function () {
-	        var directive = function ($log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowTaskActions($log, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder);
+	    return SWWorkflowTaskActionsController;
+	})();
+	var SWWorkflowTaskActions = (function () {
+	    function SWWorkflowTaskActions(workflowPartialsPath, hibachiPathBuilder) {
+	        this.workflowPartialsPath = workflowPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.restrict = 'AE';
+	        this.scope = {};
+	        this.bindToController = {
+	            workflowTask: "="
 	        };
-	        directive.$inject = [
-	            '$log',
-	            '$hibachi',
-	            'metadataService',
-	            'collectionService',
-	            'workflowPartialsPath',
-	            'hibachiPathBuilder'
-	        ];
+	        this.controller = SWWorkflowTaskActionsController;
+	        this.controllerAs = "swWorkflowTaskActions";
+	        this.link = function ($scope, element, attrs) {
+	        };
+	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "workflowtaskactions.html";
+	    }
+	    SWWorkflowTaskActions.Factory = function () {
+	        var directive = function (workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowTaskActions(workflowPartialsPath, hibachiPathBuilder);
+	        };
+	        directive.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	        return directive;
 	    };
+	    SWWorkflowTaskActions.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
 	    return SWWorkflowTaskActions;
 	})();
 	exports.SWWorkflowTaskActions = SWWorkflowTaskActions;
 
 
 /***/ },
-/* 140 */
+/* 142 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15434,23 +15993,22 @@
 	                   * --------------------------------------------------------------------------------------------------------
 	                   */
 	                scope.saveWorkflowTask = function (task, context) {
-	                    scope.done = true;
-	                    $log.debug("Context: " + context);
-	                    $log.debug("saving task");
-	                    $log.debug(scope.workflowTasks.selectedTask);
-	                    var savePromise = scope.workflowTasks.selectedTask.$$save();
-	                    savePromise.then(function () {
+	                    console.info("Context: " + context);
+	                    console.info("saving task");
+	                    console.info(scope.workflowTasks.selectedTask);
+	                    scope.workflowTasks.selectedTask.$$save().then(function (res) {
+	                        scope.done = true;
 	                        if (context === 'add') {
 	                            logger("SaveWorkflowTask", "Save and New");
 	                            scope.addWorkflowTask();
-	                            //scope.setHidden(scope.workflowTasks.selectedTask);
 	                            scope.finished = true;
 	                        }
 	                        else if (context == "finish") {
 	                            scope.finished = false;
 	                        }
+	                        scope.setHidden(scope.workflowTasks.selectedTask);
+	                    }, function (err) {
 	                    });
-	                    scope.setHidden(scope.workflowTasks.selectedTask);
 	                }; //<--end save*/
 	                /**
 	                 * Select a workflow task.
@@ -15534,13 +16092,13 @@
 
 
 /***/ },
-/* 141 */
+/* 143 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTrigger = (function () {
-	    function SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
+	    function SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http) {
 	        return {
 	            restrict: 'A',
 	            replace: true,
@@ -15550,14 +16108,14 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtrigger.html",
 	            link: function (scope, element, attrs) {
-	                $log.debug('workflow trigger init');
+	                console.warn('workflow trigger init');
 	                /**
 	                 * Selects the current workflow trigger.
 	                 */
 	                scope.selectWorkflowTrigger = function (workflowTrigger) {
-	                    $log.debug('SelectWorkflowTriggers');
+	                    console.warn('SelectWorkflowTriggers');
 	                    scope.done = false;
-	                    $log.debug(workflowTrigger);
+	                    console.warn(workflowTrigger);
 	                    scope.finished = false;
 	                    scope.workflowTriggers.selectedTrigger = undefined;
 	                    var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
@@ -15572,12 +16130,23 @@
 	                        scope.workflowTriggers.selectedTrigger = workflowTrigger;
 	                    });
 	                };
+	                var executingTrigger = false;
+	                scope.executeWorkflowTrigger = function (workflowTrigger) {
+	                    if (executingTrigger)
+	                        return;
+	                    executingTrigger = true;
+	                    var appConfig = $hibachi.getConfig();
+	                    var urlString = appConfig.baseURL + '/index.cfm/?' + appConfig.action + '=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID=' + workflowTrigger.data.workflowTriggerID;
+	                    $http.get(urlString).finally(function () {
+	                        executingTrigger = false;
+	                    });
+	                };
 	                /**
 	                 * Overrides the delete function for the confirmation modal. Delegates to the normal delete method.
 	                 */
 	                scope.deleteEntity = function (entity) {
-	                    $log.debug("Delete Called");
-	                    $log.debug(entity);
+	                    console.warn("Delete Called");
+	                    console.warn(entity);
 	                    scope.deleteTrigger(entity);
 	                };
 	                /**
@@ -15586,35 +16155,25 @@
 	                scope.deleteTrigger = function (workflowTrigger) {
 	                    var deleteTriggerPromise = $hibachi.saveEntity('WorkflowTrigger', workflowTrigger.data.workflowTriggerID, {}, 'Delete');
 	                    deleteTriggerPromise.then(function (value) {
-	                        $log.debug('deleteTrigger');
+	                        console.warn('deleteTrigger');
 	                        scope.workflowTriggers.splice(workflowTrigger.$$index, 1);
 	                    });
-	                };
-	                /**
-	                 * Sets the editing state to show/hide the edit screen.
-	                 */
-	                scope.setHidden = function (trigger) {
-	                    if (!angular.isObject(trigger) || angular.isUndefined(trigger.hidden)) {
-	                        trigger.hidden = false;
-	                    }
-	                    else {
-	                        $log.debug("setHidden()", "Setting Hide Value To " + !trigger.hidden);
-	                        trigger.hidden = !trigger.hidden;
-	                    }
 	                };
 	            }
 	        };
 	    }
 	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder);
+	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http) {
+	            return new SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$hibachi',
 	            'metadataService',
 	            'workflowPartialsPath',
-	            'hibachiPathBuilder'
+	            'hibachiPathBuilder',
+	            'collectionConfigService',
+	            '$http'
 	        ];
 	        return directive;
 	    };
@@ -15624,13 +16183,13 @@
 
 
 /***/ },
-/* 142 */
+/* 144 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTriggers = (function () {
-	    function SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, hibachiPathBuilder) {
+	    function SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -15638,7 +16197,31 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
 	            link: function (scope, element, attrs, formController) {
-	                $log.debug('Workflow triggers init');
+	                scope.$watch('workflowTriggers.selectedTrigger', function (newValue, oldValue) {
+	                    if (newValue !== undefined && newValue !== oldValue) {
+	                        console.warn('Ooh watch me, watch me', newValue);
+	                        if (newValue.data.triggerType == 'Schedule') {
+	                            if (angular.isDefined(newValue.data.schedule)) {
+	                                scope.selectedSchedule = newValue.data.schedule.data.scheduleName;
+	                            }
+	                            if (angular.isDefined(newValue.data.scheduleCollection)) {
+	                                scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
+	                            }
+	                        }
+	                    }
+	                });
+	                scope.collectionCollectionConfig = collectionConfigService.newCollectionConfig("Collection");
+	                scope.collectionCollectionConfig.setDisplayProperties("collectionID,collectionName");
+	                scope.collectionCollectionConfig.addFilter("collectionObject", scope.workflow.data.workflowObject);
+	                observerService.attach(function (item) {
+	                    scope.collectionCollectionConfig.clearFilters();
+	                    scope.collectionCollectionConfig.addFilter("collectionObject", item.value);
+	                }, 'WorkflowWorkflowObjectOnChange');
+	                scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
+	                scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
+	                scope.daysOfweek = [];
+	                scope.daysOfMonth = [];
+	                console.warn('Workflow triggers init');
 	                scope.$id = 'swWorkflowTriggers';
 	                /**
 	                 * Retrieves the workflow triggers.
@@ -15655,16 +16238,16 @@
 	                        var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 	                        workflowTriggersPromise.then(function () {
 	                            scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-	                            $log.debug('workflowtriggers');
-	                            $log.debug(scope.workflowTriggers);
+	                            console.warn('workflowtriggers');
+	                            console.warn(scope.workflowTriggers);
 	                            /* resets the workflow trigger */
 	                            if (angular.isUndefined(scope.workflow.data.workflowTriggers)) {
 	                                scope.workflow.data.workflowTriggers = [];
 	                                scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 	                            }
 	                            angular.forEach(scope.workflowTriggers, function (workflowTrigger, key) {
-	                                $log.debug('trigger');
-	                                $log.debug(workflowTrigger);
+	                                console.warn('trigger');
+	                                console.warn(workflowTrigger);
 	                                if (workflowTrigger.data.triggerType === 'Schedule') {
 	                                    workflowTrigger.$$getSchedule();
 	                                    workflowTrigger.$$getScheduleCollection();
@@ -15680,25 +16263,27 @@
 	                scope.getWorkflowTriggers(); //call triggers
 	                scope.showCollections = false;
 	                scope.collections = [];
-	                scope.getCollectionByWorkflowObject = function () {
-	                    var filterGroupsConfig = '[' +
-	                        '{' +
-	                        '"filterGroup":[' +
-	                        '{' +
-	                        '"propertyIdentifier":"_collection.collectionObject",' +
-	                        '"comparisonOperator":"=",' +
-	                        '"value":"' + scope.workflow.data.workflowObject + '"' +
-	                        '}' +
-	                        ']' +
-	                        '}' +
-	                        ']';
-	                    var collectionsPromise = $hibachi.getEntity('Collection', { filterGroupsConfig: filterGroupsConfig });
-	                    collectionsPromise.then(function (value) {
-	                        $log.debug('getcollections');
-	                        scope.collections = value.pageRecords;
-	                        $log.debug(scope.collections);
-	                    });
-	                };
+	                //scope.getCollectionByWorkflowObject = function(){
+	                //	var filterGroupsConfig ='['+
+	                //		'{'+
+	                //        	'"filterGroup":['+
+	                //	            '{'+
+	                //	               '"propertyIdentifier":"_collection.collectionObject",'+
+	                //	               '"comparisonOperator":"=",'+
+	                //	               '"value":"'+ scope.workflow.data.workflowObject +'"'+
+	                //	           '}'+
+	                //	         ']'+
+	                //		'}'+
+	                //	']';
+	                //	var collectionsPromise = $hibachi.getEntity('Collection',{filterGroupsConfig:filterGroupsConfig});
+	                //
+	                //	collectionsPromise.then(function(value){
+	                //		console.warn('getcollections');
+	                //		scope.collections = value.pageRecords;
+	                //		console.warn(scope.collections);
+	                //
+	                //	});
+	                //};
 	                scope.searchEvent = {
 	                    name: ''
 	                };
@@ -15719,9 +16304,9 @@
 	                    if (!scope.eventOptions.length) {
 	                        var eventOptionsPromise = $hibachi.getEventOptions(objectName);
 	                        eventOptionsPromise.then(function (value) {
-	                            $log.debug('getEventOptions');
+	                            console.warn('getEventOptions');
 	                            scope.eventOptions = value.data;
-	                            $log.debug(scope.eventOptions.name);
+	                            console.warn(scope.eventOptions.name);
 	                        });
 	                    }
 	                    scope.showEventOptions = !scope.showEventOptions;
@@ -15730,25 +16315,30 @@
 	                 * Saves the workflow triggers.
 	                 */
 	                scope.saveWorkflowTrigger = function (context) {
+	                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
+	                        scope.workflow.$$addWorkflowTrigger(scope.workflowTriggers.selectedTrigger);
+	                    }
 	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 	                    saveWorkflowTriggerPromise.then(function () {
 	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
 	                        if (context == 'add') {
-	                            $log.debug("Save and New");
+	                            console.warn("Save and New");
 	                            scope.addWorkflowTrigger();
-	                            scope.finished = false;
 	                        }
 	                        else if (context == "finish") {
-	                            scope.finished = true;
+	                            scope.workflowTriggers.selectedTrigger = undefined;
 	                        }
 	                    });
+	                };
+	                scope.closeTrigger = function () {
+	                    scope.workflowTriggers.selectedTrigger = undefined;
 	                };
 	                /**
 	                 * Changes the selected trigger value.
 	                 */
 	                scope.selectEvent = function (eventOption) {
-	                    $log.debug("SelectEvent");
-	                    $log.debug(eventOption);
+	                    console.warn("SelectEvent");
+	                    console.warn(eventOption);
 	                    //Needs to clear old and set new.
 	                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
 	                    if (eventOption.entityName == scope.workflow.data.workflowObject) {
@@ -15758,14 +16348,14 @@
 	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
 	                    }
 	                    scope.searchEvent.name = eventOption.name;
-	                    $log.debug(eventOption);
-	                    $log.debug(scope.workflowTriggers);
+	                    console.warn(eventOption);
+	                    console.warn(scope.workflowTriggers);
 	                };
 	                /**
 	                 * Selects a new collection.
 	                 */
 	                scope.selectCollection = function (collection) {
-	                    $log.debug('selectCollection');
+	                    console.warn('selectCollection');
 	                    scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
 	                    scope.showCollections = false;
 	                };
@@ -15787,17 +16377,61 @@
 	                 * Adds a workflow trigger.
 	                 */
 	                scope.addWorkflowTrigger = function () {
-	                    $log.debug('addWorkflowTrigger');
-	                    var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
+	                    console.warn('addWorkflowTrigger');
+	                    var newWorkflowTrigger = $hibachi.newWorkflowTrigger(); //scope.workflow.$$addWorkflowTrigger();
 	                    scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
-	                    $log.debug(scope.workflowTriggers);
+	                    //console.warn(scope.workflowTriggers);
+	                };
+	                scope.addNewSchedule = function () {
+	                    scope.createSchedule = true;
+	                    scope.scheduleEntity = $hibachi.newSchedule();
+	                };
+	                scope.saveSchedule = function () {
+	                    if (scope.scheduleEntity.data.recuringType == 'weekly') {
+	                        scope.scheduleEntity.data.daysOfWeekToRun = scope.daysOfweek.filter(Number).join();
+	                    }
+	                    else if (scope.scheduleEntity.data.recuringType == 'monthly') {
+	                        scope.scheduleEntity.data.daysOfMonthToRun = scope.daysOfMonth.filter(Number).join();
+	                    }
+	                    scope.scheduleEntity.$$save().then(function (res) {
+	                        formService.resetForm(scope.scheduleEntity.forms['scheduleForm']);
+	                        scope.createSchedule = false;
+	                    }, function () {
+	                        console.warn('ERROR');
+	                    });
+	                };
+	                scope.selectCollection = function (item) {
+	                    if (angular.isDefined(scope.workflowTriggers.selectedTrigger.data.scheduleCollection)) {
+	                        scope.workflowTriggers.selectedTrigger.data.scheduleCollection.data.collectionID = item.collectionID;
+	                        scope.workflowTriggers.selectedTrigger.data.scheduleCollection.data.collectionName = item.collectionName;
+	                    }
+	                    else {
+	                        var _collection = $hibachi.newCollection();
+	                        _collection.data.collectionID = item.collectionID;
+	                        _collection.data.collectionName = item.collectionName;
+	                        scope.workflowTriggers.selectedTrigger.$$setScheduleCollection(_collection);
+	                    }
+	                };
+	                scope.selectSchedule = function (item) {
+	                    console.warn(item);
+	                    scope.schedulePreview = scheduleService.buildSchedulePreview(item, 6);
+	                    if (angular.isDefined(scope.workflowTriggers.selectedTrigger.data.schedule)) {
+	                        scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleID = item.scheduleID;
+	                        scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleName = item.scheduleName;
+	                    }
+	                    else {
+	                        var _schedule = $hibachi.newSchedule();
+	                        _schedule.data.scheduleID = item.scheduleID;
+	                        _schedule.data.scheduleName = item.scheduleName;
+	                        scope.workflowTriggers.selectedTrigger.$$setSchedule(_schedule);
+	                    }
 	                };
 	            }
 	        };
 	    }
 	    SWWorkflowTriggers.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, workflowPartialsPath, formService, hibachiPathBuilder) {
-	            return new SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, hibachiPathBuilder);
+	        var directive = function ($log, $location, $hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService) {
+	            return new SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -15805,7 +16439,10 @@
 	            '$hibachi',
 	            'workflowPartialsPath',
 	            'formService',
-	            'hibachiPathBuilder'
+	            'observerService',
+	            'hibachiPathBuilder',
+	            'collectionConfigService',
+	            'scheduleService'
 	        ];
 	        return directive;
 	    };
@@ -15815,7 +16452,192 @@
 
 
 /***/ },
-/* 143 */
+/* 145 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWWorkflowTriggerHistory = (function () {
+	    function SWWorkflowTriggerHistory($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope) {
+	        return {
+	            restrict: 'A',
+	            scope: {
+	                workflow: "="
+	            },
+	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggerhistory.html",
+	            link: function (scope, element, attrs) {
+	                $rootScope.workflowID = scope.workflow.data.workflowID;
+	            }
+	        };
+	    }
+	    SWWorkflowTriggerHistory.Factory = function () {
+	        var directive = function ($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope) {
+	            return new SWWorkflowTriggerHistory($log, $location, $hibachi, formService, workflowPartialsPath, hibachiPathBuilder, $rootScope);
+	        };
+	        directive.$inject = [
+	            '$log',
+	            '$location',
+	            '$hibachi',
+	            'formService',
+	            'workflowPartialsPath',
+	            'hibachiPathBuilder',
+	            '$rootScope'
+	        ];
+	        return directive;
+	    };
+	    return SWWorkflowTriggerHistory;
+	})();
+	exports.SWWorkflowTriggerHistory = SWWorkflowTriggerHistory;
+
+
+/***/ },
+/* 146 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWSchedulePreviewController = (function () {
+	    function SWSchedulePreviewController() {
+	    }
+	    return SWSchedulePreviewController;
+	})();
+	var SWSchedulePreview = (function () {
+	    function SWSchedulePreview(workflowPartialsPath, hibachiPathBuilder) {
+	        this.workflowPartialsPath = workflowPartialsPath;
+	        this.hibachiPathBuilder = hibachiPathBuilder;
+	        this.restrict = 'AE';
+	        this.scope = {};
+	        this.bindToController = {
+	            schedule: "="
+	        };
+	        this.controller = SWSchedulePreviewController;
+	        this.controllerAs = "swSchedulePreview";
+	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.workflowPartialsPath) + "schedulepreview.html";
+	    }
+	    SWSchedulePreview.Factory = function () {
+	        var directive = function (workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWSchedulePreview(workflowPartialsPath, hibachiPathBuilder);
+	        };
+	        directive.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
+	        return directive;
+	    };
+	    SWSchedulePreview.$inject = ['workflowPartialsPath', 'hibachiPathBuilder'];
+	    return SWSchedulePreview;
+	})();
+	exports.SWSchedulePreview = SWSchedulePreview;
+
+
+/***/ },
+/* 147 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWSaveAndFinishController = (function () {
+	    //@ngInject
+	    function SWSaveAndFinishController($hibachi, dialogService, alertService, rbkeyService, $log) {
+	        var _this = this;
+	        this.$hibachi = $hibachi;
+	        this.dialogService = dialogService;
+	        this.alertService = alertService;
+	        this.rbkeyService = rbkeyService;
+	        this.$log = $log;
+	        this.saving = false;
+	        this.initialSetup = function () {
+	            if (!angular.isDefined(_this.finish)) {
+	                _this.openNewDialog = false;
+	            }
+	            else {
+	                _this.openNewDialog = (_this.finish.toLowerCase() == 'true') ? false : true;
+	            }
+	            if (_this.openNewDialog) {
+	                _this.rbKey = 'admin.define.saveandnew';
+	            }
+	            else {
+	                _this.rbKey = 'admin.define.saveandfinish';
+	            }
+	        };
+	        this.save = function () {
+	            _this.saving = true;
+	            var savePromise = _this.entity.$$save();
+	            savePromise.then(function (data) {
+	                _this.dialogService.removeCurrentDialog();
+	                if (_this.openNewDialog && angular.isDefined(_this.partial)) {
+	                    _this.dialogService.addPageDialog(_this.partial);
+	                }
+	                else {
+	                    if (angular.isDefined(_this.redirectUrl)) {
+	                        window.location = _this.redirectUrl;
+	                    }
+	                    else if (angular.isDefined(_this.redirectAction)) {
+	                        if (angular.isUndefined(_this.redirectQueryString)) {
+	                            _this.redirectQueryString = "";
+	                        }
+	                        window.location = _this.$hibachi.buildUrl(_this.redirectAction, _this.redirectQueryString);
+	                    }
+	                    else {
+	                        _this.$log.debug("You did not specify a redirect for swSaveAndFinish");
+	                    }
+	                }
+	            }).catch(function (data) {
+	                if (angular.isDefined(_this.customErrorRbkey)) {
+	                    data = _this.rbkeyService.getRBKey(_this.customErrorRbkey);
+	                }
+	                if (angular.isString(data)) {
+	                    var alert = _this.alertService.newAlert();
+	                    alert.msg = data;
+	                    alert.type = "error";
+	                    alert.fade = true;
+	                    _this.alertService.addAlert(alert);
+	                }
+	                else {
+	                    _this.alertService.addAlerts(data);
+	                }
+	            }).finally(function () {
+	                _this.saving = false;
+	            });
+	        };
+	        if (!angular.isFunction(this.entity.$$save)) {
+	            throw ("Your entity does not have the $$save function.");
+	        }
+	        this.initialSetup();
+	    }
+	    return SWSaveAndFinishController;
+	})();
+	exports.SWSaveAndFinishController = SWSaveAndFinishController;
+	var SWSaveAndFinish = (function () {
+	    //@ngInject
+	    function SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder) {
+	        this.hibachiPartialsPath = hibachiPartialsPath;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.controller = SWSaveAndFinishController;
+	        this.controllerAs = "swSaveAndFinish";
+	        this.bindToController = {
+	            entity: "=",
+	            redirectUrl: "@?",
+	            redirectAction: "@?",
+	            redirectQueryString: "@?",
+	            finish: "@?",
+	            partial: "@?",
+	            customErrorRbkey: "@?"
+	        };
+	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(hibachiPartialsPath) + "saveandfinish.html";
+	    }
+	    SWSaveAndFinish.Factory = function () {
+	        var directive = function (hibachiPartialsPath, hibachiPathBuilder) {
+	            return new SWSaveAndFinish(hibachiPartialsPath, hibachiPathBuilder);
+	        };
+	        directive.$inject = ["hibachiPartialsPath", "hibachiPathBuilder"];
+	        return directive;
+	    };
+	    return SWSaveAndFinish;
+	})();
+	exports.SWSaveAndFinish = SWSaveAndFinish;
+
+
+/***/ },
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/hibachiTypescript.d.ts' />
@@ -15829,13 +16651,14 @@
 	// import {FormService} from "./services/formservice";
 	// import {MetaDataService} from "./services/metadataservice";
 	//controllers
-	var otherwisecontroller_1 = __webpack_require__(144);
-	var routercontroller_1 = __webpack_require__(145);
+	var otherwisecontroller_1 = __webpack_require__(149);
+	var routercontroller_1 = __webpack_require__(150);
 	//directives
-	var swdetailtabs_1 = __webpack_require__(146);
-	var swdetail_1 = __webpack_require__(147);
-	var swlist_1 = __webpack_require__(148);
-	var entitymodule = angular.module('hibachi.entity', ['ngRoute'])
+	var swdetailtabs_1 = __webpack_require__(151);
+	var swdetail_1 = __webpack_require__(152);
+	var swlist_1 = __webpack_require__(153);
+	var core_module_1 = __webpack_require__(12);
+	var entitymodule = angular.module('hibachi.entity', ['ngRoute', core_module_1.coremodule.name])
 	    .config(['$routeProvider', '$injector', '$locationProvider', 'appConfig',
 	    function ($routeProvider, $injector, $locationProvider, appConfig) {
 	        //detect if we are in hashbang mode
@@ -15884,7 +16707,7 @@
 
 
 /***/ },
-/* 144 */
+/* 149 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15900,7 +16723,7 @@
 
 
 /***/ },
-/* 145 */
+/* 150 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15928,7 +16751,7 @@
 
 
 /***/ },
-/* 146 */
+/* 151 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15961,7 +16784,7 @@
 
 
 /***/ },
-/* 147 */
+/* 152 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -15991,14 +16814,18 @@
 	                var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
 	                scope.tabPartialPath = hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath);
 	                scope.getEntity = function () {
-	                    if (scope.entityID === 'null') {
+	                    if (scope.entityID === 'create') {
+	                        scope.createMode = true;
 	                        scope.entity = $hibachi['new' + propertyCasedEntityName]();
+	                        console.warn('Entity', scope.entity);
 	                        setupMetaData();
 	                    }
 	                    else {
+	                        scope.createMode = false;
 	                        var entityPromise = $hibachi['get' + propertyCasedEntityName]({ id: scope.entityID });
 	                        entityPromise.promise.then(function () {
 	                            scope.entity = entityPromise.value;
+	                            console.warn('Entity', scope.entity);
 	                            setupMetaData();
 	                        });
 	                    }
@@ -16033,7 +16860,7 @@
 
 
 /***/ },
-/* 148 */
+/* 153 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
@@ -16045,19 +16872,20 @@
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(coreEntityPartialsPath) + '/list.html',
 	            link: function (scope, element, attr) {
 	                $log.debug('slatwallList init');
-	                scope.getCollection = function () {
-	                    var pageShow = 50;
-	                    if (scope.pageShow !== 'Auto') {
-	                        pageShow = scope.pageShow;
-	                    }
-	                    scope.entityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
-	                    var collectionListingPromise = $hibachi.getEntity(scope.entityName, { currentPage: scope.currentPage, pageShow: pageShow, keywords: scope.keywords });
-	                    collectionListingPromise.then(function (value) {
-	                        scope.collection = value;
-	                        scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
-	                    });
-	                };
-	                scope.getCollection();
+	                //scope.getCollection = function(){
+	                //
+	                //	var pageShow = 50;
+	                //	if(scope.pageShow !== 'Auto'){
+	                //		pageShow = scope.pageShow;
+	                //	}
+	                //	scope.entityName = scope.entityName.charAt(0).toUpperCase()+scope.entityName.slice(1);
+	                //	var collectionListingPromise = $hibachi.getEntity(scope.entityName, {currentPage:scope.currentPage, pageShow:pageShow, keywords:scope.keywords});
+	                //	collectionListingPromise.then(function(value){
+	                //		scope.collection = value;
+	                //		scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
+	                //	});
+	                //};
+	                //scope.getCollection();
 	            }
 	        };
 	    }
@@ -16079,7 +16907,7 @@
 
 
 /***/ },
-/* 149 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -16087,10 +16915,10 @@
 	//services
 	//filters
 	//directives
-	var swcontentbasic_1 = __webpack_require__(150);
-	var swcontenteditor_1 = __webpack_require__(151);
-	var swcontentlist_1 = __webpack_require__(152);
-	var swcontentnode_1 = __webpack_require__(153);
+	var swcontentbasic_1 = __webpack_require__(155);
+	var swcontenteditor_1 = __webpack_require__(156);
+	var swcontentlist_1 = __webpack_require__(157);
+	var swcontentnode_1 = __webpack_require__(158);
 	var contentmodule = angular.module('hibachi.content', []).config(function () {
 	})
 	    .constant('contentPartialsPath', 'content/components/')
@@ -16102,7 +16930,7 @@
 
 
 /***/ },
-/* 150 */
+/* 155 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16178,7 +17006,7 @@
 
 
 /***/ },
-/* 151 */
+/* 156 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16238,7 +17066,7 @@
 
 
 /***/ },
-/* 152 */
+/* 157 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16469,7 +17297,7 @@
 
 
 /***/ },
-/* 153 */
+/* 158 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16611,24 +17439,24 @@
 
 
 /***/ },
-/* 154 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//controllers
-	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(155);
+	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(160);
 	//directives
-	var swaddorderitemgiftrecipient_1 = __webpack_require__(157);
-	var swgiftcardbalance_1 = __webpack_require__(158);
-	var swgiftcarddetail_1 = __webpack_require__(159);
-	var swgiftcardhistory_1 = __webpack_require__(160);
-	var swgiftcardoverview_1 = __webpack_require__(161);
-	var swgiftcardorderinfo_1 = __webpack_require__(162);
-	var swgiftcardrecipientinfo_1 = __webpack_require__(163);
-	var sworderitemgiftrecipientrow_1 = __webpack_require__(164);
+	var swaddorderitemgiftrecipient_1 = __webpack_require__(162);
+	var swgiftcardbalance_1 = __webpack_require__(163);
+	var swgiftcarddetail_1 = __webpack_require__(164);
+	var swgiftcardhistory_1 = __webpack_require__(165);
+	var swgiftcardoverview_1 = __webpack_require__(166);
+	var swgiftcardorderinfo_1 = __webpack_require__(167);
+	var swgiftcardrecipientinfo_1 = __webpack_require__(168);
+	var sworderitemgiftrecipientrow_1 = __webpack_require__(169);
 	var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -16647,12 +17475,12 @@
 
 
 /***/ },
-/* 155 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(156);
+	var giftrecipient_1 = __webpack_require__(161);
 	var OrderItemGiftRecipientControl = (function () {
 	    //@ngInject
 	    function OrderItemGiftRecipientControl($scope, $hibachi) {
@@ -16694,7 +17522,7 @@
 
 
 /***/ },
-/* 156 */
+/* 161 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16720,12 +17548,12 @@
 
 
 /***/ },
-/* 157 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
-	var giftrecipient_1 = __webpack_require__(156);
+	var giftrecipient_1 = __webpack_require__(161);
 	var SWAddOrderItemRecipientController = (function () {
 	    function SWAddOrderItemRecipientController($hibachi) {
 	        var _this = this;
@@ -16868,7 +17696,7 @@
 
 
 /***/ },
-/* 158 */
+/* 163 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -16946,7 +17774,7 @@
 
 
 /***/ },
-/* 159 */
+/* 164 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17004,7 +17832,7 @@
 
 
 /***/ },
-/* 160 */
+/* 165 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17133,7 +17961,7 @@
 
 
 /***/ },
-/* 161 */
+/* 166 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17173,7 +18001,7 @@
 
 
 /***/ },
-/* 162 */
+/* 167 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17232,7 +18060,7 @@
 
 
 /***/ },
-/* 163 */
+/* 168 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17272,7 +18100,7 @@
 
 
 /***/ },
-/* 164 */
+/* 169 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17379,17 +18207,17 @@
 
 
 /***/ },
-/* 165 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//controllers
 	//directives
-	var swaddoptiongroup_1 = __webpack_require__(166);
-	var swoptionsforoptiongroup_1 = __webpack_require__(167);
+	var swaddoptiongroup_1 = __webpack_require__(171);
+	var swoptionsforoptiongroup_1 = __webpack_require__(172);
 	var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -17401,7 +18229,7 @@
 
 
 /***/ },
-/* 166 */
+/* 171 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17569,7 +18397,7 @@
 
 
 /***/ },
-/* 167 */
+/* 172 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17640,19 +18468,19 @@
 
 
 /***/ },
-/* 168 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path="../../typings/tsd.d.ts" />
 	/// <reference path="../../typings/slatwallTypescript.d.ts" />
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//directives
-	var swchildorderitem_1 = __webpack_require__(169);
-	var sworderitem_1 = __webpack_require__(170);
-	var swoishippinglabelstamp_1 = __webpack_require__(171);
-	var sworderitemdetailstamp_1 = __webpack_require__(172);
-	var sworderitems_1 = __webpack_require__(173);
-	var swresizedimage_1 = __webpack_require__(174);
+	var swchildorderitem_1 = __webpack_require__(174);
+	var sworderitem_1 = __webpack_require__(175);
+	var swoishippinglabelstamp_1 = __webpack_require__(176);
+	var sworderitemdetailstamp_1 = __webpack_require__(177);
+	var sworderitems_1 = __webpack_require__(178);
+	var swresizedimage_1 = __webpack_require__(179);
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -17667,7 +18495,7 @@
 
 
 /***/ },
-/* 169 */
+/* 174 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -17957,7 +18785,7 @@
 
 
 /***/ },
-/* 170 */
+/* 175 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18379,7 +19207,7 @@
 
 
 /***/ },
-/* 171 */
+/* 176 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18422,7 +19250,7 @@
 
 
 /***/ },
-/* 172 */
+/* 177 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18523,7 +19351,7 @@
 
 
 /***/ },
-/* 173 */
+/* 178 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18674,7 +19502,7 @@
 
 
 /***/ },
-/* 174 */
+/* 179 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18717,16 +19545,16 @@
 
 
 /***/ },
-/* 175 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//services
 	//controllers
-	var preprocessproduct_create_1 = __webpack_require__(176);
+	var preprocessproduct_create_1 = __webpack_require__(181);
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -18737,7 +19565,7 @@
 
 
 /***/ },
-/* 176 */
+/* 181 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18810,21 +19638,21 @@
 
 
 /***/ },
-/* 177 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
 	//modules
-	var core_module_1 = __webpack_require__(11);
+	var core_module_1 = __webpack_require__(12);
 	//services
-	var productbundleservice_1 = __webpack_require__(178);
+	var productbundleservice_1 = __webpack_require__(183);
 	//controllers
-	var create_bundle_controller_1 = __webpack_require__(179);
+	var create_bundle_controller_1 = __webpack_require__(184);
 	//directives
-	var swproductbundlegrouptype_1 = __webpack_require__(180);
-	var swproductbundlegroups_1 = __webpack_require__(181);
-	var swproductbundlegroup_1 = __webpack_require__(182);
+	var swproductbundlegrouptype_1 = __webpack_require__(185);
+	var swproductbundlegroups_1 = __webpack_require__(186);
+	var swproductbundlegroup_1 = __webpack_require__(187);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -18838,7 +19666,7 @@
 
 
 /***/ },
-/* 178 */
+/* 183 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18923,7 +19751,7 @@
 
 
 /***/ },
-/* 179 */
+/* 184 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -18995,7 +19823,7 @@
 
 
 /***/ },
-/* 180 */
+/* 185 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19167,7 +19995,7 @@
 
 
 /***/ },
-/* 181 */
+/* 186 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19228,7 +20056,7 @@
 
 
 /***/ },
-/* 182 */
+/* 187 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19575,7 +20403,7 @@
 
 
 /***/ },
-/* 183 */
+/* 188 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19606,7 +20434,7 @@
 
 
 /***/ },
-/* 184 */
+/* 189 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19664,7 +20492,7 @@
 
 
 /***/ },
-/* 185 */
+/* 190 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />

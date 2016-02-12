@@ -1,10 +1,8 @@
-<select type="{{propertyDisplay.fieldType}}" class="form-control" 
+<select type="{{propertyDisplay.fieldType}}" class="form-control"
 		    		 ng-model="propertyDisplay.object.data['selected'+propertyDisplay.property]"
-		    		 ng-disabled="!propertyDisplay.editable"
+		    		 ng-disabled="propertyDisplay.object.$$isPersisted()"
 		    		 ng-show="propertyDisplay.editing"
-		    		 ng-options="propertyDisplayOption.name
-  									 for propertyDisplayOption in propertyDisplay.options
-  									 track by propertyDisplayOption.value"
+		    		 ng-options="propertyDisplayOption.name for propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value"
 					 ng-change="formFieldChanged(propertyDisplay.object.data['selected'+propertyDisplay.property])"
 					 ng-click="getOptions()"
 					

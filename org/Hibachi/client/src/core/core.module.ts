@@ -819,7 +819,7 @@ var coremodule = angular.module('hibachi.core',[
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
 
-                                if($location.url() == '/entity/'+entityName+'/null' && response.data[modifiedData.objectLevel.$$getIDName()]){
+                                if($location.url() == '/entity/'+entityName+'/create' && response.data[modifiedData.objectLevel.$$getIDName()]){
                                     $location.path('/entity/'+entityName+'/'+response.data[modifiedData.objectLevel.$$getIDName()], false);
                                 }
                                 _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
