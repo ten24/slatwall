@@ -2621,9 +2621,16 @@ tabel .s-table-header {
 .s-add-filter .s-criteria .selectboxit-container .selectboxit-options {
   width: 100% !important;
 }
+.s-add-filter .s-criteria h4.disabled {
+  opacity: .3;
+}
 .s-add-filter .s-button-select-group {
   text-align: center;
   margin-bottom: 20px;
+}
+.s-add-filter .s-button-select-group.disabled {
+  pointer-events: none;
+  opacity: .3;
 }
 .s-add-filter .s-or-box {
   margin-bottom: 10px;
