@@ -60,6 +60,11 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.site#">
 			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem view="admin:entity/sitetabs/sitesettings" />
+
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.site.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.site#" attributeSet="#attributeSet#" />
+			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
