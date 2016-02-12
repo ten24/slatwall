@@ -494,9 +494,6 @@ a:hover {
   margin-top: 0;
   margin-bottom: 0;
 }
-.content {
-  padding: 12px 3px;
-}
 .row-height {
   display: table;
   table-layout: fixed;
@@ -3100,6 +3097,7 @@ tabel .s-table-header {
   background-color: #ffffff;
   border-bottom: 2px solid #e7eaec;
   padding: 0px 0px 9px 0px;
+  border-right: 0px;
 }
 .s-body-nav .navbar h1 {
   padding: 0px;
