@@ -82,7 +82,7 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 	/// Email Template (many-to-one)
 	public void function setEmailTemplate(required any emailTemplate) {
 		variables.emailTemplate = arguments.emailTemplate;
-		if(isNew() or !arguments.emailTemplate.hasForms( this )) {
+		if(isNew() or !arguments.emailTemplate.hasForm( this )) {
 			arrayAppend(arguments.emailTemplate.getForms(), this);
 		}
 	}
