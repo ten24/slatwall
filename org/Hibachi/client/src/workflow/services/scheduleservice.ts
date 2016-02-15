@@ -6,7 +6,7 @@ class ScheduleService{
     public static $inject = ["utilityService"];
     public constructor(public utilityService){}
 
-    private clearSchedulePreview =()=>{
+    public clearSchedulePreview =()=>{
         this.schedulePreview = {};
     };
 
@@ -29,24 +29,38 @@ class ScheduleService{
 
     public buildSchedulePreview =(scheduleObject:any, totalOfPreviews:number=10):any=>{
         this.clearSchedulePreview();
+        console.log(scheduleObject);
         var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
         var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
         var now = new Date();
+        var startPoint = new Date();
+        startPoint.setHours(startTime.getHours());
+        startPoint.setMinutes(startTime.getMinutes());
+        startPoint.setSeconds(startTime.getSeconds());
         var daysToRun = [];
 
         if(scheduleObject.recuringType == 'weekly'){
-            daysToRun = scheduleObject.daysOfWeekToRun.split(',');
-            if(!daysToRun.length) return;
+            daysToRun = scheduleObject.daysOfWeekToRun.toString().split(',');
+            if(!daysToRun.length || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
+                return this.schedulePreview;
+            }
         }
 
         if(scheduleObject.recuringType == 'monthly'){
-            daysToRun = scheduleObject.daysOfMonthToRun.split(',');
-            if(!daysToRun.length) return;
+            daysToRun = scheduleObject.daysOfMonthToRun.toString().split(',');
+            if(!daysToRun.length || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
+                return this.schedulePreview;
+            }
         }
+
         var datesAdded = 0;
         for (var i =0;;i++){
+            console.warn('LOL',daysToRun);
+            if(datesAdded >= totalOfPreviews || i >= 500) break;
+
             var timeToadd = (scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
-            var currentDatetime = new Date(now.getTime() + timeToadd);
+            var currentDatetime = new Date(startPoint.getTime() + timeToadd);
+            if(currentDatetime < now) continue;
 
             if(scheduleObject.recuringType == 'weekly'){
                 if(daysToRun.indexOf((currentDatetime.getDay()+1).toString())==-1) continue;
@@ -54,13 +68,8 @@ class ScheduleService{
                 if(daysToRun.indexOf(currentDatetime.getDate().toString())==-1) continue;
             }
             if(!endTime) {
-                currentDatetime.setHours(startTime.getHours());
-                currentDatetime.setMinutes(startTime.getMinutes());
-                currentDatetime.setSeconds(startTime.getSeconds());
-                if(currentDatetime > now){
-                    this.addSchedulePreviewItem(currentDatetime);
-                    datesAdded++;
-                }
+                this.addSchedulePreviewItem(currentDatetime);
+                datesAdded++;
             }else {
                 if (this.utilityService.minutesOfDay(startTime) <= this.utilityService.minutesOfDay(currentDatetime)
                     && this.utilityService.minutesOfDay(endTime) >= this.utilityService.minutesOfDay(currentDatetime)) {
@@ -68,7 +77,7 @@ class ScheduleService{
                     datesAdded++;
                 }
             }
-            if(datesAdded >= totalOfPreviews || i >= 500) break;
+
         }
         return this.schedulePreview;
     }

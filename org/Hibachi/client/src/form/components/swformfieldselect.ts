@@ -48,13 +48,12 @@ class SWFormFieldSelect implements ng.IDirective {
 				propertyDisplay:"="
 			},
 			link:function(scope, element, attr, formController){
-					var selectType;
 
 					if(angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)){
-						selectType = 'object';
+						scope.selectType = 'object';
 						$log.debug('selectType:object');
 					}else{
-						selectType = 'string';
+                        scope.selectType = 'string';
 						$log.debug('selectType:string');
 					}
 
@@ -62,12 +61,12 @@ class SWFormFieldSelect implements ng.IDirective {
 					scope.formFieldChanged = function(option){
 						$log.debug('formfieldchanged');
 						$log.debug(option);
-						if(selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function" ){
+						if(scope.selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function" ){
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
 							if(angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])){
 								scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
 							}
-						}else if(selectType === 'string'){
+						}else if(scope.selectType === 'string'){
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
 						}
@@ -85,7 +84,7 @@ class SWFormFieldSelect implements ng.IDirective {
 							optionsPromise.then(function(value){
 								scope.propertyDisplay.options = value.data;
 
-								if(selectType === 'object'
+								if(scope.selectType === 'object'
 								){
 									if(angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
 										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
@@ -125,7 +124,7 @@ class SWFormFieldSelect implements ng.IDirective {
 										}
 
 									}
-								}else if(selectType === 'string'){
+								}else if(scope.selectType === 'string'){
 									if(scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null){
 										for(var i in scope.propertyDisplay.options){
 											if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){
@@ -149,12 +148,6 @@ class SWFormFieldSelect implements ng.IDirective {
 						scope.getOptions();
 					}
 					//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
-
-					if(selectType === 'object'){
-						formController[scope.propertyDisplay.property+'ID'].$dirty = scope.propertyDisplay.isDirty;
-					}else if(selectType === 'string'){
-						formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-					}
 				}
 			};//<--end return
 	}

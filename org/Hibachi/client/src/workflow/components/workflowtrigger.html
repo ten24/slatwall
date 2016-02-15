@@ -11,7 +11,7 @@
 	<ul class="list-unstyled list-inline s-last">
         <li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-ng-if="workflowTrigger.data.triggerType === 'Schedule'" data-ng-click="executeWorkflowTrigger(workflowTrigger);">
             <a class="btn s-btn-lgrey s-edit">
-                <i class="fa fa-play"></i>
+                <i class="fa" data-ng-class="executingTrigger ? 'fa-refresh fa-spin' : 'fa-play'"></i>
             </a>
         </li>
 

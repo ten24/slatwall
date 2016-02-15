@@ -10,23 +10,20 @@ class SWTypeaheadSearchController {
 	public propertiesToDisplay:string;
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
-	public placeholderText:string;
 	public searchText:string;
 	public results;
 	public addFunction;
     public validateRequired:boolean; 
     public displayList = [];
 	public addButtonFunction;
+    public viewFunction;
 	public hideSearch:boolean;
-	public clickOutsideArguments;
     public resultsPromise;
     public resultsDeferred;
     public showAddButton;
 
 	private _timeoutPromise;
-	private entityList;
-	private typeaheadCollectionConfig;
-	private typeaheadCollectionConfigs;
+    public showViewButton;
 
     // @ngInject
 	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
@@ -61,6 +58,10 @@ class SWTypeaheadSearchController {
             this.showAddButton = true;
         }
 
+        if(angular.isDefined(this.viewFunction)){
+            this.showViewButton = true;
+        }
+
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
@@ -82,6 +83,9 @@ class SWTypeaheadSearchController {
     public clearSearch = () =>{
         this.searchText = "";
         this.hideSearch = true;
+        if(angular.isDefined(this.addFunction)){
+            this.addFunction()(undefined);
+        }
     };
 
     public toggleOptions = () =>{
@@ -121,7 +125,7 @@ class SWTypeaheadSearchController {
                 this.hideSearch = (this.results.length == 0);
             });
         }, 500);
-	}
+	};
 
 	public addItem = (item)=>{
 
@@ -149,6 +153,10 @@ class SWTypeaheadSearchController {
 		}
 	};
 
+    public viewButtonClick = () =>{
+        this.viewFunction()();
+    };
+
 	public closeThis = (clickOutsideArgs) =>{
 
 		this.hideSearch = true;
@@ -170,7 +178,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public templateUrl;
     public transclude=true; 
 	public restrict = "EA";
-	public scope = {}
+	public scope = {};
 
 	public bindToController = {
         collectionConfig:"=?",
@@ -183,9 +191,11 @@ class SWTypeaheadSearch implements ng.IDirective{
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
+        viewFunction:"&?",
         validateRequired:"=?",
         clickOutsideArguments:"=?",
-		hideSearch:"=?"
+		hideSearch:"=?",
+        disabled:"=?"
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";

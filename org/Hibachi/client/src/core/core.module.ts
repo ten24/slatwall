@@ -386,18 +386,31 @@ var coremodule = angular.module('hibachi.core',[
 
                                         return null;
                                     };
-                                    _jsEntities[ entity.className ].prototype['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(entityInstance) {
-
+                                    _jsEntities[ entity.className ].prototype['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(entityInstance?) {
 
                                         var thisEntityInstance = this;
                                         var metaData = this.metaData;
                                         var manyToManyName = '';
+
+                                        //if entityInstance is not passed in, clear related object
+                                        if(angular.isUndefined(entityInstance)){
+                                            if(angular.isDefined(thisEntityInstance.data[property.name])){
+                                                delete thisEntityInstance.data[property.name];
+                                            }
+                                            for(var i = 0; i <= thisEntityInstance.parents.length; i++){
+                                                if(angular.isDefined(thisEntityInstance.parents[i]) &&  thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)){
+                                                    thisEntityInstance.parents.splice(i,1);
+                                                }
+                                            }
+                                            return;
+                                        }
+
                                         if(property.name === 'parent'+this.metaData.className){
                                             var childName = 'child'+this.metaData.className;
                                             manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 
                                         }else{
-                                            manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
+                                            manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
                                         }
 
                                         if(angular.isUndefined(thisEntityInstance.parents)){
@@ -426,7 +439,6 @@ var coremodule = angular.module('hibachi.core',[
 
                                         thisEntityInstance.data[property.name] = entityInstance;
                                     };
-
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
 
                                     _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){

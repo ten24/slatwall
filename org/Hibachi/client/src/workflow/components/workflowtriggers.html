@@ -208,6 +208,7 @@
                                                      data-properties="collectionName"
                                                      data-placeholder-text="Search Collection..."
                                                      data-add-function="selectCollection"
+                                                     data-view-function="viewCollection"
                                                      data-search-text="selectedCollection">
                                                     <span sw-typeahead-search-line-item
                                                           data-property-identifier="collectionName"
@@ -258,7 +259,8 @@
                                                          data-placeholder-text="Search Schedule..."
                                                          data-add-function="selectSchedule"
                                                          data-search-text="selectedSchedule"
-                                                         data-add-button-function="addNewSchedule">
+                                                         data-add-button-function="addNewSchedule"
+                                                         data-disabled="workflowTriggers.selectedTrigger.$$isPersisted()">
                                                     <span sw-typeahead-search-line-item
                                                           data-property-identifier="scheduleName"
                                                           ng-bind="item.scheduleName"></span>
@@ -304,6 +306,16 @@
                                                                 </span>
                                                         </div>
                                                     </div>
+                                                        <div class="row" data-ng-if="scheduleEntity.data.frequencyEndTime">
+                                                            <div class="form-group form-group-sm col-sm-6">
+                                                                <span sw-property-display
+                                                                      data-object="scheduleEntity"
+                                                                      data-property="frequencyInterval"
+                                                                      data-editing="true"
+                                                                      data-editable="true">
+                                                                </span>
+                                                            </div>
+                                                        </div>
                                                     <hr/>
                                                         <span sw-property-display
                                                               style="display:none"
