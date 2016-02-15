@@ -898,10 +898,10 @@ var coremodule = angular.module('hibachi.core',[
                     form.$setSubmitted();   //Sets the form to submitted for the validation errors to pop up.
                     if(form.$dirty && form.$valid){
                         for(var key in form){
-                            //$log.debug('key:'+key);
+                            //$log.debug('key:'+key); 
                             if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                                 var inputField = form[key];
-                                if(inputField.$modelValue){
+                                if(inputField.$modelValue && !angular.isObject(inputField.$modelValue)){
                                     inputField.$dirty = true;
                                 }
                                 if(angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
