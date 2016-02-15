@@ -53,7 +53,7 @@ class SWFormFieldSelect implements ng.IDirective {
 					}else{
 						selectType = 'string';
 						$log.debug('selectType:string');
-					}
+                    }
 
 
 					scope.formFieldChanged = function(option){
@@ -147,12 +147,12 @@ class SWFormFieldSelect implements ng.IDirective {
 						scope.getOptions();
 					}
 					//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
-
+                    /*
 					if(selectType === 'object'){
 						formController[scope.propertyDisplay.property+'ID'].$dirty = scope.propertyDisplay.isDirty;
 					}else if(selectType === 'string'){
 						formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-					}
+					}*/
 				}
 			};//<--end return
 	}

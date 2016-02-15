@@ -16,7 +16,8 @@
 		/>
 		<input style="display:none"	type="text" 
 				name="{{propertyDisplay.property}}"
-				ng-model="propertyDisplay.object.data[propertyDisplay.property].data"
+                ng-if="scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property]"
 		/>
 <!-- Error Messages -->
     
