@@ -273,9 +273,9 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 
 	/// Form (many-to-one)
 	public void function setForm(required any form) {
-		variables.emailTemplate = arguments.emailTemplate;
-		if(isNew() or !arguments.emailTemplate.hasForms( this )) {
-			arrayAppend(arguments.emailTemplate.getForms(), this);
+		variables.form = arguments.form;
+		if(isNew() or !arguments.form.hasAttribute( this )) {
+			arrayAppend(arguments.form.getAttributes(), this);
 		}
 	}
 	public void function removeForm(any form) {
