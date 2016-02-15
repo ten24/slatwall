@@ -47,7 +47,7 @@ class SWFormFieldSelect implements ng.IDirective {
 
 					var selectType;
 
-					if(angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)){
+					if(angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc)){
 						selectType = 'object';
 						$log.debug('selectType:object');
 					}else{
