@@ -107,6 +107,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 
+
 	public numeric function getNumberOfUnassignedGiftCards(){
 
 		if(!this.isGiftCardOrderItem()){
@@ -168,33 +169,20 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
-			var quantity = getQuantity();
-			if(!isNull(getOrder()) && !getOrder().getNewFlag() && !isNull(getSku())){
-				if(OrmExecuteQuery('SELECT count(orderItemID) FROM SlatwallOrderItem where order=:order and sku=:sku',{order=getOrder(),sku=getSku()},true) > 1){
-					
-					quantity += OrmExecuteQuery('SELECT sum(quantity) FROM SlatwallOrderItem where order=:order and sku=:sku and orderItemID <> :orderItemID',{order=getOrder(),sku=getSku(),orderItemID=getOrderItemID()},true);
-				}
-				
-			}
-			return quantity <= getMaximumOrderQuantity();
-		}
-		return true;
+		return getService('OrderService').hasQuantityWithinMaxOrderQuantity(this);
 	}
 
 	public boolean function hasQuantityWithinMinOrderQuantity() {
-		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
-			var quantity = getQuantity();
-			if(!isNull(getOrder()) && !getOrder().getNewFlag() && !isNull(getSku())){
-				if(OrmExecuteQuery('SELECT count(orderItemID) FROM SlatwallOrderItem where order=:order and sku=:sku',{order=getOrder(),sku=getSku()},true) > 1){
-					
-					quantity += OrmExecuteQuery('SELECT sum(quantity) FROM SlatwallOrderItem where order=:order and sku=:sku and orderItemID <> :orderItemID',{order=getOrder(),sku=getSku(),orderItemID=getOrderItemID()},true);
-				}
-			}
-			return quantity >= getSku().setting('skuOrderMinimumQuantity');
-		}
-		return true;
+		return getService('OrderService').hasQuantityWithinMinOrderQuantity(this);
 	}
+
+	public numeric function getQuantitySumOnOrder(){
+		return getService('OrderService').getOrderItemQuantitySumOnOrder(this);
+	}
+
+    public numeric function getOrderItemCountOnOrder(){
+        return getService('OrderService').getOrderItemCountOnOrder(this);
+    }
 
 	public string function getOrderStatusCode(){
 		return getOrder().getStatusCode();

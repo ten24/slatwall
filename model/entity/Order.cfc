@@ -180,6 +180,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				return false;
 			}
 		}
+		
 		return true;
 	}
 

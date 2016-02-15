@@ -1218,8 +1218,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return newOrderItem;
 	}
 
-	public any function processOrder_forceItemQuantityUpdate(required any order) {
+	public boolean function hasQuantityWithinMaxOrderQuantity(any orderItem){
+		return getDao('OrderDao').hasQuantityWithinMaxOrderQuantity(arguments.orderItem);
+	}
 
+	public boolean function hasQuantityWithinMinOrderQuantity(any orderItem) {
+		return getDao('OrderDao').hasQuantityWithinMinOrderQuantity(arguments.orderItem);
+	}
+
+	public boolean function getOrderItemQuantitySumOnOrder(required any orderItem){
+		return getDao('OrderDao').getOrderItemQuantitySumOnOrder(arguments.orderItem);
+	}
+
+    public boolean function getOrderItemCountOnOrder(required any orderItem){
+        return getDao('OrderDao').getOrderItemCountOnOrder(arguments.orderItem);
+    }
+
+	public any function processOrder_forceItemQuantityUpdate(required any order) {
 		var itemFound = false;
 
 		// Loop over each order Item
@@ -1234,12 +1249,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// If the max order quantity is gt 0 then just adjust the quantity of the item
 				if(orderItem.getMaximumOrderQuantity() > 0) {
-
-
 					var messageReplaceKeys = {
 						oldQuantity = orderItem.getQuantity(),
 						newQuantity = orderItem.getMaximumOrderQuantity()
 					};
+
 					orderItem.setQuantity( orderItem.getMaximumOrderQuantity() );
 
 					var message = getHibachiUtilityService().replaceStringTemplate(rbKey('validate.processOrder_forceItemQuantityUpdate.forcedItemQuantityAdjusted'), messageReplaceKeys);
