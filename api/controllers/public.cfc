@@ -44,10 +44,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             rc.context = "getAccountData";
             this.get(rc);
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
-            var action = "";
+            
             var actions = [];
             if (arguments.rc.context contains ","){
-                var actions = listToArray(arguments.rc.context);
+                actions = listToArray(arguments.rc.context);
             }
             if (!arrayLen(actions)){
                 publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
