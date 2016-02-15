@@ -50,10 +50,15 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 
 	// Persistent Properties
 	property name="formID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="formCode" ormtype="string";
+	property name="emailTo" ormtype="string";
+
 
 	// Related Object Properties (many-to-one)
+	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID" cascade="all";
 
 	// Related Object Properties (one-to-many)
+	property name="attributes" singularname="attribute" cfc="Attribute" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many)
 
@@ -65,7 +70,6 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-
 
 
 	// ============ START: Non-Persistent Property Methods =================
