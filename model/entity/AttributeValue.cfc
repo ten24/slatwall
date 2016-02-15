@@ -185,6 +185,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "attribute");
 	}
 
+	/// Form Response (many-to-one)
+	public void function setFormResponse(required any formResponse) {
+		variables.formResponse = arguments.formResponse;
+		if(isNew() or !arguments.formResponse.hasAttributeValue( this )) {
+			arrayAppend(arguments.formResponse.getAttributeValues(), this);
+		}
+	}
+	public void function removeFormResponse(any formResponse) {
+		if(!structKeyExists(arguments, "formResponse")) {
+			arguments.formResponse = variables.formResponse;
+		}
+		var index = arrayFind(arguments.formResponse.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.formResponse.getAttributeValues(), index);
+		}
+		structDelete(variables, "formResponse");
+	}
+
 	// Account (many-to-one)
 	public void function setAccount(required any account) {
 		variables.account = arguments.account;

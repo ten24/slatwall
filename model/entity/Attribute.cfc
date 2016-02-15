@@ -271,6 +271,24 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		structDelete(variables, "attributeSet");
 	}
 
+	/// Form (many-to-one)
+	public void function setForm(required any form) {
+		variables.emailTemplate = arguments.emailTemplate;
+		if(isNew() or !arguments.emailTemplate.hasForms( this )) {
+			arrayAppend(arguments.emailTemplate.getForms(), this);
+		}
+	}
+	public void function removeForm(any form) {
+		if(!structKeyExists(arguments, "form")) {
+			arguments.form = variables.form;
+		}
+		var index = arrayFind(arguments.form.getAttributes(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.form.getAttributes(), index);
+		}
+		structDelete(variables, "form");
+	}
+
 	// Attribute Options (one-to-many)
 	public void function addAttributeOption(required any attributeOption) {
 		arguments.attributeOption.setAttribute( this );

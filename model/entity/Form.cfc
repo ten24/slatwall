@@ -79,6 +79,40 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 
 	// ============= START: Bidirectional Helper Methods ===================
 
+	/// Email Template (many-to-one)
+	public void function setEmailTemplate(required any emailTemplate) {
+		variables.emailTemplate = arguments.emailTemplate;
+		if(isNew() or !arguments.emailTemplate.hasForms( this )) {
+			arrayAppend(arguments.emailTemplate.getForms(), this);
+		}
+	}
+	public void function removeEmailTemplate(any emailTemplate) {
+		if(!structKeyExists(arguments, "emailTemplate")) {
+			arguments.emailTemplate = variables.emailTemplate;
+		}
+		var index = arrayFind(arguments.emailTemplate.getForms(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.emailTemplate.getForms(), index);
+		}
+		structDelete(variables, "emailTemplate");
+	}
+
+	// Attributes (one-to-many)
+	public void function addAttribute(required any attribute) {
+		arguments.attribute.setForm( this );
+	}
+	public void function removeAttribute(required any attribute) {
+		arguments.attribute.removeForm( this );
+	}
+
+	// Form Responses (one-to-many)
+	public void function addFormResponse(required any formResponse) {
+		arguments.formResponse.setForm( this );
+	}
+	public void function removeFormResponse(required any formResponse) {
+		arguments.formResponse.removeForm( this );
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

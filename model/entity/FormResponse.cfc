@@ -76,6 +76,32 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 
 	// ============= START: Bidirectional Helper Methods ===================
 
+	/// Form (many-to-one)
+	public void function setForm(required any form) {
+		variables.form = arguments.form;
+		if(isNew() or !arguments.form.hasFormResponses( this )) {
+			arrayAppend(arguments.form.getFormResponses(), this);
+		}
+	}
+	public void function removeForm(any form) {
+		if(!structKeyExists(arguments, "form")) {
+			arguments.form = variables.form;
+		}
+		var index = arrayFind(arguments.form.getFormResponses(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.form.getFormResponses(), index);
+		}
+		structDelete(variables, "formResponse");
+	}
+
+	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setFormResponse( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeFormResponse( this );
+	}
+
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================
