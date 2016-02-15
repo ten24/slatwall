@@ -12,11 +12,11 @@
 </select>
 		<input style="display:none"	type="text" 
 				name="{{propertyDisplay.property+'ID'}}"
-				ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
 		/>
 		<input style="display:none"	type="text" 
 				name="{{propertyDisplay.property}}"
-				ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property].data"
 		/>
 <!-- Error Messages -->
     
