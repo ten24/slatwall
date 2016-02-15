@@ -77,8 +77,6 @@
 						</div>
 					</div>
 				</cfloop>
-			<cfelse>
-				<div class="alert alert-info deafult-margin" style="text-align:center;" role="alert">#attributes.hibachiScope.rbKey("entity.Product.process.image.norecordsfound")#</div>
 			</cfif>
 			
 			<div class="col-xs-2 s-upload-image s-new-image">

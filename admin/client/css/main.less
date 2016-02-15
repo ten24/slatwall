@@ -518,7 +518,6 @@ a:hover {color: @link-color-hover;text-decoration:none;}
 //Classes to create equal column
 .inside {margin-top: 20px;margin-bottom: 20px;background: #ededed;background: -webkit-gradient(linear, left top, left bottom,color-stop(0%, #f4f4f4), color-stop(100%, #ededed));background: -moz-linear-gradient(top, #f4f4f4 0%, #ededed 100%);background: -ms-linear-gradient(top, #f4f4f4 0%, #ededed 100%);}
 .inside-full-height {height: 100%;margin-top: 0;margin-bottom: 0;}
-.content {padding: 12px 3px;}
 .row-height {display: table;table-layout: fixed;height: 100%;width: 100%;}
 .col-height {display: table-cell;float: none;height: 100%;}
 .col-top {vertical-align: top;}
@@ -1033,7 +1032,9 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit-options {width:100% !important;}
+.s-add-filter .s-criteria h4.disabled {opacity:.3;}
 .s-add-filter .s-button-select-group {text-align:center;margin-bottom: 20px;}
+.s-add-filter .s-button-select-group.disabled {pointer-events: none;opacity: .3;}
 .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
 
 .s-add-filter .s-criteria .s-filter-group-item > span {float:right;}
@@ -1136,7 +1137,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-define-filter-group .s-define-filter-remove a {border: none;.border-radius(0);background-color: @brand-danger;color: @white !important;}
 
 .s-body-nav {background-color: @white;margin-bottom: 0px;.border-radius(0);border-top: 0px;border:none;margin-bottom: 20px;}
-.s-body-nav .navbar { margin-bottom: 0px; .border-radius(0); background-color: @white; border-bottom: 2px solid #e7eaec; padding: 0px 0px 9px 0px;}
+.s-body-nav .navbar { margin-bottom: 0px; .border-radius(0); background-color: @white; border-bottom: 2px solid #e7eaec; padding: 0px 0px 9px 0px;border-right: 0px;}
 .s-body-nav .navbar h1 {padding: 0px;margin: 0px;margin-top: 14px;font-size: 18px;font-weight: normal;vertical-align: middle; color: @black; line-height:22px;}
 .s-body-nav .navbar h1 > span {color: #999;}
 .s-body-nav .navbar .btn-toolbar {margin-top: 10px;}

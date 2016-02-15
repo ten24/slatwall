@@ -392,7 +392,7 @@ component accessors="true" output="false" extends="HibachiService" {
 						if(tables[ tableName ][ "tableType" ] == "linktable") {
 							tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = thisTableData[ "#tables[ tableName ][ "primaryKeyColumn" ]#_new" ][r], dataType = 'varchar'};
 							tableData[ tableName ].updateData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = thisTableData[ "#tables[ tableName ][ "primaryKeyColumn" ]#_new" ][r], dataType = 'varchar'};
-							getHibachiDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false);
+							getHibachiDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false);
 						} else {
 							// make sure all ID keys have value
 							var okToImport = true;
@@ -406,7 +406,7 @@ component accessors="true" output="false" extends="HibachiService" {
 								// set the primary key ID for insert
 								primaryKeyValue = getHibachiScope().createHibachiUUID();
 								tableData[ tableName ].insertData[ tables[ tableName ][ "primaryKeyColumn" ] ] = {value = primaryKeyValue, dataType = 'varchar'};
-								primaryKeyValue = getHibachiDataDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false, true, tables[ tableName ][ "primaryKeyColumn" ],tables[ tableName ][ "compositeKeyOperator" ]);
+								primaryKeyValue = getHibachiDAO().recordUpdate(tableName, tableData[tableName].idColumns, tableData[tableName].updateData, tableData[tableName].insertData, false, true, tables[ tableName ][ "primaryKeyColumn" ],tables[ tableName ][ "compositeKeyOperator" ]);
 							}
 						}
 						
@@ -468,7 +468,7 @@ component accessors="true" output="false" extends="HibachiService" {
 									tableData[ attributeValueTableName ].insertData[ "attributeValueID" ] = {value = getHibachiScope().createHibachiUUID(), dataType = 'varchar'};
 			
 									//writedump(label="#attributeValueTableName#",var="#tableData[attributeValueTableName]#");
-									getHibachiDataDAO().recordUpdate(attributeValueTableName, tableData[attributeValueTableName].idColumns, tableData[attributeValueTableName].updateData, tableData[attributeValueTableName].insertData, false);
+									getHibachiDAO().recordUpdate(attributeValueTableName, tableData[attributeValueTableName].idColumns, tableData[attributeValueTableName].updateData, tableData[attributeValueTableName].insertData, false);
 									
 								}
 							}
