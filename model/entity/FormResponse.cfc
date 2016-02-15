@@ -56,7 +56,7 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-	property name="attributeValues" singularname="attributeValue" fieldtype="one-to-many" fkcolumn="formResponseID" cascade="all-delete-orphan";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="formResponseID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many)
 
