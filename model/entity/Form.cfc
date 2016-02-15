@@ -59,6 +59,7 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 
 	// Related Object Properties (one-to-many)
 	property name="attributes" singularname="attribute" cfc="Attribute" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
+	property name="formResponses" singularname="formResponse" cfc="FormResponse" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many)
 
