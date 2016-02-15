@@ -79,7 +79,7 @@ component displayname="FormResponse" entityname="SlatwallFormResponse" table="Sw
 	/// Form (many-to-one)
 	public void function setForm(required any form) {
 		variables.form = arguments.form;
-		if(isNew() or !arguments.form.hasFormResponses( this )) {
+		if(isNew() or !arguments.form.hasFormResponse( this )) {
 			arrayAppend(arguments.form.getFormResponses(), this);
 		}
 	}
