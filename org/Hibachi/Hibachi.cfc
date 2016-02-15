@@ -428,6 +428,7 @@ component extends="FW1.framework" {
 					applicationInitData["baseURL"] = 					variables.framework.baseURL;
 					applicationInitData["action"] = 					variables.framework.action;
 					applicationInitData["hibachiConfig"] =				variables.framework.hibachi;
+					applicationInitData["environment"] =				variables.framework.environment;
 					
 					// Log the setup start with values
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application setup started.");
@@ -554,7 +555,6 @@ component extends="FW1.framework" {
 					}
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 					
-					
 					//========================= END: IOC SETUP ===============================
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc
@@ -566,7 +566,6 @@ component extends="FW1.framework" {
 						
 						// Set the request timeout to 360
 						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=600);
-						
 						
 						//Update custom properties
 						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
