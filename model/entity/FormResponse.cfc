@@ -46,11 +46,10 @@
 Notes:
 
 */
-component displayname="FormResponse" entityname="SlatwallFormResponse" table="SwFormResponse" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="hibachiService" {
+component displayname="FormResponse" entityname="SlatwallFormResponse" table="SwFormResponse" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="formService" {
 
 	// Persistent Properties
 	property name="formResponseID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-
 
 	// Related Object Properties (many-to-one)
 	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID" cascade="all";
