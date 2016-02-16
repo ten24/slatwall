@@ -194,7 +194,6 @@ class SWWorkflowTriggers{
                         workflowItemAdded = true;
                         scope.workflow.$$addWorkflowTrigger(scope.workflowTriggers.selectedTrigger);
                     }
-                    console.warn('SAVEEE', scope.workflowTriggers.selectedTrigger);
 					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 					saveWorkflowTriggerPromise.then(function(){
                         //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
@@ -307,7 +306,6 @@ class SWWorkflowTriggers{
                 };
 
                 scope.viewCollection = () =>{
-                    console.warn(scope.workflowTriggers.selectedTrigger.data);
                     if(angular.isDefined(scope.workflowTriggers.selectedTrigger.data.scheduleCollection)){
                         dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
                             entityName: 'Collection',

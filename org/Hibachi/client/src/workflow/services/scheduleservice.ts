@@ -55,7 +55,6 @@ class ScheduleService{
 
         var datesAdded = 0;
         for (var i =0;;i++){
-            console.warn('LOL',daysToRun);
             if(datesAdded >= totalOfPreviews || i >= 500) break;
 
             var timeToadd = (scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;

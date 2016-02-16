@@ -1536,12 +1536,24 @@
 	                                            var thisEntityInstance = this;
 	                                            var metaData = this.metaData;
 	                                            var manyToManyName = '';
+	                                            //if entityInstance is not passed in, clear related object
+	                                            if (angular.isUndefined(entityInstance)) {
+	                                                if (angular.isDefined(thisEntityInstance.data[property.name])) {
+	                                                    delete thisEntityInstance.data[property.name];
+	                                                }
+	                                                for (var i = 0; i <= thisEntityInstance.parents.length; i++) {
+	                                                    if (angular.isDefined(thisEntityInstance.parents[i]) && thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)) {
+	                                                        thisEntityInstance.parents.splice(i, 1);
+	                                                    }
+	                                                }
+	                                                return;
+	                                            }
 	                                            if (property.name === 'parent' + this.metaData.className) {
 	                                                var childName = 'child' + this.metaData.className;
 	                                                manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 	                                            }
 	                                            else {
-	                                                manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
+	                                                manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
 	                                            }
 	                                            if (angular.isUndefined(thisEntityInstance.parents)) {
 	                                                thisEntityInstance.parents = [];
@@ -4440,6 +4452,9 @@
 	        this.clearSearch = function () {
 	            _this.searchText = "";
 	            _this.hideSearch = true;
+	            if (angular.isDefined(_this.addFunction)) {
+	                _this.addFunction()(undefined);
+	            }
 	        };
 	        this.toggleOptions = function () {
 	            if (_this.hideSearch && (!_this.searchText || !_this.searchText.length)) {
@@ -4494,6 +4509,9 @@
 	                _this.addButtonFunction()(_this.searchText);
 	            }
 	        };
+	        this.viewButtonClick = function () {
+	            _this.viewFunction()();
+	        };
 	        this.closeThis = function (clickOutsideArgs) {
 	            _this.hideSearch = true;
 	            if (angular.isDefined(clickOutsideArgs)) {
@@ -4526,6 +4544,9 @@
 	        }
 	        if (angular.isDefined(this.addButtonFunction)) {
 	            this.showAddButton = true;
+	        }
+	        if (angular.isDefined(this.viewFunction)) {
+	            this.showViewButton = true;
 	        }
 	        //init timeoutPromise for link
 	        this._timeoutPromise = this.$timeout(function () { }, 500);
@@ -4568,9 +4589,11 @@
 	            results: "=?",
 	            addFunction: "&?",
 	            addButtonFunction: "&?",
+	            viewFunction: "&?",
 	            validateRequired: "=?",
 	            clickOutsideArguments: "=?",
-	            hideSearch: "=?"
+	            hideSearch: "=?",
+	            disabled: "=?"
 	        };
 	        this.controller = SWTypeaheadSearchController;
 	        this.controllerAs = "swTypeaheadSearch";
@@ -7506,7 +7529,7 @@
 	        };
 	        this.addAlert = function (alert) {
 	            _this.alerts.push(alert);
-	            _this.$timeout(function (alert) {
+	            _this.$timeout(function () {
 	                _this.removeAlert(alert);
 	            }, 3500);
 	        };
@@ -7526,11 +7549,9 @@
 	        };
 	        this.formatMessagesToAlerts = function (messages) {
 	            var alerts = [];
-	            if (messages) {
+	            if (messages && messages.length) {
 	                for (var message in messages) {
-	                    var alert = new alert_1.Alert();
-	                    alert.msg = messages[message].message;
-	                    alert.type = messages[message].messageType;
+	                    var alert = new alert_1.Alert(messages[message].message, messages[message].messageType);
 	                    alerts.push(alert);
 	                    if (alert.type === 'success' || alert.type === 'error') {
 	                        _this.$timeout(function () {
@@ -8552,11 +8573,14 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var CreateCollection = (function () {
 	    //@ngInject
-	    function CreateCollection($scope, $log, $timeout, $hibachi, collectionService, formService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService, rbkeyService) {
+	    function CreateCollection($scope, $log, $timeout, $hibachi, collectionService, metadataService, paginationService, dialogService, observerService, selectionService, collectionConfigService, rbkeyService, $window) {
+	        $window.scrollTo(0, 0);
 	        $scope.params = dialogService.getCurrentDialog().params;
+	        $scope.readOnly = angular.isDefined($scope.params.readOnly) && $scope.params.readOnly == true;
 	        $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
-	        $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
-	        if ($scope.params.entityName == 'Type' && !angular.isDefined($scope.params.entityId)) {
+	        var hibachiConfig = $hibachi.getConfig();
+	        if ($scope.params.entityName == 'Type' && angular.isUndefined($scope.params.entityId) && angular.isDefined($scope.params.parentEntity)) {
+	            $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
 	            var systemCode = $scope.params.parentEntity.charAt(0).toLowerCase() + $scope.params.parentEntity.slice(1) + 'Type';
 	            $scope.myCollection.addFilter('parentType.systemCode', systemCode);
 	        }
@@ -8585,11 +8609,6 @@
 	            $timeout(function () {
 	                $scope.newCollection.forms['form.createCollection'].$setDirty();
 	            });
-	        }
-	        if (typeof String.prototype.startsWith != 'function') {
-	            String.prototype.startsWith = function (str) {
-	                return this.slice(0, str.length) == str;
-	            };
 	        }
 	        $scope.saveCollection = function () {
 	            $scope.myCollection.loadJson($scope.collectionConfig);
@@ -8732,8 +8751,9 @@
 	                ];
 	            }
 	            $scope.newCollection.data.collectionConfig = $scope.collectionConfig;
-	            if (!$scope.newCollection.data.collectionConfig.baseEntityName.startsWith(hibachiConfig.applicationKey))
+	            if ($scope.newCollection.data.collectionConfig.baseEntityName.lastIndexOf(hibachiConfig.applicationKey, 0) !== 0) {
 	                $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
+	            }
 	            $scope.newCollection.$$save().then(function () {
 	                observerService.notify('addCollection', $scope.newCollection.data);
 	                selectionService.clearSelection('collectionSelection');
@@ -10948,7 +10968,7 @@
 	                    scope.cleanSelection();
 	                };
 	                scope.viewSelectedCollection = function () {
-	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components//criteriacreatecollection', {
+	                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
 	                        entityName: 'collection',
 	                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
 	                        parentEntity: scope.collectionConfig.baseEntityName
@@ -12570,7 +12590,7 @@
 	 * validate based on that context as defined in the validation properties object.
 	 */
 	var SWInput = (function () {
-	    function SWInput($log, $compile, $hibachi, utilityService) {
+	    function SWInput($log, $compile, $hibachi, utilityService, rbkeyService) {
 	        var getValidationDirectives = function (propertyDisplay) {
 	            var spaceDelimitedList = '';
 	            var name = propertyDisplay.property;
@@ -12643,12 +12663,18 @@
 	                }
 	            }
 	            var appConfig = $hibachi.getConfig();
+	            console.warn('propertyDisplay', propertyDisplay);
+	            var placeholder = '';
+	            if (angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey)) {
+	                placeholder = rbkeyService.getRBKey(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey);
+	            }
 	            if (propertyDisplay.fieldType === 'text') {
 	                template = '<input type="text" class="form-control" ' +
 	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
 	                    'ng-disabled="!propertyDisplay.editable" ' +
 	                    'ng-show="propertyDisplay.editing" ' +
 	                    'name="' + propertyDisplay.property + '" ' +
+	                    'placeholder="' + placeholder + '" ' +
 	                    validations + currency +
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
@@ -12659,6 +12685,7 @@
 	                    'ng-disabled="!propertyDisplay.editable" ' +
 	                    'ng-show="propertyDisplay.editing" ' +
 	                    'name="' + propertyDisplay.property + '" ' +
+	                    'placeholder="' + placeholder + '" ' +
 	                    validations +
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
@@ -12669,6 +12696,7 @@
 	                    'ng-disabled="!propertyDisplay.editable" ' +
 	                    'ng-show="propertyDisplay.editing" ' +
 	                    'name="' + propertyDisplay.property + '" ' +
+	                    'placeholder="' + placeholder + '" ' +
 	                    validations +
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
@@ -12680,28 +12708,31 @@
 	                    'ng-disabled="!propertyDisplay.editable" ' +
 	                    'ng-show="propertyDisplay.editing" ' +
 	                    'name="' + propertyDisplay.property + '" ' +
+	                    'placeholder="' + placeholder + '" ' +
 	                    validations +
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
 	            }
 	            else if (propertyDisplay.fieldType === 'date') {
 	                template = '<input type="text" class="form-control" ' +
-	                    'datetime-picker data-date-only="true" date-format="' + appConfig.dateFormat + '" ' +
+	                    'datetime-picker data-date-only="true" future-only date-format="' + appConfig.dateFormat + '" ' +
 	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
 	                    'ng-disabled="!propertyDisplay.editable" ' +
 	                    'ng-show="propertyDisplay.editing" ' +
 	                    'name="' + propertyDisplay.property + '" ' +
+	                    'placeholder="' + placeholder + '" ' +
 	                    validations +
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
 	            }
 	            else if (propertyDisplay.fieldType === 'dateTime') {
 	                template = '<input type="text" class="form-control" ' +
-	                    'datetime-picker ' +
+	                    'datetime-picker future-only ' +
 	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
 	                    'ng-disabled="!propertyDisplay.editable" ' +
 	                    'ng-show="propertyDisplay.editing" ' +
 	                    'name="' + propertyDisplay.property + '" ' +
+	                    'placeholder="' + placeholder + '" ' +
 	                    validations +
 	                    'id="swinput' + utilityService.createID(26) + '"' +
 	                    ' />';
@@ -12724,14 +12755,15 @@
 	        };
 	    }
 	    SWInput.Factory = function () {
-	        var directive = function ($log, $compile, $hibachi, utilityService) {
-	            return new SWInput($log, $compile, $hibachi, utilityService);
+	        var directive = function ($log, $compile, $hibachi, utilityService, rbkeyService) {
+	            return new SWInput($log, $compile, $hibachi, utilityService, rbkeyService);
 	        };
 	        directive.$inject = [
 	            '$log',
 	            '$compile',
 	            '$hibachi',
-	            'utilityService'
+	            'utilityService',
+	            'rbkeyService'
 	        ];
 	        return directive;
 	    };
@@ -13543,25 +13575,24 @@
 	                propertyDisplay: "="
 	            },
 	            link: function (scope, element, attr, formController) {
-	                var selectType;
 	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
-	                    selectType = 'object';
+	                    scope.selectType = 'object';
 	                    $log.debug('selectType:object');
 	                }
 	                else {
-	                    selectType = 'string';
+	                    scope.selectType = 'string';
 	                    $log.debug('selectType:string');
 	                }
 	                scope.formFieldChanged = function (option) {
 	                    $log.debug('formfieldchanged');
 	                    $log.debug(option);
-	                    if (selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
+	                    if (scope.selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
 	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
 	                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
 	                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
 	                        }
 	                    }
-	                    else if (selectType === 'string') {
+	                    else if (scope.selectType === 'string') {
 	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
 	                    }
@@ -13572,7 +13603,7 @@
 	                        var optionsPromise = $hibachi.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
 	                        optionsPromise.then(function (value) {
 	                            scope.propertyDisplay.options = value.data;
-	                            if (selectType === 'object') {
+	                            if (scope.selectType === 'object') {
 	                                if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
 	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
 	                                }
@@ -13612,7 +13643,7 @@
 	                                    }
 	                                }
 	                            }
-	                            else if (selectType === 'string') {
+	                            else if (scope.selectType === 'string') {
 	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null) {
 	                                    for (var i in scope.propertyDisplay.options) {
 	                                        if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
@@ -13633,12 +13664,6 @@
 	                    scope.getOptions();
 	                }
 	                //formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
-	                if (selectType === 'object') {
-	                    formController[scope.propertyDisplay.property + 'ID'].$dirty = scope.propertyDisplay.isDirty;
-	                }
-	                else if (selectType === 'string') {
-	                    formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-	                }
 	            }
 	        }; //<--end return
 	    }
@@ -15243,24 +15268,36 @@
 	        this.buildSchedulePreview = function (scheduleObject, totalOfPreviews) {
 	            if (totalOfPreviews === void 0) { totalOfPreviews = 10; }
 	            _this.clearSchedulePreview();
+	            console.log(scheduleObject);
 	            var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
 	            var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
 	            var now = new Date();
+	            var startPoint = new Date();
+	            startPoint.setHours(startTime.getHours());
+	            startPoint.setMinutes(startTime.getMinutes());
+	            startPoint.setSeconds(startTime.getSeconds());
 	            var daysToRun = [];
 	            if (scheduleObject.recuringType == 'weekly') {
-	                daysToRun = scheduleObject.daysOfWeekToRun.split(',');
-	                if (!daysToRun.length)
-	                    return;
+	                daysToRun = scheduleObject.daysOfWeekToRun.toString().split(',');
+	                if (!daysToRun.length || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
+	                    return _this.schedulePreview;
+	                }
 	            }
 	            if (scheduleObject.recuringType == 'monthly') {
-	                daysToRun = scheduleObject.daysOfMonthToRun.split(',');
-	                if (!daysToRun.length)
-	                    return;
+	                daysToRun = scheduleObject.daysOfMonthToRun.toString().split(',');
+	                if (!daysToRun.length || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
+	                    return _this.schedulePreview;
+	                }
 	            }
 	            var datesAdded = 0;
 	            for (var i = 0;; i++) {
+	                console.warn('LOL', daysToRun);
+	                if (datesAdded >= totalOfPreviews || i >= 500)
+	                    break;
 	                var timeToadd = (scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
-	                var currentDatetime = new Date(now.getTime() + timeToadd);
+	                var currentDatetime = new Date(startPoint.getTime() + timeToadd);
+	                if (currentDatetime < now)
+	                    continue;
 	                if (scheduleObject.recuringType == 'weekly') {
 	                    if (daysToRun.indexOf((currentDatetime.getDay() + 1).toString()) == -1)
 	                        continue;
@@ -15270,13 +15307,8 @@
 	                        continue;
 	                }
 	                if (!endTime) {
-	                    currentDatetime.setHours(startTime.getHours());
-	                    currentDatetime.setMinutes(startTime.getMinutes());
-	                    currentDatetime.setSeconds(startTime.getSeconds());
-	                    if (currentDatetime > now) {
-	                        _this.addSchedulePreviewItem(currentDatetime);
-	                        datesAdded++;
-	                    }
+	                    _this.addSchedulePreviewItem(currentDatetime);
+	                    datesAdded++;
 	                }
 	                else {
 	                    if (_this.utilityService.minutesOfDay(startTime) <= _this.utilityService.minutesOfDay(currentDatetime)
@@ -15285,8 +15317,6 @@
 	                        datesAdded++;
 	                    }
 	                }
-	                if (datesAdded >= totalOfPreviews || i >= 500)
-	                    break;
 	            }
 	            return _this.schedulePreview;
 	        };
@@ -16098,7 +16128,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTrigger = (function () {
-	    function SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http) {
+	    function SWWorkflowTrigger($hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, $http) {
 	        return {
 	            restrict: 'A',
 	            replace: true,
@@ -16130,15 +16160,15 @@
 	                        scope.workflowTriggers.selectedTrigger = workflowTrigger;
 	                    });
 	                };
-	                var executingTrigger = false;
+	                scope.executingTrigger = false;
 	                scope.executeWorkflowTrigger = function (workflowTrigger) {
-	                    if (executingTrigger)
+	                    if (scope.executingTrigger)
 	                        return;
-	                    executingTrigger = true;
+	                    scope.executingTrigger = true;
 	                    var appConfig = $hibachi.getConfig();
 	                    var urlString = appConfig.baseURL + '/index.cfm/?' + appConfig.action + '=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID=' + workflowTrigger.data.workflowTriggerID;
 	                    $http.get(urlString).finally(function () {
-	                        executingTrigger = false;
+	                        scope.executingTrigger = false;
 	                    });
 	                };
 	                /**
@@ -16163,16 +16193,15 @@
 	        };
 	    }
 	    SWWorkflowTrigger.Factory = function () {
-	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http) {
-	            return new SWWorkflowTrigger($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder, collectionConfigService, $http);
+	        var directive = function ($hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, $http) {
+	            return new SWWorkflowTrigger($hibachi, alertService, metadataService, workflowPartialsPath, hibachiPathBuilder, $http);
 	        };
 	        directive.$inject = [
-	            '$log',
 	            '$hibachi',
+	            'alertService',
 	            'metadataService',
 	            'workflowPartialsPath',
 	            'hibachiPathBuilder',
-	            'collectionConfigService',
 	            '$http'
 	        ];
 	        return directive;
@@ -16189,7 +16218,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTriggers = (function () {
-	    function SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService) {
+	    function SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -16197,12 +16226,14 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
 	            link: function (scope, element, attrs, formController) {
+	                var workflowItemAdded = false;
 	                scope.$watch('workflowTriggers.selectedTrigger', function (newValue, oldValue) {
 	                    if (newValue !== undefined && newValue !== oldValue) {
 	                        console.warn('Ooh watch me, watch me', newValue);
 	                        if (newValue.data.triggerType == 'Schedule') {
 	                            if (angular.isDefined(newValue.data.schedule)) {
 	                                scope.selectedSchedule = newValue.data.schedule.data.scheduleName;
+	                                scope.selectSchedule(newValue.data.schedule.data);
 	                            }
 	                            if (angular.isDefined(newValue.data.scheduleCollection)) {
 	                                scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
@@ -16315,9 +16346,11 @@
 	                 * Saves the workflow triggers.
 	                 */
 	                scope.saveWorkflowTrigger = function (context) {
-	                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
+	                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted() && !workflowItemAdded) {
+	                        workflowItemAdded = true;
 	                        scope.workflow.$$addWorkflowTrigger(scope.workflowTriggers.selectedTrigger);
 	                    }
+	                    console.warn('SAVEEE', scope.workflowTriggers.selectedTrigger);
 	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 	                    saveWorkflowTriggerPromise.then(function () {
 	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
@@ -16394,6 +16427,8 @@
 	                        scope.scheduleEntity.data.daysOfMonthToRun = scope.daysOfMonth.filter(Number).join();
 	                    }
 	                    scope.scheduleEntity.$$save().then(function (res) {
+	                        scope.selectedSchedule = angular.copy(scope.scheduleEntity.data.scheduleName);
+	                        scope.selectSchedule(angular.copy(scope.scheduleEntity.data));
 	                        formService.resetForm(scope.scheduleEntity.forms['scheduleForm']);
 	                        scope.createSchedule = false;
 	                    }, function () {
@@ -16401,6 +16436,10 @@
 	                    });
 	                };
 	                scope.selectCollection = function (item) {
+	                    if (item === undefined) {
+	                        scope.workflowTriggers.selectedTrigger.$$setScheduleCollection();
+	                        return;
+	                    }
 	                    if (angular.isDefined(scope.workflowTriggers.selectedTrigger.data.scheduleCollection)) {
 	                        scope.workflowTriggers.selectedTrigger.data.scheduleCollection.data.collectionID = item.collectionID;
 	                        scope.workflowTriggers.selectedTrigger.data.scheduleCollection.data.collectionName = item.collectionName;
@@ -16412,8 +16451,22 @@
 	                        scope.workflowTriggers.selectedTrigger.$$setScheduleCollection(_collection);
 	                    }
 	                };
+	                scope.viewCollection = function () {
+	                    console.warn(scope.workflowTriggers.selectedTrigger.data);
+	                    if (angular.isDefined(scope.workflowTriggers.selectedTrigger.data.scheduleCollection)) {
+	                        dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
+	                            entityName: 'Collection',
+	                            entityId: scope.workflowTriggers.selectedTrigger.data.scheduleCollection.data.collectionID,
+	                            readOnly: true
+	                        });
+	                    }
+	                };
 	                scope.selectSchedule = function (item) {
-	                    console.warn(item);
+	                    if (item === undefined) {
+	                        scope.schedulePreview = {};
+	                        scope.workflowTriggers.selectedTrigger.$$setSchedule();
+	                        return;
+	                    }
 	                    scope.schedulePreview = scheduleService.buildSchedulePreview(item, 6);
 	                    if (angular.isDefined(scope.workflowTriggers.selectedTrigger.data.schedule)) {
 	                        scope.workflowTriggers.selectedTrigger.data.schedule.data.scheduleID = item.scheduleID;
@@ -16430,19 +16483,18 @@
 	        };
 	    }
 	    SWWorkflowTriggers.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService) {
-	            return new SWWorkflowTriggers($log, $location, $hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService);
+	        var directive = function ($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService) {
+	            return new SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService);
 	        };
 	        directive.$inject = [
-	            '$log',
-	            '$location',
 	            '$hibachi',
 	            'workflowPartialsPath',
 	            'formService',
 	            'observerService',
 	            'hibachiPathBuilder',
 	            'collectionConfigService',
-	            'scheduleService'
+	            'scheduleService',
+	            'dialogService'
 	        ];
 	        return directive;
 	    };
