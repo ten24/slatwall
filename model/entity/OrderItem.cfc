@@ -147,42 +147,77 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
 
+		// If the sku is not active, then the max quantity is 0 and no other logic is needed
 		if(getSku().getActiveFlag() && getSku().getProduct().getActiveFlag()) {
+			
+			// Start with the skus maximum order quantity
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 
+			// If this orderItem has trackInventory turned on, and backorder turned off, then we need to take QATS into account
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
+				
+				// If a stock is defined we that QATS from the stock
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
-					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
-						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
-					}
+					
+				// If a stock is NOT defined we that QATS from the sku
 				} else if(getSKU().getQuantity('QATS') <= maxQTY) {
 					maxQTY = getSku().getQuantity('QATS');
-					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
-						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
-					}
+				}
+				
+				// If this order was already placed, we add back the quantity in the database to the QATS, because their previous reservation should be added to the QATS
+				if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
+					maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 				}
 			}
+			
+			// If there are other items on this order with the same sku, then we need to take them into account.
+			// This can not be done with ormExequteQuery() or sql because new items for the same sku may be added
+			// as part of this request and not yet IN the database
+			for(var orderItem in getOrder().getOrderItems()) {
+				
+				// We check that the orderItem we are looping on ISN'T this instance, and the sku does match
+				if(orderItem != this && orderItem.getSku() == this.getSku()) {
+					
+					// When that situation is true we further decrease the maxQTY
+					maxQTY -= orderItem.getQuantity();
+				}
+			}
+			
 		}
 
 		return maxQTY;
 	}
+	
+	public numeric function getMinimumOrderQuantity() {
+		// By Default we start this as a minimum of 1
+		var minQTY = 1;
+
+		// Next we set the value eq to the skuOrderMinimumQuantity setting for the sku
+		minQTY = getSku().setting('skuOrderMinimumQuantity');
+		
+		// If there are other items on this order with the same sku, then we need to take them into account.
+		// This can not be done with ormExequteQuery() or sql because new items for the same sku may be added
+		// as part of this request and not yet IN the database
+		for(var orderItem in getOrder().getOrderItems()) {
+			// We check that the orderItem we are looping on ISN'T this instance, and the sku does match
+			if(orderItem != this && orderItem.getSku() == this.getSku()) {
+				
+				// When that situation is true we further decrease the minQTY because less is needed
+				minQTY -= orderItem.getQuantity();
+			}
+		}
+
+		return minQTY;
+	}
 
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		return getService('OrderService').hasQuantityWithinMaxOrderQuantity(this);
+		return getQuantity() <= getMaximumOrderQuantity();
 	}
 
 	public boolean function hasQuantityWithinMinOrderQuantity() {
-		return getService('OrderService').hasQuantityWithinMinOrderQuantity(this);
+		return getQuantity() <= getMinimumOrderQuantity();
 	}
-
-	public numeric function getQuantitySumOnOrder(){
-		return getService('OrderService').getOrderItemQuantitySumOnOrder(this);
-	}
-
-    public numeric function getOrderItemCountOnOrder(){
-        return getService('OrderService').getOrderItemCountOnOrder(this);
-    }
 
 	public string function getOrderStatusCode(){
 		return getOrder().getStatusCode();

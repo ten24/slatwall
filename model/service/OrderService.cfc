@@ -1218,22 +1218,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return newOrderItem;
 	}
 
-	public boolean function hasQuantityWithinMaxOrderQuantity(any orderItem){
-		return getDao('OrderDao').hasQuantityWithinMaxOrderQuantity(arguments.orderItem);
-	}
-
-	public boolean function hasQuantityWithinMinOrderQuantity(any orderItem) {
-		return getDao('OrderDao').hasQuantityWithinMinOrderQuantity(arguments.orderItem);
-	}
-
-	public boolean function getOrderItemQuantitySumOnOrder(required any orderItem){
-		return getDao('OrderDao').getOrderItemQuantitySumOnOrder(arguments.orderItem);
-	}
-
-    public boolean function getOrderItemCountOnOrder(required any orderItem){
-        return getDao('OrderDao').getOrderItemCountOnOrder(arguments.orderItem);
-    }
-
 	public any function processOrder_forceItemQuantityUpdate(required any order) {
 		var itemFound = false;
 
