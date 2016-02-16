@@ -103,7 +103,7 @@ Notes:
 	
 	<cfset thisTag.columnCount = 5 />
 	<cfoutput>
-		<div class="col-xs-12 table-responsive">	
+		<div class="table-responsive">	
 			<table class="table table-bordered table-hover">
 				<tbody>
 					<cfif arraylen(thisTag.auditArray)>

@@ -61,6 +61,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID"  hb_cascadeCalculate="true";
 	
 	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="siteID" cascade="all-delete-orphan" inverse="true";
 	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" cascade="all-delete-orphan" fkcolumn="siteID" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many - owner)
@@ -141,6 +142,14 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 		structDelete(variables, "app");
 	}
 	
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setSite( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeSite( this );    
+	}
+
 	// Contents (one-to-many)
 	public void function addContent(required any content) {
 		arguments.content.setSite( this );
