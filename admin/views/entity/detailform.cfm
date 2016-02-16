@@ -60,6 +60,8 @@ Notes:
 
 	<hb:HibachiEntityDetailGroup object="#rc.form#">
 		<hb:HibachiEntityDetailItem view="admin:entity/formtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/formtabs/formquestions" />
+		<hb:HibachiEntityDetailItem view="admin:entity/formtabs/formresponses" />
 	</hb:HibachiEntityDetailGroup>
 
 </hb:HibachiEntityDetailForm>
