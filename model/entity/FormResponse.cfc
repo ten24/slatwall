@@ -46,22 +46,18 @@
 Notes:
 
 */
-component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="SwEmailTemplate" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="templateService" hb_permission="this" {
+component displayname="FormResponse" entityname="SlatwallFormResponse" table="SwFormResponse" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="hibachiService" {
 
 	// Persistent Properties
-	property name="emailTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="emailTemplateName" ormtype="string";
-	property name="emailTemplateObject" ormtype="string" hb_formFieldType="select";
-	property name="emailTemplateFile" ormtype="string" hb_formFieldType="select";
-	property name="emailBodyHTML" ormtype="string" length="4000";
-	property name="emailBodyText" ormtype="string" length="4000";
-	property name="logEmailFlag" ormtype="boolean";
+	property name="formResponseID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+
 
 	// Related Object Properties (many-to-one)
+	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-	property name="eventTriggers" singularname="eventTrigger" cfc="EventTrigger" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
-	property name="forms" singularname="form" cfc="Form" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="formResponseID" cascade="all-delete-orphan";
+
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
@@ -73,67 +69,62 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non-Persistent Properties
-	property name="emailTemplateObjectOptions" persistent="false";
-	property name="emailTemplateFileOptions" persistent="false";
-
 
 	// ============ START: Non-Persistent Property Methods =================
-
-	public array function getEmailTemplateObjectOptions() {
-		if(!structKeyExists(variables, "emailTemplateObjectOptions")) {
-			var emd = getService("hibachiService").getEntitiesMetaData();
-			var enArr = listToArray(structKeyList(emd));
-			arraySort(enArr,"text");
-			variables.emailTemplateObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
-			for(var i=1; i<=arrayLen(enArr); i++) {
-				arrayAppend(variables.emailTemplateObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
-			}
-		}
-		return variables.emailTemplateObjectOptions;
-	}
-
-	public array function getEmailTemplateFileOptions() {
-		if(!structKeyExists(variables, "emailTemplateFileOptions")) {
-			variables.emailTemplateFileOptions = getService("templateService").getTemplateFileOptions( templateType="email", objectName=getEmailTemplateObject() );
-			arrayPrepend(variables.emailTemplateFileOptions, {name=getHibachiScope().rbKey('define.none'), value=''});
-		}
-		return variables.emailTemplateFileOptions;
-	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Attributes (one-to-many)
-	public void function addForm(required any form) {
-		arguments.form.setEmailTemplate( this );
+	/// Form (many-to-one)
+	public void function setForm(required any form) {
+		variables.form = arguments.form;
+		if(isNew() or !arguments.form.hasFormResponse( this )) {
+			arrayAppend(arguments.form.getFormResponses(), this);
+		}
 	}
-	public void function removeForm(required any form) {
-		arguments.form.removeEmailTemplate( this );
+	public void function removeForm(any form) {
+		if(!structKeyExists(arguments, "form")) {
+			arguments.form = variables.form;
+		}
+		var index = arrayFind(arguments.form.getFormResponses(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.form.getFormResponses(), index);
+		}
+		structDelete(variables, "formResponse");
+	}
+
+	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setFormResponse( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeFormResponse( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
+	// =============== START: Custom Validation Methods ====================
+
+	// ===============  END: Custom Validation Methods =====================
+
+	// =============== START: Custom Formatting Methods ====================
+
+	// ===============  END: Custom Formatting Methods =====================
+
+	// ============== START: Overridden Implicet Getters ===================
+
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
-
-	public any function getEmailBodyHTML() {
-		if(!structKeyExists(variables, "emailBodyHTML")) {
-			variables.emailBodyHTML = "";
-		}
-		return variables.emailBodyHTML;
-	}
-
-	public any function getEmailBodyText() {
-		if(!structKeyExists(variables, "emailBodyText")) {
-			variables.emailBodyText = "";
-		}
-		return variables.emailBodyText;
-	}
 
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
 
 	// ===================  END:  ORM Event Hooks  =========================
+
+	// ================== START: Deprecated Methods ========================
+
+	// ==================  END:  Deprecated Methods ========================
 }
