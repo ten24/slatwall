@@ -428,7 +428,7 @@ component extends="FW1.framework" {
 					applicationInitData["baseURL"] = 					variables.framework.baseURL;
 					applicationInitData["action"] = 					variables.framework.action;
 					applicationInitData["hibachiConfig"] =				variables.framework.hibachi;
-					applicationInitData["environment"] =				variables.framework.environment;
+					applicationInitData["lineBreakStyle"] =				variables.framework.hibachi.lineBreakStyle;
 					
 					// Log the setup start with values
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Application setup started.");
