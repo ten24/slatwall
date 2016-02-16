@@ -1,3 +1,3 @@
 <cfset variables.framework.applicationKey="Slatwall" />
 <cfset variables.framework.action="slatAction" />
-<cfset variables.framework.hibachi.lineBreakStyle="Windows" />
+<cfset variables.framework.hibachi.lineBreakStyle="any" />
