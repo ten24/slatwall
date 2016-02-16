@@ -62,6 +62,9 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID" notnull="true";
 	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
 
+	// Related Object Properties (many-to-one)
+	property name="formResponse" cfc="FormResponse" fieldtype="many-to-one" fkcolumn="formResponseID" cascade="all";
+
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountAddress" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
@@ -133,7 +136,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 		return "";
 	}
-	
+
 	public string function getPropertyTitle(){
 		return getAttribute().getAttributeSet().getAttributeSetName() & ': ' & getAttribute().getAttributeName();
 	}
@@ -181,6 +184,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.attribute.getAttributeValues(), index);
 		}
 		structDelete(variables, "attribute");
+	}
+
+	/// Form Response (many-to-one)
+	public void function setFormResponse(required any formResponse) {
+		variables.formResponse = arguments.formResponse;
+		if(isNew() or !arguments.formResponse.hasAttributeValue( this )) {
+			arrayAppend(arguments.formResponse.getAttributeValues(), this);
+		}
+	}
+	public void function removeFormResponse(any formResponse) {
+		if(!structKeyExists(arguments, "formResponse")) {
+			arguments.formResponse = variables.formResponse;
+		}
+		var index = arrayFind(arguments.formResponse.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.formResponse.getAttributeValues(), index);
+		}
+		structDelete(variables, "formResponse");
 	}
 
 	// Account (many-to-one)
@@ -434,7 +455,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "orderDelivery");
 	}
-	
+
 	// Content (many-to-one)
 	public void function setContent(required any content){
 		variables.content = arguments.content;
@@ -451,7 +472,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.content.getAttributeValues(),index);
 		}
 		structDelete(variables,'content');
-	}	
+	}
 
 	// Option Group (many-to-one)
 	public void function setOptionGroup(required any optionGroup) {
@@ -726,7 +747,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 	// ================== START: Overridden Methods ========================
 
-	
+
 	public boolean function regexMatches(){
 		if(isNull(getAttribute().getValidationRegex())){
 			return true;
