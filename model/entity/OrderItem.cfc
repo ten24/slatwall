@@ -168,20 +168,31 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return maxQTY;
 	}
 
-	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		return getService('OrderService').hasQuantityWithinMaxOrderQuantity(this);
-	}
 
-	public boolean function hasQuantityWithinMinOrderQuantity() {
-		return getService('OrderService').hasQuantityWithinMinOrderQuantity(this);
-	}
+    public boolean function hasQuantityWithinMaxOrderQuantity() {
+        if(getOrderItemType().getSystemCode() == 'oitSale') {
+        	var quantity = 0;
+        	for (var orderItem in getOrder().getOrderItems()){
+	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+	                quantity += orderItem.getQuantity();
+	            }
+	        }
+            return quantity <= getMaximumOrderQuantity();
+        }
+        return true;
+    }
 
-	public numeric function getQuantitySumOnOrder(){
-		return getService('OrderService').getOrderItemQuantitySumOnOrder(this);
-	}
-
-    public numeric function getOrderItemCountOnOrder(){
-        return getService('OrderService').getOrderItemCountOnOrder(this);
+    public boolean function hasQuantityWithinMinOrderQuantity() {
+        if(getOrderItemType().getSystemCode() == 'oitSale') {
+        	var quantity = 0;
+        	for (var orderItem in getOrder().getOrderItems()){
+	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+	                quantity += orderItem.getQuantity();
+	            }
+	        }
+            return quantity >= getSku().setting('skuOrderMinimumQuantity');
+        }
+        return true;
     }
 
 	public string function getOrderStatusCode(){
