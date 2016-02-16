@@ -14085,7 +14085,6 @@
 	        var _this = this;
 	        this.$filter = $filter;
 	        this.$onInit = function () {
-	            console.log('setupFormController!!!!!!', _this.form);
 	            if (!angular.isDefined(_this.object)) {
 	                _this.object = _this.form.$$swFormInfo.object;
 	            }
@@ -14099,7 +14098,6 @@
 	                _this.title = _this.object.metaData.$$getPropertyTitle(_this.property);
 	            }
 	        };
-	        console.warn('SWPropertyDisplayController INIT', this.form);
 	        this.errors = {};
 	        if (angular.isUndefined(this.editing)) {
 	            this.editing = false;
@@ -14156,7 +14154,6 @@
 	        this.controller = SWPropertyDisplayController;
 	        this.controllerAs = "swPropertyDisplay";
 	        this.link = function ($scope, element, attrs, formController) {
-	            console.warn('SWPropertyDisplay LINK ', $scope['swPropertyDisplay']);
 	        };
 	        console.warn(this);
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";

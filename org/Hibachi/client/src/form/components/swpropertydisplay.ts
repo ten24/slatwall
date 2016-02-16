@@ -22,7 +22,6 @@ class SWPropertyDisplayController {
     constructor(
         public $filter
     ){
-        console.warn('SWPropertyDisplayController INIT', this.form);
         this.errors = {};
 
         if(angular.isUndefined(this.editing)){
@@ -55,8 +54,6 @@ class SWPropertyDisplayController {
     }
 
     public $onInit=()=>{
-        console.log('setupFormController!!!!!!', this.form);
-
         if(!angular.isDefined(this.object)){
             this.object = this.form.$$swFormInfo.object;
         }
@@ -113,7 +110,6 @@ class SWPropertyDisplay implements ng.IDirective{
     
     
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
-        console.warn('SWPropertyDisplay LINK ', $scope['swPropertyDisplay']);
     };
 
     public static Factory(){
