@@ -47,46 +47,40 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
-
 	<div class="row s-image-uploader">
-
-			<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
-				<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
-
-				<cfif fileExists(expandPath(thisImagePath))>
-					<div class="col-xs-3">
-						<div class="thumbnail">
-							<div class="s-image">
-								<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath)#" target="_blank" alt="#imageFile#">
-									#$.slatwall.getResizedImage(imagePath=thisImagePath, width=210, height=210)#
-									<span class="s-zoom"><i class="fa fa-search"></i></span>
-								</a>
-							</div>
-							<div class="s-caption">
-								<h4 title="#imageFile#">#imageFile#</h4>
-							</div>
-							<div class="s-controlls">
-								<div class="btn-group btn-group-justified" role="group">
-									<div class="btn-group" role="group">
-										<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
-									</div>
-									<div class="btn-group" role="group">
-										<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
-									</div>
+		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
+			<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
+			<cfif fileExists(expandPath(thisImagePath))>
+				<div class="col-xs-2">
+					<div class="thumbnail">
+						<div class="s-image">
+							<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath)#" target="_blank" alt="#imageFile#">
+								#$.slatwall.getResizedImage(imagePath=thisImagePath, width=210, height=210)#
+								<span class="s-zoom"><i class="fa fa-search"></i></span>
+							</a>
+						</div>
+						<!--- <div class="s-caption">
+							<h4 title="#imageFile#">#imageFile#</h4>
+						</div> --->
+						<div class="s-controlls">
+							<div class="btn-group btn-group-justified" role="group">
+								<div class="btn-group" role="group">
+									<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
+								</div>
+								<div class="btn-group" role="group">
+									<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
 								</div>
 							</div>
 						</div>
-					</div> 
-				<cfelse>
-					<div class="alert alert-info deafult-margin" role="alert" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
-					<div class="col-xs-3">
-						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-primary" icon="plus" iconOnly="false"  modal="true" />
 					</div>
-				</cfif>
-			</cfloop>
-
-
+				</div> 
+			<cfelse>
+				<div class="col-xs-2 s-upload-image s-new-image">
+					<div class="thumbnail">
+						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" icon="picture" iconOnly="false"  modal="true" />
+					</div>
+				</div>
+			</cfif>
+		</cfloop>
 	</div>
-
-
 </cfoutput>

@@ -5082,6 +5082,7 @@
 	                                pageRecord.dataparentID = _this.recordID;
 	                                pageRecord.depth = _this.recordDepth || 0;
 	                                pageRecord.depth++;
+	                                //push the children into the listing display
 	                                _this.children.push(pageRecord);
 	                                _this.records.splice(_this.recordIndex + 1, 0, pageRecord);
 	                            });
@@ -5091,6 +5092,27 @@
 	                }
 	                angular.forEach(_this.children, function (child) {
 	                    child.dataIsVisible = _this.childrenOpen;
+	                    var entityPrimaryID = _this.entity.$$getIDName();
+	                    var idsToCheck = [];
+	                    idsToCheck.push(child[entityPrimaryID]);
+	                    //close all children of the child if we are closing
+	                    var childrenTraversed = false;
+	                    var recordLength = _this.records.length;
+	                    while (!childrenTraversed && idsToCheck.length > 0) {
+	                        var found = false;
+	                        var idToCheck = idsToCheck.pop();
+	                        for (var i = 0; i < recordLength; i++) {
+	                            var record = _this.records[i];
+	                            if (record['dataparentID'] == idToCheck) {
+	                                idsToCheck.push(record[entityPrimaryID]);
+	                                record.dataIsVisible = _this.childrenOpen;
+	                                found = true;
+	                            }
+	                        }
+	                        if (!found) {
+	                            childrenTraversed = true;
+	                        }
+	                    }
 	                });
 	            });
 	        };
@@ -5098,6 +5120,7 @@
 	        this.$hibachi = $hibachi;
 	        this.utilityService = utilityService;
 	        this.collectionConfigService = collectionConfigService;
+	        this.recordID = this.parentId; //this is what parent is initalized to in the listing display
 	    }
 	    SWExpandableRecordController.$inject = ['$timeout', 'utilityService', '$hibachi', 'collectionConfigService'];
 	    return SWExpandableRecordController;
@@ -5135,13 +5158,18 @@
 	                    var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
 	                    if (scope.swExpandableRecord.multiselectIdPaths && scope.swExpandableRecord.multiselectIdPaths.length) {
 	                        var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
-	                        angular.forEach(multiselectIdPathsArray, function (multiselectIdPath) {
-	                            var position = _this.utilityService.listFind(multiselectIdPath, id, '/');
-	                            var multiselectPathLength = multiselectIdPath.split('/').length;
-	                            if (position !== -1 && position < multiselectPathLength - 1) {
-	                                scope.swExpandableRecord.toggleChild();
-	                            }
-	                        });
+	                        if (scope.swExpandableRecord.childrenLoaded) {
+	                            angular.forEach(multiselectIdPathsArray, function (multiselectIdPath) {
+	                                var position = _this.utilityService.listFind(multiselectIdPath, id, '/');
+	                                var multiselectPathLength = multiselectIdPath.split('/').length;
+	                                if (position !== -1 && position < multiselectPathLength - 1) {
+	                                    scope.swExpandableRecord.toggleChild();
+	                                }
+	                            });
+	                        }
+	                        else {
+	                            scope.swExpandableRecord.toggleChild();
+	                        }
 	                    }
 	                }
 	                _this.$templateRequest(_this.hibachiPathBuilder.buildPartialsPath(_this.corePartialsPath) + "expandablerecord.html").then(function (html) {

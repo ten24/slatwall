@@ -125,7 +125,7 @@
 			</tr>
 		</thead>
 		<tbody ng-class="{'sortable':swListingDisplay.sortable}" ng-if="swListingDisplay.collectionData.pageRecords">
-			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-if="pageRecord.dataIsVisible !== false" ng-class="{{swListingDisplay.getColorFilterNGClassObject(pageRecord)}}">
+			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-show="pageRecord.dataIsVisible !== false" ng-class="{{swListingDisplay.getColorFilterNGClassObject(pageRecord)}}">
 				<!--Selectable-->
 				<td ng-if="swListingDisplay.selectable" class="s-table-select">
 					<a href="##" class="table-action-select{{swListingDisplay.edit ? '' : 'disabled'}}" data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
@@ -169,7 +169,7 @@
 					data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}"
 					data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
 					data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
-					data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
+                    data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
 					data-entity="swListingDisplay.exampleEntity"
 					data-collection-config="swListingDisplay.collectionConfig"
 					data-records="swListingDisplay.collectionData.pageRecords || swListingDisplay.collectionData.records"
