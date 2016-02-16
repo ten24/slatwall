@@ -278,7 +278,6 @@
                 );
                 scope.selectedDay = scope.selectedDate.getDate();
                 if (attrs.ngModel) {
-                    //console.log('attrs.ngModel',attrs.ngModel);
                     var elScope = ctrl.triggerEl.scope(), dateValue;
                     if (elScope.$eval(attrs.ngModel) && elScope.$eval(attrs.ngModel).constructor.name === 'Date') {
                         dateValue = new Date(dateFilter(scope.selectedDate, dateFormat));

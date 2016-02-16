@@ -131,9 +131,9 @@ class SWWorkflowTasks{
                  * --------------------------------------------------------------------------------------------------------
                  */
                 scope.saveWorkflowTask = function (task, context) {
-                    console.info("Context: " + context);
-                    console.info("saving task");
-                    console.info(scope.workflowTasks.selectedTask);
+                    console.log("Context: " + context);
+                    console.log("saving task");
+                    console.log(scope.workflowTasks.selectedTask);
                     scope.workflowTasks.selectedTask.$$save().then(function(res){
                         scope.done = true;
                     	if (context === 'add'){

@@ -117,7 +117,7 @@ class SWInput{
             }
 
             var appConfig = $hibachi.getConfig();
-            console.warn('propertyDisplay', propertyDisplay);
+            console.log('propertyDisplay', propertyDisplay);
 
             var placeholder ='';
             if(angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey)){
