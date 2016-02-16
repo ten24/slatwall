@@ -49,7 +49,19 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-<cfoutput>
+<cfparam name="rc.edit" default="false" />
+<cfparam name="rc.form" type="any" />
 
+<cfoutput>
+<hb:HibachiEntityDetailForm object="#rc.form#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.form#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createformquestion" queryString="" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiEntityDetailGroup object="#rc.form#">
+		<hb:HibachiEntityDetailItem view="admin:entity/formtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+	</hb:HibachiEntityDetailGroup>
+
+</hb:HibachiEntityDetailForm>
 </cfoutput>
 
