@@ -30,13 +30,13 @@
 /// <reference path="../src/orderitem/components/sworderitemdetailstamp.ts" />
 /// <reference path="../src/orderitem/components/sworderitems.ts" />
 /// <reference path="../src/orderitem/components/swresizedimage.ts" />
-/// <reference path="../src/product/controllers/preprocessproduct_create.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroup.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroups.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegrouptype.ts" />
+/// <reference path="../src/product/controllers/preprocessproduct_create.ts" />
 /// <reference path="../src/productbundle/controllers/create-bundle-controller.ts" />
 /// <reference path="../src/productbundle/services/productbundleservice.ts" />
 /// <reference path="../src/slatwall/components/swcurrencyformatter.ts" />
-/// <reference path="../src/slatwall/services/slatwallpathbuilder.ts" />
 /// <reference path="../src/slatwall/filters/swcurrency.ts" />
+/// <reference path="../src/slatwall/services/slatwallpathbuilder.ts" />
 //}
