@@ -1,102 +1,128 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
+class SWPropertyDisplayController {
+    private applyFilter;
+    private setupFormController;
+    public errors;
+    public editing:boolean;
+    public editable:boolean;
+    public isHidden:boolean;
+    public fieldType;
+    public object;
+    public property;
+    public title;
+    public hint;
+    public optionsArguments;
+    public eagerLoadOptions:boolean;
+    public noValidate:boolean;
 
-class SWPropertyDisplay{
+    constructor(
+        public $filter
+    ){
+        console.warn('SWPropertyDisplayController INIT', this);
+
+        this.errors = {};
+
+        if(angular.isUndefined(this.editing)){
+            this.editing = false;
+        }
+        if(angular.isUndefined(this.editable)){
+            this.editable = true;
+        }
+        if(angular.isUndefined(this.isHidden)){
+            this.isHidden = false;
+        }
+        if(angular.isUndefined(this.eagerLoadOptions)){
+            this.eagerLoadOptions = true;
+        }
+        if(angular.isUndefined(this.noValidate)){
+            this.noValidate = false;
+        }
+
+        if(angular.isUndefined(this.optionsArguments)){
+            this.optionsArguments = {};
+        }
+
+        this.setupFormController = function(formController){
+            console.log('setupFormController!!!!!!', formController);
+
+            if(!angular.isDefined(this.object)){
+                this.object = formController.$$swFormInfo.object;
+            }
+
+            if(angular.isUndefined(this.fieldType)){
+                this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
+            }
+
+            if(angular.isUndefined(this.hint)){
+                this.hint = this.object.metaData.$$getPropertyHint(this.property);
+            }
+
+            if(angular.isUndefined(this.title)){
+                this.title = this.object.metaData.$$getPropertyTitle(this.property);
+            }
+        };
+
+        this.applyFilter = function(model, filter) {
+            try{
+                return $filter(filter)(model)
+            }catch (e){
+                return model;
+            }
+        };
+    }
+}
+
+class SWPropertyDisplay implements ng.IDirective{
+
+    public static $inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
+    public templateUrl;
+    public require = '^form';
+    public restrict = 'AE';
+    public scope = {};
+    public bindToController = true;
+
+    public bindToController = {
+        property:"@",
+        object:"=?",
+        options:"=?",
+        editable:"=?",
+        editing:"=?",
+        isHidden:"=?",
+        title:"=?",
+        hint:"@?",
+        optionsArguments:"=?",
+        eagerLoadOptions:"=?",
+        isDirty:"=?",
+        onChange:"=?",
+        fieldType:"@?",
+        noValidate:"=?"
+    };
+    public controller=SWPropertyDisplayController;
+    public controllerAs="swPropertyDisplay";
+
+    constructor(
+        public coreFormPartialsPath,
+        public hibachiPathBuilder
+    ){
+        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";
+    }
+    public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
+        console.warn('SWPropertyDisplay LINK ', $scope['swPropertyDisplay']);
+        $scope['swPropertyDisplay'].setupFormController(formController);
+    };
+
     public static Factory(){
         var directive = (
-            $log,
-            $filter,
             coreFormPartialsPath,
             hibachiPathBuilder
         )=>new SWPropertyDisplay(
-            $log,
-            $filter,
             coreFormPartialsPath,
             hibachiPathBuilder
         );
-        directive.$inject = [
-            '$log',
-            '$filter',
-            'coreFormPartialsPath',
-            'hibachiPathBuilder'
-        ];
+        directive.$inject = [ 'coreFormPartialsPath', 'hibachiPathBuilder'];
+
         return directive;
-    }
-    constructor(
-        $log,
-        $filter,
-        coreFormPartialsPath,
-        hibachiPathBuilder
-    ){
-        return {
-            require:'^form',
-            restrict: 'AE',
-            scope:{
-                object:"=",
-                options:"=?",
-                property:"@",
-                editable:"=",
-                editing:"=",
-                isHidden:"=",
-                title:"=",
-                hint:"@",
-                optionsArguments:"=",
-                eagerLoadOptions:"=",
-                isDirty:"=",
-                onChange:"=",
-                fieldType:"@",
-                noValidate:"="
-
-            },
-            templateUrl:hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath)+"propertydisplay.html",
-            link: function(scope, element,attrs,formController){
-                //if the item is new, then all fields at the object level are dirty
-                $log.debug('editingproper');
-                $log.debug(scope.property);
-                $log.debug(scope.title);
-
-                if(!angular.isDefined(scope.object)){
-                    scope.object = formController.$$swFormInfo.object;
-                }
-
-                /**
-                 * Configuration for property display object.
-                 */
-                scope.propertyDisplay = {
-                    object:scope.object,
-                    options:scope.options,
-                    property:scope.property,
-                    errors:{},
-                    editing:scope.editing || false,
-                    editable:scope.editable || true,
-                    isHidden:scope.isHidden || false,
-                    fieldType:scope.fieldType || scope.object.metaData.$$getPropertyFieldType(scope.property),
-                    title: scope.title,
-                    hint:scope.hint || scope.object.metaData.$$getPropertyHint(scope.property),
-                    optionsArguments:scope.optionsArguments || {},
-                    eagerLoadOptions:scope.eagerLoadOptions || true,
-                    isDirty:scope.isDirty,
-                    onChange:scope.onChange,
-                    noValidate:scope.noValidate || false,
-                    form: formController
-                };
-
-                scope.applyFilter = function(model, filter) {
-                    try{
-                        return $filter(filter)(model)
-                    }catch (e){
-                        return model;
-                    }
-                };
-
-                scope.$id = 'propertyDisplay:'+scope.property;
-                $log.debug(scope.propertyDisplay);
-
-
-                $log.debug('propertyDisplay');
-                $log.debug(scope.propertyDisplay);
-            }
-        };
     }
 }
 export{
