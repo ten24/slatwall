@@ -8,6 +8,7 @@ class SWActionCallerController{
     public action:string;
     public actionItem:string;
     public title:string;
+    public titleRbKey:string;
     public class:string;
     public confirmtext:string;
     public disabledtext:string;
@@ -50,6 +51,12 @@ class SWActionCallerController{
     public init = ():void =>{
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
+        if(angular.isDefined(this.titleRbKey)){
+            this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+        }
+        if(angular.isUndefined(this.text)){
+            this.text = this.title;
+        }
         if (this.type == "button" || this.type== "submit" || this.isPublic){
                 //handle submit.
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
@@ -149,6 +156,7 @@ class SWActionCallerController{
     public getText = ():string =>{
         //if we don't have text then make it up based on rbkeys
         if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && !this.text.length)){
+            console.log("looking for:",this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
             this.text = this.rbkeyService.getRBKey(this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
             var minus8letters = this.utilityService.right(this.text,8);
             //if rbkey is still missing. then can we infer it
@@ -246,7 +254,8 @@ class SWActionCaller implements ng.IDirective{
         text:"@",
         type:"@",
         queryString:"@",
-        title:"@",
+        title:"@?",
+        titleRbKey:"@?",
         'class':"@",
         icon:"@",
         iconOnly:"=",
@@ -273,6 +282,7 @@ class SWActionCaller implements ng.IDirective{
     constructor(){}
 
     public link:ng.IDirectiveLinkFn = (scope: IActionCallerScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>{
+        console.log("scoop", scope);
         if (angular.isDefined(formController)){
             scope.formController = formController;    
         }
