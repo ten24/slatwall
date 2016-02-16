@@ -60,11 +60,10 @@ component  extends="HibachiService" accessors="true" {
 	// ===================== START: Process Methods ===========================
 
 	public any function processForm_addFormQuestion(required any form, required any processObject ){
-		writedump(var=arguments,top=2,abort=true);
 
-		//add form question logic
+		arguments.form.addFormQuestion(processObject.getAttribute());
 
-		return arguments.form;
+		return this.saveForm(arguments.form);
 	}
 
 	// =====================  END: Process Methods ============================
