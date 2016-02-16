@@ -98,11 +98,11 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 	}*/
 
 	// Attributes (one-to-many)
-	public void function addAttribute(required any attribute) {
-		arguments.attribute.setForm( this );
+	public void function addFormQuestion(required any formQuestion) {
+		arguments.formQuestion.setForm( this );
 	}
-	public void function removeAttribute(required any attribute) {
-		arguments.attribute.removeForm( this );
+	public void function removeFormQuestion(required any formQuestion) {
+		arguments.formQuestion.removeForm( this );
 	}
 
 	// Form Responses (one-to-many)

@@ -55,29 +55,30 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.processObject.getAttribute()#" edit="#rc.edit#"
-								saveActionQueryString="formID=#rc.form.getFormID()#">
+	<hb:HibachiEntityProcessForm entity="#rc.processObject.getForm()#" edit="#rc.edit#">
 
-		<hb:HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
-								   backAction="admin:entity.detailform"
-								   backQueryString="formID=#rc.form.getFormID()#"
-								   cancelAction="admin:entity.detailform"
-								   cancelQueryString="formID=#rc.form.getFormID()#"
-								   deleteQueryString="formID=#rc.form.getFormID()#&redirectAction=admin:entity.detailAttributeSet" />
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject.getForm()#"></hb:HibachiEntityActionBar>
 
-		<cfif rc.edit>
+		<!--- Hidden field to attach this to the attributeSet --->
+		<input type="hidden" name="form.formID" value="#rc.form.getFormID()#" />
 
-			<!--- Hidden field to attach this to the attributeSet --->
-			<input type="hidden" name="form.formID" value="#rc.form.getFormID()#" />
-		</cfif>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="requiredFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeHint" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="defaultValue" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.processObject.getAttribute().isNew()#">
+				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.processObject.getAttribute().getAttributeInputType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.processObject.getAttribute().getAttributeInputType()))#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="relatedObject" edit="#rc.edit and rc.processObject.getAttribute().isNew()#">
+				</hb:HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.processObject.getAttribute().getAttributeInputType()) && listFindNoCase('typeSelect', rc.processObject.getAttribute().getAttributeInputType()))#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="typeSet" edit="#rc.edit and rc.processObject.getAttribute().isNew()#">
+				</hb:HibachiDisplayToggle>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-		<hb:HibachiEntityDetailGroup object="#rc.processObject.getAttribute()#">
-			<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
-				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
-			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

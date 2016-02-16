@@ -49,4 +49,12 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 //data properties
 	 property name="attribute"; 
 
+
+	public any function getAttribute(){
+		if(!structKeyExists(variables, "attribute")){
+			variables.attribute = getService("attributeService").newAttribute(); 
+		}
+		return variables.attribute; 
+	}
+
 }

@@ -274,17 +274,17 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	/// Form (many-to-one)
 	public void function setForm(required any form) {
 		variables.form = arguments.form;
-		if(isNew() or !arguments.form.hasAttribute( this )) {
-			arrayAppend(arguments.form.getAttributes(), this);
+		if(isNew() or !arguments.form.hasFormQuestion( this )) {
+			arrayAppend(arguments.form.getFormQuestions(), this);
 		}
 	}
 	public void function removeForm(any form) {
 		if(!structKeyExists(arguments, "form")) {
 			arguments.form = variables.form;
 		}
-		var index = arrayFind(arguments.form.getAttributes(), this);
+		var index = arrayFind(arguments.form.getFormQuestions(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.form.getAttributes(), index);
+			arrayDeleteAt(arguments.form.getFormQuestions(), index);
 		}
 		structDelete(variables, "form");
 	}
