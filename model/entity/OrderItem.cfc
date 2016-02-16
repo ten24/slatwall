@@ -168,16 +168,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return maxQTY;
 	}
 
-	//gets the quantity of orderItems that use the same sku on the order but excludes the current orderItem.
-    public any function getQuantityAlreadyOnOrder(){
-        var qtyAlreadyOnOrder = 0;
-        
-        return qtyAlreadyOnOrder;
-    }
-
-    public any function getQuantityPlusQuantityAlreadyOnOrder(){
-        return getQuantity() + getQuantityAlreadyOnOrder();
-    }
 
     public boolean function hasQuantityWithinMaxOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
