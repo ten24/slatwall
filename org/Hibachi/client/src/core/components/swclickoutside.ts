@@ -12,8 +12,8 @@ class SWClickOutside{
         )=>new SWClickOutside(
             $document,$timeout,utilityService
         );
-        directive.$inject =[
-            '$document','$timeout','utilityService'
+        directive.$inject = [
+            '$document', '$timeout', 'utilityService'
         ];
         return directive;
     }
@@ -22,22 +22,18 @@ class SWClickOutside{
         public $document, 
         public $timeout, 
         public utilityService
-    ){
-        this.$document = $document;
-        this.$timeout = $timeout;
-        this.utilityService = utilityService;
-    }
+    ){}
     
     public link:ng.IDirectiveLinkFn = (scope:any, elem:any, attr:any) => {     
-        $document.on('click', function (e) {
+        this.$document.on('click', (e)=> {
             if (!e || !e.target) return;
             
-            //check if our element already hiden
+            //check if our element already hidden
             if(angular.element(elem).hasClass("ng-hide")){
                 return;
             }
-            if(e.target !== elem && ! utilityService.isDescendantElement(elem,e.target)){
-                $timeout(()=>{
+            if(e.target !== elem && ! this.utilityService.isDescendantElement(elem,e.target)){
+                this.$timeout(()=>{
                     scope.swClickOutside();
                 });
             }

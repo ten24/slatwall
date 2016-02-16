@@ -5,7 +5,7 @@
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	target="_self" 
-	ng-href="{{$root.buildUrl(swActionCaller.action,swActionCaller.queryString)}}"
+	ng-href="{{swActionCaller.actionUrl}}"
 	data-disabled="{{swActionCaller.disabledtext}}"
 	data-confirm="{{swActionCaller.confirmtext}}"
 	href="##"
@@ -21,7 +21,7 @@
 	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}}" 
 		target="_self" 
-		ng-href="{{$root.buildUrl(swActionCaller.action,swActionCaller.queryString)}}"
+		ng-href="{{swActionCaller.actionUrl}}"
 		>
 		<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
 	</a>
