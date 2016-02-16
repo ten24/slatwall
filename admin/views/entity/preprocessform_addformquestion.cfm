@@ -46,29 +46,38 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.form" type="any" />
+<cfparam name="rc.attribute" type="any">
+<cfparam name="rc.form" type="any" default="#rc.attribute.getForm()#">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#"
+								saveActionQueryString="formID=#rc.form.getFormID()#">
 
-	<hb:HibachiListingDisplay smartList="#rc.form.getFormQuestionsSmartList()#"
-							   recordEditAction="admin:entity.editattribute"
-							   recordEditQueryString="redirectAction=admin:entity.detailform&formID=#rc.form.getFormID()#"
-							   recordDetailAction="admin:entity.detailattribute"
-							   sortProperty="sortOrder">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
+								   backAction="admin:entity.detailform"
+								   backQueryString="formID=#rc.form.getFormID()#"
+								   cancelAction="admin:entity.detailform"
+								   cancelQueryString="formID=#rc.form.getFormID()#"
+								   deleteQueryString="formID=#rc.form.getFormID()#&redirectAction=admin:entity.detailAttributeSet" />
 
+		<cfif rc.edit>
 
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />
-		<hb:HibachiListingColumn propertyIdentifier="attributeCode" />
-		<hb:HibachiListingColumn propertyIdentifier="attributeInputType" />
-		<hb:HibachiListingColumn propertyIdentifier="relatedObject" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
+			<!--- Hidden field to attach this to the attributeSet --->
+			<input type="hidden" name="form.formID" value="#rc.form.getFormID()#" />
+		</cfif>
 
-	<hb:HibachiProcessCaller action="admin:entity.preprocessform" entity="#rc.form#" processContext="addFormQuestion" class="btn btn-default" icon="plus" modal="true" hideDisabled="false" />
+		<hb:HibachiEntityDetailGroup object="#rc.attribute#">
+			<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
+				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
+			</cfif>
+			<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
+		</hb:HibachiEntityDetailGroup>
 
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
-
