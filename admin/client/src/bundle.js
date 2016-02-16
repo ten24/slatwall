@@ -14052,16 +14052,26 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWPropertyDisplayController = (function () {
-	    function SWPropertyDisplayController($scope, $element, $attrs, $filter) {
+	    //@ngInject
+	    function SWPropertyDisplayController($filter) {
 	        var _this = this;
-	        this.$scope = $scope;
-	        this.$element = $element;
-	        this.$attrs = $attrs;
 	        this.$filter = $filter;
 	        this.$onInit = function () {
-	            console.warn('onInit', _this);
+	            console.log('setupFormController!!!!!!', _this.form);
+	            if (!angular.isDefined(_this.object)) {
+	                _this.object = _this.form.$$swFormInfo.object;
+	            }
+	            if (angular.isUndefined(_this.fieldType)) {
+	                _this.fieldType = _this.object.metaData.$$getPropertyFieldType(_this.property);
+	            }
+	            if (angular.isUndefined(_this.hint)) {
+	                _this.hint = _this.object.metaData.$$getPropertyHint(_this.property);
+	            }
+	            if (angular.isUndefined(_this.title)) {
+	                _this.title = _this.object.metaData.$$getPropertyTitle(_this.property);
+	            }
 	        };
-	        console.warn('SWPropertyDisplayController INIT', this.formctrl);
+	        console.warn('SWPropertyDisplayController INIT', this.form);
 	        this.errors = {};
 	        if (angular.isUndefined(this.editing)) {
 	            this.editing = false;
@@ -14081,21 +14091,6 @@
 	        if (angular.isUndefined(this.optionsArguments)) {
 	            this.optionsArguments = {};
 	        }
-	        this.setupFormController = function (formController) {
-	            console.log('setupFormController!!!!!!', formController);
-	            if (!angular.isDefined(this.object)) {
-	                this.object = formController.$$swFormInfo.object;
-	            }
-	            if (angular.isUndefined(this.fieldType)) {
-	                this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
-	            }
-	            if (angular.isUndefined(this.hint)) {
-	                this.hint = this.object.metaData.$$getPropertyHint(this.property);
-	            }
-	            if (angular.isUndefined(this.title)) {
-	                this.title = this.object.metaData.$$getPropertyTitle(this.property);
-	            }
-	        };
 	        this.applyFilter = function (model, filter) {
 	            try {
 	                return $filter(filter)(model);
@@ -14111,7 +14106,7 @@
 	    function SWPropertyDisplay(coreFormPartialsPath, hibachiPathBuilder) {
 	        this.coreFormPartialsPath = coreFormPartialsPath;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
-	        this.require = { formctrl: '^form' };
+	        this.require = { form: '^form' };
 	        this.restrict = 'AE';
 	        this.scope = {};
 	        this.bindToController = {
@@ -14134,7 +14129,6 @@
 	        this.controllerAs = "swPropertyDisplay";
 	        this.link = function ($scope, element, attrs, formController) {
 	            console.warn('SWPropertyDisplay LINK ', $scope['swPropertyDisplay']);
-	            $scope['swPropertyDisplay'].setupFormController(formController);
 	        };
 	        console.warn(this);
 	        this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";

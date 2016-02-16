@@ -15,19 +15,14 @@ class SWPropertyDisplayController {
     public optionsArguments;
     public eagerLoadOptions:boolean;
     public noValidate:boolean;
-    public formctrl;
+    public form;
     
-    public $onInit=()=>{
-        console.warn('onInit',this);  
-    }
 
+    //@ngInject
     constructor(
-        public $scope,
-        public $element,
-        public $attrs,
         public $filter
     ){
-        console.warn('SWPropertyDisplayController INIT', this.formctrl);
+        console.warn('SWPropertyDisplayController INIT', this.form);
         this.errors = {};
 
         if(angular.isUndefined(this.editing)){
@@ -50,26 +45,6 @@ class SWPropertyDisplayController {
             this.optionsArguments = {};
         }
 
-        this.setupFormController = function(formController){
-            console.log('setupFormController!!!!!!', formController);
-
-            if(!angular.isDefined(this.object)){
-                this.object = formController.$$swFormInfo.object;
-            }
-
-            if(angular.isUndefined(this.fieldType)){
-                this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
-            }
-
-            if(angular.isUndefined(this.hint)){
-                this.hint = this.object.metaData.$$getPropertyHint(this.property);
-            }
-
-            if(angular.isUndefined(this.title)){
-                this.title = this.object.metaData.$$getPropertyTitle(this.property);
-            }
-        };
-
         this.applyFilter = function(model, filter) {
             try{
                 return $filter(filter)(model)
@@ -78,13 +53,33 @@ class SWPropertyDisplayController {
             }
         };
     }
+
+    public $onInit=()=>{
+        console.log('setupFormController!!!!!!', this.form);
+
+        if(!angular.isDefined(this.object)){
+            this.object = this.form.$$swFormInfo.object;
+        }
+
+        if(angular.isUndefined(this.fieldType)){
+            this.fieldType = this.object.metaData.$$getPropertyFieldType(this.property);
+        }
+
+        if(angular.isUndefined(this.hint)){
+            this.hint = this.object.metaData.$$getPropertyHint(this.property);
+        }
+
+        if(angular.isUndefined(this.title)){
+            this.title = this.object.metaData.$$getPropertyTitle(this.property);
+        }
+    };
 }
 
 class SWPropertyDisplay implements ng.IDirective{
 
     public static $inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
     public templateUrl;
-    public require = {formctrl:'^form'};
+    public require = {form:'^form'};
     public restrict = 'AE';
     public scope = {};
 
@@ -119,7 +114,6 @@ class SWPropertyDisplay implements ng.IDirective{
     
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
         console.warn('SWPropertyDisplay LINK ', $scope['swPropertyDisplay']);
-        $scope['swPropertyDisplay'].setupFormController(formController);
     };
 
     public static Factory(){
