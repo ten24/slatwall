@@ -107,6 +107,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 
+
 	public numeric function getNumberOfUnassignedGiftCards(){
 
 		if(!this.isGiftCardOrderItem()){
@@ -167,31 +168,29 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return maxQTY;
 	}
 
-	//gets the quantity of orderItems that use the same sku on the order but excludes the current orderItem.
-    public any function getQuantityAlreadyOnOrder(){
-        var qtyAlreadyOnOrder = 0;
-        for (var orderItem in getOrder().getOrderItems()){
-            if (orderItem.getOrderItemID() != "" && !isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-                qtyAlreadyOnOrder += orderItem.getQuantity();
-            }
-        }
-        return qtyAlreadyOnOrder;
-    }
-
-    public any function getQuantityPlusQuantityAlreadyOnOrder(){
-        return getQuantity() + getQuantityAlreadyOnOrder();
-    }
 
     public boolean function hasQuantityWithinMaxOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
-            return getQuantityPlusQuantityAlreadyOnOrder() <= getMaximumOrderQuantity();
+        	var quantity = 0;
+        	for (var orderItem in getOrder().getOrderItems()){
+	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+	                quantity += orderItem.getQuantity();
+	            }
+	        }
+            return quantity <= getMaximumOrderQuantity();
         }
         return true;
     }
 
     public boolean function hasQuantityWithinMinOrderQuantity() {
         if(getOrderItemType().getSystemCode() == 'oitSale') {
-            return getQuantityPlusQuantityAlreadyOnOrder() >= getSku().setting('skuOrderMinimumQuantity');
+        	var quantity = 0;
+        	for (var orderItem in getOrder().getOrderItems()){
+	            if (!isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
+	                quantity += orderItem.getQuantity();
+	            }
+	        }
+            return quantity >= getSku().setting('skuOrderMinimumQuantity');
         }
         return true;
     }
