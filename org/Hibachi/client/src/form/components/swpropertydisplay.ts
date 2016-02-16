@@ -15,12 +15,19 @@ class SWPropertyDisplayController {
     public optionsArguments;
     public eagerLoadOptions:boolean;
     public noValidate:boolean;
+    public formctrl;
+    
+    public $onInit=()=>{
+        console.warn('onInit',this);  
+    }
 
     constructor(
+        public $scope,
+        public $element,
+        public $attrs,
         public $filter
     ){
-        console.warn('SWPropertyDisplayController INIT', this);
-
+        console.warn('SWPropertyDisplayController INIT', this.formctrl);
         this.errors = {};
 
         if(angular.isUndefined(this.editing)){
@@ -77,10 +84,9 @@ class SWPropertyDisplay implements ng.IDirective{
 
     public static $inject = ['coreFormPartialsPath', 'hibachiPathBuilder'];
     public templateUrl;
-    public require = '^form';
+    public require = {formctrl:'^form'};
     public restrict = 'AE';
     public scope = {};
-    public bindToController = true;
 
     public bindToController = {
         property:"@",
@@ -105,8 +111,12 @@ class SWPropertyDisplay implements ng.IDirective{
         public coreFormPartialsPath,
         public hibachiPathBuilder
     ){
+        
+        console.warn(this);
         this.templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.coreFormPartialsPath) + "propertydisplay.html";
     }
+    
+    
     public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController: any) =>{
         console.warn('SWPropertyDisplay LINK ', $scope['swPropertyDisplay']);
         $scope['swPropertyDisplay'].setupFormController(formController);
