@@ -2,9 +2,10 @@
     <span data-ng-controller="createCollection">
   <header>
       <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
-          <span class="navbar-brand">Create Collection ({{params.entityName}})</span>
+          <span class="navbar-brand" data-ng-if="!readOnly">Create Collection ({{params.entityName}})</span>
+          <span class="navbar-brand" data-ng-if="readOnly" ng-bind="collection.collectionName"></span>
           <ul class="nav navbar-nav pull-right">
-              <li class="active"><a ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+              <li class="active"><a data-ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
           </ul>
       </div>
   </header>
@@ -57,12 +58,12 @@
                 <span sw-collection toggleoption="true"></span>
             </div>
         </section>
-	  <footer>
+	  <footer  data-ng-if="!readOnly">
           <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
               <ul class="nav navbar-nav pull-right">
-                  <li ng-class="{'active s-loading': closeSaving === true, 'active': closeSaving === false}">
+                  <li class="active" ng-class="{'s-loading': closeSaving === true}">
                       <a style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
-                         ng-click="saveNewCollection($index);">Save & Finish</a>
+                         data-ng-click="saveNewCollection($index);">Save & Finish</a>
                   </li>
               </ul>
           </div>

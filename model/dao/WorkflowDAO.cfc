@@ -67,6 +67,29 @@ Notes:
 		but it should only be unique workflows that have a workflowTrigger with the eventName passed in --->
 		<cfreturn ORMExecuteQuery('FROM SlatwallWorkflowTrigger where triggerEvent = :triggerEvent',{triggerEvent=arguments.eventName})/>
 	</cffunction>
+
+	<cffunction name="getDueWorkflows" access="public" returntype="array">
+		<cfreturn ORMExecuteQuery('FROM
+										SlatwallWorkflowTrigger
+									WHERE
+										triggerType = :triggerType
+									AND
+										(runningFlag is NULL or runningFlag = false)
+									AND
+										(nextRunDateTime IS NULL OR nextRunDateTime <= CURRENT_TIMESTAMP())
+								',{triggerType='Schedule'})/>
+
+	</cffunction>
+
+	<cffunction name="updateWorkflowTriggerRunning">
+		<cfargument name="workflowTriggerID" required="true" type="string" />
+		<cfargument name="runningFlag" required="true" type="boolean" />
+
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			UPDATE SwWorkflowTrigger SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> WHERE workflowTriggerID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.workflowTriggerID#">
+		</cfquery>
+	</cffunction>
 	
 </cfcomponent>
 

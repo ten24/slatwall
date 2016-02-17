@@ -1,0 +1,20 @@
+[
+  {
+    "openTab":true,
+    "tabName":"basic.html"
+  },
+  {
+    "openTab":false,
+    "tabName":"triggers.html"
+  },
+  {
+    "openTab":false,
+    "tabName":"tasks.html"
+  },
+  {
+    "openTab":false,
+    "showCreate":false,
+    "tabName":"history.html"
+  }
+]
+

@@ -63,6 +63,12 @@ class SWWorkflowTasks{
 					logger("getWorkflowTasks", "Workflow Tasks");
 					$log.debug(scope.workflowTasks);
 
+                    if(!scope.workflow.$$isPersisted()){
+                        scope.workflow.data.workflowTasks = [];
+                        scope.workflowTasks = scope.workflow.data.workflowTasks;
+                        return;
+                    }
+
 					/***
 					   Note:
 					   This conditional is checking whether or not we need to be retrieving to
@@ -131,22 +137,21 @@ class SWWorkflowTasks{
                  * --------------------------------------------------------------------------------------------------------
                  */
                 scope.saveWorkflowTask = function (task, context) {
-                		scope.done = true;
-                	    $log.debug("Context: " + context);
-                    $log.debug("saving task");
-                    $log.debug(scope.workflowTasks.selectedTask);
-                    var savePromise = scope.workflowTasks.selectedTask.$$save();
-                    savePromise.then(function(){
+                    console.log("Context: " + context);
+                    console.log("saving task");
+                    console.log(scope.workflowTasks.selectedTask);
+                    scope.workflowTasks.selectedTask.$$save().then(function(res){
+                        scope.done = true;
                     	if (context === 'add'){
             				logger("SaveWorkflowTask", "Save and New");
             				scope.addWorkflowTask();
-            				//scope.setHidden(scope.workflowTasks.selectedTask);
             				scope.finished = true;
-                    }else if (context == "finish"){
+                        }else if (context == "finish"){
                 			scope.finished = false;
                 		}
-                    });
-                    scope.setHidden(scope.workflowTasks.selectedTask);
+                        scope.setHidden(scope.workflowTasks.selectedTask);
+                    }, function (err) {
+                    })
                 }//<--end save*/
 
                 /**

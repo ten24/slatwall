@@ -2757,6 +2757,7 @@ tabel .s-table-header {
 }
 .s-table-footer .s-table-footer-right ul li .pagination {
   margin: 0px;
+  vertical-align: top;
 }
 .dropdown-toggle .fa-sort-desc:before {
   top: -2px;
