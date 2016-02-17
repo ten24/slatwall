@@ -271,7 +271,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 						nextDay='';
 						
 						for(i=1; i <= listLen(getDaysOfMonthToRun()); i++){
-							if(listgetAt(getDaysOfMonthToRun(),i) > day(now)){
+							if(listgetAt(getDaysOfMonthToRun(),i) > day(now())){
 								nextDay=listGetAt(getDaysOfMonthToRun(),i);
 							}
 						}

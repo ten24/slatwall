@@ -13614,24 +13614,25 @@
 	                propertyDisplay: "="
 	            },
 	            link: function (scope, element, attr, formController) {
-	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
-	                    scope.selectType = 'object';
+	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc)) {
+	                    var selectType;
+	                    selectType = 'object';
 	                    $log.debug('selectType:object');
 	                }
 	                else {
-	                    scope.selectType = 'string';
+	                    selectType = 'string';
 	                    $log.debug('selectType:string');
 	                }
 	                scope.formFieldChanged = function (option) {
 	                    $log.debug('formfieldchanged');
 	                    $log.debug(option);
-	                    if (scope.selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
+	                    if (selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function") {
 	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
 	                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
 	                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
 	                        }
 	                    }
-	                    else if (scope.selectType === 'string') {
+	                    else if (selectType === 'string') {
 	                        scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 	                        scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
 	                    }
@@ -13642,7 +13643,7 @@
 	                        var optionsPromise = $hibachi.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
 	                        optionsPromise.then(function (value) {
 	                            scope.propertyDisplay.options = value.data;
-	                            if (scope.selectType === 'object') {
+	                            if (selectType === 'object') {
 	                                if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
 	                                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
 	                                }
@@ -13682,7 +13683,7 @@
 	                                    }
 	                                }
 	                            }
-	                            else if (scope.selectType === 'string') {
+	                            else if (selectType === 'string') {
 	                                if (scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null) {
 	                                    for (var i in scope.propertyDisplay.options) {
 	                                        if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
