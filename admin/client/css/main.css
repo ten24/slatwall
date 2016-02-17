@@ -2625,7 +2625,7 @@ tabel .s-table-header {
   text-align: center;
   margin-bottom: 20px;
 }
-.s-add-filter .s-button-select-group.disabled {
+.s-button-select-group.disabled {
   pointer-events: none;
   opacity: .3;
 }
