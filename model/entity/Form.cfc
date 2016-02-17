@@ -58,7 +58,7 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 	//property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-	property name="formQuestions" singularname="formQuestion" cfc="Attribute" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
+	property name="formQuestions" singularname="formQuestion" hb_populateEnabled="public" cfc="Attribute" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
 	property name="formResponses" singularname="formResponse" cfc="FormResponse" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many)

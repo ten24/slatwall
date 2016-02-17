@@ -61,7 +61,7 @@ component  extends="HibachiService" accessors="true" {
 
 	public any function processForm_addFormQuestion(required any form, required any processObject ){
 
-		arguments.form.addFormQuestion(processObject.getAttribute());
+		arguments.form.addFormQuestion(processObject.getNewFormQuestion());
 
 		return this.saveForm(arguments.form);
 	}

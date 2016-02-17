@@ -41,20 +41,19 @@
     of the program, but you are not obligated to do so.
 Notes:
 */
-component output="false" accessors="true" extends="HibachiProcess"{
+component output="false" accessors="true" extends="HibachiProcess" {
 
 	 // Injected Entity
-	 property name="form";
+	 property name="Form";
 	
 	 //data properties
-	 property name="attribute"; 
+	 property name="newFormQuestion" cfc="Attribute" fieldtype="many-to-one" persistent="false" fkcolumn="formID"; 
 
 
-	public any function getAttribute(){
-		if(!structKeyExists(variables, "attribute")){
-			variables.attribute = getService("attributeService").newAttribute(); 
+	public any function getNewFormQuestion(){
+		if(!structKeyExists(variables, "newFormQuestion")){
+			variables.newFormQuestion = getService("attributeService").newAttribute(); 
 		}
-		return variables.attribute; 
+		return variables.newFormQuestion; 
 	}
-
 }

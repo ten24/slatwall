@@ -51,20 +51,20 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 
 	// Persistent Properties
 	property name="attributeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean" default=1;
+	property name="activeFlag" hb_populateEnabled="public" ormtype="boolean" default=1;
 	property name="displayOnOrderDetailFlag" ormtype="boolean" default=0;
-	property name="attributeName" ormtype="string";
-	property name="attributeCode" ormtype="string" index="PI_ATTRIBUTECODE";
-	property name="attributeDescription" ormtype="string" length="4000" ;
-	property name="attributeHint" ormtype="string";
-	property name="attributeInputType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
-	property name="defaultValue" ormtype="string";
-	property name="requiredFlag" ormtype="boolean" default="false" ;
+	property name="attributeName" hb_populateEnabled="public" ormtype="string";
+	property name="attributeCode" hb_populateEnabled="public" ormtype="string" index="PI_ATTRIBUTECODE";
+	property name="attributeDescription" hb_populateEnabled="public" ormtype="string" length="4000" ;
+	property name="attributeHint" hb_populateEnabled="public" ormtype="string";
+	property name="attributeInputType" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="defaultValue" hb_populateEnabled="public" ormtype="string";
+	property name="requiredFlag" hb_populateEnabled="public" ormtype="boolean" default="false" ;
 	property name="sortOrder" ormtype="integer" sortContext="attributeSet";
-	property name="validationMessage" ormtype="string";
-	property name="validationRegex" ormtype="string";
+	property name="validationMessage" hb_populateEnabled="public" ormtype="string";
+	property name="validationRegex" hb_populateEnabled="public" ormtype="string";
 	property name="decryptValueInAdminFlag" ormtype="boolean";
-	property name="relatedObject" ormtype="string" hb_formFieldType="select";
+	property name="relatedObject" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
 
 	// Calculated Properties
 

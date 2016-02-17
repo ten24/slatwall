@@ -61,21 +61,22 @@ Notes:
 
 		<!--- Hidden field to attach this to the attributeSet --->
 		<input type="hidden" name="form.formID" value="#rc.form.getFormID()#" />
+		<input type="hidden" name="newFormQuestion.attributeID" value="" />
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="requiredFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeHint" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="defaultValue" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.processObject.getAttribute().isNew()#">
-				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.processObject.getAttribute().getAttributeInputType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.processObject.getAttribute().getAttributeInputType()))#">
-					<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="relatedObject" edit="#rc.edit and rc.processObject.getAttribute().isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.activeFlag" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.requiredFlag" property="requiredFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeName" property="attributeName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeCode" property="attributeCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeHint" property="attributeHint" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.defaultValue" property="defaultValue" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.attributeInputType" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.processObject.getnewFormQuestion().isNew()#">
+				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.processObject.getnewFormQuestion().getAttributeInputType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.processObject.getnewFormQuestion().getAttributeInputType()))#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.relatedObject" property="relatedObject" edit="#rc.edit and rc.processObject.getNewFormQuestion().isNew()#">
 				</hb:HibachiDisplayToggle>
-				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.processObject.getAttribute().getAttributeInputType()) && listFindNoCase('typeSelect', rc.processObject.getAttribute().getAttributeInputType()))#">
-					<hb:HibachiPropertyDisplay object="#rc.processObject.getAttribute()#" property="typeSet" edit="#rc.edit and rc.processObject.getAttribute().isNew()#">
+				<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.processObject.getnewFormQuestion().getAttributeInputType()) && listFindNoCase('typeSelect', rc.processObject.getnewFormQuestion().getAttributeInputType()))#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getnewFormQuestion()#" fieldName="newFormQuestion.typeSet" property="typeSet" edit="#rc.edit and rc.processObject.getnewFormQuestion().isNew()#">
 				</hb:HibachiDisplayToggle>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
