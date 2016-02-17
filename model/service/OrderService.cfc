@@ -685,7 +685,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // If this was a giftCard payment
         if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
-            if(!len(arguments.processObject.getAccountPaymentMethodID()) && !isNull(arguments.processObject.getGiftCard())){
+            if(!len(arguments.processObject.getCopyFromType()) && !isNull(arguments.processObject.getGiftCard())){
 	            var giftCard = arguments.processObject.getGiftCard();
             } else if(len(arguments.processObject.getAccountPaymentMethodID()) && getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).isGiftCardAccountPaymentMethod()) {
             	var giftCard = getAccountService().getAccountPaymentMethod(arguments.processObject.getAccountPaymentMethodID()).getGiftCard();
@@ -748,7 +748,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup name if exists
 			if(!isNull(arguments.processObject.getSaveAccountPaymentMethodName())) {
 				newAccountPaymentMethod.setAccountPaymentMethodName( arguments.processObject.getSaveAccountPaymentMethodName() );
-			} else if (arguments.processObject.getSaveGiftCardToAccountFlag()){
+			} else if (arguments.processObject.getSaveGiftCardToAccountFlag() && !isNull(giftCard)){
 				newAccountPaymentMethod.setAccountPaymentMethodName( "Gift Card Ending " & left(giftCard.getGiftCardCode(), 4) );
 			}
 
@@ -1087,6 +1087,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 
+        //set the site placed so that it is available on return orders.
+        if (!isNull( arguments.order.getOrderPlacedSite()) && isObject( arguments.order.getOrderPlacedSite())){
+            newOrder.setOrderPlacedSite( arguments.order.getOrderPlacedSite() );
+        }
+
 		if (referencedOrderFlag == true){
 			newOrder.setReferencedOrder(arguments.order);
 			newOrder.setReferencedOrderType('duplicate');
@@ -1213,8 +1218,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         return newOrderItem;
 	}
 
-	public any function processOrder_forceItemQuantityUpdate(required any order) {
+	public boolean function hasQuantityWithinMaxOrderQuantity(any orderItem){
+		return getDao('OrderDao').hasQuantityWithinMaxOrderQuantity(arguments.orderItem);
+	}
 
+	public boolean function hasQuantityWithinMinOrderQuantity(any orderItem) {
+		return getDao('OrderDao').hasQuantityWithinMinOrderQuantity(arguments.orderItem);
+	}
+
+	public boolean function getOrderItemQuantitySumOnOrder(required any orderItem){
+		return getDao('OrderDao').getOrderItemQuantitySumOnOrder(arguments.orderItem);
+	}
+
+    public boolean function getOrderItemCountOnOrder(required any orderItem){
+        return getDao('OrderDao').getOrderItemCountOnOrder(arguments.orderItem);
+    }
+
+	public any function processOrder_forceItemQuantityUpdate(required any order) {
 		var itemFound = false;
 
 		// Loop over each order Item
@@ -1229,12 +1249,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 				// If the max order quantity is gt 0 then just adjust the quantity of the item
 				if(orderItem.getMaximumOrderQuantity() > 0) {
-
-
 					var messageReplaceKeys = {
 						oldQuantity = orderItem.getQuantity(),
 						newQuantity = orderItem.getMaximumOrderQuantity()
 					};
+
 					orderItem.setQuantity( orderItem.getMaximumOrderQuantity() );
 
 					var message = getHibachiUtilityService().replaceStringTemplate(rbKey('validate.processOrder_forceItemQuantityUpdate.forcedItemQuantityAdjusted'), messageReplaceKeys);
@@ -1919,7 +1938,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var emailData = {
 			emailTemplateID = emailTemplateID
 		};
-		emailData[emailTemplateObject.getEntityName()] = emailTemplateObject;
+		emailData[emailTemplateObject.getClassName()] = emailTemplateObject;
 		var email = getEmailService().processEmail_createFromTemplate(email, emailData);
 		email.setEmailTo(emailAddress);
 		email = getEmailService().sendEmail(email);

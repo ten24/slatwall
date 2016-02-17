@@ -42,6 +42,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	property name="workflowTaskActionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="actionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="updateData" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
+	property name="processMethod" ormtype="string";
 	
 	// Calculated Properties
 
@@ -76,16 +77,13 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 			Print || Email || Update || Process || Import || Export || Delete
 		*/
 		var actionTypeOptions = [];
-		var valuesList = 'print,email,update';
-		var namesList = 'entity.workflowtaskaction.print,entity.workflowtaskaction.email,entity.workflowtaskaction.update';
+		var valuesList = 'print,email,delete,process';
 		var valuesArray = ListToArray(valuesList);
-		var namesArray = ListToArray(namesList);
-		var valuesArrayLength = arrayLen(valuesArray);
 		
-		for(var i = 1; i <= valuesArrayLength; i++){
+		for(var value in valuesArray){
 			var optionStruct = {};
-			optionStruct['value'] = valuesArray[i];
-			optionStruct['name'] = rbKey(namesArray[i]);
+			optionStruct['value'] = value;
+			optionStruct['name'] = rbKey('entity.workflowtaskaction.#value#');
 			arrayAppend(actionTypeOptions,optionStruct);
 		}
     	return actionTypeOptions;

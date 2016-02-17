@@ -40,12 +40,12 @@ component output="false" accessors="true" extends="HibachiService" {
 				continue;
 			}
 			for(var key in arguments.customValidation[customValidationKey]) {
-				if(!structKeyExists(validation[customValidationKey], key)) {
-					validation[customValidationKey][ key ] = arguments.customValidation[customValidationKey][ key ];
+				if(!structKeyExists(arguments.coreValidation[customValidationKey], key)) {
+					arguments.coreValidation[customValidationKey][ key ] = arguments.customValidation[customValidationKey][ key ];
 				} else {
 					if(isArray(arguments.customValidation[customValidationKey][ key ])){
 						for(var r=1; r<=arrayLen(arguments.customValidation[customValidationKey][ key ]); r++) {
-							arrayAppend(validation[customValidationKey][ key ],arguments.customValidation[customValidationKey][ key ][r]);	
+							arrayAppend(arguments.coreValidation[customValidationKey][ key ],arguments.customValidation[customValidationKey][ key ][r]);	
 						}
 					}else{
 						for(var item in arguments.customValidation[customValidationKey][ key ]) {

@@ -51,9 +51,9 @@ class SWCollectionTable{
 			scope:{
 				collection:"=",
 				collectionConfig:"=",
-				isRadio:"=",
+				isRadio:"=?",
                 //angularLink:true || false
-                angularLinks:"="
+                angularLinks:"=?"
 			},
 			link: function(scope,element,attrs){
 

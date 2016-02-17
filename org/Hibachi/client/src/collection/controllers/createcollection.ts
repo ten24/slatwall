@@ -1,19 +1,22 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-declare var hibachiConfig:any;
 
 class CreateCollection{
 
     //@ngInject
     constructor(
-        $scope, $log, $timeout, $hibachi, collectionService, formService,
-                  metadataService, paginationService, dialogService, observerService, selectionService,collectionConfigService,
-            rbkeyService
+        $scope, $log, $timeout, $hibachi, collectionService, metadataService, paginationService, dialogService,
+        observerService, selectionService,collectionConfigService, rbkeyService, $window
     ){
+        $window.scrollTo(0,0);
         $scope.params = dialogService.getCurrentDialog().params;
+        $scope.readOnly = angular.isDefined($scope.params.readOnly) && $scope.params.readOnly == true;
+
         $scope.myCollection = collectionConfigService.newCollectionConfig($scope.params.entityName);
-        $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^'+hibachiConfig.applicationKey, 'i'), '');
-        if($scope.params.entityName == 'Type' && !angular.isDefined($scope.params.entityId)){
+        var hibachiConfig = $hibachi.getConfig();
+
+        if($scope.params.entityName == 'Type' && angular.isUndefined($scope.params.entityId) && angular.isDefined($scope.params.parentEntity)){
+            $scope.params.parentEntity = $scope.params.parentEntity.replace(new RegExp('^'+hibachiConfig.applicationKey, 'i'), '');
             var systemCode = $scope.params.parentEntity.charAt(0).toLowerCase() + $scope.params.parentEntity.slice(1) + 'Type';
             $scope.myCollection.addFilter('parentType.systemCode', systemCode);
         }
@@ -51,12 +54,6 @@ class CreateCollection{
                 $scope.newCollection.forms['form.createCollection'].$setDirty();
 
             });
-        }
-
-        if (typeof String.prototype.startsWith != 'function') {
-            String.prototype.startsWith = function (str){
-                return this.slice(0, str.length) == str;
-            };
         }
 
         $scope.saveCollection = function () {
@@ -227,8 +224,9 @@ class CreateCollection{
             }
 
             $scope.newCollection.data.collectionConfig = $scope.collectionConfig;
-            if(!$scope.newCollection.data.collectionConfig.baseEntityName.startsWith(hibachiConfig.applicationKey))
-            $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
+            if($scope.newCollection.data.collectionConfig.baseEntityName.lastIndexOf(hibachiConfig.applicationKey, 0) !== 0) {
+                $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
+            }
             $scope.newCollection.$$save().then(function () {
                 observerService.notify('addCollection', $scope.newCollection.data);
                 selectionService.clearSelection('collectionSelection');

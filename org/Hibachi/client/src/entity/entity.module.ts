@@ -15,10 +15,11 @@ import {RouterController} from "./controllers/routercontroller";
 import {SWDetailTabs} from "./components/swdetailtabs";
 import {SWDetail} from "./components/swdetail";
 import {SWList} from "./components/swlist";
+import {coremodule} from "../core/core.module";
 
 declare var $:any;
 
-var entitymodule = angular.module('hibachi.entity',['ngRoute'])
+var entitymodule = angular.module('hibachi.entity',['ngRoute',coremodule.name])
 .config(['$routeProvider','$injector','$locationProvider','appConfig',
 ($routeProvider,$injector,$locationProvider,appConfig)=>{
      //detect if we are in hashbang mode
@@ -51,10 +52,11 @@ var entitymodule = angular.module('hibachi.entity',['ngRoute'])
              }
          },
          controller: 'routerController',
-     }).otherwise({
-         //controller:'otherwiseController'
-         templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
-     });
+     })
+//        .otherwise({
+//         //controller:'otherwiseController'
+//         templateUrl: appConfig.baseURL + '/admin/client/js/partials/otherwise.html',
+//     });
 }])
 .constant('coreEntityPartialsPath','entity/components/')
 //services

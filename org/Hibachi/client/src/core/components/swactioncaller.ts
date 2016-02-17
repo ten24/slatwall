@@ -16,6 +16,8 @@ class SWActionCallerController{
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
     public formCtrl:any;
+    public actionUrl:string;
+    public queryString:string;
     //@ngInject
     constructor(
         private $scope,
@@ -46,7 +48,16 @@ class SWActionCallerController{
         });
     }
 
+
     public init = ():void =>{
+
+        //Check if is NOT a ngRouter
+        if(this.utilityService.isAngularRoute()){
+            this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
+        }else{
+            this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
+        }
+
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
 

@@ -107,6 +107,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 
+
 	public numeric function getNumberOfUnassignedGiftCards(){
 
 		if(!this.isGiftCardOrderItem()){
@@ -150,12 +151,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			maxQTY = getSku().setting('skuOrderMaximumQuantity');
 
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
-				if( !isNull(getStock()) && getStock().getQuantity('QATS') < maxQTY ) {
+				if( !isNull(getStock()) && getStock().getQuantity('QATS') <= maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
-				} else if(getSKU().getQuantity('QATS') < maxQTY) {
+				} else if(getSKU().getQuantity('QATS') <= maxQTY) {
 					maxQTY = getSku().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
@@ -167,33 +168,20 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return maxQTY;
 	}
 
-	//gets the quantity of orderItems that use the same sku on the order but excludes the current orderItem.
-    public any function getQuantityAlreadyOnOrder(){
-        var qtyAlreadyOnOrder = 0;
-        for (var orderItem in getOrder().getOrderItems()){
-            if (orderItem.getOrderItemID() != "" && !isNull(orderItem.getSku()) && orderItem.getSku().getSkuID() == getSku().getSkuID()) {
-                qtyAlreadyOnOrder += orderItem.getQuantity();
-            }
-        }
-        return qtyAlreadyOnOrder;
-    }
+	public boolean function hasQuantityWithinMaxOrderQuantity() {
+		return getService('OrderService').hasQuantityWithinMaxOrderQuantity(this);
+	}
 
-    public any function getQuantityPlusQuantityAlreadyOnOrder(){
-        return getQuantity() + getQuantityAlreadyOnOrder();
-    }
+	public boolean function hasQuantityWithinMinOrderQuantity() {
+		return getService('OrderService').hasQuantityWithinMinOrderQuantity(this);
+	}
 
-    public boolean function hasQuantityWithinMaxOrderQuantity() {
-        if(getOrderItemType().getSystemCode() == 'oitSale') {
-            return getQuantityPlusQuantityAlreadyOnOrder() <= getMaximumOrderQuantity();
-        }
-        return true;
-    }
+	public numeric function getQuantitySumOnOrder(){
+		return getService('OrderService').getOrderItemQuantitySumOnOrder(this);
+	}
 
-    public boolean function hasQuantityWithinMinOrderQuantity() {
-        if(getOrderItemType().getSystemCode() == 'oitSale') {
-            return getQuantityPlusQuantityAlreadyOnOrder() >= getSku().setting('skuOrderMinimumQuantity');
-        }
-        return true;
+    public numeric function getOrderItemCountOnOrder(){
+        return getService('OrderService').getOrderItemCountOnOrder(this);
     }
 
 	public string function getOrderStatusCode(){

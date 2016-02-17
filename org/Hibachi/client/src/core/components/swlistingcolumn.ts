@@ -20,15 +20,15 @@ class SWListingColumn implements ng.IDirective{
     public scope=true;
     public bindToController={
         propertyIdentifier:"@",
-        processObjectProperty:"@",
-        title:"@",
-        tdclass:"@",
-        search:"=",
-        sort:"=",
-        filter:"=",
-        range:"=",
-        editable:"=",
-        buttonGroup:"="
+        processObjectProperty:"@?",
+        title:"@?",
+        tdclass:"@?",
+        search:"=?",
+        sort:"=?",
+        filter:"=?",
+        range:"=?",
+        editable:"=?",
+        buttonGroup:"=?"
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";

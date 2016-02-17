@@ -400,4 +400,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		return getService('sessionService').processSession(getSession(), arguments.slatProcess);
 	}
 	
+	public boolean function onSlatwallCMS(){
+		return !isNull(getHibachiScope().getSite()) && !isNull(getHibachiScope().getSite().getApp());
+	}
+	
 }

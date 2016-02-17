@@ -52,7 +52,12 @@
 		<cfcase value="checkbox">
 			<cfoutput>
 				<input type="hidden" name="#attributes.fieldName#" value="" />
-				<input type="checkbox" name="#attributes.fieldName#" value="1" class="#attributes.fieldClass# form-control" <cfif attributes.value EQ "1"> checked="checked"</cfif> #attributes.fieldAttributes# />
+				
+				<div class="s-checkbox">
+					<input type="checkbox" id="#attributes.fieldName#" name="#attributes.fieldName#" value="1" class="#attributes.fieldClass# form-control" <cfif attributes.value EQ "1"> checked="checked"</cfif> #attributes.fieldAttributes# />
+					<label for="#attributes.fieldName#"></label>
+				</div>
+				
 			</cfoutput>
 		</cfcase>
 		<cfcase value="checkboxgroup">
@@ -61,7 +66,12 @@
 				<cfloop array="#attributes.valueOptions#" index="option">
 					<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
 					<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
-					<input type="checkbox" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass# form-control" <cfif listFindNoCase(attributes.value, thisOptionValue)> checked="checked"</cfif> #attributes.fieldAttributes# /> <span class="#attributes.fieldClass#">#thisOptionName#</span> <br />
+					
+					<div class="s-checkbox">
+						<input type="checkbox" id="#thisOptionValue#" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass# form-control" <cfif listFindNoCase(attributes.value, thisOptionValue)> checked="checked"</cfif> #attributes.fieldAttributes# /> 
+						<label for="#thisOptionValue#"> #thisOptionName#</label>
+					</div>
+					
 				</cfloop>
 			</cfoutput>
 		</cfcase>

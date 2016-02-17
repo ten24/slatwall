@@ -260,7 +260,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	//Gift Card Helpers
 	public boolean function isGiftCardAccountPaymentMethod(){
-		return this.getPaymentMethod().getPaymentMethodType() eq "giftCard";
+		return !isNull(this.getPaymentMethod()) && !isNull(this.getPaymentMethod().getPaymentMethodType()) && this.getPaymentMethod().getPaymentMethodType() eq "giftCard";
 	}
 
 	public any function getGiftCard(){

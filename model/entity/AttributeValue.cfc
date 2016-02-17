@@ -83,6 +83,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
 	property name="productReview" cfc="ProductReview" fieldtype="many-to-one" fkcolumn="productReviewID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
 	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";
 	property name="type" cfc="Type" fieldtype="many-to-one" fkcolumn="typeID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
@@ -202,7 +203,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 	// Account Address (many-to-one)
 	public void function setAccountAddress(required any accountAddress) {
-		variables.account = arguments.account;
+		variables.accountAddress = arguments.accountAddress;
 		if(isNew() or !arguments.accountAddress.hasAttributeValue( this )) {
 			arrayAppend(arguments.accountAddress.getAttributeValues(), this);
 		}
@@ -558,6 +559,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.sku.getAttributeValues(), index);
 		}
 		structDelete(variables, "sku");
+	}
+
+	// Site (many-to-one)
+	public void function setSite(required any site) {
+		variables.site = arguments.site;
+		if(isNew() or !arguments.site.hasAttributeValue( this )) {
+			arrayAppend(arguments.site.getAttributeValues(), this);
+		}
+	}
+	public void function removeSite(any site) {
+		if(!structKeyExists(arguments, "site")) {
+			arguments.site = variables.site;
+		}
+		var index = arrayFind(arguments.site.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.site.getAttributeValues(), index);
+		}
+		structDelete(variables, "site");
 	}
 
 	// Subscription Benefit (many-to-one)

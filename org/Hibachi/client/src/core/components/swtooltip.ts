@@ -51,24 +51,26 @@ class SWTooltip implements ng.IDirective{
       var tooltip = element.find(".tooltip");
       var elementPosition= element.position(); 
       var tooltipStyle = tooltip[0].style; 
-      switch(attrs.position.toLowerCase()){
-          case 'top':
-            tooltipStyle.top = "0px"; 
-            tooltipStyle.left = "0px"; 
-            break; 
-          case 'bottom':
-            //where the element is rendered to begin with
-            break;
-          case 'left': 
-            tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5)  + "px"; 
-            tooltipStyle.left = (-1 * (elementPosition.left + element[0].offsetLeft - 5)) + "px";
-            element.find(".tooltip-inner")[0].style.maxWidth = "none";
-            break;
-          default: 
-          //right is the default
-            tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5) + "px"; 
-            tooltipStyle.left = (elementPosition.left + element[0].offsetWidth - 5) + "px";
-      }      
+      if(attrs && attrs.position){
+          switch(attrs.position.toLowerCase()){
+              case 'top':
+                tooltipStyle.top = "0px"; 
+                tooltipStyle.left = "0px"; 
+                break; 
+              case 'bottom':
+                //where the element is rendered to begin with
+                break;
+              case 'left': 
+                tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5)  + "px"; 
+                tooltipStyle.left = (-1 * (elementPosition.left + element[0].offsetLeft - 5)) + "px";
+                element.find(".tooltip-inner")[0].style.maxWidth = "none";
+                break;
+              default: 
+              //right is the default
+                tooltipStyle.top = (elementPosition.top + element[0].offsetHeight - 5) + "px"; 
+                tooltipStyle.left = (elementPosition.left + element[0].offsetWidth - 5) + "px";
+          }   
+      }   
     }
     
 	public static Factory(){

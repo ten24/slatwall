@@ -30,6 +30,7 @@ module.exports = {
         ,'angular-animate':'../lib/angular/angular-animate.min.js'
         ,'angular-sanitize':'../lib/angular/angular-sanitize.min.js'
         ,'metismenu':'../lib/metismenu/metismenu.js'
+        ,'angularjs-datetime-picker':'../lib/angularjs-datetime-picker/angularjs-datetime-picker.js'
       //,'ng-ckeditor':'../lib/ng-ckeditor/ng-ckeditor.min.js'
   	}
   },

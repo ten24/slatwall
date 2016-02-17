@@ -54,6 +54,8 @@ Notes:
 
 <hb:HibachiListingDisplay smartList="#rc.account.getProductReviewsSmartList()#">
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="reviewTitle" />
+	<hb:HibachiListingColumn propertyIdentifier="rating" />
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="review" />
 	<hb:HibachiListingColumn propertyIdentifier="rating" />
 </hb:HibachiListingDisplay>

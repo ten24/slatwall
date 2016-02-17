@@ -52,7 +52,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'executeScheduledTasks');
-	
+
 	this.anyAdminMethods='';
 	
 	this.secureMethods='';
@@ -61,7 +61,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getScheduleService().executeScheduledTasks( );
 		abort;
 	}
-	
+
 	
 	
 }

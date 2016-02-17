@@ -379,6 +379,7 @@
 
 				}
 			}
+			$.slatwall.getService("hibachiEventService").announceEvent(eventName="MuraOnRenderStartComplete");
 		}
 		
 		public void function onSiteRequestEnd( required any $ ) {
@@ -469,6 +470,47 @@
 			
 			var slatwallSite = $.slatwall.getService("siteService").getSiteByCMSSiteID($.event('siteID'));
 			syncMuraCategories($=$, slatwallSiteID=slatwallSite.getSiteID(), muraSiteID=$.event('siteID'));
+			
+			if( StructKeyExists(form, 'categoryID')){
+				
+				var muraCategory = $.event('categoryBean');
+				
+				if (!muraCategory.getIsNew()){
+					var slatwallCategory = $.slatwall.getService("ContentService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getCategoryID(), muraCategory.getSiteID() );
+					var oldCategoryIDPath = slatwallCategory.getCategoryIDPath();
+					
+					//Set the category to the updated name
+					slatwallCategory.setCategoryName( muraCategory.getName() );
+					
+					if(!muraCategory.getParent().getIsNew()) {
+						var parentCategory = $.slatwall.getService("ContentService").getCategoryByCMSCategoryIDAndCMSSiteID( muraCategory.getParent().getcategoryID(), muraCategory.getSiteID() );
+						
+						//If the slatwallCategory's Parent and the parentCategory variable don't match then the parent has been updated. 
+						if( isNull(slatwallCategory.getParentCategory()) || slatwallCategory.getParentCategory().getCategoryID() != parentCategory.getCategoryID() ) {
+							slatwallCategory.setParentCategory(parentcategory);
+							
+							//Build the ID LIst
+							var newIDList = parentCategory.getCategoryIDPath();
+							listAppend(newIDList, slatwallCategory.getCategoryID() );
+							
+							//Set the new categoryIDPath
+							slatwallCategory.setCategoryIDPath(newIDList);
+							
+							// Update all nested categories
+							updateOldSlatwallCategoryIDPath(oldCategoryIDPath=oldCategoryIDPath, newCategoryIDPath=newIDList);
+						}
+					}else if ( muraCategory.getParent().getIsNew() && !isNull(slatwallCategory.getParentCategory()) )  {
+						//Set parent to null
+						slatwallCategory.setParentCategory( javaCast('null', '') );
+						
+						//Update the ID path
+						slatwallCategory.setCategoryIDPath( slatwallCategory.getCategoryID() );
+						
+						// Update all nested categories
+						updateOldSlatwallCategoryIDPath(oldCategoryIDPath=oldCategoryIDPath, newCategoryIDPath=slatwallCategory.getCategoryID());
+					}
+				}
+			}
 			
 			syncMuraContentCategoryAssignment( muraSiteID=$.event('siteID') );
 			
@@ -1043,6 +1085,39 @@
 				</cfif>
 			</cfloop>
 		</cflock>
+	</cffunction>
+	
+	<cffunction name="updateOldSlatwallCategoryIDPath">
+		<cfargument name="oldCategoryIDPath" type="string" default="" />
+		<cfargument name="newCategoryIDPath" type="string" default="" />
+		
+		<cfset var rs = "" />
+		<cfset var rs2 = "" />
+		<!--- Select any content that is a desendent of the old contentIDPath, and update them to the new path --->
+		<cfquery name="rs">
+			SELECT
+				categoryID,
+				categoryIDPath
+			FROM
+				SwCategory
+			WHERE
+				categoryIDPath <> <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#" />
+			  AND
+				categoryIDPath LIKE <cfqueryparam cfsqltype="cf_sql_varchar" value="#oldCategoryIDPath#%" />
+		</cfquery>
+		
+		
+		<cfloop query="rs">
+			<cfquery name="rs2">
+				UPDATE
+					SwCategory
+				SET
+					categoryIDPath = <cfqueryparam cfsqltype="cf_sql_varchar" value="#replace(rs.categoryIDPath, arguments.oldCategoryIDPath, arguments.newCategoryIDPath)#">
+				WHERE
+					categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.categoryID#">
+			</cfquery>
+		</cfloop>
+		
 	</cffunction>
 	
 	<cffunction name="updateOldSlatwallContentIDPath">

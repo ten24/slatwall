@@ -13,6 +13,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getExistingCollectionsByBaseEntity');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getFilterPropertiesByBaseEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessObject');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessMethodOptionsByEntityName');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
     this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
@@ -86,6 +87,7 @@ component output="false" accessors="true" extends="HibachiController" {
     }
     
     public void function login(required struct rc){
+    	
         if(!getHibachiScope().getLoggedInFlag()){
             //if account doesn't exist than one is create
             var account = getService('AccountService').processAccount(getHibachiScope().getAccount(), rc, "login");
@@ -107,9 +109,11 @@ component output="false" accessors="true" extends="HibachiController" {
                 return;
             }
         }
+        
         if(getHibachiScope().getLoggedinFlag()){
-            arguments.rc.apiResponse.content['token'] = getService('jwtService').createToken();
+            arguments.rc.apiResponse.content['token'] = getService('HibachiJWTService').createToken();
         }
+        
     }
     
     public void function noaccess(required struct rc){
@@ -127,18 +131,18 @@ component output="false" accessors="true" extends="HibachiController" {
     public any function getDetailTabs(required struct rc){
         var detailTabs = [];
         var tabsDirectory = expandPath( '/#getApplicationValue('applicationKey')#' ) & '/org/Hibachi/client/src/entity/components/#lcase(rc.entityName)#/';
-        var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
-        for(var tabFile in tabFilesList){
-            var tab = {};
-            tab['tabName']='#tabFile.name#';
-            if(tabFile.name == 'basic.html'){
-                tab['openTab'] = true;
-            }else{
-                tab['openTab'] = false;
-            }
-            arrayAppend(detailTabs,tab);
-        }    
-        
+	    if(FileExists(tabsDirectory & 'tabsConfig.json')){
+		    detailTabs =  DeserializeJSON(FileRead(tabsDirectory & 'tabsConfig.json'));
+	    }else{
+		    var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
+		    for(var tabFile in tabFilesList){
+			    var tab = {
+				    "tabName" = tabFile.name,
+				    "openTab" = (tabFile.name == 'basic.html')
+			    };
+			    arrayAppend(detailTabs,tab);
+		    }
+	    }
         arguments.rc.apiResponse.content['data'] = detailTabs;
     }
     
@@ -377,9 +381,23 @@ component output="false" accessors="true" extends="HibachiController" {
     }
     
     public void function getEventOptionsByEntityName(required struct rc){
-        var eventNameOptions = getService('hibachiEventService').getEventNameOptionsForObject(rc.entityName);
+        var eventNameOptions = getService('hibachiEventService').getEventNameOptionsForObject(arguments.rc.entityName);
         arguments.rc.apiResponse.content['data'] = eventNameOptions;
     }
+
+	public void function getProcessMethodOptionsByEntityName(required struct rc){
+		var processOptions = [];
+		var allProcessMethods = getHibachiService().getEntitiesProcessContexts();
+		if(structKeyExists(allProcessMethods, arguments.rc.entityName)){
+			for(var processMethod in allProcessMethods[arguments.rc.entityName]){
+				arrayAppend(processOptions, {
+					'name' = rbKey('entity.#arguments.rc.entityName#.process.#processMethod#'),
+					'value' = 'process#arguments.rc.entityName#_#processMethod#'
+				});
+			}
+		}
+		arguments.rc.apiResponse.content['data'] = processOptions;
+	}
     
     private void function formatEntity(required any entity, required any model){
         

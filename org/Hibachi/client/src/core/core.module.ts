@@ -1,6 +1,7 @@
 /// <reference path='../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../typings/tsd.d.ts' />
 
+import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./services/hibachiinterceptor";
 //constant
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
@@ -13,7 +14,7 @@ import {FormService} from "./services/formservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
-
+import {HibachiScope} from "./services/hibachiscope";
 //controllers
 import {GlobalSearchController} from "./controllers/globalsearch";
 
@@ -131,7 +132,7 @@ var coremodule = angular.module('hibachi.core',[
         {
             var _deferred = {};
             console.log($delegate);
-                console.log(appConfig);
+            console.log(appConfig);
             var _config = appConfig;
 
             var _jsEntities = {};
@@ -161,7 +162,7 @@ var coremodule = angular.module('hibachi.core',[
                         promise:entityDataPromise,
                         value:entityInstance
                     }
-                }
+                };
 
 
                 $delegate['get'+entity.className] = function(options){
@@ -183,15 +184,15 @@ var coremodule = angular.module('hibachi.core',[
                         promise:entityDataPromise,
                         value:entityInstance
                     }
-                }
+                };
 
                 $delegate['new'+entity.className] = function(){
                     return $delegate.newEntity(entity.className);
-                }
+                };
 
                 entity.isProcessObject = entity.className.indexOf('_') >= 0;
 
-                    _jsEntities[ entity.className ]=function() {
+                _jsEntities[ entity.className ]=function() {
 
                     this.validations = validations[entity.className];
 
@@ -211,11 +212,11 @@ var coremodule = angular.module('hibachi.core',[
 
                     this.metaData.$$getPropertyTitle = function(propertyName){
                         return _getPropertyTitle(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getPropertyHint = function(propertyName){
                         return _getPropertyHint(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getManyToManyName = function(singularname){
                         var metaData = this;
@@ -224,17 +225,17 @@ var coremodule = angular.module('hibachi.core',[
                                 return metaData[i].name;
                             }
                         }
-                    }
+                    };
 
 
 
                     this.metaData.$$getPropertyFieldType = function(propertyName){
                         return _getPropertyFieldType(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getPropertyFormatType = function(propertyName){
                         return _getPropertyFormatType(propertyName,this);
-                    }
+                    };
 
                     this.metaData.$$getDetailTabs = function(){
                         var deferred = $q.defer();
@@ -248,11 +249,11 @@ var coremodule = angular.module('hibachi.core',[
                         });
 
                         return deferred.promise;
-                    }
+                    };
 
                     this.$$getFormattedValue = function(propertyName,formatType){
                         return _getFormattedValue(propertyName,formatType,this);
-                    }
+                    };
 
                     this.data = {};
                     this.modifiedData = {};
@@ -281,16 +282,12 @@ var coremodule = angular.module('hibachi.core',[
                     });
 
                 };
-                    _jsEntities[ entity.className ].prototype = {
+                _jsEntities[ entity.className ].prototype = {
                     $$getPropertyByName:function(propertyName){
                         return this['$$get'+propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
                     },
                     $$isPersisted:function(){
-                        if(this.$$getID() === ''){
-                            return false;
-                        }else{
-                            return true;
-                        }
+                        return this.$$getID() !== '';
                     },
                     $$init:function( data ) {
 
@@ -300,8 +297,7 @@ var coremodule = angular.module('hibachi.core',[
                         return _save(this);
                     },
                     $$delete:function(){
-                        var deletePromise =_delete(this)
-                        return deletePromise;
+                        return _delete(this);
                     },
 
                     $$getValidationsByProperty:function(property){
@@ -315,12 +311,12 @@ var coremodule = angular.module('hibachi.core',[
                             var listFirst = utilityService.listFirst(propertyIdentifier,'.');
                             var relatedEntityName = this.metaData[listFirst].cfc;
                             var exampleEntity = $delegate.newEntity(relatedEntityName);
-                            return exampleEntity = exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst,''));
+                            return exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst,''));
                         }
                         return this.metaData.$$getPropertyTitle(propertyIdentifier);
-                    }
+                    },
 
-                    ,$$getMetaData:function( propertyName ) {
+                    $$getMetaData:function( propertyName ) {
                         if(propertyName === undefined) {
                             return this.metaData
                         }else{
@@ -390,18 +386,31 @@ var coremodule = angular.module('hibachi.core',[
 
                                         return null;
                                     };
-                                    _jsEntities[ entity.className ].prototype['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(entityInstance) {
-
+                                    _jsEntities[ entity.className ].prototype['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(entityInstance?) {
 
                                         var thisEntityInstance = this;
                                         var metaData = this.metaData;
                                         var manyToManyName = '';
+
+                                        //if entityInstance is not passed in, clear related object
+                                        if(angular.isUndefined(entityInstance)){
+                                            if(angular.isDefined(thisEntityInstance.data[property.name])){
+                                                delete thisEntityInstance.data[property.name];
+                                            }
+                                            for(var i = 0; i <= thisEntityInstance.parents.length; i++){
+                                                if(angular.isDefined(thisEntityInstance.parents[i]) &&  thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)){
+                                                    thisEntityInstance.parents.splice(i,1);
+                                                }
+                                            }
+                                            return;
+                                        }
+
                                         if(property.name === 'parent'+this.metaData.className){
                                             var childName = 'child'+this.metaData.className;
                                             manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 
                                         }else{
-                                            manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
+                                            manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1));
                                         }
 
                                         if(angular.isUndefined(thisEntityInstance.parents)){
@@ -416,7 +425,7 @@ var coremodule = angular.module('hibachi.core',[
                                                 entityInstance.children = [];
                                             }
 
-                                            var child = entityInstance.metaData[manyToManyName];;
+                                            var child = entityInstance.metaData[manyToManyName];
 
                                             if(entityInstance.children.indexOf(child) === -1){
                                                 entityInstance.children.push(child);
@@ -430,13 +439,13 @@ var coremodule = angular.module('hibachi.core',[
 
                                         thisEntityInstance.data[property.name] = entityInstance;
                                     };
-
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
 
-                                    _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
+                                    _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){
 
-
-                                        var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+                                        if(angular.isUndefined(entityInstance)){
+                                            var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
+                                        }
                                         var metaData = this.metaData;
 
                                         if(metaData[property.name].fieldtype === 'one-to-many'){
@@ -483,61 +492,61 @@ var coremodule = angular.module('hibachi.core',[
 
                                     _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
 
-                                    var thisEntityInstance = this;
-                                    if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
-                                        var options = {
-                                            filterGroupsConfig:angular.toJson([{
-                                                "filterGroup":[
-                                                    {
-                                                        "propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
-                                                        "comparisonOperator":"=",
-                                                        "value":this.$$getID()
+                                        var thisEntityInstance = this;
+                                        if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
+                                            var options = {
+                                                filterGroupsConfig:angular.toJson([{
+                                                    "filterGroup":[
+                                                        {
+                                                            "propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
+                                                            "comparisonOperator":"=",
+                                                            "value":this.$$getID()
+                                                        }
+                                                    ]
+                                                }]),
+                                                allRecords:true
+                                            };
+
+                                            var collectionPromise = $delegate.getEntity(property.cfc,options);
+                                            collectionPromise.then(function(response){
+
+                                                for(var i in response.records){
+
+                                                    var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData[property.name].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData[property.name].singularname.slice(1)]();
+                                                    entityInstance.$$init(response.records[i]);
+                                                    if(angular.isUndefined(thisEntityInstance[property.name])){
+                                                        thisEntityInstance[property.name] = [];
                                                     }
-                                                ]
-                                            }]),
-                                            allRecords:true
+                                                    thisEntityInstance[property.name].push(entityInstance);
+                                                }
+                                            });
+                                            return collectionPromise;
+                                        }
+                                    };
+                                }else{
+
+                                    if(['id'].indexOf(property.fieldtype)>= 0){
+                                        _jsEntities[ entity.className ].prototype['$$getID']=function(){
+                                            //this should retreive id from the metadata
+                                            return this.data[this.$$getIDName()];
                                         };
 
-                                        var collectionPromise = $delegate.getEntity(property.cfc,options);
-                                        collectionPromise.then(function(response){
-
-                                            for(var i in response.records){
-
-                                                var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData[property.name].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData[property.name].singularname.slice(1)]();
-                                                entityInstance.$$init(response.records[i]);
-                                                if(angular.isUndefined(thisEntityInstance[property.name])){
-                                                    thisEntityInstance[property.name] = [];
-                                                }
-                                                thisEntityInstance[property.name].push(entityInstance);
-                                            }
-                                        });
-                                        return collectionPromise;
+                                        _jsEntities[ entity.className ].prototype['$$getIDName']=function(){
+                                            var IDNameString = property.name;
+                                            return IDNameString;
+                                        };
                                     }
-                                };
-                            }else{
-
-                                if(['id'].indexOf(property.fieldtype)>= 0){
-                                    _jsEntities[ entity.className ].prototype['$$getID']=function(){
-                                        //this should retreive id from the metadata
-                                        return this.data[this.$$getIDName()];
-                                    };
-
-                                    _jsEntities[ entity.className ].prototype['$$getIDName']=function(){
-                                        var IDNameString = property.name;
-                                        return IDNameString;
-                                    };
-                                }
 
                                     _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(){
+                                        return this.data[property.name];
+                                    };
+                                }
+                            }else{
+                                _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
                                     return this.data[property.name];
                                 };
                             }
-                        }else{
-                            _jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
-                                return this.data[property.name];
-                            };
                         }
-                    }
                     }
                 });
 
@@ -615,7 +624,7 @@ var coremodule = angular.module('hibachi.core',[
                     return keyValue;
                 }
                 return '';
-            }
+            };
 
 
 
@@ -685,15 +694,9 @@ var coremodule = angular.module('hibachi.core',[
 
             var _isSimpleValue = function(value){
 
-                if(
-                    angular.isString(value) || angular.isNumber(value)
-                    || angular.isDate(value) || value === false || value === true
-                ){
-                    return true;
-                }else{
-                    return false;
-                }
-            }
+                return !!(angular.isString(value) || angular.isNumber(value)
+                || angular.isDate(value) || value === false || value === true);
+            };
 
 
             var _getFormattedValue = function(propertyName,formatType,entityInstance){
@@ -735,9 +738,8 @@ var coremodule = angular.module('hibachi.core',[
                 var entityName = entityInstance.metaData.className;
                 var entityID = entityInstance.$$getID();
                 var context = 'delete';
-                var deletePromise = $delegate.saveEntity(entityName,entityID,{},context);
-                return deletePromise;
-            }
+                return $delegate.saveEntity(entityName, entityID, {}, context);
+            };
 
             var _setValueByPropertyPath = function (obj,path, value) {
                 var a = path.split('.');
@@ -760,22 +762,22 @@ var coremodule = angular.module('hibachi.core',[
                 else context[a[a.length - 1]] = value;
 
 
-            }
+            };
 
             var _getValueByPropertyPath = function(obj,path) {
-                    var paths = path.split('.')
-                    , current = obj
-                    , i;
+                var paths = path.split('.'),
+                    current = obj,
+                    i;
 
-                    for (i = 0; i < paths.length; ++i) {
+                for (i = 0; i < paths.length; ++i) {
                     if (current[paths[i]] == undefined) {
                         return undefined;
                     } else {
                         current = current[paths[i]];
                     }
-                    }
-                    return current;
-            }
+                }
+                return current;
+            };
 
             var _addReturnedIDs = function(returnedIDs,entityInstance){
 
@@ -796,7 +798,7 @@ var coremodule = angular.module('hibachi.core',[
                         entityInstance.data[key] = returnedIDs[key];
                     }
                 }
-            }
+            };
 
 
             var _save = function(entityInstance){
@@ -824,11 +826,16 @@ var coremodule = angular.module('hibachi.core',[
                         }else{
                             entityName = modifiedData.objectLevel.metaData.className;
                         }
-                        var savePromise = $delegate.saveEntity(entityName,entityInstance.$$getID(),params,context);
-                        savePromise.then(function(response){
+                        var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
+                        savePromise.then((response)=>{
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
+
+                                if($location.url() == '/entity/'+entityName+'/create' && response.data[modifiedData.objectLevel.$$getIDName()]){
+                                    $location.path('/entity/'+entityName+'/'+response.data[modifiedData.objectLevel.$$getIDName()], false);
+                                }
                                 _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
+
                                 deferred.resolve(returnedIDs);
                             }else{
                                 deferred.reject(angular.isDefined(response.messages) ? response.messages : response);
@@ -846,7 +853,7 @@ var coremodule = angular.module('hibachi.core',[
                         target.focus();
                         var targetID = target.attr('id');
                         $anchorScroll();
-                        deferred.reject('input is invalid');
+                        deferred.reject('Input is invalid.');
                     }
                 });
                 //return timeoutPromise;
@@ -857,13 +864,13 @@ var coremodule = angular.module('hibachi.core',[
 
 
                 */
-            }
+            };
 
             var _getModifiedData = function(entityInstance){
                 var modifiedData:any = {};
                 modifiedData = getModifiedDataByInstance(entityInstance);
                 return modifiedData;
-            }
+            };
 
             var getObjectSaveLevel = function(entityInstance){
                 var objectLevel:any = entityInstance;
@@ -883,7 +890,7 @@ var coremodule = angular.module('hibachi.core',[
                 });
 
                 return objectLevel;
-            }
+            };
 
             var validateObject = function(entityInstance){
 
@@ -900,15 +907,19 @@ var coremodule = angular.module('hibachi.core',[
                             //$log.debug('key:'+key);
                             if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                                 var inputField = form[key];
-                                if(angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
 
+                                if(inputField.$modelValue){
+                                    inputField.$dirty = true;
+                                }
+
+                                if(angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
 
                                     if(angular.isDefined(entityInstance.metaData[key])
                                     && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype)
                                     && entityInstance.metaData[key].hb_formfieldtype === 'json'){
-                                        modifiedData[key] = angular.toJson(form[key].$modelValue);
+                                        modifiedData[key] = angular.toJson(inputField.$modelValue);
                                     }else{
-                                        modifiedData[key] = form[key].$modelValue;
+                                        modifiedData[key] = inputField.$modelValue;
                                     }
                                 }
                             }
@@ -941,14 +952,17 @@ var coremodule = angular.module('hibachi.core',[
                             for(var key in form){
                                 if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                                     var inputField = form[key];
+                                    if(inputField.$modelValue){
+                                        inputField.$dirty = true;
+                                    }
                                     if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
 
                                         if(angular.isDefined(parentInstance.metaData[key])
                                         && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype)
                                         && parentInstance.metaData[key].hb_formfieldtype === 'json'){
-                                            modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);
+                                            modifiedData[parentObject.name][key] = angular.toJson(inputField.$modelValue);
                                         }else{
-                                            modifiedData[parentObject.name][key] = form[key].$modelValue;
+                                            modifiedData[parentObject.name][key] = inputField.$modelValue;
                                         }
                                     }
                                 }
@@ -1041,12 +1055,15 @@ var coremodule = angular.module('hibachi.core',[
                 for(var key in form){
                     if(key.charAt(0) !== '$' && angular.isObject(form[key])){
                         var inputField = form[key];
+                        if(inputField.$modelValue){
+                            inputField.$dirty = true;
+                        }
                         if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && (inputField.$dirty === true || (form.autoDirty && form.autoDirty == true))){
 
                             if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
-                                data[key] = angular.toJson(form[key].$modelValue);
+                                data[key] = angular.toJson(inputField.$modelValue);
                             }else{
-                                data[key] = form[key].$modelValue;
+                                data[key] = inputField.$modelValue;
                             }
 
                         }
@@ -1084,69 +1101,65 @@ var coremodule = angular.module('hibachi.core',[
             }
 
             var getDataFromChildren = function(entityInstance){
-                        var data = {};
+                var data = {};
 
-                        //$log.debug('childrenFound');
-                        //$log.debug(entityInstance.children);
-                        for(var c in entityInstance.children){
-                            var childMetaData = entityInstance.children[c];
-                            var children = entityInstance.data[childMetaData.name];
-                            //$log.debug(childMetaData);
-                            //$log.debug(children);
-                            if(angular.isArray(entityInstance.data[childMetaData.name])){
-                                if(angular.isUndefined(data[childMetaData.name])){
-                                    data[childMetaData.name] = [];
-                                }
-                                angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
-                                    //$log.debug('process child array item')
-                                    var childData = processChild(child,entityInstance);
-                                    //$log.debug('process child return');
-                                    //$log.debug(childData);
-                                    data[childMetaData.name].push(childData);
-                                });
-                            }else{
-                                if(angular.isUndefined(data[childMetaData.name])){
-                                    data[childMetaData.name] = {};
-                                }
-                                var child = entityInstance.data[childMetaData.name];
-                                //$log.debug('begin process child');
-                                var childData = processChild(child,entityInstance);
-                                //$log.debug('process child return');
-                                //$log.debug(childData);
-                                angular.extend(data,childData);
-                            }
-
+                //$log.debug('childrenFound');
+                //$log.debug(entityInstance.children);
+                for(var c in entityInstance.children){
+                    var childMetaData = entityInstance.children[c];
+                    var children = entityInstance.data[childMetaData.name];
+                    //$log.debug(childMetaData);
+                    //$log.debug(children);
+                    if(angular.isArray(entityInstance.data[childMetaData.name])){
+                        if(angular.isUndefined(data[childMetaData.name])){
+                            data[childMetaData.name] = [];
                         }
-                        //$log.debug('returning child data');
-                        //$log.debug(data);
-
-                        return data;
-                    }
-
-                    var getModifiedDataByInstance = function(entityInstance){
-                        var modifiedData:any = {};
-
-
-
-
-
-                        var objectSaveLevel = getObjectSaveLevel(entityInstance);
-                        //$log.debug('objectSaveLevel : ' + objectSaveLevel );
-                        var valueStruct = validateObject(objectSaveLevel);
-                        //$log.debug('validateObject data');
-                        //$log.debug(valueStruct.value);
-
-                        modifiedData = {
-                            objectLevel:objectSaveLevel,
-                            value:valueStruct.value,
-                            valid:valueStruct.valid
+                        angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
+                            //$log.debug('process child array item')
+                            var childData = processChild(child,entityInstance);
+                            //$log.debug('process child return');
+                            //$log.debug(childData);
+                            data[childMetaData.name].push(childData);
+                        });
+                    }else{
+                        if(angular.isUndefined(data[childMetaData.name])){
+                            data[childMetaData.name] = {};
                         }
-                        return modifiedData;
+                        var child = entityInstance.data[childMetaData.name];
+                        //$log.debug('begin process child');
+                        var childData = processChild(child,entityInstance);
+                        //$log.debug('process child return');
+                        //$log.debug(childData);
+                        angular.extend(data,childData);
                     }
 
-                    var _getValidationsByProperty = function(entityInstance,property){
-                        return entityInstance.validations.properties[property];
-                    }
+                }
+                //$log.debug('returning child data');
+                //$log.debug(data);
+
+                return data;
+            }
+
+            var getModifiedDataByInstance = function(entityInstance){
+                var modifiedData:any = {};
+
+                var objectSaveLevel = getObjectSaveLevel(entityInstance);
+                //$log.debug('objectSaveLevel : ' + objectSaveLevel );
+                var valueStruct = validateObject(objectSaveLevel);
+                //$log.debug('validateObject data');
+                //$log.debug(valueStruct.value);
+
+                modifiedData = {
+                    objectLevel:objectSaveLevel,
+                    value:valueStruct.value,
+                    valid:valueStruct.valid
+                };
+                return modifiedData;
+            };
+
+            var _getValidationsByProperty = function(entityInstance,property){
+                return entityInstance.validations.properties[property];
+            };
 
             var _getValidationByPropertyAndContext = function(entityInstance,property,context){
                 var validations = _getValidationsByProperty(entityInstance,property);
@@ -1165,10 +1178,22 @@ var coremodule = angular.module('hibachi.core',[
             return $delegate;
         }
     ]);
+     $httpProvider.interceptors.push('hibachiInterceptor');
 }])
-.run(['$rootScope','$hibachi',($rootScope,$hibachi)=>{
+.run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
     $rootScope.buildUrl = $hibachi.buildUrl;    
-}])    
+    var original = $location.path;
+    $location.path = function (path, reload) {
+        if (reload === false) {
+            var lastRoute = $route.current;
+            var un = $rootScope.$on('$locationChangeSuccess', function () {
+                $route.current = lastRoute;
+                un();
+            });
+        }
+        return original.apply($location, [path]);
+    };
+}])
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
@@ -1180,6 +1205,8 @@ var coremodule = angular.module('hibachi.core',[
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .provider('$hibachi',$Hibachi)
+.service('hibachiInterceptor', HibachiInterceptor.Factory())
+.service('hibachiScope',HibachiScope)
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters
