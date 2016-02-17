@@ -13120,7 +13120,7 @@
 	            },
 	            link: function (scope, element, attr, formController) {
 	                var selectType;
-	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
+	                if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc)) {
 	                    selectType = 'object';
 	                    $log.debug('selectType:object');
 	                }
@@ -13208,12 +13208,6 @@
 	                    scope.getOptions();
 	                }
 	                //formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
-	                if (selectType === 'object') {
-	                    formController[scope.propertyDisplay.property + 'ID'].$dirty = scope.propertyDisplay.isDirty;
-	                }
-	                else if (selectType === 'string') {
-	                    formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-	                }
 	            }
 	        }; //<--end return
 	    }
