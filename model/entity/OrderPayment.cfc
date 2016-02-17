@@ -366,7 +366,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var uncredited = 0;
 
 		if ( getOrderPaymentType().getSystemCode() == "optCredit" ) {
-			uncredited = precisionEvaluate(getAmount() + getAmountCredited());
+			uncredited = precisionEvaluate(getAmount() - getAmountCredited());
+		} else if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
+			uncredited = precisionEvaluate(getAmountReceived() - getAmountCredited());
 		}
 
 		return uncredited;
