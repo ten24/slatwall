@@ -99,6 +99,11 @@ class SWWorkflowTriggers{
 					   trip to the database.
 
 					***/
+                    if(!scope.workflow.$$isPersisted()){
+                        scope.workflow.data.workflowTriggers = [];
+                        scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+                        return;
+                    }
 					if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
 						var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 						workflowTriggersPromise.then(function(){
