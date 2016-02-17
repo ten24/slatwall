@@ -5,7 +5,6 @@ class ProductCreateController{
         public collectionConfig;
 
         //@ngInject
-
         constructor(
                 private $scope,
                 private $element, private $log:ng.ILogService,
@@ -14,7 +13,6 @@ class ProductCreateController{
                 private selectionService,
                 private rbkeyService
         ){
-            this.$log.debug('init product_create controller');
             //on select change get collection
             this.$scope.preprocessproduct_createCtrl.productTypeChanged = (selectedOption)=>{
                     this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
@@ -23,18 +21,18 @@ class ProductCreateController{
             }  
             
             this.$scope.preprocessproduct_createCtrl.getCollection = ()=>{
-                    this.collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
-                    this.collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
-                    this.collectionConfig.setDisplayProperties('optionID',undefined,{isVisible:false});
-                    //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
-                    this.collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
-                    this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID',this.$scope.preprocessproduct_createCtrl.selectedOption.value,'=','OR');
-                    this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
-                    this.$scope.preprocessproduct_createCtrl.collectionListingPromise = this.collectionConfig.getEntity();
-                    this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
+                var collectionConfig = this.collectionConfigService.newCollectionConfig('Option');
+                collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName',undefined,{isVisible:true});
+                collectionConfig.setDisplayProperties('optionID',undefined,{isVisible:false});
+                //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
+                collectionConfig.addFilter('optionGroup.globalFlag',1,'=');
+                collectionConfig.addFilter('optionGroup.productTypes.productTypeID',this.$scope.preprocessproduct_createCtrl.selectedOption.value,'=','OR');
+                collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
+                this.$scope.preprocessproduct_createCtrl.collectionListingPromise = collectionConfig.getEntity();
+                this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then((data)=>{
                     this.$scope.preprocessproduct_createCtrl.collection = data;    
-                    this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = this.collectionConfig;
-                    })
+                    this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = collectionConfig;
+                })
             }
             
             var renewalMethodOptions = $("select[name='renewalMethod']")[0];

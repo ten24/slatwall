@@ -18717,7 +18717,6 @@
 	        this.collectionConfigService = collectionConfigService;
 	        this.selectionService = selectionService;
 	        this.rbkeyService = rbkeyService;
-	        this.$log.debug('init product_create controller');
 	        //on select change get collection
 	        this.$scope.preprocessproduct_createCtrl.productTypeChanged = function (selectedOption) {
 	            _this.$scope.preprocessproduct_createCtrl.selectedOption = selectedOption;
@@ -18725,17 +18724,17 @@
 	            _this.selectionService.clearSelection('ListingDisplay');
 	        };
 	        this.$scope.preprocessproduct_createCtrl.getCollection = function () {
-	            _this.collectionConfig = _this.collectionConfigService.newCollectionConfig('Option');
-	            _this.collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName', undefined, { isVisible: true });
-	            _this.collectionConfig.setDisplayProperties('optionID', undefined, { isVisible: false });
+	            var collectionConfig = _this.collectionConfigService.newCollectionConfig('Option');
+	            collectionConfig.setDisplayProperties('optionGroup.optionGroupName,optionName', undefined, { isVisible: true });
+	            collectionConfig.setDisplayProperties('optionID', undefined, { isVisible: false });
 	            //this.collectionConfig.addFilter('optionGroup.optionGroupID',$('input[name="currentOptionGroups"]').val(),'NOT IN')
-	            _this.collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
-	            _this.collectionConfig.addFilter('optionGroup.productTypes.productTypeID', _this.$scope.preprocessproduct_createCtrl.selectedOption.value, '=', 'OR');
-	            _this.collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
-	            _this.$scope.preprocessproduct_createCtrl.collectionListingPromise = _this.collectionConfig.getEntity();
+	            collectionConfig.addFilter('optionGroup.globalFlag', 1, '=');
+	            collectionConfig.addFilter('optionGroup.productTypes.productTypeID', _this.$scope.preprocessproduct_createCtrl.selectedOption.value, '=', 'OR');
+	            collectionConfig.setOrderBy('optionGroup.sortOrder|ASC,sortOrder|ASC');
+	            _this.$scope.preprocessproduct_createCtrl.collectionListingPromise = collectionConfig.getEntity();
 	            _this.$scope.preprocessproduct_createCtrl.collectionListingPromise.then(function (data) {
 	                _this.$scope.preprocessproduct_createCtrl.collection = data;
-	                _this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = _this.collectionConfig;
+	                _this.$scope.preprocessproduct_createCtrl.collection.collectionConfig = collectionConfig;
 	            });
 	        };
 	        var renewalMethodOptions = $("select[name='renewalMethod']")[0];
