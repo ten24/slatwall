@@ -305,15 +305,7 @@ class SWActionCaller implements ng.IDirective{
         ){
     }
 
-<<<<<<< HEAD
-    public link:ng.IDirectiveLinkFn = (scope: IActionCallerScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>{
-        console.log("scoop", scope);
-        if (angular.isDefined(formController)){
-            scope.formController = formController;    
-        }
-=======
     public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
->>>>>>> 0ffee3427a7f8bbddc631b5e23451f0a6c1a2ba6
     }
 }
 export{
