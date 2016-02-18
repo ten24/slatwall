@@ -55,14 +55,14 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.orderItem#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorderitem">
+	<hb:HibachiEntityProcessForm entity="#rc.orderItem#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorder" sRedirectQS="orderID=#rc.orderItem.getOrder().getOrderID()#">
 
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderItem#">
 		</hb:HibachiEntityActionBar>
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<div sw-add-order-item-gift-recipient quantity="#rc.orderItem.getNumberOfUnassignedGiftCards()#"></div>
+				<div sw-add-order-item-gift-recipient data-quantity="#rc.orderItem.getNumberOfUnassignedGiftCards()#"></div>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 	</hb:HibachiEntityProcessForm>
