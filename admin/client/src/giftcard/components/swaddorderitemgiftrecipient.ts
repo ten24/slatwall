@@ -145,8 +145,8 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
     public scope = {};  
     
     public bindToController = {
-        "quantity":"=", 
-        "orderItemGiftRecipients":"=", 
+        "quantity":"=?", 
+        "orderItemGiftRecipients":"=?", 
         "adding":"=?", 
         "searchText":"=?", 
         "currentgiftRecipient":"=?",
