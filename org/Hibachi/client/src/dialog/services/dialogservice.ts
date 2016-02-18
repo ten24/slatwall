@@ -22,7 +22,7 @@ class DialogService{
         return this._pageDialogs || [];
     };
 
-    addPageDialog = ( name:PageDialog, params?:any ):void =>{
+    addPageDialog = ( name:string, params?:any ):void =>{
         var newDialog = {
             'path' : name + '.html',
             'params' : params
