@@ -1888,7 +1888,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 
-            // Loop over the orderDeliveryItems to setup subscriptions and contentAccess
+            		// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
 			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
 
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
@@ -1897,9 +1897,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				//bypass auto fulfillment for non auto generated codes
 				if(orderDeliveryItem.getOrderItem().hasAllGiftCardsAssigned() && orderDeliveryItem.getOrder().hasGiftCardOrderItems()){
 					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
-						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
+						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
 					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
-						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
+						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
 					}
 				}
 
@@ -1908,9 +1908,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					emailFulfillOrderDeliveryItem(orderDeliveryItem, arguments.orderDelivery);
 				}
 
-				if(!isNull(order) && order.hasErrors()){
-                 	arguments.orderDelivery.addErrors(order.getErrors());
-              	}
+				// If the order picked up any erros when trying to process giftCard stuff, add those errors to the delivery
+				if(arguments.processObject.getOrder().hasErrors()){
+                 			arguments.orderDelivery.addErrors(arguments.processObject.getOrder().getErrors());
+              			}
 
 			}
 
