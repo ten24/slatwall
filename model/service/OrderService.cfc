@@ -2387,7 +2387,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		){
 			transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
 		}
-        if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethod().getPaymentMethodType() eq "giftCard"){
+        if(arguments.orderPayment.getPaymentMethod().getPaymentMethodType() eq "giftCard"){
             transactionType = arguments.orderPayment.getOrderPaymentType().getTypeName();
         }
 
