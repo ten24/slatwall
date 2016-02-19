@@ -8,7 +8,7 @@
 
 <!-- Button to show create option -->
 <button   type="button"
-    class="btn btn-xs s-btn-ten24" 
+    class="btn btn-xs btn-primary" 
     data-target="#j-add-display-field"
     data-toggle="collapse"
     ng-click="addDisplayDialog.toggleDisplayDialog()"
@@ -17,7 +17,7 @@
 </button>
 
 <!-- Create option dropdown -->
-<div ng-show="addDisplayDialog.isOpen" class="s-add-filter-box">
+<div ng-show="addDisplayDialog.isOpen" class="s-add-filter-box clearfix">
     
     <!-- Edit Filter Box -->
     <div class="col-xs-12  s-add-filter" >
@@ -57,16 +57,16 @@
                         >
                     </span>
                     <div class="col-xs-3">
-                        <div class="s-button-select-group">
+                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null}">
                             <button  type="button" 
-                                class="btn btn-sm s-btn-ten24"
+                                class="btn btn-sm btn-primary"
                                 ng-click="addColumn(selectedProperty)">
                                 Save & Add Another
                             </button>
                             <div class="s-or-box">OR-</div>
                             <button 
                                 type="button" 
-                                class="btn btn-sm s-btn-ten24"
+                                class="btn btn-sm btn-primary"
                                 ng-click="addColumn(selectedProperty,true)">
                                 Save & Finish
                             </button>
