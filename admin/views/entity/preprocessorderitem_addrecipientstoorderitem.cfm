@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.orderItem#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorderitem">
+	<hb:HibachiEntityProcessForm entity="#rc.orderItem#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorder" sRedirectQS="orderID=#rc.orderItem.getOrder().getOrderID()#">
 
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderItem#">
 		</hb:HibachiEntityActionBar>
