@@ -295,7 +295,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.paymentTransaction.getPayment())) {
 
 			// Lock the session scope to make sure that
-			//lock scope="Session" timeout="45" {
+			lock scope="Session" timeout="45" {
 
 				// Check to make sure this isn't a duplicate transaction
 				var isDuplicateTransaction = getPaymentDAO().isDuplicatePaymentTransaction(paymentID=arguments.paymentTransaction.getPayment().getPrimaryIDValue(), idColumnName=arguments.paymentTransaction.getPayment().getPrimaryIDPropertyName(), paymentType=arguments.paymentTransaction.getPayment().getPaymentMethodType(), transactionType=arguments.data.transactionType, transactionAmount=arguments.data.amount);
@@ -542,7 +542,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					getHibachiDAO().flushORMSession();
 				}
 
-			//}//end lock
+			}//end lock
 
 		}
 

@@ -2315,11 +2315,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup the orderPayment in the transaction to be used by the 'runTransaction'
 			paymentTransaction.setOrderPayment( arguments.orderPayment );
 
-            // Is this a gift card
-            if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){
-                //might need to set another param on transaction data
-            }
-
 			// Setup the transaction data
 			transactionData = {
 				transactionType = arguments.processObject.getTransactionType(),
