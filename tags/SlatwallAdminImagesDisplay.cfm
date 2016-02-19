@@ -61,9 +61,9 @@
 									<span class="s-zoom"><i class="fa fa-search"></i></span>
 								</a>
 							</div>
-							<!--- <div class="s-caption">
-								<h4 title="#image.getImageFile()#">#image.getImageFile()#</h4>
-							</div> --->
+							<div class="s-title s-top">
+								#image.getImageFile()#
+							</div>
 							<div class="s-controlls">
 								<div class="btn-group btn-group-justified" role="group">
 									<div class="btn-group" role="group">
@@ -78,7 +78,6 @@
 					</div>
 				</cfloop>
 			</cfif>
-			
 			<div class="col-xs-2 s-upload-image s-new-image">
 				<div class="thumbnail">
 					<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" icon="picture" />

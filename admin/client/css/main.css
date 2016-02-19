@@ -5469,6 +5469,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-image-uploader .thumbnail {
   padding: 0px;
   border-radius: 2px;
+  position: relative;
 }
 .s-image-uploader .thumbnail .s-image {
   position: relative;
@@ -5497,6 +5498,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   text-align: center;
   padding-top: 38%;
   font-size: 45px;
+  left: 0px;
 }
 .s-image-uploader .s-zoom:hover {
   opacity: 0.8;
@@ -5530,16 +5532,14 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-image-uploader .s-controlls .btn-group .btn:hover {
   border: none !important;
 }
+.s-upload-image .thumbnail {
+  transition: none;
+}
 .s-upload-image .thumbnail:hover {
   -webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
   -moz-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
-  -webkit-transition: all .1s linear;
-  -o-transition: all .1s linear;
-  -moz-transition: all .1s linear;
-  -ms-transition: all .1s linear;
-  -kthtml-transition: all .1s linear;
-  transition: all .1s linear;
+  transition: none;
 }
 .s-upload-image .thumbnail {
   display: table;
@@ -5559,6 +5559,24 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-upload-image .thumbnail .s-image-info .s-name {
   font-weight: 600;
   font-style: italic;
+}
+.thumbnail .s-title {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding: 4px 10px;
+  background-color: #F2F2F2;
+  pointer-events: none;
+  font-style: italic;
+  border-top: 1px solid #eee;
+  color: #666;
+  font-size: 11px;
+  text-align: center;
+}
+.thumbnail .s-title.s-top {
+  bottom: 29px;
+  border-bottom: 1px solid #fff;
 }
 .s-upload-image a {
   height: 229px;

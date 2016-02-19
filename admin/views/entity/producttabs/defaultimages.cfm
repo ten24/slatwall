@@ -59,9 +59,9 @@ Notes:
 								<span class="s-zoom"><i class="fa fa-search"></i></span>
 							</a>
 						</div>
-						<!--- <div class="s-caption">
-							<h4 title="#imageFile#">#imageFile#</h4>
-						</div> --->
+						<div class="s-title s-top">
+							#imageFile#
+						</div>
 						<div class="s-controlls">
 							<div class="btn-group btn-group-justified" role="group">
 								<div class="btn-group" role="group">
@@ -78,9 +78,13 @@ Notes:
 				<div class="col-xs-2 s-upload-image s-new-image">
 					<div class="thumbnail">
 						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" icon="picture" iconOnly="false"  modal="true" />
+						<div class="s-title">
+							#imageFile#
+						</div>
 					</div>
 				</div>
 			</cfif>
 		</cfloop>
 	</div>
+	
 </cfoutput>
