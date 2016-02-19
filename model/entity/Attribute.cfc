@@ -51,20 +51,20 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 
 	// Persistent Properties
 	property name="attributeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean" default=1;
+	property name="activeFlag" hb_populateEnabled="public" ormtype="boolean" default=1;
 	property name="displayOnOrderDetailFlag" ormtype="boolean" default=0;
-	property name="attributeName" ormtype="string";
-	property name="attributeCode" ormtype="string" index="PI_ATTRIBUTECODE";
-	property name="attributeDescription" ormtype="string" length="4000" ;
-	property name="attributeHint" ormtype="string";
-	property name="attributeInputType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
-	property name="defaultValue" ormtype="string";
-	property name="requiredFlag" ormtype="boolean" default="false" ;
+	property name="attributeName" hb_populateEnabled="public" ormtype="string";
+	property name="attributeCode" hb_populateEnabled="public" ormtype="string" index="PI_ATTRIBUTECODE";
+	property name="attributeDescription" hb_populateEnabled="public" ormtype="string" length="4000" ;
+	property name="attributeHint" hb_populateEnabled="public" ormtype="string";
+	property name="attributeInputType" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="defaultValue" hb_populateEnabled="public" ormtype="string";
+	property name="requiredFlag" hb_populateEnabled="public" ormtype="boolean" default="false" ;
 	property name="sortOrder" ormtype="integer" sortContext="attributeSet";
-	property name="validationMessage" ormtype="string";
-	property name="validationRegex" ormtype="string";
+	property name="validationMessage" hb_populateEnabled="public" ormtype="string";
+	property name="validationRegex" hb_populateEnabled="public" ormtype="string";
 	property name="decryptValueInAdminFlag" ormtype="boolean";
-	property name="relatedObject" ormtype="string" hb_formFieldType="select";
+	property name="relatedObject" hb_populateEnabled="public" ormtype="string" hb_formFieldType="select";
 
 	// Calculated Properties
 
@@ -274,17 +274,17 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	/// Form (many-to-one)
 	public void function setForm(required any form) {
 		variables.form = arguments.form;
-		if(isNew() or !arguments.form.hasAttribute( this )) {
-			arrayAppend(arguments.form.getAttributes(), this);
+		if(isNew() or !arguments.form.hasFormQuestion( this )) {
+			arrayAppend(arguments.form.getFormQuestions(), this);
 		}
 	}
 	public void function removeForm(any form) {
 		if(!structKeyExists(arguments, "form")) {
 			arguments.form = variables.form;
 		}
-		var index = arrayFind(arguments.form.getAttributes(), this);
+		var index = arrayFind(arguments.form.getFormQuestions(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.form.getAttributes(), index);
+			arrayDeleteAt(arguments.form.getFormQuestions(), index);
 		}
 		structDelete(variables, "form");
 	}

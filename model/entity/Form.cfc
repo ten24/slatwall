@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="hibachiService" {
+component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="formService" {
 
 	// Persistent Properties
 	property name="formID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -55,10 +55,10 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 
 
 	// Related Object Properties (many-to-one)
-	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID" cascade="all";
+	//property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-	property name="attributes" singularname="attribute" cfc="Attribute" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
+	property name="formQuestions" singularname="formQuestion" hb_populateEnabled="public" cfc="Attribute" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
 	property name="formResponses" singularname="formResponse" cfc="FormResponse" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
 
 	// Related Object Properties (many-to-many)
@@ -79,8 +79,8 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	/// Email Template (many-to-one)
-	public void function setEmailTemplate(required any emailTemplate) {
+	// Email Template (many-to-one)
+	/*public void function setEmailTemplate(required any emailTemplate) {
 		variables.emailTemplate = arguments.emailTemplate;
 		if(isNew() or !arguments.emailTemplate.hasForm( this )) {
 			arrayAppend(arguments.emailTemplate.getForms(), this);
@@ -95,14 +95,14 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 			arrayDeleteAt(arguments.emailTemplate.getForms(), index);
 		}
 		structDelete(variables, "emailTemplate");
-	}
+	}*/
 
 	// Attributes (one-to-many)
-	public void function addAttribute(required any attribute) {
-		arguments.attribute.setForm( this );
+	public void function addFormQuestion(required any formQuestion) {
+		arguments.formQuestion.setForm( this );
 	}
-	public void function removeAttribute(required any attribute) {
-		arguments.attribute.removeForm( this );
+	public void function removeFormQuestion(required any formQuestion) {
+		arguments.formQuestion.removeForm( this );
 	}
 
 	// Form Responses (one-to-many)
@@ -128,6 +128,10 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
+
+	public string function getSimpleRepresentation(){
+		return this.getFormCode();
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
