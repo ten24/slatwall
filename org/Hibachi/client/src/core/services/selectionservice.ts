@@ -29,8 +29,6 @@ class SelectionService extends BaseService{
             this._selection[selectionid] = [];
         }
         var index = this._selection[selectionid].indexOf(selection);
-        console.warn(this._selection);
-        console.warn(index,selection,selectionid);
         
         if (index > -1) {
             this._selection[selectionid].splice(index, 1);
