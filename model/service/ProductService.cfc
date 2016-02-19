@@ -780,12 +780,13 @@ component extends="HibachiService" accessors="true" {
 						arguments.product.setDefaultSku(newSku);
 					}
 
-					newSku.setImageFile(newSku.generateImageFileName());
-
 					// Add each of the options
 					for(var key in optionGroups) {
 						newSku.addOption( optionGroups[key][ currentIndexesByKey[key] ]);
 					}
+
+					newSku.setImageFile(newSku.generateImageFileName());
+
 					if(i < totalCombos) {
 						var indexesUpdated = false;
 						var changeKeyIndex = 1;
