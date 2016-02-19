@@ -62,7 +62,7 @@ Notes:
 
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<div sw-add-order-item-gift-recipient quantity="#rc.orderItem.getNumberOfUnassignedGiftCards()#"></div>
+				<div sw-add-order-item-gift-recipient data-quantity="#rc.orderItem.getNumberOfUnassignedGiftCards()#"></div>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 	</hb:HibachiEntityProcessForm>
