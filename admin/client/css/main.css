@@ -1192,11 +1192,11 @@ select.error {
   text-decoration: underline;
 }
 .table i.s-listing-arrow {
-  margin-left: 15px;
-  padding: 0px 6px 0px 10px;
   cursor: pointer;
   font-size: 14px;
   margin-top: 2px;
+  position: absolute;
+  left: 0px;
 }
 .s-property-info .table > thead > tr > th,
 .table > tbody > tr > th,
