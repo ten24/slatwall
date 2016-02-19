@@ -17,19 +17,25 @@ class SelectionService extends BaseService{
         if(angular.isUndefined(this._selection[selectionid])){
             this._selection[selectionid] = [];
         }
-        this._selection[selectionid].push(selection);
+        if(!this.hasSelection(selectionid,selection)){
+            this._selection[selectionid].push(selection);
+        }
     };
     setSelection=(selectionid:string,selections:any[]):void =>{
         this._selection[selectionid] = selections;
     };
-    removeSelection=(selection:any,selectionid?:string):void =>{
+    removeSelection=(selectionid?:string,selection:any):void =>{
         if(angular.isUndefined(this._selection[selectionid])){
             this._selection[selectionid] = [];
         }
         var index = this._selection[selectionid].indexOf(selection);
+        console.warn(this._selection);
+        console.warn(index,selection,selectionid);
+        
         if (index > -1) {
             this._selection[selectionid].splice(index, 1);
         }
+        
     };
     hasSelection=(selectionid:string,selection:any):boolean =>{
         if(angular.isUndefined(this._selection[selectionid])){
