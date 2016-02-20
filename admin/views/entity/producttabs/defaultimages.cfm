@@ -60,7 +60,11 @@ Notes:
 							</a>
 						</div>
 						<div class="s-title s-top">
-							#imageFile#
+							<cfset objImage  = imageFile>
+							<cfif len( trim( objImage ) ) gt 17>
+								<cfset objImage  = left( trim( imageFile ), 17 ) & "...">
+							</cfif>
+							#objImage#
 						</div>
 						<div class="s-controlls">
 							<div class="btn-group btn-group-justified" role="group">
@@ -79,7 +83,11 @@ Notes:
 					<div class="thumbnail">
 						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" icon="picture" iconOnly="false"  modal="true" />
 						<div class="s-title">
-							#imageFile#
+							<cfset objImage  = imageFile>
+							<cfif len( trim( objImage ) ) gt 17>
+								<cfset objImage  = left( trim( imageFile ), 17 ) & "...">
+							</cfif>
+							#objImage#
 						</div>
 					</div>
 				</div>

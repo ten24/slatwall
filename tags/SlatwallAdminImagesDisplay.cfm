@@ -54,7 +54,7 @@
 			<cfif arrayLen(attributes.object.getImages())>
 				<cfloop array="#attributes.object.getImages()#" index="image">
 					<div class="col-xs-2">
-						<div class="thumbnail">
+						<div class="thumbnail" title="#image.getImageFile()#">
 							<div class="s-image">
 								<a href="#image.getResizedImagePath()#" target="_blank">
 									#image.getResizedImage(width=210, height=210)#
@@ -62,7 +62,11 @@
 								</a>
 							</div>
 							<div class="s-title s-top">
-								#image.getImageFile()#
+								<cfset objImage  = image.getImageFile()>
+								<cfif len( trim( objImage ) ) gt 17>
+									<cfset objImage  = left( trim( image.getImageFile() ), 17 ) & "...">
+								</cfif>
+								#objImage#
 							</div>
 							<div class="s-controlls">
 								<div class="btn-group btn-group-justified" role="group">

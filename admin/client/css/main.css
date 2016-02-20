@@ -5499,6 +5499,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   padding-top: 38%;
   font-size: 45px;
   left: 0px;
+  z-index: 2;
 }
 .s-image-uploader .s-zoom:hover {
   opacity: 0.8;
