@@ -1,5 +1,5 @@
 # Slatwall eCommerce Platform
-[![Build Status](https://travis-ci.org/ten24/slatwall.svg?branch=master)](https://travis-ci.org/ten24/slatwall)[![Analytics](https://ga-beacon.appspot.com/UA-22767386-6/code)](https://github.com/igrigorik/ga-beacon)
+[![Build Status](https://travis-ci.org/ten24/slatwall.svg?branch=master)](https://travis-ci.org/ten24/slatwall) [![Analytics](https://ga-beacon.appspot.com/UA-22767386-6/code)](https://github.com/igrigorik/ga-beacon)
 
 Slatwall is an open source eCommerce platform that runs on the JVM.  Learn more about what you can do with Slatwall Commerce by visiting: http://slatwallcommerce.com
 
