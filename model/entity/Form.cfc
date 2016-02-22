@@ -129,6 +129,10 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 
 	// ================== START: Overridden Methods ========================
 
+	public any function getAttributesSmartList(){
+		return this.getFormQuestionsSmartList();
+	}
+
 	public string function getSimpleRepresentation(){
 		return this.getFormCode();
 	}
