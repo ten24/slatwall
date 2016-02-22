@@ -812,17 +812,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Loop over all the payments and credit for any charges
 		for(var orderPayment in arguments.order.getOrderPayments()) {
-            if(orderPayment.getPaymentMethodType() eq "giftCard"){
-               var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
 
-				if(totalReceived gt 0) {
-					var transactionData = {
-						amount = precisionEvaluate(totalReceived * -1),
-						transactionType = 'giftCard'
-					};
-					this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
-				}
-            } else if(orderPayment.getStatusCode() eq "opstActive") {
+           if(orderPayment.getStatusCode() eq "opstActive") {
 				var totalReceived = precisionEvaluate(orderPayment.getAmountReceived() - orderPayment.getAmountCredited());
 				if(totalReceived gt 0) {
 					var transactionData = {
@@ -1888,7 +1879,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 
-            // Loop over the orderDeliveryItems to setup subscriptions and contentAccess
+            		// Loop over the orderDeliveryItems to setup subscriptions and contentAccess
 			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
 
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
@@ -1897,9 +1888,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				//bypass auto fulfillment for non auto generated codes
 				if(orderDeliveryItem.getOrderItem().hasAllGiftCardsAssigned() && orderDeliveryItem.getOrder().hasGiftCardOrderItems()){
 					if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
-						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
+						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
 					} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
-						var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
+						creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
 					}
 				}
 
@@ -1908,9 +1899,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					emailFulfillOrderDeliveryItem(orderDeliveryItem, arguments.orderDelivery);
 				}
 
-				if(!isNull(order) && order.hasErrors()){
-                 	arguments.orderDelivery.addErrors(order.getErrors());
-              	}
+				// If the order picked up any erros when trying to process giftCard stuff, add those errors to the delivery
+				if(arguments.processObject.getOrder().hasErrors()){
+                 			arguments.orderDelivery.addErrors(arguments.processObject.getOrder().getErrors());
+              			}
 
 			}
 
@@ -2323,11 +2315,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup the orderPayment in the transaction to be used by the 'runTransaction'
 			paymentTransaction.setOrderPayment( arguments.orderPayment );
 
-            // Is this a gift card
-            if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){
-                arguments.processObject.setTransactionType("giftCard");
-            }
-
 			// Setup the transaction data
 			transactionData = {
 				transactionType = arguments.processObject.getTransactionType(),
@@ -2340,7 +2327,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// Run the transaction only if it hasn't already been processed or if it's an order cancellation
-            if(!arguments.orderPayment.getGiftCardPaymentProcessedFlag() || transactionData.amount < 0){
+            if(!arguments.orderPayment.getGiftCardPaymentProcessedFlag() || transactionData.transactionType == 'credit'){
                 paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 			}
 
@@ -2400,8 +2387,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		){
 			transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
 		}
-        if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethod().getPaymentMethodType() eq "giftCard"){
-            transactionType = arguments.orderPayment.getPaymentMethod().getPaymentMethodType();
+        if(arguments.orderPayment.getPaymentMethod().getPaymentMethodType() eq "giftCard"){
+            transactionType = arguments.orderPayment.getOrderPaymentType().getTypeName();
         }
 
 		//need subscription transactiontype
