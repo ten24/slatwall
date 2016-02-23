@@ -69,7 +69,6 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	}
 
 	function runRequestActions() {
-		WriteDump("RUNNING");
 		if(structKeyExists(form, "slatAction")) {
 			request.context['doNotRender'] = true;
 			for(var action in listToArray(form.slatAction)) {
@@ -80,11 +79,9 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			}
 		} else if (structKeyExists(url, "slatAction")) {
 			request.context['doNotRender'] = true;
-			writedump("HERE");
 			for(var action in listToArray(url.slatAction)) {
 				var actionResult = arguments.slatwallScope.doAction( action, request.context);
 				if(arguments.slatwallScope.hasFailureAction(action)) {
-					writedump("FAILEd");abort;
 					break;
 				}
 			}
