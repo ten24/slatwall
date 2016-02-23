@@ -54,7 +54,7 @@ Notes:
 				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
 						<div class="s-image">
-							#$.slatwall.getResizedImage(imagePath=thisImagePath, width=189, height=189)#
+							#$.slatwall.getResizedImage(imagePath=thisImagePath, width=250, height=250)#
 						</div>
 						<div class="s-title">
 							<span class="s-short">

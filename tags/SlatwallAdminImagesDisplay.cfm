@@ -56,7 +56,7 @@
 						<div class="thumbnail" title="#image.getImageFile()#">
 							<div class="s-image">
 								<a href="#image.getResizedImagePath()#" target="_blank">
-									#image.getResizedImage(width=210, height=210)#
+									#image.getResizedImage(width=250, height=250)#
 								</a>
 							</div>
 							<div class="s-title">
