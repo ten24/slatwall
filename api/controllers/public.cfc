@@ -48,14 +48,6 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         }else{
             this.get(rc);
         }
-
-        if(structKeyExists(rc, "fRedirectUrl") && arrayLen(getHibachiScope().getFailureActions())){
-        	getFW().redirectExact(redirectlocation=arguments.rc.fRedirectUrl);
-        }
-
-        if(structKeyExists(rc, "sRedirectUrl") && arrayLen(getHibachiScope().getSuccessfulActions())){
-			getFW().redirectExact(redirectlocation=arguments.rc.sRedirectUrl);
-        }
     }
 
 }

@@ -948,19 +948,6 @@ component extends="HibachiService"  accessors="true" output="false"
         }
     }
 
-   	public void function addFormResponse(required struct data){
-
-
-    	var formToProcess = getFormService().getForm(data.formResponse.formID);
-    	var processObject = formToProcess.getProcessObject("AddFormResponse");
-    	processObject.populate(data);
-
-    	formToProcess = getFormService().processForm_addFormResponse(formToProcess,processObject);
-
-    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
-
-    }
-
     public any function addErrors( required struct data , errors){
         if (!structKeyExists(arguments.data.ajaxResponse, "errors")){
             arguments.data.ajaxResponse["errors"] = {};
