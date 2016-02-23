@@ -48,9 +48,4 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 
-	<cffunction name="getFormByFormCode">
-		<cfargument name="formCode" type="string" required="true" />
-		<cfreturn ormExecuteQuery("select form from #getApplicationKey()#Form form where formCode=:formcode", {formcode=arguments.formCode}, true, {maxresults=1}) />
-	</cffunction>
-
 </cfcomponent>

@@ -54,10 +54,6 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: DAO Passthrough ===========================
 
-	public any function getFormByFormCode(required string formCode){
-		return getDAO("FormDAO").getFormByFormCode(arguments.formCode);
-	}
-
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================

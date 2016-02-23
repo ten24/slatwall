@@ -231,18 +231,17 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		}
 
 		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
+		var baseTemplatePath = currentSite.getApp().getAppRootPath() & "/" & currentSite.getSiteCode() & "/templates/";
 
 		if(fileExists(specificFormTemplateFilePath)){
-			//can't use an absolute path here
-			var relativePath = "/Slatwall/custom/apps/" & currentSite.getApp().getAppCode() & "/" & currentSite.getSiteCode() & "/templates/" & specificFormTemplateFileName;
-			savecontent variable="formHTML"{
-				include relativePath;
-			};
+			var templatePath = baseTemplatePath & specificFormTemplateFileName;
 		} else {
-			savecontent variable="formHtml"{
-				include 'templates/formTemplate.cfm';
-			};
+			var templatePath = baseTemplatePath & defaultFormTemplateFileName;
 		}
+
+		savecontent variable="formHTML"{
+			include templatePath;
+		};
 
 		return formHtml;
 	}
