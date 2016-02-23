@@ -46,7 +46,6 @@
 Notes:
 
 */
-
 component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: Logical Methods ===========================
@@ -72,8 +71,9 @@ component  extends="HibachiService" accessors="true" {
 
 	public any function processForm_addFormResponse(required any formToProcess, required any processObject ){
 
+		arguments.formToProcess.addFormResponse(processObject.getNewFormResponse());
 
-
+		return this.saveForm(arguments.formToProcess);
 	}
 
 	// =====================  END: Process Methods ============================

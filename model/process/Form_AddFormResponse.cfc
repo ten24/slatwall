@@ -56,4 +56,23 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.newFormResponse;
 	}
+
+	//override populate to capture attribute values
+	public any function populate(required struct data){
+		this = super.populate(data);
+
+		for(var question in this.getForm().getFormQuestions()){
+			if(structKeyExists(data, question.getAttributeCode())){
+				//create and store the new attribute value
+				var newAttributeValue = getService("attributeService").newAttributeValue();
+				newAttributeValue.setAttributeValue(evaluate("data." & question.getAttributeCode()));
+				newAttributeValue.setAttribute(question);
+				newAttributeValue.setFormResponse(this.getNewFormResponse());
+				newAttributeValue.setAttributeValueType(question.getAttributeInputType());
+				getService("attributeService").saveAttributeValue(newAttributeValue);
+			}
+		}
+
+		return this;
+	}
 }

@@ -129,8 +129,17 @@ component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent
 
 	// ================== START: Overridden Methods ========================
 
+	//Spoofed Attribute Set Methods to Allow for Compatibility with SlatwallAdminAttributeSetDisplayTag
 	public any function getAttributesSmartList(){
 		return this.getFormQuestionsSmartList();
+	}
+
+	public string function getAttributeSetObject(){
+		return "FormResponse";
+	}
+
+	public string function getAttributeSetObjectPrimaryIDPropertyName(){
+		return "FormResponseID";
 	}
 
 	public string function getSimpleRepresentation(){

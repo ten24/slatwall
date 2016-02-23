@@ -220,7 +220,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		required string formCode
 		string sRedirectUrl
 	){
-
+		var newFormResponse = getHibachiScope().getService('formService').newFormResponse();
 		var requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
 		var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
 		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
