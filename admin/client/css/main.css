@@ -5475,6 +5475,10 @@ a.disabled > i.hibachi-ui-radio-checked {
   position: relative;
   padding: 5px;
 }
+.s-image-uploader .thumbnail .s-image img {
+  width: 100%;
+  height: auto;
+}
 .s-image-uploader h4::-webkit-scrollbar {
   display: none;
 }
