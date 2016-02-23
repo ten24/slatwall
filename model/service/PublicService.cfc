@@ -957,9 +957,6 @@ component extends="HibachiService"  accessors="true" output="false"
 
     	formToProcess = getFormService().processForm_addFormResponse(formToProcess,processObject);
 
-    	writedump(var=formToProcess, top=3, abort="true");
-
-
     	arguments.data.$.slatwall.addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
 
     }
