@@ -217,7 +217,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	}
 
 	public string function dspForm(
-		required string formCode
+		required string formCode,
 		string sRedirectUrl
 	){
 		var newFormResponse = getHibachiScope().getService('formService').newFormResponse();
@@ -226,19 +226,16 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
 		var defaultFormTemplateFileName = "slatwall-form.cfm";
 
-		if(structKeyExists(arguments, "sRedirectUrl")){
-			var sRedirectUrl = arguments.sRedirectUrl;
-		} else {
-			var sRedirectUrl = "/";
+		if(!structKeyExists(arguments, "sRedirectUrl")){
+			arguments.sRedirectUrl = "/";
 		}
 
-		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
-		var defaultFormTemplateFilePath =  currentSite.getTemplatesPath() & defaultFormTemplateFileName;
+		//can't use an expanded path for savecontent
+		var specificFormTemplateFilePath =  "/Slatwall/custom/apps/" & currentSite.getApp().getAppCode() & "/" & currentSite.getSiteCode() & "/templates/" & specificFormTemplateFileName;
 
 		if(fileExists(specificFormTemplateFilePath)){
-			//can't use an absolute path here
 			savecontent variable="formHTML"{
-				include currentSite.getTemplatesPath() & specificFormTemplateFileName;
+				include specificFormTemplateFilePath;
 			};
 		} else {
 			savecontent variable="formHtml"{

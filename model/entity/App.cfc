@@ -84,14 +84,6 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 		return variables.appPath;
 	}
 
-	public string function getUnexpandedAppPath(){
-		if(!structKeyExists(variables,'appPath')){
-			var appsPath = '/Slatwall/custom/apps';
-			variables.appPath = appsPath & '/' & getAppCode();
-		}
-		return variables.appPath;
-	}
-
 	// ============ START: Non-Persistent Property Methods =================
 
 	// ============  END:  Non-Persistent Property Methods =================
