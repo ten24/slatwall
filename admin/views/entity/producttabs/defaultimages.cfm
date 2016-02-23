@@ -49,7 +49,6 @@ Notes:
 <cfoutput>
 	<div class="row s-image-uploader">
 		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFileStruct">
-			
 			<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFileStruct.imageFile#" />
 			<cfif fileExists(expandPath(thisImagePath))>
 				<div class="col-xs-2 s-upload-image">
@@ -118,5 +117,4 @@ Notes:
 			</cfif>
 		</cfloop>
 	</div>
-	
 </cfoutput>
