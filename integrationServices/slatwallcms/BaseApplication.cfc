@@ -230,12 +230,13 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			arguments.sRedirectUrl = "/";
 		}
 
-		//can't use an expanded path for savecontent
-		var specificFormTemplateFilePath =  "/Slatwall/custom/apps/" & currentSite.getApp().getAppCode() & "/" & currentSite.getSiteCode() & "/templates/" & specificFormTemplateFileName;
+		var specificFormTemplateFilePath =  currentSite.getTemplatesPath() & specificFormTemplateFileName;
 
 		if(fileExists(specificFormTemplateFilePath)){
+			//can't use an absolute path here
+			var relativePath = "/Slatwall/custom/apps/" & currentSite.getApp().getAppCode() & "/" & currentSite.getSiteCode() & "/templates/" & specificFormTemplateFileName;
 			savecontent variable="formHTML"{
-				include specificFormTemplateFilePath;
+				include relativePath;
 			};
 		} else {
 			savecontent variable="formHtml"{
