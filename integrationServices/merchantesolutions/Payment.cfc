@@ -93,11 +93,14 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 
 		requestData["transaction_type"] = variables.transactionCodes[requestBean.getTransactionType()];
 
-		if(requestBean.getTransactionType() == "authorize" || requestBean.getTransactionType() == "authorizeAndCharge") {
+		if(requestBean.getTransactionType() == "authorize" || requestBean.getTransactionType() == "authorizeAndCharge" || requestBean.getTransactionType() == "generateToken") {
 
-			requestData["transaction_amount"] = requestBean.getTransactionAmount();
-			requestData["invoice_number"] = requestBean.getOrder().getShortReferenceID(true);
-			if(!isNull(requestBean.getProviderToken())) {
+			if(requestBean.getTransactionType() == "authorize" || requestBean.getTransactionType() == "authorizeAndCharge") {
+				requestData["transaction_amount"] = requestBean.getTransactionAmount();
+				requestData["invoice_number"] = requestBean.getOrder().getShortReferenceID(true);
+			}
+
+			if(!isNull(requestBean.getProviderToken()) || !requestBean.getTransactionType() == "generateToken") {
 				requestData["card_id"] = requestBean.getProviderToken();
 			} else {
 				requestData["card_number"] = requestBean.getCreditCardNumber();
@@ -141,39 +144,6 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 			if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
 				requestData["card_exp_date"] = left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2);
 			}
-
-		} else if(requestBean.getTransactionType() == "void") {
-
-			requestData["transaction_id"] = requestBean.getTransactionID();
-
-		} else if(requestBean.getTransactionType() == "inquiry") {
-
-
-
-		} else if(requestBean.getTransactionType() == "generateToken") {
-
-			requestData["card_number"] = requestBean.getCreditCardNumber();
-			if(!isNull(requestBean.getSecurityCode())) {
-				requestData["cvv2"] = requestBean.getSecurityCode();
-			}
-			if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
-				requestData["card_exp_date"] = left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2);
-			}
-			requestData["cardholder_first_name"] = requestBean.getAccountFirstName();
-			requestData["cardholder_last_name"] = requestBean.getAccountLastName();
-			requestData["cardholder_street_address"] = isNull(requestBean.getBillingStreetAddress()) ? "":requestBean.getBillingStreetAddress();
-			requestData["cardholder_zip"] = isNull(requestBean.getBillingPostalCode()) ? "":requestBean.getBillingPostalCode();
-			if(!isNull(requestBean.getAccountPrimaryPhoneNumber())) {
-				requestData["cardholder_phone"] = requestBean.getAccountPrimaryPhoneNumber();
-			} else {
-				requestData["cardholder_phone"] = "";
-			}
-			if(!isNull(requestBean.getAccountPrimaryEmailAddress())) {
-				requestData["cardholder_email"] = requestBean.getAccountPrimaryEmailAddress();
-			} else {
-				requestData["cardholder_email"] = "";
-			}
-			requestData["ip_address"] = CGI.REMOTE_ADDR;
 
 		}
 
@@ -255,11 +225,6 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 				response.setAuthorizationCode(responseData.auth_code);
 
 			} else if(requestBean.getTransactionType() == "credit") {
-
-				response.setAmountCredited(requestBean.getTransactionAmount());
-				response.setAuthorizationCode(responseData.auth_code);
-
-			} else if(requestBean.getTransactionType() == "void") {
 
 				response.setAmountCredited(requestBean.getTransactionAmount());
 				response.setAuthorizationCode(responseData.auth_code);
