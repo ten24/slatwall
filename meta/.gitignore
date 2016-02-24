@@ -1,0 +1,4 @@
+testresults
+scratch
+tests/functional/ScratchTest.cfc
+tests/unit/ScratchTest.cfc
