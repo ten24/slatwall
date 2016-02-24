@@ -450,20 +450,54 @@ class CollectionConfig {
         return this; 
     };
 
-    public addOrderBy = (orderByString):void=>{
+    public addOrderBy = (orderByString, formatPropertyIdentifier:boolean = true):void=>{
         if(!this.orderBy){
             this.orderBy = [];
         }
 
         var propertyIdentifier = this.utilityService.listFirst(orderByString,'|');
+        if(formatPropertyIdentifier){
+            propertyIdentifier = this.formatPropertyIdentifier(propertyIdentifier);
+        }
         var direction = this.utilityService.listLast(orderByString,'|');
 
         var orderBy = {
-            propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier),
+            propertyIdentifier:propertyIdentifier,
             direction:direction
         };
 
         this.orderBy.push(orderBy);
+    };
+
+    public toggleOrderBy = (formattedPropertyIdentifier:string) => {
+        if(!this.orderBy){
+            this.orderBy = [];
+        }
+        var found = false;
+        for(var i = this.orderBy.length - 1; i >= 0; i--){
+            if(this.orderBy[i].propertyIdentifier == formattedPropertyIdentifier){
+                found = true;
+                if(this.orderBy[i].direction.toUpperCase() == "DESC" ){
+                    this.orderBy[i].direction = "ASC";
+                } else if(this.orderBy[i].direction.toUpperCase() == "ASC") {
+                    this.orderBy.splice(i,1);
+                }
+                break;
+            }
+        }
+        if(!found){
+            this.addOrderBy(formattedPropertyIdentifier + '|DESC', false);
+        }
+    };
+
+    public removeOrderBy = (formattedPropertyIdentifier:string) => {
+        angular.forEach(this.orderBy, (orderBy, index)=>{
+            if(orderBy.propertyIdentifier == formattedPropertyIdentifier){
+                this.orderBy.splice(index,1);
+                return true;
+            }
+        });
+        return false;
     };
 
     public setCurrentPage= (pageNumber):CollectionConfig =>{

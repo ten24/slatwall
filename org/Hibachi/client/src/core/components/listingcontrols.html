@@ -1,0 +1,309 @@
+<div class="s-table-inner-nav s-detail-hidden-content">
+    <div class="s-search-wrapper">
+        <div class="input-group">
+            <div class="input-group-btn search-panel">
+                <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                    <span data-ng-bind="swListingControls.getSelectedSearchColumnName()"></span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href data-ng-click="swListingControls.selectSearchColumn()"><b>All</b></a></li>
+                    <li data-ng-repeat="column in swListingControls.collectionConfig.columns | orderBy:'title'" data-ng-if="column.isSearchable">
+                        <a href data-ng-click="swListingControls.selectSearchColumn(column)" data-ng-bind="column.title"></a>
+                    </li>
+                </ul>
+            </div>
+            <span class="s-search">
+                <input type="text" class="form-control s-search" name="" placeholder="Search results...">
+                <buttom class="btn btn-xs btn-default s-add-search-param">Save this search</buttom>
+            </span>
+            <span class="input-group-btn s-action">
+                <button class="btn btn-sm btn-default" type="button" data-toggle="collapse" data-target="#j-advanced-filter" aria-expanded="false" aria-controls="j-advanced-filter">
+                    <i class="fa fa-filter"></i>
+                </button>
+            </span>
+            <span class="input-group-btn s-action">
+                <button class="btn btn-sm btn-default" type="button" data-toggle="collapse" data-target="#j-display-options" aria-expanded="false" aria-controls="j-display-options">
+                    <i class="fa fa-th"></i>
+                </button>
+            </span>
+        </div>
+        <!-- DISPLAY OPTIONS -->
+        <div class="collapse" id="j-display-options">
+            <div class="s-display-options">
+                <a href="#j-display-options" class="s-close collapsed" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="j-display-options"><i class="fa fa-times"></i></a>
+                <!-- Dragable List group -->
+                <h4>Display Options</h4>
+                <sw-display-options
+                        data-columns="swListingControls.collectionConfig.columns"
+                        data-properties-list="swListingControls.filterPropertiesList"
+                        data-save-collection="saveCollection()"
+                        data-base-entity-alias="swListingControls.collectionConfig.baseEntityAlias"
+                        data-base-entity-name="swListingControls.collectionConfig.baseEntityName">
+                    <li class="list-group-item"
+                        ng-repeat="column in swListingControls.collectionConfig.columns"
+                        sw-column-item
+                        data-column="column"
+                        data-columns="swListingControls.collectionConfig.columns"
+                        data-column-index="$index"
+                        data-save-collection="saveCollection()"
+                        data-properties-list="swListingControls.filterPropertiesList"
+                        data-order-by="swListingControls.collectionConfig.orderBy">
+                    </li>
+                </sw-display-options >
+            </div>
+        </div>
+        <!-- //DISPLAY OPTIONS -->
+        <!-- ADD FILTER -->
+        <div class="collapse" id="j-advanced-filter">
+            <div class="col-xs-12 s-add-filter s-add-filter-secondary-layout">
+                <a href="##j-advanced-filter" class="s-close" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-times"></i></a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <h4>Define Filter</h4>
+                                <div class="form-group form-group-sm s-option-group">
+                                    <label class="control-label">
+                                        <span>Select From</span>
+                                        <strong>Orders</strong>:
+                                    </label>
+                                    <div class="s-option-wrapper">
+                                        <select class="form-control input-sm">
+                                            <option value="" selected="selected"> Account</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm s-option-group s-selected">
+                                    <label class="control-label">
+                                        <span>Select From</span>
+                                        <strong>Account</strong>:
+                                    </label>
+                                    <div class="s-option-wrapper s-right">
+                                        <select class="form-control input-sm s-selected">
+                                            <option value="" selected="selected"> Account:</option>
+                                            <option value="_account.accountAddresses" label="Addresses">Addresses</option>
+                                            <option value="_account.accountAuthentications" label="Account Authentications">Account Authentications</option>
+                                            <option value="_account.accountEmailAddresses" label="Account Email Addresses">Account Email Addresses</option>
+                                            <option value="_account.accountID" label="accountID">accountID</option>
+                                            <option value="_account.accountPhoneNumbers" label="Phone Numbers">Phone Numbers</option>
+                                            <option value="_account.cmsAccountID" label="CMS Account ID">CMS Account ID</option>
+                                            <option value="_account.company" label="Company">Company</option>
+                                            <option value="_account.createdByAccountID" label="Created By AccountID">Created By AccountID</option>
+                                            <option value="_account.createdDateTime" label="Created Date Time">Created Date Time</option>
+                                            <option value="_account.failedLoginAttemptCount" label="Failed Login Attempts">Failed Login Attempts</option>
+                                            <option value="_account.firstName" label="First Name" selected="selected">First Name</option>
+                                            <option value="_account.lastName" label="Last Name">Last Name</option>
+                                            <option value="_account.loginLockExpiresDateTime" label="Account Locked">Account Locked</option>
+                                            <option value="_account.modifiedByAccountID" label="Modified By AccountID">Modified By AccountID</option>
+                                            <option value="_account.modifiedDateTime" label="Modified Date Time">Modified Date Time</option>
+                                            <option value="_account.permissionGroups" label="Permission Groups">Permission Groups</option>
+                                            <option value="_account.primaryAddress" label="Primary Address">Primary Address</option>
+                                            <option value="_account.primaryEmailAddress" label="Account Primary Email Address">Account Primary Email Address</option>
+                                            <option value="_account.primaryPhoneNumber" label="Account Primary Phone Number">Account Primary Phone Number</option>
+                                            <option value="_account.superUserFlag" label="Super User">Super User</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6 s-criteria">
+                                <h4>Criteria</h4>
+                                <div class="form-group form-group-sm s-option-group">
+                                    <label class="control-label">
+                                        <span>Condition:</span>
+                                    </label>
+                                    <div class="s-option-wrapper">
+                                        <select class="form-control input-sm">
+                                            <option selected="selected" value="" class="">Select Condition</option>
+                                            <option value="" label="Equals" selected="selected">Equals</option>
+                                            <option value="" label="Doesn't Equal">Doesn't Equal</option>
+                                            <option value="" label="Contains">Contains</option>
+                                            <option value="" label="Doesn't Contain">Doesn't Contain</option>
+                                            <option value="" label="Starts With">Starts With</option>
+                                            <option value="" label="Doesn't Start With">Doesn't Start With</option>
+                                            <option value="" label="Ends With">Ends With</option>
+                                            <option value="" label="Doesn't End With">Doesn't End With</option>
+                                            <option value="" label="In List">In List</option>
+                                            <option value="" label="Not In List">Not In List</option>
+                                            <option value="" label="Defined">Defined</option>
+                                            <option value="" label="Not Defined">Not Defined</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-sm s-option-group s-selected">
+                                    <label class="control-label">
+                                        <span>Value:</span>
+                                    </label>
+                                    <div class="s-option-wrapper">
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <h4>Preview &amp; Save</h4>
+                                <div class="well well-sm">
+                                    <div>Preview:</div>
+                                    <div style="color: #666">
+                                        First Name = <strong>Reinaldo</strong>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary">Add Filter</button>
+                                <!-- Multi Option Button -->
+                                <!-- <div class="btn-group s-multiple-option-btn">
+                                    <a href="#" class="btn btn-primary btn-small">Add Filter</a>
+                                    <button class="btn dropdown-toggle btn-primary btn-small" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li class="disabled">
+                                            <a href="#">Add Filter</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Save & Add Another Filter</a>
+                                        </li>
+                                    </ul>
+                                    </div> -->
+                                <!-- ///Multi Option Button -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--  //ADD FILTER -->
+    </div>
+    <div class="s-filter-wrapper">
+        <div class="s-filters">
+            <!-- Filter -->
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#j-example-filter" aria-expanded="false" aria-controls="j-example-filter">First Name = Reinaldo</button>
+                <button type="button" class="btn btn-sm btn-primary s-remove">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            <!-- //Filter -->
+            <!-- Filter -->
+            <div class="btn-group">
+                <button class="btn btn-primary btn-sm" data-toggle="collapse" data-target="#j-example-filter" aria-expanded="false" aria-controls="j-example-filter">First Name = Reinaldo</button>
+                <button type="button" class="btn btn-sm btn-primary s-remove">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            <!-- //Filter -->
+        </div>
+        <!-- ADD FILTER -->
+        <div class="col-xs-12 s-add-filter s-add-filter-secondary-layout collapse" id="j-example-filter">
+            <a href="##j-example-filter" class="s-close" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-times"></i></a>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <h4>Define Filter</h4>
+                            <div class="form-group form-group-sm s-option-group">
+                                <label class="control-label">
+                                    <span>Select From</span>
+                                    <strong>Orders</strong>:
+                                </label>
+                                <div class="s-option-wrapper">
+                                    <select class="form-control input-sm">
+                                        <option value="" selected="selected"> Account</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm s-option-group s-selected">
+                                <label class="control-label">
+                                    <span>Select From</span>
+                                    <strong>Account</strong>:
+                                </label>
+                                <div class="s-option-wrapper s-right">
+                                    <select class="form-control input-sm s-selected">
+                                        <option value="" selected="selected"> Account:</option>
+                                        <option value="_account.accountAddresses" label="Addresses">Addresses</option>
+                                        <option value="_account.accountAuthentications" label="Account Authentications">Account Authentications</option>
+                                        <option value="_account.accountEmailAddresses" label="Account Email Addresses">Account Email Addresses</option>
+                                        <option value="_account.accountID" label="accountID">accountID</option>
+                                        <option value="_account.accountPhoneNumbers" label="Phone Numbers">Phone Numbers</option>
+                                        <option value="_account.cmsAccountID" label="CMS Account ID">CMS Account ID</option>
+                                        <option value="_account.company" label="Company">Company</option>
+                                        <option value="_account.createdByAccountID" label="Created By AccountID">Created By AccountID</option>
+                                        <option value="_account.createdDateTime" label="Created Date Time">Created Date Time</option>
+                                        <option value="_account.failedLoginAttemptCount" label="Failed Login Attempts">Failed Login Attempts</option>
+                                        <option value="_account.firstName" label="First Name" selected="selected">First Name</option>
+                                        <option value="_account.lastName" label="Last Name">Last Name</option>
+                                        <option value="_account.loginLockExpiresDateTime" label="Account Locked">Account Locked</option>
+                                        <option value="_account.modifiedByAccountID" label="Modified By AccountID">Modified By AccountID</option>
+                                        <option value="_account.modifiedDateTime" label="Modified Date Time">Modified Date Time</option>
+                                        <option value="_account.permissionGroups" label="Permission Groups">Permission Groups</option>
+                                        <option value="_account.primaryAddress" label="Primary Address">Primary Address</option>
+                                        <option value="_account.primaryEmailAddress" label="Account Primary Email Address">Account Primary Email Address</option>
+                                        <option value="_account.primaryPhoneNumber" label="Account Primary Phone Number">Account Primary Phone Number</option>
+                                        <option value="_account.superUserFlag" label="Super User">Super User</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 s-criteria">
+                            <h4>Criteria</h4>
+                            <div class="form-group form-group-sm s-option-group">
+                                <label class="control-label">
+                                    <span>Condition:</span>
+                                </label>
+                                <div class="s-option-wrapper">
+                                    <select class="form-control input-sm">
+                                        <option selected="selected" value="" class="">Select Condition</option>
+                                        <option value="" label="Equals" selected="selected">Equals</option>
+                                        <option value="" label="Doesn't Equal">Doesn't Equal</option>
+                                        <option value="" label="Contains">Contains</option>
+                                        <option value="" label="Doesn't Contain">Doesn't Contain</option>
+                                        <option value="" label="Starts With">Starts With</option>
+                                        <option value="" label="Doesn't Start With">Doesn't Start With</option>
+                                        <option value="" label="Ends With">Ends With</option>
+                                        <option value="" label="Doesn't End With">Doesn't End With</option>
+                                        <option value="" label="In List">In List</option>
+                                        <option value="" label="Not In List">Not In List</option>
+                                        <option value="" label="Defined">Defined</option>
+                                        <option value="" label="Not Defined">Not Defined</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm s-option-group s-selected">
+                                <label class="control-label">
+                                    <span>Value:</span>
+                                </label>
+                                <div class="s-option-wrapper">
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <h4>Preview &amp; Save</h4>
+                            <div class="well well-sm">
+                                <div>Preview:</div>
+                                <div style="color: #666">
+                                    First Name = <strong>Reinaldo</strong>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">Add Filter</button>
+                            <!-- Multi Option Button -->
+                            <!-- <div class="btn-group s-multiple-option-btn">
+                                <a href="#" class="btn btn-primary btn-small">Add Filter</a>
+                                <button class="btn dropdown-toggle btn-primary btn-small" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li class="disabled">
+                                        <a href="#">Add Filter</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Save & Add Another Filter</a>
+                                    </li>
+                                </ul>
+                                </div> -->
+                            <!-- ///Multi Option Button -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--  //ADD FILTER -->
+    </div>
+</div>
