@@ -21,6 +21,6 @@ before_install:
  - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml build
-  - cd org/Hibachi/client
-  - npm install
+  - cd meta
+  - docker-compose -f docker/slatwall-ci/docker-compose.yml up
+  - docker exec -i -t slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests
