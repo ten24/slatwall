@@ -708,6 +708,23 @@
 
 			return arguments.data;
 		}
+		
+		public any function getLineBreakByEnvironment(required string environmentName){
+			var linebreak = "";
+			
+			if ( findNoCase('windows', arguments.environmentName) ){
+				linebreak =  Chr(13) & Chr(10);
+			}else if (findNoCase('mac', arguments.environmentName) ){
+				linebreak = Chr(10);
+			}else if (findNoCase('linux', arguments.environmentName)){
+				linebreak = Chr(10);
+			}else {
+				linebreak = CreateObject("java", "java.lang.System").getProperty("line.separator");
+			}
+			
+			return linebreak;
+		}
+			
 	</cfscript>
 
 	<cffunction name="logException" returntype="void" access="public">

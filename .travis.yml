@@ -8,6 +8,12 @@ services:
 env:
   COMPOSE_VERSION: 1.4.1
 
+branches:
+  only:
+    - master
+    - develop
+    - hotfix
+
 before_install:
  - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
  - chmod +x docker-compose
