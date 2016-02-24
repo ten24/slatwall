@@ -13,6 +13,7 @@ branches:
     - master
     - develop
     - hotfix
+    - travis
 
 before_install:
  - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
