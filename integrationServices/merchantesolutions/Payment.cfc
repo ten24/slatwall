@@ -97,7 +97,11 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 
 			requestData["transaction_amount"] = requestBean.getTransactionAmount();
 			requestData["invoice_number"] = requestBean.getOrder().getShortReferenceID(true);
-			requestData["card_number"] = requestBean.getCreditCardNumber();
+			if(!isNull(requestBean.getProviderToken())) {
+				requestData["card_id"] = requestBean.getProviderToken();
+			} else {
+				requestData["card_number"] = requestBean.getCreditCardNumber();
+			}
 			if(!isNull(requestBean.getSecurityCode())) {
 				requestData["cvv2"] = requestBean.getSecurityCode();
 			}
@@ -129,7 +133,11 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 		} else if(requestBean.getTransactionType()== "credit") {
 
 			requestData["transaction_amount"] = requestBean.getTransactionAmount();
-			requestData["card_number"] = requestBean.getCreditCardNumber();
+			if(!isNull(requestBean.getProviderToken())) {
+				requestData["card_id"] = requestBean.getProviderToken();
+			} else {
+				requestData["card_number"] = requestBean.getCreditCardNumber();
+			}
 			if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
 				requestData["card_exp_date"] = left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2);
 			}
@@ -151,6 +159,21 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 			if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
 				requestData["card_exp_date"] = left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2);
 			}
+			requestData["cardholder_first_name"] = requestBean.getAccountFirstName();
+			requestData["cardholder_last_name"] = requestBean.getAccountLastName();
+			requestData["cardholder_street_address"] = isNull(requestBean.getBillingStreetAddress()) ? "":requestBean.getBillingStreetAddress();
+			requestData["cardholder_zip"] = isNull(requestBean.getBillingPostalCode()) ? "":requestBean.getBillingPostalCode();
+			if(!isNull(requestBean.getAccountPrimaryPhoneNumber())) {
+				requestData["cardholder_phone"] = requestBean.getAccountPrimaryPhoneNumber();
+			} else {
+				requestData["cardholder_phone"] = "";
+			}
+			if(!isNull(requestBean.getAccountPrimaryEmailAddress())) {
+				requestData["cardholder_email"] = requestBean.getAccountPrimaryEmailAddress();
+			} else {
+				requestData["cardholder_email"] = "";
+			}
+			requestData["ip_address"] = CGI.REMOTE_ADDR;
 
 		}
 
@@ -205,10 +228,11 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 			// Transaction did not go through
 			response.addError(responseData.error_code, responseData.auth_response_text);
 		} else {
-			if(requestBean.getTransactionType() == "authorize") {
+			if(requestBean.getTransactionType() == "authorize" || requestBean.getTransactionType() == "authorizeAndCharge") {
 
 				response.setAmountAuthorized(requestBean.getTransactionAmount());
 				response.setAuthorizationCode(responseData.auth_code);
+
 				if(responseData.avs_result == "S") {
 					response.setAVSCode("U");
 				} else {
@@ -221,21 +245,8 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 					response.setSecurityCodeMatch(false);
 				}
 
-			} else if(requestBean.getTransactionType() == "authorizeAndCharge") {
-
-				response.setAmountAuthorized(requestBean.getTransactionAmount());
-				response.setAmountCharged(requestBean.getTransactionAmount());
-				response.setAuthorizationCode(responseData.auth_code);
-				if(responseData.avs_result == "S") {
-					response.setAVSCode("U");
-				} else {
-					response.setAVSCode(responseData.avs_result);
-				}
-
-				if(responseData.cvv2_result == 'M') {
-					response.setSecurityCodeMatch(true);
-				} else {
-					response.setSecurityCodeMatch(false);
+				if(requestBean.getTransactionType() == "authorizeAndCharge") {
+					response.setAmountCharged(requestBean.getTransactionAmount());
 				}
 
 			} else if(requestBean.getTransactionType() == "chargePreAuthorization") {
