@@ -58,18 +58,18 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: Process Methods ===========================
 
-	public any function processForm_addFormQuestion(required any formToProcess, required any processObject ){
+	public any function processForm_addFormQuestion(required any form, required any processObject ){
 
-		arguments.formToProcess.addFormQuestion(processObject.getNewFormQuestion());
+		arguments.form.addFormQuestion(processObject.getNewFormQuestion());
 
-		return this.saveForm(arguments.formToProcess);
+		return this.saveForm(arguments.form);
 	}
 
-	public any function processForm_addFormResponse(required any formToProcess, required any processObject ){
+	public any function processForm_addFormResponse(required any form, required any processObject ){
 
-		arguments.formToProcess.addFormResponse(processObject.getNewFormResponse());
+		arguments.form.addFormResponse(processObject.getNewFormResponse());
 
-		return this.saveForm(arguments.formToProcess);
+		return this.saveForm(arguments.form);
 	}
 
 	// =====================  END: Process Methods ============================
