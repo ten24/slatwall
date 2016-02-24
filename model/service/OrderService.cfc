@@ -385,7 +385,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				(
 					(!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag())
 					  ||
-					(getHibachiScope().getLoggedInAsAdminFlag() && getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(crudType='update', entityName='orderItem', propertyName='price', account=getHibachiScope().getAccount()));
+					(getHibachiScope().getLoggedInAsAdminFlag() && getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(crudType='update', entityName='orderItem', propertyName='price', account=getHibachiScope().getAccount()))
 				) && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );
 			} else {
