@@ -7,13 +7,15 @@ slatwallweb:
   links:
    - slatwalldb
   environment:
-   MYSQL_ROOT_PASSWORD : MakeThisSecret!
+   MYSQL_ROOT_PASSWORD : CiPassword
    MYSQL_HOST : slatwalldb
-   LUCEE_PASSWORD: AlsoChangeThis!
+   MYSQL_DATABASE : Slatwall
+   LUCEE_PASSWORD: CiPassword
+   LUCEE_JAVA_OPTS: -Xms1024m -Xmx1024m
 slatwalldb:
   image: mysql
   ports:
    - "3306:3306"
   environment:
-   MYSQL_ROOT_PASSWORD : MakeThisSecret!
+   MYSQL_ROOT_PASSWORD : CiPassword
    MYSQL_DATABASE : Slatwall
