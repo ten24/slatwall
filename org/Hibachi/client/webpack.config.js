@@ -36,7 +36,7 @@ var appConfig = {
             app: path.join(customPath, '/src'),
             lib: path.join(customPath, '/lib')
         };
-        if(typeof bootstrap !== "undefined"){
+        if(typeof bootstrap !== 'undefined'){
             this.entry.app[this.entry.app.length - 1] = bootstrap;
         }
         this.output.path = PATHS.app;
@@ -52,12 +52,12 @@ var appConfig = {
         this.entry.app.splice(this.entry.app.length - 1, 0, name);
         return this;
     },
-    addLoader: function(plugin){
+    addPlugin: function(plugin){
         this.plugins.push(plugin);
         return this;
     },
-    addPlugin: function(plugin){
-        this.module.loaders.push(plugin);
+    addLoader: function(loader){
+        this.module.loaders.push(loader);
         return this;
     }
 
