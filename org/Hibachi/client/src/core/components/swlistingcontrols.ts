@@ -7,14 +7,21 @@ class SWListingControlsController {
     private getSelectedSearchColumnName;
     private filterPropertiesList;
     private collectionConfig;
-
-
+    private search;
+    private _timeoutPromise;
+    private paginator;
+    private searching;
+    private getCollection;
+    private searchText;
+    private backupColumnsConfig;
 
     //@ngInject
     constructor(
         public $hibachi,
-        public metadataService
+        public metadataService,
+        public $timeout
     ){
+
         this.selectSearchColumn = (column?)=>{
             this.selectedSearchColumn = column;
         };
@@ -31,6 +38,17 @@ class SWListingControlsController {
             metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias],this.collectionConfig.baseEntityAlias);
         });
 
+        this.search = () =>{
+            if(this._timeoutPromise) {
+                $timeout.cancel(this._timeoutPromise);
+            }
+            this._timeoutPromise = $timeout(()=>{
+                this.collectionConfig.setKeywords(this.searchText)
+                this.paginator.setCurrentPage(1);
+                this.searching = true;
+                this.getCollection();
+            }, 500);
+        };
     }
 }
 
@@ -42,7 +60,9 @@ class SWListingControls  implements ng.IDirective{
     public scope = {};
 
     public bindToController =  {
-        collectionConfig : "="
+        collectionConfig : "=",
+        paginator : "=",
+        getCollection : "&"
     };
     public controller = SWListingControlsController;
     public controllerAs = 'swListingControls';

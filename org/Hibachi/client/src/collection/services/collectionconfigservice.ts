@@ -549,6 +549,18 @@ class CollectionConfig {
         return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
     };
 
+    public getColumns=()=>{
+        if(!this.columns){
+            this.columns = [];
+        }
+        return this.columns;
+    };
+
+    public setColumns=(columns)=>{
+        this.columns = columns;
+        return this;
+    }
+
 }
 
 export {
