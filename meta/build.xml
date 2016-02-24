@@ -33,9 +33,9 @@
 		<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
 
 		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
-		<property name="slatwall.test.server" value="slatwall" />
-		<property name="slatwall.test.serverport" value="80" />
-		<property name="slatwall.test.datasource" value="slatwall" />
+		<property name="slatwall.test.server" value="127.0.0.1" />
+		<property name="slatwall.test.serverport" value="8888" />
+		<property name="slatwall.test.datasource" value="Slatwall" />
 		<property name="slatwall.test.functional.browser" value="*googlechrome" />
 
 		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
@@ -70,7 +70,7 @@
 
 		<delete dir="${slatwall.test.output.xml}/reloadget" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/reloadget" />
-		<get src="http://${slatwall.test.server}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
+		<get src="http://${slatwall.test.server}:${slatwall.test.serverport}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
 	</target>
 
 	<target name="setupMachineTestsConfig" depends="init">

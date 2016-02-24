@@ -7,7 +7,7 @@
 		<column name="lastName" />
 		<column name="company" />
 		<column name="cmsAccountID" />
-		<column name="remoteID" /> 
+		<column name="remoteID" />
 		<column name="remoteEmployeeID" />
 		<column name="remoteCustomerID" />
 		<column name="remoteContactID" />
