@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,33 +45,41 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
 
-<cfoutput>
+	property name="fw" type="any";
 
-	<sw-entity-action-bar
-			data-type="listing"
-			data-page-title-rb-key="admin.entity.listform"
-						>
-		<sw-entity-action-bar-button-group>
-			<sw-process-caller data-action="admin:entity.createform" data-title-rb-key="entity.Form.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
-		</sw-entity-action-bar-button-group>
-	</sw-entity-action-bar>
+	property name="formService" type="any";
+	property name="hibachiSessionService" type="any";
 
+	public void function init( required any fw ) {
+		setFW( arguments.fw );
+	}
 
-	<sw-listing-display
-			data-collection="'Form'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailform"
-			data-record-edit-action="admin:entity.editform"
+	public void function before() {
+		getFW().setView("public:main.blank");
+	}
 
-						>
-		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>
-		<sw-listing-column data-property-identifier="emailTo"></sw-listing-column>
-	</sw-listing-display>
+	public void function after( required struct rc ) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions())) {
+			getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(getHibachiScope().getFailureActions())) {
+			getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL );
+		} else if (structKeyExists(arguments.rc, "redirectURL")) {
+			getFW().redirectExact( redirectLocation=arguments.rc.redirectURL );
+		}
+	}
 
-</cfoutput>
+	public void function addFormResponse(required struct rc){
 
+    	var formToProcess = getFormService().getForm(rc.formResponse.formID);
+    	var processObject = formToProcess.getProcessObject("AddFormResponse");
+    	processObject.populate(rc);
+
+    	formToProcess = getFormService().processForm_addFormResponse(formToProcess,processObject);
+
+    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
+
+    }
+}

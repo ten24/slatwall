@@ -46,32 +46,12 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-
-<cfoutput>
-
-	<sw-entity-action-bar
-			data-type="listing"
-			data-page-title-rb-key="admin.entity.listform"
-						>
-		<sw-entity-action-bar-button-group>
-			<sw-process-caller data-action="admin:entity.createform" data-title-rb-key="entity.Form.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
-		</sw-entity-action-bar-button-group>
-	</sw-entity-action-bar>
+<cfcomponent extends="HibachiDAO">
 
 
-	<sw-listing-display
-			data-collection="'Form'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailform"
-			data-record-edit-action="admin:entity.editform"
+	<cffunction name="getFormQuestionAndFormResponsesRawData">
+		<cfargument required="true" name="formID" />
+		<cfreturn ormExecuteQuery("SELECT Distinct  new map( av.attributeValue as response, av.formResponse.formResponseID as formResponseID, av.attribute.attributeID as questionID, av.attribute.attributeName as question) from #getApplicationKey()#AttributeValue as av left join av.formResponse as fr left join fr.form as f left join fr.form.formQuestions fq where av.formResponse.form.formID=:formid order by av.formResponse.formResponseID asc", {formid=arguments.formID}) />
+	</cffunction>
 
-						>
-		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>
-		<sw-listing-column data-property-identifier="emailTo"></sw-listing-column>
-	</sw-listing-display>
-
-</cfoutput>
-
+</cfcomponent>

@@ -1,5 +1,4 @@
-<!---
-
+/*
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
-
 	- You also meet the terms and conditions of the license of each
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets
 	the above guidelines as a combined work under the terms of GPL for this program,
 	provided that you include the source code of that other code when and as the
@@ -42,36 +39,40 @@
 
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
-
 Notes:
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+	 // Injected Entity
+	 property name="Form";
 
-<cfoutput>
-
-	<sw-entity-action-bar
-			data-type="listing"
-			data-page-title-rb-key="admin.entity.listform"
-						>
-		<sw-entity-action-bar-button-group>
-			<sw-process-caller data-action="admin:entity.createform" data-title-rb-key="entity.Form.process.create" data-class="adminentitycreateform btn btn-primary" data-icon="'plus'" data-type="link"></sw-process-caller>
-		</sw-entity-action-bar-button-group>
-	</sw-entity-action-bar>
+	 //data properties
+	 property name="newFormResponse" cfc="FormResponse" fieldtype="many-to-one" persistent="false" fkcolumn="formID";
 
 
-	<sw-listing-display
-			data-collection="'Form'"
-			data-edit="false"
-			data-has-search="true"
-			data-record-detail-action="admin:entity.detailform"
-			data-record-edit-action="admin:entity.editform"
+	public any function getNewFormResponse(){
+		if(!structKeyExists(variables, "newFormResponse")){
+			variables.newFormResponse = getService("formService").newFormResponse();
+		}
+		return variables.newFormResponse;
+	}
 
-						>
-		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>
-		<sw-listing-column data-property-identifier="emailTo"></sw-listing-column>
-	</sw-listing-display>
+	//override populate to capture attribute values
+	public any function populate(required struct data){
+		this = super.populate(data);
 
-</cfoutput>
+		for(var question in this.getForm().getFormQuestions()){
+			if(structKeyExists(data, question.getAttributeCode())){
+				//create and store the new attribute value
+				var newAttributeValue = getService("attributeService").newAttributeValue();
+				newAttributeValue.setAttributeValue(evaluate("data." & question.getAttributeCode()));
+				newAttributeValue.setAttribute(question);
+				newAttributeValue.setFormResponse(this.getNewFormResponse());
+				newAttributeValue.setAttributeValueType(question.getAttributeInputType());
+				getService("attributeService").saveAttributeValue(newAttributeValue);
+			}
+		}
 
+		return this;
+	}
+}
