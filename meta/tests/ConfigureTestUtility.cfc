@@ -12,7 +12,7 @@ component {
 		var configStruct = structNew();
 		var hostname = createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
 		var configPath = expandPath( "/Slatwall/meta/tests/config/#hostname#.ini" );
-		
+
 		if(not fileExists(configPath)){
 			throw("Can't load local configuration: #configPath# should exist! If you're seeing this, copy /Slatwall/meta/tests/config/sample.ini and name it #hostname#.ini, then update any values with your environment-specific details");
 		}
@@ -31,7 +31,7 @@ component {
 	}
 
 	public function updateTestData(){
-		//variables.slatwallApplication.getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = expandPath("/Slatwall/meta/tests/config/testdbdata"), ignorePreviouslyInserted=false);
+		variables.slatwallApplication.getBeanFactory().getBean("hibachiDataService").loadDataFromXMLDirectory(xmlDirectory = expandPath("/Slatwall/meta/tests/config/testdbdata"), ignorePreviouslyInserted=false);
 	}
 
 }

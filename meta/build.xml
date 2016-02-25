@@ -33,7 +33,7 @@
 		<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
 
 		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
-		<property name="slatwall.test.server" value="127.0.0.1" />
+		<property name="slatwall.test.server" value="${computer.hostname}" />
 		<property name="slatwall.test.serverport" value="8888" />
 		<property name="slatwall.test.datasource" value="Slatwall" />
 		<property name="slatwall.test.functional.browser" value="*googlechrome" />
@@ -62,19 +62,35 @@
 		<echoproperties />
 	</target>
 
-	<target name="setupApplicationConfig" depends="init">
+	<target name="setupMachineTestsConfig" depends="init">
+		<echo file="tests/config/${computer.hostname}.ini">
+# Parameters needed by all tests
+[common]
+login=testrunnersuperuser@mailinator.com
+password=testrunner
+
+# Parameters for UI tests
+[ui]
+browserUrl=http://${slatwall.test.server}/
+browserCommand=${slatwall.test.functional.browser}
+		</echo>
+	</target>
+
+	<target name="setupApplicationConfig" depends="init,setupMachineTestsConfig">
 		<tstamp>
 		      <format property="touch.time" pattern="yyyymmddhhmmaa" unit="hour" />
 		</tstamp>
 		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 		<delete file="../custom/config/lastFullUpdate.txt.cfm" failonerror="false"/>
 
+		<!--
 		<delete dir="${slatwall.test.output.xml}/reloadget" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/reloadget" />
 		<get src="http://${slatwall.test.server}:${slatwall.test.serverport}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
+	-->
 	</target>
 
-	<target name="runUnitTests" depends="init,setupApplicationConfig,setupMachineTestsConfig">
+	<target name="runUnitTests" depends="setupApplicationConfig">
 		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/unit" />
@@ -92,7 +108,7 @@
 		  <report format="frames" todir="${slatwall.test.output.html}/unit"/>
 		</junitreport>
 	</target>
-	
+
 	<macrodef name="runTestDirectory">
 		<attribute name="directoryName"/>
 		<attribute name="excludes" default=""/>
@@ -102,22 +118,10 @@
 			</mxunittask>
 		</sequential>
 	</macrodef>
-	
+
+
+
 <!--
-	<target name="setupMachineTestsConfig" depends="init">
-		<echo file="tests/config/${computer.hostname}.ini">
-# Parameters needed by all tests
-[common]
-login=testrunnersuperuser@mailinator.com
-password=testrunner
-
-# Parameters for UI tests
-[ui]
-browserUrl=http://${slatwall.test.server}/
-browserCommand=${slatwall.test.functional.browser}
-		</echo>
-	</target>
-
 	<target name="runFunctionalTests" depends="init,setupApplicationConfig,setupMachineTestsConfig">
 		<delete dir="${slatwall.test.output.xml}/functional" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/functional" />
