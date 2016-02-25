@@ -3,9 +3,6 @@
 class SWEditFilterItem{
 	public static Factory(){
 		var directive = (
-			$http,
-			$compile,
-			$templateCache,
 			$log,
 			$filter,
             $timeout,
@@ -16,9 +13,6 @@ class SWEditFilterItem{
 			hibachiPathBuilder,
             rbkeyService
 		)=> new SWEditFilterItem(
-			$http,
-			$compile,
-			$templateCache,
 			$log,
 			$filter,
             $timeout,
@@ -30,9 +24,6 @@ class SWEditFilterItem{
             rbkeyService
 		);
 		directive.$inject = [
-			'$http',
-			'$compile',
-			'$templateCache',
 			'$log',
 			'$filter',
             '$timeout',
@@ -46,9 +37,6 @@ class SWEditFilterItem{
 		return directive;
 	}
 	constructor(
-		$http,
-		$compile,
-		$templateCache,
 		$log,
 		$filter,
         $timeout,
@@ -69,7 +57,8 @@ class SWEditFilterItem{
 				saveCollection:"&",
 				removeFilterItem:"&",
 				filterItemIndex:"=",
-				comparisonType:"="
+				comparisonType:"=",
+                simple:"="
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"editfilteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){

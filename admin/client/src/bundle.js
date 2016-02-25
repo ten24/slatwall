@@ -5695,6 +5695,7 @@
 	            _this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
 	                if (newValue) {
 	                    _this.$q.when(_this.collectionPromise).then(function (data) {
+	                        console.warn('CARALHO');
 	                        _this.collectionData = data;
 	                        _this.setupDefaultCollectionInfo();
 	                        if (_this.collectionConfig.hasColumns()) {
@@ -5732,6 +5733,7 @@
 	            return function () {
 	                _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
 	                _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+	                console.warn('GET ENTITYYY');
 	                _this.collectionConfig.getEntity().then(function (data) {
 	                    _this.collectionData = data;
 	                    _this.setupDefaultCollectionInfo();
@@ -6202,13 +6204,15 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWListingControlsController = (function () {
 	    //@ngInject
-	    function SWListingControlsController($hibachi, metadataService, $timeout) {
+	    function SWListingControlsController($hibachi, metadataService, $timeout, collectionService) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.metadataService = metadataService;
 	        this.$timeout = $timeout;
+	        this.collectionService = collectionService;
 	        this.selectSearchColumn = function (column) {
 	            _this.selectedSearchColumn = column;
+	            _this.triggerSearch();
 	        };
 	        this.getSelectedSearchColumnName = function () {
 	            return (angular.isUndefined(_this.selectedSearchColumn)) ? 'All' : _this.selectedSearchColumn.title;
@@ -6220,17 +6224,48 @@
 	            _this.filterPropertiesList[_this.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias(_this.collectionConfig.baseEntityAlias);
 	            metadataService.formatPropertiesList(_this.filterPropertiesList[_this.collectionConfig.baseEntityAlias], _this.collectionConfig.baseEntityAlias);
 	        });
+	        this.backupColumnsConfig = this.collectionConfig.getColumns();
 	        this.search = function () {
 	            if (_this._timeoutPromise) {
 	                $timeout.cancel(_this._timeoutPromise);
 	            }
 	            _this._timeoutPromise = $timeout(function () {
 	                _this.collectionConfig.setKeywords(_this.searchText);
-	                _this.paginator.setCurrentPage(1);
-	                _this.searching = true;
-	                _this.getCollection();
+	                _this.triggerSearch();
 	            }, 500);
 	        };
+	        this.triggerSearch = function () {
+	            if (angular.isDefined(_this.selectedSearchColumn)) {
+	                _this.backupColumnsConfig = angular.copy(_this.collectionConfig.getColumns());
+	                var collectionColumns = _this.collectionConfig.getColumns();
+	                for (var i = 0; i < collectionColumns.length; i++) {
+	                    if (collectionColumns[i].propertyIdentifier != _this.selectedSearchColumn.propertyIdentifier) {
+	                        collectionColumns[i].isSearchable = false;
+	                    }
+	                }
+	                _this.paginator.setCurrentPage(1);
+	                _this.collectionConfig.setColumns(_this.backupColumnsConfig);
+	            }
+	            else {
+	                _this.paginator.setCurrentPage(1);
+	            }
+	        };
+	        this.setItemInUse = function (booleanValue) {
+	            this.itemInUse = booleanValue;
+	        };
+	        this.removeFilter = function (array, index) {
+	            array.splice(index, 1);
+	        };
+	        this.addSearchFilter = function () {
+	            if (angular.isUndefined(_this.selectedSearchColumn))
+	                return;
+	            _this.collectionConfig.addFilter(_this.selectedSearchColumn.propertyIdentifier, _this.searchText);
+	            _this.searchText = '';
+	            _this.getCollection();
+	        };
+	        //this.createNewFilter = function(){
+	        this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup, this.setItemInUse);
+	        //}
 	    }
 	    return SWListingControlsController;
 	})();
@@ -7888,6 +7923,7 @@
 	            _this.baseEntityAlias = jsonCollection.baseEntityAlias;
 	            _this.baseEntityName = jsonCollection.baseEntityName;
 	            if (angular.isDefined(jsonCollection.filterGroups)) {
+	                _this.validateFilter(jsonCollection.filterGroups);
 	                _this.filterGroups = jsonCollection.filterGroups;
 	            }
 	            _this.columns = jsonCollection.columns;
@@ -7922,13 +7958,15 @@
 	                keywords: _this.keywords,
 	                defaultColumns: (!_this.columns || !_this.columns.length),
 	                allRecords: _this.allRecords,
-	                isDistinct: _this.isDistinct
+	                isDistinct: _this.isDistinct,
+	                orderBy: _this.orderBy
 	            };
 	        };
 	        this.getEntityName = function () {
 	            return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
 	        };
 	        this.getOptions = function () {
+	            _this.validateFilter(_this.filterGroups);
 	            var options = {
 	                columnsConfig: angular.toJson(_this.columns),
 	                filterGroupsConfig: angular.toJson(_this.filterGroups),
@@ -7952,6 +7990,10 @@
 	        };
 	        this.formatPropertyIdentifier = function (propertyIdentifier, addJoin) {
 	            if (addJoin === void 0) { addJoin = false; }
+	            //if already starts with alias, strip it out
+	            if (propertyIdentifier.lastIndexOf(_this.baseEntityAlias, 0) === 0) {
+	                propertyIdentifier = propertyIdentifier.slice(_this.baseEntityAlias.length + 1);
+	            }
 	            var _propertyIdentifier = _this.baseEntityAlias;
 	            if (addJoin === true) {
 	                _propertyIdentifier += _this.processJoin(propertyIdentifier);
@@ -7964,7 +8006,7 @@
 	        this.processJoin = function (propertyIdentifier) {
 	            var _propertyIdentifier = '', propertyIdentifierParts = propertyIdentifier.split('.'), current_collection = _this.collection;
 	            for (var i = 0; i < propertyIdentifierParts.length; i++) {
-	                if (current_collection.metaData[propertyIdentifierParts[i]].cfc) {
+	                if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
 	                    current_collection = _this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
 	                    _propertyIdentifier += '_' + propertyIdentifierParts[i];
 	                    _this.addJoin(new Join(_propertyIdentifier.replace(/_/g, '.').substring(1), _this.baseEntityAlias + _propertyIdentifier));
@@ -8052,6 +8094,9 @@
 	            return _this;
 	        };
 	        this.addDisplayAggregate = function (propertyIdentifier, aggregateFunction, aggregateAlias, options) {
+	            if (angular.isUndefined(aggregateAlias)) {
+	                aggregateAlias = propertyIdentifier.replace(/\./g, '_') + aggregateFunction;
+	            }
 	            var column = {
 	                propertyIdentifier: _this.formatPropertyIdentifier(propertyIdentifier, true),
 	                title: _this.rbkeyService.getRBKey("entity." + _this.baseEntityName + "." + propertyIdentifier),
@@ -8208,6 +8253,11 @@
 	            _this.allRecords = allFlag;
 	            return _this;
 	        };
+	        this.setDistinct = function (flag) {
+	            if (flag === void 0) { flag = true; }
+	            _this.isDistinct = flag;
+	            return _this;
+	        };
 	        this.setKeywords = function (keyword) {
 	            _this.keywords = keyword;
 	            return _this;
@@ -8231,6 +8281,24 @@
 	                _this.setId(id);
 	            }
 	            return _this.$hibachi.getEntity(_this.baseEntityName, _this.getOptions());
+	        };
+	        this.validateFilter = function (filter, currentGroup) {
+	            if (angular.isUndefined(currentGroup)) {
+	                currentGroup = filter;
+	            }
+	            if (angular.isArray(filter)) {
+	                angular.forEach(filter, function (key) {
+	                    _this.validateFilter(key, filter);
+	                });
+	            }
+	            else if (angular.isArray(filter.filterGroup)) {
+	                _this.validateFilter(filter.filterGroup, filter.filterGroup);
+	            }
+	            else {
+	                if ((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)) {
+	                    currentGroup.splice(currentGroup.indexOf(filter), 1);
+	                }
+	            }
 	        };
 	        this.getColumns = function () {
 	            if (!_this.columns) {
@@ -11805,7 +11873,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWEditFilterItem = (function () {
-	    function SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
+	    function SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
 	        return {
 	            require: '^swFilterGroups',
 	            restrict: 'E',
@@ -11816,7 +11884,8 @@
 	                saveCollection: "&",
 	                removeFilterItem: "&",
 	                filterItemIndex: "=",
-	                comparisonType: "="
+	                comparisonType: "=",
+	                simple: "="
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "editfilteritem.html",
 	            link: function (scope, element, attrs, filterGroupsController) {
@@ -12076,13 +12145,10 @@
 	        };
 	    }
 	    SWEditFilterItem.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
-	            return new SWEditFilterItem($http, $compile, $templateCache, $log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService);
+	        var directive = function ($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
+	            return new SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService);
 	        };
 	        directive.$inject = [
-	            '$http',
-	            '$compile',
-	            '$templateCache',
 	            '$log',
 	            '$filter',
 	            '$timeout',
@@ -12107,7 +12173,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWFilterGroups = (function () {
-	    function SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, hibachiPathBuilder) {
+	    function SWFilterGroups($log, collectionPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'EA',
 	            scope: {
@@ -12116,7 +12182,8 @@
 	                filterPropertiesList: "=?",
 	                saveCollection: "&",
 	                filterGroup: "=?",
-	                comparisonType: "=?"
+	                comparisonType: "=?",
+	                simple: "="
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
 	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
@@ -12181,13 +12248,10 @@
 	        };
 	    }
 	    SWFilterGroups.Factory = function () {
-	        var directive = function ($http, $compile, $templateCache, $log, collectionPartialsPath, hibachiPathBuilder) {
-	            return new SWFilterGroups($http, $compile, $templateCache, $log, collectionPartialsPath, hibachiPathBuilder);
+	        var directive = function ($log, collectionPartialsPath, hibachiPathBuilder) {
+	            return new SWFilterGroups($log, collectionPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
-	            '$http',
-	            '$compile',
-	            '$templateCache',
 	            '$log',
 	            'collectionPartialsPath',
 	            'hibachiPathBuilder'
@@ -12217,7 +12281,8 @@
 	                filterPropertiesList: "=",
 	                filterItemIndex: "=",
 	                saveCollection: "&",
-	                comparisonType: "="
+	                comparisonType: "=",
+	                simple: "="
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filteritem.html",
 	            link: function (scope, element, attrs, filterGroupsController) {

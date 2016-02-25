@@ -14,16 +14,23 @@ class SWListingControlsController {
     private getCollection;
     private searchText;
     private backupColumnsConfig;
+    private createNewFilter;
+    private setItemInUse;
+    private removeFilter;
+    private addSearchFilter;
+    private triggerSearch;
 
     //@ngInject
     constructor(
         public $hibachi,
         public metadataService,
-        public $timeout
+        public $timeout,
+        public collectionService
     ){
 
         this.selectSearchColumn = (column?)=>{
             this.selectedSearchColumn = column;
+            this.triggerSearch();
         };
 
         this.getSelectedSearchColumnName = () =>{
@@ -38,18 +45,59 @@ class SWListingControlsController {
             metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias],this.collectionConfig.baseEntityAlias);
         });
 
+        this.backupColumnsConfig = this.collectionConfig.getColumns();
+
         this.search = () =>{
             if(this._timeoutPromise) {
                 $timeout.cancel(this._timeoutPromise);
             }
             this._timeoutPromise = $timeout(()=>{
-                this.collectionConfig.setKeywords(this.searchText)
-                this.paginator.setCurrentPage(1);
-                this.searching = true;
-                this.getCollection();
+                this.collectionConfig.setKeywords(this.searchText);
+                this.triggerSearch();
             }, 500);
         };
+
+        this.triggerSearch =()=>{
+            if(angular.isDefined(this.selectedSearchColumn)){
+                this.backupColumnsConfig = angular.copy(this.collectionConfig.getColumns());
+                var collectionColumns = this.collectionConfig.getColumns();
+                for(var i = 0; i < collectionColumns.length; i++){
+                    if(collectionColumns[i].propertyIdentifier != this.selectedSearchColumn.propertyIdentifier){
+                        collectionColumns[i].isSearchable = false;
+                    }
+                }
+                this.paginator.setCurrentPage(1);
+                this.collectionConfig.setColumns(this.backupColumnsConfig);
+            }else{
+                this.paginator.setCurrentPage(1);
+            }
+        };
+
+        this.setItemInUse = function(booleanValue){
+            this.itemInUse = booleanValue;
+        };
+
+        this.removeFilter = function(array, index){
+            array.splice(index, 1);
+        };
+
+        this.addSearchFilter=()=>{
+            if(angular.isUndefined(this.selectedSearchColumn)) return;
+            this.collectionConfig.addFilter(
+                this.selectedSearchColumn.propertyIdentifier,
+                this.searchText
+            );
+            this.searchText = '';
+            this.getCollection();
+        };
+
+        //this.createNewFilter = function(){
+            this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+        //}
+
     }
+
+
 }
 
 class SWListingControls  implements ng.IDirective{

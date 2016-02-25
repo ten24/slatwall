@@ -177,6 +177,7 @@ class SWListingDisplayController{
         this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
                 this.$q.when(this.collectionPromise).then((data)=>{
+                    console.warn('CARALHO')
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
                     if(this.collectionConfig.hasColumns()){
@@ -212,9 +213,11 @@ class SWListingDisplayController{
 
     private setupDefaultGetCollection = () =>{
         this.collectionPromise = this.collectionConfig.getEntity();
+
         return ()=>{
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
+            console.warn('GET ENTITYYY');
             this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
                 this.setupDefaultCollectionInfo();
