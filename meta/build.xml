@@ -33,7 +33,7 @@
 		<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
 
 		<!-- what server and port should your tests run against? These defaults only apply if the properties are not set in $user.name}.properties -->
-		<property name="slatwall.test.server" value="computer.hostname" />
+		<property name="slatwall.test.server" value="${computer.hostname}" />
 		<property name="slatwall.test.serverport" value="8888" />
 		<property name="slatwall.test.datasource" value="Slatwall" />
 		<property name="slatwall.test.functional.browser" value="*googlechrome" />
