@@ -62,19 +62,35 @@
 		<echoproperties />
 	</target>
 
-	<target name="setupApplicationConfig" depends="init">
+	<target name="setupMachineTestsConfig" depends="init">
+		<echo file="tests/config/${computer.hostname}.ini">
+# Parameters needed by all tests
+[common]
+login=testrunnersuperuser@mailinator.com
+password=testrunner
+
+# Parameters for UI tests
+[ui]
+browserUrl=http://${slatwall.test.server}/
+browserCommand=${slatwall.test.functional.browser}
+		</echo>
+	</target>
+
+	<target name="setupApplicationConfig" depends="init,setupMachineTestsConfig">
 		<tstamp>
 		      <format property="touch.time" pattern="yyyymmddhhmmaa" unit="hour" />
 		</tstamp>
 		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 		<delete file="../custom/config/lastFullUpdate.txt.cfm" failonerror="false"/>
 
+		<!--
 		<delete dir="${slatwall.test.output.xml}/reloadget" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/reloadget" />
 		<get src="http://${slatwall.test.server}:${slatwall.test.serverport}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
+	-->
 	</target>
 
-	<target name="runUnitTests" depends="init,setupApplicationConfig">
+	<target name="runUnitTests" depends="setupApplicationConfig">
 		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/unit" />
@@ -103,21 +119,9 @@
 		</sequential>
 	</macrodef>
 
+
+
 <!--
-	<target name="setupMachineTestsConfig" depends="init">
-		<echo file="tests/config/${computer.hostname}.ini">
-# Parameters needed by all tests
-[common]
-login=testrunnersuperuser@mailinator.com
-password=testrunner
-
-# Parameters for UI tests
-[ui]
-browserUrl=http://${slatwall.test.server}/
-browserCommand=${slatwall.test.functional.browser}
-		</echo>
-	</target>
-
 	<target name="runFunctionalTests" depends="init,setupApplicationConfig,setupMachineTestsConfig">
 		<delete dir="${slatwall.test.output.xml}/functional" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/functional" />

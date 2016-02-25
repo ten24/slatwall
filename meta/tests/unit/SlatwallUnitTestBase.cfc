@@ -78,7 +78,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 	// AFTER EACH TEST
 	public void function tearDown() {
 		debug(variables.debugArray);
-		
+
 		variables.debugArray = [];
 
 		var flushRequired = false;
