@@ -22,4 +22,9 @@ script:
   - cd meta
   - docker-compose -f docker/slatwall-ci/docker-compose.yml up -d
   - docker ps
+  - docker-machine ip
+  - docker-machine url
+  - docker-machine inspect
+  - sleep 10
+  - docker logs --tail=500 slatwallci_slatwallweb_1
   - docker exec -i -t slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests
