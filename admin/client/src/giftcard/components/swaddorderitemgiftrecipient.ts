@@ -21,13 +21,23 @@ class SWAddOrderItemRecipientController {
     public static $inject=["$hibachi"];
     
     constructor(private $hibachi){
-        this.adding = false; 
-        this.assignedCount = 0; 
-        this.searchText = ""; 
+        if(angular.isUndefined(this.adding)){
+            this.adding = false; 
+        }
+        if(angular.isUndefined(this.assignedCount)){
+            this.assignedCount = 0; 
+        }
+        if(angular.isUndefined(this.searchText)){
+            this.searchText = ""; 
+        }
         var count = 1;
         this.currentGiftRecipient = $hibachi.newEntity("OrderItemGiftRecipient");
-        this.orderItemGiftRecipients = [];
-        this.showInvalidAddFormMessage = false;
+        if(angular.isUndefined( this.orderItemGiftRecipients)){
+            this.orderItemGiftRecipients = [];
+        }
+        if(angular.isUndefined(this.showInvalidAddFormMessage)){
+            this.showInvalidAddFormMessage = false;
+        }
     }
     
     addGiftRecipientFromAccountList = (account:any):void =>{
@@ -135,15 +145,15 @@ class SWAddOrderItemGiftRecipient implements ng.IDirective{
     public scope = {};  
     
     public bindToController = {
-        "quantity":"=", 
-        "orderItemGiftRecipients":"=", 
-        "adding":"=", 
-        "searchText":"=", 
-        "currentgiftRecipient":"=",
+        "quantity":"=?", 
+        "orderItemGiftRecipients":"=?", 
+        "adding":"=?", 
+        "searchText":"=?", 
+        "currentgiftRecipient":"=?",
         "showInvalidAddFormMessage":"=?",
         "showInvalidRowMessage":"=?",
-        "tableForm":"=",
-        "recipientAddForm":"="
+        "tableForm":"=?",
+        "recipientAddForm":"=?"
     };
     
     public controller=SWAddOrderItemRecipientController;

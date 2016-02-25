@@ -1205,7 +1205,7 @@
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#newCategoryID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.categoryID#" />,
-							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />
+							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />,
 							<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.urltitle#" />
 						)
 					</cfquery>
@@ -1241,7 +1241,7 @@
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#parentMappingCache[ missingCategoryQuery.parentID ].categoryID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.categoryID#" />,
-								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />
+								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.name#" />,
 								<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingCategoryQuery.urltitle#" />
 							)
 						</cfquery>
