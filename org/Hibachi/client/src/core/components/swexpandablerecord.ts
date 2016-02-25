@@ -167,7 +167,7 @@ class SWExpandableRecord implements ng.IDirective{
                 var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
                 if(scope.swExpandableRecord.multiselectIdPaths && scope.swExpandableRecord.multiselectIdPaths.length){
                     var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
-                    if(scope.swExpandableRecord.childrenLoaded){
+                    if(!scope.swExpandableRecord.childrenLoaded){
                         angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
                             var position = this.utilityService.listFind(multiselectIdPath,id,'/');
                             var multiselectPathLength = multiselectIdPath.split('/').length;
@@ -175,8 +175,6 @@ class SWExpandableRecord implements ng.IDirective{
                                 scope.swExpandableRecord.toggleChild();
                             }
                         });
-                    }else{
-                        scope.swExpandableRecord.toggleChild();
                     }
                     
                 }

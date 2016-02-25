@@ -63,6 +63,12 @@ class SWWorkflowTasks{
 					logger("getWorkflowTasks", "Workflow Tasks");
 					$log.debug(scope.workflowTasks);
 
+                    if(!scope.workflow.$$isPersisted()){
+                        scope.workflow.data.workflowTasks = [];
+                        scope.workflowTasks = scope.workflow.data.workflowTasks;
+                        return;
+                    }
+
 					/***
 					   Note:
 					   This conditional is checking whether or not we need to be retrieving to

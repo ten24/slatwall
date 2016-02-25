@@ -761,19 +761,20 @@ component output="false" accessors="true" extends="HibachiController" {
         arguments.rc.context = "delete";
         post(arguments.rc);
     }
-    
-    public any function log(required struct rc) { 
-        var exception = 'There was no reported exception.';
-        if(structKeyExists(arguments.rc,'exception')){
-            exception = arguments.rc.exception;
-        }
-        var cause = 'There was no reported cause';
-        if(structKeyExists(arguments.rc,'cause')){
-            cause = arguments.rc.cause;
-        }
-        //throw the error so it will follow expected lifecycle 
-        throw(type="ClientError", message="Exception: #exception# Cause: #cause#");
-    }
+
+	public any function log(required struct rc) {
+
+		if(structKeyExists(arguments.rc,'exception') && !isNull(arguments.rc.exception)){
+
+			var message = "Exception: #arguments.rc.exception#";
+
+			if(structKeyExists(arguments.rc,'cause') && !isNull(arguments.rc.cause)){
+				message &=  " Cause: #arguments.rc.cause#";
+			}
+			//throw the error so it will follow expected lifecycle
+			throw(type="ClientError", message="#message#");
+		}
+	}
     
         /*
         

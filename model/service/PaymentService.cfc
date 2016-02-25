@@ -323,7 +323,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 					// If this isn't a creditOffline or receiveOffline, and an INTEGRATION EXISTS
-					if(!listFindNoCase("creditOffline,receiveOffline", arguments.data.transactionType) && listFindNoCase("creditCard,giftCard,external", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()) && !isNull(arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration())) {
+					if(!listFindNoCase("creditOffline,receiveOffline", arguments.data.transactionType) && listFindNoCase("creditCard,external", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()) && !isNull(arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration())) {
 
 						// Get the PaymentCFC
 						var integration = arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration();
@@ -467,17 +467,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					} else {
 
 						//GiftCard
-                        if(arguments.data.transactiontype eq "giftCard"){
-
+                        if(listFindNoCase("giftCard", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType())){
                             var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted()));
 
-                            if(arguments.paymentTransaction.getOrderPayment().getAmountUncredited() EQ 0){
-                                var amount = arguments.data.amount;
-                            } else {
-                                var amount = precisionEvaluate(arguments.paymentTransaction.getOrderPayment().getAmountUncredited() * -1);
-                            }
+							var amount = arguments.data.amount;
 
-                            if(amount > 0){
+                            if(arguments.data.transactionType == "charge"){
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
 
@@ -505,19 +500,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                         arguments.paymentTransaction.addErrors(card.getErrors());
                                     }
                                 }
-                            } else {
+                            } else if(arguments.data.transactionType == "credit") {
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
 
                                 giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
                                 giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
 
-                                giftCardProcessObject.setCreditAmount(precisionEvaluate(amount * -1));
+                                giftCardProcessObject.setCreditAmount(amount);
 
                                 var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
 
                                 if(!card.hasErrors()){
-                                    arguments.paymentTransaction.setAmountCredited( precisionEvaluate(amount * -1) );
+                                    arguments.paymentTransaction.setAmountCredited(amount);
                                 } else {
                                     arguments.paymentTransaction.addErrors(card.getErrors());
                                 }
@@ -547,7 +542,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					getHibachiDAO().flushORMSession();
 				}
 
-			}
+			}//end lock
 
 		}
 
