@@ -46,100 +46,39 @@
 Notes:
 
 */
-
 component  extends="HibachiService" accessors="true" {
 
-	property name="attributeDAO";
-
 	// ===================== START: Logical Methods ===========================
-
-	public string function getAttributeCodesListByAttributeSetObject( required string attributeSetObject ) {
-		var attributeCodeList = "";
-		var rs = getAttributeDAO().getAttributeCodesQueryByAttributeSetObject( arguments.attributeSetObject );
-
-		for(var i=1; i<=rs.recordCount; i++) {
-			attributeCodeList = listAppend(attributeCodeList, rs[ "attributeCode" ][i]);
-		}
-
-		return attributeCodeList;
-	}
-
-	public any function getAttributeNameByAttributeCode(string attributeCode) {
-		var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.attributeCode#';
-		if(getHibachiCacheService().hasCachedValue(key)) {
-			return getHibachiCacheService().getCachedValue(key);
-		}
-
-		var attribute = this.getAttributeByAttributeCode(arguments.attributeCode);
-		var atributeName = "";
-		if (!isNull(attribute)) {
-			atributeName = attribute.getAttributeName();
-		}
-
-		getHibachiCacheService().setCachedValue(key, atributeName);
-
-		return atributeName;
-	}
 
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================
 
-	public array function getAttributeValuesForEntity() {
-		return getAttributeDAO().getAttributeValuesForEntity(argumentcollection=arguments);
-	}
-
 	// ===================== START: DAO Passthrough ===========================
 
 	// ===================== START: Process Methods ===========================
+
+	public any function processForm_addFormQuestion(required any form, required any processObject ){
+
+		arguments.form.addFormQuestion(processObject.getNewFormQuestion());
+
+		return this.saveForm(arguments.form);
+	}
+
+	public any function processForm_addFormResponse(required any form, required any processObject ){
+
+		arguments.form.addFormResponse(processObject.getNewFormResponse());
+
+		return this.saveForm(arguments.form);
+	}
 
 	// =====================  END: Process Methods ============================
 
 	// ====================== START: Save Overrides ===========================
 
-	public any function saveAttribute(required any attribute, struct data={}) {
-		arguments.attribute = super.save(arguments.attribute, arguments.data);
-
-		if(!arguments.attribute.hasErrors() && !isNull(arguments.attribute.getAttributeSet())) {
-			getHibachiDAO().flushORMSession();
-
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#arguments.attribute.getAttributeSet().getAttributeSetObject()#");
-		}
-
-		return arguments.attribute;
-	}
-
 	// ======================  END: Save Overrides ============================
 
 	// ====================== START: Delete Overrides =========================
-
-	public boolean function deleteAttribute(required any attribute) {
-
-		if(!isNull(arguments.attribute.getAttributeSet())) {
-			var attributeSetObject = arguments.attribute.getAttributeSet().getAttributeSetObject();
-		}
-
-		var deleteOK = super.delete(arguments.attribute);
-
-		// Clear the cached value of acceptable
-		if(deleteOK && !isNull(attributeSetObject)) {
-			getHibachiDAO().flushORMSession();
-
-			getHibachiCacheService().resetCachedKey("attributeService_getAttributeCodesListByAttributeSetObject_#attributeSetObject#");
-		}
-
-		return deleteOK;
-	}
-
-	public boolean function deleteAttributeOption(required any attributeOption) {
-		if(arguments.attributeOption.isDeletable()) {
-			getAttributeDAO().removeAttributeOptionFromAllAttributeValues( arguments.attributeOption.getAttributeOptionID() );
-
-			return super.delete(arguments.attributeOption);
-		}
-
-		return false;
-	}
 
 	// ======================  END: Delete Overrides ==========================
 

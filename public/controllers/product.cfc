@@ -60,9 +60,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function after( required struct rc ) {
-		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions())) {
 			getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
-		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(getHibachiScope().getFailureActions())) {
 			getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL );
 		} else if (structKeyExists(arguments.rc, "redirectURL")) {
 			getFW().redirectExact( redirectLocation=arguments.rc.redirectURL );
@@ -87,13 +87,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if( !isNull(product) ) {
 			product = getProductService().processProduct( product, arguments.rc, 'addProductReview');
 
-			arguments.rc.$.slatwall.addActionResult( "public:product.addProductReview", product.hasErrors() );
+			getHibachiScope().addActionResult( "public:product.addProductReview", product.hasErrors() );
 
 			if(!product.hasErrors()) {
 				product.clearProcessObject("addProductReview");
 			}
 		} else {
-			arguments.rc.$.slatwall.addActionResult( "public:product.addProductReview", true );
+			getHibachiScope().addActionResult( "public:product.addProductReview", true );
 		}
 	}
 

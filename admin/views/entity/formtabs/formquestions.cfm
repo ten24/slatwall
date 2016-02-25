@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,30 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	public any function redeemToAccount(required struct rc){
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+<cfparam name="rc.form" type="any" />
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
+<cfoutput>
 
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
-		}
-	}
+	<hb:HibachiListingDisplay smartList="#rc.form.getFormQuestionsSmartList()#"
+							   recordEditAction="admin:entity.editattribute"
+							   recordEditQueryString="redirectAction=admin:entity.detailform&formID=#rc.form.getFormID()#"
+							   recordDetailAction="admin:entity.detailattribute"
+							   sortProperty="sortOrder">
 
-}
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />
+		<hb:HibachiListingColumn propertyIdentifier="attributeCode" />
+		<hb:HibachiListingColumn propertyIdentifier="attributeInputType" />
+		<hb:HibachiListingColumn propertyIdentifier="relatedObject" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
+
+	<hb:HibachiProcessCaller action="admin:entity.preprocessform" entity="#rc.form#" processContext="addFormQuestion" class="btn btn-default" icon="plus" modal="true" hideDisabled="false" />
+
+</cfoutput>
+

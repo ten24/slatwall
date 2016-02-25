@@ -46,27 +46,18 @@
 Notes:
 
 */
-component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="siteService" hb_permission="this" {
+component displayname="FormResponse" entityname="SlatwallFormResponse" table="SwFormResponse" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="formService" {
 
 	// Persistent Properties
-	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="siteName" ormtype="string";
-	property name="siteCode" ormtype="string" index="PI_SITECODE";
-	property name="domainNames" ormtype="string";
-	property name="allowAdminAccessFlag" ormtype="boolean";
-	// CMS Properties
-	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
+	property name="formResponseID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Related Object Properties (many-to-one)
-	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID"  hb_cascadeCalculate="true";
+	property name="form" cfc="Form" fieldtype="many-to-one" fkcolumn="formID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="siteID" cascade="all-delete-orphan" inverse="true";
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" cascade="all-delete-orphan" fkcolumn="siteID" inverse="true" lazy="extra";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="formResponseID" cascade="all-delete-orphan";
 
-	// Related Object Properties (many-to-many - owner)
-
-	// Related Object Properties (many-to-many - inverse)
+	// Related Object Properties (many-to-many)
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -77,46 +68,6 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non-Persistent Properties
-	property name="sitePath" persistent="false";
-	property name="templatesPath" persistent="false";
-	property name="assetsPath" persistent="false";
-
-	public boolean function getAllowAdminAccessFlag() {
-		if(isNull(variables.allowAdminAccessFlag)) {
-			variables.allowAdminAccessFlag = 0;
-		}
-		return variables.allowAdminAccessFlag;
-	}
-
-	public boolean function isSlatwallCMS(){
-		return !isNull(this.getApp()) && !isNull(this.getApp().getIntegration()) && !isNull(this.getApp().getIntegration().getintegrationPackage()) && this.getapp().getintegration().getintegrationPackage() == 'slatwallcms';
-	}
-
-	public string function getSitePath(){
-		if(!structKeyExists(variables,'sitePath')){
-			variables.sitePath = getApp().getAppPath() & '/' & getSiteCode() & '/';
-		}
-		return variables.sitePath;
-	}
-
-	public string function getTemplatesPath(){
-		if(!structKeyExists(variables,'templatesPath')){
-			variables.templatesPath = getSitePath() & 'templates/';
-		}
-		return variables.templatesPath;
-	}
-
-	public string function getAssetsPath(){
-		if(!structKeyExists(variables,'assetsPath')){
-			variables.assetsPath = getSitePath() & 'assets/';
-		}
-		return variables.assetsPath;
-	}
-
-	public string function getSharedAssetsPath(){
-		return getService('siteService').getSharedAssetsPath();
-	}
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -124,38 +75,30 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// App (many-to-one)
-	public void function setApp(required any app) {
-		variables.app = arguments.app;
-		if(isNew() or !arguments.app.hasSite( this )) {
-			arrayAppend(arguments.app.getSites(), this);
+	/// Form (many-to-one)
+	public void function setForm(required any form) {
+		variables.form = arguments.form;
+		if(isNew() or !arguments.form.hasFormResponse( this )) {
+			arrayAppend(arguments.form.getFormResponses(), this);
 		}
 	}
-	public void function removeApp(any app) {
-		if(!structKeyExists(arguments, "app")) {
-			arguments.app = variables.app;
+	public void function removeForm(any form) {
+		if(!structKeyExists(arguments, "form")) {
+			arguments.form = variables.form;
 		}
-		var index = arrayFind(arguments.app.getSites(), this);
+		var index = arrayFind(arguments.form.getFormResponses(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.app.getSites(), index);
+			arrayDeleteAt(arguments.form.getFormResponses(), index);
 		}
-		structDelete(variables, "app");
+		structDelete(variables, "formResponse");
 	}
 
 	// Attribute Values (one-to-many)
 	public void function addAttributeValue(required any attributeValue) {
-		arguments.attributeValue.setSite( this );
+		arguments.attributeValue.setFormResponse( this );
 	}
 	public void function removeAttributeValue(required any attributeValue) {
-		arguments.attributeValue.removeSite( this );
-	}
-
-	// Contents (one-to-many)
-	public void function addContent(required any content) {
-		arguments.content.setSite( this );
-	}
-	public void function removeContent(required any content) {
-		arguments.content.removeSite( this );
+		arguments.attributeValue.removeFormResponse( this );
 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -167,6 +110,10 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// =============== START: Custom Formatting Methods ====================
 
 	// ===============  END: Custom Formatting Methods =====================
+
+	// ============== START: Overridden Implicet Getters ===================
+
+	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
 

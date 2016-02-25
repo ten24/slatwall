@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,13 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+--->
+<cfcomponent extends="HibachiDAO">
 
-	public any function redeemToAccount(required struct rc){
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+	<cffunction name="getFormQuestionAndFormResponsesRawData">
+		<cfargument required="true" name="formID" />
+		<cfreturn ormExecuteQuery("SELECT Distinct  new map( av.attributeValue as response, av.formResponse.formResponseID as formResponseID, av.attribute.attributeID as questionID, av.attribute.attributeName as question) from #getApplicationKey()#AttributeValue as av left join av.formResponse as fr left join fr.form as f left join fr.form.formQuestions fq where av.formResponse.form.formID=:formid order by av.formResponse.formResponseID asc", {formid=arguments.formID}) />
+	</cffunction>
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
-
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
-		}
-	}
-
-}
+</cfcomponent>

@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,22 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	public any function redeemToAccount(required struct rc){
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+<cfparam name="rc.form" type="any" />
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
+<cfoutput>
 
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
-		}
-	}
+	<hb:HibachiListingDisplay smartList="#rc.form.getFormResponsesSmartList()#"
+							   recordEditAction="admin:entity.editformresponse"
+							   recordEditQueryString="redirectAction=admin:entity.detailform&formID=#rc.form.getFormID()#"
+							   recordDetailAction="admin:entity.detailformresponse">
 
-}
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="formResponseID" />
+	</hb:HibachiListingDisplay>
+
+</cfoutput>

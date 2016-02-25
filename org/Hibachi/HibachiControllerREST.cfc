@@ -503,6 +503,30 @@ component output="false" accessors="true" extends="HibachiController" {
         return model;
     }
     
+    public void function getFormResponses(required struct rc){
+
+    	var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(rc.formID);
+		var transformedData = [];
+		var currentFormResponseID = "";
+
+    	for(var row in untransformedData){
+			if (currentFormResponseID != row["formResponseID"]){
+
+				if(currentFormResponseID != ""){
+					arrayAppend(transformedData, responseStruct);
+				}
+
+				currentFormResponseID = row["formResponseID"];
+				var responseStruct = {};
+				responseStruct["formResponseID"] = row["formResponseID"];
+			}
+			responseStruct[row["questionID"]] = row["response"];
+    	}
+		arrayAppend(transformedData, responseStruct);
+		arguments.rc.apiResponse.content['data'] = transformedData;
+
+    }
+
     public any function get( required struct rc ) {
         /* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
             create a base default properties function that can be overridden at the entity level via function
