@@ -506,8 +506,13 @@ component output="false" accessors="true" extends="HibachiController" {
 
     public void function getFormResponses(required struct rc){
 
-    	var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(rc.formID);
+		var formToFetch = getService('FormService').getForm(arguments.rc.formID);
+		var formQuestions = getDAO('FormDAO').getFormQuestionColumnHeaderData(arguments.rc.formID);
+		var numberOfQuestions = arrayLen(formQuestions);
+
+    	var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(arguments.rc.formID, numberOfQuestions, arguments.rc.currentPage, arguments.rc.pageShow);
 		var transformedData = [];
+
 		var currentFormResponseID = "";
 
     	for(var row in untransformedData){
@@ -523,10 +528,21 @@ component output="false" accessors="true" extends="HibachiController" {
 			}
 			responseStruct[row["questionID"]] = row["response"];
     	}
+
 		arrayAppend(transformedData, responseStruct);
-		arguments.rc.apiResponse.content['columnRecords'] = getDAO('FormDAO').getFormQuestionColumnHeaderData(rc.formID);
+
+		arguments.rc.apiResponse.content['columnRecords'] = formQuestions;
 		arguments.rc.apiResponse.content['pageRecords'] = transformedData;
 
+		//pagination properties
+		arguments.rc.apiResponse.content['recordsCount'] = formToFetch.getFormResponsesCount();
+		arguments.rc.apiResponse.content['pageRecordsStart'] = ((arguments.rc.currentPage-1)*arguments.rc.pageShow) + 1;
+		var pageRecordsEnd = arguments.rc.apiResponse.content['pageRecordsStart'] + arguments.rc.pageShow - 1;
+		if(pageRecordsEnd > arguments.rc.apiResponse.content['recordsCount']) {
+			pageRecordsEnd = arguments.rc.apiResponse.content['recordsCount'];
+		}
+		arguments.rc.apiResponse.content['pageRecordsEnd'] = pageRecordsEnd;
+		arguments.rc.apiResponse.content['totalPages'] = ceiling(formToFetch.getFormResponsesCount() / arguments.rc.pageShow);
     }
 
     public any function get( required struct rc ) {

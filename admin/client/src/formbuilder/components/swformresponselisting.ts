@@ -6,36 +6,51 @@ class SWFormResponseListingController {
     private formId;
     private columns; 
     private pageRecords; 
+    private paginator; 
     
     //@ngInject
     constructor(
         private $http,
-        private $hibachi
+        private $hibachi,
+        private paginationService
     ){
         this.init();
     }
     
-    init = () => { 
-        
+    init = () => {   
         if(angular.isUndefined(this.formId)){
             throw("Form ID is required for swFormResponseListing");
         }
         
+        this.paginator = this.paginationService.createPagination();
+        this.paginator.getCollection = this.updateFormResponses;
+        
+        this.updateFormResponses(); 
+    }
+    
+    updateFormResponses = () => {
         var formResponsesRequestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformresponses&formID=" + this.formId;
+   
+        var params:any = {};      
+        params.currentPage = this.paginator.currentPage || 1;
+        params.pageShow = this.paginator.pageShow || 10;
         
         var formResponsesPromise = this.$http({
             method: 'GET',
-            url: formResponsesRequestUrl
+            url: formResponsesRequestUrl,
+            params: params
         });
         
         formResponsesPromise.then((response)=>{
-            console.log("Form Responses: ", response);
             this.columns = response.data.columnRecords; 
             this.pageRecords = response.data.pageRecords; 
+            this.paginator.recordsCount = response.data.recordsCount;
+            this.paginator.totalPages = response.data.totalPages;
+            this.paginator.pageStart = response.data.pageRecordsStart; 
+            this.paginator.pageEnd = response.data.pageRecordsEnd;
         }, (response)=>{
             throw("There was a problem collecting the form responses");
         });
-        
     }
 }
 
@@ -56,17 +71,20 @@ class SWFormResponseListing implements ng.IDirective{
         var directive:ng.IDirectiveFactory = (
             $http,
             $hibachi,
+            paginationService,
 		    formBuilderPartialsPath,
 			slatwallPathBuilder
         ) => new SWFormResponseListing(
             $http,
             $hibachi,
+            paginationService,
 			formBuilderPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
             '$http',
             '$hibachi',
+            'paginationService',
 			'formBuilderPartialsPath',
 			'slatwallPathBuilder'
         ];
@@ -77,6 +95,7 @@ class SWFormResponseListing implements ng.IDirective{
 	constructor(
 		private $http,
         private $hibachi,
+        private paginationService,
 	    private formBuilderPartialsPath,
 		private slatwallPathBuilder
 	){
