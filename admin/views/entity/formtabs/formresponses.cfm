@@ -53,16 +53,5 @@ Notes:
 <cfparam name="rc.form" type="any" />
 
 <cfoutput>
-
-	<hb:HibachiListingDisplay smartList="#rc.form.getFormResponsesSmartList()#"
-							   recordEditAction="admin:entity.editformresponse"
-							   recordEditQueryString="redirectAction=admin:entity.detailform&formID=#rc.form.getFormID()#"
-							   recordDetailAction="admin:entity.detailformresponse">
-
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="formResponseID" />
-	</hb:HibachiListingDisplay>
-
 	<sw-form-response-listing data-form-id="#rc.form.getFormID()#"></sw-form-response-listing>
-
 </cfoutput>

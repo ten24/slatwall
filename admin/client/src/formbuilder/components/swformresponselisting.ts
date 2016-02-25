@@ -4,6 +4,8 @@
 class SWFormResponseListingController {
     
     private formId;
+    private columns; 
+    private pageRecords; 
     
     //@ngInject
     constructor(
@@ -20,23 +22,16 @@ class SWFormResponseListingController {
         }
         
         var formResponsesRequestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformresponses&formID=" + this.formId;
-        var formQuestionsRequestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformquestions&formID=" + this.formId;
         
         var formResponsesPromise = this.$http({
             method: 'GET',
             url: formResponsesRequestUrl
         });
         
-        var formQuestionsPromise = this.$http({
-            method: 'GET', 
-            url: formQuestionsRequestUrl
-        })
-        
         formResponsesPromise.then((response)=>{
             console.log("Form Responses: ", response);
-            formQuestionsPromise.then((response)=>{
-                console.log("Form Questions: ", response); 
-            });
+            this.columns = response.data.columnRecords; 
+            this.pageRecords = response.data.pageRecords; 
         }, (response)=>{
             throw("There was a problem collecting the form responses");
         });

@@ -32,7 +32,6 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getModel');
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
-    this.publicMethods=listAppend(this.publicMethods, 'getFormQuestions');
     this.publicMethods=listAppend(this.publicMethods, 'getFormResponses');
 
     //  this.secureMethods='';
@@ -505,10 +504,6 @@ component output="false" accessors="true" extends="HibachiController" {
         return model;
     }
 
-    public void function getFormQuestions(required struct rc){
-    	arguments.rc.apiResponse.content['data'] = getDAO('FormDAO').getFormQuestionColumnHeaderData(rc.formID);
-    }
-
     public void function getFormResponses(required struct rc){
 
     	var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(rc.formID);
@@ -529,7 +524,8 @@ component output="false" accessors="true" extends="HibachiController" {
 			responseStruct[row["questionID"]] = row["response"];
     	}
 		arrayAppend(transformedData, responseStruct);
-		arguments.rc.apiResponse.content['data'] = transformedData;
+		arguments.rc.apiResponse.content['columnRecords'] = getDAO('FormDAO').getFormQuestionColumnHeaderData(rc.formID);
+		arguments.rc.apiResponse.content['pageRecords'] = transformedData;
 
     }
 
