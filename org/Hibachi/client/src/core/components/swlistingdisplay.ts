@@ -177,7 +177,6 @@ class SWListingDisplayController{
         this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
                 this.$q.when(this.collectionPromise).then((data)=>{
-                    console.warn('CARALHO')
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
                     if(this.collectionConfig.hasColumns()){
@@ -198,7 +197,7 @@ class SWListingDisplayController{
         }
         this.paginator.getCollection = this.getCollection;
         //this.getCollection();
-    }
+    };
 
     private setupDefaultCollectionInfo = () =>{
         if(this.hasCollectionPromise){
@@ -209,7 +208,7 @@ class SWListingDisplayController{
         this.collectionConfig.setPageShow(this.paginator.getPageShow());
         this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
         //this.collectionConfig.setKeywords(this.paginator.keywords);
-    }
+    };
 
     private setupDefaultGetCollection = () =>{
         this.collectionPromise = this.collectionConfig.getEntity();
@@ -217,12 +216,11 @@ class SWListingDisplayController{
         return ()=>{
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
-            console.warn('GET ENTITYYY');
             this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
                 this.setupDefaultCollectionInfo();
                 this.setupColumns();
-                this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+                this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
                 this.paginator.setPageRecordsInfo(this.collectionData);
             });
         };

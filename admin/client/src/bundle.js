@@ -5695,7 +5695,6 @@
 	            _this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
 	                if (newValue) {
 	                    _this.$q.when(_this.collectionPromise).then(function (data) {
-	                        console.warn('CARALHO');
 	                        _this.collectionData = data;
 	                        _this.setupDefaultCollectionInfo();
 	                        if (_this.collectionConfig.hasColumns()) {
@@ -5733,7 +5732,6 @@
 	            return function () {
 	                _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
 	                _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
-	                console.warn('GET ENTITYYY');
 	                _this.collectionConfig.getEntity().then(function (data) {
 	                    _this.collectionData = data;
 	                    _this.setupDefaultCollectionInfo();
@@ -6210,6 +6208,8 @@
 	        this.metadataService = metadataService;
 	        this.$timeout = $timeout;
 	        this.collectionService = collectionService;
+	        this.displayOptionsClosed = true;
+	        this.filtersClosed = true;
 	        this.selectSearchColumn = function (column) {
 	            _this.selectedSearchColumn = column;
 	            _this.triggerSearch();
@@ -6263,9 +6263,18 @@
 	            _this.searchText = '';
 	            _this.getCollection();
 	        };
-	        //this.createNewFilter = function(){
-	        this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup, this.setItemInUse);
-	        //}
+	        this.toggleFilters = function () {
+	            _this.filtersClosed = !_this.filtersClosed;
+	            if (_this.filtersClosed) {
+	                _this.removeFilter(_this.collectionConfig.filterGroups[0].filterGroup, _this.newFilterPosition);
+	            }
+	            else {
+	                _this.newFilterPosition = _this.collectionService.newFilterItem(_this.collectionConfig.filterGroups[0].filterGroup, _this.setItemInUse);
+	            }
+	        };
+	        this.toggleDisplayOptions = function () {
+	            _this.displayOptionsClosed = !_this.displayOptionsClosed;
+	        };
 	    }
 	    return SWListingControlsController;
 	})();
@@ -8425,6 +8434,7 @@
 	            }
 	            filterItemGroup.push(filterItem);
 	            _this.selectFilterItem(filterItem);
+	            return (filterItemGroup.length - 1);
 	        };
 	        this.newFilterGroupItem = function (filterItemGroup, setItemInUse) {
 	            var filterGroupItem = {

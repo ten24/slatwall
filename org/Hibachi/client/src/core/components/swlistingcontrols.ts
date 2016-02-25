@@ -19,6 +19,11 @@ class SWListingControlsController {
     private removeFilter;
     private addSearchFilter;
     private triggerSearch;
+    private displayOptionsClosed:boolean=true;
+    private filtersClosed:boolean=true;
+    private toggleFilters;
+    private toggleDisplayOptions;
+    private newFilterPosition;
 
     //@ngInject
     constructor(
@@ -27,7 +32,6 @@ class SWListingControlsController {
         public $timeout,
         public collectionService
     ){
-
         this.selectSearchColumn = (column?)=>{
             this.selectedSearchColumn = column;
             this.triggerSearch();
@@ -91,9 +95,22 @@ class SWListingControlsController {
             this.getCollection();
         };
 
-        //this.createNewFilter = function(){
-            this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
-        //}
+
+        this.toggleFilters = ()=>{
+            this.filtersClosed = !this.filtersClosed;
+
+            if(this.filtersClosed) {
+                this.removeFilter(this.collectionConfig.filterGroups[0].filterGroup, this.newFilterPosition);
+            }else{
+                this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+            }
+        };
+
+        this.toggleDisplayOptions=()=>{
+            this.displayOptionsClosed = !this.displayOptionsClosed;
+
+        };
+
 
     }
 

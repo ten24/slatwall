@@ -23,20 +23,22 @@
                         data-ng-click="swListingControls.addSearchFilter()">Save this search</buttom>
             </span>
             <span class="input-group-btn s-action">
-                <button class="btn btn-sm btn-default" type="button" data-toggle="collapse" data-target="#j-advanced-filter" aria-expanded="false" aria-controls="j-advanced-filter">
+                <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingControls.toggleFilters()">
                     <i class="fa fa-filter"></i>
                 </button>
             </span>
             <span class="input-group-btn s-action">
-                <button class="btn btn-sm btn-default" type="button" data-toggle="collapse" data-target="#j-display-options" aria-expanded="false" aria-controls="j-display-options">
+                <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingControls.toggleDisplayOptions()">
                     <i class="fa fa-th"></i>
                 </button>
             </span>
         </div>
         <!-- DISPLAY OPTIONS -->
-        <div class="collapse" id="j-display-options">
+        <div data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">
-                <a href="#j-display-options" class="s-close collapsed" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="j-display-options"><i class="fa fa-times"></i></a>
+                <a href class="s-close" data-ng-click="swListingControls.toggleDisplayOptions()">
+                    <i class="fa fa-times"></i>
+                </a>
                 <!-- Dragable List group -->
                 <h4>Display Options</h4>
                 <sw-display-options
@@ -60,9 +62,11 @@
         </div>
         <!-- //DISPLAY OPTIONS -->
         <!-- ADD FILTER -->
-        <div class="collapse" id="j-advanced-filter">
+        <div data-collapse="swListingControls.filtersClosed" id="j-advanced-filter">
             <div class="col-xs-12 s-add-filter s-add-filter-secondary-layout">
-                <a href="##j-advanced-filter" class="s-close" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapseExample"><i class="fa fa-times"></i></a>
+                <a href class="s-close" data-ng-click="swListingControls.toggleFilters()">
+                    <i class="fa fa-times"></i>
+                </a>
                 <div class="row">
                     <div
                         sw-filter-groups
