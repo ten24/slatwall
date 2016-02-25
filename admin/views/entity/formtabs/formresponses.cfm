@@ -63,4 +63,6 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="formResponseID" />
 	</hb:HibachiListingDisplay>
 
+	<sw-form-response-listing data-form-id="#rc.form.getFormID()#"></sw-form-response-listing>
+
 </cfoutput>
