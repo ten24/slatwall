@@ -20,6 +20,4 @@ before_install:
 
 script:
   - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
-  - docker ps
-  - sleep 10
   - docker exec -i -t slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests
