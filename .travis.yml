@@ -20,6 +20,6 @@ before_install:
 
 script:
   - cd meta
-  - docker-compose -f docker/slatwall-ci/docker-compose.yml -d up
+  - docker-compose -f docker/slatwall-ci/docker-compose.yml up -d
   - docker ps
   - docker exec -i -t slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests
