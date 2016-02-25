@@ -7,11 +7,30 @@ class SWFormResponseListingController {
     
     //@ngInject
     constructor(
-        
+        private $http,
+        private $hibachi
     ){
+        this.init();
+    }
+    
+    init = () => { 
+        
+        if(angular.isUndefined(this.formId)){
+            throw("Form ID is required for swFormResponseListing");
+        }
+        
+        var requestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformresponses&formID=" + this.formId;
+        
+        this.$http({
+            method: 'GET',
+            url: requestUrl
+        }).then((response)=>{
+            console.log("Form Responses: ", response);
+        }, (response)=>{
+            throw("There was a problem collecting the form responses");
+        });
         
     }
-
 }
 
 class SWFormResponseListing implements ng.IDirective{
@@ -29,15 +48,18 @@ class SWFormResponseListing implements ng.IDirective{
     
 	public static Factory():ng.IDirectiveFactory{
         var directive:ng.IDirectiveFactory = (
+            $http,
             $hibachi,
 		    formBuilderPartialsPath,
 			slatwallPathBuilder
         ) => new SWFormResponseListing(
+            $http,
             $hibachi,
 			formBuilderPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
+            '$http',
             '$hibachi',
 			'formBuilderPartialsPath',
 			'slatwallPathBuilder'
@@ -47,11 +69,11 @@ class SWFormResponseListing implements ng.IDirective{
     
     //@ngInject
 	constructor(
-		private $hibachi,
+		private $http,
+        private $hibachi,
 	    private formBuilderPartialsPath,
 		private slatwallPathBuilder
 	){
-        console.log("WE HAVE ARRIVED");
 		this.templateUrl = slatwallPathBuilder.buildPartialsPath(formBuilderPartialsPath) + "/formresponselisting.html";
     }
 

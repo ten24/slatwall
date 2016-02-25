@@ -19,7 +19,6 @@ var formbuildermodule = angular.module('formbuilder',[coremodule.name])
 //controllers
 //directives
 .directive('swFormResponseListing',SWFormResponseListing.Factory())
-
 ;
 export{
 	formbuildermodule
