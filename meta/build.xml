@@ -68,10 +68,12 @@
 		</tstamp>
 		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 		<delete file="../custom/config/lastFullUpdate.txt.cfm" failonerror="false"/>
-
+		
+		<!--
 		<delete dir="${slatwall.test.output.xml}/reloadget" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/reloadget" />
 		<get src="http://${slatwall.test.server}:${slatwall.test.serverport}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
+		-->
 	</target>
 
 	<target name="runUnitTests" depends="init,setupApplicationConfig">
