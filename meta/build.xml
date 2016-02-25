@@ -74,7 +74,7 @@
 		<get src="http://${slatwall.test.server}:${slatwall.test.serverport}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
 	</target>
 
-	<target name="runUnitTests" depends="init,setupApplicationConfig,setupMachineTestsConfig">
+	<target name="runUnitTests" depends="init,setupApplicationConfig">
 		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/unit" />
@@ -92,7 +92,7 @@
 		  <report format="frames" todir="${slatwall.test.output.html}/unit"/>
 		</junitreport>
 	</target>
-	
+
 	<macrodef name="runTestDirectory">
 		<attribute name="directoryName"/>
 		<attribute name="excludes" default=""/>
@@ -102,7 +102,7 @@
 			</mxunittask>
 		</sequential>
 	</macrodef>
-	
+
 <!--
 	<target name="setupMachineTestsConfig" depends="init">
 		<echo file="tests/config/${computer.hostname}.ini">
