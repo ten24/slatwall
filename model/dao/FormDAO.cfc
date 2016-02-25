@@ -48,10 +48,14 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 
+	<cffunction name="getFormQuestionColumnHeaderData">
+		<cfargument required="true" name="formID" />
+		<cfreturn ormExecuteQuery("SELECT DISTINCT new map(fq.attributeID as questionID, fq.attributeName as question) FROM #getApplicationKey()#Form f left join f.formQuestions fq where f.formID=:formid order by fq.attributeID asc",{formid=arguments.formID}) />
+	</cffunction>
 
 	<cffunction name="getFormQuestionAndFormResponsesRawData">
 		<cfargument required="true" name="formID" />
-		<cfreturn ormExecuteQuery("SELECT Distinct  new map( av.attributeValue as response, av.formResponse.formResponseID as formResponseID, av.attribute.attributeID as questionID, av.attribute.attributeName as question) from #getApplicationKey()#AttributeValue as av left join av.formResponse as fr left join fr.form as f left join fr.form.formQuestions fq where av.formResponse.form.formID=:formid order by av.formResponse.formResponseID asc", {formid=arguments.formID}) />
+		<cfreturn ormExecuteQuery("SELECT DISTINCT  new map( av.attributeValue as response, av.formResponse.formResponseID as formResponseID, av.attribute.attributeID as questionID, av.attribute.attributeName as question) from #getApplicationKey()#AttributeValue as av left join av.formResponse as fr left join fr.form as f left join fr.form.formQuestions fq where av.formResponse.form.formID=:formid order by av.formResponse.formResponseID asc", {formid=arguments.formID}) />
 	</cffunction>
 
 </cfcomponent>

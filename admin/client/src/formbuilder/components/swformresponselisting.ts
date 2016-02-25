@@ -19,13 +19,24 @@ class SWFormResponseListingController {
             throw("Form ID is required for swFormResponseListing");
         }
         
-        var requestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformresponses&formID=" + this.formId;
+        var formResponsesRequestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformresponses&formID=" + this.formId;
+        var formQuestionsRequestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformquestions&formID=" + this.formId;
         
-        this.$http({
+        var formResponsesPromise = this.$http({
             method: 'GET',
-            url: requestUrl
-        }).then((response)=>{
+            url: formResponsesRequestUrl
+        });
+        
+        var formQuestionsPromise = this.$http({
+            method: 'GET', 
+            url: formQuestionsRequestUrl
+        })
+        
+        formResponsesPromise.then((response)=>{
             console.log("Form Responses: ", response);
+            formQuestionsPromise.then((response)=>{
+                console.log("Form Questions: ", response); 
+            });
         }, (response)=>{
             throw("There was a problem collecting the form responses");
         });
