@@ -6,12 +6,13 @@ machine:
 
 dependencies:
   override:
-    #- ls -la node_modules
+    - ls -la node_modules
 
-    #- node -v
+    - node -v
 
-    #- npm -v
+    - npm -v
 
+    - bower install
     # Install node modules required for build
     #- npm install --dev
 
