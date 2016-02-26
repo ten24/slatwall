@@ -1,6 +1,4 @@
 machine:
-  node:
-    version: 4.2.2
   hosts:
     slatwall-qa: 127.0.0.1
   services:
@@ -16,6 +14,8 @@ dependencies:
 
     # Install node modules required for build
     - npm install --dev
+
+    - npm install -g --dev
 
     - npm update
 
