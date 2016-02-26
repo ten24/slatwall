@@ -12,11 +12,16 @@
             "browserName": "firefox",
             "username": "${SAUCE_USERNAME}",
             "accessKey": "${SAUCE_ACCESS_KEY}"
+          },
+          "browserOptions": {
+            "browserName": "chrome",
+            "username": "${SAUCE_USERNAME}",
+            "accessKey": "${SAUCE_ACCESS_KEY}"
           }
         }
       ],
       "scripts": [
-        "meta/tests/integration/*"
+        "meta/tests/integration/admin/*"
       ]
     }
   ]
