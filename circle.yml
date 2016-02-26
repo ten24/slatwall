@@ -20,8 +20,9 @@ dependencies:
 
 test:
   pre:
-    # Fire Up Slatwall Containers
+    # Fire Up Slatwall Containers, Need to do in parallel so that it starts up on all VMs
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
+        parallel: true
 
     # Connect ot SauceLabs for Integration Testing
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
