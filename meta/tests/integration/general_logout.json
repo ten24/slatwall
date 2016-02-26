@@ -5,7 +5,7 @@
   "steps": [
     {
       "type": "get",
-      "url": "http://192.168.99.100/?slatAction=main.login&fw1pk=1"
+      "url": "http://localhost/?slatAction=main.login&fw1pk=1"
     },
     {
       "type": "setElementText",
@@ -13,7 +13,7 @@
         "type": "name",
         "value": "emailAddress"
       },
-      "text": "greg@gregmoser.com"
+      "text": "qa@mailinator.com"
     },
     {
       "type": "setElementText",
@@ -21,7 +21,7 @@
         "type": "name",
         "value": "password"
       },
-      "text": "Sl83!123"
+      "text": "qauserpass"
     },
     {
       "type": "clickElement",
@@ -31,8 +31,22 @@
       }
     },
     {
+      "type": "clickElement",
+      "locator": {
+        "type": "xpath",
+        "value": "//div[@id='j-mobile-nav']/div/ul/li[2]/a/i"
+      }
+    },
+    {
+      "type": "clickElement",
+      "locator": {
+        "type": "link text",
+        "value": "Logout"
+      }
+    },
+    {
       "type": "verifyTextPresent",
-      "text": "Dashboard"
+      "text": "Login"
     }
   ],
   "data": {

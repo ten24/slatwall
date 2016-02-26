@@ -1,4 +1,6 @@
 machine:
+  hosts:
+    slatwall-qa: 127.0.0.1
   services:
     - docker
 
@@ -8,7 +10,6 @@ dependencies:
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
-#    - sudo pip install --upgrade docker-compose==1.4.1
   post:
     - wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
     - tar -xzf sc-latest-linux.tar.gz

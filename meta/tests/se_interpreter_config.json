@@ -16,8 +16,7 @@
         }
       ],
       "scripts": [
-        "integration/general/*",
-        "meta/tests/integration/*"
+        "integration/*"
       ]
     }
   ]
