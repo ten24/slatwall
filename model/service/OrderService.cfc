@@ -380,7 +380,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 
 
-			if(len(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
+			if(len(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) || isNumeric(arguments.processObject.getPrice()) && arguments.processObject.getPrice() neq arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );
 			} else {
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
