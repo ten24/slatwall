@@ -41,7 +41,7 @@ test:
     - se-interpreter --parallel=1 meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
-    - se-interpreter --parallel=5 meta/tests/integration/admin_config.json
+    #- se-interpreter --parallel=5 meta/tests/integration/admin_config.json
 
     # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
