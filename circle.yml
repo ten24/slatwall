@@ -14,15 +14,14 @@ dependencies:
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
   post:
-    # Install Sauce Labse Connector
+    # Install Sauce Labs Connector
     - wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
     - tar -xzf sc-latest-linux.tar.gz
 
 test:
   pre:
     # Fire Up Slatwall Containers, Need to do in parallel so that it starts up on all VMs
-    - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d:
-        parallel: true
+    - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
 
     # Connect ot SauceLabs for Integration Testing
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
@@ -32,19 +31,22 @@ test:
     - while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
   override:
     # Run Sauce Labs Integration Setup Tests (IF on CONTAINER 0)
-    - case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=1 meta/tests/integration/setup_config.json ;; esac:
-        parallel: true
+    #- case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=1 meta/tests/integration/setup_config.json ;; esac:
+    #    parallel: true
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time (IF CONTAINER 0)
-    - case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=5 meta/tests/integration/admin_config.json ;; esac:
-        parallel: true
+    #- case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=5 meta/tests/integration/admin_config.json ;; esac:
+    #    parallel: true
 
     # Run Unit Tests (IF CONTAINER 1)
-    - case $CIRCLE_NODE_INDEX in 1) sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests ;; esac:
-        parallel: true
+    #- case $CIRCLE_NODE_INDEX in 1) sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests ;; esac:
+    #    parallel: true
+
+    # Run Sauce Labs Integration Setup Tests
+    - se-interpreter --parallel=5 meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
-    #- se-interpreter --parallel=5 meta/tests/integration/admin_config.json
+    - se-interpreter --parallel=5 meta/tests/integration/admin_config.json
 
     # Run Unit Tests
-    #- sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
