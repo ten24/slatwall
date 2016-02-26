@@ -17,7 +17,8 @@
         {
           "driverOptions": {
             "host": "ondemand.saucelabs.com",
-            "port": 80
+            "port": 80,
+            "build": "${CIRCLE_BUILD_NUM}-${CIRCLE_BRANCH}"
           },
           "browserOptions": {
             "browserName": "chrome",
