@@ -27,7 +27,7 @@ dependencies:
 test:
   pre:
     # Fire Up Slatwall Containers, Need to do in parallel so that it starts up on all VMs
-    #- docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
+    - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
 
     # Connect ot SauceLabs for Integration Testing
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
@@ -38,13 +38,13 @@ test:
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    #- se-interpreter --parallel=1 meta/tests/integration/setup_config.json
+    - se-interpreter --parallel=1 meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
-    #- se-interpreter --parallel=5 meta/tests/integration/admin_config.json
+    - se-interpreter --parallel=5 meta/tests/integration/admin_config.json
 
     # Run Unit Tests
-    #- sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
 
     # Run Sauce Labs Integration Setup Tests (IF on CONTAINER 0)
     #- case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=1 meta/tests/integration/setup_config.json ;; esac:
