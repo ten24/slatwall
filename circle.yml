@@ -6,20 +6,20 @@ machine:
 
 dependencies:
   override:
-    - ls -la node_modules
+    #- ls -la node_modules
 
-    - node -v
+    #- node -v
 
-    - npm -v
+    #- npm -v
 
     # Install node modules required for build
-    - npm install --dev
+    #- npm install --dev
 
-    - npm install -g --dev
+    #- npm install -g --dev
 
-    - npm update
+    #- npm update
 
-    - npm update --dev
+    #- npm update --dev
 
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - npm install -g se-interpreter
@@ -38,6 +38,9 @@ dependencies:
 
 test:
   pre:
+    # Minify JS
+    - webpack --config admin/client/webpack-production.config.js -p
+
     # Fire Up Slatwall Containers, Need to do in parallel so that it starts up on all VMs
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
 
