@@ -9,13 +9,16 @@ dependencies:
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
 #    - sudo pip install --upgrade docker-compose==1.4.1
+  post:
+    - wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
+    - tar -xzf sc-latest-linux.tar.gz
 
 test:
   pre:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
     - sleep 10
   override:
-    # - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml run slatwallweb ant -f /var/www/meta/build.xml runUnitTests
+    - cd sc-*-linux && ./bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY:
+        background: true
+    - se-interpreter meta/tests/se_interpreter_config.json
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
-    # - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- bash -c ant -f /var/www/meta/build.xml runUnitTests
-    # - docker-compose run slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests
