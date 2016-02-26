@@ -1,7 +1,5 @@
 sudo: required
 
-language: node_js
-
 services:
   - docker
 
@@ -13,6 +11,7 @@ branches:
     - master
     - develop
     - hotfix
+    - travis
 
 before_install:
  - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -20,6 +19,5 @@ before_install:
  - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml build
-  - cd org/Hibachi/client
-  - npm install
+  - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
+  - docker exec -i -t slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests

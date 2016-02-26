@@ -75,11 +75,10 @@ component extends="mxunit.framework.TestCase" output="false" {
 		variables.persistentEntities = [];
 	}
 
-	// AFTER BEACH TEST
+	// AFTER EACH TEST
 	public void function tearDown() {
-		if(!structKeyExists(variables.configuration.common, "outputdebug") || variables.configuration.common.outputdebug) {
-			debug(variables.debugArray);
-		}
+		debug(variables.debugArray);
+
 		variables.debugArray = [];
 
 		var flushRequired = false;
