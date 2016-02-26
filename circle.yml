@@ -18,8 +18,8 @@ test:
   pre:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
     - sleep 10
-    - cd sc-*-linux && ./bin/sc -u $SAUCE_USERNAME -k $SAUCE_ACCESS_KEY:
-        background: true
   override:
+    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
+        background: true
     - se-interpreter meta/tests/se_interpreter_config.json
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
