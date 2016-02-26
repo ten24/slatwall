@@ -6,27 +6,14 @@ machine:
 
 dependencies:
   override:
-    - ls -la node_modules
-
-    - node -v
-
-    - npm -v
-
-    - bower install
-    # Install node modules required for build
-    #- npm install --dev
-
-    #- npm install -g --dev
-
-    #- npm update
-
-    #- npm update --dev
+    # Install webpack globally
+    - npm install -g webpack
 
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - npm install -g se-interpreter
 
     # Minify JS
-    #- webpack --config admin/client/webpack-production.config.js -p
+    - webpack --config admin/client/webpack-production.config.js -p
 
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
@@ -39,9 +26,6 @@ dependencies:
 
 test:
   pre:
-    # Minify JS
-    - webpack --config admin/client/webpack-production.config.js -p
-
     # Fire Up Slatwall Containers, Need to do in parallel so that it starts up on all VMs
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
 
