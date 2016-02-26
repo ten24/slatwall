@@ -9,11 +9,18 @@ dependencies:
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - npm install -g se-interpreter
 
+    # Install node modules required for build
+    - npm install
+
+    # Minify JS
+    - cd admin/client
+    - webpack --config webpack-production.config.js -p
+
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
-  post:
+
     # Install Sauce Labs Connector
     - wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
     - tar -xzf sc-latest-linux.tar.gz
@@ -32,14 +39,14 @@ test:
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    - se-interpreter --parallel=5 meta/tests/integration/setup_config.json
+    - se-interpreter --parallel=1 meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
     - se-interpreter --parallel=5 meta/tests/integration/admin_config.json
 
     # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
-    
+
     # Run Sauce Labs Integration Setup Tests (IF on CONTAINER 0)
     #- case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=1 meta/tests/integration/setup_config.json ;; esac:
     #    parallel: true
@@ -51,3 +58,11 @@ test:
     # Run Unit Tests (IF CONTAINER 1)
     #- case $CIRCLE_NODE_INDEX in 1) sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests ;; esac:
     #    parallel: true
+
+#deployment:
+#  travis:
+#    branch: /travis/
+#    commands:
+#      - git add .
+#      - git commit -m "CI Build Passed Committing JS [skip ci]"
+#      - git push
