@@ -4,8 +4,11 @@ machine:
 
 dependencies:
   override:
-    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-    - sudo pip install --upgrade docker-compose==1.4.1
+    - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - chmod +x docker-compose
+    - sudo mv docker-compose /usr/local/bin
+#    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+#    - sudo pip install --upgrade docker-compose==1.4.1
 
 test:
   pre:
