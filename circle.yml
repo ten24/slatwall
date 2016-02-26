@@ -65,4 +65,4 @@ deployment:
       - git config --global user.email "info@slatwallcommerce.com"
       - git config --global user.name "Slatwall 'Big Boy' Robot"
       - git commit -a -m "CI Build Passed Committing JS [skip ci]"
-      - git push
+      - git push origin $CIRCLE_BRANCH
