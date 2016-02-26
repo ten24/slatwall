@@ -53,7 +53,7 @@
         "type": "name",
         "value": "password"
       },
-      "text": "qauserpass"
+      "text": "QaPa33word"
     },
     {
       "type": "setElementText",
@@ -61,7 +61,7 @@
         "type": "name",
         "value": "passwordConfirm"
       },
-      "text": "qauserpass"
+      "text": "QaPa33word"
     },
     {
       "type": "clickElement",

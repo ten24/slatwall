@@ -6,21 +6,32 @@ machine:
 
 dependencies:
   override:
+    # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - npm install -g se-interpreter
+
+    # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
     - chmod +x docker-compose
     - sudo mv docker-compose /usr/local/bin
   post:
+    # Install Sauce Labse Connector
     - wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
     - tar -xzf sc-latest-linux.tar.gz
 
 test:
   pre:
+    # Fire Up Slatwall Containers
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
-    - sleep 10
-  override:
+
+    # Connect ot SauceLabs for Integration Testing
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
         background: true
+
+    # Wait for Saucelabs connection
     - while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
-    - se-interpreter --parallel=5 meta/tests/se_interpreter_config.json
+  override:
+    # Run Sauce Labs Integration Tests
+    - se-interpreter --parallel=1 meta/tests/se_interpreter_config.json
+
+    # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
