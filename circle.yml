@@ -58,10 +58,10 @@ test:
     #- case $CIRCLE_NODE_INDEX in 1) sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests ;; esac:
     #    parallel: true
 
-#deployment:
-#  travis:
-#    branch: /travis/
-#    commands:
-#      - git add .
-#      - git commit -m "CI Build Passed Committing JS [skip ci]"
-#      - git push
+deployment:
+  travis:
+    branch: /travis/
+    commands:
+      - git add .
+      - git commit -m "CI Build Passed Committing JS [skip ci]"
+      - git push
