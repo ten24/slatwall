@@ -13,4 +13,5 @@ test:
   pre:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
   override:
-    - docker-compose run slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- bash -c ant -f /var/www/meta/build.xml runUnitTests
+    # - docker-compose run slatwallci_slatwallweb_1 ant -f /var/www/meta/build.xml runUnitTests
