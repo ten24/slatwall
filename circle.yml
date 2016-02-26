@@ -24,15 +24,12 @@ test:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d:
         parallel: true
 
-    # Connect ot SauceLabs for Integration Testing (IF on CONTAINER 0)
-    - case $CIRCLE_NODE_INDEX in 0) cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
-        parallel: true
+    # Connect ot SauceLabs for Integration Testing
+    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
         background: true
 
-    # Wait for Saucelabs connection (IF on CONTAINER 0)
-    - case $CIRCLE_NODE_INDEX in 0) while [ ! -e ~/sauce_is_ready ]; do sleep 1; done ;; esac:
-        parallel: true
-
+    # Wait for Saucelabs connection
+    - while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
   override:
     # Run Sauce Labs Integration Setup Tests (IF on CONTAINER 0)
     - case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=1 meta/tests/integration/setup_config.json ;; esac:
