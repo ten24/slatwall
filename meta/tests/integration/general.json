@@ -5,11 +5,11 @@
   "scripts": [
     {
       "where": "local",
-      "path": "login.json"
+      "path": "general/login.json"
     },
     {
       "where": "local",
-      "path": "logout.json"
+      "path": "general/logout.json"
     }
   ],
   "shareState": false
