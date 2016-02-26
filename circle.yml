@@ -6,6 +6,8 @@ machine:
 
 dependencies:
   override:
+    - cd node_modules
+    - ls -la
     # Install node modules required for build
     - npm install
 
