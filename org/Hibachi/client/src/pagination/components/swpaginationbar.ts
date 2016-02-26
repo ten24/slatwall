@@ -20,7 +20,7 @@ class SWPaginationBarController{
     public restrict:string = 'E';
     public scope = {};
     public bindToController={
-        paginator:"="
+        paginator:"=?"
     };
     public controller=SWPaginationBarController;
     public controllerAs="swPaginationBar";

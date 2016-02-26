@@ -48,10 +48,40 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 
+	<cffunction name="getFormQuestionColumnHeaderData">
+		<cfargument required="true" name="formID" />
+		<cfreturn ormExecuteQuery("SELECT DISTINCT new map(fq.attributeID as questionID, fq.attributeName as question) FROM #getApplicationKey()#Form f left join f.formQuestions fq where f.formID=:formid order by fq.attributeID asc",{formid=arguments.formID}) />
+	</cffunction>
 
 	<cffunction name="getFormQuestionAndFormResponsesRawData">
 		<cfargument required="true" name="formID" />
-		<cfreturn ormExecuteQuery("SELECT Distinct  new map( av.attributeValue as response, av.formResponse.formResponseID as formResponseID, av.attribute.attributeID as questionID, av.attribute.attributeName as question) from #getApplicationKey()#AttributeValue as av left join av.formResponse as fr left join fr.form as f left join fr.form.formQuestions fq where av.formResponse.form.formID=:formid order by av.formResponse.formResponseID asc", {formid=arguments.formID}) />
+		<cfargument required="false" name="numberOfQuestions" />
+		<cfargument required="false" name="currentPage" />
+		<cfargument required="false" name="pageShow" />
+
+		<cfset HQL = "
+			SELECT DISTINCT
+				new map(
+						av.attributeValue as response,
+						av.formResponse.formResponseID as formResponseID,
+						av.attribute.attributeID as questionID,
+						av.attribute.attributeName as question
+				)
+			FROM #getApplicationKey()#AttributeValue as av
+				LEFT JOIN av.formResponse as fr
+				LEFT JOIN fr.form as f
+				LEFT JOIN fr.form.formQuestions fq
+			WHERE
+				av.formResponse.form.formID=:formid
+			ORDER BY
+				av.formResponse.formResponseID ASC
+		" />
+		<cfif structKeyExists(arguments, "numberOfQuestions") && structKeyExists(arguments, "currentPage") && structKeyExists(arguments, "pageShow")>
+			<cfset var maxResults = arguments.pageShow * arguments.numberOfQuestions />
+			<cfset var offset = (arguments.currentPage - 1) * maxResults />
+			<cfreturn ormExecuteQuery(HQL, {formid=arguments.formID}, false, {offset=offset, maxresults=maxResults}) />
+		</cfif>
+		<cfreturn ormExecuteQuery(HQL, {formid=arguments.formID}, false) />
 	</cffunction>
 
 </cfcomponent>
