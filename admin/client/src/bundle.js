@@ -5936,7 +5936,9 @@
 	            //assumes no alias formatting
 	            angular.forEach(_this.columns.reverse(), function (column) {
 	                var lastEntity = _this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.collectionObject, column.propertyIdentifier);
-	                var title = _this.rbkeyService.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+	                if (angular.isUndefined(column.title)) {
+	                    column.title = _this.rbkeyService.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+	                }
 	                if (angular.isUndefined(column.isVisible)) {
 	                    column.isVisible = true;
 	                }
@@ -5963,7 +5965,7 @@
 	                    }
 	                }
 	                _this.columnOrderBy(column);
-	                _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, title, column);
+	                _this.collectionConfig.addDisplayProperty(column.propertyIdentifier, column.title, column);
 	            });
 	            //if the passed in collection has columns perform some formatting
 	            if (_this.hasCollectionPromise) {
@@ -6028,12 +6030,6 @@
 	        this.updateMultiselectValues = function () {
 	            _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
 	        };
-	        this.escapeRegExp = function (str) {
-	            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-	        };
-	        this.replaceAll = function (str, find, replace) {
-	            return str.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
-	        };
 	        this.getPageRecordKey = function (propertyIdentifier) {
 	            if (propertyIdentifier) {
 	                var propertyIdentifierWithoutAlias = '';
@@ -6043,7 +6039,7 @@
 	                else {
 	                    propertyIdentifierWithoutAlias = propertyIdentifier;
 	                }
-	                return _this.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+	                return _this.utilityService.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
 	            }
 	            return '';
 	        };
@@ -6062,20 +6058,33 @@
 	        this.getExportAction = function () {
 	            return _this.exportAction + _this.collectionID;
 	        };
+	        this.exportCurrentList = function (selection) {
+	            if (selection === void 0) { selection = false; }
+	            var exportCollectionConfig = angular.copy(_this.collectionConfig.getCollectionConfig());
+	            if (selection && !angular.isUndefined(_this.selectionService.getSelections('ListingDisplay'))
+	                && (_this.selectionService.getSelections('ListingDisplay').length > 0)) {
+	                exportCollectionConfig.filterGroups[0].filterGroup = [
+	                    {
+	                        "displayPropertyIdentifier": _this.rbkeyService.getRBKey("entity." + exportCollectionConfig.baseEntityName.toLowerCase() + "." + _this.exampleEntity.$$getIDName().toLowerCase()),
+	                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "." + _this.exampleEntity.$$getIDName(),
+	                        "comparisonOperator": "in",
+	                        "value": _this.selectionService.getSelections('ListingDisplay').join(),
+	                        "displayValue": _this.selectionService.getSelections('ListingDisplay').join(),
+	                        "ormtype": "string",
+	                        "fieldtype": "id",
+	                        "conditionDisplay": "In List"
+	                    }
+	                ];
+	            }
+	            /*TODO: change action */
+	            $('body').append('<form action="/?slatAction=main.collectionConfigExport" method="post" id="formExport"></form>');
+	            $('#formExport')
+	                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+	                .submit()
+	                .remove();
+	        };
 	        console.log('here');
 	        console.log(this);
-	        this.$q = $q;
-	        this.$timeout = $timeout;
-	        this.$hibachi = $hibachi;
-	        this.$transclude = $transclude;
-	        this.utilityService = utilityService;
-	        this.$scope = $scope;
-	        this.$element = $element;
-	        this.collectionConfigService = collectionConfigService;
-	        this.paginationService = paginationService;
-	        this.selectionService = selectionService;
-	        this.observerService = observerService;
-	        this.rbkeyService = rbkeyService;
 	        this.intialSetup();
 	        this.$scope.$on('$destroy', function () {
 	            _this.observerService.detachById(_this.$scope.collection);
@@ -6202,34 +6211,35 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWListingControlsController = (function () {
 	    //@ngInject
-	    function SWListingControlsController($hibachi, metadataService, $timeout, collectionService) {
+	    function SWListingControlsController($hibachi, metadataService, $timeout, collectionService, observerService) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.metadataService = metadataService;
 	        this.$timeout = $timeout;
 	        this.collectionService = collectionService;
+	        this.observerService = observerService;
 	        this.displayOptionsClosed = true;
 	        this.filtersClosed = true;
+	        this.filterActions = function (res) {
+	            if (res.action == 'add') {
+	                _this.paginator.setCurrentPage(1);
+	            }
+	            _this.filtersClosed = true;
+	        };
 	        this.selectSearchColumn = function (column) {
 	            _this.selectedSearchColumn = column;
-	            _this.triggerSearch();
+	            if (_this.searchText) {
+	                _this.triggerSearch();
+	            }
 	        };
 	        this.getSelectedSearchColumnName = function () {
 	            return (angular.isUndefined(_this.selectedSearchColumn)) ? 'All' : _this.selectedSearchColumn.title;
 	        };
-	        this.filterPropertiesList = {};
-	        var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias);
-	        filterPropertiesPromise.then(function (value) {
-	            metadataService.setPropertiesList(value, _this.collectionConfig.baseEntityAlias);
-	            _this.filterPropertiesList[_this.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias(_this.collectionConfig.baseEntityAlias);
-	            metadataService.formatPropertiesList(_this.filterPropertiesList[_this.collectionConfig.baseEntityAlias], _this.collectionConfig.baseEntityAlias);
-	        });
-	        this.backupColumnsConfig = this.collectionConfig.getColumns();
 	        this.search = function () {
 	            if (_this._timeoutPromise) {
-	                $timeout.cancel(_this._timeoutPromise);
+	                _this.$timeout.cancel(_this._timeoutPromise);
 	            }
-	            _this._timeoutPromise = $timeout(function () {
+	            _this._timeoutPromise = _this.$timeout(function () {
 	                _this.collectionConfig.setKeywords(_this.searchText);
 	                _this.triggerSearch();
 	            }, 500);
@@ -6250,31 +6260,49 @@
 	                _this.paginator.setCurrentPage(1);
 	            }
 	        };
-	        this.setItemInUse = function (booleanValue) {
-	            this.itemInUse = booleanValue;
-	        };
-	        this.removeFilter = function (array, index) {
-	            array.splice(index, 1);
-	        };
 	        this.addSearchFilter = function () {
-	            if (angular.isUndefined(_this.selectedSearchColumn))
+	            if (angular.isUndefined(_this.selectedSearchColumn) || !_this.searchText)
 	                return;
-	            _this.collectionConfig.addFilter(_this.selectedSearchColumn.propertyIdentifier, _this.searchText);
+	            _this.collectionConfig.addLikeFilter(_this.selectedSearchColumn.propertyIdentifier, _this.searchText);
 	            _this.searchText = '';
-	            _this.getCollection();
-	        };
-	        this.toggleFilters = function () {
-	            _this.filtersClosed = !_this.filtersClosed;
-	            if (_this.filtersClosed) {
-	                _this.removeFilter(_this.collectionConfig.filterGroups[0].filterGroup, _this.newFilterPosition);
-	            }
-	            else {
-	                _this.newFilterPosition = _this.collectionService.newFilterItem(_this.collectionConfig.filterGroups[0].filterGroup, _this.setItemInUse);
-	            }
+	            _this.collectionConfig.setKeywords(_this.searchText);
+	            _this.paginator.setCurrentPage(1);
 	        };
 	        this.toggleDisplayOptions = function () {
 	            _this.displayOptionsClosed = !_this.displayOptionsClosed;
 	        };
+	        this.setItemInUse = function (booleanValue) {
+	            _this.itemInUse = booleanValue;
+	        };
+	        this.removeFilter = function (array, index, reloadCollection) {
+	            if (reloadCollection === void 0) { reloadCollection = true; }
+	            array.splice(index, 1);
+	            if (reloadCollection) {
+	                _this.paginator.setCurrentPage(1);
+	            }
+	        };
+	        this.toggleFilters = function () {
+	            console.log(_this.filtersClosed);
+	            if (_this.filtersClosed) {
+	                _this.filtersClosed = false;
+	                _this.newFilterPosition = _this.collectionService.newFilterItem(_this.collectionConfig.filterGroups[0].filterGroup, _this.setItemInUse);
+	            }
+	        };
+	        this.selectFilterItem = function (filterItem) {
+	            _this.filtersClosed = false;
+	            _this.collectionService.selectFilterItem(filterItem);
+	        };
+	        this.selectAll = function () {
+	            console.log(_this.isAllSelected);
+	        };
+	        this.backupColumnsConfig = this.collectionConfig.getColumns();
+	        this.filterPropertiesList = {};
+	        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then(function (value) {
+	            metadataService.setPropertiesList(value, _this.collectionConfig.baseEntityAlias);
+	            _this.filterPropertiesList[_this.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias(_this.collectionConfig.baseEntityAlias);
+	            metadataService.formatPropertiesList(_this.filterPropertiesList[_this.collectionConfig.baseEntityAlias], _this.collectionConfig.baseEntityAlias);
+	        });
+	        this.observerService.attach(this.filterActions, 'filterItemAction');
 	    }
 	    return SWListingControlsController;
 	})();
@@ -7850,13 +7878,15 @@
 	})();
 	exports.Column = Column;
 	var Filter = (function () {
-	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue) {
+	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue, ormtype, pattern) {
 	        this.propertyIdentifier = propertyIdentifier;
 	        this.value = value;
 	        this.comparisonOperator = comparisonOperator;
 	        this.logicalOperator = logicalOperator;
 	        this.displayPropertyIdentifier = displayPropertyIdentifier;
 	        this.displayValue = displayValue;
+	        this.ormtype = ormtype;
+	        this.pattern = pattern;
 	    }
 	    return Filter;
 	})();
@@ -8158,8 +8188,41 @@
 	            else {
 	                var join = true;
 	            }
+	            var ormtype = 'string';
+	            var lastEntity = _this.$hibachi.getEntityExample(_this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier));
+	            var lastProperty = propertyIdentifier.split('.').pop();
+	            if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
+	                ormtype = lastEntity.metaData[lastProperty].ormtype;
+	            }
 	            //create filter group
-	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value);
+	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), //RB KEY HERE
+	            value, ormtype);
+	            _this.filterGroups[0].filterGroup.push(filter);
+	            return _this;
+	        };
+	        this.addLikeFilter = function (propertyIdentifier, value, pattern, logicalOperator) {
+	            if (pattern === void 0) { pattern = '%w%'; }
+	            //if filterGroups does not exists then set a default
+	            if (!_this.filterGroups) {
+	                _this.filterGroups = [{ filterGroup: [] }];
+	            }
+	            //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
+	            if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
+	                logicalOperator = 'AND';
+	            if (propertyIdentifier.split('.').length < 2) {
+	                var join = false;
+	            }
+	            else {
+	                var join = true;
+	            }
+	            var ormtype = 'string';
+	            var lastEntity = _this.$hibachi.getEntityExample(_this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier));
+	            var lastProperty = propertyIdentifier.split('.').pop();
+	            if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
+	                ormtype = lastEntity.metaData[lastProperty].ormtype;
+	            }
+	            //create filter group
+	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, 'like', logicalOperator, propertyIdentifier.split('.').pop(), value, ormtype, pattern);
 	            _this.filterGroups[0].filterGroup.push(filter);
 	            return _this;
 	        };
@@ -11883,7 +11946,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWEditFilterItem = (function () {
-	    function SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
+	    function SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService) {
 	        return {
 	            require: '^swFilterGroups',
 	            restrict: 'E',
@@ -12025,7 +12088,11 @@
 	                        scope.filterItem.$$siblingItems[siblingIndex].$$disabled = false;
 	                    }
 	                    if (scope.filterItem.$$isNew === true) {
+	                        observerService.notify('filterItemAction', { action: 'remove', filterItemIndex: scope.filterItemIndex });
 	                        scope.removeFilterItem({ filterItemIndex: scope.filterItemIndex });
+	                    }
+	                    else {
+	                        observerService.notify('filterItemAction', { action: 'close', filterItemIndex: scope.filterItemIndex });
 	                    }
 	                };
 	                scope.saveFilter = function (selectedFilterProperty, filterItem, callback) {
@@ -12145,6 +12212,7 @@
 	                        scope.saveCollection();
 	                        $log.debug(selectedFilterProperty);
 	                        $log.debug(filterItem);
+	                        observerService.notify('filterItemAction', { action: 'add', filterItemIndex: scope.filterItemIndex });
 	                        $timeout(function () {
 	                            callback();
 	                        });
@@ -12155,8 +12223,8 @@
 	        };
 	    }
 	    SWEditFilterItem.Factory = function () {
-	        var directive = function ($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService) {
-	            return new SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService);
+	        var directive = function ($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService) {
+	            return new SWEditFilterItem($log, $filter, $timeout, $hibachi, collectionPartialsPath, collectionService, metadataService, hibachiPathBuilder, rbkeyService, observerService);
 	        };
 	        directive.$inject = [
 	            '$log',
@@ -12167,7 +12235,8 @@
 	            'collectionService',
 	            'metadataService',
 	            'hibachiPathBuilder',
-	            'rbkeyService'
+	            'rbkeyService',
+	            'observerService'
 	        ];
 	        return directive;
 	    };

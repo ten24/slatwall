@@ -674,6 +674,30 @@ component output="false" accessors="true" extends="HibachiService" {
 			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
 	}//<--end function
 
+	public void function collectionConfigExport(required struct data) {
+		if(!structKeyExists(arguments.data, 'collectionConfig')) abort;
+
+		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
+
+		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
+
+		var exportableColumns = [];
+		for(var column in arguments.data.collectionConfig.columns){
+			if(StructKeyExists(column, "isExportable") && column.isExportable){
+				ArrayAppend(exportableColumns, column);
+			}
+		}
+		arguments.data.collectionConfig.columns = exportableColumns;
+		arguments.data.collectionConfig.baseEntityName = getProperlyCasedFullEntityName(arguments.data.collectionConfig.baseEntityName);
+
+		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
+
+		var collectionData = collectionEntity.getRecords(forExport=true);
+		var headers = StructKeyList(collectionData[1]);
+		getService('hibachiService').export( collectionData, headers, headers, "CampaignList", "csv" );
+
+	}
+
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

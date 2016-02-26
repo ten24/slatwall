@@ -2,118 +2,125 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWListingControlsController {
-    private selectSearchColumn;
     private selectedSearchColumn;
-    private getSelectedSearchColumnName;
     private filterPropertiesList;
     private collectionConfig;
-    private search;
     private _timeoutPromise;
     private paginator;
-    private searching;
-    private getCollection;
     private searchText;
     private backupColumnsConfig;
-    private createNewFilter;
-    private setItemInUse;
-    private removeFilter;
-    private addSearchFilter;
-    private triggerSearch;
     private displayOptionsClosed:boolean=true;
     private filtersClosed:boolean=true;
-    private toggleFilters;
-    private toggleDisplayOptions;
     private newFilterPosition;
+    private itemInUse;
+    private isAllSelected;
 
     //@ngInject
     constructor(
         public $hibachi,
         public metadataService,
         public $timeout,
-        public collectionService
-    ){
-        this.selectSearchColumn = (column?)=>{
-            this.selectedSearchColumn = column;
-            this.triggerSearch();
-        };
-
-        this.getSelectedSearchColumnName = () =>{
-            return (angular.isUndefined(this.selectedSearchColumn)) ? 'All' : this.selectedSearchColumn.title;
-        };
-
+        public collectionService,
+        public observerService
+    ) {
+        this.backupColumnsConfig = this.collectionConfig.getColumns();
         this.filterPropertiesList = {};
-        var filterPropertiesPromise = $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias);
-        filterPropertiesPromise.then((value)=>{
-            metadataService.setPropertiesList(value,this.collectionConfig.baseEntityAlias);
+
+        $hibachi.getFilterPropertiesByBaseEntityName(this.collectionConfig.baseEntityAlias).then((value)=> {
+            metadataService.setPropertiesList(value, this.collectionConfig.baseEntityAlias);
             this.filterPropertiesList[this.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias(this.collectionConfig.baseEntityAlias);
-            metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias],this.collectionConfig.baseEntityAlias);
+            metadataService.formatPropertiesList(this.filterPropertiesList[this.collectionConfig.baseEntityAlias], this.collectionConfig.baseEntityAlias);
         });
 
-        this.backupColumnsConfig = this.collectionConfig.getColumns();
-
-        this.search = () =>{
-            if(this._timeoutPromise) {
-                $timeout.cancel(this._timeoutPromise);
-            }
-            this._timeoutPromise = $timeout(()=>{
-                this.collectionConfig.setKeywords(this.searchText);
-                this.triggerSearch();
-            }, 500);
-        };
-
-        this.triggerSearch =()=>{
-            if(angular.isDefined(this.selectedSearchColumn)){
-                this.backupColumnsConfig = angular.copy(this.collectionConfig.getColumns());
-                var collectionColumns = this.collectionConfig.getColumns();
-                for(var i = 0; i < collectionColumns.length; i++){
-                    if(collectionColumns[i].propertyIdentifier != this.selectedSearchColumn.propertyIdentifier){
-                        collectionColumns[i].isSearchable = false;
-                    }
-                }
-                this.paginator.setCurrentPage(1);
-                this.collectionConfig.setColumns(this.backupColumnsConfig);
-            }else{
-                this.paginator.setCurrentPage(1);
-            }
-        };
-
-        this.setItemInUse = function(booleanValue){
-            this.itemInUse = booleanValue;
-        };
-
-        this.removeFilter = function(array, index){
-            array.splice(index, 1);
-        };
-
-        this.addSearchFilter=()=>{
-            if(angular.isUndefined(this.selectedSearchColumn)) return;
-            this.collectionConfig.addFilter(
-                this.selectedSearchColumn.propertyIdentifier,
-                this.searchText
-            );
-            this.searchText = '';
-            this.getCollection();
-        };
-
-
-        this.toggleFilters = ()=>{
-            this.filtersClosed = !this.filtersClosed;
-
-            if(this.filtersClosed) {
-                this.removeFilter(this.collectionConfig.filterGroups[0].filterGroup, this.newFilterPosition);
-            }else{
-                this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
-            }
-        };
-
-        this.toggleDisplayOptions=()=>{
-            this.displayOptionsClosed = !this.displayOptionsClosed;
-
-        };
-
+        this.observerService.attach(this.filterActions, 'filterItemAction');
 
     }
+    public filterActions =(res)=>{
+        if(res.action == 'add'){
+            this.paginator.setCurrentPage(1);
+        }
+        this.filtersClosed = true;
+    };
 
+    public selectSearchColumn = (column?)=>{
+        this.selectedSearchColumn = column;
+        if(this.searchText){
+            this.triggerSearch();
+        }
+    };
+
+    public getSelectedSearchColumnName = () =>{
+        return (angular.isUndefined(this.selectedSearchColumn)) ? 'All' : this.selectedSearchColumn.title;
+    };
+
+    public search = () =>{
+        if(this._timeoutPromise) {
+            this.$timeout.cancel(this._timeoutPromise);
+        }
+        this._timeoutPromise = this.$timeout(()=>{
+            this.collectionConfig.setKeywords(this.searchText);
+            this.triggerSearch();
+        }, 500);
+    };
+
+    private triggerSearch =()=>{
+        if(angular.isDefined(this.selectedSearchColumn)){
+            this.backupColumnsConfig = angular.copy(this.collectionConfig.getColumns());
+            var collectionColumns = this.collectionConfig.getColumns();
+            for(var i = 0; i < collectionColumns.length; i++){
+                if(collectionColumns[i].propertyIdentifier != this.selectedSearchColumn.propertyIdentifier){
+                    collectionColumns[i].isSearchable = false;
+                }
+            }
+            this.paginator.setCurrentPage(1);
+            this.collectionConfig.setColumns(this.backupColumnsConfig);
+        }else{
+            this.paginator.setCurrentPage(1);
+        }
+    };
+
+    private addSearchFilter=()=>{
+        if(angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
+        this.collectionConfig.addLikeFilter(
+            this.selectedSearchColumn.propertyIdentifier,
+            this.searchText
+        );
+        this.searchText = '';
+        this.collectionConfig.setKeywords(this.searchText);
+        this.paginator.setCurrentPage(1);
+    };
+
+    public toggleDisplayOptions=()=>{
+        this.displayOptionsClosed = !this.displayOptionsClosed;
+    };
+
+    private setItemInUse = (booleanValue)=>{
+        this.itemInUse = booleanValue;
+    };
+
+    public removeFilter = (array, index, reloadCollection:boolean=true)=>{
+        array.splice(index, 1);
+        if(reloadCollection){
+            this.paginator.setCurrentPage(1);
+        }
+    };
+
+    public toggleFilters = ()=>{
+        console.log(this.filtersClosed);
+        if(this.filtersClosed) {
+            this.filtersClosed = false;
+            this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
+        }
+    };
+
+    public selectFilterItem = (filterItem) =>{
+        this.filtersClosed = false;
+        this.collectionService.selectFilterItem(filterItem);
+    };
+
+    public selectAll=()=>{
+        console.log(this.isAllSelected);
+    }
 
 }
 

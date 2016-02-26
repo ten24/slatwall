@@ -78,18 +78,6 @@ class SWListingDisplayController{
     ){
         console.log('here');
         console.log(this);
-        this.$q = $q;
-        this.$timeout = $timeout;
-        this.$hibachi = $hibachi;
-        this.$transclude = $transclude;
-        this.utilityService = utilityService;
-        this.$scope = $scope;
-        this.$element = $element;
-        this.collectionConfigService = collectionConfigService;
-        this.paginationService = paginationService;
-        this.selectionService = selectionService;
-        this.observerService = observerService;
-        this.rbkeyService = rbkeyService;
         this.intialSetup();
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
@@ -504,15 +492,16 @@ class SWListingDisplayController{
         //Setup table class
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
-    }
+    };
 
     public setupColumns = ()=>{
         //assumes no alias formatting
         angular.forEach(this.columns.reverse(), (column)=>{
 
             var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
-
-            var title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+            if(angular.isUndefined(column.title)){
+                column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+            }
             if(angular.isUndefined(column.isVisible)){
                 column.isVisible = true;
             }
@@ -542,7 +531,7 @@ class SWListingDisplayController{
             this.columnOrderBy(column);
             
             
-            this.collectionConfig.addDisplayProperty(column.propertyIdentifier,title,column);
+            this.collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
         });
         //if the passed in collection has columns perform some formatting
         if(this.hasCollectionPromise){
@@ -556,7 +545,7 @@ class SWListingDisplayController{
                 }
             });
         }
-    }
+    };
     
     public getColorFilterNGClassObject = (pageRecord)=>{
         var classObjectString = "{"; 
@@ -567,7 +556,7 @@ class SWListingDisplayController{
             }
         }); 
         return classObjectString + "}"; 
-    }
+    };
     
     private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        if(angular.isDefined(colorFilter.comparisonProperty)){
@@ -575,12 +564,12 @@ class SWListingDisplayController{
        } else { 
             return pageRecord[colorFilter.propertyToCompare.replace('.','_')] + colorFilter.comparisonOperator + colorFilter.comparisonValue;
        }
-    }
+    };
     
     public toggleOrderBy = (column) => {
         this.collectionConfig.toggleOrderBy(column.propertyIdentifier);
         this.getCollection();
-    }
+    };
     
     public columnOrderBy = (column) => {
         var found = false; 
@@ -595,7 +584,7 @@ class SWListingDisplayController{
             this.orderByStates[column.propertyIdentifier] = '';
         }
         return this.orderByStates[column.propertyIdentifier];
-    }
+    };
     
     public columnOrderByIndex = (column) =>{
         var found = false; 
@@ -610,19 +599,12 @@ class SWListingDisplayController{
             this.orderByIndices[column.propertyIdentifier] = '';
         }
         return this.orderByIndices[column.propertyIdentifier];
-    }
+    };
 
     public updateMultiselectValues = ()=>{
         this.multiselectValues = this.selectionService.getSelections('ListingDisplay');
-    }
+    };
 
-    public escapeRegExp = (str)=> {
-        return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-    }
-
-    public replaceAll = (str, find, replace)=> {
-        return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-    }
 
     public getPageRecordKey = (propertyIdentifier)=>{
         if(propertyIdentifier){
@@ -632,10 +614,10 @@ class SWListingDisplayController{
             }else{
                 propertyIdentifierWithoutAlias = propertyIdentifier;
             }
-            return this.replaceAll(propertyIdentifierWithoutAlias,'.','_')
+            return this.utilityService.replaceAll(propertyIdentifierWithoutAlias,'.','_')
         }
         return '';
-    }
+    };
 
     private getAdminAttributesByType = (type:string):void =>{
         var recordActionName = 'record'+type.toUpperCase()+'Action';
@@ -648,11 +630,37 @@ class SWListingDisplayController{
         }
         this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'querystring="'+this[recordActionQueryStringName]+'"', " ");
         this.adminattributes = this.utilityService.listAppend(this.adminattributes, 'data-'+type+'modal="'+this[recordActionModalName]+'"', " ");
-    }
+    };
 
     public getExportAction = ():string =>{
         return this.exportAction+this.collectionID;
-    }
+    };
+
+    public exportCurrentList =(selection:boolean=false)=>{
+
+        var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+        if (selection && !angular.isUndefined(this.selectionService.getSelections('ListingDisplay'))
+            && (this.selectionService.getSelections('ListingDisplay').length > 0)) {
+            exportCollectionConfig.filterGroups[0].filterGroup = [
+                {
+                    "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
+                    "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
+                    "comparisonOperator": "in",
+                    "value": this.selectionService.getSelections('ListingDisplay').join(),
+                    "displayValue": this.selectionService.getSelections('ListingDisplay').join(),
+                    "ormtype": "string",
+                    "fieldtype": "id",
+                    "conditionDisplay": "In List"
+                }
+            ];
+        }
+        /*TODO: change action */
+        $('body').append('<form action="/?slatAction=main.collectionConfigExport" method="post" id="formExport"></form>');
+        $('#formExport')
+            .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
+            .submit()
+            .remove();
+    };
 }
 
 class SWListingDisplay implements ng.IDirective{

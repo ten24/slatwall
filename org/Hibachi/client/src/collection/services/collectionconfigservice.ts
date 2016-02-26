@@ -44,7 +44,9 @@ class Filter{
         public comparisonOperator:string,
         public logicalOperator?:string,
         public displayPropertyIdentifier?:string,
-        public displayValue?:string
+        public displayValue?:string,
+        public ormtype?:string,
+        public pattern?:string
     ){}
 }
 
@@ -398,6 +400,12 @@ class CollectionConfig {
         } else {
             var join = true;
         }
+        var ormtype = 'string';
+        var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier));
+        var lastProperty=propertyIdentifier.split('.').pop();
+        if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
+            ormtype = lastEntity.metaData[lastProperty].ormtype;
+        }
 
         //create filter group
         var filter = new Filter(
@@ -405,8 +413,48 @@ class CollectionConfig {
             value,
             comparisonOperator,
             logicalOperator,
+            propertyIdentifier.split('.').pop(), //RB KEY HERE
+            value,
+            ormtype
+        );
+
+        this.filterGroups[0].filterGroup.push(filter);
+        return this;
+    };
+
+    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%', logicalOperator?: string):CollectionConfig =>{
+
+        //if filterGroups does not exists then set a default
+        if(!this.filterGroups){
+            this.filterGroups = [{filterGroup:[]}];
+        }
+
+        //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
+        if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
+
+        if(propertyIdentifier.split('.').length < 2){
+            var join = false;
+        } else {
+            var join = true;
+        }
+
+        var ormtype = 'string';
+        var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier));
+        var lastProperty=propertyIdentifier.split('.').pop();
+        if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
+            ormtype = lastEntity.metaData[lastProperty].ormtype;
+        }
+
+        //create filter group
+        var filter = new Filter(
+            this.formatPropertyIdentifier(propertyIdentifier, join),
+            value,
+            'like',
+            logicalOperator,
             propertyIdentifier.split('.').pop(),
-            value
+            value,
+            ormtype,
+            pattern
         );
 
         this.filterGroups[0].filterGroup.push(filter);

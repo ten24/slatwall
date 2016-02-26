@@ -4,16 +4,16 @@
         <div class="s-detail-body">
             <div class="s-content-header">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
-                <span class="pull-right s-expand-icon s-detail-show-content">
-                    <a href="##" class="s-expand-table">
-                        <i class="fa fa-expand"></i>
-                    </a>
-                </span>
-                <span class="pull-right s-compress-icon s-detail-show-content">
-                    <a href="##" class="s-compress-table">
-                        <i class="fa fa-compress"></i>
-                    </a>
-                </span>
+                <!--<span class="pull-right s-expand-icon s-detail-show-content">-->
+                    <!--<a href="##" class="s-expand-table">-->
+                        <!--<i class="fa fa-expand"></i>-->
+                    <!--</a>-->
+                <!--</span>-->
+                <!--<span class="pull-right s-compress-icon s-detail-show-content">-->
+                    <!--<a href="##" class="s-compress-table">-->
+                        <!--<i class="fa fa-compress"></i>-->
+                    <!--</a>-->
+                <!--</span>-->
             </div>
             <sw-listing-controls
                     data-collection-config="swListingDisplay.collectionConfig"
@@ -25,38 +25,43 @@
             <div class="s-detail-notifications s-detail-hidden-content">
                 <div class="row">
                     <div class="col-sm-8 s-message">
-                        <span>All <b>50</b> items on this page are selected.</span>
-                        <a href="##">Select all <b>5,720</b> items</span></a>
+                        <!--<span>All <b>50</b> items on this page are selected.</span>-->
+                        <!--<a href="##">Select all <b>5,720</b> items</span></a>-->
                     </div>
                     <div class="col-sm-4" style="text-align:right;">
                         <div class="btn-toolbar" style="margin:0px;">
-                            <div class="btn-group btn-group-xs">
-                                <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-print"></i></button>
-                                <ul class="dropdown-menu pull-right">
-                                    <li>
-                                        <a href="##" target="_self">Order Confirmation</a>
-                                        <a href="##" target="_self">Order Status</a>
-                                        <a href="##" target="_self">...</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="btn-group btn-group-xs">
-                                <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-envelope"></i></button>
-                                <ul class="dropdown-menu pull-right">
-                                    <li>
-                                        <a href="##" target="_self">Order Confirmation</a>
-                                        <a href="##" target="_self">Order Status</a>
-                                        <a href="##" target="_self">...</a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <!--<div class="btn-group btn-group-xs">-->
+                                <!--<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-print"></i></button>-->
+                                <!--<ul class="dropdown-menu pull-right">-->
+                                    <!--<li>-->
+                                        <!--<a href="##" target="_self">Order Confirmation</a>-->
+                                        <!--<a href="##" target="_self">Order Status</a>-->
+                                        <!--<a href="##" target="_self">...</a>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                            <!--<div class="btn-group btn-group-xs">-->
+                                <!--<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-envelope"></i></button>-->
+                                <!--<ul class="dropdown-menu pull-right">-->
+                                    <!--<li>-->
+                                        <!--<a href="##" target="_self">Order Confirmation</a>-->
+                                        <!--<a href="##" target="_self">Order Status</a>-->
+                                        <!--<a href="##" target="_self">...</a>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
                             <div class="btn-group btn-group-xs">
                                 <button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">Action <span class="caret"></span></button>
                                 <ul class="dropdown-menu pull-right">
                                     <li>
-                                        <a href="##" target="_self">Capture & Fulfill</a>
-                                        <a href="##" target="_self">Fulfill</a>
-                                        <a href="##" target="_self">....</a>
+                                        <a href data-ng-click="swListingDisplay.exportCurrentList()">Export</a>
+                                    </li>
+                                    <li>
+                                        <a href
+                                           data-ng-click="swListingDisplay.exportCurrentList()"
+                                           data-ng-if="swListingDisplay.multiselectable">
+                                            Export Selected Rows
+                                        </a>
                                     </li>
                                 </ul>
                             </div>
@@ -73,25 +78,18 @@
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}" data-ng-value="swListingDisplay.multiselectValues.toString()" />
-                            <th data-ng-if-end class="multiselect" data-ng-class="{'disabled':!swListingDisplay.edit}">
-                                <div data-ng-if="!swListingDisplay.expandable && swListinDisplay.multiselectPropertyIdentifier && swListinDisplay.multiselectPropertyIdentifier.length" class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
-                                    <ul class="dropdown-menu nav">
-                                        <li>
-                                            <a href="#" class="multiselect-checked-filter">
-                                                <i data-ng-class="(!swListingDisplay.edit) ? 'hibachi-ui-checkbox-checked':'hibachi-ui-checkbox'"></i> Show Selected
-                                            </a>
-                                        </li>
-                                    </ul>
+                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'disabled':!swListingDisplay.edit}">
+                                <div class="s-checkbox">
+                                    <input type="checkbox" id="exampleID" data-ng-model="swListingDisplay.isAllSelected" data-ng-click="swListingDisplay.selectAll()">
+                                    <label for="exampleID"></label>
                                 </div>
-                                <span data-ng-if="!(!swListingDisplay.expandable && swListinDisplay.multiselectPropertyIdentifier && swListinDisplay.multiselectPropertyIdentifier.length)">&nbsp;</span>
                             </th>
                             <!-- Sortable -->
                             <th class="sort" data-ng-if="swListingDisplay.sortable">&nbsp;</th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
                             <th data-ng-repeat="column in swListingDisplay.collectionConfig.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" data-ng-click="swListingDisplay.toggleOrderBy(column)" ng-cloak>
-                                <span data-ng-bind="column.title"></span>
-                                <a href data-ng-click="swListingDisplay.toggleOrderBy(column)" data-ng-if="!(column.persistent == false)" class="s-sort-arrows">
+                                <span data-ng-bind="column.title" style="cursor: pointer"></span>
+                                <a href data-ng-if="!(column.persistent == false)" class="s-sort-arrows">
                                     <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                                         <g transform="translate(0.5, 0.5)">
                                             <polygon class="s-ascending" data-ng-class="{'s-active':swListingDisplay.columnOrderBy(column) == 'DESC'}" fill="none" stroke="#cccccc" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon>
