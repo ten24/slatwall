@@ -100,7 +100,9 @@ browserCommand=${slatwall.test.functional.browser}
 		<!-- Run the tests -->
 		<runTestDirectory directoryName="unit" excludes=""/>
 
-		<echo message="Bombed? ${tests.bombed}"/>
+		<condition property="tests.bombed">
+			<fail/>
+		</condition>
 
 		<!-- Update test reports -->
 		<junitreport todir="${slatwall.test.output.html}/unit">
