@@ -100,6 +100,8 @@ browserCommand=${slatwall.test.functional.browser}
 		<!-- Run the tests -->
 		<runTestDirectory directoryName="unit" excludes=""/>
 
+		<echo message="Bombed? ${tests.bombed}"/>
+
 		<!-- Update test reports -->
 		<junitreport todir="${slatwall.test.output.html}/unit">
 		  <fileset dir="${slatwall.test.output.xml}/unit">
@@ -117,7 +119,6 @@ browserCommand=${slatwall.test.functional.browser}
 				<directory path="${slatwall.test.dir.location}/@{directoryName}" recurse="true" packageName="${slatwall.test.cfcpath}.@{directoryName}" componentPath="${slatwall.test.cfcpath}.@{directoryName}" excludes="@{excludes}" />
 			</mxunittask>
 		</sequential>
-		<echo message="Bombed? ${tests.bombed}"/>
 	</macrodef>
 
 
