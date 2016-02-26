@@ -117,6 +117,7 @@ browserCommand=${slatwall.test.functional.browser}
 				<directory path="${slatwall.test.dir.location}/@{directoryName}" recurse="true" packageName="${slatwall.test.cfcpath}.@{directoryName}" componentPath="${slatwall.test.cfcpath}.@{directoryName}" excludes="@{excludes}" />
 			</mxunittask>
 		</sequential>
+		<echo message="Bombed? ${tests.bombed}"/>
 	</macrodef>
 
 
