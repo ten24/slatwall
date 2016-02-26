@@ -27,6 +27,7 @@ sed -i "s/\${SERVER-HSPW-SALT}/$LUCEESERVERSALT/g" /opt/lucee/server/lucee-serve
 # Update Lucee Datasource Information
 sed -i "s/\${MYSQL_ROOT_PASSWORD}/${MYSQL_ROOT_PASSWORD}/g" /opt/lucee/server/lucee-server/context/lucee-server.xml
 sed -i "s/\${MYSQL_HOST}/${MYSQL_HOST}/g" /opt/lucee/server/lucee-server/context/lucee-server.xml
+sed -i "s/\${MYSQL_PORT}/${MYSQL_PORT}/g" /opt/lucee/server/lucee-server/context/lucee-server.xml
 sed -i "s/\${MYSQL_DATABASE}/${MYSQL_DATABASE}/g" /opt/lucee/server/lucee-server/context/lucee-server.xml
 
 # Update Lucee Web Admin Password
