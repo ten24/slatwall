@@ -48,6 +48,8 @@ Notes:
 */
 component  extends="HibachiService" accessors="true" {
 
+	property name="attributeService" type="any";
+
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================
@@ -61,6 +63,22 @@ component  extends="HibachiService" accessors="true" {
 	public any function processForm_addFormQuestion(required any form, required any processObject ){
 
 		arguments.form.addFormQuestion(processObject.getNewFormQuestion());
+
+		//backfill attribute values for already submitted form responses
+		if(!arguments.form.hasErrors() && arguments.form.getFormResponsesCount() > 0){
+			for(var response in arguments.form.getFormResponses()){
+				var value = getAttributeService().newAttributeValue();
+				value.setAttribute(processObject.getNewFormQuestion());
+				value.setFormResponse(response);
+				value.setAttributeValueType("FormResponse");
+				if(!isNull(processObject.getNewFormQuestion().getDefaultValue())){
+					value.setAttributeValue(processObject.getNewFormQuestion().getDefaultValue());
+				} else {
+					value.setAttributeValue("");
+				}
+				this.saveFormResponse(response);
+			}
+		}
 
 		return this.saveForm(arguments.form);
 	}

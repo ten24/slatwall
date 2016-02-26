@@ -58,6 +58,7 @@ Notes:
 		<cfargument required="false" name="numberOfQuestions" />
 		<cfargument required="false" name="currentPage" />
 		<cfargument required="false" name="pageShow" />
+
 		<cfset HQL = "
 			SELECT DISTINCT
 				new map(

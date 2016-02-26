@@ -138,6 +138,9 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 
 	public string function getPropertyTitle(){
+		if(isNull(getAttribute().getAttributeSet())){
+			return getAttribute().getForm().getFormCode() & ': ' & getAttribute().getAttributeName();
+		}
 		return getAttribute().getAttributeSet().getAttributeSetName() & ': ' & getAttribute().getAttributeName();
 	}
 
