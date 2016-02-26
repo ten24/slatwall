@@ -1,0 +1,16 @@
+{
+  "type": "suite",
+  "seleniumVersion": "2",
+  "formatVersion": 1,
+  "scripts": [
+    {
+      "where": "local",
+      "path": "login.json"
+    },
+    {
+      "where": "local",
+      "path": "logout.json"
+    }
+  ],
+  "shareState": false
+}
