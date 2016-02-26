@@ -91,6 +91,7 @@ browserCommand=${slatwall.test.functional.browser}
 	</target>
 
 	<target name="runUnitTests" depends="setupApplicationConfig">
+
 		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/unit" />
@@ -108,8 +109,11 @@ browserCommand=${slatwall.test.functional.browser}
 		  <report format="frames" todir="${slatwall.test.output.html}/unit"/>
 		</junitreport>
 
-		<fail>
-			<condition property="tests.bombed" />
+		<!-- Fail Build if not all unit tests pass -->
+		<fail message="Not All Unit Tests Passed">
+			<condition>
+				<istrue value="${tests.bombed}"/>
+			</condition>
 		</fail>
 	</target>
 
