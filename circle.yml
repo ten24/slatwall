@@ -27,7 +27,7 @@ dependencies:
 test:
   pre:
     # Fire Up Slatwall Containers, Need to do in parallel so that it starts up on all VMs
-    - docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
+    #- docker-compose -f meta/docker/slatwall-ci/docker-compose.yml up -d
 
     # Connect ot SauceLabs for Integration Testing
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
@@ -38,7 +38,7 @@ test:
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    - se-interpreter --parallel=1 meta/tests/integration/setup_config.json
+    #- se-interpreter --parallel=1 meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
     #- se-interpreter --parallel=5 meta/tests/integration/admin_config.json
@@ -62,6 +62,7 @@ deployment:
   travis:
     branch: /travis/
     commands:
-      - git add .
-      - git commit -m "CI Build Passed Committing JS [skip ci]"
+      - git config --global user.email "info@slatwallcommerce.com"
+      - git config --global user.name "Slatwall 'Big Boy' Robot"
+      - git commit -a -m "CI Build Passed Committing JS [skip ci]"
       - git push
