@@ -38,7 +38,7 @@ test:
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    - se-interpreter --parallel=1 meta/tests/integration/setup_config.json
+    #- se-interpreter --parallel=1 meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
     #- se-interpreter --parallel=5 meta/tests/integration/admin_config.json
@@ -65,4 +65,4 @@ deployment:
       - git config --global user.email "info@slatwallcommerce.com"
       - git config --global user.name "Slatwall 'Big Boy' Robot"
       - git commit -a -m "CI Build Passed Committing JS [skip ci]"
-      - git push origin $CIRCLE_SHA1:refs/heads/$CIRCLE_BRANCH
+      - git push origin
