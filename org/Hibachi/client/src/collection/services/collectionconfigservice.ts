@@ -45,7 +45,6 @@ class Filter{
         public logicalOperator?:string,
         public displayPropertyIdentifier?:string,
         public displayValue?:string,
-        public ormtype?:string,
         public pattern?:string
     ){}
 }
@@ -400,13 +399,6 @@ class CollectionConfig {
         } else {
             var join = true;
         }
-        var ormtype = 'string';
-        var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier));
-        var lastProperty=propertyIdentifier.split('.').pop();
-        if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
-            ormtype = lastEntity.metaData[lastProperty].ormtype;
-        }
-
         //create filter group
         var filter = new Filter(
             this.formatPropertyIdentifier(propertyIdentifier, join),
@@ -414,8 +406,7 @@ class CollectionConfig {
             comparisonOperator,
             logicalOperator,
             propertyIdentifier.split('.').pop(), //RB KEY HERE
-            value,
-            ormtype
+            value
         );
 
         this.filterGroups[0].filterGroup.push(filter);
@@ -438,13 +429,6 @@ class CollectionConfig {
             var join = true;
         }
 
-        var ormtype = 'string';
-        var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier));
-        var lastProperty=propertyIdentifier.split('.').pop();
-        if(lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype){
-            ormtype = lastEntity.metaData[lastProperty].ormtype;
-        }
-
         //create filter group
         var filter = new Filter(
             this.formatPropertyIdentifier(propertyIdentifier, join),
@@ -453,7 +437,6 @@ class CollectionConfig {
             logicalOperator,
             propertyIdentifier.split('.').pop(),
             value,
-            ormtype,
             pattern
         );
 

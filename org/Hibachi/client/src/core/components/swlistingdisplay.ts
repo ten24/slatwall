@@ -61,12 +61,14 @@ class SWListingDisplayController{
 
 
     private _timeoutPromise;
+    public selections;
+    private multiselectCount;
+    private isCurrentPageRecordsSelected;
+    private allSelected;
     //@ngInject
     constructor(
         public $scope,
-        public $element,
         public $transclude,
-        public $timeout,
         public $q,
         public $hibachi,
         public utilityService,
@@ -114,7 +116,6 @@ class SWListingDisplayController{
         }
 
         this.setupDefaultCollectionInfo();
-
 
             //if columns doesn't exist then make it
         if(!this.collectionConfig.columns){
@@ -172,7 +173,7 @@ class SWListingDisplayController{
                     }else{
                         this.collectionConfig.loadJson(data.collectionConfig);
                     }
-                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
+                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
                     this.paginator.setPageRecordsInfo(this.collectionData);
                     this.searching = false;
                 });
@@ -239,6 +240,9 @@ class SWListingDisplayController{
 
             //attach observer so we know when a selection occurs
             this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelection',this.collectionObject);
+
+            //attach observer so we know when a pagination change occurs
+            this.observerService.attach(this.paginationPageChange,'swPaginationAction');
         }
         if(this.multiselectable && !this.columns.length){
             //check if it has an active flag and if so then add the active flag
@@ -601,8 +605,27 @@ class SWListingDisplayController{
         return this.orderByIndices[column.propertyIdentifier];
     };
 
-    public updateMultiselectValues = ()=>{
+    public updateMultiselectValues = (res)=>{
         this.multiselectValues = this.selectionService.getSelections('ListingDisplay');
+        if(this.selectionService.isAllSelected('ListingDisplay')){
+            this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount('ListingDisplay');
+        }else{
+            this.multiselectCount = this.selectionService.getSelectionCount('ListingDisplay');
+        }
+        switch (res.action){
+            case 'uncheck':
+                this.isCurrentPageRecordsSelected = false;
+                break;
+            case 'selectAll':
+                this.allSelected = true;
+                this.isCurrentPageRecordsSelected = false;
+                break;
+            case 'clear':
+                this.allSelected = false;
+                this.isCurrentPageRecordsSelected = false;
+                break;
+        }
+
     };
 
 
@@ -645,7 +668,7 @@ class SWListingDisplayController{
                 {
                     "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
                     "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
-                    "comparisonOperator": "in",
+                    "comparisonOperator": (this.allSelected) ? "not in":"in",
                     "value": this.selectionService.getSelections('ListingDisplay').join(),
                     "displayValue": this.selectionService.getSelections('ListingDisplay').join(),
                     "ormtype": "string",
@@ -654,12 +677,36 @@ class SWListingDisplayController{
                 }
             ];
         }
-        /*TODO: change action */
-        $('body').append('<form action="/?slatAction=main.collectionConfigExport" method="post" id="formExport"></form>');
+
+        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
         $('#formExport')
             .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
             .submit()
             .remove();
+    };
+
+    public paginationPageChange=(res)=>{
+        this.isCurrentPageRecordsSelected = false;
+    };
+
+    public selectCurrentPageRecords=()=>{
+        if(!this.collectionData.pageRecords) return;
+
+        for(var i = 0; i < this.collectionData.pageRecords.length; i++){
+            if(this.isCurrentPageRecordsSelected == true){
+                this.selectionService.addSelection('ListingDisplay', this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
+            }else{
+                this.selectionService.removeSelection('ListingDisplay', this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
+            }
+        }
+    };
+
+    public clearSelection=()=>{
+        this.selectionService.clearSelection('ListingDisplay');
+    };
+
+    public selectAll=()=>{
+        this.selectionService.selectAll('ListingDisplay');
     };
 }
 

@@ -3015,48 +3015,98 @@
 	var baseservice_1 = __webpack_require__(17);
 	var SelectionService = (function (_super) {
 	    __extends(SelectionService, _super);
-	    function SelectionService() {
+	    //@ngInject
+	    function SelectionService(observerService) {
 	        var _this = this;
 	        _super.call(this);
+	        this.observerService = observerService;
 	        this._selection = {};
+	        /* add current selectionid to main selection object*/
+	        this.createSelections = function (selectionid) {
+	            _this._selection[selectionid] = {
+	                allSelected: false,
+	                ids: []
+	            };
+	        };
 	        this.radioSelection = function (selectionid, selection) {
-	            _this._selection[selectionid] = [];
-	            _this._selection[selectionid].push(selection);
+	            _this.createSelections(selectionid);
+	            _this._selection[selectionid].ids.push(selection);
+	            _this.observerService.notify('swSelectionToggleSelection', { action: 'check', selectionid: selectionid, selection: selection });
 	        };
 	        this.addSelection = function (selectionid, selection) {
-	            if (angular.isUndefined(_this._selection[selectionid])) {
-	                _this._selection[selectionid] = [];
+	            /*if allSelected flag is true addSelection will remove selection*/
+	            if (_this.isAllSelected(selectionid)) {
+	                var index = _this._selection[selectionid].ids.indexOf(selection);
+	                if (index > -1) {
+	                    _this._selection[selectionid].ids.splice(index, 1);
+	                    _this.observerService.notify('swSelectionToggleSelection', { action: 'check', selectionid: selectionid, selection: selection });
+	                }
 	            }
-	            if (!_this.hasSelection(selectionid, selection)) {
-	                _this._selection[selectionid].push(selection);
+	            else if (!_this.hasSelection(selectionid, selection)) {
+	                _this._selection[selectionid].ids.push(selection);
+	                _this.observerService.notify('swSelectionToggleSelection', { action: 'check', selectionid: selectionid, selection: selection });
 	            }
+	            console.info(_this._selection[selectionid]);
 	        };
 	        this.setSelection = function (selectionid, selections) {
-	            _this._selection[selectionid] = selections;
+	            if (angular.isUndefined(_this._selection[selectionid])) {
+	                _this.createSelections(selectionid);
+	            }
+	            _this._selection[selectionid].ids = selections;
 	        };
 	        this.removeSelection = function (selectionid, selection) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
-	                _this._selection[selectionid] = [];
+	                return;
 	            }
-	            var index = _this._selection[selectionid].indexOf(selection);
-	            if (index > -1) {
-	                _this._selection[selectionid].splice(index, 1);
+	            if (!_this.isAllSelected(selectionid)) {
+	                var index = _this._selection[selectionid].ids.indexOf(selection);
+	                if (index > -1) {
+	                    _this._selection[selectionid].ids.splice(index, 1);
+	                    _this.observerService.notify('swSelectionToggleSelection', { action: 'uncheck', selectionid: selectionid, selection: selection });
+	                }
 	            }
+	            else if (!_this.hasSelection(selectionid, selection)) {
+	                _this._selection[selectionid].ids.push(selection);
+	                _this.observerService.notify('swSelectionToggleSelection', { action: 'uncheck', selectionid: selectionid, selection: selection });
+	            }
+	            console.info(_this._selection[selectionid]);
 	        };
 	        this.hasSelection = function (selectionid, selection) {
 	            if (angular.isUndefined(_this._selection[selectionid])) {
 	                return false;
 	            }
-	            var index = _this._selection[selectionid].indexOf(selection);
-	            if (index > -1) {
-	                return true;
-	            }
+	            return _this._selection[selectionid].ids.indexOf(selection) > -1;
 	        };
 	        this.getSelections = function (selectionid) {
-	            return _this._selection[selectionid];
+	            if (angular.isUndefined(_this._selection[selectionid])) {
+	                _this.createSelections(selectionid);
+	            }
+	            return _this._selection[selectionid].ids;
+	        };
+	        this.getSelectionCount = function (selectionid) {
+	            if (angular.isUndefined(_this._selection[selectionid])) {
+	                _this.createSelections(selectionid);
+	            }
+	            return _this._selection[selectionid].ids.length;
 	        };
 	        this.clearSelection = function (selectionid) {
-	            _this._selection[selectionid] = [];
+	            _this.createSelections(selectionid);
+	            _this.observerService.notify('swSelectionToggleSelection', { action: 'clear' });
+	            console.info(_this._selection[selectionid]);
+	        };
+	        this.selectAll = function (selectionid) {
+	            _this._selection[selectionid] = {
+	                allSelected: true,
+	                ids: []
+	            };
+	            _this.observerService.notify('swSelectionToggleSelection', { action: 'selectAll' });
+	            console.info(_this._selection[selectionid]);
+	        };
+	        this.isAllSelected = function (selectionid) {
+	            if (angular.isUndefined(_this._selection[selectionid])) {
+	                _this.createSelections(selectionid);
+	            }
+	            return _this._selection[selectionid].allSelected;
 	        };
 	    }
 	    return SelectionService;
@@ -5597,12 +5647,10 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWListingDisplayController = (function () {
 	    //@ngInject
-	    function SWListingDisplayController($scope, $element, $transclude, $timeout, $q, $hibachi, utilityService, collectionConfigService, paginationService, selectionService, observerService, rbkeyService) {
+	    function SWListingDisplayController($scope, $transclude, $q, $hibachi, utilityService, collectionConfigService, paginationService, selectionService, observerService, rbkeyService) {
 	        var _this = this;
 	        this.$scope = $scope;
-	        this.$element = $element;
 	        this.$transclude = $transclude;
-	        this.$timeout = $timeout;
 	        this.$q = $q;
 	        this.$hibachi = $hibachi;
 	        this.utilityService = utilityService;
@@ -5761,6 +5809,8 @@
 	                _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-multiselectpropertyidentifier="' + _this.multiselectPropertyIdentifier + '"', ' ');
 	                //attach observer so we know when a selection occurs
 	                _this.observerService.attach(_this.updateMultiselectValues, 'swSelectionToggleSelection', _this.collectionObject);
+	                //attach observer so we know when a pagination change occurs
+	                _this.observerService.attach(_this.paginationPageChange, 'swPaginationAction');
 	            }
 	            if (_this.multiselectable && !_this.columns.length) {
 	                //check if it has an active flag and if so then add the active flag
@@ -6027,8 +6077,27 @@
 	            }
 	            return _this.orderByIndices[column.propertyIdentifier];
 	        };
-	        this.updateMultiselectValues = function () {
+	        this.updateMultiselectValues = function (res) {
 	            _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
+	            if (_this.selectionService.isAllSelected('ListingDisplay')) {
+	                _this.multiselectCount = _this.collectionData.recordsCount - _this.selectionService.getSelectionCount('ListingDisplay');
+	            }
+	            else {
+	                _this.multiselectCount = _this.selectionService.getSelectionCount('ListingDisplay');
+	            }
+	            switch (res.action) {
+	                case 'uncheck':
+	                    _this.isCurrentPageRecordsSelected = false;
+	                    break;
+	                case 'selectAll':
+	                    _this.allSelected = true;
+	                    _this.isCurrentPageRecordsSelected = false;
+	                    break;
+	                case 'clear':
+	                    _this.allSelected = false;
+	                    _this.isCurrentPageRecordsSelected = false;
+	                    break;
+	            }
 	        };
 	        this.getPageRecordKey = function (propertyIdentifier) {
 	            if (propertyIdentifier) {
@@ -6067,7 +6136,7 @@
 	                    {
 	                        "displayPropertyIdentifier": _this.rbkeyService.getRBKey("entity." + exportCollectionConfig.baseEntityName.toLowerCase() + "." + _this.exampleEntity.$$getIDName().toLowerCase()),
 	                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "." + _this.exampleEntity.$$getIDName(),
-	                        "comparisonOperator": "in",
+	                        "comparisonOperator": (_this.allSelected) ? "not in" : "in",
 	                        "value": _this.selectionService.getSelections('ListingDisplay').join(),
 	                        "displayValue": _this.selectionService.getSelections('ListingDisplay').join(),
 	                        "ormtype": "string",
@@ -6076,12 +6145,32 @@
 	                    }
 	                ];
 	            }
-	            /*TODO: change action */
-	            $('body').append('<form action="/?slatAction=main.collectionConfigExport" method="post" id="formExport"></form>');
+	            $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=main.collectionConfigExport" method="post" id="formExport"></form>');
 	            $('#formExport')
 	                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
 	                .submit()
 	                .remove();
+	        };
+	        this.paginationPageChange = function (res) {
+	            _this.isCurrentPageRecordsSelected = false;
+	        };
+	        this.selectCurrentPageRecords = function () {
+	            if (!_this.collectionData.pageRecords)
+	                return;
+	            for (var i = 0; i < _this.collectionData.pageRecords.length; i++) {
+	                if (_this.isCurrentPageRecordsSelected == true) {
+	                    _this.selectionService.addSelection('ListingDisplay', _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
+	                }
+	                else {
+	                    _this.selectionService.removeSelection('ListingDisplay', _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
+	                }
+	            }
+	        };
+	        this.clearSelection = function () {
+	            _this.selectionService.clearSelection('ListingDisplay');
+	        };
+	        this.selectAll = function () {
+	            _this.selectionService.selectAll('ListingDisplay');
 	        };
 	        console.log('here');
 	        console.log(this);
@@ -6263,7 +6352,10 @@
 	        this.addSearchFilter = function () {
 	            if (angular.isUndefined(_this.selectedSearchColumn) || !_this.searchText)
 	                return;
-	            _this.collectionConfig.addLikeFilter(_this.selectedSearchColumn.propertyIdentifier, _this.searchText);
+	            var keywords = _this.searchText.split(" ");
+	            for (var i = 0; i < keywords.length; i++) {
+	                _this.collectionConfig.addLikeFilter(_this.selectedSearchColumn.propertyIdentifier, keywords[i]);
+	            }
 	            _this.searchText = '';
 	            _this.collectionConfig.setKeywords(_this.searchText);
 	            _this.paginator.setCurrentPage(1);
@@ -7073,9 +7165,26 @@
 	                if (!scope.name) {
 	                    scope.name = 'selection';
 	                }
-	                if (selectionService.hasSelection(scope.selectionid, scope.selection)) {
-	                    scope.toggleValue = true;
+	                scope.test = {};
+	                if (selectionService.isAllSelected(scope.selectionid)) {
+	                    scope.test.toggleValue = true;
 	                }
+	                else {
+	                    scope.test.toggleValue = selectionService.hasSelection(scope.selectionid, scope.selection);
+	                }
+	                scope.updateSelectValue = function (res) {
+	                    if (res.action == 'clear') {
+	                        scope.test.toggleValue = false;
+	                    }
+	                    else if (res.action == 'selectAll') {
+	                        scope.test.toggleValue = true;
+	                    }
+	                    else if (res.selection == scope.selection) {
+	                        scope.test.toggleValue = (res.action == 'check');
+	                    }
+	                };
+	                //attach observer so we know when a selection occurs
+	                observerService.attach(scope.updateSelectValue, 'swSelectionToggleSelection');
 	                scope.toggleSelection = function (toggleValue, selectionid, selection) {
 	                    console.log('selected!');
 	                    console.log(toggleValue);
@@ -7092,7 +7201,6 @@
 	                            selectionService.removeSelection(selectionid, selection);
 	                        }
 	                    }
-	                    observerService.notify('swSelectionToggleSelection', { selectionid: selectionid, selection: selection });
 	                };
 	            }
 	        };
@@ -7878,14 +7986,13 @@
 	})();
 	exports.Column = Column;
 	var Filter = (function () {
-	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue, ormtype, pattern) {
+	    function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue, pattern) {
 	        this.propertyIdentifier = propertyIdentifier;
 	        this.value = value;
 	        this.comparisonOperator = comparisonOperator;
 	        this.logicalOperator = logicalOperator;
 	        this.displayPropertyIdentifier = displayPropertyIdentifier;
 	        this.displayValue = displayValue;
-	        this.ormtype = ormtype;
 	        this.pattern = pattern;
 	    }
 	    return Filter;
@@ -8188,15 +8295,9 @@
 	            else {
 	                var join = true;
 	            }
-	            var ormtype = 'string';
-	            var lastEntity = _this.$hibachi.getEntityExample(_this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier));
-	            var lastProperty = propertyIdentifier.split('.').pop();
-	            if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
-	                ormtype = lastEntity.metaData[lastProperty].ormtype;
-	            }
 	            //create filter group
 	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), //RB KEY HERE
-	            value, ormtype);
+	            value);
 	            _this.filterGroups[0].filterGroup.push(filter);
 	            return _this;
 	        };
@@ -8215,14 +8316,8 @@
 	            else {
 	                var join = true;
 	            }
-	            var ormtype = 'string';
-	            var lastEntity = _this.$hibachi.getEntityExample(_this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier));
-	            var lastProperty = propertyIdentifier.split('.').pop();
-	            if (lastEntity.metaData[lastProperty] && lastEntity.metaData[lastProperty].ormtype) {
-	                ormtype = lastEntity.metaData[lastProperty].ormtype;
-	            }
 	            //create filter group
-	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, 'like', logicalOperator, propertyIdentifier.split('.').pop(), value, ormtype, pattern);
+	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, 'like', logicalOperator, propertyIdentifier.split('.').pop(), value, pattern);
 	            _this.filterGroups[0].filterGroup.push(filter);
 	            return _this;
 	        };
@@ -12591,8 +12686,9 @@
 	/*collection service is used to maintain the state of the ui*/
 	var Pagination = (function () {
 	    //@ngInject
-	    function Pagination(uuid) {
+	    function Pagination(observerService, uuid) {
 	        var _this = this;
+	        this.observerService = observerService;
 	        this.uuid = uuid;
 	        this.pageShow = 10;
 	        this.currentPage = 1;
@@ -12615,7 +12711,6 @@
 	        this.pageShowOptionChanged = function (pageShowOption) {
 	            _this.setPageShow(pageShowOption.value);
 	            _this.setCurrentPage(1);
-	            _this.getCollection();
 	        };
 	        this.getTotalPages = function () {
 	            return _this.totalPages;
@@ -12659,6 +12754,7 @@
 	        this.setCurrentPage = function (currentPage) {
 	            _this.currentPage = currentPage;
 	            _this.getCollection();
+	            _this.observerService.notify('swPaginationAction', { action: 'pageChange', currentPage: currentPage });
 	        };
 	        this.previousPage = function () {
 	            if (_this.getCurrentPage() == 1)
@@ -12667,8 +12763,7 @@
 	        };
 	        this.nextPage = function () {
 	            if (_this.getCurrentPage() < _this.getTotalPages()) {
-	                _this.currentPage = _this.getCurrentPage() + 1;
-	                _this.getCollection();
+	                _this.setCurrentPage(_this.getCurrentPage() + 1);
 	            }
 	        };
 	        this.hasPrevious = function () {
@@ -12740,13 +12835,14 @@
 	exports.Pagination = Pagination;
 	var PaginationService = (function () {
 	    //@ngInject
-	    function PaginationService(utilityService) {
+	    function PaginationService(utilityService, observerService) {
 	        var _this = this;
 	        this.utilityService = utilityService;
+	        this.observerService = observerService;
 	        this.paginations = {};
 	        this.createPagination = function () {
 	            var uuid = _this.utilityService.createID(10);
-	            _this.paginations[uuid] = new Pagination(uuid);
+	            _this.paginations[uuid] = new Pagination(_this.observerService, uuid);
 	            return _this.paginations[uuid];
 	        };
 	        this.getPagination = function (uuid) {
@@ -12772,6 +12868,7 @@
 	var SWPaginationBarController = (function () {
 	    //@ngInject
 	    function SWPaginationBarController(paginationService) {
+	        this.paginationService = paginationService;
 	        if (angular.isUndefined(this.paginator)) {
 	            this.paginator = paginationService.createPagination();
 	        }
@@ -12789,8 +12886,7 @@
 	        };
 	        this.controller = SWPaginationBarController;
 	        this.controllerAs = "swPaginationBar";
-	        this.link = function (scope, element, attrs) {
-	        };
+	        this.link = function (scope, element, attrs) { };
 	        this.templateUrl = hibachiPathBuilder.buildPartialsPath(partialsPath) + 'paginationbar.html';
 	    }
 	    SWPaginationBar.Factory = function () {
@@ -12801,22 +12897,6 @@
 	    return SWPaginationBar;
 	})();
 	exports.SWPaginationBar = SWPaginationBar;
-	//class SWPaginationBarFactory{
-	//    public static getFactoryFor<T extends SWPaginationBar>(classType:Function):ng.IDirectiveFactory {
-	//        var factory = (...args:any[]):T=>{
-	//            var directive = <any>classType;
-	//            return new directive(args);
-	//        }
-	//
-	//        factory.$inject = classType.$inject;
-	//        return factory;
-	//        // var directive: ng.IDirectiveFactory =
-	//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService);
-	//        // directive.$inject = ['$log','$timeout','partialsPath','paginationService'];
-	//        // return directive;
-	//    }
-	//}
-	//angular.module('hibachi.pagination').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
 
 
 /***/ },

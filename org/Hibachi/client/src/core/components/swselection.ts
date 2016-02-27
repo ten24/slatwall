@@ -47,9 +47,28 @@ class SWSelection{
                 if(!scope.name){
                     scope.name = 'selection';    
                 }
-                if(selectionService.hasSelection(scope.selectionid,scope.selection)){
-                    scope.toggleValue = true;    
+                scope.test = {};
+
+                if(selectionService.isAllSelected(scope.selectionid)){
+                    scope.test.toggleValue = true;
+                }else{
+                    scope.test.toggleValue = selectionService.hasSelection(scope.selectionid,scope.selection);
                 }
+
+
+                scope.updateSelectValue = function(res){
+                    if(res.action == 'clear'){
+                        scope.test.toggleValue = false;
+                    }else if(res.action == 'selectAll'){
+                        scope.test.toggleValue = true;
+                    }else if(res.selection== scope.selection){
+                        scope.test.toggleValue = (res.action == 'check');
+                    }
+
+                };
+
+                //attach observer so we know when a selection occurs
+                observerService.attach(scope.updateSelectValue,'swSelectionToggleSelection');
                 
 				scope.toggleSelection = function(toggleValue,selectionid,selection){
                     console.log('selected!');
@@ -65,7 +84,6 @@ class SWSelection{
                             selectionService.removeSelection(selectionid,selection);
                         }
                     }
-                    observerService.notify('swSelectionToggleSelection',{selectionid,selection});
                 }
 			}
 		};

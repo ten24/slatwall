@@ -675,7 +675,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}//<--end function
 
 	public void function collectionConfigExport(required struct data) {
-		if(!structKeyExists(arguments.data, 'collectionConfig')) abort;
+		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
 
 		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
 
@@ -683,18 +683,16 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var exportableColumns = [];
 		for(var column in arguments.data.collectionConfig.columns){
-			if(StructKeyExists(column, "isExportable") && column.isExportable){
+			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
 				ArrayAppend(exportableColumns, column);
 			}
 		}
 		arguments.data.collectionConfig.columns = exportableColumns;
-		arguments.data.collectionConfig.baseEntityName = getProperlyCasedFullEntityName(arguments.data.collectionConfig.baseEntityName);
-
+		arguments.data.collectionConfig["allRecords"] = true;
 		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
-
-		var collectionData = collectionEntity.getRecords(forExport=true);
+		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
 		var headers = StructKeyList(collectionData[1]);
-		getService('hibachiService').export( collectionData, headers, headers, "CampaignList", "csv" );
+		getService('hibachiService').export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
 
 	}
 

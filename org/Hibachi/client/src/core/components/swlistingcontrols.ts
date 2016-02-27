@@ -81,10 +81,15 @@ class SWListingControlsController {
 
     private addSearchFilter=()=>{
         if(angular.isUndefined(this.selectedSearchColumn) || !this.searchText) return;
-        this.collectionConfig.addLikeFilter(
-            this.selectedSearchColumn.propertyIdentifier,
-            this.searchText
-        );
+
+        var keywords = this.searchText.split(" ");
+        for(var i = 0; i < keywords.length; i++){
+            this.collectionConfig.addLikeFilter(
+                this.selectedSearchColumn.propertyIdentifier,
+                keywords[i]
+            );
+        }
+
         this.searchText = '';
         this.collectionConfig.setKeywords(this.searchText);
         this.paginator.setCurrentPage(1);

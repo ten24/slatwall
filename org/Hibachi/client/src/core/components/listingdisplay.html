@@ -25,8 +25,16 @@
             <div class="s-detail-notifications s-detail-hidden-content">
                 <div class="row">
                     <div class="col-sm-8 s-message">
-                        <!--<span>All <b>50</b> items on this page are selected.</span>-->
-                        <!--<a href="##">Select all <b>5,720</b> items</span></a>-->
+                        <span data-ng-if="swListingDisplay.isCurrentPageRecordsSelected && !swListingDisplay.allSelected">
+                            <span>All <b data-ng-bind="swListingDisplay.collectionData.pageRecords.length"></b> items on this page are selected.</span>
+                            <a href data-ng-click="swListingDisplay.selectAll()">Select all <b data-ng-bind="swListingDisplay.paginator.getRecordsCount()"></b> items</span></a>
+                        </span>
+
+                        <span data-ng-if="(!swListingDisplay.isCurrentPageRecordsSelected ||swListingDisplay.isCurrentPageRecordsSelected  && swListingDisplay.allSelected)&& swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
+                            <span><b data-ng-bind="swListingDisplay.multiselectCount"></b> items are selected.</span>
+                            <a href data-ng-click="swListingDisplay.clearSelection()">Clear selections?</a>
+                        </span>
+
                     </div>
                     <div class="col-sm-4" style="text-align:right;">
                         <div class="btn-toolbar" style="margin:0px;">
@@ -58,9 +66,9 @@
                                     </li>
                                     <li>
                                         <a href
-                                           data-ng-click="swListingDisplay.exportCurrentList()"
-                                           data-ng-if="swListingDisplay.multiselectable">
-                                            Export Selected Rows
+                                           data-ng-click="swListingDisplay.exportCurrentList(true)"
+                                           data-ng-if="swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
+                                            Export Selected Rows ({{swListingDisplay.multiselectCount}})
                                         </a>
                                     </li>
                                 </ul>
@@ -80,7 +88,7 @@
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}" data-ng-value="swListingDisplay.multiselectValues.toString()" />
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'disabled':!swListingDisplay.edit}">
                                 <div class="s-checkbox">
-                                    <input type="checkbox" id="exampleID" data-ng-model="swListingDisplay.isAllSelected" data-ng-click="swListingDisplay.selectAll()">
+                                    <input type="checkbox" id="exampleID" data-ng-model="swListingDisplay.isCurrentPageRecordsSelected" data-ng-click="swListingDisplay.selectCurrentPageRecords()">
                                     <label for="exampleID"></label>
                                 </div>
                             </th>
