@@ -63,6 +63,6 @@ deployment:
     branch: /travis/
     commands:
       - git config --global user.email "info@slatwallcommerce.com"
-      - git config --global user.name "Slatwall 'Big Boy' Robot"
+      - git config --global user.name "Slatwall Robot 'Big Boy'"
       - git commit -a -m "CI Build Passed Committing JS [skip ci]"
-      - git push origin
+      - git push origin current
