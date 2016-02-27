@@ -59,8 +59,8 @@ test:
     #    parallel: true
 
 deployment:
-  travis:
-    branch: /travis/
+  jsbuild:
+    branch: [develop, hotfix]
     commands:
       - git config --global user.email "info@slatwallcommerce.com"
       - git config --global user.name "Slatwall Robot 'Big Boy'"
