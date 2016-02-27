@@ -6,6 +6,10 @@ machine:
 
 dependencies:
   override:
+    # Setup git user for deployment
+    - git config --global user.email "info@slatwallcommerce.com"
+    - git config --global user.name "Slatwall Robot 'Big Boy'"
+
     # Install webpack globally
     - npm install -g webpack
 
@@ -60,6 +64,6 @@ test:
 
 deployment:
   jsbuild:
-    branch: [develop, hotfix]
+    branch: [travis, develop, hotfix]
     commands:
       - meta/ci/push_built_files.sh

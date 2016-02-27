@@ -2,13 +2,12 @@
 
 if git diff-index --quiet HEAD --; then
     # no changes
-    echo hello
+    echo No Changes To Push
+
 else
 
     # changes
-    echo world
+    git commit -a -m "CI build passed, commit of automatically built files - $CIRCLE_BUILD_URL [skip ci]"
+    git push origin current
+
 fi
-#git config --global user.email "info@slatwallcommerce.com"
-#git config --global user.name "Slatwall Robot 'Big Boy'"
-#git commit -a -m "CI build passed, commit of auto build files - $CIRCLE_BUILD_URL [skip ci]"
-#git push origin current
