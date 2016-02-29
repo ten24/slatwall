@@ -152,9 +152,9 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
             if(lower == 0 && upper == 0) {
                 variables.shipmentQuantityRange = rbKey('define.any');
             } else {
-                variables.shipmentQuantityRange = formatValue(lower, "weight") & " - ";
+                variables.shipmentQuantityRange = lower & " - ";
                 if(upper gt 0) {
-                    variables.shipmentQuantityRange &= formatValue(upper, "weight");
+                    variables.shipmentQuantityRange &= upper;
                 } else {
                     variables.shipmentQuantityRange &= rbKey('define.any');
                 }
