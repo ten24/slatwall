@@ -523,7 +523,7 @@ component extends="HibachiService"  accessors="true" output="false"
     }
     
     /** adds a billing address to an order. */
-    public void function addBillingAddress(required data, required slatwall){
+    public void function addBillingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="1"; 
         //if we have that data and don't have any suggestions to make, than try to populate the address
             billingAddress = getService('AddressService').newAddress();    
@@ -533,7 +533,7 @@ component extends="HibachiService"  accessors="true" output="false"
             
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
-                var order = slatwall.cart();
+                var order = getHibachiScope().cart();
                 order.setBillingAddress(savedAddress);
                 
                 getOrderService().saveOrder(order);
@@ -901,7 +901,7 @@ component extends="HibachiService"  accessors="true" output="false"
         
         if (!data.newOrderPayment.saveShippingAsBilling){
             //use this billing information
-            this.addBillingAddress(data.newOrderPayment.billingAddress, getHibachiScope(), "billing");
+            this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
         }
         
         var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
