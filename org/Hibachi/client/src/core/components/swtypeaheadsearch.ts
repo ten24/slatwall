@@ -10,102 +10,110 @@ class SWTypeaheadSearchController {
 	public propertiesToDisplay:string;
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
-	public placeholderText:string;
 	public searchText:string;
 	public results;
 	public addFunction;
     public validateRequired:boolean; 
     public displayList = [];
 	public addButtonFunction;
+    public viewFunction;
 	public hideSearch:boolean;
-	public clickOutsideArguments;
     public resultsPromise;
-    public resultsDeferred; 
-    
-	private _timeoutPromise; 
-	private entityList;
-	private typeaheadCollectionConfig;
-	private typeaheadCollectionConfigs;
-    
+    public resultsDeferred;
+    public showAddButton;
+
+	private _timeoutPromise;
+    public showViewButton;
+
     // @ngInject
 	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
-        
+
         if(angular.isUndefined(this.searchText)){
             this.searchText = "";
         }
-        
+
         if(angular.isUndefined(this.results)){
-            this.results = []; 
-        }
-        
-        if(angular.isUndefined(this.validateRequired)){
-            this.validateRequired = false; 
-        }
-        if(angular.isUndefined(this.hideSearch)){ 
-            this.hideSearch = true; 
+            this.results = [];
         }
 
-        if(angular.isDefined(this.collectionConfig)){
-            this.typeaheadCollectionConfig = this.collectionConfig; 
-        } else if (angular.isDefined(this.entity)){ 
-            this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-        } else { 
-            throw("You did not pass the correct collection config data to swTypeaheadSearch");
+        if(angular.isUndefined(this.validateRequired)){
+            this.validateRequired = false;
         }
-        
-		if(angular.isDefined(this.propertiesToDisplay)){
-			this.displayList = this.propertiesToDisplay.split(",");
-		} 
+        if(angular.isUndefined(this.hideSearch)){
+            this.hideSearch = true;
+        }
+
+        if(angular.isUndefined(this.collectionConfig)){
+            if(angular.isDefined(this.entity)){
+                this.collectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+            } else {
+                throw("You did not pass the correct collection config data to swTypeaheadSearch");
+            }
+        }
+
+        if(angular.isDefined(this.addButtonFunction)){
+            this.showAddButton = true;
+        }
+
+        if(angular.isDefined(this.viewFunction)){
+            this.showViewButton = true;
+        }
 
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
         //populate the displayList
-        this.$transclude = this.$transclude;
         this.$transclude($scope,()=>{});
-        
-        this.typeaheadCollectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
 
-		if(angular.isDefined(this.allRecords)){
-			this.typeaheadCollectionConfig.setAllRecords(this.allRecords);
+        if(angular.isDefined(this.propertiesToDisplay)){
+            this.displayList = this.propertiesToDisplay.split(",");
+        }
+
+        this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
+
+        if(angular.isDefined(this.allRecords)){
+			this.collectionConfig.setAllRecords(this.allRecords);
 		} else {
-			this.typeaheadCollectionConfig.setAllRecords(true);
+			this.collectionConfig.setAllRecords(true);
 		}
 	}
-    
+
     public clearSearch = () =>{
         this.searchText = "";
-        this.hideSearch = true; 
-    }
-    
-    public toggleOptions = () =>{
-        if(this.hideSearch && !this.searchText.length){
-            this.search(this.searchText); 
-        } else { 
-            this.hideSearch = !this.hideSearch; 
+        this.hideSearch = true;
+        if(angular.isDefined(this.addFunction)){
+            this.addFunction()(undefined);
         }
-    }
+    };
+
+    public toggleOptions = () =>{
+        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
+            this.search(this.searchText);
+        } else {
+            this.hideSearch = !this.hideSearch;
+        }
+    };
 
 	public search = (search:string)=>{
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
 		}
 
-        this.typeaheadCollectionConfig.setKeywords(search);
+        this.collectionConfig.setKeywords(search);
 
         if(angular.isDefined(this.filterGroupsConfig)){
             //allows for filtering on search text
             var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search);
             filterConfig = filterConfig.trim();
-            this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig));
+            this.collectionConfig.loadFilterGroups(JSON.parse(filterConfig));
         }
-         
+
         this._timeoutPromise = this.$timeout(()=>{
 
-            var promise = this.typeaheadCollectionConfig.getEntity();
+            var promise = this.collectionConfig.getEntity();
 
             promise.then( (response) =>{
                 if(angular.isDefined(this.allRecords) && this.allRecords == false){
@@ -118,7 +126,7 @@ class SWTypeaheadSearchController {
                 this.hideSearch = (this.results.length == 0);
             });
         }, 500);
-	}
+	};
 
 	public addItem = (item)=>{
 
@@ -129,22 +137,26 @@ class SWTypeaheadSearchController {
 		if(angular.isDefined(this.displayList)){
 			this.searchText = item[this.displayList[0]];
 		}
-        
+
 		if(angular.isDefined(this.addFunction)){
 			this.addFunction()(item);
 		}
-	}
+	};
 
 	public addButtonItem = ()=>{
 
 		if(!this.hideSearch){
 			this.hideSearch = true;
 		}
-        
+
 		if(angular.isDefined(this.addButtonFunction)){
 			this.addButtonFunction()(this.searchText);
 		}
-	}
+	};
+
+    public viewButtonClick = () =>{
+        this.viewFunction()();
+    };
 
 	public closeThis = (clickOutsideArgs) =>{
 
@@ -162,12 +174,10 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 
-	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-			'hibachiPathBuilder'];
 	public templateUrl;
     public transclude=true; 
 	public restrict = "EA";
-	public scope = {}
+	public scope = {};
 
 	public bindToController = {
         collectionConfig:"=?",
@@ -180,13 +190,16 @@ class SWTypeaheadSearch implements ng.IDirective{
 		results:"=?",
 		addFunction:"&?",
 		addButtonFunction:"&?",
+        viewFunction:"&?",
         validateRequired:"=?",
         clickOutsideArguments:"=?",
-		hideSearch:"=?"
-	}
+		hideSearch:"=?",
+        disabled:"=?"
+	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
 
+    // @ngInject
 	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
@@ -202,9 +215,7 @@ class SWTypeaheadSearch implements ng.IDirective{
         scope.swTypeaheadSearch.resultsPromise.then(()=>{
             target.append(this.$compile(listItemTemplate)(scope));
         });
-	}
-    
- 
+	};
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
