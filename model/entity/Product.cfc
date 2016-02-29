@@ -707,14 +707,20 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			var sl = getService("skuService").getSkuSmartList();
 			sl.addFilter('product.productID', getProductID());
-			sl.addSelect('imageFile', 'imageFile');
 			sl.setSelectDistinctFlag( true );
-
 			var records = sl.getRecords();
 
 			for(var record in records) {
-				if(structKeyExists(record, "imageFile")) {
-					arrayAppend(variables.defaultProductImageFiles, record["imageFile"]);
+				if(!isNull(record.getImageFile())) {
+					arrayIndex = ArrayFind(variables.defaultProductImageFiles, function(struct){ 
+						return struct.ImageFile == record.getImageFile(); 
+					});
+					if(arrayIndex == 0){
+						var imageFileStruct = {};
+						imageFileStruct['imageFile'] = record.getImageFile();
+						imageFileStruct['skuDefinition'] = record.getSkuDefinition();
+						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
+					}			
 				}
 			}
 		}
@@ -724,8 +730,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public numeric function getDefaultProductImageFilesCount() {
 		if(!structKeyExists(variables,"defaultProductImageFilesCount")){
 			variables.defaultProductImageFilesCount = 0;
-			for(var imageFile in this.getDefaultProductImageFiles()){
-				if(fileExists(expandPath(this.getHibachiScope().getBaseImageURL() & "/product/default/#imageFile#"))){
+			for(var imageFileStruct in this.getDefaultProductImageFiles()){
+				if(fileExists(expandPath(this.getHibachiScope().getBaseImageURL() & "/product/default/#imageFileStruct['imageFile']#"))){
 					variables.defaultProductImageFilesCount++;
 				}
 			}
