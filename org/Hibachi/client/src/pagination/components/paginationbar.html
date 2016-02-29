@@ -13,7 +13,7 @@
 		</div>
 	</div>
 	
-	<div class="col-xs-8 s-table-footer-right" ng-if="swPaginationBar.paginator.recordsCount && swPaginationBar.paginator.recordsCount > swPaginationBar.paginator.pageShow">
+	<div class="col-xs-8 s-table-footer-right" ng-if="swPaginationBar.paginator.recordsCount">
 		<ul class="list-inline list-unstyled">
 		    <li>
 		        <form class="form-horizontal">
@@ -30,7 +30,7 @@
 		            </div>
 		        </form>
 		    </li>
-		    <li>
+		    <li ng-if="swPaginationBar.paginator.recordsCount > swPaginationBar.paginator.pageShow">
 		        <ul class="pagination pagination-sm" ng-show="swPaginationBar.paginator.pageShowOptions.selectedPageShowOption.value !== 'Auto'">
 		            <li ng-click="swPaginationBar.paginator.previousPage()" ng-class="{disabled:swPaginationBar.paginator.hasPrevious()}">
 		                <a>&laquo;</a>
