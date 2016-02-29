@@ -52,6 +52,32 @@ component  extends="HibachiService" accessors="true" {
 
 	// ===================== START: Logical Methods ===========================
 
+	//Utilized by HibachiControllerREST to supply usefully shaped form response data
+	public array function transformFormResponseData(required any rawData){
+		var transformedData = [];
+
+		var currentFormResponseID = "";
+		var responseStruct = {};
+
+    	for(var row in arguments.rawData){
+			if (currentFormResponseID != row["formResponseID"]){
+
+				if(currentFormResponseID != ""){
+					arrayAppend(transformedData, responseStruct);
+				}
+
+				currentFormResponseID = row["formResponseID"];
+				responseStruct = {};
+				responseStruct["formResponseID"] = row["formResponseID"];
+			}
+			responseStruct[row["questionID"]] = row["response"];
+    	}
+
+		arrayAppend(transformedData, responseStruct);
+
+		return transformedData;
+    }
+
 	// =====================  END: Logical Methods ============================
 
 	// ===================== START: DAO Passthrough ===========================

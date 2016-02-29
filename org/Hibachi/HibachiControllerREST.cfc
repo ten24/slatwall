@@ -33,6 +33,7 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
     this.publicMethods=listAppend(this.publicMethods, 'getFormResponses');
+    this.publicMethods=listAppend(this.publicMethods, 'exportFormResponses');
 
     //  this.secureMethods='';
     //  this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -504,6 +505,41 @@ component output="false" accessors="true" extends="HibachiController" {
         return model;
     }
 
+    public void function exportFormResponses(required struct rc){
+		var formQuestions = getDAO('FormDAO').getFormQuestionColumnHeaderData(arguments.rc.formID);
+		var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(arguments.rc.formID);
+		var exportList = "";
+		for(var question in formQuestions){
+			exportList = listAppend(exportList, question["question"]);
+		}
+		var transformedData = getService("FormService").transformFormResponseData(untransformedData);
+
+		for(var row in transformedData){
+			for(var question in formQuestions){
+				if(!isNull(row[question["questionID"]]) && !isNull(question["questionID"])){
+					exportList = listAppend(exportList, row[question["questionID"]]);
+				} else {
+					exportList = listAppend(exportList, " ");
+				}
+			}
+		}
+
+		var fileNameWithExt = "formResponse.csv";
+
+		if(structKeyExists(application,"tempDir")){
+			var filePath = application.tempDir & "/" & fileNameWithExt;
+		} else {
+			var filePath = GetTempDirectory() & fileNameWithExt;
+		}
+
+		fileWrite(filePath,exportList);
+
+		getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/csv",true);
+
+    }
+
+
+
     public void function getFormResponses(required struct rc){
 
 		var formToFetch = getService('FormService').getForm(arguments.rc.formID);
@@ -511,28 +547,9 @@ component output="false" accessors="true" extends="HibachiController" {
 		var numberOfQuestions = arrayLen(formQuestions);
 
     	var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(arguments.rc.formID, numberOfQuestions, arguments.rc.currentPage, arguments.rc.pageShow);
-		var transformedData = [];
-
-		var currentFormResponseID = "";
-
-    	for(var row in untransformedData){
-			if (currentFormResponseID != row["formResponseID"]){
-
-				if(currentFormResponseID != ""){
-					arrayAppend(transformedData, responseStruct);
-				}
-
-				currentFormResponseID = row["formResponseID"];
-				var responseStruct = {};
-				responseStruct["formResponseID"] = row["formResponseID"];
-			}
-			responseStruct[row["questionID"]] = row["response"];
-    	}
-
-		arrayAppend(transformedData, responseStruct);
 
 		arguments.rc.apiResponse.content['columnRecords'] = formQuestions;
-		arguments.rc.apiResponse.content['pageRecords'] = transformedData;
+		arguments.rc.apiResponse.content['pageRecords'] = getService("FormService").transformFormResponseData(untransformedData);
 
 		//pagination properties
 		arguments.rc.apiResponse.content['recordsCount'] = formToFetch.getFormResponsesCount();

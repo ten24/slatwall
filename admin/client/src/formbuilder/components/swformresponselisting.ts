@@ -28,6 +28,17 @@ class SWFormResponseListingController {
         this.updateFormResponses(); 
     }
     
+    export = () => {
+        $('body').append('<form action="' 
+              + this.$hibachi.getUrlWithActionPrefix() 
+              + 'api:main.exportformresponses&formID=' + this.formId  
+              + '" method="post" id="formExport"></form>');
+              
+        $('#formExport')
+            .submit()
+            .remove();
+    }
+    
     updateFormResponses = () => {
         var formResponsesRequestUrl = this.$hibachi.getUrlWithActionPrefix() + "api:main.getformresponses&formID=" + this.formId;
    
