@@ -88,6 +88,7 @@ class CollectionConfig {
         private rbkeyService:any,
         private $hibachi:any,
         private utilityService,
+        public  observerService,
         public  baseEntityName?:string,
         public  baseEntityAlias?:string,
         public columns?:Column[],
@@ -122,7 +123,7 @@ class CollectionConfig {
     };
 
     public newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string):CollectionConfig=>{
-        return new CollectionConfig(this.rbkeyService, this.$hibachi, this.utilityService, baseEntityName, baseEntityAlias);
+        return new CollectionConfig(this.rbkeyService, this.$hibachi, this.utilityService, this.observerService, baseEntityName, baseEntityAlias);
     };
 
     public loadJson= (jsonCollection):any =>{
@@ -617,7 +618,14 @@ class CollectionConfig {
             this.validateFilter(filter.filterGroup,filter.filterGroup);
         }else{
             if((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)){
-                currentGroup.splice(currentGroup.indexOf(filter), 1);
+                var index = currentGroup.indexOf(filter);
+                if(index > -1) {
+                    this.observerService.notify('filterItemAction', {
+                        action: 'remove',
+                        filterItemIndex: index
+                    });
+                    currentGroup.splice(index, 1);
+                }
             }
         }
     };

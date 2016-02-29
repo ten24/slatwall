@@ -8008,7 +8008,7 @@
 	    .controller('collections', collections_1.CollectionController)
 	    .controller('confirmationController', confirmationcontroller_1.ConfirmationController)
 	    .controller('createCollection', createcollection_1.CreateCollection)
-	    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', function (rbkeyService, $hibachi, utilityService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService); }])
+	    .factory('collectionConfigService', ['rbkeyService', '$hibachi', 'utilityService', 'observerService', function (rbkeyService, $hibachi, utilityService, observerService) { return new collectionconfigservice_1.CollectionConfig(rbkeyService, $hibachi, utilityService, observerService); }])
 	    .service('collectionService', collectionservice_1.CollectionService)
 	    .directive('swCollection', swcollection_1.SWCollection.Factory())
 	    .directive('swAddFilterButtons', swaddfilterbuttons_1.SWAddFilterButtons.Factory())
@@ -8103,7 +8103,7 @@
 	exports.OrderBy = OrderBy;
 	var CollectionConfig = (function () {
 	    // @ngInject
-	    function CollectionConfig(rbkeyService, $hibachi, utilityService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, isDistinct) {
+	    function CollectionConfig(rbkeyService, $hibachi, utilityService, observerService, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, groupBys, id, currentPage, pageShow, keywords, allRecords, isDistinct) {
 	        var _this = this;
 	        if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
 	        if (currentPage === void 0) { currentPage = 1; }
@@ -8114,6 +8114,7 @@
 	        this.rbkeyService = rbkeyService;
 	        this.$hibachi = $hibachi;
 	        this.utilityService = utilityService;
+	        this.observerService = observerService;
 	        this.baseEntityName = baseEntityName;
 	        this.baseEntityAlias = baseEntityAlias;
 	        this.columns = columns;
@@ -8132,7 +8133,7 @@
 	            return _this;
 	        };
 	        this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
-	            return new CollectionConfig(_this.rbkeyService, _this.$hibachi, _this.utilityService, baseEntityName, baseEntityAlias);
+	            return new CollectionConfig(_this.rbkeyService, _this.$hibachi, _this.utilityService, _this.observerService, baseEntityName, baseEntityAlias);
 	        };
 	        this.loadJson = function (jsonCollection) {
 	            //if json then make a javascript object else use the javascript object
@@ -8546,7 +8547,14 @@
 	            }
 	            else {
 	                if ((!filter.comparisonOperator || !filter.comparisonOperator.length) && (!filter.propertyIdentifier || !filter.propertyIdentifier.length)) {
-	                    currentGroup.splice(currentGroup.indexOf(filter), 1);
+	                    var index = currentGroup.indexOf(filter);
+	                    if (index > -1) {
+	                        _this.observerService.notify('filterItemAction', {
+	                            action: 'remove',
+	                            filterItemIndex: index
+	                        });
+	                        currentGroup.splice(index, 1);
+	                    }
 	                }
 	            }
 	        };
