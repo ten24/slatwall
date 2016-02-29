@@ -462,7 +462,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
             totalShippingQuantity = totalShippingQuantity + orderItem.getQuantity();
         }
 
-        return totalShippingWeight;
+        return totalShippingQuantity;
     }
 
 	// ============  END:  Non-Persistent Property Methods =================
