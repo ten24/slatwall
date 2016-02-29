@@ -510,7 +510,7 @@ class CollectionConfig {
         this.orderBy.push(orderBy);
     };
 
-    public toggleOrderBy = (formattedPropertyIdentifier:string) => {
+    public toggleOrderBy = (formattedPropertyIdentifier:string, singleColumn:boolean=false) => {
         if(!this.orderBy){
             this.orderBy = [];
         }
@@ -526,7 +526,17 @@ class CollectionConfig {
                 break;
             }
         }
+
         if(!found){
+            if(singleColumn){
+                this.orderBy = [];
+                for(var i =  0; i < this.columns.length; i++){
+                    if(this.columns[i]["sorting"] && this.columns[i]["sorting"]["active"]){
+                        this.columns[i]["sorting"]["active"] = false;
+                        this.columns[i]["sorting"]["sortOrder"] = 'asc';
+                    }
+                }
+            }
             this.addOrderBy(formattedPropertyIdentifier + '|DESC', false);
         }
     };

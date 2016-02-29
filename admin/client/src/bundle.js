@@ -5765,7 +5765,9 @@
 	            if (angular.isString(_this.showTopPagination)) {
 	                _this.showTopPagination = (_this.showTopPagination.toLowerCase() === 'true');
 	            }
-	            ;
+	            if (angular.isUndefined(_this.name)) {
+	                _this.name = 'ListingDisplay';
+	            }
 	            _this.paginator = _this.paginationService.createPagination();
 	            _this.hasCollectionPromise = false;
 	            if (angular.isUndefined(_this.getChildCount)) {
@@ -5943,13 +5945,13 @@
 	            if (_this.multiselectIdPaths && _this.multiselectIdPaths.length) {
 	                angular.forEach(_this.multiselectIdPaths.split(','), function (value) {
 	                    var id = _this.utilityService.listLast(value, '/');
-	                    _this.selectionService.addSelection('ListingDisplay', id);
+	                    _this.selectionService.addSelection(_this.name, id);
 	                });
 	            }
 	            if (_this.multiselectValues && _this.multiselectValues.length) {
 	                //select all owned ids
 	                angular.forEach(_this.multiselectValues.split(','), function (value) {
-	                    _this.selectionService.addSelection('ListingDisplay', value);
+	                    _this.selectionService.addSelection(_this.name, value);
 	                });
 	            }
 	            //set defaults if value is not specified
@@ -6126,42 +6128,42 @@
 	            }
 	        };
 	        this.toggleOrderBy = function (column) {
-	            _this.collectionConfig.toggleOrderBy(column.propertyIdentifier);
+	            _this.collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
 	            _this.getCollection();
 	        };
 	        this.columnOrderBy = function (column) {
-	            var found = false;
+	            var isfound = false;
 	            angular.forEach(_this.collectionConfig.orderBy, function (orderBy, index) {
 	                if (column.propertyIdentifier == orderBy.propertyIdentifier) {
-	                    found = true;
+	                    isfound = true;
 	                    _this.orderByStates[column.propertyIdentifier] = orderBy.direction;
 	                }
 	            });
-	            if (!found) {
+	            if (!isfound) {
 	                _this.orderByStates[column.propertyIdentifier] = '';
 	            }
 	            return _this.orderByStates[column.propertyIdentifier];
 	        };
 	        this.columnOrderByIndex = function (column) {
-	            var found = false;
+	            var isfound = false;
 	            angular.forEach(_this.collectionConfig.orderBy, function (orderBy, index) {
 	                if (column.propertyIdentifier == orderBy.propertyIdentifier) {
-	                    found = true;
+	                    isfound = true;
 	                    _this.orderByIndices[column.propertyIdentifier] = index + 1;
 	                }
 	            });
-	            if (!found) {
+	            if (!isfound) {
 	                _this.orderByIndices[column.propertyIdentifier] = '';
 	            }
 	            return _this.orderByIndices[column.propertyIdentifier];
 	        };
 	        this.updateMultiselectValues = function (res) {
-	            _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
-	            if (_this.selectionService.isAllSelected('ListingDisplay')) {
-	                _this.multiselectCount = _this.collectionData.recordsCount - _this.selectionService.getSelectionCount('ListingDisplay');
+	            _this.multiselectValues = _this.selectionService.getSelections(_this.name);
+	            if (_this.selectionService.isAllSelected(_this.name)) {
+	                _this.multiselectCount = _this.collectionData.recordsCount - _this.selectionService.getSelectionCount(_this.name);
 	            }
 	            else {
-	                _this.multiselectCount = _this.selectionService.getSelectionCount('ListingDisplay');
+	                _this.multiselectCount = _this.selectionService.getSelectionCount(_this.name);
 	            }
 	            switch (res.action) {
 	                case 'uncheck':
@@ -6208,15 +6210,15 @@
 	        this.exportCurrentList = function (selection) {
 	            if (selection === void 0) { selection = false; }
 	            var exportCollectionConfig = angular.copy(_this.collectionConfig.getCollectionConfig());
-	            if (selection && !angular.isUndefined(_this.selectionService.getSelections('ListingDisplay'))
-	                && (_this.selectionService.getSelections('ListingDisplay').length > 0)) {
+	            if (selection && !angular.isUndefined(_this.selectionService.getSelections(_this.name))
+	                && (_this.selectionService.getSelections(_this.name).length > 0)) {
 	                exportCollectionConfig.filterGroups[0].filterGroup = [
 	                    {
 	                        "displayPropertyIdentifier": _this.rbkeyService.getRBKey("entity." + exportCollectionConfig.baseEntityName.toLowerCase() + "." + _this.exampleEntity.$$getIDName().toLowerCase()),
 	                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "." + _this.exampleEntity.$$getIDName(),
 	                        "comparisonOperator": (_this.allSelected) ? "not in" : "in",
-	                        "value": _this.selectionService.getSelections('ListingDisplay').join(),
-	                        "displayValue": _this.selectionService.getSelections('ListingDisplay').join(),
+	                        "value": _this.selectionService.getSelections(_this.name).join(),
+	                        "displayValue": _this.selectionService.getSelections(_this.name).join(),
 	                        "ormtype": "string",
 	                        "fieldtype": "id",
 	                        "conditionDisplay": "In List"
@@ -6237,18 +6239,18 @@
 	                return;
 	            for (var i = 0; i < _this.collectionData.pageRecords.length; i++) {
 	                if (_this.isCurrentPageRecordsSelected == true) {
-	                    _this.selectionService.addSelection('ListingDisplay', _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
+	                    _this.selectionService.addSelection(_this.name, _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
 	                }
 	                else {
-	                    _this.selectionService.removeSelection('ListingDisplay', _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
+	                    _this.selectionService.removeSelection(_this.name, _this.collectionData.pageRecords[i][_this.exampleEntity.$$getIDName()]);
 	                }
 	            }
 	        };
 	        this.clearSelection = function () {
-	            _this.selectionService.clearSelection('ListingDisplay');
+	            _this.selectionService.clearSelection(_this.name);
 	        };
 	        this.selectAll = function () {
-	            _this.selectionService.selectAll('ListingDisplay');
+	            _this.selectionService.selectAll(_this.name);
 	        };
 	        console.log('here');
 	        console.log(this);
@@ -6378,11 +6380,10 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWListingControlsController = (function () {
 	    //@ngInject
-	    function SWListingControlsController($hibachi, metadataService, $timeout, collectionService, observerService) {
+	    function SWListingControlsController($hibachi, metadataService, collectionService, observerService) {
 	        var _this = this;
 	        this.$hibachi = $hibachi;
 	        this.metadataService = metadataService;
-	        this.$timeout = $timeout;
 	        this.collectionService = collectionService;
 	        this.observerService = observerService;
 	        this.displayOptionsClosed = true;
@@ -6396,22 +6397,17 @@
 	        this.selectSearchColumn = function (column) {
 	            _this.selectedSearchColumn = column;
 	            if (_this.searchText) {
-	                _this.triggerSearch();
+	                _this.search();
 	            }
 	        };
 	        this.getSelectedSearchColumnName = function () {
 	            return (angular.isUndefined(_this.selectedSearchColumn)) ? 'All' : _this.selectedSearchColumn.title;
 	        };
-	        this.search = function () {
-	            if (_this._timeoutPromise) {
-	                _this.$timeout.cancel(_this._timeoutPromise);
-	            }
-	            _this._timeoutPromise = _this.$timeout(function () {
-	                _this.collectionConfig.setKeywords(_this.searchText);
-	                _this.triggerSearch();
-	            }, 500);
+	        this.setKeywords = function () {
+	            _this.collectionConfig.setKeywords(_this.searchText);
+	            _this.search();
 	        };
-	        this.triggerSearch = function () {
+	        this.search = function () {
 	            if (angular.isDefined(_this.selectedSearchColumn)) {
 	                _this.backupColumnsConfig = angular.copy(_this.collectionConfig.getColumns());
 	                var collectionColumns = _this.collectionConfig.getColumns();
@@ -6452,7 +6448,6 @@
 	            }
 	        };
 	        this.toggleFilters = function () {
-	            console.log(_this.filtersClosed);
 	            if (_this.filtersClosed) {
 	                _this.filtersClosed = false;
 	                _this.newFilterPosition = _this.collectionService.newFilterItem(_this.collectionConfig.filterGroups[0].filterGroup, _this.setItemInUse);
@@ -6461,9 +6456,6 @@
 	        this.selectFilterItem = function (filterItem) {
 	            _this.filtersClosed = false;
 	            _this.collectionService.selectFilterItem(filterItem);
-	        };
-	        this.selectAll = function () {
-	            console.log(_this.isAllSelected);
 	        };
 	        this.backupColumnsConfig = this.collectionConfig.getColumns();
 	        this.filterPropertiesList = {};
@@ -7244,7 +7236,6 @@
 	            }
 	        };
 	        this.toggleSelection = function (toggleValue, selectionid, selection) {
-	            console.log('selected!');
 	            console.log(toggleValue);
 	            console.log(selectionid);
 	            console.log(selection);
@@ -7264,7 +7255,7 @@
 	            this.name = 'selection';
 	        }
 	        if (selectionService.isAllSelected(this.selectionid)) {
-	            this.toggleValue = true;
+	            this.toggleValue = !selectionService.hasSelection(this.selectionid, this.selection);
 	        }
 	        else {
 	            this.toggleValue = selectionService.hasSelection(this.selectionid, this.selection);
@@ -8456,7 +8447,8 @@
 	            };
 	            _this.orderBy.push(orderBy);
 	        };
-	        this.toggleOrderBy = function (formattedPropertyIdentifier) {
+	        this.toggleOrderBy = function (formattedPropertyIdentifier, singleColumn) {
+	            if (singleColumn === void 0) { singleColumn = false; }
 	            if (!_this.orderBy) {
 	                _this.orderBy = [];
 	            }
@@ -8474,6 +8466,15 @@
 	                }
 	            }
 	            if (!found) {
+	                if (singleColumn) {
+	                    _this.orderBy = [];
+	                    for (var i = 0; i < _this.columns.length; i++) {
+	                        if (_this.columns[i]["sorting"] && _this.columns[i]["sorting"]["active"]) {
+	                            _this.columns[i]["sorting"]["active"] = false;
+	                            _this.columns[i]["sorting"]["sortOrder"] = 'asc';
+	                        }
+	                    }
+	                }
 	                _this.addOrderBy(formattedPropertyIdentifier + '|DESC', false);
 	            }
 	        };

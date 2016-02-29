@@ -17,7 +17,7 @@ class SWSelectionController{
         }
 
         if(selectionService.isAllSelected(this.selectionid)){
-            this.toggleValue = true;
+            this.toggleValue = !selectionService.hasSelection(this.selectionid,this.selection);
         }else{
             this.toggleValue = selectionService.hasSelection(this.selectionid,this.selection);
         }
@@ -36,7 +36,6 @@ class SWSelectionController{
         }
     };
     private toggleSelection = (toggleValue,selectionid,selection)=>{
-        console.log('selected!');
         console.log(toggleValue);
         console.log(selectionid);
         console.log(selection);

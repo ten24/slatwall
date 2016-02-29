@@ -65,6 +65,7 @@ class SWListingDisplayController{
     private multiselectCount;
     private isCurrentPageRecordsSelected;
     private allSelected;
+    private name;
     //@ngInject
     constructor(
         public $scope,
@@ -98,7 +99,11 @@ class SWListingDisplayController{
         
         if(angular.isString(this.showTopPagination)){
             this.showTopPagination = (this.showTopPagination.toLowerCase() === 'true');
-        };
+        }
+
+        if(angular.isUndefined(this.name)){
+            this.name = 'ListingDisplay';
+        }
 
         this.paginator = this.paginationService.createPagination();
 
@@ -306,14 +311,14 @@ class SWListingDisplayController{
         if(this.multiselectIdPaths && this.multiselectIdPaths.length){
             angular.forEach(this.multiselectIdPaths.split(','),(value)=>{
                 var id = this.utilityService.listLast(value,'/');
-                this.selectionService.addSelection('ListingDisplay',id);
+                this.selectionService.addSelection(this.name,id);
             });
         }
 
         if(this.multiselectValues && this.multiselectValues.length){
             //select all owned ids
             angular.forEach(this.multiselectValues.split(','),(value)=>{
-                this.selectionService.addSelection('ListingDisplay',value);
+                this.selectionService.addSelection(this.name,value);
             });
         }
 
@@ -571,46 +576,46 @@ class SWListingDisplayController{
     };
     
     public toggleOrderBy = (column) => {
-        this.collectionConfig.toggleOrderBy(column.propertyIdentifier);
+        this.collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
         this.getCollection();
     };
     
     public columnOrderBy = (column) => {
-        var found = false; 
+        var isfound = false;
         
         angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
              if(column.propertyIdentifier == orderBy.propertyIdentifier){
-                   found = true; 
+                 isfound = true;
                    this.orderByStates[column.propertyIdentifier] = orderBy.direction;
              }
         });
-        if(!found){
+        if(!isfound){
             this.orderByStates[column.propertyIdentifier] = '';
         }
         return this.orderByStates[column.propertyIdentifier];
     };
     
     public columnOrderByIndex = (column) =>{
-        var found = false; 
+        var isfound = false;
         
         angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
              if(column.propertyIdentifier == orderBy.propertyIdentifier){
-                   found = true; 
+                 isfound = true;
                    this.orderByIndices[column.propertyIdentifier] = index + 1;
              }
         });
-        if(!found){
+        if(!isfound){
             this.orderByIndices[column.propertyIdentifier] = '';
         }
         return this.orderByIndices[column.propertyIdentifier];
     };
 
     public updateMultiselectValues = (res)=>{
-        this.multiselectValues = this.selectionService.getSelections('ListingDisplay');
-        if(this.selectionService.isAllSelected('ListingDisplay')){
-            this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount('ListingDisplay');
+        this.multiselectValues = this.selectionService.getSelections(this.name);
+        if(this.selectionService.isAllSelected(this.name)){
+            this.multiselectCount = this.collectionData.recordsCount - this.selectionService.getSelectionCount(this.name);
         }else{
-            this.multiselectCount = this.selectionService.getSelectionCount('ListingDisplay');
+            this.multiselectCount = this.selectionService.getSelectionCount(this.name);
         }
         switch (res.action){
             case 'uncheck':
@@ -662,15 +667,15 @@ class SWListingDisplayController{
     public exportCurrentList =(selection:boolean=false)=>{
 
         var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
-        if (selection && !angular.isUndefined(this.selectionService.getSelections('ListingDisplay'))
-            && (this.selectionService.getSelections('ListingDisplay').length > 0)) {
+        if (selection && !angular.isUndefined(this.selectionService.getSelections(this.name))
+            && (this.selectionService.getSelections(this.name).length > 0)) {
             exportCollectionConfig.filterGroups[0].filterGroup = [
                 {
                     "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
                     "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
                     "comparisonOperator": (this.allSelected) ? "not in":"in",
-                    "value": this.selectionService.getSelections('ListingDisplay').join(),
-                    "displayValue": this.selectionService.getSelections('ListingDisplay').join(),
+                    "value": this.selectionService.getSelections(this.name).join(),
+                    "displayValue": this.selectionService.getSelections(this.name).join(),
                     "ormtype": "string",
                     "fieldtype": "id",
                     "conditionDisplay": "In List"
@@ -694,19 +699,19 @@ class SWListingDisplayController{
 
         for(var i = 0; i < this.collectionData.pageRecords.length; i++){
             if(this.isCurrentPageRecordsSelected == true){
-                this.selectionService.addSelection('ListingDisplay', this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
+                this.selectionService.addSelection(this.name, this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
             }else{
-                this.selectionService.removeSelection('ListingDisplay', this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
+                this.selectionService.removeSelection(this.name, this.collectionData.pageRecords[i][this.exampleEntity.$$getIDName()]);
             }
         }
     };
 
     public clearSelection=()=>{
-        this.selectionService.clearSelection('ListingDisplay');
+        this.selectionService.clearSelection(this.name);
     };
 
     public selectAll=()=>{
-        this.selectionService.selectAll('ListingDisplay');
+        this.selectionService.selectAll(this.name);
     };
 }
 

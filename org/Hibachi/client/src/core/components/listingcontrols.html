@@ -17,7 +17,8 @@
             <span class="s-search">
                 <input type="text" class="form-control s-search" name="" placeholder="Search results..."
                        data-ng-model="swListingControls.searchText"
-                       data-ng-change="swListingControls.search()">
+                       data-ng-model-options='{ debounce: 500 }'
+                       data-ng-change="swListingControls.setKeywords()">
                 <buttom class="btn btn-xs btn-default s-add-search-param"
                         data-ng-disabled="!swListingControls.selectedSearchColumn"
                         data-ng-click="swListingControls.addSearchFilter()">Save this search</buttom>

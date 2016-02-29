@@ -5,7 +5,6 @@ class SWListingControlsController {
     private selectedSearchColumn;
     private filterPropertiesList;
     private collectionConfig;
-    private _timeoutPromise;
     private paginator;
     private searchText;
     private backupColumnsConfig;
@@ -13,13 +12,11 @@ class SWListingControlsController {
     private filtersClosed:boolean=true;
     private newFilterPosition;
     private itemInUse;
-    private isAllSelected;
 
     //@ngInject
     constructor(
         public $hibachi,
         public metadataService,
-        public $timeout,
         public collectionService,
         public observerService
     ) {
@@ -45,7 +42,7 @@ class SWListingControlsController {
     public selectSearchColumn = (column?)=>{
         this.selectedSearchColumn = column;
         if(this.searchText){
-            this.triggerSearch();
+            this.search();
         }
     };
 
@@ -53,17 +50,12 @@ class SWListingControlsController {
         return (angular.isUndefined(this.selectedSearchColumn)) ? 'All' : this.selectedSearchColumn.title;
     };
 
-    public search = () =>{
-        if(this._timeoutPromise) {
-            this.$timeout.cancel(this._timeoutPromise);
-        }
-        this._timeoutPromise = this.$timeout(()=>{
-            this.collectionConfig.setKeywords(this.searchText);
-            this.triggerSearch();
-        }, 500);
+    public setKeywords = () =>{
+        this.collectionConfig.setKeywords(this.searchText);
+        this.search();
     };
 
-    private triggerSearch =()=>{
+    private search =()=>{
         if(angular.isDefined(this.selectedSearchColumn)){
             this.backupColumnsConfig = angular.copy(this.collectionConfig.getColumns());
             var collectionColumns = this.collectionConfig.getColumns();
@@ -111,7 +103,6 @@ class SWListingControlsController {
     };
 
     public toggleFilters = ()=>{
-        console.log(this.filtersClosed);
         if(this.filtersClosed) {
             this.filtersClosed = false;
             this.newFilterPosition = this.collectionService.newFilterItem(this.collectionConfig.filterGroups[0].filterGroup,this.setItemInUse);
@@ -122,10 +113,6 @@ class SWListingControlsController {
         this.filtersClosed = false;
         this.collectionService.selectFilterItem(filterItem);
     };
-
-    public selectAll=()=>{
-        console.log(this.isAllSelected);
-    }
 
 }
 

@@ -49,12 +49,14 @@ class SelectionService extends BaseService{
         if(angular.isUndefined(this._selection[selectionid])){
             return;
         }
+
         if(!this.isAllSelected(selectionid)){
             var index = this._selection[selectionid].ids.indexOf(selection);
             if (index > -1) {
                 this._selection[selectionid].ids.splice(index, 1);
                 this.observerService.notify('swSelectionToggleSelection',{action:'uncheck',selectionid,selection});
             }
+        /*if allSelected flag is true removeSelection will add selection*/
         }else if(!this.hasSelection(selectionid,selection)) {
             this._selection[selectionid].ids.push(selection);
             this.observerService.notify('swSelectionToggleSelection', {action: 'uncheck', selectionid, selection});
