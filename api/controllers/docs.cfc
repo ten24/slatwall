@@ -75,7 +75,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		entities = generateEntityJson(),
     		services = generateServiceJson(),
     		processes = generateProcessJson(),
-    		dao = generateDaoJson()
+    		daos = generateDaoJson()
     	};
     	var docsJsonPath = expandPath('/'&getService('hibachiDao').getApplicationKey()) & '/meta/docs/json/docs.json';
     	fileWrite(docsJsonPath,serializeJson(docJson));
