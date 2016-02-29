@@ -222,7 +222,7 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'create');
         
-        arguments.data.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
+        getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
         
         if(account.hasErrors()){
             addErrors(data, data.$.slatwall.getAccount().getProcessObject("create").getErrors());
