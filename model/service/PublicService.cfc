@@ -221,11 +221,10 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="arguments.data.createAuthenticationFlag" default="1";
         
         var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'create');
-        
         getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
         
         if(account.hasErrors()){
-            addErrors(data, data.$.slatwall.getAccount().getProcessObject("create").getErrors());
+            addErrors(data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         }
     }
     
