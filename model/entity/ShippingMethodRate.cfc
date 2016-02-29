@@ -86,6 +86,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="shippingIntegrationMethodOptions" type="array" persistent="false";
 	property name="addressZoneOptions" type="array" persistent="false";
 	property name="shipmentWeightRange" type="string" persistent="false";
+	property name="shipmentQuantityRange" type="string" persistent="false";
 	property name="shipmentItemPriceRange" type="string" persistent="false";
 	property name="shippingMethodRateName" type="string" persistent="false";
 	
