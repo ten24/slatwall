@@ -89,12 +89,14 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="minimumShipmentItemPrice" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="maximumShipmentItemPrice" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.shippingMethodRate#" property="defaultAmount" edit="#rc.edit#">
+					<!--- $.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits') --->
+					
 				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
-
 		<hb:HibachiEntityDetailGroup object="#rc.shippingMethodRate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratepricegroups" />
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratesettings" />
 		</hb:HibachiEntityDetailGroup>
 		

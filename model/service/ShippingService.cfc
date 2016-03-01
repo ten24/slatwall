@@ -74,7 +74,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 
 				// check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity())) {
+				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity(), arguments.orderFulfillment.getOrder().getAccount().getPriceGroups())) {
 					// Add any new shipping integrations in any of the rates the the shippingIntegrations array that we are going to query for rates later
 					if(!isNull(shippingMethodRates[r].getShippingIntegration()) && !arrayFind(integrations, shippingMethodRates[r].getShippingIntegration())) {
 						arrayAppend(integrations, shippingMethodRates[r].getShippingIntegration());
@@ -338,7 +338,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(shipmentItemQuantity < lowerQuantity || shipmentItemQuantity gt higherQuantity) {
             return false;
         }
-
+        
 		// If we have not returned false by now, then return true
 		return true;
 	}
@@ -374,7 +374,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return returnAmount;
 	}
+    
+    public numeric function calculateShippingRateAdjustmentByPriceGroup(required numeric originalAmount, required any priceGroupRate) {
+        var returnAmount = arguments.originalAmount;
+        //var shippingMethodRateAdjustmentAmount = arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount');
 
+        if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
+
+            switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
+                case "increasePercentage":
+                    returnAmount = precisionEvaluate(arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
+                    break;
+                case "decreasePercentage":
+                    returnAmount = precisionEvaluate(arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
+                    break;
+                case "increaseAmount":
+                    returnAmount = precisionEvaluate(arguments.originalAmount + shippingMethodRateAdjustmentAmount);
+                    break;
+                case "decreaseAmount":
+                    returnAmount = precisionEvaluate(arguments.originalAmount - shippingMethodRateAdjustmentAmount);
+                    break;
+            }
+       }
+
+        return returnAmount;
+    }
 
 	// ===================== START: Logical Methods ===========================
 
