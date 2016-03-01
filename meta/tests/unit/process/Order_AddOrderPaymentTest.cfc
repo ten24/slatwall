@@ -104,7 +104,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		yetAnotherProcessObject.setNewOrderPayment(yetAnotherOrderPayment);
 
-		request.debug(yetAnotherProcessObject.isReturnWithGiftCardOrderPayment());
+		addToDebug(yetAnotherProcessObject.isReturnWithGiftCardOrderPayment());
 
 		assertFalse(yetAnotherProcessObject.isReturnWithGiftCardOrderPayment());
 	}

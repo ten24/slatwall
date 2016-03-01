@@ -63,7 +63,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var processGiftCard = giftCard.getProcessObject( 'addDebit' );
 		processGiftCard.setDebitAmount("10.50");
 
-		request.debug(processGiftCard);
+		addToDebug(processGiftCard);
 
 		var orderItemData = {
 			orderItemID=""
