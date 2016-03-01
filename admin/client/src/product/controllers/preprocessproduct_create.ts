@@ -74,6 +74,14 @@ class ProductCreateController{
                     }
                     this.$scope.preprocessproduct_createCtrl.options.push(option); 
             });
+            
+            this.$scope.preprocessproduct_createCtrl.selectedOption = {};
+            
+            if(angular.isDefined(this.$scope.preprocessproduct_createCtrl.options[0]) && angular.isDefined(this.$scope.preprocessproduct_createCtrl.options[0].value)){
+                this.$scope.preprocessproduct_createCtrl.selectedOption.value = this.$scope.preprocessproduct_createCtrl.options[0].value;
+            } else {
+                this.$scope.preprocessproduct_createCtrl.selectedOption.value = "";
+            }
           
         }
 
