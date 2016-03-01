@@ -147,7 +147,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var productData = {
 			productID = '',
-			productName = '',
+			productName = 'TestName',
 			skus = [
 				{
 					skuID = CreateUUID()
@@ -215,7 +215,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var productData = {
 			productID = '',
-			productName = '',
+			productName = 'TestName',
 			skus = [
 				{
 					skuID = ''
@@ -240,5 +240,3 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(product.hasUnusedProductOptionCombinations());
 	}
 }
-
-
