@@ -50,11 +50,6 @@ class SWListingControlsController {
         return (angular.isUndefined(this.selectedSearchColumn)) ? 'All' : this.selectedSearchColumn.title;
     };
 
-    public setKeywords = () =>{
-        this.collectionConfig.setKeywords(this.searchText);
-        this.search();
-    };
-
     private search =()=>{
         if(angular.isDefined(this.selectedSearchColumn)){
             this.backupColumnsConfig = angular.copy(this.collectionConfig.getColumns());
@@ -64,9 +59,11 @@ class SWListingControlsController {
                     collectionColumns[i].isSearchable = false;
                 }
             }
+            this.collectionConfig.setKeywords(this.searchText);
             this.paginator.setCurrentPage(1);
             this.collectionConfig.setColumns(this.backupColumnsConfig);
         }else{
+                this.collectionConfig.setKeywords(this.searchText);
             this.paginator.setCurrentPage(1);
         }
     };

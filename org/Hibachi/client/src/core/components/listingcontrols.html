@@ -18,7 +18,7 @@
                 <input type="text" class="form-control s-search" name="" placeholder="Search results..."
                        data-ng-model="swListingControls.searchText"
                        data-ng-model-options='{ debounce: 500 }'
-                       data-ng-change="swListingControls.setKeywords()">
+                       data-ng-change="swListingControls.search()">
                 <buttom class="btn btn-xs btn-default s-add-search-param"
                         data-ng-disabled="!swListingControls.selectedSearchColumn"
                         data-ng-click="swListingControls.addSearchFilter()">Save this search</buttom>
@@ -82,14 +82,14 @@
             <!-- Filter -->
             <div class="btn-group"
                  data-ng-repeat="filter in swListingControls.collectionConfig.filterGroups[0].filterGroup"
-                 data-ng-if="filter.hasOwnProperty('filterGroup') == false && filter.propertyIdentifier">
+                 data-ng-if="filter.hasOwnProperty('filterGroup') == false && filter.propertyIdentifier && !filter.hidden">
 
                 <button
                         class="btn btn-primary btn-sm"
                         data-ng-click="swListingControls.selectFilterItem(filter)"
                         data-ng-disabled="!filter.conditionDisplay"
                         >
-                    {{filter.displayPropertyIdentifier}} {{filter.comparisonOperator}} {{filter.displayValue}}
+                    {{filter.displayPropertyIdentifier}} {{filter.comparisonOperator}} {{filter.displayValue | truncate: 20}}
                 </button>
                 <!-- TODO: HARD CODING MARGIN, ASK RAYJAY TO FIX IT -->
                 <button type="button"
