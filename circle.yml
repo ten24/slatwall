@@ -8,7 +8,7 @@ dependencies:
   override:
     # Setup git user for deployment
     - git config --global user.email "info@slatwallcommerce.com"
-    - git config --global user.name "Slatwall Robot 'Big Boy'"
+    - git config --global user.name "Big Boy (Slatwall Robot)"
 
     # Install webpack globally
     - npm install -g webpack
@@ -63,7 +63,11 @@ test:
     #    parallel: true
 
 deployment:
-  jsbuild:
+  js_build:
     branch: [travis, develop, hotfix]
     commands:
       - meta/ci/push_built_files.sh
+  master_release:
+    branch: master
+    commands:
+      - meta/ci/update_master_version.sh
