@@ -41,7 +41,7 @@
 		<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/HttpAntRunner.cfc" />
 
 		<!-- this is where the xml and html will live for the report generator and Jenkins -->
-		<property name="slatwall.test.output" location="tests/testresults" />
+		<property name="slatwall.test.output" location="testresults" />
 		<property name="slatwall.test.output.xml" location="${slatwall.test.output}/xml" />
 		<property name="slatwall.test.output.html" location="${slatwall.test.output}/html" />
 
