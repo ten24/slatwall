@@ -83,7 +83,7 @@ class MetaDataService {
 
 		//--------------------------------Removes empty lines from dropdown.
 		var temp = [];
-		for (var i:any = 0; i <=propertiesList.data.length -1; i++){
+		for (let i = 0; i <=propertiesList.data.length -1; i++){
 			if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1){
 				this.$log.debug("removing: " + propertiesList.data[i].displayPropertyIdentifier);
 				propertiesList.data[i].displayPropertyIdentifier = "hide";
