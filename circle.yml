@@ -11,14 +11,19 @@ dependencies:
     - git config --global user.name "Big Boy (Slatwall Robot)"
     - git config --global push.default current
 
-    # Install webpack globally
-    - npm install -g webpack
+    - npm install -g webpack gulp
+
+    - npm install gulp gulp-inject gulp-chmod gulp-util run-sequence webpack
 
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - npm install -g se-interpreter
 
     # Minify JS
-    - cd admin/client && webpack --config webpack-production.config.js -p
+     # generate typings 
+    - cd org/Hibachi/client && gulp gen-ts-refs
+    - cd admin/client && gulp gen-ts-refs
+    # Minify JS
+    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
 
     # Update docker-compose
     - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose

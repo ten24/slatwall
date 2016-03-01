@@ -7,10 +7,9 @@ import {loggermodule} from "./logger/logger.module";
 
 //custom bootstrapper
 class bootstrapper extends BaseBootStrapper{
-
+    public myApplication;
     constructor(){
-        this.myApplication = [hibachimodule.name, loggermodule.name];
-        var angular:any = super();
+        var angular:any = super([hibachimodule.name, loggermodule.name]);
         angular.bootstrap()
     }
 
