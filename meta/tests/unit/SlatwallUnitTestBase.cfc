@@ -94,6 +94,8 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 		variables.persistentEntities = [];
 
+		ormClearSession();
+
 		structDelete(request, 'slatwallScope');
 	}
 
