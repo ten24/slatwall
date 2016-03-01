@@ -96,15 +96,15 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
-	property name="initialSubscriptionOrderItem" persistant="false";
-	property name="initialOrderItem" persistant="false";
-	property name="initialOrder" persistant="false";
-	property name="initialSku" persistant="false";
-	property name="initialProduct" persistant="false";
-	property name="mostRecentSubscriptionOrderItem" persistant="false";
-	property name="mostRecentOrderItem" persistant="false";
-	property name="mostRecentOrder" persistant="false";
-	property name="totalNumberOfSubscriptionOrderItems" persistant="false";
+	property name="initialSubscriptionOrderItem" persistent="false";
+	property name="initialOrderItem" persistent="false";
+	property name="initialOrder" persistent="false";
+	property name="initialSku" persistent="false";
+	property name="initialProduct" persistent="false";
+	property name="mostRecentSubscriptionOrderItem" persistent="false";
+	property name="mostRecentOrderItem" persistent="false";
+	property name="mostRecentOrder" persistent="false";
+	property name="totalNumberOfSubscriptionOrderItems" persistent="false";
 	property name="subscriptionOrderItemType" persistent="false";
 	property name="useRenewalSku" persistent="false" hb_formFieldType="yesno";
 
@@ -136,7 +136,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 
 	public void function copyOrderItemInfo(required any orderItem) {
-		
+
 		var currencyCode = arguments.orderItem.getCurrencyCode();
 		var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
 		setRenewalPrice( renewalPrice );

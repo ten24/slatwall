@@ -13,7 +13,8 @@ export class BaseBootStrapper{
     public $q:ng.IQService;
     public appConfig:any;
 
-    constructor(){
+    constructor(myApplication){
+      this.myApplication = myApplication;
       return angular.lazy(this.myApplication)
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;

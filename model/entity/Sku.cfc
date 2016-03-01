@@ -165,7 +165,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
 	property name="giftCardExpirationTermOptions" persistent="false";
-	property name="formattedRedemptionAmount" persistant="false";
+	property name="formattedRedemptionAmount" persistent="false";
 	// Deprecated Properties
 
 
@@ -974,7 +974,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			if(isNull(baseProductType)){
 				baseProductType = "";
 			}
-			
+
 			switch (baseProductType)
 			{
 				case "merchandise":
@@ -1492,4 +1492,3 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 
 }
-
