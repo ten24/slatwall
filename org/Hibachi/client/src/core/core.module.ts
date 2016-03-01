@@ -40,6 +40,7 @@ import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
 import {SWListingFilter} from "./components/swlistingfilter";
+import {SWListingFilterGroup} from "./components/swlistingfilterGroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
@@ -1232,6 +1233,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
 .directive('swListingFilter',SWListingFilter.Factory())
+.directive('swListingFilterGroup',SWListingFilterGroup.Factory())
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
