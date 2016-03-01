@@ -63,11 +63,17 @@ test:
     #    parallel: true
 
 deployment:
-  js_build:
-    branch: [travis, develop, hotfix]
-    commands:
-      - meta/ci/push_built_files.sh
   master_release:
     branch: master
     commands:
+      - meta/ci/version_adjust.sh
+      - meta/ci/push_built_files.sh
+  develop_release:
+    branch: develop
+    commands:
+      - meta/ci/version_adjust.sh
       - meta/ci/update_master_version.sh
+  jsbuild_only:
+    branch: [travis, hotfix]
+    commands:
+      - meta/ci/push_built_files.sh
