@@ -22,9 +22,10 @@ devConfig.module.loaders.push(stripLogDebugs);
 devConfig.plugins= [
   	new ngAnnotatePlugin({
         add: true,
-        // other ng-annotate options here 
+        // other ng-annotate options here
     })
   ];
+devConfig.watch = false;
 //change output filename
 //devConfig.output.filename = "bundle.min.js";
 module.exports = devConfig;

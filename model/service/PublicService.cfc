@@ -37,8 +37,8 @@
 
     You may copy and distribute the modified version of this program that meets 
     the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
-	GNU GPL requires distribution of source code.
+    provided that you include the source code of that other code when and as the 
+    GNU GPL requires distribution of source code.
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
@@ -124,13 +124,13 @@ component extends="HibachiService"  accessors="true" output="false"
       @example  testuser@slatwalltest.com:Vah7cIxXe would become dGVzdHVzZXJAc2xhdHdhbGx0ZXN0LmNvbTpWYWg3Y0l4WGU=               
      */
     public any function login( required struct data ){
-        var accountProcess = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'login' );
-        arguments.data.$.slatwall.addActionResult( "public:account.login", accountProcess.hasErrors() );
+        var accountProcess = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'login' );
+        getHibachiScope().addActionResult( "public:account.login", accountProcess.hasErrors() );
         if (accountProcess.hasErrors()){
-            if (data.$.slatwall.getAccount().hasErrors()){
-                acountProcess.$errors = data.$.slatwall.getAccount().getErrors();
+            if (getHibachiScope().getAccount().hasErrors()){
+                acountProcess.$errors = getHibachiScope().getAccount().getErrors();
             }
-            addErrors(data, data.$.slatwall.getAccount().getProcessObject("login").getErrors());
+            addErrors(data, getHibachiScope().getAccount().getProcessObject("login").getErrors());
         }
         return accountProcess;
     }
@@ -142,11 +142,11 @@ component extends="HibachiService"  accessors="true" output="false"
         
         try{
             if (structKeyExists(data, entityName) && lCase(data.entityName) == "account"){
-                var processObject = evaluate("data.$.slatwall.getAccount().getProcessObject('#data.processObject#')");
+                var processObject = evaluate("getHibachiScope().getAccount().getProcessObject('#data.processObject#')");
             }else if(structKeyExists(data, entityName) && (lCase(data.entityName) == "order" || lCase(data.entityName) == "cart")){
-                var processObject = evaluate("data.$.slatwall.cart().getProcessObject('#data.processObject#')");
+                var processObject = evaluate("getHibachiScope().cart().getProcessObject('#data.processObject#')");
             }else{
-                var processObject = evaluate("data.$.slatwall.#data.entityName#().getProcessObject('#data.processObject#')");
+                var processObject = evaluate("getHibachiScope().#data.entityName#().getProcessObject('#data.processObject#')");
             }
             
             arguments.data.ajaxResponse['processObject'] = processObject.getThisMetaData();
@@ -155,7 +155,7 @@ component extends="HibachiService"  accessors="true" output="false"
             arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
         }catch(any e){}
         
-        var entity = evaluate('data.$.slatwall.get#data.entityName#()');
+        var entity = evaluate('getHibachiScope().get#data.entityName#()');
         var entityMeta = entity.getThisMetaData();
         arguments.data.ajaxResponse['processObject']["entityMeta"] = entityMeta.properties;
     }
@@ -179,8 +179,6 @@ component extends="HibachiService"  accessors="true" output="false"
             arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
             arguments.data.ajaxResponse['processObject']['messages']      = processObject.getMessages();    
         }
-        
-        
     }
     
     /** 
@@ -195,10 +193,10 @@ component extends="HibachiService"  accessors="true" output="false"
      */
     public any function logout( required struct data ){ 
         
-        var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'logout' );
-        arguments.data.$.slatwall.addActionResult( "public:account.logout", account.hasErrors() );
+        var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'logout' );
+        getHibachiScope().addActionResult( "public:account.logout", account.hasErrors() );
         if(account.hasErrors()){
-            addErrors(data, data.$.slatwall.getAccount().getProcessObject("logout").getErrors());
+            addErrors(data, getHibachiScope().getAccount().getProcessObject("logout").getErrors());
         }
         return account;
     }   
@@ -219,12 +217,14 @@ component extends="HibachiService"  accessors="true" output="false"
      *  @param password {string}
      *  @param passwordConfirm {string}
      */
-    public void function createAccount( required struct data ) {
+    public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
-        var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'create');
-        arguments.data.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
+        
+        var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
+        getHibachiScope().addActionResult( "public:account.create", account.hasErrors() );
+        
         if(account.hasErrors()){
-            addErrors(data, data.$.slatwall.getAccount().getProcessObject("create").getErrors());
+            addErrors(data, getHibachiScope().getAccount().getProcessObject("create").getErrors());
         }
     }
     
@@ -255,8 +255,8 @@ component extends="HibachiService"  accessors="true" output="false"
       * @param emailAddress {string}
       **/
     public any function forgotPassword( required struct data ) {
-        var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'forgotPassword');
-        arguments.data.$.slatwall.addActionResult( "public:account.forgotPassword", account.hasErrors() );
+        var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'forgotPassword');
+        getHibachiScope().addActionResult( "public:account.forgotPassword", account.hasErrors() );
         return account;
     }
     
@@ -274,16 +274,16 @@ component extends="HibachiService"  accessors="true" output="false"
         var account = getAccountService().getAccount( data.accountID );
         if(!isNull(account)) {
             var account = getAccountService().processAccount(account, data, "resetPassword");
-            arguments.data.$.slatwall.addActionResult( "public:account.resetPassword", account.hasErrors() );   
+            getHibachiScope().addActionResult( "public:account.resetPassword", account.hasErrors() );   
             // As long as there were no errors resetting the password, then we can set the email address in the form scope so that a chained login action will work
             if(!account.hasErrors() && !structKeyExists(form, "emailAddress") && !structKeyExists(url, "emailAddress")) {
                 form.emailAddress = account.getEmailAddress();
             }
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.resetPassword", true );
+            getHibachiScope().addActionResult( "public:account.resetPassword", true );
         }
         // Populate the current account with this processObject so that any errors are there.
-        arguments.data.$.slatwall.account().setProcessObject( account.getProcessObject( "resetPassword" ) );
+        getHibachiScope().account().setProcessObject( account.getProcessObject( "resetPassword" ) );
         return account.getProcessObject( "resetPassword" ) ;
     }
     
@@ -297,8 +297,8 @@ component extends="HibachiService"  accessors="true" output="false"
       **/
     public any function changePassword( required struct data ) {
         
-        var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'changePassword');
-        arguments.data.$.slatwall.addActionResult( "public:account.changePassword", account.hasErrors() );
+        var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'changePassword');
+        getHibachiScope().addActionResult( "public:account.changePassword", account.hasErrors() );
         return account;
     }
     
@@ -313,8 +313,8 @@ component extends="HibachiService"  accessors="true" output="false"
       **/
     public any function updateAccount( required struct data ) {
         
-        var account = getAccountService().saveAccount( data.$.slatwall.getAccount(), arguments.data );
-        arguments.data.$.slatwall.addActionResult( "public:account.update", account.hasErrors() );
+        var account = getAccountService().saveAccount( getHibachiScope().getAccount(), arguments.data );
+        getHibachiScope().addActionResult( "public:account.update", account.hasErrors() );
         return account;
     }
     
@@ -331,11 +331,11 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var accountEmailAddress = getAccountService().getAccountEmailAddress( data.accountEmailAddressID );
         
-        if(!isNull(accountEmailAddress) && accountEmailAddress.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+        if(!isNull(accountEmailAddress) && accountEmailAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountEmailAddress( accountEmailAddress );
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", !deleteOK );
+            getHibachiScope().addActionResult( "public:account.deleteAccountEmailAddress", !deleteOK );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", true );  
+            getHibachiScope().addActionResult( "public:account.deleteAccountEmailAddress", true );  
         }
         return accountEmailAddress;
     }
@@ -354,9 +354,9 @@ component extends="HibachiService"  accessors="true" output="false"
         
         if(!isNull(accountEmailAddress) && !isNull(accountEmailAddress.getVerifiedFlag()) && !accountEmailAddress.getVerifiedFlag()) {
             accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, data, 'sendVerificationEmail' );
-            arguments.data.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", accountEmailAddress.hasErrors() );
+            getHibachiScope().addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", accountEmailAddress.hasErrors() );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
+            getHibachiScope().addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
         }
         
         return accountEmailAddress;
@@ -376,9 +376,9 @@ component extends="HibachiService"  accessors="true" output="false"
         
         if(!isNull(accountEmailAddress)) {
             accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, data, 'verify' );
-            arguments.data.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", accountEmailAddress.hasErrors() );
+            getHibachiScope().addActionResult( "public:account.verifyAccountEmailAddress", accountEmailAddress.hasErrors() );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", true );
+            getHibachiScope().addActionResult( "public:account.verifyAccountEmailAddress", true );
         }
         handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.data);
     }
@@ -394,11 +394,11 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var accountPhoneNumber = getAccountService().getAccountPhoneNumber( data.accountPhoneNumberID );
         
-        if(!isNull(accountPhoneNumber) && accountPhoneNumber.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+        if(!isNull(accountPhoneNumber) && accountPhoneNumber.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountPhoneNumber( accountPhoneNumber );
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPhoneNumber", !deleteOK );
+            getHibachiScope().addActionResult( "public:account.deleteAccountPhoneNumber", !deleteOK );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPhoneNumber", true );   
+            getHibachiScope().addActionResult( "public:account.deleteAccountPhoneNumber", true );   
         }
     }
     
@@ -412,11 +412,11 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var accountAddress = getAccountService().getAccountAddress( data.accountAddressID );
         
-        if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+        if(!isNull(accountAddress) && accountAddress.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountAddress( accountAddress );
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountAddress", !deleteOK );
+            getHibachiScope().addActionResult( "public:account.deleteAccountAddress", !deleteOK );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountAddress", true );   
+            getHibachiScope().addActionResult( "public:account.deleteAccountAddress", true );   
         }
     }
     
@@ -430,18 +430,17 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var accountPaymentMethod = getAccountService().getAccountPaymentMethod( data.accountPaymentMethodID );
         
-        if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+        if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
+            getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", !deleteOK );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", true ); 
+            getHibachiScope().addActionResult( "public:account.deleteAccountPaymentMethod", true ); 
         }
     }
     
     public any function addOrderShippingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="1";
         param name="data.saveShippingAsBilling" default="1";
-        
         
         /** add a shipping address */
         var shippingAddress = {};
@@ -453,7 +452,7 @@ component extends="HibachiService"  accessors="true" output="false"
             
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
-                var order = data.$.slatwall.cart();
+                var order = getHibachiScope().cart();
                 order.setShippingAddress(savedAddress);
                 
                 if (structKeyExists(data, "saveShippingAsBilling") && data.saveShippingAsBilling){
@@ -461,18 +460,17 @@ component extends="HibachiService"  accessors="true" output="false"
                 }
                 
                 if (structKeyExists(data, "saveAsAccountAddressFlag") && data.saveAsAccountAddressFlag){
-                
-                    var accountAddress = getService('AddressService').getAccountAddress(data.$.slatwall.account().getAccountAddresses()[1].getAccountAddressID());
+                    var accountAddresses = getHibachiScope().account().getAccountAddresses();
+                    if (!isNull(accountAddresses) && arrayLen(accountAddresses)){
+                        var accountAddress = getService('AddressService').getAccountAddress(accountAddresses[1].getAccountAddressID());
+                    }else{
+                        var accountAddress = getService("AccountService").newAccountAddress();
+                    }
                     
-                    accountAddress.setAccountAddressName(data.name); 
-                    //get new saved address
-                    var newAddress = getService("AddressService").newAddress();
-                    var savedNewAddress = getService('AddressService').saveAddress(newAddress, data);
-                    
-                    //set the new address on the account address entity.
-                    accountAddress.setAddress(savedNewAddress);
-                    var savedNewAccountAddress = getService('AddressService').saveAccountAddress(accountAddress);
-                
+                    if (len(accountAddress.getAccountAddressID())){
+                        data.accountAddressID = accountAddress.getAccountAddressID();
+                        addShippingAddressUsingAccountAddress();
+                    }
                 }
                 
                 getOrderService().saveOrder(order);
@@ -480,13 +478,52 @@ component extends="HibachiService"  accessors="true" output="false"
             }else{
                     
                     this.addErrors(data, savedAddress.getErrors()); //add the basic errors
-                    arguments.data.$.slatwall.addActionResult( "public:cart.AddShippingAddress", savedAddress.hasErrors());
+                    getHibachiScope().addActionResult( "public:cart.AddShippingAddress", savedAddress.hasErrors());
             }
         }
     }
     
+    /** Adds a shipping address to an order using an account address */
+    public void function addShippingAddressUsingAccountAddress(required data){
+        var accountAddressId = data.accountAddressID;
+        if (isNull(accountAddressID)){
+            return;
+        }
+        var accountAddress = getService('AddressService').getAccountAddress(accountAddressID);
+        
+        if (isObject(accountAddress) && !accountAddress.hasErrors()){
+            //save the address at the order level.
+            var order = getHibachiScope().cart();
+            order.setShippingAddress(accountAddress.getAddress());
+            order.setBillingAddress(accountAddress.getAddress());
+            getOrderService().saveOrder(order);            
+        }else{
+            this.addErrors(arguments.data, accountAddress.getErrors()); //add the basic errors
+            getHibachiScope().addActionResult( "public:cart.addShippingAddressUsingAccountAddress", accountAddress.hasErrors());
+        }
+    }
+    
+    /** Sets the shipping method to an order shippingMethodID */
+    public void function addShippingMethodUsingShippingMethodID(required data){
+        var shippingMethodId = data.shippingMethodID;
+        if (isNull(shippingMethodId)){
+            return;
+        }
+        var shippingMethod = getService('ShippingService').getShippingMethod(shippingMethodId);
+        
+        if (isObject(shippingMethod) && !shippingMethod.hasErrors()){
+            var order = getHibachiScope().cart();
+            var orderFulfillment = order.getOrderFulfillments()[1];
+            orderFulfillment.setShippingMethod(shippingMethod);
+            getOrderService().saveOrder(order);            
+        }else{
+            this.addErrors(arguments.data, shippingMethod.getErrors()); //add the basic errors
+            getHibachiScope().addActionResult( "public:cart.addShippingMethodUsingShippingMethodID", shippingMethod.hasErrors());
+        }
+    }
+    
     /** adds a billing address to an order. */
-    public void function addBillingAddress(required data, required slatwall){
+    public void function addBillingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="1"; 
         //if we have that data and don't have any suggestions to make, than try to populate the address
             billingAddress = getService('AddressService').newAddress();    
@@ -496,14 +533,14 @@ component extends="HibachiService"  accessors="true" output="false"
             
             if (isObject(savedAddress) && !savedAddress.hasErrors()){
                 //save the address at the order level.
-                var order = slatwall.cart();
+                var order = getHibachiScope().cart();
                 order.setBillingAddress(savedAddress);
                 
                 getOrderService().saveOrder(order);
             }
             if(savedAddress.hasErrors()){
                     this.addErrors(arguments.data, savedAddress.getErrors()); //add the basic errors
-                    arguments.slatwall.addActionResult( "public:cart.AddBillingAddress", savedAddress.hasErrors());
+                    getHibachiScope().addActionResult( "public:cart.AddBillingAddress", savedAddress.hasErrors());
             }
     }
     
@@ -514,22 +551,22 @@ component extends="HibachiService"  accessors="true" output="false"
      */
     public void function addAccountPaymentMethod() {
         
-        if(arguments.data.$.slatwall.getLoggedInFlag()) {
+        if(getHibachiScope().getLoggedInFlag()) {
             
             // Fodatae the payment method to be added to the current account
-            var accountPaymentMethod = arguments.data.$.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
+            var accountPaymentMethod = getHibachiScope().getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
             
-            accountPaymentMethod.setAccount( arguments.data.$.slatwall.getAccount() );
+            accountPaymentMethod.setAccount( getHibachiScope().getAccount() );
             
             accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.data );
             
-            arguments.data.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
+            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
             
             // If there were no errors then we can clear out the
             
         } else {
             
-            arguments.data.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", true );
+            getHibachiScope().addActionResult( "public:account.addAccountPaymentMethod", true );
                 
         }
         
@@ -543,18 +580,18 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function guestAccount(required any data) {
         param name="arguments.data.createAuthenticationFlag" default="0";
         
-        var account = getAccountService().processAccount( data.$.slatwall.getAccount(), arguments.data, 'create');
+        var account = getAccountService().processAccount( getHibachiScope().getAccount(), arguments.data, 'create');
         
         if( !account.hasErrors() ) {
-            if( !isNull(data.$.slatwall.getCart().getAccount())) {
-                var newCart = getOrderService().duplicateOrderWithNewAccount( data.$.slatwall.getCart(), account );
-                data.$.slatwall.getSession().setOrder( newCart );
+            if( !isNull(getHibachiScope().getCart().getAccount())) {
+                var newCart = getOrderService().duplicateOrderWithNewAccount( getHibachiScope().getCart(), account );
+                getHibachiScope().getSession().setOrder( newCart );
             } else {
-                data.$.slatwall.getCart().setAccount( account );    
+                getHibachiScope().getCart().setAccount( account );    
             }
-            arguments.data.$.slatwall.addActionResult( "public:cart.guestCheckout", false );
+            getHibachiScope().addActionResult( "public:cart.guestCheckout", false );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:cart.guestCheckout", true ); 
+            getHibachiScope().addActionResult( "public:cart.guestCheckout", true ); 
         }
         
     }
@@ -571,14 +608,14 @@ component extends="HibachiService"  accessors="true" output="false"
         var order = getOrderService().getOrder( arguments.data.orderID );
         
         // verify that the orderID passed in was in fact the lastPlacedOrderID from the session, that the order & account match up, and that the account is in fact a guest account right now
-        if(!isNull(order) && arguments.data.orderID == arguments.data.$.slatwall.getSession().getLastPlacedOrderID() && order.getAccount().getAccountID() == arguments.data.accountID && order.getAccount().getGuestAccountFlag()) {
+        if(!isNull(order) && arguments.data.orderID == getHibachiScope().getSession().getLastPlacedOrderID() && order.getAccount().getAccountID() == arguments.data.accountID && order.getAccount().getGuestAccountFlag()) {
             
             var account = getAccountService().processAccount( order.getAccount(), arguments.data, "createPassword" );
-            arguments.data.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", account.hasErrors() );
+            getHibachiScope().addActionResult( "public:cart.guestAccountCreatePassword", account.hasErrors() );
             return account;
         } else {
             
-            arguments.data.$.slatwall.addActionResult( "public:cart.guestAccountCreatePassword", true );
+            getHibachiScope().addActionResult( "public:cart.guestAccountCreatePassword", true );
         }
         
     }
@@ -592,12 +629,12 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( data.subscriptionUsageID );
         
-        if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+        if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var subscriptionUsage = getSubscriptionService().saveSubscriptionUsage( subscriptionUsage, arguments.data );
-            arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
+            getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
             return subscriptionUsage;
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
+            getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", true );
         }
         
     }
@@ -612,22 +649,22 @@ component extends="HibachiService"  accessors="true" output="false"
         
         var subscriptionUsage = getSubscriptionService().getSubscriptionUsage( data.subscriptionUsageID );
         
-        if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID() ) {
+        if(!isNull(subscriptionUsage) && subscriptionUsage.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID() ) {
             var subscriptionUsage = getSubscriptionService().processSubscriptionUsage( subscriptionUsage, arguments.data, 'renew' );
-            arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
+            getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", subscriptionUsage.hasErrors() );
             return subscriptionUsage;
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
+            getHibachiScope().addActionResult( "public:account.updateSubscriptionUsage", true );
         }
     }
     
     /** exposes the cart and account */
     public void function getCartData(any data) {
-        arguments.data.ajaxResponse = data.$.slatwall.getHibachiScope().getCartData();
+        arguments.data.ajaxResponse = getHibachiScope().getHibachiScope().getCartData();
     }
     
     public void function getAccountData(any data) {
-        arguments.data.ajaxResponse = data.$.slatwall.getHibachiScope().getAccountData();
+        arguments.data.ajaxResponse = getHibachiScope().getHibachiScope().getAccountData();
     }
     
     /** 
@@ -640,7 +677,7 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="arguments.data.setAsCartFlag" default="0";
         
         var order = getOrderService().getOrder( arguments.data.orderID );
-        if(!isNull(order) && order.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID()) {
+        if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
             
             var data = {
                 saveNewFlag=true,
@@ -650,11 +687,11 @@ component extends="HibachiService"  accessors="true" output="false"
             var duplicateOrder = getOrderService().processOrder(order,data,"duplicateOrder" );
             
             if(isBoolean(arguments.data.setAsCartFlag) && arguments.data.setAsCartFlag) {
-                arguments.data.$.slatwall.getSession().setOrder( duplicateOrder );
+                getHibachiScope().getSession().setOrder( duplicateOrder );
             }
-            arguments.data.$.slatwall.addActionResult( "public:account.duplicateOrder", false );
+            getHibachiScope().addActionResult( "public:account.duplicateOrder", false );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:account.duplicateOrder", true );
+            getHibachiScope().addActionResult( "public:account.duplicateOrder", true );
         }
     }
     
@@ -664,14 +701,14 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      */
     public void function updateOrder( required struct data ) {
-        var cart = getOrderService().saveOrder( data.$.slatwall.cart(), arguments.data );
+        var cart = getOrderService().saveOrder( getHibachiScope().cart(), arguments.data );
         
         // Insure that all items in the cart are within their max constraint
         if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
             cart = getOrderService().processOrder(cart, 'fodataeItemQuantityUpdate');
         }
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.update", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.update", cart.hasErrors() );
     }
     
     /** 
@@ -680,9 +717,9 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      */
     public void function clearOrder( required struct data ) {
-        var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'clear');
+        var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'clear');
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.clear", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.clear", cart.hasErrors() );
     }
     
     /** 
@@ -694,11 +731,11 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="arguments.data.orderID" default="";
         
         var order = getOrderService().getOrder( arguments.data.orderID );
-        if(!isNull(order) && order.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID()) {
-            arguments.data.$.slatwall.getSession().setOrder( order );
-            arguments.data.$.slatwall.addActionResult( "public:cart.change", false );
+        if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
+            getHibachiScope().getSession().setOrder( order );
+            getHibachiScope().addActionResult( "public:cart.change", false );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:cart.change", true );
+            getHibachiScope().addActionResult( "public:cart.change", true );
         }
     }
     
@@ -711,11 +748,11 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="arguments.data.orderID" default="";
         
         var order = getOrderService().getOrder( arguments.data.orderID );
-        if(!isNull(order) && order.getAccount().getAccountID() == arguments.data.$.slatwall.getAccount().getAccountID()) {
+        if(!isNull(order) && order.getAccount().getAccountID() == getHibachiScope().getAccount().getAccountID()) {
             var deleteOk = getOrderService().deleteOrder(order);
-            arguments.data.$.slatwall.addActionResult( "public:cart.delete", !deleteOK );
+            getHibachiScope().addActionResult( "public:cart.delete", !deleteOK );
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:cart.delete", true );
+            getHibachiScope().addActionResult( "public:cart.delete", true );
         }
     }
     
@@ -729,29 +766,29 @@ component extends="HibachiService"  accessors="true" output="false"
         param name="data.preProcessDisplayedFlag" default="true";
         param name="data.saveShippingAccountAddressFlag" default="false";
         
-        var cart = data.$.slatwall.cart();
+        var cart = getHibachiScope().cart();
         
         // Check to see if we can attach the current account to this order, required to apply price group details
-        if( isNull(cart.getAccount()) && data.$.slatwall.getLoggedInFlag() ) {
-            cart.setAccount( data.$.slatwall.getAccount() );
+        if( isNull(cart.getAccount()) && getHibachiScope().getLoggedInFlag() ) {
+            cart.setAccount( getHibachiScope().getAccount() );
         }
         
         cart = getOrderService().processOrder( cart, arguments.data, 'addOrderItem');
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.addOrderItem", cart.hasErrors() );
         
         if(!cart.hasErrors()) {
             // If the cart doesn't have errors then clear the process object
             cart.clearProcessObject("addOrderItem");
             
             // Also make sure that this cart gets set in the session as the order
-            data.$.slatwall.getSession().setOrder( cart );
+            getHibachiScope().getSession().setOrder( cart );
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
         }else{
-            addErrors(data, data.$.slatwall.getCart().getProcessObject("addOrderItem").getErrors());
+            addErrors(data, getHibachiScope().getCart().getProcessObject("addOrderItem").getErrors());
         }
         
     }
@@ -762,11 +799,11 @@ component extends="HibachiService"  accessors="true" output="false"
      */
     public void function updateOrderItemQuantity(required any data) {
         
-        var cart = data.$.slatwall.cart();
+        var cart = getHibachiScope().cart();
         
         // Check to see if we can attach the current account to this order, required to apply price group details
-        if( isNull(cart.getAccount()) && data.$.slatwall.getLoggedInFlag() ) {
-            cart.setAccount( data.$.slatwall.getAccount() );
+        if( isNull(cart.getAccount()) && getHibachiScope().getLoggedInFlag() ) {
+            cart.setAccount( getHibachiScope().getAccount() );
         }
         
         if (structKeyExists(data, "orderItem") && structKeyExists(data.orderItem, "sku") && structKeyExists(data.orderItem.sku, "skuID") && structKeyExists(data.orderItem, "qty") && data.orderItem.qty > 0 ){
@@ -776,20 +813,20 @@ component extends="HibachiService"  accessors="true" output="false"
                 }
             }
         }
-        arguments.data.$.slatwall.addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.updateOrderItem", cart.hasErrors() );
         
         if(!cart.hasErrors()) {
             //Persist the quantity change
             getOrderService().saveOrder(cart);
             
             // Also make sure that this cart gets set in the session as the order
-            data.$.slatwall.getSession().setOrder( cart );
+            getHibachiScope().getSession().setOrder( cart );
             
             // Make sure that the session is persisted
             getHibachiSessionService().persistSession();
             
         }else{
-            addErrors(data, data.$.slatwall.getCart().getErrors());
+            addErrors(data, getHibachiScope().getCart().getErrors());
         }
     }
     /** 
@@ -798,9 +835,9 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Removed or <b>(400)</b> Bad or Missing Input Data
      */
     public void function removeOrderItem(required any data) {
-        var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'removeOrderItem');
+        var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderItem');
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
     }
     
     /** 
@@ -809,9 +846,9 @@ component extends="HibachiService"  accessors="true" output="false"
       * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      */
     public void function updateOrderFulfillment(required any data) {
-        var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'updateOrderFulfillment');
+        var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'updateOrderFulfillment');
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
     }
     
     /** 
@@ -820,14 +857,14 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
      */
     public void function addPromotionCode(required any data) {
-        var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'addPromotionCode');
+        var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'addPromotionCode');
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.addPromotionCode", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.addPromotionCode", cart.hasErrors() );
         
         if(!cart.hasErrors()) {
             cart.clearProcessObject("addPromotionCode");
         }else{
-            addErrors(data, data.$.slatwall.getCart().getProcessObject("AddPromotionCode").getErrors());
+            addErrors(data, getHibachiScope().getCart().getProcessObject("AddPromotionCode").getErrors());
         }
     }
     
@@ -836,9 +873,9 @@ component extends="HibachiService"  accessors="true" output="false"
      * @description Remove Promotion Code
      */
     public void function removePromotionCode(required any data) {
-        var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'removePromotionCode');
+        var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'removePromotionCode');
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.removePromotionCode", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.removePromotionCode", cart.hasErrors() );
     }
     
     /** 
@@ -857,18 +894,28 @@ component extends="HibachiService"  accessors="true" output="false"
         // Make sure that someone isn't trying to pass in another users orderPaymentID
         if(len(data.newOrderPayment.orderPaymentID)) {
             var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);
-            if(orderPayment.getOrder().getOrderID() != data.$.slatwall.cart().getOrderID()) {
+            if(orderPayment.getOrder().getOrderID() != getHibachiScope().cart().getOrderID()) {
                 data.newOrderPayment.orderPaymentID = "";
             }
         }
         
         if (!data.newOrderPayment.saveShippingAsBilling){
             //use this billing information
-            this.addBillingAddress(data.newOrderPayment.billingAddress, arguments.data.$.slatwall, "billing");
+            this.addBillingAddress(data.newOrderPayment.billingAddress, "billing");
         }
         
-        var addOrderPayment = getService('OrderService').processOrder( data.$.slatwall.cart(), arguments.data, 'addOrderPayment');
-        arguments.data.$.slatwall.addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
+        var addOrderPayment = getService('OrderService').processOrder( getHibachiScope().cart(), arguments.data, 'addOrderPayment');
+        getHibachiScope().addActionResult( "public:cart.addOrderPayment", addOrderPayment.hasErrors() );
+        
+    }
+    /**
+     Adds an order payment and then calls place order.
+    */
+    public void function addOrderPaymentAndPlaceOrder(required any data) {
+        addOrderPayment(arguments.data);
+        if (!getHibachiScope().cart().hasErrors()){
+            placeOrder(arguments.data);
+        }
         
     }
     
@@ -878,9 +925,9 @@ component extends="HibachiService"  accessors="true" output="false"
      * @description Remove Order Payment 
      */
     public void function removeOrderPayment(required any data) {
-        var cart = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'removeOrderPayment');
+        var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderPayment');
         
-        arguments.data.$.slatwall.addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
+        getHibachiScope().addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
     }
     
     /** 
@@ -890,9 +937,9 @@ component extends="HibachiService"  accessors="true" output="false"
     public void function placeOrder(required any data) {
         
         // Insure that all items in the cart are within their max constraint
-        if(!data.$.slatwall.cart().hasItemsQuantityWithinMaxOrderQuantity()) {
-            getOrderService().processOrder(data.$.slatwall.cart(), 'fodataeItemQuantityUpdate');
-            arguments.data.$.slatwall.addActionResult( "public:cart.placeOrder", true );
+        if(!getHibachiScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
+            getOrderService().processOrder(getHibachiScope().cart(), 'fodataeItemQuantityUpdate');
+            getHibachiScope().addActionResult( "public:cart.placeOrder", true );
         } else {
             // Setup newOrderPayment requirements
             if(structKeyExists(data, "newOrderPayment")) {
@@ -903,22 +950,22 @@ component extends="HibachiService"  accessors="true" output="false"
                 // Make sure that someone isn't trying to pass in another users orderPaymentID
                 if(len(data.newOrderPayment.orderPaymentID)) {
                     var orderPayment = getOrderService().getOrderPayment(data.newOrderPayment.orderPaymentID);
-                    if(orderPayment.getOrder().getOrderID() != data.$.slatwall.cart().getOrderID()) {
+                    if(orderPayment.getOrder().getOrderID() != getHibachiScope().cart().getOrderID()) {
                         data.newOrderPayment.orderPaymentID = "";
                     }
                 }
                 
-                data.newOrderPayment.order.orderID = data.$.slatwall.cart().getOrderID();
+                data.newOrderPayment.order.orderID = getHibachiScope().cart().getOrderID();
                 data.newOrderPayment.orderPaymentType.typeID = '444df2f0fed139ff94191de8fcd1f61b';
             }
             
-            var order = getOrderService().processOrder( data.$.slatwall.cart(), arguments.data, 'placeOrder');
+            var order = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'placeOrder');
             
-            arguments.data.$.slatwall.addActionResult( "public:cart.placeOrder", order.hasErrors() );
+            getHibachiScope().addActionResult( "public:cart.placeOrder", order.hasErrors() );
             
             if(!order.hasErrors()) {
-                data.$.slatwall.setSessionValue('confirmationOrderID', order.getOrderID());
-                data.$.slatwall.getSession().setLastPlacedOrderID( order.getOrderID() );
+                getHibachiScope().setSessionValue('confirmationOrderID', order.getOrderID());
+                getHibachiScope().getSession().setLastPlacedOrderID( order.getOrderID() );
             }
             
         }
@@ -937,13 +984,13 @@ component extends="HibachiService"  accessors="true" output="false"
         if( !isNull(product) ) {
             product = getProductService().processProduct( product, arguments.data, 'addProductReview');
             
-            arguments.data.$.slatwall.addActionResult( "public:product.addProductReview", product.hasErrors() );
+            getHibachiScope().addActionResult( "public:product.addProductReview", product.hasErrors() );
             
             if(!product.hasErrors()) {
                 product.clearProcessObject("addProductReview");
             }
         } else {
-            arguments.data.$.slatwall.addActionResult( "public:product.addProductReview", true );
+            getHibachiScope().addActionResult( "public:product.addProductReview", true );
         }
     }
     

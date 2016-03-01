@@ -7,7 +7,7 @@
   "repository": "https://github.com/ten24/Slatwall",
   "license": "MIT",
   "dependencies": {
-      "ts-loader": "^0.6.0",
+      "ts-loader": "*",
       "blueimp-md5": "^1.1.0",
       "md5":"^2.0.0"
   },
@@ -22,7 +22,7 @@
     "run-sequence": "^1.1.4",
     "strip-loader": "^0.1.0",
     "tsify": "*",
-    "typescript": "^1.6.2",
+    "typescript": "*",
     "vinyl-source-stream": "^1.1.0",
     "webpack": "*",
     "webpack-dev-server": "^1.12.1",
