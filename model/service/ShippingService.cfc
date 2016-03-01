@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 
 				// again, check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity())) {
+				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity(), arguments.orderFulfillment.getOrder().getAccount().getPriceGroups())) {
 
 					// If this rate is a manual one, then use the default amount
 					if(isNull(shippingMethodRates[r].getShippingIntegration())) {
@@ -341,10 +341,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         // Make sure that the shipping method rates price-group is one that the user has access to on account.
         
         //If this rate has price groups assigned but the user does not, then fail.
-        if (arrayLen(shippingMethodRate.getPriceGroups()) && !arrayLen(arguments.accountPriceGroups)){
+        if (!isNull(shippingMethodRate.getPriceGroups()) && arrayLen(shippingMethodRate.getPriceGroups()) && isNull(arguments.accountPriceGroups)){
         	return false;
         //If this rate has price groups assigned and the user has groups but not the correct ones, then fail.
-        }else if(arrayLen(shippingMethodRate.getPriceGroups()) && arrayLen(arguments.accountPriceGroups)){
+        } else if (arrayLen(shippingMethodRate.getPriceGroups()) && !isNull(arguments.accountPriceGroups) && arrayLen(arguments.accountPriceGroups)){
         	var foundMatchingPriceGroup = false;
         	for (var priceGroup in shippingMethodRate.getPriceGroups()){
         		if (listFindNoCase(priceGroup, arguments.accountPriceGroups)){
