@@ -1,0 +1,12 @@
+{  
+    "paymentMethodMaximumOrderTotalPercentageAmount":{  
+        "fieldType":"text",
+        "defaultValue":100,
+        "formatType":"percentage",
+        "validate":{  
+            "dataType":"numeric",
+            "minValue":0,
+            "maxValue":100
+        }
+    }
+}

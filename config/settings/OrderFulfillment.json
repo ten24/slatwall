@@ -1,0 +1,6 @@
+{  
+    "orderFulfillmentEmailTemplate":{  
+        "fieldtype":"select",
+        "defaultValue":""
+    }
+}

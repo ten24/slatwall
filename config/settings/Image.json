@@ -1,0 +1,10 @@
+{  
+    "imageAltString":{  
+        "fieldType":"text",
+        "defaultValue":""
+    },
+    "imageMissingImagePath":{  
+        "fieldType":"text",
+        "defaultValue":"/assets/images/missingimage.jpg"
+    }
+}

@@ -1,0 +1,34 @@
+{  
+    "contentRestrictAccessFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":0
+    },
+    "contentRequirePurchaseFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":0
+    },
+    "contentRequireSubscriptionFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":0
+    },
+    "contentIncludeChildContentProductsFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":1
+    },
+    "contentRestrictedContentDisplayTemplate":{  
+        "fieldType":"select"
+    },
+    "contentHTMLTitleString":{  
+        "fieldType":"text"
+    },
+    "contentMetaDescriptionString":{  
+        "fieldType":"textarea"
+    },
+    "contentMetaKeywordsString":{  
+        "fieldType":"textarea"
+    },
+    "contentTemplateFile":{  
+        "fieldType":"select",
+        "defaultValue":"default.cfm"
+    }
+}

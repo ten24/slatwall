@@ -1,0 +1,6 @@
+{  
+    "shippingMethodQualifiedRateSelection":{  
+        "fieldType":"select",
+        "defaultValue":"lowest"
+    }
+}

@@ -1,0 +1,23 @@
+{  
+    "locationConfigurationCapacity":{  
+        "fieldType":"text",
+        "defaultValue":0,
+        "validate":{  
+            "dataType":"numeric"
+        }
+    },
+    "locationConfigurationAdditionalPreReservationTime":{  
+        "fieldType":"text",
+        "defaultValue":0,
+        "validate":{  
+            "dataType":"numeric"
+        }
+    },
+    "locationConfigurationAdditionalPostReservationTime":{  
+        "fieldType":"text",
+        "defaultValue":0,
+        "validate":{  
+            "dataType":"numeric"
+        }
+    }
+}
