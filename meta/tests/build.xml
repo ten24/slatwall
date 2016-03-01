@@ -27,7 +27,7 @@
 		<property name="slatwall.test.dir.name" value="meta/tests" />
 
 		<!-- where do your tests live, relative to this build file? test.dir.location will be a full path to a directory -->
-		<property name="slatwall.test.dir.location" location="tests" />
+		<property name="slatwall.test.dir.location" location="./" />
 
 		<!-- what is the cfc dot-notation path to that directory, as ColdFusion sees it? -->
 		<property name="slatwall.test.cfcpath" value="Slatwall.meta.tests" />
@@ -36,7 +36,6 @@
 		<property name="slatwall.test.server" value="${computer.hostname}" />
 		<property name="slatwall.test.serverport" value="8888" />
 		<property name="slatwall.test.datasource" value="Slatwall" />
-		<property name="slatwall.test.functional.browser" value="*googlechrome" />
 
 		<!-- what "runner" URL should the tests hit. In this example, you'd be hitting http://localhost:80/DirectoryNameOfYourProject/test/HttpAntRunner.cfc  Simply copy mxunit/samples/HttpAntRunner.cfc into your test directory! -->
 		<property name="slatwall.test.runner" value="/${slatwall.test.dir.name}/HttpAntRunner.cfc" />
@@ -62,32 +61,12 @@
 		<echoproperties />
 	</target>
 
-	<target name="setupMachineTestsConfig" depends="init">
-		<echo file="tests/config/${computer.hostname}.ini">
-# Parameters needed by all tests
-[common]
-login=testrunnersuperuser@mailinator.com
-password=testrunner
-
-# Parameters for UI tests
-[ui]
-browserUrl=http://${slatwall.test.server}/
-browserCommand=${slatwall.test.functional.browser}
-		</echo>
-	</target>
-
-	<target name="setupApplicationConfig" depends="init,setupMachineTestsConfig">
+	<target name="setupApplicationConfig" depends="init">
 		<tstamp>
 		      <format property="touch.time" pattern="yyyymmddhhmmaa" unit="hour" />
 		</tstamp>
 		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 		<delete file="../custom/config/lastFullUpdate.txt.cfm" failonerror="false"/>
-
-		<!--
-		<delete dir="${slatwall.test.output.xml}/reloadget" failonerror="false"/>
-		<mkdir dir="${slatwall.test.output.xml}/reloadget" />
-		<get src="http://${slatwall.test.server}:${slatwall.test.serverport}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
-	-->
 	</target>
 
 	<target name="runUnitTests" depends="setupApplicationConfig">
@@ -115,7 +94,7 @@ browserCommand=${slatwall.test.functional.browser}
 				<istrue value="${tests.bombed}"/>
 			</condition>
 		</fail>
-		
+
 	</target>
 
 	<macrodef name="runTestDirectory">
@@ -127,19 +106,5 @@ browserCommand=${slatwall.test.functional.browser}
 			</mxunittask>
 		</sequential>
 	</macrodef>
-
-
-
-<!--
-	<target name="runFunctionalTests" depends="init,setupApplicationConfig,setupMachineTestsConfig">
-		<delete dir="${slatwall.test.output.xml}/functional" failonerror="false"/>
-		<mkdir dir="${slatwall.test.output.xml}/functional" />
-		<runTestDirectory directoryName="functional" excludes=""/>
-	</target>
-
-	<target name="runAllTests" description="Make output directories and run the MXUnit task" depends="init,runUnitTests,runFunctionalTests">
-		<fail if="tests.bombed" message="Failing the build due to test failures"/>
-	</target>
--->
 
 </project>

@@ -4,6 +4,7 @@ slatwallweb:
    - "80:8888"
   volumes:
    - ../../../:/var/www
+   - $CIRCLE_TEST_REPORTS:/var/www/meta/tests/testresults/xml
   links:
    - slatwalldb
   environment:

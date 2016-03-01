@@ -56,10 +56,6 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		variables.configureTestUtility = createObject("component", "Slatwall.meta.tests.ConfigureTestUtility").init( variables.slatwallFW1Application );
-
-		// Read Config
-		variables.configuration = variables.configureTestUtility.readLocalConfiguration();
 
 		super.beforeTests();
 	}
