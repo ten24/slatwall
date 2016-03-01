@@ -4,7 +4,7 @@
 
 	<cfparam name="attributes.edit" type="boolean" default="false" />					<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
 	<cfparam name="attributes.requiredFlag" type="boolean" default="false" />			<!--- Determines whether property is required or not in edit mode --->
-	
+
 	<cfparam name="attributes.title" type="string" default="" />						<!--- hint: This can be used to override the displayName of a property" --->
 	<cfparam name="attributes.hint" type="string" default="" />							<!--- hint: This is the hint value associated with whatever field we are displaying.  If specified, you will get a tooltip popup --->
 
@@ -40,8 +40,10 @@
 					<div class="form-group <cfif attributes.requiredFlag>s-required</cfif>">
 						<label for="#attributes.fieldName#" class="control-label col-sm-4">
 							<span class="s-title">#attributes.title#</span>
-							<cfif len(attributes.hint)> 
-								<a href="##" tabindex="-1" data-toggle="tooltip" class="s-tooltip-hint" data-title="#attributes.hint#"><i class="fa fa-info-circle"></i></a>
+							<cfif len(attributes.hint)>
+								<span sw-tooltip class="j-tool-tip-item" data-text="#attributes.hint#" data-position="right">
+           							<i class="fa fa-question-circle"></i>
+      							</span>
 							</cfif>
 						</label>
 						<div class="col-sm-8">
@@ -53,8 +55,8 @@
 			<cfelse>
 				<cfoutput>
 					<div class="form-group">
-						<label class="control-label col-sm-4 title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif></label>
-						
+						<label class="control-label col-sm-4 title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)><span sw-tooltip class="j-tool-tip-item" data-text="#attributes.hint#" data-position="right"><i class="fa fa-question-circle"></i></span></cfif><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif></label>
+
 						<div class="col-sm-8">
 							<cfif attributes.fieldType eq "listingMultiselect">
 								<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></p>
@@ -75,7 +77,7 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<tr>
-						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif> <cfif attributes.requiredFlag>s-required</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></td>
+						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif> <cfif attributes.requiredFlag>s-required</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)><span sw-tooltip class="j-tool-tip-item" data-text="#attributes.hint#" data-position="right"><i class="fa fa-question-circle"></i></span></a></cfif></label></td>
 						<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
 							<hb:HibachiFormField attributecollection="#attributes#" />
 							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
