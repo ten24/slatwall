@@ -9,6 +9,7 @@ dependencies:
     # Setup git user for deployment
     - git config --global user.email "info@slatwallcommerce.com"
     - git config --global user.name "Big Boy (Slatwall Robot)"
+    - git config --global push.default current
 
     # Install webpack globally
     - npm install -g webpack

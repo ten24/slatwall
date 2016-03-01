@@ -9,6 +9,6 @@ else
     # changes
     echo "Build Changes Found"
     git commit -a -m "CI build passed, commit of automatically built files - $CIRCLE_BUILD_URL [skip ci]"
-    git push origin current
+    git push origin
 
 fi
