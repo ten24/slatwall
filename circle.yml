@@ -43,37 +43,31 @@ test:
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    #- se-interpreter --parallel=1 meta/tests/integration/setup_config.json
+    - se-interpreter --parallel=1 meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
-    #- se-interpreter --parallel=5 meta/tests/integration/admin_config.json
+    - se-interpreter --parallel=5 meta/tests/integration/admin_config.json
 
     # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests
 
-    # Run Sauce Labs Integration Setup Tests (IF on CONTAINER 0)
-    #- case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=1 meta/tests/integration/setup_config.json ;; esac:
-    #    parallel: true
-
-    # Run Sauce Labs Integration Admin Tests, 5 side by side at a time (IF CONTAINER 0)
-    #- case $CIRCLE_NODE_INDEX in 0) se-interpreter --parallel=5 meta/tests/integration/admin_config.json ;; esac:
-    #    parallel: true
-
-    # Run Unit Tests (IF CONTAINER 1)
-    #- case $CIRCLE_NODE_INDEX in 1) sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/build.xml runUnitTests ;; esac:
-    #    parallel: true
-
 deployment:
+
+  # If this is a merge into master, then do a micro version adjust and push the built files
   master_release:
     branch: master
     commands:
       - meta/ci/version_adjust.sh
       - meta/ci/push_built_files.sh
+
+  # If this is a merfe into develop, then do a build version adjust and push the built files
   develop_release:
     branch: develop
     commands:
       - meta/ci/version_adjust.sh
       - meta/ci/update_master_version.sh
+
+  # If this is an integration branch just build the JS as needed
   jsbuild_only:
     branch: [travis, hotfix]
     commands:

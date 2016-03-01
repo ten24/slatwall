@@ -109,13 +109,13 @@ browserCommand=${slatwall.test.functional.browser}
 		  <report format="frames" todir="${slatwall.test.output.html}/unit"/>
 		</junitreport>
 
-		<!-- Fail Build if not all unit tests pass
+		<!-- Fail Build if not all unit tests pass -->
 		<fail message="Not All Unit Tests Passed">
 			<condition>
 				<istrue value="${tests.bombed}"/>
 			</condition>
 		</fail>
-		-->
+		
 	</target>
 
 	<macrodef name="runTestDirectory">
