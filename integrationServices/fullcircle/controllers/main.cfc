@@ -49,8 +49,8 @@ Notes:
 component {
 
 	public any function updateProducts() {
-		var DataDAO = new Slatwall.integrationServices.fullcircle.com.HibachiDataDAO();
-		DataDAO.updateProducts();
+		var dataDAO = new Slatwall.integrationServices.fullcircle.com.DataDAO();
+		dataDAO.updateProducts();
 	}
 
 }
