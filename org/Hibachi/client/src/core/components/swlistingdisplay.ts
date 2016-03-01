@@ -66,6 +66,7 @@ class SWListingDisplayController{
     private isCurrentPageRecordsSelected;
     private allSelected;
     private name;
+    private filterGroups;
     //@ngInject
     constructor(
         public $scope,
@@ -131,6 +132,11 @@ class SWListingDisplayController{
         //this is performed early to populate columns with swlistingcolumn info
         this.$transclude(this.$scope,()=>{});
         
+        //add filterGroups
+        angular.forEach(this.filterGroups, (filterGroup)=>{
+            this.collectionConfig.addFilterGroup(filterGroup);
+        });
+
          //add filters
         this.setupColumns();
         angular.forEach(this.filters, (filter)=>{
@@ -249,7 +255,7 @@ class SWListingDisplayController{
             //attach observer so we know when a pagination change occurs
             this.observerService.attach(this.paginationPageChange,'swPaginationAction');
         }
-        if(this.multiselectable && !this.columns.length){
+        if(this.multiselectable && (!this.columns || !this.columns.length)){
             //check if it has an active flag and if so then add the active flag
             if(this.exampleEntity.metaData.activeProperty && !this.hasCollectionPromise){
                 this.collectionConfig.addFilter('activeFlag',1);
@@ -269,7 +275,7 @@ class SWListingDisplayController{
             }
         }
             //Setup Hierachy Expandable
-        if(this.parentPropertyName && this.parentPropertyName.length){
+        if(this.parentPropertyName && this.parentPropertyName.length && this.expandable !=false){
             if(angular.isUndefined(this.expandable)){
                 this.expandable = true;
             }
@@ -409,7 +415,7 @@ class SWListingDisplayController{
         */
 
         //Setup the list of all property identifiers to be used later
-        angular.forEach(this.columns,(column)=>{
+        angular.forEach(this.columns,(column:any)=>{
             //If this is a standard propertyIdentifier
             if(column.propertyIdentifier){
                 //Add to the all property identifiers
@@ -484,7 +490,8 @@ class SWListingDisplayController{
 
         });
         //Setup a variable for the number of columns so that the none can have a proper colspan
-        this.columnCount = this.columns.length;
+        this.columnCount = (this.columns) ? this.columns.length : 0;
+
         if(this.selectable){
             this.columnCount++;
         }
@@ -505,7 +512,7 @@ class SWListingDisplayController{
 
     public setupColumns = ()=>{
         //assumes no alias formatting
-        angular.forEach(this.columns.reverse(), (column)=>{
+        angular.forEach(this.columns, (column:any)=>{
 
             var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
             if(angular.isUndefined(column.title)){
