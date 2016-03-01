@@ -61,15 +61,7 @@
 		<echoproperties />
 	</target>
 
-	<target name="setupApplicationConfig" depends="init">
-		<tstamp>
-		      <format property="touch.time" pattern="yyyymmddhhmmaa" unit="hour" />
-		</tstamp>
-		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
-		<delete file="../custom/config/lastFullUpdate.txt.cfm" failonerror="false"/>
-	</target>
-
-	<target name="runUnitTests" depends="setupApplicationConfig">
+	<target name="runUnitTests" depends="init">
 
 		<!-- Setup test output directory -->
 		<delete dir="${slatwall.test.output.xml}/unit" failonerror="false"/>
