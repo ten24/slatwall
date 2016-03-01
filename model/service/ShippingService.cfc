@@ -261,7 +261,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getTotalCharge() );
 			}
 		}
-
 	}
 
 	public boolean function verifyOrderFulfillmentShippingMethodRate(required any orderFulfillment) {
@@ -289,7 +288,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity) {
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity, any accountPriceGroups) {
 		// Make sure that the rate is active
 		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
 			return false;
@@ -339,6 +338,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             return false;
         }
         
+        // Make sure that the shipping method rates price-group is one that the user has access to on account.
+        
+        //If this rate has price groups assigned but the user does not, then fail.
+        if (arrayLen(shippingMethodRate.getPriceGroups()) && !arrayLen(arguments.accountPriceGroups)){
+        	return false;
+        //If this rate has price groups assigned and the user has groups but not the correct ones, then fail.
+        }else if(arrayLen(shippingMethodRate.getPriceGroups()) && arrayLen(arguments.accountPriceGroups)){
+        	var foundMatchingPriceGroup = false;
+        	for (var priceGroup in shippingMethodRate.getPriceGroups()){
+        		if (listFindNoCase(priceGroup, arguments.accountPriceGroups)){
+        			foundMatchingPriceGroup = true;
+        		}
+        	}
+        	if (!foundMatchingPriceGroup){
+        		return false;
+        	}
+        }
+        
 		// If we have not returned false by now, then return true
 		return true;
 	}
@@ -374,31 +391,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return returnAmount;
 	}
-    
-    public numeric function calculateShippingRateAdjustmentByPriceGroup(required numeric originalAmount, required any priceGroupRate) {
-        var returnAmount = arguments.originalAmount;
-        //var shippingMethodRateAdjustmentAmount = arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount');
 
-        if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
-
-            switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
-                case "increasePercentage":
-                    returnAmount = precisionEvaluate(arguments.originalAmount + (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
-                    break;
-                case "decreasePercentage":
-                    returnAmount = precisionEvaluate(arguments.originalAmount - (arguments.originalAmount * shippingMethodRateAdjustmentAmount));
-                    break;
-                case "increaseAmount":
-                    returnAmount = precisionEvaluate(arguments.originalAmount + shippingMethodRateAdjustmentAmount);
-                    break;
-                case "decreaseAmount":
-                    returnAmount = precisionEvaluate(arguments.originalAmount - shippingMethodRateAdjustmentAmount);
-                    break;
-            }
-       }
-
-        return returnAmount;
-    }
 
 	// ===================== START: Logical Methods ===========================
 
