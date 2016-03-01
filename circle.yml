@@ -1,0 +1,79 @@
+machine:
+  hosts:
+    slatwall-qa: 127.0.0.1
+  services:
+    - docker
+
+dependencies:
+  override:
+    # Setup git user for deployment
+    - git config --global user.email "info@slatwallcommerce.com"
+    - git config --global user.name "Big Boy (Slatwall Robot)"
+    - git config --global push.default current
+
+    - npm install -g webpack gulp
+
+    - npm install gulp gulp-inject gulp-chmod gulp-util run-sequence webpack
+
+    # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
+    - npm install -g se-interpreter
+
+    # Minify JS
+     # generate typings 
+    - cd org/Hibachi/client && gulp gen-ts-refs
+    - cd admin/client && gulp gen-ts-refs
+    # Minify JS
+    - cd admin/client && webpack --config webpack-production.config.js -p --display-error-details
+
+    # Update docker-compose
+    - curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > docker-compose
+    - chmod +x docker-compose
+    - sudo mv docker-compose /usr/local/bin
+
+    # Install Sauce Labs Connector
+    - wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
+    - tar -xzf sc-latest-linux.tar.gz
+
+test:
+  pre:
+    # Fire Up Slatwall Containers, Need to do in parallel so that it starts up on all VMs
+    - docker-compose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
+
+    # Connect ot SauceLabs for Integration Testing
+    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
+        background: true
+
+    # Wait for Saucelabs connection
+    - while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
+  override:
+
+    # Run Sauce Labs Integration Setup Tests
+    - se-interpreter --parallel=1 meta/tests/integration/setup_config.json
+
+    # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
+    - se-interpreter --parallel=5 meta/tests/integration/admin_config.json
+
+    # Run Unit Tests
+    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml runUnitTests
+
+deployment:
+
+  # If this is a merge into master, then do a micro version adjust and push the built files
+  master_release:
+    branch: master
+    commands:
+      - meta/ci/version_adjust.sh
+      - meta/ci/push_built_files.sh
+
+  # If this is a merfe into develop, then do a build version adjust and push the built files
+  develop_release:
+    branch: develop
+    commands:
+      - meta/ci/version_adjust.sh
+      - meta/ci/update_master_version.sh
+
+  # If this is an integration branch just build the JS as needed
+  jsbuild_only:
+    branch: [travis, hotfix]
+    commands:
+      - meta/ci/push_built_files.sh

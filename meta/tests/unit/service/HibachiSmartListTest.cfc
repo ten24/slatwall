@@ -56,7 +56,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function getSmartListTest(){
 		variables.smartList.addSelect('test-dash','a');
-		request.debug(variables.smartList.getRecords(refresh=true)[1].a);
+		addToDebug(variables.smartList.getRecords(refresh=true)[1].a);
 		
 	}
 }

@@ -17,10 +17,10 @@ class SWAddOrderItemRecipientController {
     public recipientAddForm;
     public tableForm;
     public showInvalidAddFormMessage:boolean;
+    public typeaheadCollectionConfig
     
-    public static $inject=["$hibachi"];
-    
-    constructor(private $hibachi){
+    //@ngInject
+    constructor(private $hibachi, private collectionConfigService){
         if(angular.isUndefined(this.adding)){
             this.adding = false; 
         }
@@ -38,6 +38,9 @@ class SWAddOrderItemRecipientController {
         if(angular.isUndefined(this.showInvalidAddFormMessage)){
             this.showInvalidAddFormMessage = false;
         }
+        
+        this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig('Account');
+        this.typeaheadCollectionConfig.addFilter("primaryEmailAddress","null","is not");
     }
     
     addGiftRecipientFromAccountList = (account:any):void =>{

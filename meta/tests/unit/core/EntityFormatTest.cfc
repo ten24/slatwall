@@ -59,7 +59,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entitiesWithNoAuditPropsRequired = "SlatwallCommentRelationship,SlatwallAudit,SlatwallUpdateScript";
 		
 		// Exception Entities that only require the createdByAccountID & createdDateTime
-		var entitiesWithCreatedOnlyProperties = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallStockReceiverItem";
+		var entitiesWithCreatedOnlyProperties = "SlatwallComment,SlatwallEmail,SlatwallInventory,SlatwallPrint,SlatwallShippingMethodOption,SlatwallStockReceiverItem,SlatwallEmailBounce";
 		
 		// Exception Entities that only required createdDateTime & modifiedDateTime
 		var entitiesWithCreatedAndModifiedTimeOnlyProperties = "SlatwallSession";
@@ -284,6 +284,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				smartList.getPageRecords();
 			} catch (any e) {
 				arrayAppend(exceptionErrorEntities, entityName);
+				arrayAppend(exceptionErrorEntities, e.message);
 			}
 
 		}

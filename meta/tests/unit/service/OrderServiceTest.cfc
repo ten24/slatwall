@@ -161,17 +161,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var id = orderItemsAdded[1].getOrderItemID();
 		var id2 = orderItemsAdded[2].getOrderItemID();
-		request.debug(ArrayLen(order.getOrderItems()));
+		addToDebug(ArrayLen(order.getOrderItems()));
 		//assertEquals("123", id2);//This should fail and it does.
 		//variables.service.processOrder_removeOrderItem(order, {orderItemID="#id#"});
 
 		variables.service.processOrder_removeOrderItem(order, {orderItemIDList="#id#,#id2#"});//Removes multiple
-		request.debug(ArrayLen(order.getOrderItems()));
-		//request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
-		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
-		//request.debug(orderReturn.getOrderID());
-		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
-		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		addToDebug(ArrayLen(order.getOrderItems()));
+		//addToDebug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
+		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//addToDebug(orderReturn.getOrderID());
+		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 	}
 
 	public void function process_order_add_gift_card_order_item(){
@@ -318,11 +318,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			referencedOrderFlag=false
 		};
 
-		//request.debug(order);
+		//addToDebug(order);
 
 		var duplicateorderitem = variables.service.copyToNewOrderItem(orderItem1);
 
-		//request.debug(order);
+		//addToDebug(order);
 
 		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
 
