@@ -55,71 +55,71 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// This method will return the rate that a given productType has based on a priceGroup, also this looks up to parent productTypes as well.
 	public any function getRateForProductTypeBasedOnPriceGroup(required any productType, required any priceGroup, checkParentFlag = true) {
-		
+
 		// Setup a var'd value for returnRate but default it to null
 		var returnRate = javaCast("null","");
-		
+
 		// Loop over rates to see if productType applies
 		var currentProductType = arguments.productType;
-			
+
 		while (!isNull(currentProductType)) {
 			// Query to get returnRate by productTypeID
 			returnRate = getPriceGroupDAO().getPriceGroupRateByProductTypeID(arguments.priceGroup.getPriceGroupID(), currentProductType.getProductTypeID());
-			
+
 			// Check if this productType is applied in the rate
 			if(!isNull(returnRate)) {
 				break;
-			}	
-			
+			}
+
 			// This sets the product type to the parent, so the while loop will run again
 			currentProductType = currentProductType.getParentProductType();
 		}
-		
+
 		// If the returnRate is null an empty string, then loop through the rates looking for a global rate
 		if(isNull(returnRate)) {
 			returnRate = getPriceGroupDAO().getGlobalPriceGroupRate(arguments.priceGroup.getPriceGroupID());
 		}
-		
+
 		// If the returnRate is still null, then check the productType against the parent priceGroup which will check product and productType (this is done with recursion)
 		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup()) && arguments.checkParentFlag){
 			returnRate = getRateForProductTypeBasedOnPriceGroup(productType=arguments.productType, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
-		
+
 		if(!isNull(returnRate)){
 			return returnRate;
 		}
-		
+
 	}
 
 	// This method will return the rate that a product has for a given price group
 	public any function getRateForProductBasedOnPriceGroup(required any product, required any priceGroup, checkParentFlag = true) {
 		// Query to get returnRate by productID
 		var returnRate = getPriceGroupDAO().getPriceGroupRateByProductID(arguments.priceGroup.getPriceGroupID(), arguments.product.getProductID());
-		
+
 		// If the returnRate is null, then check the productType
 		if(isNull(returnRate)) {
 			returnRate = getRateForProductTypeBasedOnPriceGroup(productType=arguments.product.getProductType(), priceGroup=arguments.priceGroup);
 		}
-		
+
 		// If the returnRate is still null, then check the productType against the parent priceGroup which will check product and productType (this is done with recursion)
 		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup()) && arguments.checkParentFlag) {
 			returnRate = getRateForProductBasedOnPriceGroup(product=arguments.product, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
-		
+
 		if(!isNull(returnRate)){
 			return returnRate;
 		}
 	}
-	
+
 	public any function getRateForSkuBasedOnPriceGroup(required any sku, required any priceGroup, checkParentFlag = true ) {
 		// Query to get returnRate by skuID
 		var returnRate = getPriceGroupDAO().getPriceGroupRateBySkuID(arguments.priceGroup.getPriceGroupID(), arguments.sku.getSkuID());
-		
+
 		// If the returnRate is null, then check the product
 		if(isNull(returnRate)) {
 			returnRate = getRateForProductBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup, checkParentFlag=false);
 		}
-		
+
 		// If the returnRate is null, then check the sku against the parent priceGroup which will check product and productType (this is done with recursion)
 		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup())) {
 			returnRate = getRateForSkuBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup.getParentPriceGroup());
@@ -129,7 +129,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(returnRate)){
 			return returnRate;
 		}
-		
+
 	}
 
 	// This function has two optional arguments, newAmount and priceGroupRateId. Calling this function either other of these mutually exclusively determines the function's logic
@@ -288,13 +288,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	// Simple method that gets the appopriate rate to use for this sku no matter where it comes from, and then calculates the correct value.  If no rate is found, it is just a passthough of sku.getPrice()
 	public numeric function calculateSkuPriceBasedOnPriceGroup(required any sku, required any priceGroup) {
+		if(arguments.priceGroup.getActiveFlag()){
+			// Figure out the rate for this particular sku
+			var rate = getRateForSkuBasedOnPriceGroup(sku=arguments.sku, priceGroup=arguments.priceGroup);
 
-		// Figure out the rate for this particular sku
-		var rate = getRateForSkuBasedOnPriceGroup(sku=arguments.sku, priceGroup=arguments.priceGroup);
-
-		// If the sku is supposed to have this rate applied, then calculate the rate and apply
-		if(!isNull(rate)) {
-			return calculateSkuPriceBasedOnPriceGroupRate(sku=arguments.sku, priceGroupRate=rate);
+			// If the sku is supposed to have this rate applied, then calculate the rate and apply
+			if(!isNull(rate)) {
+				return calculateSkuPriceBasedOnPriceGroupRate(sku=arguments.sku, priceGroupRate=rate);
+			}
 		}
 
 		// Return the sku price if there was no rate
@@ -302,13 +303,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public numeric function calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(required any sku, required any priceGroup, required string currencyCode) {
+		if(arguments.priceGroup.getActiveFlag()){
+			// Figure out the rate for this particular sku
+			var rate = getRateForSkuBasedOnPriceGroup(sku=arguments.sku, priceGroup=arguments.priceGroup,currencyCode=arguments.currencyCode);
 
-		// Figure out the rate for this particular sku
-		var rate = getRateForSkuBasedOnPriceGroup(sku=arguments.sku, priceGroup=arguments.priceGroup,currencyCode=arguments.currencyCode);
-
-		// If the sku is supposed to have this rate applied, then calculate the rate and apply
-		if(!isNull(rate)) {
-			return calculateSkuPriceBasedOnPriceGroupRateAndCurrencyCode(sku=arguments.sku, priceGroupRate=rate, currencyCode=arguments.currencyCode);
+			// If the sku is supposed to have this rate applied, then calculate the rate and apply
+			if(!isNull(rate)) {
+				return calculateSkuPriceBasedOnPriceGroupRateAndCurrencyCode(sku=arguments.sku, priceGroupRate=rate, currencyCode=arguments.currencyCode);
+			}
 		}
 
 		// Return the sku price if there was no rate
@@ -320,7 +322,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// setup the new price as the old price in the event of a passthrough
 		var newPrice = arguments.sku.getPrice();
-		
+
 		switch(arguments.priceGroupRate.getAmountType()) {
 			case "percentageOff" :
 				var newPrice = precisionEvaluate(arguments.sku.getPrice() - (arguments.sku.getPrice() * (arguments.priceGroupRate.getAmount() / 100)));
@@ -379,12 +381,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Loop over each of the price groups of this account, and get the price based on that pricegroup
 		for(var i=1; i<=arrayLen(arguments.account.getPriceGroups()); i++) {
+			if(account.getPriceGroups()[i].getActiveFlag()){
+				var thisPrice = calculateSkuPriceBasedOnPriceGroup(sku=arguments.sku, priceGroup=account.getPriceGroups()[i]);
 
-			var thisPrice = calculateSkuPriceBasedOnPriceGroup(sku=arguments.sku, priceGroup=account.getPriceGroups()[i]);
-
-			if(thisPrice < bestPrice.price) {
-				bestPrice.price = thisPrice;
-				bestPrice.priceGroup = account.getPriceGroups()[i];
+				if(thisPrice < bestPrice.price) {
+					bestPrice.price = thisPrice;
+					bestPrice.priceGroup = account.getPriceGroups()[i];
+				}
 			}
 		}
 
@@ -402,12 +405,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Loop over each of the price groups of this account, and get the price based on that pricegroup
 		for(var i=1; i<=arrayLen(arguments.account.getPriceGroups()); i++) {
+			if(account.getPriceGroups()[i].getActiveFlag()){
+				var thisPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=account.getPriceGroups()[i],currencyCode=arguments.currencyCode);
 
-			var thisPrice = calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=arguments.sku, priceGroup=account.getPriceGroups()[i],currencyCode=arguments.currencyCode);
-
-			if(thisPrice < bestPrice.price) {
-				bestPrice.price = thisPrice;
-				bestPrice.priceGroup = account.getPriceGroups()[i];
+				if(thisPrice < bestPrice.price) {
+					bestPrice.price = thisPrice;
+					bestPrice.priceGroup = account.getPriceGroups()[i];
+				}
 			}
 		}
 
