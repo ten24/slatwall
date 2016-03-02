@@ -2,12 +2,12 @@
     "accountEligiblePaymentMethods":{  
         "fieldType":"listingMultiselect",
         "listingMultiselectEntityName":"PaymentMethod",
-        "defaultValue":"#getPaymentService().getAllActivePaymentMethodIDList()#"
+        "defaultValue":"#getService('PaymentService').getAllActivePaymentMethodIDList()#"
     },
     "accountEligiblePaymentTerms":{  
         "fieldType":"listingMultiselect",
         "listingMultiselectEntityName":"PaymentTerm",
-        "defaultValue":"#getPaymentService().getAllActivePaymentTermIDList()#"
+        "defaultValue":"#getService('PaymentService').getAllActivePaymentTermIDList()#"
     },
     "accountPaymentTerm":{  
         "fieldType":"select"

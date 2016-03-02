@@ -30,22 +30,22 @@
     "skuEligibleCurrencies":{  
         "fieldType":"listingMultiselect",
         "listingMultiselectEntityName":"Currency",
-        "defaultValue":"#getCurrencyService().getAllActiveCurrencyIDList()#"
+        "defaultValue":"#getService('Currency').getAllActiveCurrencyIDList()#"
     },
     "skuEligibleFulfillmentMethods":{  
         "fieldType":"listingMultiselect",
         "listingMultiselectEntityName":"FulfillmentMethod",
-        "defaultValue":"#getFulfillmentService().getAllActiveFulfillmentMethodIDList()#"
+        "defaultValue":"#getService('FulfillmentService').getAllActiveFulfillmentMethodIDList()#"
     },
     "skuEligibleOrderOrigins":{  
         "fieldType":"listingMultiselect",
         "listingMultiselectEntityName":"OrderOrigin",
-        "defaultValue":"#getAllActiveOrderOriginIDList()#"
+        "defaultValue":"#getService('SettingService').getAllActiveOrderOriginIDList()#" 
     },
     "skuEligiblePaymentMethods":{  
         "fieldType":"listingMultiselect",
         "listingMultiselectEntityName":"PaymentMethod",
-        "defaultValue":"#getPaymentService().getAllActivePaymentMethodIDList()#"
+        "defaultValue":"#getService('PaymentService').getAllActivePaymentMethodIDList()#"
     },
     "skuEmailFulfillmentTemplate":{  
         "fieldType":"select",

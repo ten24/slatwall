@@ -66,6 +66,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="taskService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="hibachiUtilityService" type="any";
 
 	// ====================== START: NEW JSON FUNCTION ==========================
 
@@ -81,12 +82,11 @@ component extends="HibachiService" output="false" accessors="true" {
 		var allSettingMetaData = {};
 		var folderPathsList = directoryList(arguments.folderPath);
 
-		// Loop over each integration in the integration directory
 		for(var i=1; i<= arrayLen(folderPathsList); i++) {
 			if(fileExists( folderPathsList[i] )) {
 				var rawCoreJSON = fileRead( folderPathsList[i] );
 				if(isJSON( rawCoreJSON )) {
-					structAppend(allSettingMetaData, deserializeJSON( rawCoreJSON ), false);
+					structAppend(allSettingMetaData, getHibachiUtilityService().evaluateColdfusionInStruct(deserializeJSON( rawCoreJSON )), false);
 				} else {
 					throw("The Setting File: #folderPathsList[i]# is not a valid JSON object");
 				}
@@ -96,47 +96,23 @@ component extends="HibachiService" output="false" accessors="true" {
 		return allSettingMetaData;
 	}
 
+	public struct function getSettingsConfig(){
+		var settingsConfigPath = expandPath("/#getApplicationValue('applicationKey')#/config/settings.config.json");
+		var settingsConfigJson = fileRead( settingsConfigPath );
+		if(!isJSON( settingsConfigJson )) {
+			throw("The Setting File: #folderPathsList[i]# is not a valid JSON object");
+		}
+		return deserializeJSON( settingsConfigJson );
+	}
+
 	// ====================== START: META DATA SETUP ============================
 
 	public array function getSettingPrefixInOrder() {
-		return [
-			"accountAuthentication",
-			"locationConfiguration",
-			"shippingMethodRate",
-			"fulfillmentMethod",
-			"subscriptionUsage",
-			"subscriptionTerm",
-			"orderFulfillment",
-			"shippingMethod",
-			"paymentMethod",
-			"productType",
-			"product",
-			"content",
-			"account",
-			"image",
-			"brand",
-			"email",
-			"stock",
-			"site",
-			"task",
-			"sku"
-		];
+		return getSettingsConfig()["PrefixOrder"];
 	}
 
 	public struct function getSettingLookupOrder() {
-		return {
-			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
-			locationConfiguration = ["location.locationID"	],
-			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
-			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
-			productType = ["productTypeIDPath"],
-			content = ["contentIDPath","contentID","site.siteID"],
-			email = ["emailTemplate.emailTemplateID"],
-			shippingMethodRate = ["shippingMethod.shippingMethodID"],
-			accountAuthentication = [ "integration.integrationID" ],
-			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
-			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ]
-		};
+		return getSettingsConfig()["LookupOrder"];
 	}
 
 	public struct function getAllSettingMetaData() {

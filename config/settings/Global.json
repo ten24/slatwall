@@ -17,11 +17,11 @@
     },
     "globalAssetsImageFolderPath":{  
         "fieldType":"text",
-        "defaultValue":"#getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'#"
+        "defaultValue":"#getURLFromPath(getApplicationValue('applicationRootMappingPath') & '/custom/assets/images')#"
     },
     "globalAssetsFileFolderPath":{  
         "fieldType":"text",
-        "defaultValue":"#getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'#"
+        "defaultValue":"#getURLFromPath(getApplicationValue('applicationRootMappingPath') & '/custom/assets/files')#"
     },
     "globalAuditAutoArchiveVersionLimit":{  
         "fieldType":"text",
@@ -87,7 +87,7 @@
     },
     "globalMissingImagePath":{  
         "fieldType":"text",
-        "defaultValue":"#getURLFromPath(getApplicationvalue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'#"
+        "defaultValue":"#getURLFromPath(getApplicationValue('applicationRootMappingPath') & '/custom/assets/images/missingimage.jpg')#"
     },
     "globalNoSessionIPRegex":{  
         "fieldType":"text",
