@@ -24,12 +24,12 @@
       "text": "User"
     },
     {
-      "type": "sendKeysToElement",
+      "type": "setElementText",
       "locator": {
         "type": "name",
         "value": "company"
       },
-      "text": "\\9"
+      "text": "QA Company"
     },
     {
       "type": "setElementText",
