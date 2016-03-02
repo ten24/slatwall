@@ -9,7 +9,7 @@ var util = require('util');
 
 function Listener(testRun, params, interpreter_module) {
   this.testRun = testRun;
-  this.originalListener = params.silent ? null : interpreter_module.getInterpreterListener(testRun, params, interpreter_module);
+  this.originalListener = interpreter_module.getInterpreterListener(testRun, params, interpreter_module);
 };
 
 Listener.prototype.startTestRun = function(testRun, info) {
