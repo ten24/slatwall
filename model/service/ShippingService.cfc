@@ -338,19 +338,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             return false;
         }
         
-        // Make sure that the shipping method rates price-group is one that the user has access to on account.
-        
+        // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
         //If this rate has price groups assigned but the user does not, then fail.
-        if (!isNull(shippingMethodRate.getPriceGroups()) && arrayLen(shippingMethodRate.getPriceGroups()) && isNull(arguments.accountPriceGroups)){
+        if ( !isNull(arguments.shippingMethodRate.getPriceGroups()) && 
+             arrayLen(arguments.shippingMethodRate.getPriceGroups()) && 
+             !arrayLen(arguments.accountPriceGroups) ){
         	return false;
+        
         //If this rate has price groups assigned and the user has groups but not the correct ones, then fail.
-        } else if (arrayLen(shippingMethodRate.getPriceGroups()) && !isNull(arguments.accountPriceGroups) && arrayLen(arguments.accountPriceGroups)){
+        } else if ( !isNull(arguments.shippingMethodRate.getPriceGroups()) &&
+                    arrayLen(arguments.shippingMethodRate.getPriceGroups()) && 
+                    arrayLen(arguments.accountPriceGroups) ){
         	var foundMatchingPriceGroup = false;
-        	for (var priceGroup in shippingMethodRate.getPriceGroups()){
-        		if (listFindNoCase(priceGroup, arguments.accountPriceGroups)){
-        			foundMatchingPriceGroup = true;
-        		}
+        	//Check if the pricegroup supports the users price groups
+        	for (var priceGroup in arguments.accountPriceGroups){
+    			if (arguments.shippingMethodRate.hasPriceGroup(priceGroup)){
+                    foundMatchingPriceGroup = true;
+                }
         	}
+        	//If not found then return false.
         	if (!foundMatchingPriceGroup){
         		return false;
         	}
