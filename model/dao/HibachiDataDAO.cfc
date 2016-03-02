@@ -46,60 +46,7 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiDataService" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiDataDAO" {
 
-	property name="hibachiDataDAO" type="any";
-
-	public any function toBundle(required any bundle, required string tableList) {
-		getHibachiDataDAO().toBundle(argumentcollection=arguments);
-	}
-
-	public any function fromBundle(required any bundle, required string tableList) {
-		getHibachiDataDAO().toBundle(argumentcollection=arguments);
-	}
-
-	public any function getAllAttributeStruct() {
-		var attributeStruct = { attributeCode = {attributeID = "", attributeValueType = ""}};
-
-		var qry = new Query( sql="SELECT attributeID,attributeCode FROM SwAttribute" );
-		var attributes = qry.execute().getResult();
-		for(var i = 1; i <= attributes.recordCount; i++) {
-			attributeStruct[ attributes.attributeCode[i] ]["attributeID"] = attributes.attributeID[i];
-		}
-
-		return attributeStruct;
-	}
-
-	public string function getAttributeValueTableName(){
-		return "SwAttributeValue";
-	}
-
-	// ===================== START: Logical Methods ===========================
-
-	// =====================  END: Logical Methods ============================
-
-	// ===================== START: DAO Passthrough ===========================
-
-	public string function getShortReferenceID() {
-		return getHibachiDataDAO().getShortReferenceID(argumentcollection=arguments);
-	}
-
-	// ===================== START: DAO Passthrough ===========================
-
-	// ===================== START: Process Methods ===========================
-
-	// =====================  END: Process Methods ============================
-
-	// ====================== START: Save Overrides ===========================
-
-	// ======================  END: Save Overrides ============================
-
-	// ==================== START: Smart List Overrides =======================
-
-	// ====================  END: Smart List Overrides ========================
-
-	// ====================== START: Get Overrides ============================
-
-	// ======================  END: Get Overrides =============================
-
+	
 }
