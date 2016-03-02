@@ -40,7 +40,7 @@ test:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
 
     # Connect ot SauceLabs for Integration Testing
-    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready --daemonize:
+    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready --daemonize
     #    background: true
 
     # Wait for Saucelabs connection
@@ -50,8 +50,11 @@ test:
     # Run Sauce Labs Integration Setup Tests
     - se-interpreter --parallel=1 --listener=meta/tests/integration/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/setup_config.json
 
-    # Run Sauce Labs Integration Admin Tests, 5 side by side at a time
+    # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
     - se-interpreter --parallel=2 --listener=meta/tests/integration/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/admin_config.json
+
+    # Kill the Sauce Labs tunnel
+    - kill $(cat sc.pid)
 
     # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml runUnitTests
