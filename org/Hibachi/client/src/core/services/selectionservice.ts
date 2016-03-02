@@ -45,7 +45,7 @@ class SelectionService extends BaseService{
         }
         this._selection[selectionid].ids = selections;
     };
-    removeSelection=(selectionid:string,selection:any):void =>{
+    removeSelection=(selectionid?:string,selection?:any):void =>{
         if(angular.isUndefined(this._selection[selectionid])){
             return;
         }

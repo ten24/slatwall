@@ -58,7 +58,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function getSiteOptions_test(){
 		var siteOptions = variables.entity.getSiteOptions();
-		request.debug(siteOptions);
+		addToDebug(siteOptions);
 	}
 	
 	

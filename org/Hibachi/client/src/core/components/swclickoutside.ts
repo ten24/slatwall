@@ -22,7 +22,11 @@ class SWClickOutside{
         public $document, 
         public $timeout, 
         public utilityService
-    ){}
+    ){
+        this.$document = $document;
+        this.$timeout = $timeout;
+        this.utilityService = utilityService;
+    }
     
     public link:ng.IDirectiveLinkFn = (scope:any, elem:any, attr:any) => {     
         this.$document.on('click', (e)=> {
