@@ -2727,7 +2727,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="order.orderOrigin.orderOriginName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="sku.skuCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="sku.product.calculatedTitle", weight=1);
-		smartList.addKeywordProperty(propertyIdentifier="orderItemStatusType.type", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="orderItemStatusType.typeName", weight=1);
 
 		return smartList;
 	}
