@@ -802,7 +802,7 @@ function runNext() {
     testRuns[index].shareStateFromPrevTestRun ? testRuns[index - 1].vars : null);
   } else {
     if (index == lastRunFinishedIndex) { // We're the last runner to complete.
-      var listener = listenerFactory(testRuns[index], listenerOptions);
+      var listener = listenerFactory(testRuns[index - 1], listenerOptions);
       if (listener) {
         listener.endAllRuns(testRuns.length, successes);
       }
