@@ -1726,7 +1726,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		var orderItemQualificationCount = variables.service.getPromotionPeriodOrderItemQualificationCount(promotionPeriod,orderItem,order);
 
-		//THIS SHOULD BE ONE COURTESY OF IHICKEY
 		assertEquals(orderItemQualificationCount,0);
 
 		order.addOrderItem(orderItem);
