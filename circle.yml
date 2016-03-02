@@ -40,7 +40,7 @@ test:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
 
     # Connect ot SauceLabs for Integration Testing
-    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
+    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --logfile sclog.txt --readyfile ~/sauce_is_ready:
         background: true
 
     # Wait for Saucelabs connection
