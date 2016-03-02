@@ -52,7 +52,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true";
-	property name="productName" ormtype="string" notNull="true";
+	property name="productName" ormtype="string";
 	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE";
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="publishedFlag" ormtype="boolean" default="false";
@@ -712,15 +712,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			for(var record in records) {
 				if(!isNull(record.getImageFile())) {
-					arrayIndex = ArrayFind(variables.defaultProductImageFiles, function(struct){ 
-						return struct.ImageFile == record.getImageFile(); 
+					arrayIndex = ArrayFind(variables.defaultProductImageFiles, function(struct){
+						return struct.ImageFile == record.getImageFile();
 					});
 					if(arrayIndex == 0){
 						var imageFileStruct = {};
 						imageFileStruct['imageFile'] = record.getImageFile();
 						imageFileStruct['skuDefinition'] = record.getSkuDefinition();
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
-					}			
+					}
 				}
 			}
 		}

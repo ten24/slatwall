@@ -48,19 +48,19 @@ Notes:
 */
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiDataService" {
 
-	property name="dataDAO" type="any";
+	property name="hibachiDataDAO" type="any";
 
 	public any function toBundle(required any bundle, required string tableList) {
-		getDataDAO().toBundle(argumentcollection=arguments);
+		getHibachiDataDAO().toBundle(argumentcollection=arguments);
 	}
 
 	public any function fromBundle(required any bundle, required string tableList) {
-		getDataDAO().toBundle(argumentcollection=arguments);
+		getHibachiDataDAO().toBundle(argumentcollection=arguments);
 	}
-	
+
 	public any function getAllAttributeStruct() {
 		var attributeStruct = { attributeCode = {attributeID = "", attributeValueType = ""}};
-		
+
 		var qry = new Query( sql="SELECT attributeID,attributeCode FROM SwAttribute" );
 		var attributes = qry.execute().getResult();
 		for(var i = 1; i <= attributes.recordCount; i++) {
@@ -69,11 +69,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiD
 
 		return attributeStruct;
 	}
-	
+
 	public string function getAttributeValueTableName(){
 		return "SwAttributeValue";
 	}
-	
+
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================
@@ -81,7 +81,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiD
 	// ===================== START: DAO Passthrough ===========================
 
 	public string function getShortReferenceID() {
-		return getDataDAO().getShortReferenceID(argumentcollection=arguments);
+		return getHibachiDataDAO().getShortReferenceID(argumentcollection=arguments);
 	}
 
 	// ===================== START: DAO Passthrough ===========================

@@ -90,7 +90,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
-		////request.debug(product.getSkus()[1].getProductBundleGroups()[1].getAmount());
+		////addToDebug(product.getSkus()[1].getProductBundleGroups()[1].getAmount());
 		
 		var orderItemData = {
 			orderitemid='',
@@ -157,7 +157,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
-		////request.debug(product.getSkus()[1].getProductBundleGroups()[1].getAmount());
+		////addToDebug(product.getSkus()[1].getProductBundleGroups()[1].getAmount());
 		
 		var orderItemData = {
 			orderitemid='',
@@ -189,7 +189,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		orderItem.getChildOrderItems()[3].setProductBundleGroup(product.getSkus()[1].getProductBundleGroups()[3]);
 		//5 + 110 + 150 + 30
 		assertEquals(orderItem.getProductBundlePrice(),295);
-		//request.debug(orderItem.getProductBundlePrice());
+		//addToDebug(orderItem.getProductBundlePrice());
 		
 	}
 	
