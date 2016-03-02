@@ -40,7 +40,7 @@ test:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
 
     # Create xml output directory for testresults
-    - sudo mkdir -p meta/tests/testresults/xml
+    - sudo mkdir -p meta/tests/testresults/xml/integration
     - sudo chmod -R 777 meta/tests/testresults
 
     # Connect ot SauceLabs for Integration Testing
@@ -52,10 +52,10 @@ test:
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/setup_config.json
+    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
-    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/admin_config.json
+    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json
 
     # Kill the Sauce Labs tunnel
     - cd sc-*-linux && kill $(cat sc.pid)
