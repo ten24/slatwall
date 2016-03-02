@@ -123,7 +123,7 @@ var TestRun = function(script, name, initialVars) {
 TestRun.prototype.start = function(callback, webDriverToUse) {
   callback = callback || function() {};
   this.browserOptions.name = this.name;
-  
+
   if (webDriverToUse) {
     this.wd = webDriverToUse;
     var info = { 'success': true, 'error': null };
@@ -409,7 +409,7 @@ function getInterpreterListener(testRun) {
     },
     'endTestRun': function(testRun, info) {
       if (info.success) {
-        console.log(testRun.name + ": " + "Test passed".green +("("+ testRun.browserOptions.browserName +") ").yellow);
+        console.log(testRun.name + ": " + "Test passed ".green +("("+ testRun.browserOptions.browserName +") ").yellow);
       } else {
         if (info.error) {
           console.log(testRun.name + ": " + "Test failed: ".red +("("+ testRun.browserOptions.browserName +") ").yellow + util.inspect(info.error));
@@ -500,7 +500,7 @@ function parseSuiteFile(path, fileContents, testRuns, silencePrints, listenerFac
       parseScriptFile(scriptLocation.path, null, testRuns, silencePrints, listenerFactory, exeFactory, browserOptions, driverOptions, listenerOptions, dataSources);
     }
   });
-  
+
   if (shareState && testRuns.length > prevTestRunsLength + 1) {
     for (var i = prevTestRunsLength; i < testRuns.length - 1; i++) {
       testRuns[i].quitDriverAfterUse = false;
@@ -802,7 +802,7 @@ function runNext() {
     testRuns[index].shareStateFromPrevTestRun ? testRuns[index - 1].vars : null);
   } else {
     if (index == lastRunFinishedIndex) { // We're the last runner to complete.
-      var listener = listenerFactory();
+      var listener = listenerFactory(testRuns[index], listenerOptions);
       if (listener) {
         listener.endAllRuns(testRuns.length, successes);
       }
