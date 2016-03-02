@@ -55,6 +55,10 @@ Listener.prototype.endStep = function(testRun, step, info) {
   if (this.originalListener) { this.originalListener.endStep(testRun, step, info); }
 };
 
+Listner.prototype.endAllRuns = function(num_runs, successes) {
+  if (this.originalListener) { this.originalListener.endStep(num_runs, successes); }
+};
+
 exports.getInterpreterListener = function(testRun, options, interpreter_module) {
   return new Listener(testRun, options, interpreter_module);
 };
