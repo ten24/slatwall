@@ -13,4 +13,4 @@ settings.xml/
 logs/
 WEB-INF
 .rdsTempFiles/
-
+node_modules

@@ -29,15 +29,15 @@ class SWClickOutside{
     }
     
     public link:ng.IDirectiveLinkFn = (scope:any, elem:any, attr:any) => {     
-        $document.on('click', function (e) {
+        this.$document.on('click', function (e) {
             if (!e || !e.target) return;
             
             //check if our element already hiden
             if(angular.element(elem).hasClass("ng-hide")){
                 return;
             }
-            if(e.target !== elem && ! utilityService.isDescendantElement(elem,e.target)){
-                $timeout(()=>{
+            if(e.target !== elem && ! this.utilityService.isDescendantElement(elem,e.target)){
+                this.$timeout(()=>{
                     scope.swClickOutside();
                 });
             }

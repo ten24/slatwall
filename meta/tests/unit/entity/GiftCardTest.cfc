@@ -145,39 +145,39 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertFalse(giftCard.hasOwnerAccount(ownerAccount));
 	}
-	
-	public void function test_balance(){ 
-		var giftCardData = { 
-			giftCardID="" 	
+
+	public void function test_balance(){
+		var giftCardData = {
+			giftCardID=""
 		};
-		
-		var giftCard = createPersistedTestEntity('giftCard', giftCardData); 
-		
-		var creditTransactionData = { 
+
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
+
+		var creditTransactionData = {
 			giftCardTransactionID="",
-			creditAmount="2000"	
+			creditAmount="2000"
 		};
 		var creditTransaction = createPersistedTestEntity('giftCardTransaction', creditTransactionData);
-		
-		var debitTransactionData = { 
+
+		var debitTransactionData = {
 			giftCardTransactionID="",
-			debitAmount="250.50"	
+			debitAmount="250.50"
 		};
 		var debitTransaction = createPersistedTestEntity('giftCardTransaction', debitTransactionData);
-		
-		var debitTransactionData2 = { 
+
+		var debitTransactionData2 = {
 			giftCardTransactionID="",
-			debitAmount="250.25"	
+			debitAmount="250.25"
 		};
 		var debitTransaction2 = createPersistedTestEntity('giftCardTransaction', debitTransactionData2);
-		
-		giftCard.addGiftCardTransaction(creditTransaction); 
-		giftCard.addGiftCardTransaction(debitTransaction); 
-		giftCard.addGiftCardTransaction(debitTransaction2); 
-		
-		assertEquals("1499.25", giftCard.getBalance());
-		assertTrue(giftCard.isActive()); 
-	
+
+		giftCard.addGiftCardTransaction(creditTransaction);
+		giftCard.addGiftCardTransaction(debitTransaction);
+		giftCard.addGiftCardTransaction(debitTransaction2);
+
+		assertEquals("1499.25", giftCard.getBalanceAmount());
+		assertTrue(giftCard.getActiveFlag());
+
 	}
 
 }
