@@ -140,7 +140,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		} else if(!isNull(getAttribute())) {
 			return getAttribute().getAttributeName();
 		} else {
-			return "attributeValue";
+			return rbKey('entity.attributeValue.attributeValue');
 		}
 	}
 
