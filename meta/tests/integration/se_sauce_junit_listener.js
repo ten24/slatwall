@@ -55,7 +55,7 @@ Listener.prototype.endStep = function(testRun, step, info) {
   if (this.originalListener) { this.originalListener.endStep(testRun, step, info); }
 };
 
-Listner.prototype.endAllRuns = function(num_runs, successes) {
+Listener.prototype.endAllRuns = function(num_runs, successes) {
   if (this.originalListener) { this.originalListener.endStep(num_runs, successes); }
 };
 
