@@ -41,6 +41,7 @@ test:
 
     # Create xml output directory for testresults
     - mkdir -p meta/tests/testresults/xml
+    - chmod 777 meta/tests/testresults/xml
 
     # Connect ot SauceLabs for Integration Testing
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready:
