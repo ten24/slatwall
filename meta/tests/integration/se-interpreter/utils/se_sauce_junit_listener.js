@@ -246,45 +246,7 @@ var writeReport = function writeReport (name, path, /* xmlbuilder*/ data) {
       return;
     }
 
-    // Debugging
-    console.log("DEBUG START");
-    console.log(path);
-
-    try {
-      fs.writeFileSync(path, data.toString({pretty:true}));
-      console.log('WORKS ' + path);
-    } catch (e) {
-      console.log('NO WORK ' + path);
-    }
-    try {
-      fs.writeFileSync('../../../testresults/xml/junit-general_login.xml', data.toString({pretty:true}));
-      console.log('WORKS ../../../testresults/xml/junit-general_login.xml');
-    } catch (e) {
-      console.log('NO WORK ../../../testresults/xml/junit-general_login.xml');
-    }
-    try {
-      fs.writeFileSync('../../testresults/xml/junit-general_login.xml', data.toString({pretty:true}));
-      console.log('WORKS ../../testresults/xml/junit-general_login.xml');
-    } catch (e) {
-      console.log('NO WORK ../../testresults/xml/junit-general_login.xml');
-    }
-    try {
-      fs.writeFileSync('~/slatwall/meta/tests/testresults/xml/junit-general_login.xml', data.toString({pretty:true}));
-      console.log('WORKS ~/slatwall/meta/tests/testresults/xml/junit-general_login.xml');
-    } catch (e) {
-      console.log('NO WORK ~/slatwall/meta/tests/testresults/xml/junit-general_login.xml');
-    }
-    try {
-      fs.writeFileSync('/home/ubuntu/slatwall/meta/tests/testresults/xml/junit-general_login.xml', data.toString({pretty:true}));
-      console.log('WORKS /home/ubuntu/slatwall/meta/tests/testresults/xml/junit-general_login.xml');
-    } catch (e) {
-      console.log('NO WORK /home/ubuntu/slatwall/meta/tests/testresults/xml/junit-general_login.xml');
-    }
-
-
-    console.log("DEBUG END");
-    // END Debugging
-    //fs.writeFileSync(path, data.toString({pretty:true}));
+    fs.writeFileSync(path, data.toString({pretty:true}));
     // console.log(name + ' - Report saved to %s', path);
   });
 };
