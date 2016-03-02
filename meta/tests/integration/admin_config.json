@@ -12,6 +12,9 @@
             "browserName": "firefox",
             "username": "${SAUCE_USERNAME}",
             "accessKey": "${SAUCE_ACCESS_KEY}"
+          },
+          "listenerOptions": {
+            "silent": false
           }
         },
         {
@@ -23,6 +26,9 @@
             "browserName": "chrome",
             "username": "${SAUCE_USERNAME}",
             "accessKey": "${SAUCE_ACCESS_KEY}"
+          },
+          "listenerOptions": {
+            "silent": false
           }
         }
       ],
