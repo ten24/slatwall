@@ -40,8 +40,8 @@ test:
     - docker-compose -f meta/docker/slatwall-ci/docker-compose-circleci.yml up -d
 
     # Create xml output directory for testresults
-    - mkdir -p meta/tests/testresults/xml
-    - chmod 777 meta/tests/testresults/xml
+    - sudo mkdir -p meta/tests/testresults/xml
+    - sudo chmod -R 777 meta/tests/testresults
 
     # Connect ot SauceLabs for Integration Testing
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready:
