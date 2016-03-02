@@ -41,6 +41,7 @@ class SWSelectionController{
         console.log(selection);
         if(this.isRadio){
             this.selectionService.radioSelection(selectionid,selection);
+            this.toggleValue = toggleValue;
         }else{
             if(toggleValue){
                 this.selectionService.addSelection(selectionid,selection);

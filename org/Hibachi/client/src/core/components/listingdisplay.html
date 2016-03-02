@@ -25,19 +25,19 @@
             <div class="s-detail-notifications s-detail-hidden-content">
                 <div class="row">
                     <div class="col-sm-8 s-message">
-                        <span data-ng-if="swListingDisplay.isCurrentPageRecordsSelected && !swListingDisplay.allSelected">
+                        <span data-ng-if="!swListingDisplay.isRadio && swListingDisplay.isCurrentPageRecordsSelected && !swListingDisplay.allSelected">
                             <span>All <b data-ng-bind="swListingDisplay.collectionData.pageRecords.length"></b> items on this page are selected.</span>
                             <a href data-ng-click="swListingDisplay.selectAll()">Select all <b data-ng-bind="swListingDisplay.paginator.getRecordsCount()"></b> items</span></a>
                         </span>
 
-                        <span data-ng-if="(!swListingDisplay.isCurrentPageRecordsSelected ||swListingDisplay.isCurrentPageRecordsSelected  && swListingDisplay.allSelected)&& swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
+                        <span data-ng-if="!swListingDisplay.isRadio && (!swListingDisplay.isCurrentPageRecordsSelected ||swListingDisplay.isCurrentPageRecordsSelected  && swListingDisplay.allSelected)&& swListingDisplay.multiselectable && swListingDisplay.multiselectCount > 0">
                             <span><b data-ng-bind="swListingDisplay.multiselectCount"></b> items are selected.</span>
                             <a href data-ng-click="swListingDisplay.clearSelection()">Clear selections?</a>
                         </span>
 
                     </div>
                     <div class="col-sm-4" style="text-align:right;">
-                        <div class="btn-toolbar" style="margin:0px;">
+                        <div class="btn-toolbar" style="margin:0">
                             <!--<div class="btn-group btn-group-xs">-->
                                 <!--<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-print"></i></button>-->
                                 <!--<ul class="dropdown-menu pull-right">-->
@@ -87,7 +87,7 @@
                             <!-- Multiselectable -->
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}" data-ng-value="swListingDisplay.multiselectValues.toString()" />
                             <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'disabled':!swListingDisplay.edit}">
-                                <div class="s-checkbox">
+                            <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
                                     <input type="checkbox" id="exampleID" data-ng-model="swListingDisplay.isCurrentPageRecordsSelected" data-ng-click="swListingDisplay.selectCurrentPageRecords()">
                                     <label for="exampleID"></label>
                                 </div>
