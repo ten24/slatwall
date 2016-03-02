@@ -24,7 +24,7 @@
       "text": "User"
     },
     {
-      "type": "sendKeysToElement",
+      "type": "setElementText",
       "locator": {
         "type": "name",
         "value": "company"

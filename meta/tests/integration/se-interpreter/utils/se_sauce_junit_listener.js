@@ -251,6 +251,12 @@ var writeReport = function writeReport (name, path, /* xmlbuilder*/ data) {
     console.log(path);
 
     try {
+      fs.writeFileSync(path, data.toString({pretty:true}));
+      console.log('WORKS ' + path);
+    } catch (e) {
+      console.log('NO WORK ' + path);
+    }
+    try {
       fs.writeFileSync('../../../testresults/xml/junit-general_login.xml', data.toString({pretty:true}));
       console.log('WORKS ../../../testresults/xml/junit-general_login.xml');
     } catch (e) {
@@ -268,10 +274,17 @@ var writeReport = function writeReport (name, path, /* xmlbuilder*/ data) {
     } catch (e) {
       console.log('NO WORK ~/slatwall/meta/tests/testresults/xml/junit-general_login.xml');
     }
+    try {
+      fs.writeFileSync('/home/ubuntu/slatwall/meta/tests/testresults/xml/junit-general_login.xml', data.toString({pretty:true}));
+      console.log('WORKS /home/ubuntu/slatwall/meta/tests/testresults/xml/junit-general_login.xml');
+    } catch (e) {
+      console.log('NO WORK /home/ubuntu/slatwall/meta/tests/testresults/xml/junit-general_login.xml');
+    }
+
 
     console.log("DEBUG END");
     // END Debugging
-    fs.writeFileSync(path, data.toString({pretty:true}));
+    //fs.writeFileSync(path, data.toString({pretty:true}));
     // console.log(name + ' - Report saved to %s', path);
   });
 };
