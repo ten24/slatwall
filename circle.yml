@@ -16,9 +16,10 @@ dependencies:
     - npm install gulp gulp-inject gulp-chmod gulp-util run-sequence webpack
 
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
-    - npm install -g se-interpreter
+    - cd meta/tests/integration/se-interpreter && npm install
+    #- npm install -g se-interpreter
     # Add needed xmlbuilder and ensureDir node_modules for jUnit reporting
-    - cd ~/nvm/v0.10.33/lib/node_modules/se-interpreter && npm install xmlbuilder ensureDir
+    #- cd ~/nvm/v0.10.33/lib/node_modules/se-interpreter && npm install xmlbuilder ensureDir
 
     # Minify JS
      # generate typings
@@ -50,10 +51,10 @@ test:
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    - se-interpreter --parallel=1 --listener=meta/tests/integration/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/setup_config.json
+    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
-    - se-interpreter --parallel=2 --listener=meta/tests/integration/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/admin_config.json
+    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml meta/tests/integration/admin_config.json
 
     # Kill the Sauce Labs tunnel
     - cd sc-*-linux && kill $(cat sc.pid)
