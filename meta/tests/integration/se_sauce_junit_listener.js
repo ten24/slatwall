@@ -17,15 +17,13 @@ Example usage:
   You can also use --listener-silent=true to prevent the default listener
   output from happening, just like the --silent command.
 */
+
 var https = require('https');
 var util = require('util');
-
-
 var builder = require('xmlbuilder');
 var fs      = require('fs');
 var pathLib = require('path');
 var ensure  = require('ensureDir');
-var utils   = require('util');
 
 function Listener(testRun, params, interpreter_module) {
   // Sauce
@@ -60,7 +58,7 @@ Listener.prototype.startTestRun = function(testRun, info) {
 
   // jUnit
   if (!info.success) {
-    console.log('[ERROR] '+ this._name +' - Could not start: '+ utils.inspect(info));
+    console.log('[ERROR] '+ this._name +' - Could not start: '+ util.inspect(info));
     return;
   }
   this._suite = getSuite(testRun);
@@ -99,7 +97,7 @@ Listener.prototype.endTestRun = function(testRun, info) {
   // jUnit
   var report = generateReport(this._suite, testRun);
   if (!info.success) {
-    console.log('[ERROR] '+ this._name +' '+ utils.inspect(info));
+    console.log('[ERROR] '+ this._name +' '+ util.inspect(info));
   }
   writeReport(this._name, sanitize(this._params.path), report);
 
@@ -244,7 +242,7 @@ var writeReport = function writeReport (name, path, /* xmlbuilder*/ data) {
 
   ensure(dirname, 0777, function ensureDirCB (err) {
     if (err) {
-      console.log('[Error] '+ utils.inspect(err));
+      console.log('[Error] '+ util.inspect(err));
       return;
     }
     fs.writeFileSync(path, data.toString({pretty:true}));
