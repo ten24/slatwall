@@ -16,7 +16,9 @@ dependencies:
     - npm install gulp gulp-inject gulp-chmod gulp-util run-sequence webpack
 
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
-    - npm install -g se-interpreter xmlbuilder ensureDir
+    - npm install -g se-interpreter
+    # Add needed xmlbuilder and ensureDir node_modules for jUnit reporting
+    - cd ~/nvm/v0.10.33/lib/node_modules/se-interpreter && npm install xmlbuilder ensureDir
 
     # Minify JS
      # generate typings
