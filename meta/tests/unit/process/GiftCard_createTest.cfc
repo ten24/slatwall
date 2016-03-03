@@ -57,7 +57,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function test_creating_card(){ 
 		
 		var giftCardData = { 
-			giftCardID=""
+			giftCardID="",
+			currencyCode="USD"
 		}; 
 		
 		var giftCard = createPersistedTestEntity('GiftCard', giftCardData); 
@@ -79,7 +80,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		giftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
 		processGiftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
 		
-		assertTrue(giftCard.hasGiftCardExpirationTerm(giftExpirationTerm));
+		assertTrue(giftCard.hasGiftCardExpirationTerm());
 		
 		assertTrue(giftCard.getGiftCardExpirationTerm().getTermID()==processGiftCard.getGiftCardExpirationTerm().getTermID()); 
 		
@@ -108,9 +109,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		giftCard.setOriginalOrderItem(giftOrderItem); 		
 		processGiftCard.setOriginalOrderItem(giftOrderItem); 
 		
-		assertTrue(giftCard.hasOriginalOrderItem(giftOrderItem)); 
+		assertTrue(giftCard.hasOriginalOrderItem()); 
 	
-		assertTrue(giftCard.hasOriginalOrderItem(giftOrderItem)); 
 		assertTrue(processGiftCard.getOriginalOrderItem().getOrderItemID() == giftOrderItem.getOrderItemID()); 
 		
 		var accountData = {
@@ -119,13 +119,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('Account', accountData);
 		
 		giftCard.setOwnerAccount(account); 
+		giftCard.setOwnerEmailAddress('test@test.com');
 		processGiftCard.setOwnerAccount(account);
 		
-		assertTrue(giftCard.hasOwnerAccount(account)); 
+		assertTrue(giftCard.hasOwnerAccount()); 
 		assertTrue(processGiftCard.getOwnerAccount().getAccountID() == account.getAccountID());
 		
 		giftCard = request.slatwallScope.getService("giftCardService").saveGiftCard(giftCard);
-		
+		request.debug(giftCard.getErrors());
 		assertTrue(!giftCard.hasErrors()); 
 		
 		request.slatwallScope.getService("giftCardService").deleteGiftCard(giftCard);
