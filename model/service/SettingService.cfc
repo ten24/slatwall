@@ -71,11 +71,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ====================== START: NEW JSON FUNCTION ==========================
 
 	public struct function getAllCoreSettingMetaData(){
-		return this.inspectFolderForSettingsFiles(expandPath("/#getApplicationValue('applicationKey')#/config/settings"));
+		return this.inspectFolderForSettingsFiles(expandPath("/#getApplicationValue('applicationKey')#/model/settings"));
 	}
 
 	public struct function getAllCustomSettingMetaData(){
-		return this.inspectFolderForSettingsFiles(expandPath("/#getApplicationValue('applicationKey')#/custom/config/settings"));
+		return this.inspectFolderForSettingsFiles(expandPath("/#getApplicationValue('applicationKey')#/custom/model/settings"));
 	}
 
 	public struct function inspectFolderForSettingsFiles(required string folderPath){
@@ -97,7 +97,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	}
 
 	public struct function getSettingsConfig(){
-		var settingsConfigPath = expandPath("/#getApplicationValue('applicationKey')#/config/settings.config.json");
+		var settingsConfigPath = expandPath("/#getApplicationValue('applicationKey')#/model/settings/settings.config.json");
 		var settingsConfigJson = fileRead( settingsConfigPath );
 		if(!isJSON( settingsConfigJson )) {
 			throw("The Setting File: #folderPathsList[i]# is not a valid JSON object");
