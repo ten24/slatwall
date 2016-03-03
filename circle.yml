@@ -67,10 +67,11 @@ deployment:
 
   # If this is a merge into master, then do a micro version adjust and push the built files
   master_release:
-    branch: [master, hotfix-rm-tagrelease]
+    branch: [master, hotfix-rm-tagarelease]
     commands:
       - meta/ci/version_adjust.sh
       - meta/ci/push_built_files.sh
+      - meta/ci/tag_master.sh
 
   # If this is a merfe into develop, then do a build version adjust and push the built files
   develop_release:
