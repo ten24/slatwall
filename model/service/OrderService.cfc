@@ -312,6 +312,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					if(arguments.processObject.matchesOrderItem( orderItem )){
 						foundItem = true;
+						var foundOrderItem = orderItem;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
 						orderItem.validate(context='save');
 						if(orderItem.hasErrors()) {
@@ -418,7 +419,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
 				var recipient = this.newOrderItemGiftRecipient();
 				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
-				recipientProcessObject.setOrderItem(newOrderItem);
+				if(foundItem){
+					recipientProcessObject.setOrderItem(foundOrderItem);
+				} else {
+					recipientProcessObject.setOrderItem(newOrderItem);
+				}
 				recipientProcessObject.setRecipient(recipient);
 				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
 			}
