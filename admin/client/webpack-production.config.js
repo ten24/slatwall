@@ -30,9 +30,7 @@ devConfig.plugins= [
         {
             if (stats.compilation.errors && stats.compilation.errors.length)
             {
-            	for(var i = 0; i < stats.compilation.errors.length;i++){
-            		console.error(stats.compilation.errors[i]).message;
-            	}
+            	console.error(stats.compilation.errors);
                 
                 process.exit(1);
             }
