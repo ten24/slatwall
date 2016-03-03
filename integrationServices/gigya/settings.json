@@ -1,0 +1,19 @@
+{  
+    "apiKey":{  
+        "fieldType":"text"
+    },
+    "secretKey":{  
+        "fieldType":"password",
+        "encryptValue":"true"
+    },
+    "siteName":{  
+        "fieldType":"text"
+    },
+    "enabledProviders":{  
+        "fieldType":"text",
+        "defaultValue":"facebook,twitter,googleplus,linkedin,yahoo,microsoft,aol,foursquare"
+    },
+    "legacyUIDPropertyIdentifier":{  
+        "fieldType":"text"
+    }
+}
