@@ -53,16 +53,28 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 	 */
 	public void function setUp() {
 		super.setup();
+		
+		var accountData = {
+			accountID="",
+			accountAuthentications=[
+				{
+					accountAuthenticationID="",
+					authToken="A1E4E94C-D2A6-3462-235FFD1EF3339E0C"
+				}
+			]
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
 		variables.crypto = request.slatwallScope.getBean("cryptoService");
 		variables.key = "A1E4E94C-D2A6-3462-235FFD1EF3339E0C";
 		variables.keyBase64 = "QTFFNEU5NEMtRDJBNi0zNDYyLTIzNUZGRDFFRjMzMzlFMEM=";//This is the clients secret key
-		variables.userID = "4028818d4b05b871014b102d388a00db";//This is the clients userid
+		variables.userID = "#account.getAccountID()#";//This is the clients userid
 		variables.timestamp = Now();//This is the coldfusion time now.
 		variables.unixTime = DateDiff("s", CreateDate(1970,1,1), variables.timestamp);//This is the unix version of the coldfusion time.
 		variables.oldTimestamp = "1430467282";//This is an oldtimestamp for testing purposes.
 		variables.keySignature = "A1E4E94C-D2A6-3462-235FFD1EF3339E0C NDIyNEYzODJCRjQ0NjI2MjJCNDY4QTM0NjQwRDQyODE0MzU4MDk3Rg== A1E4E94C-D2A6-3462-235FFD1EF3339E0C";
 		//variables.unixTime = 1430642944 ;
-		variables.timeUserKey = "1430739219589_4028818d4b05b871014b102d388a00db_QTFFNEU5NEMtRDJBNi0zNDYyLTIzNUZGRDFFRjMzMzlFMEM=";
+		variables.timeUserKey = "1430739219589_#account.getAccountID()#_QTFFNEU5NEMtRDJBNi0zNDYyLTIzNUZGRDFFRjMzMzlFMEM=";
 	}
 
 	public void function encodeAndDecode_Base64_Test(){
