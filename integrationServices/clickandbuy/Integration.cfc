@@ -9,17 +9,4 @@
 	<cfreturn 'Click & Buy' />
 </cffunction>
 
-
-<cffunction name="getSettings" returnType="struct" access="public">
-	<cfreturn {
-		merchantId						= { fieldType='text' },
-		projectId							= { fieldType='text' },
-		projectDescription		= { fieldType='text' },
-		consumerLanguage			= { fieldType='text', defaultValue='en' },
-		secretKey							= { fieldType='text' },
-		currency							= { fieldType='text', defaultValue='EUR' },
-		sandBoxIsActive				= { fieldType='yesno', defaultValue=true }
-	} />
-</cffunction>
-
 </cfcomponent>

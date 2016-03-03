@@ -1,0 +1,13 @@
+{  
+    "username":{  
+        "fieldType":"text"
+    },
+    "password":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "liveModeFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"0"
+    }
+}

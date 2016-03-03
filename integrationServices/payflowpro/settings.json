@@ -1,0 +1,31 @@
+{  
+    "vendorID":{  
+        "fieldType":"text"
+    },
+    "partnerID":{  
+        "fieldType":"text"
+    },
+    "username":{  
+        "fieldType":"text"
+    },
+    "password":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "liveModeFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"0"
+    },
+    "orderPaymentCommentOneTemplate":{  
+        "fieldType":"text"
+    },
+    "orderPaymentCommentTwoTemplate":{  
+        "fieldType":"text"
+    },
+    "accountPaymentCommentOneTemplate":{  
+        "fieldType":"text"
+    },
+    "accountPaymentCommentTwoTemplate":{  
+        "fieldType":"text"
+    }
+}

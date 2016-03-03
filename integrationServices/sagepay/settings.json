@@ -1,0 +1,16 @@
+{  
+    "vendorID":{  
+        "fieldType":"text"
+    },
+    "currency":{  
+        "fieldType":"text"
+    },
+    "simulatorMode":{  
+        "fieldType":"yesno",
+        "defaultValue":"1"
+    },
+    "testMode":{  
+        "fieldType":"yesno",
+        "defaultValue":"1"
+    }
+}

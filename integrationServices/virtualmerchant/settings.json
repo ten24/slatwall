@@ -1,0 +1,25 @@
+{  
+    "merchantID":{  
+        "fieldType":"text"
+    },
+    "userID":{  
+        "fieldType":"text"
+    },
+    "pin":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "testMerchantID":{  
+        "fieldType":"text"
+    },
+    "testUserID":{  
+        "fieldType":"text"
+    },
+    "testPin":{  
+        "fieldType":"text"
+    },
+    "testAccountFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"1"
+    }
+}

@@ -61,16 +61,4 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		return "Merchant e-Solutions";
 	}
 
-	public struct function getSettings() {
-		var settings = {
-			profileID = {fieldType="text"},
-			profileKey = {fieldType="text"},
-			testModeFlag = {fieldType="yesno", defaultValue="1"},
-			testProfileID = {fieldType="text"},
-			testProfileKey = {fieldType="text"},
-			apiUrl = {fieldType="text", defaultValue="https://cert.merchante-solutions.com/mes-api/tridentApi"}
-		};
-
-		return settings;
-	}
 }

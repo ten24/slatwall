@@ -1,0 +1,37 @@
+{  
+    "productDisplayTemplate":{  
+        "fieldType":"select"
+    },
+    "productImageDefaultExtension":{  
+        "fieldType":"text",
+        "defaultValue":"jpg"
+    },
+    "productImageOptionCodeDelimiter":{  
+        "fieldType":"select",
+        "defaultValue":"-"
+    },
+    "productTitleString":{  
+        "fieldType":"text",
+        "defaultValue":"${brand.brandName} ${productName}"
+    },
+    "productHTMLTitleString":{  
+        "fieldType":"text",
+        "defaultValue":"${brand.brandName} ${productName} - ${productType.productTypeName}"
+    },
+    "productMetaDescriptionString":{  
+        "fieldType":"textarea",
+        "defaultValue":"${productDescription}"
+    },
+    "productMetaKeywordsString":{  
+        "fieldType":"textarea",
+        "defaultValue":"${productName}, ${productType.productTypeName}, ${brand.brandName}"
+    },
+    "productShowDetailWhenNotPublishedFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":0
+    },
+    "productAutoApproveReviewsFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":0
+    }
+}

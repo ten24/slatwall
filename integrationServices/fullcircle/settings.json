@@ -1,0 +1,35 @@
+{  
+    "companyCode":{  
+        "fieldType":"text"
+    },
+    "fcFTPAddress":{  
+        "fieldType":"text"
+    },
+    "fcFTPDirecotry":{  
+        "fieldType":"text"
+    },
+    "fcFTPUsername":{  
+        "fieldType":"text"
+    },
+    "fcFTPPassword":{  
+        "fieldType":"password"
+    },
+    "fcFTPPort":{  
+        "fieldType":"text"
+    },
+    "fcFTPUseSecure":{  
+        "fieldType":"yesno"
+    },
+    "localTransferDirctory":{  
+        "fieldType":"text"
+    },
+    "localTransferURLPath":{  
+        "fieldType":"text"
+    },
+    "localTransferURLUsername":{  
+        "fieldType":"text"
+    },
+    "localTransferURLPassword":{  
+        "fieldType":"password"
+    }
+}

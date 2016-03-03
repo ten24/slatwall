@@ -1,0 +1,10 @@
+{  
+    "taskFailureEmailTemplate":{  
+        "fieldType":"select",
+        "defaultValue":""
+    },
+    "taskSuccessEmailTemplate":{  
+        "fieldType":"select",
+        "defaultValue":""
+    }
+}

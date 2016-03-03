@@ -1,0 +1,13 @@
+{  
+    "key":{  
+        "fieldType":"text"
+    },
+    "pin":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "testingFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"1"
+    }
+}

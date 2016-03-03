@@ -1,0 +1,36 @@
+{  
+    "accountID":{  
+        "fieldType":"text"
+    },
+    "fromPostalCode":{  
+        "fieldType":"text"
+    },
+    "passPhrase":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "syncFTPSite":{  
+        "fieldType":"text"
+    },
+    "syncFTPSiteUsername":{  
+        "fieldType":"text"
+    },
+    "syncFTPSitePassword":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "syncFTPSitePort":{  
+        "fieldType":"text",
+        "defaultValue":21
+    },
+    "syncFTPSiteDropoffDirectory":{  
+        "fieldType":"text"
+    },
+    "syncFTPSiteDropoffFilename":{  
+        "fieldType":"text"
+    },
+    "syncFTPSiteSecure":{  
+        "fieldType":"yesno",
+        "defaultValue":0
+    }
+}

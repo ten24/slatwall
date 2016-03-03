@@ -1,0 +1,34 @@
+{  
+    "accountNo":{  
+        "fieldType":"text"
+    },
+    "password":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "transactionKey":{  
+        "fieldType":"text"
+    },
+    "meterNo":{  
+        "fieldType":"text"
+    },
+    "testingFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"1"
+    },
+    "shipperStreet":{  
+        "fieldType":"text"
+    },
+    "shipperCity":{  
+        "fieldType":"text"
+    },
+    "shipperStateCode":{  
+        "fieldType":"text"
+    },
+    "shipperPostalCode":{  
+        "fieldType":"text"
+    },
+    "shipperCountryCode":{  
+        "fieldType":"text"
+    }
+}

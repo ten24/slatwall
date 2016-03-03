@@ -92,9 +92,9 @@ Notes:
 				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
-
 		<hb:HibachiEntityDetailGroup object="#rc.shippingMethodRate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratepricegroups" />
 			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodratetabs/shippingmethodratesettings" />
 		</hb:HibachiEntityDetailGroup>
 		

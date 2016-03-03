@@ -1,0 +1,16 @@
+{  
+    "userID":{  
+        "fieldType":"text"
+    },
+    "shipFromPostalCode":{  
+        "fieldType":"text"
+    },
+    "testingFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"1"
+    },
+    "useSSLFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"1"
+    }
+}

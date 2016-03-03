@@ -74,7 +74,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 
 				// check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity())) {
+				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity(), arguments.orderFulfillment.getOrder().getAccount().getPriceGroups())) {
 					// Add any new shipping integrations in any of the rates the the shippingIntegrations array that we are going to query for rates later
 					if(!isNull(shippingMethodRates[r].getShippingIntegration()) && !arrayFind(integrations, shippingMethodRates[r].getShippingIntegration())) {
 						arrayAppend(integrations, shippingMethodRates[r].getShippingIntegration());
@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 
 				// again, check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity())) {
+				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity(), arguments.orderFulfillment.getOrder().getAccount().getPriceGroups())) {
 
 					// If this rate is a manual one, then use the default amount
 					if(isNull(shippingMethodRates[r].getShippingIntegration())) {
@@ -261,7 +261,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderFulfillment.setFulfillmentCharge( arguments.orderFulfillment.getFulfillmentShippingMethodOptions()[1].getTotalCharge() );
 			}
 		}
-
 	}
 
 	public boolean function verifyOrderFulfillmentShippingMethodRate(required any orderFulfillment) {
@@ -289,7 +288,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity) {
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity, any accountPriceGroups) {
 		// Make sure that the rate is active
 		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
 			return false;
@@ -338,7 +337,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(shipmentItemQuantity < lowerQuantity || shipmentItemQuantity gt higherQuantity) {
             return false;
         }
-
+        
+        // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
+        //If this rate has price groups assigned but the user does not, then fail.
+        if ( !isNull(arguments.shippingMethodRate.getPriceGroups()) && 
+             arrayLen(arguments.shippingMethodRate.getPriceGroups()) && 
+             !arrayLen(arguments.accountPriceGroups) ){
+        	return false;
+        
+        //If this rate has price groups assigned and the user has groups but not the correct ones, then fail.
+        } else if ( !isNull(arguments.shippingMethodRate.getPriceGroups()) &&
+                    arrayLen(arguments.shippingMethodRate.getPriceGroups()) && 
+                    arrayLen(arguments.accountPriceGroups) ){
+        	var foundMatchingPriceGroup = false;
+        	//Check if the pricegroup supports the users price groups
+        	for (var priceGroup in arguments.accountPriceGroups){
+    			if (arguments.shippingMethodRate.hasPriceGroup(priceGroup)){
+                    foundMatchingPriceGroup = true;
+                }
+        	}
+        	//If not found then return false.
+        	if (!foundMatchingPriceGroup){
+        		return false;
+        	}
+        }
+        
 		// If we have not returned false by now, then return true
 		return true;
 	}

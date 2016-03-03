@@ -1,0 +1,11 @@
+{  
+    "shipperPostalCode":{  
+        "fieldType":"text"
+    },
+    "shipperCountryCode":{  
+        "fieldType":"text"
+    },
+    "apiKey":{  
+        "fieldType":"text"
+    }
+}

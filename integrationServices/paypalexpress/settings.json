@@ -1,0 +1,29 @@
+{  
+    "cancelURL":{  
+        "fieldType":"text"
+    },
+    "externalPaymentReturnURL":{  
+        "fieldType":"text"
+    },
+    "paypalAccountEmail":{  
+        "fieldType":"text"
+    },
+    "paypalAccountUser":{  
+        "fieldType":"text"
+    },
+    "paypalAccountPassword":{  
+        "fieldType":"password",
+        "encryptValue":true
+    },
+    "paypalAccountSignature":{  
+        "fieldType":"text"
+    },
+    "paypalAccountSandboxFlag":{  
+        "fieldType":"yesno",
+        "defaultValue":"0"
+    },
+    "paypalHeaderImage":{  
+        "fieldType":"text",
+        "defaultValue":""
+    }
+}
