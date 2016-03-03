@@ -11,7 +11,7 @@ export class BaseBootStrapper{
     public _resourceBundle = {};
     public $http:ng.IHttpService;
     public $q:ng.IQService;
-    public appConfig;
+    public appConfig:any;
 
     constructor(myApplication){
       this.myApplication = myApplication;
