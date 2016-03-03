@@ -5469,10 +5469,15 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-image-uploader .thumbnail {
   padding: 0px;
   border-radius: 2px;
+  position: relative;
 }
 .s-image-uploader .thumbnail .s-image {
   position: relative;
   padding: 5px;
+}
+.s-image-uploader .thumbnail .s-image img {
+  width: 100%;
+  height: auto;
 }
 .s-image-uploader h4::-webkit-scrollbar {
   display: none;
@@ -5486,21 +5491,6 @@ a.disabled > i.hibachi-ui-radio-checked {
   overflow: -moz-scrollbars-none;
   white-space: nowrap;
 }
-.s-image-uploader .s-zoom {
-  display: inline-block;
-  background-color: #fff;
-  opacity: .0;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0px;
-  text-align: center;
-  padding-top: 38%;
-  font-size: 45px;
-}
-.s-image-uploader .s-zoom:hover {
-  opacity: 0.8;
-}
 .s-image-uploader .s-caption {
   margin-top: 10px;
 }
@@ -5508,6 +5498,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   display: inline-block;
   width: 100%;
   margin-bottom: -4px;
+  border-top: 1px solid #000;
 }
 .s-image-uploader .s-controlls > .btn-group {
   display: inline-block;
@@ -5516,7 +5507,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   backgrou: #E6E6E6;
 }
 .s-image-uploader .s-controlls .btn-group {
-  border-right: 1px solid #fff;
+  border-right: 1px solid #D9D9D9;
   background-color: #F2F2F2;
 }
 .s-image-uploader .s-controlls .btn-group:last-child {
@@ -5530,16 +5521,57 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-image-uploader .s-controlls .btn-group .btn:hover {
   border: none !important;
 }
+.s-upload-image .thumbnail {
+  transition: none;
+}
 .s-upload-image .thumbnail:hover {
   -webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
   -moz-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.12);
-  -webkit-transition: all .1s linear;
-  -o-transition: all .1s linear;
-  -moz-transition: all .1s linear;
-  -ms-transition: all .1s linear;
-  -kthtml-transition: all .1s linear;
-  transition: all .1s linear;
+  transition: none;
+}
+.s-upload-image .thumbnail .s-title .s-long {
+  display: none;
+}
+.s-upload-image .thumbnail:hover .s-title .s-short {
+  display: none;
+}
+.s-upload-image .thumbnail:hover .s-title .s-long {
+  display: inline;
+}
+.s-upload-image .thumbnail .s-title .s-long ul {
+  margin: 0px;
+}
+.s-upload-image .thumbnail .s-title .s-long ul li {
+  white-space: pre-wrap;
+  /* CSS3 */
+  white-space: -moz-pre-wrap;
+  /* Firefox */
+  white-space: -pre-wrap;
+  /* Opera <7 */
+  white-space: -o-pre-wrap;
+  /* Opera 7 */
+  word-wrap: break-word;
+  /* IE */
+  text-align: left;
+  margin-bottom: 5px;
+}
+.s-upload-image .thumbnail .s-title {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  height: 11%;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+  overflow: hidden;
+  border-top: 1px solid #D9D9D9;
+}
+.s-upload-image .thumbnail:hover .s-title {
+  border: none;
+}
+.s-upload-image .thumbnail:hover .s-title {
+  height: 100%;
 }
 .s-upload-image .thumbnail {
   display: table;
@@ -5560,20 +5592,38 @@ a.disabled > i.hibachi-ui-radio-checked {
   font-weight: 600;
   font-style: italic;
 }
-.s-upload-image a {
-  height: 229px;
-  display: table-cell;
+.thumbnail .s-title {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding: 4px 10px 50px 10px;
+  background-color: #F2F2F2;
+  pointer-events: none;
+  border-top: 1px solid #eee;
+  color: #666;
+  font-size: 11px;
+  text-align: center;
+}
+.thumbnail .s-title.s-top {
+  bottom: 29px;
+  border-bottom: 1px solid #fff;
+}
+.s-upload-image .thumbnail .s-image > a {
+  height: 189px;
   width: 100%;
-  vertical-align: middle;
+  text-align: center;
+  display: block;
+}
+.s-upload-image .thumbnail .s-image > a i {
+  font-size: 50px;
+  top: 30%;
+}
+.s-upload-image.s-new-image .thumbnail .s-controlls {
+  border-top: 1px solid #DDD;
 }
 .s-upload-image a {
   text-decoration: none;
-}
-.s-upload-image a i {
-  display: block;
-  font-size: 90px;
-  margin-bottom: 5px;
-  margin-top: -52px;
 }
 .s-upload-image.s-new-image a i {
   margin-top: 0px;

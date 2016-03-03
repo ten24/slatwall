@@ -147,22 +147,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var productData = {
 			productID = '',
-			productName = '',
+			productName = 'TestName',
+			productCode=createUUID(),
 			skus = [
 				{
-					skuID = CreateUUID()
+					skuID = "",
+					skuCode = CreateUUID(),
+					options=[
+						{
+							optionID=og1.getOptions()[1].getOptionID()
+						},
+						{
+							optionID=og2.getOptions()[1].getOptionID()
+						},
+						{
+							optionID=og3.getOptions()[1].getOptionID()
+						}
+					]
 				}
 			]
 		};
 
 		var product = createPersistedTestEntity('product', productData);
-		product.getSkus()[1].addOption(og1.getOptions()[1]);
-		product.getSkus()[1].addOption(og2.getOptions()[1]);
-		product.getSkus()[1].addOption(og3.getOptions()[1]);
 
-		request.debug(product.getNumberOfUnusedProductOptionCombinations());
+		addToDebug(product.getNumberOfUnusedProductOptionCombinations());
 
-		assertEquals(8, product.getNumberOfUnusedProductOptionCombinations());
+		assertEquals(11, product.getNumberOfUnusedProductOptionCombinations());
 		assertTrue(product.hasUnusedProductOptionCombinations());
 	}
 
@@ -215,7 +225,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		var productData = {
 			productID = '',
-			productName = '',
+			productName = 'TestName',
 			skus = [
 				{
 					skuID = ''
@@ -228,17 +238,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		product.getSkus()[1].addOption(og2.getOptions()[1]);
 		product.getSkus()[1].addOption(og3.getOptions()[1]);
 
-		request.debug(og1.getOptions()[1].getOptionID());
-		request.debug("|       |");
-		request.debug(og2.getOptions()[1].getOptionID());
-		request.debug("|       |");
-		request.debug(og3.getOptions()[1].getOptionID());
+		addToDebug(og1.getOptions()[1].getOptionID());
+		addToDebug("|       |");
+		addToDebug(og2.getOptions()[1].getOptionID());
+		addToDebug("|       |");
+		addToDebug(og3.getOptions()[1].getOptionID());
 
-		request.debug(product.getNumberOfUnusedProductOptionCombinations());
+		addToDebug(product.getNumberOfUnusedProductOptionCombinations());
 
 		assertEquals(0, product.getNumberOfUnusedProductOptionCombinations());
 		assertFalse(product.hasUnusedProductOptionCombinations());
 	}
 }
-
-
