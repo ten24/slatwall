@@ -139,7 +139,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entityName = 'product';
 		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName,variables.defaultCollectionOptions);
 		assertEquals('product',collectionEntity.getCollectionObject());
-		assertEquals('SlatwallProduct',collectionEntity.getCollectionConfigStruct().baseentityname);
+		assertEquals('product',collectionEntity.getCollectionConfigStruct().baseentityname);
 		assertEquals('_product',collectionEntity.getCollectionConfigStruct().baseentityalias);
 	}
 	
@@ -239,7 +239,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('account',accountData);
 		var propertyIdentifiers = "lastName,firstName";
 		var collectionOptions = setupCollectionOptions({propertyIdentifiersList=propertyIdentifiers});
-		var apiResponse = variables.service.getAPIResponseForEntityName('account',collectionOptions);
+		var apiResponse = variables.service.getAPIResponseForEntityName('account',collectionOptions,false);
 		
 		assertTrue(isStruct(apiResponse));
 	}
@@ -323,7 +323,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var propertyIdentifiersList = "firstName,lastName";
 		
-		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,setupCollectionOptions({propertyIdentifiersList=propertyIdentifiersList}));
+		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,setupCollectionOptions({propertyIdentifiersList=propertyIdentifiersList}),false);
 		//addToDebug(apiResponse);
 	}
 	

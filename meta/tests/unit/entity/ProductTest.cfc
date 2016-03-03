@@ -148,21 +148,31 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var productData = {
 			productID = '',
 			productName = 'TestName',
+			productCode=createUUID(),
 			skus = [
 				{
-					skuID = CreateUUID()
+					skuID = "",
+					skuCode = CreateUUID(),
+					options=[
+						{
+							optionID=og1.getOptions()[1].getOptionID()
+						},
+						{
+							optionID=og2.getOptions()[1].getOptionID()
+						},
+						{
+							optionID=og3.getOptions()[1].getOptionID()
+						}
+					]
 				}
 			]
 		};
 
 		var product = createPersistedTestEntity('product', productData);
-		product.getSkus()[1].addOption(og1.getOptions()[1]);
-		product.getSkus()[1].addOption(og2.getOptions()[1]);
-		product.getSkus()[1].addOption(og3.getOptions()[1]);
 
 		addToDebug(product.getNumberOfUnusedProductOptionCombinations());
 
-		assertEquals(8, product.getNumberOfUnusedProductOptionCombinations());
+		assertEquals(11, product.getNumberOfUnusedProductOptionCombinations());
 		assertTrue(product.hasUnusedProductOptionCombinations());
 	}
 

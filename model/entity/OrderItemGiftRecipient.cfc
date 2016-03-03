@@ -50,11 +50,11 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 
 	// Persistent Properties
 	property name="orderItemGiftRecipientID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="firstName" ormtype="string";
-	property name="lastName" ormtype="string";
-	property name="emailAddress" ormtype="string";
-	property name="quantity" ormtype="integer";
-	property name="giftMessage" ormtype="string" length="4000";
+	property name="firstName" ormtype="string" hb_populateEnabled="public";
+	property name="lastName" ormtype="string" hb_populateEnabled="public";
+	property name="emailAddress" ormtype="string" hb_populateEnabled="public";
+	property name="quantity" ormtype="integer" hb_populateEnabled="public";
+	property name="giftMessage" ormtype="string" length="4000" hb_populateEnabled="public";
 
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
@@ -156,9 +156,10 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
     public string function getSimpleRepresentation() {
 		if(!isNull(this.getFirstName()) && !isNull(this.getLastName())){
 			return this.getFirstName() & " " & this.getLastName();
-		} else {
+		} else if(!isNull(getEmailAddress())){
 			return getEmailAddress();
 		}
+		return '';
 	}
 
 	// ==================  END:  Overridden Methods ========================
