@@ -60,9 +60,4 @@ component accessors="true" output="false" displayname="UPS" extends="Slatwall.in
 		return "UPS";
 	}
 
-	public struct function getSettings() {
-		var settings = ;
-
-		return settings;
-	}
 }

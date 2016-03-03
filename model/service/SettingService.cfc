@@ -83,7 +83,11 @@ component extends="HibachiService" output="false" accessors="true" {
 		var folderPathsList = directoryList(arguments.folderPath);
 
 		for(var i=1; i<= arrayLen(folderPathsList); i++) {
-			if(fileExists( folderPathsList[i] ) && FindNoCase("settings.config.json", folderPathsList[i]) == 0) {
+			var fileExt = lcase(ListLast(getFileInfo(folderPathsList[i]).name,"."));
+			if(fileExists( folderPathsList[i] )
+				&& fileExt  == "json"
+				&& FindNoCase("settings.config.json", folderPathsList[i]) == 0
+			) {
 				var rawCoreJSON = fileRead( folderPathsList[i] );
 				if(isJSON( rawCoreJSON )) {
 					try{
