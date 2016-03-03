@@ -58,7 +58,7 @@ class SWFFormFieldController {
 		*/
 	public static $inject = ['$scope'];
 	constructor ( public $scope:ng.IScope ) {
-		let vm:IFormFieldControllerVM = this;
+		let vm:any = this;
         
         if (this.propertyDisplay){
             vm.propertyDisplay = this.propertyDisplay;   

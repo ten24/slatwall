@@ -49,21 +49,33 @@
 	<cfparam name="attributes.object" type="any" />
 
 	<cfoutput>
-
 		<div class="row s-image-uploader">
 			<cfif arrayLen(attributes.object.getImages())>
 				<cfloop array="#attributes.object.getImages()#" index="image">
-					<div class="col-xs-2">
-						<div class="thumbnail">
+					<div class="col-xs-2 s-upload-image">
+						<div class="thumbnail" title="#image.getImageFile()#">
 							<div class="s-image">
 								<a href="#image.getResizedImagePath()#" target="_blank">
-									#image.getResizedImage(width=210, height=210)#
-									<span class="s-zoom"><i class="fa fa-search"></i></span>
+									#image.getResizedImage(width=250, height=250)#
 								</a>
 							</div>
-							<!--- <div class="s-caption">
-								<h4 title="#image.getImageFile()#">#image.getImageFile()#</h4>
-							</div> --->
+							<div class="s-title">
+								<div class="s-title">
+									<span class="s-short">
+										<cfset objImage  = image.getImageFile()>
+										<cfif len( trim( objImage ) ) gt 17>
+											<cfset objImage  = left( trim( image.getImageFile() ), 17 ) & "...">
+										</cfif>
+										#objImage#
+									</span>
+									<span class="s-long">
+										<ul class="list-unstyled" style="margin:0px;">
+											<li><strong>URL Title:</strong><div>#image.getImageFile()#</div></li>
+											<cfif len(image.getImageName())><li><strong>Image Name:</strong><div>#image.getImageName()#</div></li></cfif>
+										</ul>
+									</span>
+								</div>
+							</div>
 							<div class="s-controlls">
 								<div class="btn-group btn-group-justified" role="group">
 									<div class="btn-group" role="group">
@@ -78,14 +90,20 @@
 					</div>
 				</cfloop>
 			</cfif>
-			
 			<div class="col-xs-2 s-upload-image s-new-image">
 				<div class="thumbnail">
-					<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" icon="picture" />
+					<div class="s-image">
+						<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" icon="picture" iconOnly="true"/>
+					</div>
+					<div class="s-controlls">
+						<div class="btn-group btn-group-justified" role="group">
+							<div class="btn-group" role="group">
+								<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" icon="plus" iconOnly="true" class="btn btn-default"/>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-
 		</div>
-
 	</cfoutput>
 </cfif>

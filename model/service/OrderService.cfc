@@ -58,6 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="fulfillmentService";
 	property name="giftCardService";
 	property name="hibachiUtilityService";
+	property name="hibachiAuthenticationService";
 	property name="locationService";
 	property name="paymentService";
 	property name="priceGroupService";
@@ -311,6 +312,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					if(arguments.processObject.matchesOrderItem( orderItem )){
 						foundItem = true;
+						var foundOrderItem = orderItem;
 						orderItem.setQuantity(orderItem.getQuantity() + arguments.processObject.getQuantity());
 						orderItem.validate(context='save');
 						if(orderItem.hasErrors()) {
@@ -379,8 +381,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
 			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 
-
-			if(len(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
+			// If the sku is allowed to have a user defined price OR the current account has permissions to edit price
+			if(
+				(
+					(!isNull(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag())
+					  ||
+					(getHibachiScope().getLoggedInAsAdminFlag() && getHibachiAuthenticationService().authenticateEntityPropertyCrudByAccount(crudType='update', entityName='orderItem', propertyName='price', account=getHibachiScope().getAccount()))
+				) && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );
 			} else {
 				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
@@ -412,7 +419,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var recipientProcessObject = arguments.order.getProcessObject("addOrderItemGiftRecipient");
 				var recipient = this.newOrderItemGiftRecipient();
 				recipient = this.saveOrderItemGiftRecipient(recipient.populate(recipients[i]));
-				recipientProcessObject.setOrderItem(newOrderItem);
+				if(foundItem){
+					recipientProcessObject.setOrderItem(foundOrderItem);
+				} else {
+					recipientProcessObject.setOrderItem(newOrderItem);
+				}
 				recipientProcessObject.setRecipient(recipient);
 				this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
 			}
@@ -2721,7 +2732,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		smartList.addKeywordProperty(propertyIdentifier="order.orderOrigin.orderOriginName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="sku.skuCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="sku.product.calculatedTitle", weight=1);
-		smartList.addKeywordProperty(propertyIdentifier="orderItemStatusType.type", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="orderItemStatusType.typeName", weight=1);
 
 		return smartList;
 	}
