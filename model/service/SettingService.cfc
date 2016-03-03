@@ -86,7 +86,11 @@ component extends="HibachiService" output="false" accessors="true" {
 			if(fileExists( folderPathsList[i] ) && FindNoCase("settings.config.json", folderPathsList[i]) == 0) {
 				var rawCoreJSON = fileRead( folderPathsList[i] );
 				if(isJSON( rawCoreJSON )) {
-					structAppend(allSettingMetaData, getHibachiUtilityService().evaluateColdfusionInStruct(deserializeJSON( rawCoreJSON )), false);
+					try{
+						structAppend(allSettingMetaData, getHibachiUtilityService().evaluateColdfusionInStruct(deserializeJSON( rawCoreJSON )), false);
+					} catch(any e){
+						throw("The Setting File: #folderPathsList[i]# has an invalid coldfusion statement");
+					}
 				} else {
 					throw("The Setting File: #folderPathsList[i]# is not a valid JSON object");
 				}

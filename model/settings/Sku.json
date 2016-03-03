@@ -30,7 +30,7 @@
     "skuEligibleCurrencies":{  
         "fieldType":"listingMultiselect",
         "listingMultiselectEntityName":"Currency",
-        "defaultValue":"#getService('Currency').getAllActiveCurrencyIDList()#"
+        "defaultValue":"#getService('CurrencyService').getAllActiveCurrencyIDList()#"
     },
     "skuEligibleFulfillmentMethods":{  
         "fieldType":"listingMultiselect",
