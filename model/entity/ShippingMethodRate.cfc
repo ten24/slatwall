@@ -53,6 +53,8 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="sortOrder" ormtype="integer" sortContext="shippingMethod";
 	property name="minimumShipmentWeight" ormtype="float" hb_nullRBKey="define.0";
 	property name="maximumShipmentWeight" ormtype="float" hb_nullRBKey="define.unlimited";
+	property name="minimumShipmentQuantity" ormtype="float" hb_nullRBKey="define.0";
+    property name="maximumShipmentQuantity" ormtype="float" hb_nullRBKey="define.unlimited";
 	property name="minimumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.0";
 	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.unlimited";
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
@@ -84,6 +86,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="shippingIntegrationMethodOptions" type="array" persistent="false";
 	property name="addressZoneOptions" type="array" persistent="false";
 	property name="shipmentWeightRange" type="string" persistent="false";
+	property name="shipmentQuantityRange" type="string" persistent="false";
 	property name="shipmentItemPriceRange" type="string" persistent="false";
 	property name="shippingMethodRateName" type="string" persistent="false";
 	
@@ -130,6 +133,35 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		}
 		return variables.shipmentWeightRange;
 	}
+	
+	public string function getShipmentQuantityRange() {
+        if(!structKeyExists(variables, "shipmentQuantityRange")) {
+            variables.shipmentQuantityRange = "";
+            
+            var lower = 0;
+            var upper = 0;
+            
+            if(!isNull(getMinimumShipmentQuantity()) && getMinimumShipmentQuantity() gt 0) {
+                lower = getMinimumshipmentQuantity();
+            }
+            
+            if(!isNull(getMaximumShipmentQuantity()) && getMaximumShipmentQuantity() gt 0) {
+                upper = getMaximumShipmentQuantity();
+            }
+            
+            if(lower == 0 && upper == 0) {
+                variables.shipmentQuantityRange = rbKey('define.any');
+            } else {
+                variables.shipmentQuantityRange = lower & " - ";
+                if(upper gt 0) {
+                    variables.shipmentQuantityRange &= upper;
+                } else {
+                    variables.shipmentQuantityRange &= rbKey('define.any');
+                }
+            }
+        }
+        return variables.shipmentQuantityRange;
+    }
 		
 	public string function getShipmentItemPriceRange() {
 		if(!structKeyExists(variables, "shipmentItemPriceRange")) {

@@ -75,7 +75,7 @@ class SWFFormFieldController {
         //}
 		
 	}
-}
+} 
 
 /**
 	* This class handles configuring formFields for use in process forms on the front end.

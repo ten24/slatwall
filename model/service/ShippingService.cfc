@@ -74,7 +74,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 
 				// check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts())) {
+				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity())) {
 					// Add any new shipping integrations in any of the rates the the shippingIntegrations array that we are going to query for rates later
 					if(!isNull(shippingMethodRates[r].getShippingIntegration()) && !arrayFind(integrations, shippingMethodRates[r].getShippingIntegration())) {
 						arrayAppend(integrations, shippingMethodRates[r].getShippingIntegration());
@@ -119,7 +119,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=arrayLen(shippingMethodRates); r++) {
 
 				// again, check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts())) {
+				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity())) {
 
 					// If this rate is a manual one, then use the default amount
 					if(isNull(shippingMethodRates[r].getShippingIntegration())) {
@@ -289,7 +289,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice) {
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity) {
 		// Make sure that the rate is active
 		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
 			return false;
@@ -325,6 +325,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(shipmentWeight lt lowerWeight || shipmentWeight gt higherWeight) {
 			return false;
 		}
+
+        // Make sure that the orderFulfillment Total Quantity is within the min and max of rate
+        var lowerQuantity = 0;
+        var higherQuantity = 100000000;
+        if(!isNull(arguments.shippingMethodRate.getMinimumShipmentQuantity())) {
+            lowerQuantity = arguments.shippingMethodRate.getMinimumShipmentQuantity();
+        }
+        if(!isNull(arguments.shippingMethodRate.getMaximumShipmentQuantity())) {
+            higherQuantity = arguments.shippingMethodRate.getMaximumShipmentQuantity();
+        }
+        if(shipmentItemQuantity < lowerQuantity || shipmentItemQuantity gt higherQuantity) {
+            return false;
+        }
 
 		// If we have not returned false by now, then return true
 		return true;

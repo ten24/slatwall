@@ -2,7 +2,6 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWExpandableRecordController{
-    public static $inject = ['$timeout','utilityService','$hibachi','collectionConfigService'];
     public childrenLoaded = false;
     public childrenOpen = false;
     public children = [];
@@ -16,16 +15,18 @@ class SWExpandableRecordController{
     public parentId:string;
     public entity:any
     //@ngInject
-    constructor(private $timeout:ng.ITimeoutService, private utilityService, private $hibachi, private collectionConfigService){
+    constructor(private $timeout:ng.ITimeoutService, private utilityService, private $hibachi, private collectionConfigService, private expandableService){
         this.$timeout = $timeout;
         this.$hibachi = $hibachi;
         this.utilityService = utilityService;
         this.collectionConfigService = collectionConfigService;
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
+        expandableService.addRecord(this.recordID);
     }
     public toggleChild = ()=>{
         this.$timeout(()=>{
             this.childrenOpen = !this.childrenOpen;
+            this.expandableService.updateState(this.recordID,{isOpen:this.childrenOpen});
             if(!this.childrenLoaded){
                     var childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
                     //set up parent
@@ -42,7 +43,7 @@ class SWExpandableRecordController{
                     childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
                     childCollectionConfig.setAllRecords(true);
                     angular.forEach(this.collectionConfig.columns,(column)=>{
-                        childCollectionConfig.addColumn(column.propertyIdentifier,column.tilte,column);
+                        childCollectionConfig.addColumn(column.propertyIdentifier,column.title,column);
                     });
 
                     angular.forEach(this.collectionConfig.joins,(join)=>{
@@ -56,6 +57,7 @@ class SWExpandableRecordController{
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                         if(this.collectionData.pageRecords.length){
                             angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
+                                this.expandableService.addRecord(pageRecord[parentIDName],true);
                                 pageRecord.dataparentID = this.recordID;
                                 pageRecord.depth = this.recordDepth || 0;
                                 pageRecord.depth++;
@@ -70,9 +72,10 @@ class SWExpandableRecordController{
 
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
-                var entityPrimaryID = this.entity.$$getIDName();
+                var entityPrimaryIDName = this.entity.$$getIDName();
                 var idsToCheck = [];
-                idsToCheck.push(child[entityPrimaryID]);
+                idsToCheck.push(child[entityPrimaryIDName]);
+                this.expandableService.updateState(child[entityPrimaryIDName], {isOpen:this.childrenOpen})
                 //close all children of the child if we are closing
                 var childrenTraversed = false; 
                 var recordLength = this.records.length; 
@@ -82,7 +85,8 @@ class SWExpandableRecordController{
                     for(var i=0; i < recordLength; i++){
                         var record = this.records[i]; 
                         if(record['dataparentID'] == idToCheck ){
-                            idsToCheck.push(record[entityPrimaryID]);
+                            idsToCheck.push(record[entityPrimaryIDName]);
+                            this.expandableService.updateState(record[entityPrimaryIDName], {isOpen:this.childrenOpen})
                             record.dataIsVisible=this.childrenOpen;
                             found=true; 
                         }
@@ -121,6 +125,7 @@ class SWExpandableRecord implements ng.IDirective{
             $timeout:ng.ITimeoutService,
             corePartialsPath,
             utilityService,
+            expandableService,
 			hibachiPathBuilder
         ) => new SWExpandableRecord(
             $compile,
@@ -128,6 +133,7 @@ class SWExpandableRecord implements ng.IDirective{
             $timeout,
             corePartialsPath,
             utilityService,
+            expandableService,
 			hibachiPathBuilder
         );
         directive.$inject = [
@@ -136,6 +142,7 @@ class SWExpandableRecord implements ng.IDirective{
             '$timeout',
             'corePartialsPath',
             'utilityService',
+            'expandableService',
 			'hibachiPathBuilder'
         ];
         return directive;
@@ -143,14 +150,14 @@ class SWExpandableRecord implements ng.IDirective{
 
     public controller=SWExpandableRecordController;
     public controllerAs="swExpandableRecord";
-    public static $inject = ['$compile','$templateRequest','$timeout','corePartialsPath','utilityService',
-			'hibachiPathBuilder'];
+    //@ngInject
     constructor(
         public $compile:ng.ICompileService,
         public $templateRequest:ng.ITemplateRequestService,
         public $timeout:ng.ITimeoutService,
         public corePartialsPath,
         public utilityService,
+        public expandableService,
 		public hibachiPathBuilder
      ){
         this.$compile = $compile;
@@ -158,6 +165,7 @@ class SWExpandableRecord implements ng.IDirective{
         this.corePartialsPath = corePartialsPath;
         this.$timeout = $timeout;
         this.utilityService = utilityService;
+        this.expandableService = expandableService;
         this.hibachiPathBuilder = hibachiPathBuilder;
     }
 
@@ -167,18 +175,17 @@ class SWExpandableRecord implements ng.IDirective{
                 var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];
                 if(scope.swExpandableRecord.multiselectIdPaths && scope.swExpandableRecord.multiselectIdPaths.length){
                     var multiselectIdPathsArray = scope.swExpandableRecord.multiselectIdPaths.split(',');
-                    if(scope.swExpandableRecord.childrenLoaded){
+                    if(!scope.swExpandableRecord.childrenLoaded){
                         angular.forEach(multiselectIdPathsArray,(multiselectIdPath)=>{
                             var position = this.utilityService.listFind(multiselectIdPath,id,'/');
-                            var multiselectPathLength = multiselectIdPath.split('/').length;
-                            if(position !== -1 && position < multiselectPathLength -1){
+                            var multiSelectIDs =  multiselectIdPath.split('/'); 
+                            var multiselectPathLength = multiSelectIDs.length;
+                            if(position !== -1 && position < multiselectPathLength - 1 && !this.expandableService.getState(id,"isOpen")){                            
+                                this.expandableService.updateState(id,{isOpen:true});                       
                                 scope.swExpandableRecord.toggleChild();
                             }
                         });
-                    }else{
-                        scope.swExpandableRecord.toggleChild();
                     }
-                    
                 }
             }
            
