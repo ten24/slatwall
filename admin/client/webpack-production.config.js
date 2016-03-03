@@ -24,19 +24,7 @@ devConfig.plugins= [
         add: true,
         // other ng-annotate options here
     }),
-    function()
-    {
-        this.plugin("done", function(stats)
-        {
-            if (stats.compilation.errors && stats.compilation.errors.length)
-            {
-            	console.error(stats.compilation.errors.message);
-                
-                process.exit(1);
-            }
-            
-        });
-    }
+    require('webpack-fail-plugin')
   ];
 devConfig.watch = false;
 //change output filename
