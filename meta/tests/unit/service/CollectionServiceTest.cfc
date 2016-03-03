@@ -139,7 +139,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entityName = 'product';
 		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName,variables.defaultCollectionOptions);
 		assertEquals('product',collectionEntity.getCollectionObject());
-		assertEquals('SlatwallProduct',collectionEntity.getCollectionConfigStruct().baseentityname);
+		assertEquals('product',collectionEntity.getCollectionConfigStruct().baseentityname);
 		assertEquals('_product',collectionEntity.getCollectionConfigStruct().baseentityalias);
 	}
 	
