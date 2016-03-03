@@ -32,7 +32,7 @@
 		*/
 		public function arrayOfStructsSort(aOfS,key){
 		        //by default we'll use an ascending sort
-		        var sortOrder = "asc";        
+		        var sortOrder = "asc";
 		        //by default, we'll use a textnocase sort
 		        var sortType = "textnocase";
 		        //by default, use ascii character 30 as the delim
@@ -138,35 +138,35 @@
 		public any function formatValue_url( required string value, struct formatDetails={} ) {
 			return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
 		}
-		
+
 		public any function formatValue_urltitle( required string value, struct formatDetails={} ) {
 			return createUniqueURLTitle(arguments.value, arguments.formatDetails.tableName);
 		}
-		
+
 		public any function formatValue_alphanumericdash( required string value, struct formatDetails={} ) {
-			return createSEOString(arguments.data.value); 
+			return createSEOString(arguments.data.value);
 		}
-		
+
 		public string function createUniqueURLTitle(required string titleString, required string tableName) {
 			return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');
 		}
-		
+
 		public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
-	
+
 			var addon = 1;
-	
+
 			var urlTitle = createSEOString(arguments.titleString);
-	
+
 			var returnTitle = urlTitle;
-	
+
 			var unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
-	
+
 			while(!unique) {
 				addon++;
 				returnTitle = "#urlTitle#-#addon#";
 				unique = getHibachiDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
 			}
-	
+
 			return returnTitle;
 		}
 
@@ -291,6 +291,22 @@
 
 			return returnString;
 		}
+
+		public struct function evaluateColdfusionInStruct(required struct structToParse){
+			for(var key in structToParse){
+				if(isStruct(structToParse[key])){
+					structToParse[key] = evaluateColdfusionInStruct(structToParse[key]);
+				}
+				if(isSimpleValue(structToParse[key])){
+					var matches = REMatch("^##(.*)##$", structToParse[key]);
+					if(arrayLen(matches)){
+						structToParse[key] = evaluate(structToParse[key]);
+					}
+				}
+			}
+			return structToParse;
+		}
+
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
@@ -708,10 +724,10 @@
 
 			return arguments.data;
 		}
-		
+
 		public any function getLineBreakByEnvironment(required string environmentName){
 			var linebreak = "";
-			
+
 			if ( findNoCase('windows', arguments.environmentName) ){
 				linebreak =  Chr(13) & Chr(10);
 			}else if (findNoCase('mac', arguments.environmentName) ){
@@ -721,10 +737,10 @@
 			}else {
 				linebreak = CreateObject("java", "java.lang.System").getProperty("line.separator");
 			}
-			
+
 			return linebreak;
 		}
-			
+
 	</cfscript>
 
 	<cffunction name="logException" returntype="void" access="public">
@@ -759,14 +775,14 @@
 		<cfargument name="templatePath" default="" />
 		<cfargument name="logType" default="Information" /><!--- Information  |  Error  |  Fatal  |  Warning  --->
 		<cfargument name="generalLog" type="boolean" default="false" />
-		
+
 		<cfif getHibachiScope().setting("globalLogMessages") neq "none" and (getHibachiScope().setting("globalLogMessages") eq "detail" or arguments.generalLog)>
 			<cfif generalLog>
 				<cfset var logText = "General Log" />
 			<cfelse>
 				<cfset var logText = "Detail Log" />
 			</cfif>
-			
+
 			<cfif arguments.messageType neq "" and isSimpleValue(arguments.messageType)>
 				<cfset logText &= " - #arguments.messageType#" />
 			</cfif>
@@ -779,16 +795,16 @@
 			<cfif arguments.message neq "" and isSimpleValue(arguments.message)>
 				<cfset logText &= " - #arguments.message#" />
 			</cfif>
-			
+
 			<!--- Verify that the log type was correct --->
 			<cfif not ListFind("Information,Error,Fatal,Warning", arguments.logType)>
 				<cfset logMessage(messageType="Internal Error", messageCode = "500", message="The Log type that was attempted was not valid", logType="Warning") />
 				<cfset arguments.logType = "Information" />
 			</cfif>
-			
+
 			<cflog file="#getApplicationValue('applicationKey')#" text="#logText#" type="#arguments.logType#" />
 		</cfif>
-		
+
 	</cffunction>
 
 	<cffunction name="compareLists" access="public" returntype="struct" output="false" hint="Given two versions of a list, I return a struct containing the values that were added, the values that were removed, and the values that stayed the same.">
@@ -1065,7 +1081,7 @@
 	    <!--- Return the CSV value. --->
 	    <cfreturn LOCAL.Buffer.ToString() />
 	</cffunction>
-	
+
 	<cffunction name="getCurrentUtcTime" returntype="Numeric" >
         <cfset local.currentDate = Now()>
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
