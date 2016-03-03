@@ -44,7 +44,7 @@ test:
     - sudo chmod -R 777 meta/tests/testresults
 
     # Connect ot SauceLabs for Integration Testing
-    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready:
+    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready --tunnel-identifier $CIRCLE_BUILD_NUM:
         background: true
 
     # Wait for Saucelabs connection
