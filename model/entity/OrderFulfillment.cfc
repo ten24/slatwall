@@ -656,7 +656,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
         var settingVal = getService("settingService").getSettingValue(settingName='globalMaximumFulfillmentsPerOrder');
         if (!isNull(settingVal) 
         	&& !isNull(getOrder()) 
-        	&& !isNull(getOrder().getOrderFulfillments())
         ){
            return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);  
         }
