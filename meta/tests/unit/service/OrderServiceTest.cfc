@@ -209,7 +209,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var account = createPersistedTestEntity('Account', accountData);
 		var order = createPersistedTestEntity('Order',orderData);
-		request.debug(order.getHibachiErrors());
+		addToDebug(order.getHibachiErrors());
 
 		order.setAccount(account);
 
@@ -311,5 +311,3 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 }
-
-
