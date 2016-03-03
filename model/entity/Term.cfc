@@ -107,24 +107,6 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Gift Cards (one-to-many)
-	/*public void function addGiftCard(required any giftCard){
-		arguments.giftCard.setGiftCardExpirationTerm( this );
-	}
-
-	public void function removeGiftCard(required any giftCard){
-		arguments.giftCard.removeGiftCardExpirationTerm( this );
-	}
-
-	// Gift Cards Expiration Skus (one-to-many)
-	public void function addGiftCardExpirationSku(required any giftCardExpirationSku){
-		arguments.giftCardExpirationSku.setGiftCardExpirationTerm( this );
-	}
-
-	public void function removeGiftCardExpirationSku(required any giftCardExpirationSku){
-		arguments.giftCardExpirationSku.removeGiftCardExpirationTerm( this );
-	}*/
-
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================

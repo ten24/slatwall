@@ -118,10 +118,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
 
 		giftCard.setGiftCardExpirationTerm(term);
-
-		assertTrue(giftCard.hasGiftCardExpirationTerm(term));
-
-		giftCard.removeGiftCardExpirationTerm(term);
+		
+		assertTrue(giftCard.hasGiftCardExpirationTerm());
+		
+		term.removeGiftCard(giftCard);
 
 		assertFalse(giftCard.hasGiftCardExpirationTerm(term));
 
@@ -139,11 +139,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		giftCard.setOwnerAccount(ownerAccount);
 
-		assertTrue(giftCard.hasOwnerAccount(ownerAccount));
+		assertTrue(giftCard.hasOwnerAccount());
 
 		giftCard.removeOwnerAccount(ownerAccount);
 
-		assertFalse(giftCard.hasOwnerAccount(ownerAccount));
+		assertFalse(giftCard.hasOwnerAccount());
 	}
 
 	public void function test_balance(){
