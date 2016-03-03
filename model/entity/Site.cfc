@@ -150,13 +150,6 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 		arguments.attributeValue.removeSite( this );    
 	}
 
-	// Contents (one-to-many)
-	public void function addContent(required any content) {
-		arguments.content.setSite( this );
-	}
-	public void function removeContent(required any content) {
-		arguments.content.removeSite( this );
-	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

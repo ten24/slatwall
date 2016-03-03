@@ -75,20 +75,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		var sameAsPrice = createPersistedTestEntity('sku',skuData);
 
-		var skuData = {
+		var skuData2 = {
 			skuID="",
 			redemptionAmountType="fixedAmount",
 			redemptionAmount="10.00"
 		};
-		var fixedAmount = createPersistedTestEntity('sku',skuData);
+		var fixedAmount = createPersistedTestEntity('sku',skuData2);
 
-		var skuData = {
+		var skuData3 = {
 			skuID="",
 			redemptionAmountType="percentage",
-			redemptionAmountPercentage=50,
-			redemptionAmount="10.00"
+			price="10.00",
+			redemptionAmount=50
 		};
-		var percentage = createPersistedTestEntity('sku',skuData);
+		var percentage = createPersistedTestEntity('sku',skuData3);
 
 		assertEquals(sameAsPrice.getRedemptionAmount(), 5.00);
 		assertEquals(fixedAmount.getRedemptionAmount(), 10.00);

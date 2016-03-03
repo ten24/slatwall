@@ -71,10 +71,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var orderItem = createPersistedTestEntity("orderItem", orderItemData); 
 		
 		recipient1.setOrderItem(orderItem); 
-		assertTrue(recipient1.hasOrderItem(orderItem)); 
+		assertTrue(recipient1.hasOrderItem()); 
 		
 		recipient1.removeOrderItem(orderItem); 
-		assertFalse(recipient1.hasOrderItem(orderItem));
+		assertFalse(recipient1.hasOrderItem());
 		
 	}
 	

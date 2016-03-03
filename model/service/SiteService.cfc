@@ -206,6 +206,7 @@ component  extends="HibachiService" accessors="true" {
 		};
 		var homePageContent = getService('contentService').newContent();
 		homePageContent.setSite(arguments.site);
+		arguments.site.addContent(homePageContent);
 		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
 		ormflush();
 		createHomePageChildrenContent(homePageContent,arguments.site);
@@ -247,7 +248,7 @@ component  extends="HibachiService" accessors="true" {
 			copyContentExclusionList=".svn,.git"
 		);
 		if(arguments.createContent){
-		createDefaultContentPages(arguments.site);
+			createDefaultContentPages(arguments.site);
 		}
 
 

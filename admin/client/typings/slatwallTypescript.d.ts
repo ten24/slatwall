@@ -3,7 +3,6 @@
 /// <reference path="../src/content/content.module.ts" />
 /// <reference path="../src/giftcard/giftcard.module.ts" />
 /// <reference path="../src/optiongroup/optiongroup.module.ts" />
-/// <reference path="../src/orderfulfillment/orderfulfillment.module.ts" />
 /// <reference path="../src/orderitem/orderitem.module.ts" />
 /// <reference path="../src/product/product.module.ts" />
 /// <reference path="../src/productbundle/productbundle.module.ts" />
@@ -21,11 +20,14 @@
 /// <reference path="../src/giftcard/components/swgiftcardrecipientinfo.ts" />
 /// <reference path="../src/giftcard/components/sworderitemgiftrecipientrow.ts" />
 /// <reference path="../src/giftcard/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
+<<<<<<< HEAD
 /// <reference path="../src/giftcard/models/giftRecipient.ts" />
+=======
+>>>>>>> refs/heads/master
 /// <reference path="../src/giftcard/models/giftcard.ts" />
+/// <reference path="../src/giftcard/models/giftrecipient.ts" />
 /// <reference path="../src/optiongroup/components/swaddoptiongroup.ts" />
 /// <reference path="../src/optiongroup/components/swoptionsforoptiongroup.ts" />
-/// <reference path="../src/orderfulfillment/components/sworderfulfillmentlist.ts" />
 /// <reference path="../src/orderitem/components/swchildorderitem.ts" />
 /// <reference path="../src/orderitem/components/swoishippinglabelstamp.ts" />
 /// <reference path="../src/orderitem/components/sworderitem.ts" />
