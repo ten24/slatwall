@@ -58,6 +58,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getProductBundlePrice_fixed_none(){
 		var productData = {
 			productName="productBundleName",
+			productCode="#createUUID()#",
 			productid="",
 			activeflag=1,
 			price=1,
@@ -68,7 +69,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					skuid="",
 					price=1,
 					activeflag=1,
-					skuCode = 'productBundle-1',
+					skuCode = '#createUUID()#',
 					productBundleGroups=[
 						{
 							productBundleGroupid:"",
@@ -120,6 +121,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getProductBundlePrice_increase_decrease_skuPrice(){
 		var productData = {
 			productName="productBundleName",
+			productCode="#createUUID()#",
 			productid="",
 			activeflag=1,
 			price=1,
@@ -130,7 +132,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					skuid="",
 					price=1,
 					activeflag=1,
-					skuCode = 'productBundle-1',
+					skuCode = '#createUUID()#',
 					productBundleGroups=[
 						{
 							productBundleGroupid:"",

@@ -73,11 +73,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		giftCardTransaction.setOrderPayment(orderPayment); 
 		
-		assertTrue(giftCardTransaction.hasOrderPayment(orderPayment)); 
+		assertTrue(giftCardTransaction.hasOrderPayment()); 
 		
 		giftCardTransaction.removeOrderPayment(orderPayment); 
 		
-		assertFalse(giftCardTransaction.hasOrderPayment(orderPayment));
+		assertFalse(giftCardTransaction.hasOrderPayment());
 	}
 	
 	public void function test_gift_card_transaction(){ 
@@ -97,10 +97,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		giftCardTransaction.setGiftCard(giftCard); 
 		
-		assertTrue(giftCardTransaction.hasGiftCard(giftCard)); 
+		assertTrue(giftCardTransaction.hasGiftCard()); 
 		
 		giftCardTransaction.removeGiftCard(giftCard);
 		
-		assertFalse(giftCardTransaction.hasGiftCard(giftCard)); 
+		assertFalse(giftCardTransaction.hasGiftCard()); 
 	}
 }

@@ -156,9 +156,10 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
     public string function getSimpleRepresentation() {
 		if(!isNull(this.getFirstName()) && !isNull(this.getLastName())){
 			return this.getFirstName() & " " & this.getLastName();
-		} else {
+		} else if(!isNull(getEmailAddress())){
 			return getEmailAddress();
 		}
+		return '';
 	}
 
 	// ==================  END:  Overridden Methods ========================
