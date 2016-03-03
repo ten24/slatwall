@@ -56,7 +56,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function matchesOrderItem(){
 
 		//Testing adding child order items.
-		var psku = getTestSku('TestSku');
+		var psku = getTestSku('TestSku#createUUID()#');
 		var pstock = getTestStock();
 		var pstock2 = getTestStock();
 		var porderItem = request.slatwallScope.newEntity( 'orderItem' );
@@ -66,7 +66,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		porderItem.setStock(pstock);
 		porderItem.setProductBundleGroup("PBG1");
 
-		var sku = getTestSku('TestSku');
+		var sku = getTestSku('TestSku#createUUID()#');
 		var stock = getTestStock();
 		var stock2 = getTestStock();
 		var orderItem = request.slatwallScope.newEntity( 'orderItem' );
@@ -77,7 +77,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		orderItem.setParentOrderItem(porderItem);
 		orderItem.setProductBundleGroup(pOrderItem);
 
-		var sku2 = getTestSku('TestSku');
+		var sku2 = getTestSku('TestSku#createUUID()#');
 		var stock3 = getTestStock();
 		var stock4 = getTestStock();
 		var orderItem2 = request.slatwallScope.newEntity( 'orderItem' );
@@ -123,7 +123,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(foundMatch);
 
 		//different sku as orderitem
-		var sku2 = getTestSku('TestSku2');
+		var sku2 = getTestSku('TestSku2#createUUID()#');
 		processOrderItem.setSku(sku2);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock);
@@ -189,7 +189,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			termYears="4"
 		};
 
-		var giftExpirationTerm = createPersistedTestEntity("giftExpirationTerm", termData);
+		var giftExpirationTerm = createPersistedTestEntity("Term", termData);
 
 		return giftExpirationTerm;
 	}
