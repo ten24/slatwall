@@ -23,7 +23,22 @@ devConfig.plugins= [
   	new ngAnnotatePlugin({
         add: true,
         // other ng-annotate options here
-    })
+    }),
+    function()
+    {
+        this.plugin("done", function(stats)
+        {
+            if (stats.compilation.errors && stats.compilation.errors.length)
+            {
+            	for(var i = 0; i < stats.compilation.errors.length;i++){
+            		console.error(stats.compilation.errors[i]).message;
+            	}
+                
+                process.exit(1);
+            }
+            
+        });
+    }
   ];
 devConfig.watch = false;
 //change output filename
