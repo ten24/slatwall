@@ -49,32 +49,16 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.shippingMethod" type="any" />
-
+<cfparam name="rc.shippingMethodRate" type="any" />
+<cfset selectedPriceGroups = rc.shippingMethodRate.getPriceGroups() />
+<cfset selectedPriceGroupIDs = "" />
+<cfloop array="#selectedPriceGroups#" index="i">
+    <cfset selectedPriceGroupIDs = listAppend(selectedPriceGroupIDs, i.getPriceGroupID()) />
+</cfloop>
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.shippingMethod.getShippingMethodRatesSmartList()#"
-							   recordEditAction="admin:entity.editshippingmethodrate"
-							   recordDeleteAction="admin:entity.deleteshippingmethodrate"
-							   recordDetailAction="admin:entity.detailshippingmethodrate"
-							   recorddeletequerystring="redirectAction=admin:entity.detailshippingmethod&shippingMethodID=#rc.shippingMethod.getShippingMethodID()#"
-							   sortProperty="sortOrder"
-							   sortContextIDColumn="shippingMethodID"
-							   sortContextIDValue="#rc.shippingMethod.getShippingMethodID()#">
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="shippingMethodRateName" />
-		<hb:HibachiListingColumn propertyidentifier="addressZone.addressZoneName" />
-		<hb:HibachiListingColumn propertyidentifier="shipmentWeightRange" />
-		<hb:HibachiListingColumn propertyidentifier="shipmentQuantityRange" />
-		<hb:HibachiListingColumn propertyidentifier="shipmentItemPriceRange" />
-		<hb:HibachiListingColumn propertyidentifier="hasPriceGroups" />
-		<hb:HibachiListingColumn propertyidentifier="defaultAmount" />
-		<hb:HibachiListingColumn propertyidentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
-	
-	<hb:HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.shippingmethodrate')#" icon="plus" buttonClass="btn-inverse">
-		<cfset local.integrationOptions = rc.shippingMethod.getShippingMethodRateIntegrationOptions()>
-		<cfloop array="#local.integrationOptions#" index="local.integration">
-			<hb:HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createshippingmethodrate" type="list" queryString="shippingMethodID=#rc.shippingMethod.getShippingMethodID()#&integrationID=#local.integration['value']#" modal="true" />
-		</cfloop>
-		<hb:HibachiActionCaller action="admin:entity.createshippingmethodrate" type="list" queryString="shippingMethodID=#rc.shippingMethod.getShippingMethodID()#" modal="true" />
-	</hb:HibachiActionCallerDropdown>
+	<div class="col-md-12">
+            <hb:HibachiListingDisplay smartList="#rc.$.slatwall.getService('PriceGroupService').getPriceGroupSmartList()#" multiselectFieldName="priceGroups" multiselectValues="#selectedPriceGroupIDs#" edit="#rc.edit#">
+                <hb:HibachiListingColumn propertyIdentifier="PriceGroupName" tdclass="primary" />
+            </hb:HibachiListingDisplay>
+    </div>
 </cfoutput>
