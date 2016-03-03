@@ -1070,24 +1070,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		structDelete(variables, "subscriptionTerm");
 	}
 
-	// GiftCardExpirationTerm (many-to-one)
-	public void function setGiftCardExpirationTerm(required any term) {
-		variables.giftCardExpirationTerm = arguments.term;
-		if(isNew() or !arguments.term.hasGiftCardExpirationTerm( this )) {
-			arrayAppend(arguments.term.getGiftCardExpirationTerms(), this);
-		}
-	}
-	public void function removeGiftCardExpirationTerm(any term) {
-		if(!structKeyExists(arguments, "term")) {
-			arguments.term = variables.term;
-		}
-		var index = arrayFind(arguments.term.getGiftCardExpirationTerms(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.term.getGiftCardExpirationTerms(), index);
-		}
-		structDelete(variables, "term");
-	}
-
 	// Alternate Sku Codes (one-to-many)
 	public void function addAlternateSkuCode(required any alternateSkuCode) {
 		arguments.alternateSkuCode.setSku( this );
@@ -1102,14 +1084,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeSku( this );
-	}
-
-	// Event Registrations (one-to-many)
-	public void function addEventRegistrations(required any eventRegistration) {
-		arguments.eventRegistration.setSku( this );
-	}
-	public void function removeEventRegistration(required any eventRegistration) {
-		arguments.eventRegistration.removeSku( this );
 	}
 
 	// Sku Currencies (one-to-many)

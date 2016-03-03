@@ -120,10 +120,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		giftCard.setGiftCardExpirationTerm(term);
 		
 		assertTrue(giftCard.hasGiftCardExpirationTerm());
+		
+		term.removeGiftCard(giftCard);
 
-		giftCard.removeGiftCardExpirationTerm(term);
-
-		assertFalse(giftCard.hasGiftCardExpirationTerm());
+		assertFalse(giftCard.hasGiftCardExpirationTerm(term));
 
 	}
 
