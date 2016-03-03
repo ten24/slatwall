@@ -8,7 +8,7 @@ import {slatwalladminmodule} from "./slatwall/slatwalladmin.module";
 class bootstrapper extends BaseBootStrapper{
     public myApplication;
     constructor(){
-        var angular = super(slatwalladminmodule.name);
+        var angular:any = super(slatwalladminmodule.name);
         angular.bootstrap()
     }
 
