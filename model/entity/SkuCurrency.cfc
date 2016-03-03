@@ -116,7 +116,17 @@ component entityname="SlatwallSkuCurrency" table="SwSkuCurrency" persistent="tru
 	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentation() {
-		return getSku().getSkuCode() & " - " & getCurrency().getCurrencyCode(); 
+		if(
+			!isNull(getSku()) 
+			&& !isNull(getSku().getSkuCode())
+			&& !isNull(getCurrency())
+			&& !isNull(getCurrency().getCurrencyCode())
+		){
+			return getSku().getSkuCode() & " - " & getCurrency().getCurrencyCode(); 
+		}else{
+			return '';
+		}
+		
 	}
 	
 	// ==================  END:  Overridden Methods ========================
