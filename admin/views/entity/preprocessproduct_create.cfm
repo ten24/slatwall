@@ -263,7 +263,7 @@ Notes:
 						<!--- Select Product Type --->
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTermID" edit="true">
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmountType" edit="true" fieldAttributes="ng-model='redemptionType' ng-options=""option.label for option in preprocessproduct_createCtrl.redemptionAmountTypeOptions track by option.value""">
-						<div ng-if="redemptionType.value != 'sameAsPrice'">
+						<div ng-if="redemptionType != 'sameAsPrice'">
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmount" edit="true" value="0">
 						</div>
 

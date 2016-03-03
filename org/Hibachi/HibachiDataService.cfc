@@ -1,5 +1,7 @@
 component accessors="true" output="false" extends="HibachiService" {
 
+	property name="hibachiDataDAO";
+
 	public boolean function isUniqueProperty( required string propertyName, required any entity ) {
 		return getHibachiDAO().isUniqueProperty(argumentcollection=arguments);
 	}
@@ -97,11 +99,11 @@ component accessors="true" output="false" extends="HibachiService" {
 				idKey = listAppend(idKey, insertData[listGetAt(idColumns, l)].value, "~");
 			}
 
-			var insertedData = getDataDAO().getInsertedDataFile();
+			var insertedData = getHibachiDataDAO().getInsertedDataFile();
 			var updateOnly = ignorePreviouslyInserted && listFindNoCase(insertedData, idKey);
 
-			getDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
-			getDataDAO().updateInsertedDataFile( idKey );
+			getHibachiDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
+			getHibachiDataDAO().updateInsertedDataFile( idKey );
 		}
 
 		return includesCircular;

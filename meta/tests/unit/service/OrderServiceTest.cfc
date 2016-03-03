@@ -116,15 +116,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderData = {
 			orderid="",
 			activeflag=1,
-			currencycode="USD",
-			orderFulfillments=[
-				{
-					orderfulfillmentid="",
-					fulfillmentMethod={
-						fulfillmentMethodid="444df2fb93d5fa960ba2966ba2017953"
-					}
-				}
-			]
+			currencycode="USD"
 		};
 		var order = createPersistedTestEntity('Order',orderData);
 		//var orderFulfillmentData = variables.service.getOrderFulfillment();
@@ -133,16 +125,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var processObjectData = {
 			quantity=1,
 			price=1,
-			skuid=product.getSkus()[1].getSkuID(),
-			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+			skuid=product.getSkus()[1].getSkuID()
 		};
 		//Second orderitem
 		//add orderfulfillment
 		var processObjectDataTwo = {
 			quantity=1,
 			price=1,
-			skuid=product2.getSkus()[1].getSkuID(),
-			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+			skuid=product2.getSkus()[1].getSkuID()
 		};
 
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
@@ -210,31 +200,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		//set up order
 		var orderData = {
-			orderid="",
+			orderID="",
 			activeflag=1,
-			currencycode="USD",
-			orderFulfillments=[
-				{
-					orderfulfillmentid="",
-					fulfillmentMethod={
-						fulfillmentMethodID="444df2fb93d5fa960ba2966ba2017953"
-					}
-				}
-			]
+			currencycode="USD"
 		};
 		accountData={
 			accountID=""
 		};
 		var account = createPersistedTestEntity('Account', accountData);
 		var order = createPersistedTestEntity('Order',orderData);
+		addToDebug(order.getHibachiErrors());
 
 		order.setAccount(account);
 
 		var processObjectData = {
 			quantity=1,
 			price=1,
-			skuid=product.getSkus()[1].getSkuID(),
-			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+			skuid=product.getSkus()[1].getSkuID()
 		};
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
 
@@ -247,7 +229,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItemGiftRecipientData = {
 			orderItemGiftRecipientID="",
 			firstName="Bobby",
-			lastName="Bot"
+			lastName="Bot",
+			quantity=1
 		};
 
 		var recipient1 = createPersistedTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData);
@@ -328,5 +311,3 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	}
 }
-
-

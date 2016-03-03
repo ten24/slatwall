@@ -666,7 +666,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     // ==================  START: Validation Methods  ======================
     public boolean function hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity() {
         var settingVal = getService("settingService").getSettingValue(settingName='globalMaximumFulfillmentsPerOrder');
-        if (!isNull(settingVal) && !isNull(getOrder().getOrderFulfillments())){
+        if (!isNull(settingVal) 
+        	&& !isNull(getOrder()) 
+        ){
            return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);  
         }
         return false;
