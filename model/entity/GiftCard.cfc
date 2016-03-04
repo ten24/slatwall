@@ -60,7 +60,10 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
     property name="issuedDate" ormtype="timestamp";
     property name="currencyCode" ormtype="string" length="3";
     //Calculated Properties
-    property name="balanceAmount" ormtype="big_decimal";
+    property name="calculatedBalanceAmount" ormtype="big_decimal";
+
+    //non-persistent properties
+    property name="balanceAmount" persitent="false";
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
