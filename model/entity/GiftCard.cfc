@@ -63,7 +63,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
     property name="calculatedBalanceAmount" ormtype="big_decimal";
 
     //non-persistent properties
-    property name="balanceAmount" persitent="false";
+    property name="balanceAmount" persistent="false";
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
