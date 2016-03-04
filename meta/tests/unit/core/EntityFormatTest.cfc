@@ -128,9 +128,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					}
 				}
 
-			}
 		}
-
 		assert(misspellCount EQ 0);
 	}
 
