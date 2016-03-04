@@ -71,9 +71,9 @@ Listener.prototype.endTestRun = function(testRun, info) {
   // Sauce
   var data = null;
   if (info.error) {
-    data = JSON.stringify({'build':process.env.CIRCLE_BUILD_NUM, 'passed': info.success, 'custom-data': {'interpreter-error': util.inspect(info.error)}});
+    data = JSON.stringify({'passed': info.success, 'custom-data': {'interpreter-error': util.inspect(info.error)}});
   } else {
-    data = JSON.stringify({'build':process.env.CIRCLE_BUILD_NUM, 'passed': info.success});
+    data = JSON.stringify({'passed': info.success});
   }
 
   var options = {
