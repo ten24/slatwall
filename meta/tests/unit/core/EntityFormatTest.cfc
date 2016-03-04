@@ -111,6 +111,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function all_entity_properties_didnt_mispell_persistent() {
 
 		var misspellCount = 0;
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
 
 		for(var entityName in allEntities) {
 
@@ -130,6 +131,53 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		}
 		assert(misspellCount EQ 0);
+	}
+
+	//Misspell persistent Test
+	public void function all_calculated_properties_are_setup_correctly() {
+
+		var calculatedErrors = 0;
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+
+		for(var entityName in allEntities) {
+
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			for(var property in properties) {
+
+				if(left(property.name, 10) eq "calculated"){
+
+					var metaData = getMetaData(entityNew( entityName ));
+					var isFound = false;
+					var nonPersistentPropertyName = right(property.name, len(property.name)-10);
+					for(var func in metaData.functions){
+						if(func.name == "get" & nonPersistentPropertyName){
+							isFound = true;
+							break;
+						}
+					}
+					if(!isFound){
+						calculatedErrors++;
+						addToDebug(entityName);
+					}
+					isFound = false;
+					for(var property in properties) {
+						if(property.name == nonPersistentPropertyName
+							&& structKeyExists(property,"persistent")
+							&& lcase(property.persistent) eq "false"
+						){
+							isFound = true;
+							break;
+						}
+					}
+					if(!isFound){
+						calculatedErrors++;
+						addToDebug(entityName);
+					}
+				}
+
+			}
+		}
+		assert(calculatedErrors EQ 0);
 	}
 
 	// Oracle Naming tests
