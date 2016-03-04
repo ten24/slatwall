@@ -160,7 +160,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					}
 					isFound = false;
 					for(var property in properties) {
-						if(property.name = nonPersistentPropertyName
+						if(property.name == nonPersistentPropertyName
 							&& structKeyExists(property,"persistent")
 							&& lcase(property.persistent) eq "false"
 						){
