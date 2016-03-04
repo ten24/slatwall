@@ -145,8 +145,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			for(var property in properties) {
 
 				if(left(property.name, 10) eq "calculated"){
+
 					var metaData = getMetaData(entityNew( entityName ));
-					request.debug(metaData);
 					var isFound = false;
 					var nonPersistentPropertyName = right(property.name, len(property.name)-10);
 					for(var func in metaData.functions){
