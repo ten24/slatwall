@@ -152,6 +152,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					for(var func in metaData.functions){
 						if(func.name == "get" & nonPersistentPropertyName){
 							isFound = true;
+							break;
 						}
 					}
 					if(!isFound){
@@ -165,6 +166,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 							&& lcase(property.persistent) eq "false"
 						){
 							isFound = true;
+							break;
 						}
 					}
 					if(!isFound){
