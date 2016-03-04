@@ -148,9 +148,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					var metaData = getMetaData(entityNew( entityName ));
 					request.debug(metaData);
 					var isFound = false;
-					var nonPersistantPropertyName = right(property.name, len(property.name)-10);
+					var nonPersistentPropertyName = right(property.name, len(property.name)-10);
 					for(var func in metaData.functions){
-						if(func.name == "get" & nonPersistantPropertyName){
+						if(func.name == "get" & nonPersistentPropertyName){
 							isFound = true;
 						}
 					}
@@ -160,7 +160,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					}
 					isFound = false;
 					for(var property in properties) {
-						if(property.name = nonPersistantPropertyName){
+						if(property.name = nonPersistentPropertyName && structKeyExists(property,"persistent") && !property.persistent){
 							isFound = true;
 						}
 					}
