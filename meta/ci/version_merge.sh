@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#TESTING ONLY!!!!
-CIRCLE_BRANCH='master'
-
 # Functions for increasing the version number
 function format3Digit( ) {
   if [ ${#micro} = 1 ]
@@ -74,7 +71,6 @@ elif [ $mergedFrom != "master" ] && [ $CIRCLE_BRANCH = "develop" ]; then
   # Write File
   echo $newVersion > version.txt.cfm
   echo "Updated $version -> $newVersion"
-  tag=true
 fi
 
 # Commit To git with compiled JS, and version file updates
@@ -85,11 +81,15 @@ else
     # changes
     echo "Build/Version Changes Found"
     git commit -a -m "CI build passed, auto-built files commit - $CIRCLE_BUILD_URL [ci skip]"
-    # Push
+
+    # Push the code
     git push origin
 
     if [ tag == true ]; then
+      # Tag this version
       git tag -a $(newVersion) -m "Version $newVersion"
+
+      # Push Tag to github
       git push origin $(newVersion)
     fi
 fi
@@ -100,5 +100,29 @@ if [ $CIRCLE_BRANCH = "master" ]; then
   git checkout develop
   # merge master into develop
   git merge master
+
+  # Read all the conflicts of the repository
+  conflicts=$(git diff --name-only --diff-filter=U)
+
+  # If the only conflict is the version.txt.cfm file, then we can interperate and fix
+  if [ "version.txt.cfm" = "$conflicts" ]; then
+
+    # Update the Version File
+    versionArray=() # Create array
+    while IFS= read -r line # Read a line
+    do
+        versionArray+=("$line") # Append line to the array
+    done < "version.txt.cfm"
+    echo ${versionArray[3]}.$(echo ${versionArray[1]} | cut -d. -f4) > version.txt.cfm
+
+    # Add the version file back
+    git add version.txt.cfm
+
+    # commit the updates & merge
+    git commit --no-edit
+
+    # push up the latest develop
+    git push origin
+  fi
 
 fi

@@ -65,23 +65,8 @@ test:
 
 deployment:
 
-  # If this is a merge into master, then do a micro version adjust and push the built files
-  master_release:
-    branch: [master, hotfix-rm-tagarelease]
+  # As long as this build passed, we can commit JS builds, Version #, and do downstream merging when necessary
+  release:
+    branch: [master, hotfix, develop, /develop-.*/]
     commands:
-      - meta/ci/version_adjust.sh
-      - meta/ci/push_built_files.sh
-      - meta/ci/tag_master.sh
-
-  # If this is a merfe into develop, then do a build version adjust and push the built files
-  develop_release:
-    branch: develop
-    commands:
-      - meta/ci/version_adjust.sh
-      - meta/ci/update_master_version.sh
-
-  # If this is an integration branch just build the JS as needed
-  jsbuild_only:
-    branch: [travis, hotfix]
-    commands:
-      - meta/ci/push_built_files.sh
+      - meta/ci/version_merge.sh
