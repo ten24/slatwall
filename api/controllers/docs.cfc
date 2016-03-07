@@ -170,7 +170,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     
     public array function getExtended(required struct object, array extended=[]){
     	//exclude coldfusion base component
-    	if(CompareNoCase(object.fullname,'"WEB-INF.cftags.component"') != 0){
+    	if(object.fullname != "WEB-INF.cftags.component"){
     		arrayAppend(arguments.extended,object.fullname);
     	}
     	
