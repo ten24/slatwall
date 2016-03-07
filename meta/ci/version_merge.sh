@@ -90,10 +90,10 @@ else
 
     if [ $tag = true ]; then
       # Tag this version
-      git tag -a $(newVersion) -m "Version $newVersion"
+      git tag -a -m "Version $newVersion" $newVersion
 
       # Push Tag to github
-      git push origin $(newVersion)
+      git push origin $newVersion
     fi
 fi
 
