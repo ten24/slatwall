@@ -88,7 +88,7 @@ else
     # Push the code
     git push origin
 
-    if [ tag == true ]; then
+    if [ $tag = true ]; then
       # Tag this version
       git tag -a $(newVersion) -m "Version $newVersion"
 
