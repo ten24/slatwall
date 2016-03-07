@@ -164,6 +164,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		if(structKeyExists(componentMetaData,'properties')){
     			processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
     		}
+    		processComponentMetaData[componentName]['validations'] = getService('hibachiValidationService').getValidationStructByName(componentName);
     	}
     	return processComponentMetaData;
     }
