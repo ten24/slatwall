@@ -28,7 +28,7 @@ micro=$(echo $version | cut -d. -f3 | sed 's/^0*//')
 build=$(echo $version | cut -d. -f4 | sed 's/^0*//')
 tag=false
 
-# Get the las commit message, and more importantly the merfedFrom Variable
+# Get the las commit message, and more importantly the mergedFrom Variable
 lastCommit=$(git log --merges --pretty=%s -n1 2>&1)
 if [[ $lastCommit == *ten24/master ]]; then
   mergedFrom="master"
@@ -73,8 +73,11 @@ elif [ $mergedFrom != "master" ] && [ $CIRCLE_BRANCH = "develop" ]; then
   echo "Updated $version -> $newVersion"
 fi
 
+# Find out if any files changed as part of this build
+changedFiles=$(git diff --name-only)
+
 # Commit To git with compiled JS, and version file updates
-if git diff-index --quiet HEAD --; then
+if [ "$changedFiles" = "" ]; then
     # no changes
     echo "No Changes To Push"
 else
@@ -124,7 +127,7 @@ if [ $CIRCLE_BRANCH = "master" ]; then
     git push origin
 
   # If the only conflict is the version.txt.cfm file, then we can interperate and fix
-  elif [ "version.txt.cfm" = "$conflicts" ]; then
+  elif [ "$conflicts" = "version.txt.cfm" ]; then
     echo "Only Version Conflict"
     # Update the Version File
     versionArray=() # Create array
