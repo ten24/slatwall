@@ -25,7 +25,8 @@
             "browserName": "chrome",
             "username": "${SAUCE_USERNAME}",
             "accessKey": "${SAUCE_ACCESS_KEY}",
-            "tunnelIdentifier": "${CIRCLE_BUILD_NUM}"
+            "tunnelIdentifier": "${CIRCLE_BUILD_NUM}",
+            "build":"${CIRCLE_BUILD_NUM}"
           }
         }
       ],
