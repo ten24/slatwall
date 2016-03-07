@@ -45,7 +45,7 @@ if [ $mergedFrom = "develop" ] && [ $CIRCLE_BRANCH = "master" ]; then
   echo 'develop -> master'
   # Increment Minor
   minor=$((minor + 1))
-  newVersion=$major.$minor.$micro
+  newVersion=$major.$minor.000
   # Write File
   echo $newVersion > version.txt.cfm
   echo "Updated $version -> $newVersion"
@@ -96,17 +96,36 @@ fi
 
 # If this was a master branch change, we need to try and merge into develop, and then push develop
 if [ $CIRCLE_BRANCH = "master" ]; then
+  # checkout hotfix
+  git checkout hotfix
+  # merge master into hotfix
+  git merge master
+  # push hotfix back up
+  git push origin
+
   # checkout develop
   git checkout develop
   # merge master into develop
   git merge master
-
   # Read all the conflicts of the repository
   conflicts=$(git diff --name-only --diff-filter=U)
 
-  # If the only conflict is the version.txt.cfm file, then we can interperate and fix
-  if [ "version.txt.cfm" = "$conflicts" ]; then
+  # If there are no conflicts it was likely a minor release
+  if [ "$conflicts" = "" ] && [ $mergedFrom = "develop" ] && [ $CIRCLE_BRANCH = "master" ]; then
+    echo "No Conflict, Minor Release"
 
+    # Write version file with 000 build
+    echo $newVersion.000 > version.txt.cfm
+
+    # Commit the version file edit
+    git commit -a -m "Added a baseline 000 build [ci skip]"
+
+    # push up the latest develop
+    git push origin
+
+  # If the only conflict is the version.txt.cfm file, then we can interperate and fix
+  elif [ "version.txt.cfm" = "$conflicts" ]; then
+    echo "Only Version Conflict"
     # Update the Version File
     versionArray=() # Create array
     while IFS= read -r line # Read a line
@@ -123,6 +142,10 @@ if [ $CIRCLE_BRANCH = "master" ]; then
 
     # push up the latest develop
     git push origin
+
+  # If there were multiple merge conflicts
+  else
+    echo "Multiple merge conflicts found and must be resolved manually"
   fi
 
 fi
