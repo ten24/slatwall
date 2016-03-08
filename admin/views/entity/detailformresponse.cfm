@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,11 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	public any function redeemToAccount(required struct rc){
+<cfoutput>
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+</cfoutput>
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
-
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
-		}
-	}
-
-}

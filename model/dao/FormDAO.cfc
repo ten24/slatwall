@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,43 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+--->
+<cfcomponent extends="HibachiDAO">
 
-	public any function redeemToAccount(required struct rc){
+	<cffunction name="getFormQuestionColumnHeaderData">
+		<cfargument required="true" name="formID" />
+		<cfreturn ormExecuteQuery("SELECT DISTINCT new map(fq.attributeID as questionID, fq.attributeName as question) FROM #getApplicationKey()#Form f left join f.formQuestions fq where f.formID=:formid order by fq.attributeID asc",{formid=arguments.formID}) />
+	</cffunction>
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+	<cffunction name="getFormQuestionAndFormResponsesRawData">
+		<cfargument required="true" name="formID" />
+		<cfargument required="false" name="numberOfQuestions" />
+		<cfargument required="false" name="currentPage" />
+		<cfargument required="false" name="pageShow" />
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
+		<cfset HQL = "
+			SELECT DISTINCT
+				new map(
+						av.attributeValue as response,
+						av.formResponse.formResponseID as formResponseID,
+						av.attribute.attributeID as questionID,
+						av.attribute.attributeName as question
+				)
+			FROM #getApplicationKey()#AttributeValue as av
+				LEFT JOIN av.formResponse as fr
+				LEFT JOIN fr.form as f
+				LEFT JOIN fr.form.formQuestions fq
+			WHERE
+				av.formResponse.form.formID=:formid
+			ORDER BY
+				av.formResponse.formResponseID ASC
+		" />
+		<cfif structKeyExists(arguments, "numberOfQuestions") && structKeyExists(arguments, "currentPage") && structKeyExists(arguments, "pageShow")>
+			<cfset var maxResults = arguments.pageShow * arguments.numberOfQuestions />
+			<cfset var offset = (arguments.currentPage - 1) * maxResults />
+			<cfreturn ormExecuteQuery(HQL, {formid=arguments.formID}, false, {offset=offset, maxresults=maxResults}) />
+		</cfif>
+		<cfreturn ormExecuteQuery(HQL, {formid=arguments.formID}, false) />
+	</cffunction>
 
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
-		}
-	}
-
-}
+</cfcomponent>

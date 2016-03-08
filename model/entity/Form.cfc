@@ -46,27 +46,22 @@
 Notes:
 
 */
-component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="siteService" hb_permission="this" {
+component displayname="Form" entityname="SlatwallForm" table="SwForm" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="formService" {
 
 	// Persistent Properties
-	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="siteName" ormtype="string";
-	property name="siteCode" ormtype="string" index="PI_SITECODE";
-	property name="domainNames" ormtype="string";
-	property name="allowAdminAccessFlag" ormtype="boolean";
-	// CMS Properties
-	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
+	property name="formID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="formCode" ormtype="string";
+	property name="emailTo" ormtype="string";
+
 
 	// Related Object Properties (many-to-one)
-	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID"  hb_cascadeCalculate="true";
+	//property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID" cascade="all";
 
 	// Related Object Properties (one-to-many)
-	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="siteID" cascade="all-delete-orphan" inverse="true";
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" cascade="all-delete-orphan" fkcolumn="siteID" inverse="true" lazy="extra";
+	property name="formQuestions" singularname="formQuestion" hb_populateEnabled="public" cfc="Attribute" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
+	property name="formResponses" singularname="formResponse" cfc="FormResponse" fieldtype="one-to-many" fkcolumn="formID" cascade="all-delete-orphan";
 
-	// Related Object Properties (many-to-many - owner)
-
-	// Related Object Properties (many-to-many - inverse)
+	// Related Object Properties (many-to-many)
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -77,46 +72,6 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non-Persistent Properties
-	property name="sitePath" persistent="false";
-	property name="templatesPath" persistent="false";
-	property name="assetsPath" persistent="false";
-
-	public boolean function getAllowAdminAccessFlag() {
-		if(isNull(variables.allowAdminAccessFlag)) {
-			variables.allowAdminAccessFlag = 0;
-		}
-		return variables.allowAdminAccessFlag;
-	}
-
-	public boolean function isSlatwallCMS(){
-		return !isNull(this.getApp()) && !isNull(this.getApp().getIntegration()) && !isNull(this.getApp().getIntegration().getintegrationPackage()) && this.getapp().getintegration().getintegrationPackage() == 'slatwallcms';
-	}
-
-	public string function getSitePath(){
-		if(!structKeyExists(variables,'sitePath')){
-			variables.sitePath = getApp().getAppPath() & '/' & getSiteCode() & '/';
-		}
-		return variables.sitePath;
-	}
-
-	public string function getTemplatesPath(){
-		if(!structKeyExists(variables,'templatesPath')){
-			variables.templatesPath = getSitePath() & 'templates/';
-		}
-		return variables.templatesPath;
-	}
-
-	public string function getAssetsPath(){
-		if(!structKeyExists(variables,'assetsPath')){
-			variables.assetsPath = getSitePath() & 'assets/';
-		}
-		return variables.assetsPath;
-	}
-
-	public string function getSharedAssetsPath(){
-		return getService('siteService').getSharedAssetsPath();
-	}
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -124,32 +79,39 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// App (many-to-one)
-	public void function setApp(required any app) {
-		variables.app = arguments.app;
-		if(isNew() or !arguments.app.hasSite( this )) {
-			arrayAppend(arguments.app.getSites(), this);
+	// Email Template (many-to-one)
+	/*public void function setEmailTemplate(required any emailTemplate) {
+		variables.emailTemplate = arguments.emailTemplate;
+		if(isNew() or !arguments.emailTemplate.hasForm( this )) {
+			arrayAppend(arguments.emailTemplate.getForms(), this);
 		}
 	}
-	public void function removeApp(any app) {
-		if(!structKeyExists(arguments, "app")) {
-			arguments.app = variables.app;
+	public void function removeEmailTemplate(any emailTemplate) {
+		if(!structKeyExists(arguments, "emailTemplate")) {
+			arguments.emailTemplate = variables.emailTemplate;
 		}
-		var index = arrayFind(arguments.app.getSites(), this);
+		var index = arrayFind(arguments.emailTemplate.getForms(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.app.getSites(), index);
+			arrayDeleteAt(arguments.emailTemplate.getForms(), index);
 		}
-		structDelete(variables, "app");
+		structDelete(variables, "emailTemplate");
+	}*/
+
+	// Attributes (one-to-many)
+	public void function addFormQuestion(required any formQuestion) {
+		arguments.formQuestion.setForm( this );
+	}
+	public void function removeFormQuestion(required any formQuestion) {
+		arguments.formQuestion.removeForm( this );
 	}
 
-	// Attribute Values (one-to-many)
-	public void function addAttributeValue(required any attributeValue) {
-		arguments.attributeValue.setSite( this );
+	// Form Responses (one-to-many)
+	public void function addFormResponse(required any formResponse) {
+		arguments.formResponse.setForm( this );
 	}
-	public void function removeAttributeValue(required any attributeValue) {
-		arguments.attributeValue.removeSite( this );
+	public void function removeFormResponse(required any formResponse) {
+		arguments.formResponse.removeForm( this );
 	}
-
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
@@ -161,7 +123,28 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 
 	// ===============  END: Custom Formatting Methods =====================
 
+	// ============== START: Overridden Implicet Getters ===================
+
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
+
+	//Spoofed Attribute Set Methods to Allow for Compatibility with SlatwallAdminAttributeSetDisplayTag
+	public any function getAttributesSmartList(){
+		return this.getFormQuestionsSmartList();
+	}
+
+	public string function getAttributeSetObject(){
+		return "FormResponse";
+	}
+
+	public string function getAttributeSetObjectPrimaryIDPropertyName(){
+		return "FormResponseID";
+	}
+
+	public string function getSimpleRepresentation(){
+		return this.getFormCode();
+	}
 
 	// ==================  END:  Overridden Methods ========================
 
