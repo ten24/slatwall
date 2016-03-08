@@ -11,6 +11,7 @@ import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
 import {FormService} from "./services/formservice";
+import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
@@ -34,10 +35,12 @@ import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbutton
 import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar"; 
 import {SWListingDisplay} from "./components/swlistingdisplay";
+import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
 import {SWListingFilter} from "./components/swlistingfilter";
+import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWLogin} from "./components/swlogin";
 import {SWNumbersOnly} from "./components/swnumbersonly";
@@ -1201,6 +1204,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
 .service('observerService',ObserverService)
+.service('expandableService',ExpandableService)
 .service('formService',FormService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
@@ -1224,10 +1228,12 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swExpandableRecord',SWExpandableRecord.Factory())
 .directive('swGravatar', SWGravatar.Factory())
 .directive('swListingDisplay',SWListingDisplay.Factory())
+.directive('swListingControls',SWListingControls.Factory())
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
 .directive('swListingFilter',SWListingFilter.Factory())
+.directive('swListingFilterGroup',SWListingFilterGroup.Factory())
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())

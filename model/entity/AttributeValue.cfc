@@ -138,10 +138,13 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 
 	public string function getPropertyTitle(){
-		if(isNull(getAttribute().getAttributeSet())){
-			return getAttribute().getForm().getFormCode() & ': ' & getAttribute().getAttributeName();
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeSet())){
+			return getAttribute().getAttributeSet().getAttributeSetName() & ': ' & getAttribute().getAttributeName();
+		} else if(!isNull(getAttribute())) {
+			return getAttribute().getAttributeName();
+		} else {
+			return rbKey('entity.attributeValue.attributeValue');
 		}
-		return getAttribute().getAttributeSet().getAttributeSetName() & ': ' & getAttribute().getAttributeName();
 	}
 
 	public array function getAttributeValueOptions() {
@@ -752,7 +755,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 
 	public boolean function regexMatches(){
-		if(isNull(getAttribute().getValidationRegex())){
+		if(isNull(getAttribute()) || isNull(getAttribute().getValidationRegex())){
 			return true;
 		}else{
 			return getService('HibachiValidationService').validate_regex(this, 'attributeValue', getAttribute().getValidationRegex());

@@ -44,7 +44,25 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
             rc.context = "getAccountData";
             this.get(rc);
         }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
-            publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+            
+            var actions = [];
+            if (arguments.rc.context contains ","){
+                actions = listToArray(arguments.rc.context);
+            }
+            if (!arrayLen(actions)){
+                publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
+            }else{
+                //iterate through all the actions calling the method.
+                for (var eachAction in actions){
+                    //Make sure there are no errors if we have multiple.
+                    if (!arguments.rc.$.slatwall.cart().hasErrors() && !arguments.rc.$.slatwall.account().hasErrors()){
+                          getHibachiScope().flushORMSession();
+                          publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
+                    }else{
+                        return; //return here to push errors to the form that errored.
+                    }
+                }
+            }
         }else{
             this.get(rc);
         }

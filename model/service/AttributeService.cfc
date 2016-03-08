@@ -98,6 +98,22 @@ component  extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 
 	public any function saveAttribute(required any attribute, struct data={}) {
+
+		if(arguments.attribute.getAttributeInputType() == 'file'
+			&& structKeyExists(arguments.data, "attributeCode")
+			&& arguments.attribute.getAttributeCode() != arguments.data.attributeCode
+		){
+			for(var value in attribute.getAttributeValues()){
+				var newPath = expandPath(replacenocase(value.getAttributeValueFileURL(),arguments.attribute.getAttributeCode(),arguments.data.attributeCode));
+				var newFolder = replacenocase(newPath,value.getAttributeValue(),"");
+				var oldPath = expandPath(value.getAttributeValueFileURL());
+				if(!directoryExists(newFolder)){
+					directoryCreate(newFolder);
+				}
+				filemove(oldPath, newPath);
+			}
+		}
+
 		arguments.attribute = super.save(arguments.attribute, arguments.data);
 
 		if(!arguments.attribute.hasErrors() && !isNull(arguments.attribute.getAttributeSet())) {

@@ -215,7 +215,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
-			if(!isNull(getOrder().getCurrencyCode())) {
+			if(!isNull(getOrder()) && !isNull(getOrder().getCurrencyCode())) {
 				variables.currencyCode = getOrder().getCurrencyCode();
 			} else if (!isNull(getSku()) && len(getSku().setting('skuCurrency')) eq 3) {
 				variables.currencyCode = getSku().setting('skuCurrency');

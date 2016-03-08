@@ -104,7 +104,7 @@ import {IFilter} from "./collectionconfigservice";
         filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
     }
 
-    newFilterItem = (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:any):void =>{
+    newFilterItem = (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:any) =>{
         if(angular.isUndefined(prepareForFilterGroup)){
             prepareForFilterGroup = false;
         }
@@ -132,8 +132,8 @@ import {IFilter} from "./collectionconfigservice";
 
         this.selectFilterItem(filterItem);
 
-
-    }
+        return (filterItemGroup.length - 1);
+    };
 
     newFilterGroupItem = (filterItemGroup:any,setItemInUse:any):void =>{
         var filterGroupItem:any = {

@@ -67,18 +67,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				integrationID=integration.getIntegrationID()
 			}
 		};
-		var app = createTestEntity(entityName="app",data=appData);
+		var app = createTestEntity(entityName="app",data=appData,saveWithService=true);
 		request.slatwallScope.saveEntity( app, appData );
 		var siteData = {
 			siteid='',
 			siteName="#createUuid()#",
 			siteCode="#createUuid()#",
+			domainNames="#createUUID()#",
 			app={
 				appID=app.getAppID()
 			}
 		};
 		var site = createTestEntity(entityName="site",data=siteData);
-		request.slatwallScope.saveEntity( site, siteData );
+		site = variables.service.saveSite(site,siteData);
 		//here we should assert the default content was created as well as the directories
 		assertTrue(arraylen(site.getContents()));
 		//remove directories as the unit tests do not already do that. Delete outside of validation

@@ -15,7 +15,7 @@ import {SWWorkflowTaskActions} from "./components/swworkflowtaskactions";
 import {SWWorkflowTasks} from "./components/swworkflowtasks";
 import {SWWorkflowTrigger} from "./components/swworkflowtrigger";
 import {SWWorkflowTriggers} from "./components/swworkflowtriggers";
-import {SWWorkflowTriggerHistory} from "./components/swworkflowtriggerHistory";
+import {SWWorkflowTriggerHistory} from "./components/swworkflowtriggerhistory";
 import {SWSchedulePreview} from "./components/swschedulepreview";
 
 //filters

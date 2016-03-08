@@ -1,6 +1,5 @@
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
-require('./vendor.ts')();
 import {coremodule} from "./core/core.module";
 declare var angular:any;
 declare var hibachiConfig:any;
@@ -13,7 +12,8 @@ export class BaseBootStrapper{
     public $q:ng.IQService;
     public appConfig:any;
 
-    constructor(){
+    constructor(myApplication){
+      this.myApplication = myApplication;
       return angular.lazy(this.myApplication)
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;
