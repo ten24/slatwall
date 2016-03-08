@@ -295,7 +295,7 @@ class HibachiService{
 	}
 	getEventOptions= (entityName) => {
 		var deferred = this.$q.defer();
-		var urlString = getUrlWithActionPrefix()+'api:main.getEventOptionsByEntityName&entityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getEventOptionsByEntityName&entityName='+entityName;
 
 		this.$http.get(urlString)
 		.success((data) => {
@@ -308,7 +308,7 @@ class HibachiService{
 	};
     getProcessOptions= (entityName) => {
         var deferred = this.$q.defer();
-        var urlString = getUrlWithActionPrefix()+'api:main.getProcessMethodOptionsByEntityName&entityName='+entityName;
+        var urlString = this.getUrlWithActionPrefix()+'api:main.getProcessMethodOptionsByEntityName&entityName='+entityName;
 
         this.$http.get(urlString)
             .success((data) => {
