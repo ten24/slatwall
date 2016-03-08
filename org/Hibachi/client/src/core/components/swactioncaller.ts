@@ -1,7 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-
 class SWActionCallerController{
     public type:string;
     public confirm:any;
@@ -170,7 +169,6 @@ class SWActionCallerController{
     public getText = ():string =>{
         //if we don't have text then make it up based on rbkeys
         if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && !this.text.length)){
-            console.log("looking for:",this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
             this.text = this.rbkeyService.getRBKey(this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
             var minus8letters = this.utilityService.right(this.text,8);
             //if rbkey is still missing. then can we infer it
@@ -313,6 +311,4 @@ export{
     SWActionCaller,
     SWActionCallerController
 }
-	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
-
 
