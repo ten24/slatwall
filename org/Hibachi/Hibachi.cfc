@@ -324,7 +324,7 @@ component extends="FW1.framework" {
 			} else {
 					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem
 				if(find("ajaxsubmit=1", request.context.sRedirectURL)!=0 || find("modal=1", request.context.sRedirectURL)!=0 ){
-					var context = getPageContext().getResponse();
+					var context = getPageContext();
 					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					abort;
 				} else if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
@@ -346,7 +346,7 @@ component extends="FW1.framework" {
 			if(structKeyExists(apiController,'publicMethods')){
 				publicMethods = apiController.publicMethods;
 			}
-			var context = getPageContext().getResponse();
+			var context = getPageContext();
 			if(!structKeyExists(request.context,'messages')){
 				request.context.messages = [];
 			}
@@ -365,7 +365,7 @@ component extends="FW1.framework" {
 					message['message'] = 'invalid_token';
 				}
 				//did we get an error? if so stop!
-				if(context.getResponse().getStatus() != 200){
+				if(context.getResponse().getResponse().getStatus() != 200){
 					var message['messageType'] = 'error';
 					arrayAppend(request.context.messages,message);
 					renderApiResponse();
