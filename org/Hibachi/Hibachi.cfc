@@ -196,6 +196,7 @@ component extends="FW1.framework" {
 	}
 	
 	public void function setupGlobalRequest() {
+		
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
             if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
@@ -240,6 +241,7 @@ component extends="FW1.framework" {
 	}
 	
 	public void function setupRequest() {
+		var status = 200;
 		setupGlobalRequest();
 		var httpRequestData = getHTTPRequestData();
 
@@ -325,7 +327,8 @@ component extends="FW1.framework" {
 					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem
 				if(find("ajaxsubmit=1", request.context.sRedirectURL)!=0 || find("modal=1", request.context.sRedirectURL)!=0 ){
 					var context = getPageContext();
-					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					status = 403;
+					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					abort;
 				} else if(listFindNoCase(hibachiConfig.loginSubsystems, getSubsystem(request.context[ getAction() ]))) {
 					redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#", preserve="swprid,sRedirectURL");
@@ -355,17 +358,20 @@ component extends="FW1.framework" {
 			if(!listFindNoCase(publicMethods,getItem())){
 				var message = {};
 				if(structKeyExists(authorizationDetails,'forbidden') && authorizationDetails.forbidden == true){
-					context.getResponse().setStatus(403, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					status = 403;
+					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'forbidden';
 				}else if(structKeyExists(authorizationDetails,'timeout') && authorizationDetails.timeout == true){
-					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					status = 401;
+					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'timeout';
 				}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
-					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					status = 401;
+					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'invalid_token';
 				}
 				//did we get an error? if so stop!
-				if(context.getResponse().getResponse().getStatus() != 200){
+				if(status != 200){
 					var message['messageType'] = 'error';
 					arrayAppend(request.context.messages,message);
 					renderApiResponse();
