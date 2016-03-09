@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,22 +45,25 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	public any function redeemToAccount(required struct rc){
+<cfparam name="rc.edit" default="false" />
+<cfparam name="rc.form" type="any" />
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+<cfoutput>
+<hb:HibachiEntityDetailForm object="#rc.form#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.form#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createformquestion" queryString="" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
+	<hb:HibachiEntityDetailGroup object="#rc.form#">
+		<hb:HibachiEntityDetailItem view="admin:entity/formtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/formtabs/formquestions" />
+		<hb:HibachiEntityDetailItem view="admin:entity/formtabs/formresponses" />
+	</hb:HibachiEntityDetailGroup>
 
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
-		}
-	}
+</hb:HibachiEntityDetailForm>
+</cfoutput>
 
-}

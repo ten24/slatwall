@@ -33,7 +33,7 @@ import {SWConfirm} from "./components/swconfirm";
 import {SWEntityActionBar} from "./components/swentityactionbar";
 import {SWEntityActionBarButtonGroup} from "./components/swentityactionbarbuttongroup";
 import {SWExpandableRecord} from "./components/swexpandablerecord";
-import {SWGravatar} from "./components/swgravatar"; 
+import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
 import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
@@ -69,7 +69,7 @@ var coremodule = angular.module('hibachi.core',[
 ]).config(['$httpProvider','$logProvider','$filterProvider','$provide','hibachiPathBuilder','appConfig',($httpProvider,$logProvider,$filterProvider,$provide,hibachiPathBuilder,appConfig)=>{
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
-    
+
     $logProvider.debugEnabled( appConfig.debugFlag );
      $filterProvider.register('likeFilter',function(){
          return function(text){
@@ -102,8 +102,8 @@ var coremodule = angular.module('hibachi.core',[
              return input;
          };
      });
-    
-    
+
+
     hibachiPathBuilder.setBaseURL(appConfig.baseURL);
     hibachiPathBuilder.setBasePartialsPath('/org/Hibachi/client/src/');
     $provide.decorator('$hibachi',[
@@ -1184,7 +1184,7 @@ var coremodule = angular.module('hibachi.core',[
      $httpProvider.interceptors.push('hibachiInterceptor');
 }])
 .run(['$rootScope','$hibachi', '$route', '$location',($rootScope,$hibachi, $route, $location)=>{
-    $rootScope.buildUrl = $hibachi.buildUrl;    
+    $rootScope.buildUrl = $hibachi.buildUrl;
     var original = $location.path;
     $location.path = function (path, reload) {
         if (reload === false) {

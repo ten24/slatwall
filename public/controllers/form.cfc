@@ -48,19 +48,38 @@ Notes:
 */
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
 
-	public any function redeemToAccount(required struct rc){
+	property name="fw" type="any";
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+	property name="formService" type="any";
+	property name="hibachiSessionService" type="any";
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
+	public void function init( required any fw ) {
+		setFW( arguments.fw );
+	}
 
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
+	public void function before() {
+		getFW().setView("public:main.blank");
+	}
+
+	public void function after( required struct rc ) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(getHibachiScope().getFailureActions())) {
+			getFW().redirectExact( redirectLocation=arguments.rc.fRedirectURL );
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(getHibachiScope().getFailureActions())) {
+			getFW().redirectExact( redirectLocation=arguments.rc.sRedirectURL );
+		} else if (structKeyExists(arguments.rc, "redirectURL")) {
+			getFW().redirectExact( redirectLocation=arguments.rc.redirectURL );
 		}
 	}
 
+	public void function addFormResponse(required struct rc){
+
+    	var formToProcess = getFormService().getForm(rc.formResponse.formID);
+    	var processObject = formToProcess.getProcessObject("AddFormResponse");
+    	processObject.populate(rc);
+
+    	formToProcess = getFormService().processForm_addFormResponse(formToProcess,processObject);
+
+    	getHibachiScope().addActionResult( "public:form.addFormResponse", formToProcess.hasErrors() );
+
+    }
 }

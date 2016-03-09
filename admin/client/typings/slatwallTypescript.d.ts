@@ -25,7 +25,6 @@
 /// <reference path="../src/giftcard/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
 /// <reference path="../src/giftcard/models/giftcard.ts" />
 /// <reference path="../src/giftcard/models/giftrecipient.ts" />
-/// <reference path="../src/orderfulfillment/components/sworderfulfillmentlist.ts" />
 /// <reference path="../src/orderitem/components/swchildorderitem.ts" />
 /// <reference path="../src/orderitem/components/swoishippinglabelstamp.ts" />
 /// <reference path="../src/orderitem/components/sworderitem.ts" />
