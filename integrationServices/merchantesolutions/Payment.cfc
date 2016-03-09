@@ -100,7 +100,7 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 				requestData["invoice_number"] = requestBean.getOrder().getShortReferenceID(true);
 			}
 
-			if(!isNull(requestBean.getProviderToken()) || !requestBean.getTransactionType() == "generateToken") {
+			if(!isNull(requestBean.getProviderToken()) && !requestBean.getTransactionType() == "generateToken") {
 				requestData["card_id"] = requestBean.getProviderToken();
 			} else {
 				requestData["card_number"] = requestBean.getCreditCardNumber();
@@ -129,7 +129,7 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 
 		} else if(requestBean.getTransactionType() == "chargePreAuthorization") {
 
-			requestData["transaction_id"] = requestBean.getTransactionID();
+			requestData["transaction_id"] = requestBean.getOriginalProviderTransactionID();
 			requestData["transaction_amount"] = requestBean.getTransactionAmount();
 			requestData["invoice_number"] = requestBean.getOrder().getShortReferenceID(true);
 
@@ -174,9 +174,9 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 		//Convert the array of key-value pairs into a struct
 		var responseData = {};
 		for(r in responseDataArray) {
-			key = listGetAt(r, 1 ,"=");
-			val = listGetAt(r, 2, "=");
-			responseData["#key#"] = val;
+			var key = listGetAt(r, 1 ,"=");
+			var val = listGetAt(r, 2, "=");
+			responseData[key] = val;
 		}
 
 		// Populate the data with the raw response & request
@@ -209,10 +209,12 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 					response.setAVSCode(responseData.avs_result);
 				}
 
-				if(responseData.cvv2_result == 'M') {
-					response.setSecurityCodeMatch(true);
-				} else {
-					response.setSecurityCodeMatch(false);
+				if(!isNull(responseData.cvv2_result)) {
+					if(responseData.cvv2_result == 'M') {
+						response.setSecurityCodeMatch(true);
+					} else {
+						response.setSecurityCodeMatch(false);
+					}
 				}
 
 				if(requestBean.getTransactionType() == "authorizeAndCharge") {
@@ -222,12 +224,10 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 			} else if(requestBean.getTransactionType() == "chargePreAuthorization") {
 
 				response.setAmountCharged(requestBean.getTransactionAmount());
-				response.setAuthorizationCode(responseData.auth_code);
 
 			} else if(requestBean.getTransactionType() == "credit") {
 
 				response.setAmountCredited(requestBean.getTransactionAmount());
-				response.setAuthorizationCode(responseData.auth_code);
 
 			}else if(requestBean.getTransactionType() == "generateToken") {
 				response.setProviderToken(responseData.transaction_id);

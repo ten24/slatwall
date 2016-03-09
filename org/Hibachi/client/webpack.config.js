@@ -1,4 +1,6 @@
 var webpack = require('webpack');
+var ForceCaseSensitivityPlugin = require('force-case-sensitivity-webpack-plugin');
+
 var path = require('path');
 var PATHS = {
     app: path.join(__dirname, '/src'),
@@ -30,7 +32,9 @@ var appConfig = {
             }
         ]
     },
-    plugins: [],
+    plugins: [
+        new ForceCaseSensitivityPlugin()
+    ],
     setupApp: function(customPath, bootstrap){
         PATHS = {
             app: path.join(customPath, '/src'),

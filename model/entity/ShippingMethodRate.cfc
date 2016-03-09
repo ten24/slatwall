@@ -57,6 +57,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
     property name="maximumShipmentQuantity" ormtype="float" hb_nullRBKey="define.unlimited";
 	property name="minimumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.0";
 	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.unlimited";
+	
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
 	property name="shippingIntegrationMethod" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
@@ -68,9 +69,10 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	
 	// Related Object Properties (one-to-many)
 	property name="shippingMethodOptions" singularname="shippingMethodOption" cfc="ShippingMethodOption" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="delete-orphan" inverse="true" lazy="extra";
-	
+    
 	// Related Object Properties (many-to-many - owner)
-	
+	property name="priceGroups" singularname="priceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwShippingMethodRatePriceGroup" fkcolumn="shippingMethodRateID" inversejoincolumn="priceGroupID";
+    
 	// Related Object Properties (many-to-many - inverse)
 	
 	// Remote Properties
@@ -89,6 +91,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="shipmentQuantityRange" type="string" persistent="false";
 	property name="shipmentItemPriceRange" type="string" persistent="false";
 	property name="shippingMethodRateName" type="string" persistent="false";
+	property name="hasPriceGroups" type="string" persistent="false";
 	
 	
 	// ============ START: Non-Persistent Property Methods =================
@@ -191,6 +194,18 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		return variables.shipmentItemPriceRange;
 	}
 	
+	public string function getHasPriceGroups() {
+        if(!structKeyExists(variables, "hasPriceGroups")) {
+            variables.hasPriceGroups = "No";
+            
+            if(!isNull(getPriceGroups()) && arrayLen(getPriceGroups())) {
+                variables.hasPriceGroups = "Yes";
+            }
+            
+        }
+        return variables.hasPriceGroups;
+    }
+	
 	public string function getShippingMethodRateName() {
 		if(!structKeyExists(variables, "shippingMethodRateName")) {
 			variables.shippingMethodRateName = "";
@@ -242,6 +257,26 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 		structDelete(variables, "shippingMethod");
 	}
 	
+	// Price Groups (many-to-many - owner)    
+    public void function addPriceGroup(required any priceGroup) {    
+        if(arguments.priceGroup.isNew() or !hasPriceGroup(arguments.priceGroup)) {    
+            arrayAppend(variables.priceGroups, arguments.priceGroup);    
+        }    
+        if(isNew() or !arguments.priceGroup.hasShippingMethodRate( this )) {    
+            arrayAppend(arguments.priceGroup.getShippingMethodRates(), this);    
+        }    
+    }    
+    public void function removePriceGroup(required any priceGroup) {    
+        var thisIndex = arrayFind(variables.priceGroups, arguments.priceGroup);    
+        if(thisIndex > 0) {    
+            arrayDeleteAt(variables.priceGroups, thisIndex);    
+        }    
+        var thatIndex = arrayFind(arguments.priceGroup.getShippingMethodRates(), this);    
+        if(thatIndex > 0) {    
+            arrayDeleteAt(arguments.priceGroup.getShippingMethodRates(), thatIndex);    
+        }    
+    }
+    
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

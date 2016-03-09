@@ -287,10 +287,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		
 		// add process object error messages
 		data[ 'processObjects' ] = {};
-		for(var key in getAccount().getProcessObjects()) {
+		for(var key in getCart().getProcessObjects()) {
 			data[ 'processObjects' ][ key ] = {};
-			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
-			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
+			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getCart().getProcessObjects()[ key ].hasErrors();
+			data[ 'processObjects' ][ key ][ 'errors' ] = getCart().getProcessObjects()[ key ].getErrors();
 		}
 		
 		return data;

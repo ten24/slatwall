@@ -4,11 +4,13 @@
 
 class SWProcessCallerController{
 	public utilityService;
+    public title:string;
+    public titleRbKey:string;
+    public text:string; 
 	public type:string;
 	public queryString:string;
-	public static $inject = ['$templateRequest','$compile','corePartialsPath','$scope','$element','$transclude','utilityService',
-			'hibachiPathBuilder'];
-	constructor(public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public corePartialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService,
+	//@ngInject
+	constructor(private rbkeyService, public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public corePartialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService,
 			hibachiPathBuilder){
 		this.$templateRequest = $templateRequest;
 		this.$compile = $compile;
@@ -24,6 +26,12 @@ class SWProcessCallerController{
 			this.$element.parent().append(template);
 			$compile(template)(this.$scope);
 		});
+        if(angular.isDefined(this.titleRbKey)){
+            this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+        }
+        if(angular.isUndefined(this.text)){
+            this.text = this.title;
+        }
 	}
 }
 
@@ -39,7 +47,8 @@ class SWProcessCaller implements ng.IDirective{
 		type:"@",
 		queryString:"@",
 		text:"@",
-		title:"@",
+		title:"@?",
+        titleRbKey:"@?",
 		'class':"@",
 		icon:"=",
 		iconOnly:"=",

@@ -2453,7 +2453,7 @@
 	        this.$injector = $injector;
 	        this.alertService = alertService;
 	        this.appConfig = appConfig;
-	        this.baseUrl = appConfig.baseUrl;
+	        this.baseUrl = appConfig.baseURL;
 	        this.dialogService = dialogService;
 	        this.utilityService = utilityService;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
@@ -3648,6 +3648,9 @@
 	            }
 	            return baseUrl + '?' + actionName + '=' + action + queryString;
 	        };
+	        this.getUrlWithActionPrefix = function () {
+	            return _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + "=";
+	        };
 	        this.getJsEntities = function () {
 	            return _this._jsEntities;
 	        };
@@ -3786,7 +3789,7 @@
 	            }
 	            var params = {};
 	            if (typeof options === 'string') {
-	                var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.get&entityName=' + entityName + '&entityID=' + options;
+	                var urlString = _this.getUrlWithActionPrefix() + 'api:main.get&entityName=' + entityName + '&entityID=' + options;
 	            }
 	            else {
 	                params['P:Current'] = options.currentPage || 1;
@@ -3804,7 +3807,7 @@
 	                params.processContext = options.processContext || '';
 	                console.log(_this.appConfig);
 	                console.log(_this.appConfig);
-	                var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.get&entityName=' + entityName;
+	                var urlString = _this.getUrlWithActionPrefix() + 'api:main.get&entityName=' + entityName;
 	            }
 	            var deferred = _this.$q.defer();
 	            if (angular.isDefined(options.id)) {
@@ -3852,7 +3855,7 @@
 	        };
 	        this.getResizedImageByProfileName = function (profileName, skuIDs) {
 	            var deferred = _this.$q.defer();
-	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + 'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
 	                .success(function (data) {
 	                deferred.resolve(data);
 	            }).error(function (reason) {
@@ -3861,7 +3864,7 @@
 	        };
 	        this.getEventOptions = function (entityName) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getEventOptionsByEntityName&entityName=' + entityName;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getEventOptionsByEntityName&entityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3872,7 +3875,7 @@
 	        };
 	        this.getProcessOptions = function (entityName) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getProcessMethodOptionsByEntityName&entityName=' + entityName;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getProcessMethodOptionsByEntityName&entityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3882,20 +3885,20 @@
 	            return deferred.promise;
 	        };
 	        this.checkUniqueOrNullValue = function (object, property, value) {
-	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + 'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 	                '&value=' + escape(value)).then(function (results) {
 	                return results.data.uniqueStatus;
 	            });
 	        };
 	        this.checkUniqueValue = function (object, property, value) {
-	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+	            return _this.$http.get(_this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + 'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 	                '&value=' + escape(value)).then(function (results) {
 	                return results.data.uniqueStatus;
 	            });
 	        };
 	        this.getPropertyDisplayData = function (entityName, options) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getPropertyDisplayData&entityName=' + entityName;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getPropertyDisplayData&entityName=' + entityName;
 	            var params = {};
 	            params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 	            _this.$http.get(urlString, { params: params })
@@ -3908,7 +3911,7 @@
 	        };
 	        this.getPropertyDisplayOptions = function (entityName, options) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getPropertyDisplayOptions&entityName=' + entityName;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getPropertyDisplayOptions&entityName=' + entityName;
 	            var params = {};
 	            params.property = options.property || '';
 	            if (angular.isDefined(options.argument1)) {
@@ -3925,7 +3928,7 @@
 	        this.saveEntity = function (entityName, id, params, context) {
 	            //$log.debug('save'+ entityName);
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.post';
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.post';
 	            if (angular.isDefined(entityName)) {
 	                params.entityName = entityName;
 	            }
@@ -3950,7 +3953,7 @@
 	        };
 	        this.getExistingCollectionsByBaseEntity = function (entityName) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getExistingCollectionsByBaseEntity&entityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3961,7 +3964,7 @@
 	        };
 	        this.getFilterPropertiesByBaseEntityName = function (entityName) {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getFilterPropertiesByBaseEntityName&EntityName=' + entityName;
 	            _this.$http.get(urlString)
 	                .success(function (data) {
 	                deferred.resolve(data);
@@ -3989,7 +3992,7 @@
 	            if (_this._resourceBundle[locale]) {
 	                return _this._resourceBundle[locale];
 	            }
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getResourceBundle&instantiationKey=' + _this.appConfig.instantiationKey + '&locale=' + locale;
 	            _this.$http({
 	                url: urlString,
 	                method: "GET"
@@ -4004,7 +4007,7 @@
 	        };
 	        this.getCurrencies = function () {
 	            var deferred = _this.$q.defer();
-	            var urlString = _this.appConfig.baseURL + '/index.cfm/?' + _this.appConfig.action + '=api:main.getCurrencies&instantiationKey=' + _this.appConfig.instantiationKey;
+	            var urlString = _this.getUrlWithActionPrefix() + 'api:main.getCurrencies&instantiationKey=' + _this.appConfig.instantiationKey;
 	            _this.$http.get(urlString).success(function (response) {
 	                deferred.resolve(response);
 	            }).error(function (response) {
@@ -4335,6 +4338,12 @@
 	            }
 	            //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
 	            _this.type = _this.type || 'link';
+	            if (angular.isDefined(_this.titleRbKey)) {
+	                _this.title = _this.rbkeyService.getRBKey(_this.titleRbKey);
+	            }
+	            if (angular.isUndefined(_this.text)) {
+	                _this.text = _this.title;
+	            }
 	            if (_this.type == "button") {
 	                //handle submit.
 	                /** in order to attach the correct controller to local vm, we need a watch to bind */
@@ -4536,7 +4545,8 @@
 	            text: "@",
 	            type: "@",
 	            queryString: "@",
-	            title: "@",
+	            title: "@?",
+	            titleRbKey: "@?",
 	            'class': "@",
 	            icon: "@",
 	            iconOnly: "=",
@@ -4568,7 +4578,6 @@
 	    return SWActionCaller;
 	}());
 	exports.SWActionCaller = SWActionCaller;
-	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
 
 
 /***/ },
@@ -5071,8 +5080,14 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
 	var SWEntityActionBarController = (function () {
-	    function SWEntityActionBarController() {
+	    //@ngInject
+	    function SWEntityActionBarController(rbkeyService) {
+	        var _this = this;
+	        this.rbkeyService = rbkeyService;
 	        this.init = function () {
+	            if (angular.isDefined(_this.pageTitleRbKey)) {
+	                _this.pageTitle = _this.rbkeyService.getRBKey(_this.pageTitleRbKey);
+	            }
 	        };
 	        this.init();
 	    }
@@ -5089,7 +5104,8 @@
 	            /*Core settings*/
 	            type: "@",
 	            object: "=",
-	            pageTitle: "@",
+	            pageTitle: "@?",
+	            pageTitleRbKey: "@?",
 	            edit: "=",
 	            /*Action Callers (top buttons)*/
 	            showcancel: "=",
@@ -7545,8 +7561,10 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	"use strict";
 	var SWProcessCallerController = (function () {
-	    function SWProcessCallerController($templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, hibachiPathBuilder) {
+	    //@ngInject
+	    function SWProcessCallerController(rbkeyService, $templateRequest, $compile, corePartialsPath, $scope, $element, $transclude, utilityService, hibachiPathBuilder) {
 	        var _this = this;
+	        this.rbkeyService = rbkeyService;
 	        this.$templateRequest = $templateRequest;
 	        this.$compile = $compile;
 	        this.corePartialsPath = corePartialsPath;
@@ -7567,9 +7585,13 @@
 	            _this.$element.parent().append(template);
 	            $compile(template)(_this.$scope);
 	        });
+	        if (angular.isDefined(this.titleRbKey)) {
+	            this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+	        }
+	        if (angular.isUndefined(this.text)) {
+	            this.text = this.title;
+	        }
 	    }
-	    SWProcessCallerController.$inject = ['$templateRequest', '$compile', 'corePartialsPath', '$scope', '$element', '$transclude', 'utilityService',
-	        'hibachiPathBuilder'];
 	    return SWProcessCallerController;
 	}());
 	var SWProcessCaller = (function () {
@@ -7586,7 +7608,8 @@
 	            type: "@",
 	            queryString: "@",
 	            text: "@",
-	            title: "@",
+	            title: "@?",
+	            titleRbKey: "@?",
 	            'class': "@",
 	            icon: "=",
 	            iconOnly: "=",
@@ -7739,22 +7762,44 @@
 	var workflow_module_1 = __webpack_require__(137);
 	var entity_module_1 = __webpack_require__(153);
 	var content_module_1 = __webpack_require__(159);
+<<<<<<< HEAD
 	var giftcard_module_1 = __webpack_require__(164);
 	var optiongroup_module_1 = __webpack_require__(175);
 	var orderitem_module_1 = __webpack_require__(178);
 	var product_module_1 = __webpack_require__(185);
 	var productbundle_module_1 = __webpack_require__(187);
+=======
+	var formbuilder_module_1 = __webpack_require__(164);
+	var giftcard_module_1 = __webpack_require__(166);
+	var optiongroup_module_1 = __webpack_require__(177);
+	var orderitem_module_1 = __webpack_require__(180);
+	var product_module_1 = __webpack_require__(187);
+	var productbundle_module_1 = __webpack_require__(189);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//constant
+<<<<<<< HEAD
 	var slatwallpathbuilder_1 = __webpack_require__(193);
+=======
+	var slatwallpathbuilder_1 = __webpack_require__(195);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//directives
+<<<<<<< HEAD
 	var swcurrencyformatter_1 = __webpack_require__(194);
+=======
+	var swcurrencyformatter_1 = __webpack_require__(196);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//filters
+<<<<<<< HEAD
 	var swcurrency_1 = __webpack_require__(195);
+=======
+	var swcurrency_1 = __webpack_require__(197);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
 	    entity_module_1.entitymodule.name,
 	    content_module_1.contentmodule.name,
+	    formbuilder_module_1.formbuildermodule.name,
 	    giftcard_module_1.giftcardmodule.name,
 	    optiongroup_module_1.optiongroupmodule.name,
 	    orderitem_module_1.orderitemmodule.name,
@@ -13109,7 +13154,7 @@
 	        this.restrict = 'E';
 	        this.scope = {};
 	        this.bindToController = {
-	            paginator: "="
+	            paginator: "=?"
 	        };
 	        this.controller = SWPaginationBarController;
 	        this.controllerAs = "swPaginationBar";
@@ -18152,8 +18197,12 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//controllers
+<<<<<<< HEAD
 	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(165);
+=======
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//directives
+<<<<<<< HEAD
 	var swaddorderitemgiftrecipient_1 = __webpack_require__(167);
 	var swgiftcardbalance_1 = __webpack_require__(168);
 	var swgiftcarddetail_1 = __webpack_require__(169);
@@ -18162,6 +18211,133 @@
 	var swgiftcardorderinfo_1 = __webpack_require__(172);
 	var swgiftcardrecipientinfo_1 = __webpack_require__(173);
 	var sworderitemgiftrecipientrow_1 = __webpack_require__(174);
+=======
+	var swformresponselisting_1 = __webpack_require__(165);
+	//models
+	var formbuildermodule = angular.module('formbuilder', [core_module_1.coremodule.name])
+	    .config([function () {
+	    }]).run([function () {
+	    }])
+	    .constant('formBuilderPartialsPath', 'formbuilder/components/')
+	    .directive('swFormResponseListing', swformresponselisting_1.SWFormResponseListing.Factory());
+	exports.formbuildermodule = formbuildermodule;
+
+
+/***/ },
+/* 165 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var SWFormResponseListingController = (function () {
+	    //@ngInject
+	    function SWFormResponseListingController($http, $hibachi, paginationService) {
+	        var _this = this;
+	        this.$http = $http;
+	        this.$hibachi = $hibachi;
+	        this.paginationService = paginationService;
+	        this.init = function () {
+	            if (angular.isUndefined(_this.formId)) {
+	                throw ("Form ID is required for swFormResponseListing");
+	            }
+	            _this.paginator = _this.paginationService.createPagination();
+	            _this.paginator.getCollection = _this.updateFormResponses;
+	            _this.updateFormResponses();
+	        };
+	        this.export = function () {
+	            $('body').append('<form action="'
+	                + _this.$hibachi.getUrlWithActionPrefix()
+	                + 'api:main.exportformresponses&formID=' + _this.formId
+	                + '" method="post" id="formExport"></form>');
+	            $('#formExport')
+	                .submit()
+	                .remove();
+	        };
+	        this.updateFormResponses = function () {
+	            var formResponsesRequestUrl = _this.$hibachi.getUrlWithActionPrefix() + "api:main.getformresponses&formID=" + _this.formId;
+	            var params = {};
+	            params.currentPage = _this.paginator.currentPage || 1;
+	            params.pageShow = _this.paginator.pageShow || 10;
+	            var formResponsesPromise = _this.$http({
+	                method: 'GET',
+	                url: formResponsesRequestUrl,
+	                params: params
+	            });
+	            formResponsesPromise.then(function (response) {
+	                _this.columns = response.data.columnRecords;
+	                _this.pageRecords = response.data.pageRecords;
+	                _this.paginator.recordsCount = response.data.recordsCount;
+	                _this.paginator.totalPages = response.data.totalPages;
+	                _this.paginator.pageStart = response.data.pageRecordsStart;
+	                _this.paginator.pageEnd = response.data.pageRecordsEnd;
+	            }, function (response) {
+	                throw ("There was a problem collecting the form responses");
+	            });
+	        };
+	        this.init();
+	    }
+	    return SWFormResponseListingController;
+	}());
+	exports.SWFormResponseListingController = SWFormResponseListingController;
+	var SWFormResponseListing = (function () {
+	    //@ngInject
+	    function SWFormResponseListing($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder) {
+	        this.$http = $http;
+	        this.$hibachi = $hibachi;
+	        this.paginationService = paginationService;
+	        this.formBuilderPartialsPath = formBuilderPartialsPath;
+	        this.slatwallPathBuilder = slatwallPathBuilder;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            "formId": "@"
+	        };
+	        this.controller = SWFormResponseListingController;
+	        this.controllerAs = "swFormResponseListing";
+	        this.link = function ($scope, element, attrs) {
+	        };
+	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(formBuilderPartialsPath) + "/formresponselisting.html";
+	    }
+	    SWFormResponseListing.Factory = function () {
+	        var directive = function ($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder) {
+	            return new SWFormResponseListing($http, $hibachi, paginationService, formBuilderPartialsPath, slatwallPathBuilder);
+	        };
+	        directive.$inject = [
+	            '$http',
+	            '$hibachi',
+	            'paginationService',
+	            'formBuilderPartialsPath',
+	            'slatwallPathBuilder'
+	        ];
+	        return directive;
+	    };
+	    return SWFormResponseListing;
+	}());
+	exports.SWFormResponseListing = SWFormResponseListing;
+
+
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/// <reference path='../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var core_module_1 = __webpack_require__(14);
+	//controllers
+	var preprocessorderitem_addorderitemgiftrecipient_1 = __webpack_require__(167);
+	//directives
+	var swaddorderitemgiftrecipient_1 = __webpack_require__(169);
+	var swgiftcardbalance_1 = __webpack_require__(170);
+	var swgiftcarddetail_1 = __webpack_require__(171);
+	var swgiftcardhistory_1 = __webpack_require__(172);
+	var swgiftcardoverview_1 = __webpack_require__(173);
+	var swgiftcardorderinfo_1 = __webpack_require__(174);
+	var swgiftcardrecipientinfo_1 = __webpack_require__(175);
+	var sworderitemgiftrecipientrow_1 = __webpack_require__(176);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	var giftcardmodule = angular.module('giftcard', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -18180,13 +18356,21 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 165 */
+=======
+/* 167 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 	var giftrecipient_1 = __webpack_require__(166);
+=======
+	var giftrecipient_1 = __webpack_require__(168);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	var OrderItemGiftRecipientControl = (function () {
 	    //@ngInject
 	    function OrderItemGiftRecipientControl($scope, $hibachi) {
@@ -18228,7 +18412,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 166 */
+=======
+/* 168 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18255,13 +18443,21 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 167 */
+=======
+/* 169 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+<<<<<<< HEAD
 	var giftrecipient_1 = __webpack_require__(166);
+=======
+	var giftrecipient_1 = __webpack_require__(168);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	var SWAddOrderItemRecipientController = (function () {
 	    //@ngInject
 	    function SWAddOrderItemRecipientController($hibachi, collectionConfigService) {
@@ -18417,7 +18613,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 168 */
+=======
+/* 170 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18496,7 +18696,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 169 */
+=======
+/* 171 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18555,7 +18759,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 170 */
+=======
+/* 172 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18685,7 +18893,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 171 */
+=======
+/* 173 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18726,7 +18938,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 172 */
+=======
+/* 174 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18786,7 +19002,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 173 */
+=======
+/* 175 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18827,7 +19047,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 174 */
+=======
+/* 176 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18935,7 +19159,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 175 */
+=======
+/* 177 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18945,8 +19173,13 @@
 	var core_module_1 = __webpack_require__(14);
 	//controllers
 	//directives
+<<<<<<< HEAD
 	var swaddoptiongroup_1 = __webpack_require__(176);
 	var swoptionsforoptiongroup_1 = __webpack_require__(177);
+=======
+	var swaddoptiongroup_1 = __webpack_require__(178);
+	var swoptionsforoptiongroup_1 = __webpack_require__(179);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	var optiongroupmodule = angular.module('optiongroup', [core_module_1.coremodule.name])
 	    .config([function () {
 	    }]).run([function () {
@@ -18958,7 +19191,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 176 */
+=======
+/* 178 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -19127,7 +19364,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 177 */
+=======
+/* 179 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19199,7 +19440,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 178 */
+=======
+/* 180 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19207,12 +19452,21 @@
 	/// <reference path="../../typings/slatwallTypescript.d.ts" />
 	var core_module_1 = __webpack_require__(14);
 	//directives
+<<<<<<< HEAD
 	var swchildorderitem_1 = __webpack_require__(179);
 	var sworderitem_1 = __webpack_require__(180);
 	var swoishippinglabelstamp_1 = __webpack_require__(181);
 	var sworderitemdetailstamp_1 = __webpack_require__(182);
 	var sworderitems_1 = __webpack_require__(183);
 	var swresizedimage_1 = __webpack_require__(184);
+=======
+	var swchildorderitem_1 = __webpack_require__(181);
+	var sworderitem_1 = __webpack_require__(182);
+	var swoishippinglabelstamp_1 = __webpack_require__(183);
+	var sworderitemdetailstamp_1 = __webpack_require__(184);
+	var sworderitems_1 = __webpack_require__(185);
+	var swresizedimage_1 = __webpack_require__(186);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	var orderitemmodule = angular.module('hibachi.orderitem', [core_module_1.coremodule.name])
 	    .run([function () {
 	    }])
@@ -19227,7 +19481,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 179 */
+=======
+/* 181 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19518,7 +19776,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 180 */
+=======
+/* 182 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19941,7 +20203,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 181 */
+=======
+/* 183 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19985,7 +20251,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 182 */
+=======
+/* 184 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20087,7 +20357,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 183 */
+=======
+/* 185 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20239,7 +20513,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 184 */
+=======
+/* 186 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20283,7 +20561,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 185 */
+=======
+/* 187 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20293,7 +20575,11 @@
 	var core_module_1 = __webpack_require__(14);
 	//services
 	//controllers
+<<<<<<< HEAD
 	var preprocessproduct_create_1 = __webpack_require__(186);
+=======
+	var preprocessproduct_create_1 = __webpack_require__(188);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//filters
 	//directives
 	var productmodule = angular.module('hibachi.product', [core_module_1.coremodule.name]).config(function () {
@@ -20304,7 +20590,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 186 */
+=======
+/* 188 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -20384,7 +20674,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 187 */
+=======
+/* 189 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports, __webpack_require__) {
 
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
@@ -20393,13 +20687,27 @@
 	//modules
 	var core_module_1 = __webpack_require__(14);
 	//services
+<<<<<<< HEAD
 	var productbundleservice_1 = __webpack_require__(188);
+=======
+	var productbundleservice_1 = __webpack_require__(190);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//controllers
+<<<<<<< HEAD
 	var create_bundle_controller_1 = __webpack_require__(189);
+=======
+	var create_bundle_controller_1 = __webpack_require__(191);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//directives
+<<<<<<< HEAD
 	var swproductbundlegrouptype_1 = __webpack_require__(190);
 	var swproductbundlegroups_1 = __webpack_require__(191);
 	var swproductbundlegroup_1 = __webpack_require__(192);
+=======
+	var swproductbundlegrouptype_1 = __webpack_require__(192);
+	var swproductbundlegroups_1 = __webpack_require__(193);
+	var swproductbundlegroup_1 = __webpack_require__(194);
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -20413,7 +20721,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 188 */
+=======
+/* 190 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -20499,7 +20811,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 189 */
+=======
+/* 191 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20572,7 +20888,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 190 */
+=======
+/* 192 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -20745,7 +21065,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 191 */
+=======
+/* 193 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20807,7 +21131,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 192 */
+=======
+/* 194 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
@@ -21155,7 +21483,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 193 */
+=======
+/* 195 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21187,7 +21519,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 194 */
+=======
+/* 196 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21246,7 +21582,11 @@
 
 
 /***/ },
+<<<<<<< HEAD
 /* 195 */
+=======
+/* 197 */
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />

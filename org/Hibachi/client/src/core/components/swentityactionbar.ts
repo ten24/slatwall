@@ -2,10 +2,17 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWEntityActionBarController{
+    public pageTitle; 
+    public pageTitleRbKey; 
+    
     public init = () =>{
+        if(angular.isDefined(this.pageTitleRbKey)){
+            this.pageTitle = this.rbkeyService.getRBKey(this.pageTitleRbKey);
+        }
     }
 
-    constructor(){
+    //@ngInject
+    constructor(private rbkeyService){
         this.init();
     }
 }
@@ -19,7 +26,8 @@ class SWEntityActionBar implements ng.IDirective{
         /*Core settings*/
         type:"@",
         object:"=",
-        pageTitle:"@",
+        pageTitle:"@?",
+        pageTitleRbKey:"@?",
         edit:"=",
         /*Action Callers (top buttons)*/
         showcancel:"=",
