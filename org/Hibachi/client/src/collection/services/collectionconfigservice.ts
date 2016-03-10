@@ -388,7 +388,6 @@ class CollectionConfig {
     };
 
     public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
-        console.log('HEREEE!!', hidden);
         //create filter
         var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
@@ -402,7 +401,6 @@ class CollectionConfig {
         if(!this.filterGroups){
             this.filterGroups = [{filterGroup:[]}];
         }
-
         //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
