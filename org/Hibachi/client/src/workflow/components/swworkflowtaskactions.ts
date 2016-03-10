@@ -26,6 +26,7 @@ class SWWorkflowTaskActionsController {
     private selectPrintTemplate;
     private emailTemplateCollectionConfig;
     private printTemplateCollectionConfig;
+    //@NgInject
     constructor(
         public $scope,
         public $log,
