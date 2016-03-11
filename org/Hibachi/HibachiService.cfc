@@ -781,31 +781,15 @@
 			return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ]; 
 		}
 		
-//		public any function getEntitiesProcessContexts() {
-//			if(!structCount(variables.entitiesProcessContexts)) {
-//				var processContexts = {};
-//				var emd = getEntitiesMetaData();
-//				for(var entityName in emd) {
-//					if(structKeyExists(emd[ entityName ], "hb_processContexts")) {
-//						processContexts[ entityName ] = listToArray(emd[ entityName ].hb_processContexts);
-//					}
-//				}
-//				
-//				variables.entitiesProcessContexts = processContexts;
-//			}
-//			return variables.entitiesProcessContexts;
-//		}
-
 		public string function getProcessComponentPath(){
 	    	return getDao('hibachiDao').getApplicationValue('applicationKey')&'.model.process.';
 	    }
 	    
 	    public array function getProcessComponentDirectoryListing(){
-	    	if(!structKeyExists(variables,'processComponentDirectoryListing')){
+	    	if(!arrayLen(variables.processComponentDirectoryListing)){
 	    		var processComponentPath = getProcessComponentPath();
 		    	var processComponentDirectoryPath = expandPath('/'&getDao('hibachiDao').getApplicationKey()) & '/model/process';
-		    	var processComponentDirectoryListing = directoryList(processComponentDirectoryPath,false,'name','*.cfc');
-	    		variables.processComponentDirectoryListing = processComponentDirectoryListing;
+		    	variables.processComponentDirectoryListing = directoryList(processComponentDirectoryPath,false,'name','*.cfc');
 	    	}
 	    	
 	    	return variables.processComponentDirectoryListing;
@@ -814,19 +798,18 @@
 		public struct function getEntitiesProcessContexts(){
 			if(!structCount(variables.entitiesProcessContexts)) {
 		    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
-		    	var entitiesProcessContexts = {};
-		    	for(processComponent in processComponentDirectoryListing){
+		    	
+		    	for(var processComponent in processComponentDirectoryListing){
 		    		if(processComponent != 'HibachiProcess.cfc'){
 		    			var processObjectName = listFirst(processComponent,'.');
 		    			var entityName = listFirst(processObjectName,'_');
 		    			var processName = listLast(processObjectName,"_");
-		    			if(!structKeyExists(entitiesProcessContexts,entityName)){
-		    				entitiesProcessContexts[entityName] = [];
+		    			if(!structKeyExists(variables.entitiesProcessContexts,entityName)){
+		    				variables.entitiesProcessContexts[entityName] = [];
 		    			}
-		    			arrayAppend(entitiesProcessContexts[entityName],processName);
+		    			arrayAppend(variables.entitiesProcessContexts[entityName],processName);
 		    		}
 		    	}
-		    	variables.entitiesProcessContexts = entitiesProcessContexts;
 		    }
 	    	return variables.entitiesProcessContexts;
 	    }

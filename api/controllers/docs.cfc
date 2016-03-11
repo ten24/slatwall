@@ -84,9 +84,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     public struct function generateValidationJson(){
     	var validationInfo = {};
     	
-    	//var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
     	var entitiesProcessContexts = getService('hibachiService').getEntitiesProcessContexts();
-    	
     	for(var entityName in entitiesProcessContexts){
 			var entity = getService('hibachiService').getEntityObject(entityName);
     		var entityProcessContexts = duplicate(entitiesProcessContexts[entityName]);
@@ -130,6 +128,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     			}
     		}
     	}
+    	writedump(validationInfo);abort;
     	return validationInfo;
     }
     
@@ -207,7 +206,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     	for(var componentCFCName in processComponentDirectoryListing){
     		if(componentCFCName != 'HibachiProcess.cfc'){
     			var componentName = listFirst(componentCFCName,'.');
-				var componentMetaData = getComponentMetaData(getProcessComponentPath()&componentName);
+				var componentMetaData = getComponentMetaData(getService('hibachiService').getProcessComponentPath()&componentName);
 				processComponentMetaData[componentName] = {};
 				processComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
 				if(structKeyExists(componentMetaData,'functions')){
