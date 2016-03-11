@@ -443,7 +443,8 @@ var coremodule = angular.module('hibachi.core',[
                                         thisEntityInstance.data[property.name] = entityInstance;
                                     };
                                 }else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
-
+                                    console.log(entity.className);
+                                    console.log(property);
                                     _jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(entityInstance?){
 
                                         if(angular.isUndefined(entityInstance)){

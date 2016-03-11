@@ -101,13 +101,18 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     			var validationsByContext = getService('hibachiValidationService').getValidationsByContext(entity,processContext);
     			if(!isNull(validationsByContext)){
     				validationInfo[entityName]['validations'][processContext] = {};
-    				
-    				var entityValidationsByContext = {};
-    				for(var key in validationsByContext){
-    					var processEntityName = lcase(left(entityName,1))&right(entityName,len(entityName)-1);
-    					entityValidationsByContext["#processEntityName#.#key#"] = validationsByContext[key];
+    				if(processContext == 'save' || processContext == 'delete'){
+    					validationInfo[entityName]['validations'][processContext]['validations'] = validationsByContext;
+    				}else{
+    					var entityValidationsByContext = {};
+	    				for(var key in validationsByContext){
+	    					var processEntityName = lcase(left(entityName,1))&right(entityName,len(entityName)-1);
+	    					var propertyIdentifier = "#processEntityName#.#key#";
+	    					entityValidationsByContext[propertyIdentifier] = validationsByContext[key];
+	    				}
+	    				validationInfo[entityName]['validations'][processContext]['validations'] = entityValidationsByContext;
     				}
-    				validationInfo[entityName]['validations'][processContext]['validations'] = entityValidationsByContext;
+    				
     			}
     			
     			if(processContext != 'save' && processContext != 'delete'){
