@@ -8,7 +8,9 @@
 class SWPaginationBarController{
     public paginator;
     //@ngInject
-    constructor(paginationService){
+    constructor(
+        public paginationService
+    ){
         if(angular.isUndefined(this.paginator)){
             this.paginator = paginationService.createPagination();
         }
@@ -20,7 +22,7 @@ class SWPaginationBarController{
     public restrict:string = 'E';
     public scope = {};
     public bindToController={
-        paginator:"="
+        paginator:"=?"
     };
     public controller=SWPaginationBarController;
     public controllerAs="swPaginationBar";
@@ -33,36 +35,14 @@ class SWPaginationBarController{
 
     //@ngInject
     constructor(hibachiPathBuilder,partialsPath){
-
-
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(partialsPath)+'paginationbar.html';
     }
 
-
-    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
-    }
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{}
 }
 
-//class SWPaginationBarFactory{
-//    public static getFactoryFor<T extends SWPaginationBar>(classType:Function):ng.IDirectiveFactory {
-//        var factory = (...args:any[]):T=>{
-//            var directive = <any>classType;
-//            return new directive(args);
-//        }
-//
-//        factory.$inject = classType.$inject;
-//        return factory;
-//        // var directive: ng.IDirectiveFactory =
-//        //                ($log:ng.ILogService, $timeout:ng.ITimeoutService, partialsPath, paginationService) => new SWPaginationBar( $log,  $timeout, partialsPath,  paginationService);
-//        // directive.$inject = ['$log','$timeout','partialsPath','paginationService'];
-//        // return directive;
-//    }
-//}
+
 export {
     SWPaginationBar,
     SWPaginationBarController
 };
-
-	//angular.module('hibachi.pagination').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
-

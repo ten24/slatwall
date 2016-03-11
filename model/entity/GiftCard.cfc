@@ -60,7 +60,10 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
     property name="issuedDate" ormtype="timestamp";
     property name="currencyCode" ormtype="string" length="3";
     //Calculated Properties
-    property name="balanceAmount" ormtype="big_decimal";
+    property name="calculatedBalanceAmount" ormtype="big_decimal";
+
+    //non-persistent properties
+    property name="balanceAmount" persistent="false";
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
@@ -140,23 +143,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Gift Card Expiration Term (many-to-one)
-	public void function setGiftCardExpirationTerm(required any giftCardExpirationTerm) {
-		variables.giftCardExpirationTerm = arguments.giftCardExpirationTerm;
-		if(isNew() or !arguments.giftCardExpirationTerm.hasGiftCard( this )) {
-			arrayAppend(arguments.giftCardExpirationTerm.getGiftCards(), this);
-		}
-	}
-	public void function removeGiftCardExpirationTerm(any giftCardExpirationTerm) {
-		if(!structKeyExists(arguments, "giftCardExpirationTerm")) {
-			arguments.giftCardExpirationTerm = variables.giftCardExpirationTerm;
-		}
-		var index = arrayFind(arguments.giftCardExpirationTerm.getGiftCards(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.giftCardExpirationTerm.getGiftCards(), index);
-		}
-		structDelete(variables, "giftCardExpirationTerm");
-	}
 
     // Order Item Gift Recipient (many-to-one)
 	public void function setOrderItemGiftRecipient(required any orderItemGiftRecipient) {

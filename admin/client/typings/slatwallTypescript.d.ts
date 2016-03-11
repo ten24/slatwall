@@ -1,8 +1,16 @@
 //{
 /// <reference path="../src/bootstrap.ts" />
 /// <reference path="../src/content/content.module.ts" />
-/// <reference path="../src/optiongroup/optiongroup.module.ts" />
+<<<<<<< HEAD
+=======
+/// <reference path="../src/formbuilder/formbuilder.module.ts" />
 /// <reference path="../src/giftcard/giftcard.module.ts" />
+>>>>>>> branch 'develop' of ssh://git@github.com/ten24/slatwall.git
+/// <reference path="../src/optiongroup/optiongroup.module.ts" />
+<<<<<<< HEAD
+/// <reference path="../src/giftcard/giftcard.module.ts" />
+=======
+>>>>>>> branch 'develop' of ssh://git@github.com/ten24/slatwall.git
 /// <reference path="../src/orderitem/orderitem.module.ts" />
 /// <reference path="../src/product/product.module.ts" />
 /// <reference path="../src/productbundle/productbundle.module.ts" />
@@ -11,8 +19,12 @@
 /// <reference path="../src/content/components/swcontenteditor.ts" />
 /// <reference path="../src/content/components/swcontentlist.ts" />
 /// <reference path="../src/content/components/swcontentnode.ts" />
+<<<<<<< HEAD
 /// <reference path="../src/optiongroup/components/swaddoptiongroup.ts" />
 /// <reference path="../src/optiongroup/components/swoptionsforoptiongroup.ts" />
+=======
+/// <reference path="../src/formbuilder/components/swformresponselisting.ts" />
+>>>>>>> branch 'develop' of ssh://git@github.com/ten24/slatwall.git
 /// <reference path="../src/giftcard/components/swaddorderitemgiftrecipient.ts" />
 /// <reference path="../src/giftcard/components/swgiftcardbalance.ts" />
 /// <reference path="../src/giftcard/components/swgiftcarddetail.ts" />
@@ -22,8 +34,13 @@
 /// <reference path="../src/giftcard/components/swgiftcardrecipientinfo.ts" />
 /// <reference path="../src/giftcard/components/sworderitemgiftrecipientrow.ts" />
 /// <reference path="../src/giftcard/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
-/// <reference path="../src/giftcard/models/giftRecipient.ts" />
 /// <reference path="../src/giftcard/models/giftcard.ts" />
+<<<<<<< HEAD
+=======
+/// <reference path="../src/giftcard/models/giftrecipient.ts" />
+/// <reference path="../src/optiongroup/components/swaddoptiongroup.ts" />
+/// <reference path="../src/optiongroup/components/swoptionsforoptiongroup.ts" />
+>>>>>>> branch 'develop' of ssh://git@github.com/ten24/slatwall.git
 /// <reference path="../src/orderitem/components/swchildorderitem.ts" />
 /// <reference path="../src/orderitem/components/swoishippinglabelstamp.ts" />
 /// <reference path="../src/orderitem/components/sworderitem.ts" />

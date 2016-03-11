@@ -1,13 +1,13 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-
 class SWActionCallerController{
     public type:string;
     public confirm:any;
     public action:string;
     public actionItem:string;
     public title:string;
+    public titleRbKey:string;
     public class:string;
     public confirmtext:string;
     public disabledtext:string;
@@ -52,6 +52,7 @@ class SWActionCallerController{
     public init = ():void =>{
 
         //Check if is NOT a ngRouter
+
         if(!this.utilityService.isAngularRoute()){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
         }else{
@@ -60,6 +61,12 @@ class SWActionCallerController{
 
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
+        if(angular.isDefined(this.titleRbKey)){
+            this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+        }
+        if(angular.isUndefined(this.text)){
+            this.text = this.title;
+        }
 
             if (this.type == "button"){
                 //handle submit.
@@ -255,7 +262,8 @@ class SWActionCaller implements ng.IDirective{
         text:"@",
         type:"@",
         queryString:"@",
-        title:"@",
+        title:"@?",
+        titleRbKey:"@?",
         'class':"@",
         icon:"@",
         iconOnly:"=",
@@ -303,6 +311,4 @@ export{
     SWActionCaller,
     SWActionCallerController
 }
-	//angular.module('slatwalladmin').directive('swActionCaller',[() => new SWActionCaller()]);
-
 

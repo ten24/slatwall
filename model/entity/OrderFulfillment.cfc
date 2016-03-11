@@ -108,7 +108,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="subtotalAfterDiscountsWithTax" type="array" persistent="false" hb_formatType="currency";
 	property name="taxAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="totalShippingWeight" type="numeric" persistent="false" hb_formatType="weight";
-
+    property name="totalShippingQuantity" type="numeric" persistent="false" hb_formatType="weight";
+    
 	// Deprecated
 	property name="discountTotal" persistent="false";
 	property name="shippingCharge" persistent="false";
@@ -452,6 +453,17 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 
     	return totalShippingWeight;
     }
+    
+    
+    public numeric function getTotalShippingQuantity() {
+        var totalShippingQuantity = 0;
+
+        for( var orderItem in getOrderFulfillmentItems()) {
+            totalShippingQuantity = totalShippingQuantity + orderItem.getQuantity();
+        }
+
+        return totalShippingQuantity;
+    }
 
 	// ============  END:  Non-Persistent Property Methods =================
 
@@ -654,7 +666,9 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     // ==================  START: Validation Methods  ======================
     public boolean function hasQuantityOfOrderFulfillmentsWithinMaxOrderQuantity() {
         var settingVal = getService("settingService").getSettingValue(settingName='globalMaximumFulfillmentsPerOrder');
-        if (!isNull(settingVal) && !isNull(getOrder().getOrderFulfillments())){
+        if (!isNull(settingVal) 
+        	&& !isNull(getOrder()) 
+        ){
            return (arrayLen(getOrder().getOrderFulfillments()) <= settingVal);  
         }
         return false;

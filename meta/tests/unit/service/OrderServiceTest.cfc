@@ -116,15 +116,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderData = {
 			orderid="",
 			activeflag=1,
-			currencycode="USD",
-			orderFulfillments=[
-				{
-					orderfulfillmentid="",
-					fulfillmentMethod={
-						fulfillmentMethodid="444df2fb93d5fa960ba2966ba2017953"
-					}
-				}
-			]
+			currencycode="USD"
 		};
 		var order = createPersistedTestEntity('Order',orderData);
 		//var orderFulfillmentData = variables.service.getOrderFulfillment();
@@ -133,16 +125,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var processObjectData = {
 			quantity=1,
 			price=1,
-			skuid=product.getSkus()[1].getSkuID(),
-			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+			skuid=product.getSkus()[1].getSkuID()
 		};
 		//Second orderitem
 		//add orderfulfillment
 		var processObjectDataTwo = {
 			quantity=1,
 			price=1,
-			skuid=product2.getSkus()[1].getSkuID(),
-			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+			skuid=product2.getSkus()[1].getSkuID()
 		};
 
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
@@ -161,17 +151,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var id = orderItemsAdded[1].getOrderItemID();
 		var id2 = orderItemsAdded[2].getOrderItemID();
-		request.debug(ArrayLen(order.getOrderItems()));
+		addToDebug(ArrayLen(order.getOrderItems()));
 		//assertEquals("123", id2);//This should fail and it does.
 		//variables.service.processOrder_removeOrderItem(order, {orderItemID="#id#"});
 
 		variables.service.processOrder_removeOrderItem(order, {orderItemIDList="#id#,#id2#"});//Removes multiple
-		request.debug(ArrayLen(order.getOrderItems()));
-		//request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
-		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
-		//request.debug(orderReturn.getOrderID());
-		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
-		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		addToDebug(ArrayLen(order.getOrderItems()));
+		//addToDebug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
+		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//addToDebug(orderReturn.getOrderID());
+		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//addToDebug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 	}
 
 	public void function process_order_add_gift_card_order_item(){
@@ -210,31 +200,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		//set up order
 		var orderData = {
-			orderid="",
+			orderID="",
 			activeflag=1,
-			currencycode="USD",
-			orderFulfillments=[
-				{
-					orderfulfillmentid="",
-					fulfillmentMethod={
-						fulfillmentMethodID="444df2fb93d5fa960ba2966ba2017953"
-					}
-				}
-			]
+			currencycode="USD"
 		};
 		accountData={
 			accountID=""
 		};
 		var account = createPersistedTestEntity('Account', accountData);
 		var order = createPersistedTestEntity('Order',orderData);
+		addToDebug(order.getHibachiErrors());
 
 		order.setAccount(account);
 
 		var processObjectData = {
 			quantity=1,
 			price=1,
-			skuid=product.getSkus()[1].getSkuID(),
-			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+			skuid=product.getSkus()[1].getSkuID()
 		};
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
 
@@ -247,7 +229,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItemGiftRecipientData = {
 			orderItemGiftRecipientID="",
 			firstName="Bobby",
-			lastName="Bot"
+			lastName="Bot",
+			quantity=1
 		};
 
 		var recipient1 = createPersistedTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData);
@@ -318,15 +301,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			referencedOrderFlag=false
 		};
 
-		//request.debug(order);
+		//addToDebug(order);
 
 		var duplicateorderitem = variables.service.copyToNewOrderItem(orderItem1);
 
-		//request.debug(order);
+		//addToDebug(order);
 
 		assertTrue(ArrayLen(duplicateorderitem.getChildOrderItems()));
 
 	}
 }
-
-

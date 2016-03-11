@@ -85,7 +85,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function getValidationStructTest(){
 		var order = request.slatwallScope.newEntity('Order');
 		var validation = variables.service.getValidationStruct(order);
-		request.debug(validation);
+		addToDebug(validation);
 	}
 	
 }

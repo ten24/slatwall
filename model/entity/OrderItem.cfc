@@ -633,14 +633,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.childOrderItem.removeParentOrderItem( this );
 	}
 
-	// Event Registrations (one-to-many)
- 	public void function addEventRegistration(required any eventRegistration) {
-		arguments.eventRegistration.setOrderItem( this );
-	}
- 	public void function removeEventRegistration(required any eventRegistration) {
-		arguments.eventRegistration.removeOrderItem( this );
-	}
-
 	// Order Delivery Items (one-to-many)
 	public void function addOrderDeliveryItem(required any orderDeliveryItem) {
 		arguments.orderDeliveryItem.setOrderItem( this );
