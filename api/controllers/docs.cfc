@@ -128,7 +128,6 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     			}
     		}
     	}
-    	writedump(validationInfo);abort;
     	return validationInfo;
     }
     
