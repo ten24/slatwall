@@ -14,7 +14,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     this.publicMethods=listAppend(this.publicMethods, 'generateDocsJson');
     
     public any function before( required struct rc ) {
-        getFW().setView("public:main.blank");
+        getFW().setView("api:main.blank");
     }
     
     public struct function generateEntityJson(){
@@ -61,7 +61,6 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		if(structKeyExists(object,'hb_processContext')){
     			entityDocData['hb_processContext'] = object.hb_processcontext;
     		}
-    		entityDocData['validations'] = getService('hibachiValidationService').getValidationStructByName(listlast(object.fullname,'.'));
     		
     		entitiesDocData[listlast(object.fullname,'.')] = entityDocData;
     		
@@ -76,9 +75,79 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		docsJson['services'] = generateServiceJson();
 		docsJson['processes'] = generateProcessJson();
 		docsJson['daos'] = generateDaoJson();
+		docsJson['validationInfo'] = generateValidationJson();
     	var docsJsonPath = expandPath('/'&getService('hibachiDao').getApplicationKey()) & '/meta/docs/json/docs.json';
     	fileWrite(docsJsonPath,serializeJson(docsJson));
+    	abort;
+    }
+    
+    public struct function generateValidationJson(){
+    	var validationInfo = {};
     	
+    	//var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
+    	var entitiesProcessContexts = getEntitiesProcessContexts();
+    	
+    	for(var entityName in entitiesProcessContexts){
+			var entity = getService('hibachiService').getEntityObject(entityName);
+    		var entityProcessContexts = duplicate(entitiesProcessContexts[entityName]);
+    		arrayAppend(entityProcessContexts,'save');
+    		arrayAppend(entityProcessContexts,'delete');
+    		validationInfo[entityName]['validations'] = {};
+    		
+    		var validationStruct = getService('hibachiValidationService').getValidationStruct(entity);
+    		if(structKeyExists(validationStruct,'conditions')){
+    			validationInfo[entityName]['conditions'] = validationStruct.conditions;
+    		}
+    		//get all validations by context
+    		for(var processContext in entityProcessContexts){
+    			var validationsByContext = getService('hibachiValidationService').getValidationsByContext(entity,processContext);
+    			if(!isNull(validationsByContext)){
+    				validationInfo[entityName]['validations'][processContext] = {};
+    			
+    				validationInfo[entityName]['validations'][processContext]['validations'] = validationsByContext;
+    			}
+    			
+    			if(processContext != 'save' && processContext != 'delete'){
+    				var processValidationStruct = getService('hibachiValidationService').getValidationsByContext(entity.getProcessObject(processContext));
+					for(var propertyKey in processValidationStruct){
+						if(!structKeyExists(validationInfo[entityName]['validations'][processContext]['validations'],propertyKey)){
+							validationInfo[entityName]['validations'][processContext]['validations'][propertyKey] = processValidationStruct[propertyKey];
+						}else{
+							structAppend(validationInfo[entityName]['validations'][processContext]['validations'][propertyKey],processValidationStruct[propertyKey]);
+						}
+					}
+    			}
+    			
+    			try{
+    				var processObject = entity.getProcessObject(processContext);
+    			
+	    			validationStruct = getService('hibachiValidationService').getValidationStruct(processObject);
+	    			if(structKeyExists(validationStruct,'conditions')){
+	    				validationInfo[entityName]['validations'][processContext]['conditions'] =validationStruct.conditions;
+	    			}
+    			}catch(any e){
+    				
+    			}
+    		}
+    	}
+    	return validationInfo;
+    }
+    
+    private struct function getEntitiesProcessContexts(){
+    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
+    	var entitiesProcessContexts = {};
+    	for(processComponent in processComponentDirectoryListing){
+    		if(processComponent != 'HibachiProcess.cfc'){
+    			var processObjectName = listFirst(processComponent,'.');
+    			var entityName = listFirst(processObjectName,'_');
+    			var processName = listLast(processObjectName,"_");
+    			if(!structKeyExists(entitiesProcessContexts,entityName)){
+    				entitiesProcessContexts[entityName] = [];
+    			}
+    			arrayAppend(entitiesProcessContexts[entityName],processName);
+    		}
+    	}
+    	return entitiesProcessContexts;
     }
     
     public struct function generateBaseComponentJson(){
@@ -145,27 +214,36 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     	return daoComponentMetaData;
     }
     
-    public struct function generateProcessJson(){
-    	var processComponentMetaData = {};
-    	
+    private string function getProcessComponentPath(){
+    	return getDao('hibachiDao').getApplicationValue('applicationKey')&'.model.process.';
+    }
+    
+    private any function getProcessComponentDirectoryListing(){
+    	var processComponentPath = getProcessComponentPath();
     	var processComponentDirectoryPath = expandPath('/'&getDao('hibachiDao').getApplicationKey()) & '/model/process';
     	var processComponentDirectoryListing = directoryList(processComponentDirectoryPath,false,'name','*.cfc');
+    	return processComponentDirectoryListing;
+    }
+    
+    public struct function generateProcessJson(){
+    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
     	
-    	var processComponentPath = getDao('hibachiDao').getApplicationValue('applicationKey')&'.model.process.';
+    	var processComponentMetaData = {};
     	
     	for(var componentCFCName in processComponentDirectoryListing){
-    		var componentName = listFirst(componentCFCName,'.');
-    		var componentMetaData = getComponentMetaData(processComponentPath&componentName);
-    		processComponentMetaData[componentName] = {};
-    		processComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
-    		if(structKeyExists(componentMetaData,'functions')){
-    			processComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData.functions);
-    		}
-    		if(structKeyExists(componentMetaData,'properties')){
-    			processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
-    		}
-    		processComponentMetaData[componentName]['validations'] = getService('hibachiValidationService').getValidationStructByName(componentName);
-    	}
+    		if(componentCFCName != 'HibachiProcess.cfc'){
+    			var componentName = listFirst(componentCFCName,'.');
+				var componentMetaData = getComponentMetaData(getProcessComponentPath()&componentName);
+				processComponentMetaData[componentName] = {};
+				processComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
+				if(structKeyExists(componentMetaData,'functions')){
+					processComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData.functions);
+				}
+				if(structKeyExists(componentMetaData,'properties')){
+					processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
+				}
+			}
+		}
     	return processComponentMetaData;
     }
     
