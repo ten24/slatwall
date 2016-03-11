@@ -85,7 +85,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     	var validationInfo = {};
     	
     	//var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
-    	var entitiesProcessContexts = getEntitiesProcessContexts();
+    	var entitiesProcessContexts = getService('hibachiService').getEntitiesProcessContexts();
     	
     	for(var entityName in entitiesProcessContexts){
 			var entity = getService('hibachiService').getEntityObject(entityName);
@@ -133,22 +133,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     	return validationInfo;
     }
     
-    private struct function getEntitiesProcessContexts(){
-    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
-    	var entitiesProcessContexts = {};
-    	for(processComponent in processComponentDirectoryListing){
-    		if(processComponent != 'HibachiProcess.cfc'){
-    			var processObjectName = listFirst(processComponent,'.');
-    			var entityName = listFirst(processObjectName,'_');
-    			var processName = listLast(processObjectName,"_");
-    			if(!structKeyExists(entitiesProcessContexts,entityName)){
-    				entitiesProcessContexts[entityName] = [];
-    			}
-    			arrayAppend(entitiesProcessContexts[entityName],processName);
-    		}
-    	}
-    	return entitiesProcessContexts;
-    }
+    
     
     public struct function generateBaseComponentJson(){
     	var baseComponentMetaData = {};
@@ -214,19 +199,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     	return daoComponentMetaData;
     }
     
-    private string function getProcessComponentPath(){
-    	return getDao('hibachiDao').getApplicationValue('applicationKey')&'.model.process.';
-    }
-    
-    private any function getProcessComponentDirectoryListing(){
-    	var processComponentPath = getProcessComponentPath();
-    	var processComponentDirectoryPath = expandPath('/'&getDao('hibachiDao').getApplicationKey()) & '/model/process';
-    	var processComponentDirectoryListing = directoryList(processComponentDirectoryPath,false,'name','*.cfc');
-    	return processComponentDirectoryListing;
-    }
-    
     public struct function generateProcessJson(){
-    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
+    	var processComponentDirectoryListing = getService('hibachiService').getProcessComponentDirectoryListing();
     	
     	var processComponentMetaData = {};
     	
