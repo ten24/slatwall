@@ -74,10 +74,15 @@ Notes:
 		</hb:HibachiPropertyRow>
 		<!--- Custom Attributes --->
 		<hb:HibachiEntityDetailGroup object="#rc.accountAddress#">
-
-			<cfloop array="#rc.accountAddress.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminAttributeSetDisplay entity="#rc.accountAddress#" attributeSet="#attributeSet#" edit="#rc.edit#" />
-			</cfloop>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="s-property form-horizontal">
+						<cfloop array="#rc.accountAddress.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+							<swa:SlatwallAdminAttributeSetDisplay entity="#rc.accountAddress#" attributeSet="#attributeSet#" edit="#rc.edit#" />
+						</cfloop>
+					</div>
+				</div>
+			</div>
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

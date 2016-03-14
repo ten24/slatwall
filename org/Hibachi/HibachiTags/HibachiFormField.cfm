@@ -154,9 +154,14 @@
 					<cfset attributes.value = attributes.valueOptions[1]['value'] />
 				</cfif>
 				<cfloop array="#attributes.valueOptions#" index="option">
-						<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
-						<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
-					<input type="radio" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass#" <cfif attributes.value EQ thisOptionValue> checked="checked"</cfif> #attributes.fieldAttributes# /><span class="#attributes.fieldClass#">#thisOptionName#</span>
+					<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
+					<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
+					<div class="radio">
+						<input type="radio" id="#thisOptionValue#" name="#attributes.fieldName#" value="#thisOptionValue#" class="#attributes.fieldClass#" <cfif attributes.value EQ thisOptionValue> checked="checked"</cfif> #attributes.fieldAttributes# />
+						<label for="#thisOptionValue#">
+							#thisOptionName#
+						</label>
+					</div>	
 				</cfloop>
 			</cfoutput>
 		</cfcase>
