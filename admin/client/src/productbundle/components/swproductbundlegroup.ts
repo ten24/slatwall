@@ -196,6 +196,8 @@ class SWProductBundleGroupController {
 	};
 
 	public getFiltersByTerm = (keyword,filterTerm) =>{
+        console.log("SEARCHING")
+        
 		//save search
         this.keyword = keyword;
         this.filterTerm = filterTerm;
@@ -211,7 +213,7 @@ class SWProductBundleGroupController {
                 this.showAll = true;
                 this.productBundleGroupFilters.value = [];
                 _loadingCount = this.searchOptions.options.length - 1;
-                for(var i = 0; i > this.searchOptions.options.length;i++){
+                for(var i = 0; i < this.searchOptions.options.length;i++){
                     this.$log.debug("INT");
                     this.$log.debug(i);
                     if(i > 0){
