@@ -286,7 +286,7 @@ class HibachiService{
 	};
 	getResizedImageByProfileName = (profileName, skuIDs) => {
 		var deferred = this.$q.defer();
-		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?'+this.appConfig.action+'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -320,14 +320,14 @@ class HibachiService{
         return deferred.promise;
     };
 	checkUniqueOrNullValue = (object, property, value) => {
-		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?'+this.appConfig.action+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(
 	 (results:any):ng.IPromise<any> =>{
 		return results.data.uniqueStatus;
 		})
 	};
 	checkUniqueValue = (object, property, value) => {
-		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?'+this.appConfig.action+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
 			 (results:any):ng.IPromise<any> =>{
 				return results.data.uniqueStatus;
