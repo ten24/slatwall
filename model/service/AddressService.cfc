@@ -56,29 +56,15 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public boolean function isAddressInZone(required any address, required any addressZone) {
 		var addressInZone = false;
+		var addressZoneLocationsSmartList = arguments.addressZone.getAddressZoneLocationsSmartList();
+		addressZoneLocationsSmartList.addFilter('postalCode',arguments.address.getPostalCode());
+		addressZoneLocationsSmartList.addFilter('city',arguments.address.getCity());
+		addressZoneLocationsSmartList.addFilter('stateCode',arguments.address.getStateCode());
+		addressZoneLocationsSmartList.addFilter('countryCode',arguments.address.getCountryCode());
 		
-		for(var i=1; i <= arrayLen(arguments.addressZone.getAddressZoneLocations()); i++) {
-			var location = arguments.addressZone.getAddressZoneLocations()[i];
-			var inLocation = true;
-			if(!isNull(location.getPostalCode()) && location.getPostalCode() != arguments.address.getPostalCode()) {
-				inLocation = false;
-			}
-			if(!isNull(location.getCity()) && location.getCity() != arguments.address.getCity()) {
-				inLocation = false;
-			}
-			if(!isNull(location.getStateCode()) && location.getStateCode() != arguments.address.getStateCode()) {
-				inLocation = false;
-			}
-			if(!isNull(location.getCountryCode()) && location.getCountryCode() != arguments.address.getCountryCode()) {
-				inLocation = false;
-			}
-			if(inLocation) {
-				addressInZone = true;
-				break;
-			}
-		}
+		var addressZoneLocationCount = addressZoneLocationsSmartList.getRecordsCount();
 		
-		return addressInZone;
+		return addressZoneLocationCount > 0;
 	}
 	
 	public any function copyAddress(required any address, saveNewAddress=false) {
