@@ -196,8 +196,6 @@ class SWProductBundleGroupController {
 	};
 
 	public getFiltersByTerm = (keyword,filterTerm) =>{
-        console.log("SEARCHING")
-        
 		//save search
         this.keyword = keyword;
         this.filterTerm = filterTerm;
