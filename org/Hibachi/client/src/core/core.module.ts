@@ -26,6 +26,7 @@ import {EntityRBKey} from "./filters/entityrbkey";
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
 import {SWTypeaheadSearch} from "./components/swtypeaheadsearch";
+import {SWTypeaheadInputField} from "./components/swtypeaheadinputfield";
 import {SWTypeaheadSearchLineItem} from "./components/swtypeaheadsearchlineitem";
 import {SWActionCallerDropdown} from "./components/swactioncallerdropdown";
 import {SWColumnSorter} from "./components/swcolumnsorter";
@@ -1218,6 +1219,7 @@ var coremodule = angular.module('hibachi.core',[
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 //directives
 .directive('swTypeaheadSearch',SWTypeaheadSearch.Factory())
+.directive('swTypeaheadInputField',SWTypeaheadInputField.Factory())
 .directive('swTypeaheadSearchLineItem', SWTypeaheadSearchLineItem.Factory())
 .directive('swActionCaller',SWActionCaller.Factory())
 .directive('swActionCallerDropdown',SWActionCallerDropdown.Factory())
