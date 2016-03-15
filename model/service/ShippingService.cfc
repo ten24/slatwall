@@ -144,6 +144,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			shippingMethodRatesSmartList.addWhereCondition('aslatwallshippingmethodrate.addressZone IS NOT NULL');
 			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) > #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
 			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) < #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) > #arguments.orderFulfillment.getTotalShippingWeight()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) < #arguments.orderFulfillment.getTotalShippingWeight()#');
 			var shippingMethodRates = shippingMethodRatesSmartList.getRecords(); 
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
 			
