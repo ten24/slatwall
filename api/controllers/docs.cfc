@@ -231,10 +231,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     }
     
     public array function getExtended(required struct object, array extended=[]){
-    	//exclude coldfusion base component
-    	if(object.fullname != "WEB-INF.cftags.component"){
-    		arrayAppend(arguments.extended,object.fullname);
-    	}
+    	
+		arrayAppend(arguments.extended,object.fullname);
     	
     	if(structKeyExists(arguments.object,'extends')){
     		arguments.extended = getExtended(arguments.object.extends,arguments.extended);
