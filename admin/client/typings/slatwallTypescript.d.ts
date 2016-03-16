@@ -3,7 +3,6 @@
 /// <reference path="../src/content/content.module.ts" />
 /// <reference path="../src/optiongroup/optiongroup.module.ts" />
 /// <reference path="../src/giftcard/giftcard.module.ts" />
-/// <reference path="../src/orderfulfillment/orderfulfillment.module.ts" />
 /// <reference path="../src/orderitem/orderitem.module.ts" />
 /// <reference path="../src/product/product.module.ts" />
 /// <reference path="../src/productbundle/productbundle.module.ts" />
