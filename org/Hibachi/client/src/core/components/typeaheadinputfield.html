@@ -1,0 +1,10 @@
+<div sw-typeahead-search 
+        data-collection-config="swTypeaheadInputField.typeaheadCollectionConfig"
+        data-placeholder-rb-key="{{swTypeaheadInputField.placeholderRbKey}}"
+        data-add-function="swTypeaheadInputField.addFunction"
+        data-validate-required="true"
+       
+        >
+        <span ng-transclude></span>
+</div>
+<input style="display:none" ng-model="swTypeaheadInputField.modelValue" name="{{swTypeaheadInputField.fieldName}}" >

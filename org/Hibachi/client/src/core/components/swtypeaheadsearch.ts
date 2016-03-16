@@ -1,7 +1,6 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-
 class SWTypeaheadSearchController {
 
 	public collectionConfig; 
@@ -15,18 +14,21 @@ class SWTypeaheadSearchController {
 	public addFunction;
     public validateRequired:boolean; 
     public displayList = [];
+    public filters = [];
 	public addButtonFunction;
     public viewFunction;
 	public hideSearch:boolean;
     public resultsPromise;
     public resultsDeferred;
     public showAddButton;
+    public placeholderText:string;
+    public placeholderRbKey:string;
 
 	private _timeoutPromise;
     public showViewButton;
 
     // @ngInject
-	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
+	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private rbkeyService, private collectionConfigService){
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
@@ -53,6 +55,11 @@ class SWTypeaheadSearchController {
                 throw("You did not pass the correct collection config data to swTypeaheadSearch");
             }
         }
+        
+        if(angular.isDefined(this.placeholderRbKey)){
+            console.log("Blam", this.placeholderRbKey);
+            this.placeholderText = this.rbkeyService.getRBKey(this.placeholderRbKey);
+        }
 
         if(angular.isDefined(this.addButtonFunction)){
             this.showAddButton = true;
@@ -65,13 +72,18 @@ class SWTypeaheadSearchController {
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
-        //populate the displayList
+        //populates the displayList and filters
         this.$transclude($scope,()=>{});
 
         if(angular.isDefined(this.propertiesToDisplay)){
             this.displayList = this.propertiesToDisplay.split(",");
-            this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
         }
+        
+        this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
+        
+        angular.forEach(this.filters, (filter)=>{
+                this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+        }); 
 
         if(angular.isDefined(this.allRecords)){
 			this.collectionConfig.setAllRecords(this.allRecords);
@@ -89,7 +101,7 @@ class SWTypeaheadSearchController {
     };
 
     public toggleOptions = () =>{
-        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
+        if(this.hideSearch && !this.searchText.length){
             this.search(this.searchText);
         } else {
             this.hideSearch = !this.hideSearch;
@@ -187,6 +199,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 		propertiesToDisplay:"@?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
+        placeholderRbKey:"@?",
 		searchText:"=?",
 		results:"=?",
 		addFunction:"&?",

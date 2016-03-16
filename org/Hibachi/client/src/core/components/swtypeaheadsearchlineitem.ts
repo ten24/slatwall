@@ -2,23 +2,18 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 
 class SWTypeaheadSearchLineItemController{
-
-    constructor(
-
-    ){
-        this.init();
-    }
-
-    public init = () =>{
-
-    }
+    constructor(){}
 }
 
 class SWTypeaheadSearchLineItem implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
     public bindToController={
-        propertyIdentifier:"@"
+        propertyIdentifier:"@",
+        comparisonOperator:"@?",
+        comparisonValue:"@?",
+        logicalOperator:"@?",
+        hidden:"@?"
     };
     public controller=SWTypeaheadSearchLineItemController;
     public controllerAs="swTypeaheadSearchLineItem";
@@ -35,14 +30,40 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
         ];
         return directive;
     }
+    
     constructor(private utilityService){
 
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        if(angular.isDefined(scope.$parent.swTypeaheadSearch)){
+        
+        if( angular.isDefined(scope.swTypeaheadSearchLineItem.comparisonOperator) &&
+            angular.isDefined(scope.swTypeaheadSearchLineItem.comparisonValue) 
+        ){
+           var filter = {
+                    propertyIdentifier:scope.swTypeaheadSearchLineItem.propertyIdentifier,
+                    comparisonOperator:scope.swTypeaheadSearchLineItem.comparisonOperator,
+                    comparisonValue:scope.swTypeaheadSearchLineItem.comparisonValue,
+                    logicalOperator:scope.swTypeaheadSearchLineItem.logicalOperator,
+                    hidden:scope.swTypeaheadSearchLineItem.hidden
+           };
+        } 
+        
+        if(angular.isDefined(scope.$parent.swTypeaheadSearch)){ 
             scope.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
-        }
+            
+            if(angular.isDefined(filter)){
+                scope.$parent.swTypeaheadSearch.filters.push(filter);
+            }
+        } 
+        
+        if(angular.isDefined(scope.$parent.$parent.swTypeaheadSearch)){
+            scope.$parent.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
+            
+            if(angular.isDefined(filter)){
+                scope.$parent.$parent.swTypeaheadSearch.filters.push(filter);
+            }
+        }     
     }
 }
 export{
