@@ -1,2 +1,14 @@
-{
+{  
+    "appName":{  
+        "fieldType":"text"
+    },
+    "appURL":{  
+        "fieldType":"text"
+    },
+    "appID":{  
+        "fieldType":"text"
+    }
+    "requestFrequency":{  
+        "fieldType":"numeric"
+    }
 }

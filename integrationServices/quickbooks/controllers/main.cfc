@@ -45,25 +45,23 @@
 
 Notes:
 
-	Paypal Express DOCS
-	https://developer.paypal.com/webapps/developer/docs/classic/express-checkout/ht_ec-singleItemPayment-curl-etc/
-
 */
-component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
+component accessors="true" output="false" {
 
-	public any function init() {
-		return this;
+	property name="fw" type="any";
+
+	this.publicMethods='';
+
+	this.anyAdminMethods='';
+
+	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'main');
+
+	public void function init( required any fw ) {
+		setFW( arguments.fw );
 	}
 
-	public string function getIntegrationTypes() {
-		return "";
+	public void function before() {
 	}
 
-	public string function getDisplayName() {
-		return "Quickbooks";
-	}
-
-	public string function getQWBCFile() {
-
-	}
 }
