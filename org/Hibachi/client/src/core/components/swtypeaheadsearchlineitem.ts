@@ -53,7 +53,6 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
         
         if(angular.isDefined(scope.$parent.swTypeaheadSearch)){ 
             scope.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
-            uploaded =true; 
             if(angular.isDefined(filter)){
                 scope.$parent.swTypeaheadSearch.filters.push(filter);
             }
@@ -61,13 +60,10 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
         
         if(angular.isDefined(scope.$parent.swTypeaheadInputField)){
             scope.$parent.swTypeaheadInputField.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
-            uploaded =true; 
             if(angular.isDefined(filter)){
                 scope.$parent.swTypeaheadInputField.filters.push(filter);
             }
-        }  
-        
-        console.log("uppity",uploaded, scope)   
+        }   
     }
 }
 export{
