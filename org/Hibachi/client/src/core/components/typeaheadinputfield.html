@@ -5,6 +5,6 @@
         data-validate-required="true"
        
         >
-        <span ng-transclude></span>
+        <span class="transclude-here"></span>
 </div>
-<input style="display:none" ng-model="swTypeaheadInputField.modelValue" name="{{swTypeaheadInputField.fieldName}}" >
+<input style="display:block" ng-bind="swTypeaheadInputField.modelValue" name="{{swTypeaheadInputField.fieldName}}" >

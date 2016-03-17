@@ -30,6 +30,7 @@ class SWTypeaheadInputFieldController {
     }
     
     public addFunction = (value:any) => {
+        console.log("valm",value)
         this.modelValue = value; 
     }
 
@@ -58,7 +59,9 @@ class SWTypeaheadInputField implements ng.IDirective{
 	}
 
 	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-        
+        var target = element.find(".transclude-here");
+        var transcludeContent = transclude(scope,()=>{});
+        target.append(transcludeContent); 
 	};
 
 	public static Factory(){
