@@ -56,10 +56,10 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 
 	public string function getIntegrationTypes() {
-		return "payment,fw1";
+		return "";
 	}
 
 	public string function getDisplayName() {
-		return "PayPal Express";
+		return "Quickbooks";
 	}
 }
