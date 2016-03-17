@@ -46,8 +46,6 @@
 				<!--- Selectable --->
 				<input ng-if-start="swListingDisplay.selectable" type="hidden" ng-attr-name="{{swListingDisplay.selectFieldName}}" ng-value="swListingDisplay.selectValue" />
 				<th ng-if-end ng-class="{'disabled':!swListingDisplay.edit,'select':1===1}" ng-bind="swListingDisplay.selectTitle"></th>
-				<!--- Multiselectable --->
-				<input ng-if-start="swListingDisplay.multiselectable" type="hidden" ng-attr-name="{{swListingDisplay.multiselectFieldName}}" ng-value="swListingDisplay.multiselectValues.toString()" />
 				<th ng-if-end ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
 					<div ng-if="!swListingDisplay.expandable && swListinDisplay.multiselectPropertyIdentifier && swListinDisplay.multiselectPropertyIdentifier.length" class="dropdown">
 						<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
@@ -139,7 +137,7 @@
 						data-is-radio="swListingDisplay.isRadio"
 	            		data-selectionid="{{swListingDisplay.name || 'ListingDisplay'}}"
 	            		data-selection="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
-	            		data-name="{{swListingDisplay.multiselectFieldName+'selection'}}"
+	            		data-name="{{swListingDisplay.multiselectFieldName}}"
 	            		data-disabled="swListingDisplay.edit === false"
 					></sw-selection>
 					
