@@ -104,8 +104,9 @@ component output="false" update="true" extends="HibachiService" {
 				if(structKeyExists(object,'callEvent')){
 					object.callEvent(eventName=arguments.eventName,eventData=arguments.eventData);
 				//support legacy event handlers
-				}else if(structKeyExists(object,'onEvent')){
-					object.onEvent(eventName=arguments.eventName,eventData=arguments.eventData);
+				}else{ 
+					// Attempt to evaluate this method
+					evaluate("object.#eventName#( argumentCollection=arguments.eventData )");	
 				}
 				
 			}

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,34 +45,41 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-<cfparam name="rc.product" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+	public void function setUp() {
+		super.setup();
+		//Setup the Yaml service
+		variables.service = request.slatwallScope.getService("hibachiYamlService");
+	}
+	
+	// addAuditToCommit()
+	public void function loadYamlTest() {
+		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
+		assert(isStruct(yamlStruct));
+	}
+	
+	public void function getYamlTest(){
+		var yaml = variables.service.getYaml();
+		assert(isObject(yaml));
+	}
+	
+	public void function dumpYamlTest(){
+		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
+		var dumpYaml = variables.service.dumpYaml(yamlStruct);
+		assert(len(dumpYaml));
+	}
+	
+	public void function writeYamlTest(){
+		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
+		var applicationKey = request.slatwallScope.getDao('hibachiDao').getApplicationKey();
+		var filePath = expandPath('/#applicationKey#/meta/tests/assets.yml');
+		variables.service.writeYamlToFile(filePath,yamlStruct);
+		assert(FileExists(filePath));		
+		FileDelete(filepath);
+		
+	}
+}
 
-<cfset selectedListingDisplays = rc.product.getListingPages() />
-<cfset selectedListingPageIDPaths = "" />
-<cfloop array="#selectedListingDisplays#" index="local.lp">
-	<cfset selectedListingPageIDPaths = listAppend(selectedListingPageIDPaths, replace(local.lp.getContentIDPath(),',','/','all')) />
-</cfloop>
-<cfoutput>
-	<sw-listing-display
-		data-collection="'Content'"
-		data-multiselect-field-name="listingPages"
-		data-multiselect-id-paths="#selectedListingPageIDPaths#"
-		data-edit="#rc.edit#"
-		data-has-search="false"
-        data-has-action-bar="false"
-		data-record-edit-action="admin:entity.editcontent"
-	>
-		<sw-listing-column data-property-identifier="title" tdclass="primary" />
-		<sw-listing-column data-property-identifier="site.siteName" />
-	</sw-listing-display>
-</cfoutput>
-<!--- deprecating previous listing display --->
-<!---<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
-	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
-	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-</hb:HibachiListingDisplay>--->
+
