@@ -24,7 +24,7 @@
                  
 				</div>-->
                 
-               <!--<div sw-typeahead-search 
+               <div sw-typeahead-search 
                         data-collection-config="productBundleGroupTypes.typeaheadCollectionConfig"
                         data-search-text="productBundleGroup.data.productBundleGroupType.data.typeName"
                         data-placeholder-rb-key="admin.entity.createProduct.searchProductBundleType"
@@ -35,25 +35,7 @@
                         
                         <span sw-typeahead-search-line-item data-property-identifier="typeName">
                             <span ng-bind="item.typeName"></span>
-                        </span> 
-                        
-                </div>-->
-                
-                <div sw-typeahead-input-field 
-                        data-placeholder-rb-key="admin.entity.createProduct.searchProductBundleType"
-                        data-field-name="testing 1 2 3"
-                        data-entity-name="Type"
-                        data-properties-to-display="typeName"
-                        >
-                        <span sw-typeahead-search-line-item data-property-identifier="typeName">
-                            <span ng-bind="item.typeName"></span>
-                        </span> 
-                        <span sw-typeahead-search-line-item 
-                            data-property-identifier="parentType.systemCode" 
-                            data-comparison-value="productBundleGroupType" 
-                            data-comparison-operator="="
-                            data-hidden="true"
-                        ></span>
+                        </span>           
                 </div>
 
 				<!--<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">

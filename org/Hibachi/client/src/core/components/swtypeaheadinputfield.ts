@@ -9,29 +9,41 @@ class SWTypeaheadInputFieldController {
     public typeaheadCollectionConfig; 
     public modelValue; 
     public displayList = []; 
-    public propertiesToDisplay; 
+    public filters = [];
+    public propertiesToLoad; 
     public placeholderRbKey;
+    public propertyToSave;
     
     // @ngInject
 	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
-       
-        if(angular.isDefined(this.propertiesToDisplay)){
-            var propertyArray = this.propertiesToDisplay.split(",");
-            for(var i=0; i < propertyArray.length; i++){
-                this.displayList.push({identifier:propertyArray[i], binding:"item."+propertyArray[i]});
-            }
-        }
         
         if(angular.isUndefined(this.entityName)){
             throw("The typeahead input field directive requires an entity name.");
         }
+        if(angular.isUndefined(this.propertyToSave)){
+            throw("You must select a property to save for the input field directive")
+        }
                
         this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entityName); 
+        
+        //populate the display list
+        this.$transclude($scope,()=>{});
+        
+        if(this.displayList.length){
+            this.typeaheadCollectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
+        }
+        
+        if(angular.isDefined(this.propertiesToLoad)){
+            this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
+        }
+        
+        angular.forEach(this.filters, (filter)=>{
+                this.typeaheadCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+        }); 
     }
     
     public addFunction = (value:any) => {
-        console.log("valm",value)
-        this.modelValue = value; 
+        this.modelValue = value[this.propertyToSave]; 
     }
 
 }
@@ -44,12 +56,14 @@ class SWTypeaheadInputField implements ng.IDirective{
     public transclude=true; 
 	public restrict = "EA";
 	public scope = {};
+    public priority = 100;
 
 	public bindToController = {
         fieldName:"@",
         entityName:"@",
-        propertiesToDisplay:"@",
-        placeholderRbKey:"@"
+        propertiesToLoad:"@?",
+        placeholderRbKey:"@?",
+        propertyToSave:"@"
 	};
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";
@@ -57,12 +71,6 @@ class SWTypeaheadInputField implements ng.IDirective{
 	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
 	}
-
-	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-        var target = element.find(".transclude-here");
-        var transcludeContent = transclude(scope,()=>{});
-        target.append(transcludeContent); 
-	};
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (

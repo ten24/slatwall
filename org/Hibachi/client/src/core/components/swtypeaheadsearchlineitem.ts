@@ -49,21 +49,25 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
            };
         } 
         
+        var uploaded = false; 
+        
         if(angular.isDefined(scope.$parent.swTypeaheadSearch)){ 
             scope.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
-            
+            uploaded =true; 
             if(angular.isDefined(filter)){
                 scope.$parent.swTypeaheadSearch.filters.push(filter);
             }
         } 
         
-        if(angular.isDefined(scope.$parent.$parent.swTypeaheadSearch)){
-            scope.$parent.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
-            
+        if(angular.isDefined(scope.$parent.swTypeaheadInputField)){
+            scope.$parent.swTypeaheadInputField.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
+            uploaded =true; 
             if(angular.isDefined(filter)){
-                scope.$parent.$parent.swTypeaheadSearch.filters.push(filter);
+                scope.$parent.swTypeaheadInputField.filters.push(filter);
             }
-        }     
+        }  
+        
+        console.log("uppity",uploaded, scope)   
     }
 }
 export{

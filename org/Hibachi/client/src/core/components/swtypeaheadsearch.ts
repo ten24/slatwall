@@ -79,8 +79,11 @@ class SWTypeaheadSearchController {
             this.displayList = this.propertiesToDisplay.split(",");
         }
         
-        this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
+        console.log("upp",this.displayList)
         
+        if(this.displayList.length){
+            this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
+        }
         angular.forEach(this.filters, (filter)=>{
                 this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
@@ -191,12 +194,14 @@ class SWTypeaheadSearch implements ng.IDirective{
     public transclude=true; 
 	public restrict = "EA";
 	public scope = {};
+    public terminal=true;
 
 	public bindToController = {
         collectionConfig:"=?",
 		entity:"@?",
 		properties:"@?",
 		propertiesToDisplay:"@?",
+        displayList:"=?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
         placeholderRbKey:"@?",
@@ -216,19 +221,29 @@ class SWTypeaheadSearch implements ng.IDirective{
 	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
-
-	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
-        var target = element.find(".dropdown-menu");
-        var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
-        var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
-        var transcludeContent = transclude(scope,()=>{});
-        actionTemplate.append(transcludeContent); 
-        listItemTemplate.append(actionTemplate); 
-        
-        scope.swTypeaheadSearch.resultsPromise.then(()=>{
-            target.append(this.$compile(listItemTemplate)(scope));
-        });
-	};
+    
+    public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
+        return {
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                
+            },
+            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                var target = element.find(".dropdown-menu");
+                var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
+                var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
+                var transcludeContent = transclude($scope,()=>{});
+                //strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
+                if(angular.isDefined(transcludeContent[1]) && angular.isDefined(transcludeContent[1].localName) && transcludeContent[1].localName == 'ng-transclude'){
+                    transcludeContent = transcludeContent.children();
+                }
+                actionTemplate.append(transcludeContent); 
+                listItemTemplate.append(actionTemplate); 
+                $scope.swTypeaheadSearch.resultsPromise.then(()=>{
+                    target.append(this.$compile(listItemTemplate)($scope));
+                });
+            }
+        };
+    }
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
