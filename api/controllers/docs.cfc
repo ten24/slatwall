@@ -36,7 +36,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     			entityDocData['hb_serviceName'] = object.hb_servicename;
     		}
     		entityDocData['extends'] = getExtended(object);
-    		entityDocData['functions'] = getFunctions(object.functions);
+    		entityDocData['functions'] = getFunctions(object);
     		entityDocData['properties'] = object.properties;
     		if(structKeyExists(object,'cacheuse')){
     			entityDocData['cacheUse'] = object.cacheuse;
@@ -157,7 +157,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		var componentMetaData = getComponentMetaData(baseComponentPath&componentName);
     		baseComponentMetaData[componentName] = {};
     		baseComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
-    		baseComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData.functions);
+    		baseComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
     	}
     	return baseComponentMetaData;
     }
@@ -176,7 +176,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		serviceComponentMetaData[componentName] = {};
     		serviceComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
     		if(structKeyExists(componentMetaData,'functions')){
-    			serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData.functions);
+    			serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
     		}
     		if(structKeyExists(componentMetaData,'properties')){
     			serviceComponentMetaData[componentName]['properties'] = componentMetaData.properties;
@@ -199,7 +199,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		daoComponentMetaData[componentName] = {};
     		daoComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
     		if(structKeyExists(componentMetaData,'functions')){
-    			daoComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData.functions);
+    			daoComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
     		}
     		if(structKeyExists(componentMetaData,'properties')){
     			daoComponentMetaData[componentName]['properties'] = componentMetaData.properties;
@@ -220,7 +220,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 				processComponentMetaData[componentName] = {};
 				processComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
 				if(structKeyExists(componentMetaData,'functions')){
-					processComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData.functions);
+					processComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 				}
 				if(structKeyExists(componentMetaData,'properties')){
 					processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
@@ -241,11 +241,35 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     	return arguments.extended;
     }
     
-    public array function getFunctions(required array functions){
+    public array function getFunctions(required any object){
     	var functionArray = [];
-    	for(var f in arguments.functions){
+    	for(var f in object.functions){
     		var functionItem = {};
     		functionItem['name'] = f.NAME;
+    		
+    		var firstThreeChars = left(f.NAME,3);
+    		var firstFiveChars = left(f.NAME,5);
+    		var modelComponentPath = 'Slatwall.model.entity';
+    		if(
+    			left(object.fullname,len(modelComponentPath)) == modelComponentPath 
+    			&&
+    			(
+	    			(
+	    				firstThreeChars == 'get'
+		    			|| firstThreeChars == 'set'
+		    			|| firstThreeChars == 'add'
+		    		) 
+		    		&& getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+		    	)||
+		    	(
+	    			(
+	    				firstFiveChars == 'remove'
+		    		) 
+		    		&& getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-5))
+		    	)
+			){
+    			 functionItem['isImplicit'] = true;
+    		}
     		if(structKeyExists(f,'RETURNTYPE')){
     			functionItem['returntype'] = f.RETURNTYPE;
     		}
