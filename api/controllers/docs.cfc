@@ -231,8 +231,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     }
     
     public array function getExtended(required struct object, array extended=[]){
-    	
-		arrayAppend(arguments.extended,object.fullname);
+    	if(arguments.object.fullname != 'lucee.Component'){
+    		arrayAppend(arguments.extended,object.fullname);
+    	}
     	
     	if(structKeyExists(arguments.object,'extends')){
     		arguments.extended = getExtended(arguments.object.extends,arguments.extended);
