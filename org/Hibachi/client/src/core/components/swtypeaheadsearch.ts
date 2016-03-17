@@ -57,7 +57,6 @@ class SWTypeaheadSearchController {
         }
         
         if(angular.isDefined(this.placeholderRbKey)){
-            console.log("Blam", this.placeholderRbKey);
             this.placeholderText = this.rbkeyService.getRBKey(this.placeholderRbKey);
         }
 
@@ -78,8 +77,6 @@ class SWTypeaheadSearchController {
         if(angular.isDefined(this.propertiesToDisplay)){
             this.displayList = this.propertiesToDisplay.split(",");
         }
-        
-        console.log("upp",this.displayList)
         
         if(this.displayList.length){
             this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
