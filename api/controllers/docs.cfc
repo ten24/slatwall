@@ -264,14 +264,20 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		    			firstThreeChars == 'add'
 						|| firstThreeChars == 'has'
 					)
-					&& getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+					&& (
+						getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+						|| getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+					)
 				){
 	    			functionItem['isImplicit'] = true;
 	    		}else if(
 	    			(
 	    				firstFiveChars == 'remove'
 		    		) 
-		    		&& getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
+		    		&& (
+		    			getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
+		    			|| getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
+		    		)
 	    		){
 	    			
 	    			functionItem['isImplicit'] = true;
