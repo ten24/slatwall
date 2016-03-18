@@ -270,6 +270,8 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		    	)
 			){
     			 functionItem['isImplicit'] = true;
+    		}else{
+    			functionItem['isImplicit'] = false;
     		}
     		if(structKeyExists(f,'RETURNTYPE')){
     			functionItem['returntype'] = f.RETURNTYPE;
