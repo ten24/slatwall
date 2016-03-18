@@ -81,7 +81,7 @@ class SWTypeaheadSearchController {
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
-        //populates the displayList and filters
+        //populates the columns and filters
         this.$transclude($scope,()=>{});
 
         if(angular.isDefined(this.propertiesToDisplay)){
@@ -156,8 +156,11 @@ class SWTypeaheadSearchController {
 			this.hideSearch = true;
 		}
 
-		if(angular.isDefined(this.displayList)){
-			this.searchText = item[this.displayList[0]];
+		if(angular.isDefined(this.columns) && 
+           this.columns.length && 
+           angular.isDefined(this.columns[0].propertyIdentifier)
+        ){
+			this.searchText = item[this.columns[0].propertyIdentifier];
 		}
 
 		if(angular.isDefined(this.addFunction)){
@@ -206,7 +209,6 @@ class SWTypeaheadSearch implements ng.IDirective{
 		entity:"@?",
 		properties:"@?",
 		propertiesToDisplay:"@?",
-        displayList:"=?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
         placeholderRbKey:"@?",
@@ -263,7 +265,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 			,corePartialsPath
             ,hibachiPathBuilder
 		);
-		directive.$inject = ["$hibachi", "$compile", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
+		directive.$inject = ["$compile","corePartialsPath",
 			'hibachiPathBuilder'];
 		return directive;
 	}
