@@ -256,7 +256,11 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	    				firstThreeChars == 'get'
 		    			|| firstThreeChars == 'set'
 		    		) 
-		    		&& getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+		    		&& 
+		    		(
+		    			getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+						|| getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+					)
 				){
 	    			 functionItem['isImplicit'] = true;
 	    		}else if(
