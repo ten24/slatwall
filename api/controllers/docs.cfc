@@ -248,7 +248,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		functionItem['name'] = f.NAME;
     		
     		var firstThreeChars = left(f.NAME,3);
-    		var firstFiveChars = left(f.NAME,5);
+    		var firstFiveChars = left(f.NAME,6);
     		var modelComponentPath = 'Slatwall.model.entity';
     		if(left(object.fullname,len(modelComponentPath)) == modelComponentPath ){
     			if(
@@ -271,11 +271,12 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	    			(
 	    				firstFiveChars == 'remove'
 		    		) 
-		    		&& getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-5))
+		    		&& getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
 	    		){
 	    			
 	    			functionItem['isImplicit'] = true;
 	    		}else{
+	    			
 	    			functionItem['isImplicit'] = false;
 	    		}
     		}
