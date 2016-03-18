@@ -49,8 +49,6 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
            };
         } 
         
-        var uploaded = false; 
-        
         if(angular.isDefined(scope.$parent.swTypeaheadSearch)){ 
             scope.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
             if(angular.isDefined(filter)){

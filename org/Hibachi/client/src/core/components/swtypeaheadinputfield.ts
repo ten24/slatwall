@@ -15,7 +15,14 @@ class SWTypeaheadInputFieldController {
     public propertyToSave;
     
     // @ngInject
-	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
+	constructor(private $scope, 
+                private $q, 
+                private $transclude, 
+                private $hibachi, 
+                private $timeout:ng.ITimeoutService, 
+                private utilityService, 
+                private collectionConfigService
+    ){
         
         if(angular.isUndefined(this.entityName)){
             throw("The typeahead input field directive requires an entity name.");
@@ -50,8 +57,6 @@ class SWTypeaheadInputFieldController {
 
 class SWTypeaheadInputField implements ng.IDirective{
 
-	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-			'hibachiPathBuilder'];
 	public templateUrl;
     public transclude=true; 
 	public restrict = "EA";
@@ -68,31 +73,21 @@ class SWTypeaheadInputField implements ng.IDirective{
 	public controller=SWTypeaheadInputFieldController;
 	public controllerAs="swTypeaheadInputField";
 
-	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
+    // @ngInject
+	constructor(private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadinputfield.html";
 	}
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-			$hibachi
-            ,$compile
-			,$timeout
-            ,utilityService
-			,collectionConfigService
-			,corePartialsPath
+			corePartialsPath
             ,hibachiPathBuilder
 
 		)=> new SWTypeaheadInputField(
-			$hibachi
-            ,$compile
-			,$timeout
-            ,utilityService
-			,collectionConfigService
-			,corePartialsPath
+            corePartialsPath
             ,hibachiPathBuilder
 		);
-		directive.$inject = ["$hibachi", "$compile", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
-			'hibachiPathBuilder'];
+		directive.$inject = ["corePartialsPath",'hibachiPathBuilder'];
 		return directive;
 	}
 }

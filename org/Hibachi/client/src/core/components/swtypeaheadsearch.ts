@@ -28,7 +28,15 @@ class SWTypeaheadSearchController {
     public showViewButton;
 
     // @ngInject
-	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private rbkeyService, private collectionConfigService){
+	constructor(private $scope, 
+                private $q,
+                private $transclude, 
+                private $hibachi, 
+                private $timeout:ng.ITimeoutService, 
+                private utilityService, 
+                private rbkeyService, 
+                private collectionConfigService
+     ){
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
@@ -58,6 +66,8 @@ class SWTypeaheadSearchController {
         
         if(angular.isDefined(this.placeholderRbKey)){
             this.placeholderText = this.rbkeyService.getRBKey(this.placeholderRbKey);
+        } else if (angular.isUndefined(this.placeholderText)){
+            this.placeholderText = this.rbkeyService.getRBKey('define.search');
         }
 
         if(angular.isDefined(this.addButtonFunction)){
@@ -185,8 +195,6 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 
-	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
-			'hibachiPathBuilder'];
 	public templateUrl;
     public transclude=true; 
 	public restrict = "EA";
@@ -214,8 +222,9 @@ class SWTypeaheadSearch implements ng.IDirective{
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
-
-	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
+    
+    // @ngInject
+	constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
     
@@ -230,7 +239,10 @@ class SWTypeaheadSearch implements ng.IDirective{
                 var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
                 var transcludeContent = transclude($scope,()=>{});
                 //strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
-                if(angular.isDefined(transcludeContent[1]) && angular.isDefined(transcludeContent[1].localName) && transcludeContent[1].localName == 'ng-transclude'){
+                if(angular.isDefined(transcludeContent[1]) && 
+                   angular.isDefined(transcludeContent[1].localName) && 
+                   transcludeContent[1].localName == 'ng-transclude'
+                ){
                     transcludeContent = transcludeContent.children();
                 }
                 actionTemplate.append(transcludeContent); 
@@ -244,20 +256,12 @@ class SWTypeaheadSearch implements ng.IDirective{
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-			$hibachi
-            ,$compile
-			,$timeout
-            ,utilityService
-			,collectionConfigService
+            $compile
 			,corePartialsPath
             ,hibachiPathBuilder
 
 		)=> new SWTypeaheadSearch(
-			$hibachi
-            ,$compile
-			,$timeout
-            ,utilityService
-			,collectionConfigService
+            $compile
 			,corePartialsPath
             ,hibachiPathBuilder
 		);
