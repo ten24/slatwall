@@ -7,7 +7,7 @@
     },
     "appID":{  
         "fieldType":"text"
-    }
+    },
     "requestFrequency":{  
         "fieldType":"numeric"
     }
