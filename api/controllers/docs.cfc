@@ -250,29 +250,36 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		var firstThreeChars = left(f.NAME,3);
     		var firstFiveChars = left(f.NAME,5);
     		var modelComponentPath = 'Slatwall.model.entity';
-    		if(
-    			left(object.fullname,len(modelComponentPath)) == modelComponentPath 
-    			&&
-    			(
+    		if(left(object.fullname,len(modelComponentPath)) == modelComponentPath ){
+    			if(
 	    			(
 	    				firstThreeChars == 'get'
 		    			|| firstThreeChars == 'set'
-		    			|| firstThreeChars == 'add'
-		    			|| firstThreeChars == 'has'
 		    		) 
 		    		&& getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
-		    	)||
-		    	(
+				){
+	    			 functionItem['isImplicit'] = true;
+	    		}else if(
+	    			(
+		    			firstThreeChars == 'add'
+						|| firstThreeChars == 'has'
+					)
+					&& getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+				){
+	    			functionItem['isImplicit'] = true;
+	    		}else if(
 	    			(
 	    				firstFiveChars == 'remove'
 		    		) 
-		    		&& getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-5))
-		    	)
-			){
-    			 functionItem['isImplicit'] = true;
-    		}else{
-    			functionItem['isImplicit'] = false;
+		    		&& getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-5))
+	    		){
+	    			writedump('test');abort;
+	    			functionItem['isImplicit'] = true;
+	    		}else{
+	    			functionItem['isImplicit'] = false;
+	    		}
     		}
+    		
     		if(structKeyExists(f,'RETURNTYPE')){
     			functionItem['returntype'] = f.RETURNTYPE;
     		}

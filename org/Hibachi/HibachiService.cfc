@@ -781,6 +781,21 @@
 			return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ]; 
 		}
 		
+		public any function getPropertyByEntityNameAndSingularName( required string entityName, required string singularName ) {
+			var propertiesStruct = getPropertiesStructByEntityName( entityName=arguments.entityName );
+			for(var key in propertiesStruct){
+				var property = propertiesStruct[key];
+				
+				if(structKeyExists(property,'singularname') && lcase(property.singularname) == lcase(arguments.singularName)){
+					return property;
+				}
+			}
+		}
+		
+		public boolean function hasPropertyByEntityNameAndSinuglarName( required string entityName, required string singularName){
+			return !isNull(getPropertyByEntityNameAndSingularName(arguments.entityName,arguments.singularName));
+		}
+		
 		public string function getProcessComponentPath(){
 	    	return getDao('hibachiDao').getApplicationValue('applicationKey')&'.model.process.';
 	    }
@@ -852,6 +867,7 @@
 				return false;	
 			}
 		}
+		
 		
 		// @hint traverses a propertyIdentifier to find the last entityName in the list... this is then used by the hasProperty and hasAttribute methods()
 		public string function getLastEntityNameInPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
