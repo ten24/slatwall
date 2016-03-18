@@ -13,7 +13,7 @@ class SWTypeaheadSearchController {
 	public results;
 	public addFunction;
     public validateRequired:boolean; 
-    public displayList = [];
+    public columns = [];
     public filters = [];
 	public addButtonFunction;
     public viewFunction;
@@ -85,12 +85,13 @@ class SWTypeaheadSearchController {
         this.$transclude($scope,()=>{});
 
         if(angular.isDefined(this.propertiesToDisplay)){
-            this.displayList = this.propertiesToDisplay.split(",");
+            this.collectionConfig.addDisplayProperty(this.propertiesToDisplay.split(","));
         }
         
-        if(this.displayList.length){
-            this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
-        }
+        angular.forEach(this.columns, (column)=>{
+                this.collectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
+        });
+        
         angular.forEach(this.filters, (filter)=>{
                 this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
@@ -199,7 +200,6 @@ class SWTypeaheadSearch implements ng.IDirective{
     public transclude=true; 
 	public restrict = "EA";
 	public scope = {};
-    public terminal=true;
 
 	public bindToController = {
         collectionConfig:"=?",
@@ -230,9 +230,7 @@ class SWTypeaheadSearch implements ng.IDirective{
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                
-            },
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 var target = element.find(".dropdown-menu");
                 var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');

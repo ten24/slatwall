@@ -8,7 +8,7 @@ class SWTypeaheadInputFieldController {
     public entityName;
     public typeaheadCollectionConfig; 
     public modelValue; 
-    public displayList = []; 
+    public columns = []; 
     public filters = [];
     public propertiesToLoad; 
     public placeholderRbKey;
@@ -35,14 +35,14 @@ class SWTypeaheadInputFieldController {
         
         //populate the display list
         this.$transclude($scope,()=>{});
-        
-        if(this.displayList.length){
-            this.typeaheadCollectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
-        }
-        
+           
         if(angular.isDefined(this.propertiesToLoad)){
             this.typeaheadCollectionConfig.addDisplayProperty(this.propertiesToLoad);
         }
+        
+        angular.forEach(this.columns, (column)=>{
+                this.typeaheadCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
+        });
         
         angular.forEach(this.filters, (filter)=>{
                 this.typeaheadCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
