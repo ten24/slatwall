@@ -273,7 +273,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		    		) 
 		    		&& getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-5))
 	    		){
-	    			writedump('test');abort;
+	    			
 	    			functionItem['isImplicit'] = true;
 	    		}else{
 	    			functionItem['isImplicit'] = false;
