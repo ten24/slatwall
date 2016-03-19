@@ -8,9 +8,9 @@
 		<cfargument name="domain" type="string" default="#CGI.HTTP_HOST#" />
 
 		<cfif structKeyExists(arguments, "expires")>
-			<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#" httponly="true">
+			<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#" httponly="true" domain="#arguments.domain#">
 		<cfelse>
-			<cfcookie name="#arguments.name#" value="#arguments.value#" secure="#arguments.secure#" httponly="true">
+			<cfcookie name="#arguments.name#" value="#arguments.value#" secure="#arguments.secure#" httponly="true" domain="#arguments.domain#">
 		</cfif>
 	</cffunction>
 
