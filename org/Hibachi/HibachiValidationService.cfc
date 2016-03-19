@@ -292,6 +292,9 @@ component output="false" accessors="true" extends="HibachiService" {
 
 	public boolean function validate_required(required any object, required string propertyIdentifier, boolean constraintValue=true) {
 		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
+		if(arguments.constraintValue == false) {
+			return true;
+		}
 		if(!isNull(propertyValue) && (isObject(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue)) || (isStruct(propertyValue) && structCount(propertyValue)) || (isSimpleValue(propertyValue) && len(trim(propertyValue))))) {
 			return true;
 		}
