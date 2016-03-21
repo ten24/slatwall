@@ -33,12 +33,14 @@ class SWCollectionColumn implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
         
-        console.log("scoop",scope)
-        
         var column = {
-                propertyIdentifier:scope.swTypeaheadSearchFilter.propertyIdentifier,
-                hidden:scope.swTypeaheadSearchFilter.hidden
+                propertyIdentifier:scope.swCollectionColumn.propertyIdentifier,
+                hidden:scope.swCollectionColumn.hidden
         };
+        
+        if(angular.isDefined(scope.swCollectionConfig)){ 
+            scope.swCollectionConfig.columns.push(column); 
+        }
     }
 }
 export{

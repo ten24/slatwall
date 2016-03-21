@@ -282,6 +282,10 @@ class CollectionConfig {
                 lastProperty=column.split('.').pop()
                 ;
             var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
+            if(angular.isUndefined(lastEntity)){
+                throw("You have passed an incorrect entity name to a collection config");
+            }
+            
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }

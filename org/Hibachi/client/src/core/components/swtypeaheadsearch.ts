@@ -37,6 +37,9 @@ class SWTypeaheadSearchController {
                 private rbkeyService, 
                 private collectionConfigService
      ){
+       
+        //populates all needed variables
+        this.$transclude($scope,()=>{});
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
@@ -80,9 +83,6 @@ class SWTypeaheadSearchController {
 
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
-
-        //populates the columns and filters
-        this.$transclude($scope,()=>{});
 
         if(angular.isDefined(this.propertiesToDisplay)){
             this.collectionConfig.addDisplayProperty(this.propertiesToDisplay.split(","));
@@ -234,22 +234,30 @@ class SWTypeaheadSearch implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                console.log("postlink")
                 var target = element.find(".dropdown-menu");
                 var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
                 var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
                 var transcludeContent = transclude($scope,()=>{});
                 //strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
-                if(angular.isDefined(transcludeContent[1]) && 
-                   angular.isDefined(transcludeContent[1].localName) && 
-                   transcludeContent[1].localName == 'ng-transclude'
-                ){
-                    transcludeContent = transcludeContent.children();
+                if(angular.isDefined(transcludeContent[1])){
+                    if(angular.isDefined(transcludeContent[1].localName) && 
+                       transcludeContent[1].localName == 'sw-collection-config'
+                    ){
+                        transcludeContent.splice(1,1);
+                    }
+                    if(angular.isDefined(transcludeContent[1].localName) && 
+                       transcludeContent[1].localName == 'ng-transclude'
+                    ){
+                        transcludeContent = transcludeContent.children();
+                    }
                 }
                 actionTemplate.append(transcludeContent); 
                 listItemTemplate.append(actionTemplate); 
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{
                     target.append(this.$compile(listItemTemplate)($scope));
                 });
+                
             }
         };
     }

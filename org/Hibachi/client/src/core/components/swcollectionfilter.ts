@@ -34,13 +34,12 @@ class SWCollectionFilter implements ng.IDirective{
     constructor(private utilityService){}
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        console.log("scoop",scope)
         var filter = {
-                propertyIdentifier:scope.swTypeaheadSearchFilter.propertyIdentifier,
-                comparisonOperator:scope.swTypeaheadSearchFilter.comparisonOperator,
-                comparisonValue:scope.swTypeaheadSearchFilter.comparisonValue,
-                logicalOperator:scope.swTypeaheadSearchFilter.logicalOperator,
-                hidden:scope.swTypeaheadSearchFilter.hidden
+                propertyIdentifier:scope.SWCollectionFilter.propertyIdentifier,
+                comparisonOperator:scope.SWCollectionFilter.comparisonOperator,
+                comparisonValue:scope.SWCollectionFilter.comparisonValue,
+                logicalOperator:scope.SWCollectionFilter.logicalOperator,
+                hidden:scope.SWCollectionFilter.hidden
         };
        
         if(angular.isDefined(scope.swCollectionConfig)){ 
