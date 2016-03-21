@@ -1395,6 +1395,14 @@ table tr th .glyphicon {
 .panel-heading .fa:hover {
   color: #fff;
 }
+.panel-heading .fa.s-opened {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  transition: transform 0.2s linear;
+}
 .s-header-nav .navbar-collapse {
   padding: 0px;
 }
@@ -4168,6 +4176,9 @@ tabel .s-table-header {
 }
 .s-pannel-group .panel-default {
   overflow: visible;
+}
+a[data-toggle="collapse"] {
+  text-decoration: none;
 }
 .s-tooltip-hint {
   text-decoration: none;
