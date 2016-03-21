@@ -1259,8 +1259,6 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 			nextRowDepth = jQuery('#' + afterRowID).find('[data-depth]').attr('data-depth');
 			nextRowDepth++;
 		}
-		console.log('updateListingDisplay');
-		console.log(data);
 		if(data['entityName']){
 			
 			
