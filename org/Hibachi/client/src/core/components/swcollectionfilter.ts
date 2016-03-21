@@ -1,11 +1,10 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
-/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 
-class SWTypeaheadSearchFilterController{
+class SWCollectionFilterController{
     constructor(){}
 }
 
-class SWTypeaheadSearchFilter implements ng.IDirective{
+class SWCollectionFilter implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
     public bindToController={
@@ -15,13 +14,14 @@ class SWTypeaheadSearchFilter implements ng.IDirective{
         logicalOperator:"@?",
         hidden:"@?"
     };
-    public controller=SWTypeaheadSearchFilterController;
-    public controllerAs="swTypeaheadSearchFilter";
+    public controller=SWCollectionFilterController;
+    public controllerAs="SWCollectionFilter";
+    template
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             utilityService
-        )=>new SWTypeaheadSearchFilter(
+        )=>new SWCollectionFilter(
             utilityService
         );
         directive.$inject = [
@@ -34,7 +34,7 @@ class SWTypeaheadSearchFilter implements ng.IDirective{
     constructor(private utilityService){}
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        
+        console.log("scoop",scope)
         var filter = {
                 propertyIdentifier:scope.swTypeaheadSearchFilter.propertyIdentifier,
                 comparisonOperator:scope.swTypeaheadSearchFilter.comparisonOperator,
@@ -42,21 +42,13 @@ class SWTypeaheadSearchFilter implements ng.IDirective{
                 logicalOperator:scope.swTypeaheadSearchFilter.logicalOperator,
                 hidden:scope.swTypeaheadSearchFilter.hidden
         };
-        
-        if(angular.isDefined(scope.$parent.swTypeaheadSearch)){ 
-            if(angular.isDefined(filter)){
-                scope.$parent.swTypeaheadSearch.filters.push(filter);
-            }
-        } 
-        
-        if(angular.isDefined(scope.$parent.swTypeaheadInputField)){
-            if(angular.isDefined(filter)){
-                scope.$parent.swTypeaheadInputField.filters.push(filter);
-            }
-        }   
+       
+        if(angular.isDefined(scope.swCollectionConfig)){ 
+            scope.swCollectionConfig.filters.push(filter); 
+        }
     }
 }
 export{
-    SWTypeaheadSearchFilter,
-    SWTypeaheadSearchFilterController
+    SWCollectionFilterController,
+    SWCollectionFilter
 }
