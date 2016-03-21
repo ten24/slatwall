@@ -1260,8 +1260,6 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 			nextRowDepth++;
 		}
 		if(data['entityName']){
-			
-			
 			jQuery.ajax({
 				url: hibachiConfig.baseURL + '/',
 				method: 'post',
@@ -1402,6 +1400,9 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 					pendingCarriageReturn=false;
 				}
 			});
+		}else{
+			removeLoadingDiv( tableID );
+			listingUpdateRelease();
 		}
 	}
 }
