@@ -2255,11 +2255,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// If there was one or more accountContentAccess associated with the referenced orderItem then we need to remove them.
 			var accountContentAccessSmartList = getAccountService().getAccountContentAccessSmartList();
 			accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
-			accountContentAccesses = accountContentAccessSmartList.getRecords();
+			var accountContentAccesses = accountContentAccessSmartList.getRecords();
 			for (var accountContentAccess in accountContentAccesses){
-    			if(!isNull(accountContentAccess)) {
-    				getAccountService().deleteAccountContentAccess( accountContentAccess );
-    			}
+    			
+    			getAccountService().deleteAccountContentAccess( accountContentAccess );
+    			
 			}
 		}
 
