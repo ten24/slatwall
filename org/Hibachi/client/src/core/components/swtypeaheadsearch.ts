@@ -234,7 +234,6 @@ class SWTypeaheadSearch implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                console.log("postlink")
                 var target = element.find(".dropdown-menu");
                 var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
                 var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
