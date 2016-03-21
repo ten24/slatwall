@@ -2767,6 +2767,13 @@ tabel .s-table-header {
 }
 .s-table-header-nav .s-table-header-search {
   max-width: 200px;
+  position: relative;
+}
+.s-table-header-nav .s-table-header-search i {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  pointer-events: none;
 }
 .s-table-header-nav .s-page-show {
   min-width: 150px;
@@ -3137,6 +3144,7 @@ tabel .s-table-header {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   background-color: #ffffff;
+  border-bottom: 2px solid #e7eaec;
   padding: 0px 0px 9px 0px;
   border-right: 0px;
 }
