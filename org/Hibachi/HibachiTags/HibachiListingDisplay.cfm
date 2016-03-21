@@ -329,46 +329,46 @@
 
 			<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
 				<ul class="list-inline list-unstyled">
-					<li class="s-table-header-search">
-						<cfif not thistag.expandable>
-							<input type="text" name="search" class="form-control general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
-						</cfif>
-					</li>
 					<li>
 						<div class="btn-group navbar-left dropdown">
 
-							<button type="button" class="btn btn-sm s-btn-dgrey dropdown-toggle"><i class="fa fa-cog"></i></button>
+							<button type="button" class="btn btn-xs btn-no-style dropdown-toggle"><i class="fa fa-cogs"></i></button>
 
-								<ul class="dropdown-menu pull-right" role="menu">
-									<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-								</ul>
-								<!--- Listing: Button Groups --->
-								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
-									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
-										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-											<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
-													#buttonGroup.generatedContent#
-											<cfelse>
-												<div class="btn-group">
-													#buttonGroup.generatedContent#
-												</div>
-											</cfif>
-										</cfif>
-									</cfloop>
-								</cfif>
-
-								<!--- Listing: Create --->
-								<cfif len(attributes.createAction)>
-									<div class="btn-group">
-										<cfif attributes.createModal>
-											<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+							<ul class="dropdown-menu pull-right" role="menu">
+								<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+							</ul>
+							<!--- Listing: Button Groups --->
+							<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+								<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+									<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+										<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+												#buttonGroup.generatedContent#
 										<cfelse>
-											<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+											<div class="btn-group">
+												#buttonGroup.generatedContent#
+											</div>
 										</cfif>
-									</div>
-								</cfif>
+									</cfif>
+								</cfloop>
+							</cfif>
+
+							<!--- Listing: Create --->
+							<cfif len(attributes.createAction)>
+								<div class="btn-group">
+									<cfif attributes.createModal>
+										<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+									<cfelse>
+										<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+									</cfif>
+								</div>
+							</cfif>
 
 						</div>
+					</li>
+					<li class="s-table-header-search">
+						<cfif not thistag.expandable>
+							<input type="text" name="search" class="form-control input-xs general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+						</cfif>
 					</li>
 				</ul>
 
