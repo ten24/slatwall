@@ -71,7 +71,6 @@ class SWCollectionConfig implements ng.IDirective{
                 transclude(scope,()=>{});
                 
                 angular.forEach(scope.swCollectionConfig.columns, (column)=>{
-                        console.log("scoopc",column)
                         newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
                 });
                 angular.forEach(scope.swCollectionConfig.filters, (filter)=>{

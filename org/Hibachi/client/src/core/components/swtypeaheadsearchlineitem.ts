@@ -33,7 +33,6 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
             pre: (scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                console.log("scoopelement", element)
                 var innerHTML = '<span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
                 element.append(innerHTML);
                 
