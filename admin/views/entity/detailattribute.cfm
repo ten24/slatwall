@@ -54,7 +54,7 @@ Notes:
 
 <cfparam name="rc.edit" type="boolean" />
 
-<cfif !isNull(rc.attribute.getAttributeSet())>
+<cfif structKeyExists(rc, "attributeSet")>
 	<cfparam name="rc.attributeSet" type="any" default="#rc.attribute.getAttributeSet()#" />
 
 	<cfoutput>
