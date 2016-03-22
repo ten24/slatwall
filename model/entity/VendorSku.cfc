@@ -46,13 +46,10 @@
 Notes:
 
 */
-component displayname="LedgerAccount" entityname="SlatwallLedgerAccount" table="SwLedgerAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="quickbooksService" hb_permission="this" hb_processContexts="" {
+component entityname="SlatwallVendorSku" table="SwVendorSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorService" {
 
 	// Persistent Properties
-	property name="ledgerAccountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="ledgerAccountName" ormtype="string";
-
-	property name="ledgerAccountType" cfc="Type" fieldtype="many-to-one" fkcolumn="ledgerAccountTypeID";
+	property name="vendorSkuID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -60,6 +57,14 @@ component displayname="LedgerAccount" entityname="SlatwallLedgerAccount" table="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
+	// Related Object Properties
+	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
+	property name="alternateSkuCode" cfc="AlternateSkuCode" fieldtype="many-to-one" fkcolumn="alternateSkuCodeID";
+	property name="lastVendorOrderItem" cfc="VendorOrderItem" fieldtype="many-to-one" fkcolumn="vendorOrderItemID";
+
+	// Remote properties
+	property name="remoteID" ormtype="string";
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -67,18 +72,10 @@ component displayname="LedgerAccount" entityname="SlatwallLedgerAccount" table="
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// =============  END: Overridden Smart List Getters ===================
-
-	// ================== START: Overridden Methods ========================
-
-	// ==================  END:  Overridden Methods ========================
+	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =================== START: ORM Event Hooks  =========================
 
 	// ===================  END:  ORM Event Hooks  =========================
-
-	// ================== START: Deprecated Methods ========================
-
-	// ==================  END:  Deprecated Methods ========================
-
 }
+
