@@ -49,6 +49,7 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	property name="settingService";
+	property name="hibachiUtilityService";
 
 	/* Example Qwc File
 	 <?xml version="1.0"?>
@@ -84,8 +85,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var runEveryNMinutes = 15;
 		}
 
-		if(len(getSettingService().getSettingValue("integrationquickbooksappname") > 0){
-			var appName = getSettingService().getSettingValue("integrationquickbooksappname")
+		if(len(getSettingService().getSettingValue("integrationquickbooksappname")) > 0){
+			var appName = getSettingService().getSettingValue("integrationquickbooksappname");
 		} else {
 			var appName = "";
 		}
@@ -107,8 +108,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					'</QBWCXML>'
 			);
 		}
+		var fileName
+		var filePath = getTempDirectory() & "/" & fileName;
+		FileWrite(filePath,qwcFile);
 
-		//download the file
+		getHibachiUtilityService().downloadFile(fileName,filePath,"qwc");
 	}
 
 	// ===================== START: Logical Methods ===========================
