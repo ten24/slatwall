@@ -2,7 +2,7 @@
     <!-- The s-shrink-view class can be removed to show expanded view -->
     <div class="col-xs-12 s-results-listing">
         <div class="s-detail-body">
-            <div class="s-content-header">
+            <div class="s-content-header" data-ng-if="swListingDisplay.title">
                 <h2 data-ng-bind="swListingDisplay.title"></h2>
                 <!--<span class="pull-right s-expand-icon s-detail-show-content">-->
                     <!--<a href="##" class="s-expand-table">-->
@@ -18,11 +18,12 @@
             <sw-listing-controls
                     data-collection-config="swListingDisplay.collectionConfig"
                     data-get-collection="swListingDisplay.getCollection"
-                    data-paginator="swListingDisplay.paginator">
+                    data-paginator="swListingDisplay.paginator"
+                    data-ng-if="swListingDisplay.hasSearch !== false">
 
             </sw-listing-controls>
 
-            <div class="s-detail-notifications s-detail-hidden-content">
+            <div class="s-detail-notifications s-detail-hidden-content" data-ng-if="swListingDisplay.hasActionBar !== false">
                 <div class="row">
                     <div class="col-sm-8 s-message">
                         <span data-ng-if="!swListingDisplay.isRadio && swListingDisplay.isCurrentPageRecordsSelected && !swListingDisplay.allSelected">

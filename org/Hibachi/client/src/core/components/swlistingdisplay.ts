@@ -24,6 +24,7 @@ class SWListingDisplayController{
     public exampleEntity:any = "";
     public exportAction;
     public filters = [];
+    public filterGroups = [];
     public getCollection;
     public getChildCount;
     public hasCollectionPromise;
@@ -34,8 +35,8 @@ class SWListingDisplayController{
     public multiselectValues;
     public norecordstext;
     public orderBys = [];
-    public  orderByStates = {}; 
-    public  orderByIndices = {};
+    public orderByStates = {};
+    public orderByIndices = {};
     public paginator;
     public parentPropertyName;
     public processObjectProperties;
@@ -46,11 +47,11 @@ class SWListingDisplayController{
     public recordProcessButtonDisplayFlag;
     public searching:boolean = false;
     public searchText;
-    public savedSearchText;
+
     public selectFieldName;
     public selectable:boolean = false;
-    private showSearch;
-    private showTopPagination;
+    public showSearch;
+    public showTopPagination;
     public sortable:boolean = false;
     public sortProperty;
     public tableID;
@@ -58,15 +59,11 @@ class SWListingDisplayController{
     public tableattributes;
     public hasSearch:boolean;
 
-
-
-    private _timeoutPromise;
     public selections;
-    private multiselectCount;
-    private isCurrentPageRecordsSelected;
-    private allSelected;
-    private name;
-    private filterGroups;
+    public multiselectCount;
+    public isCurrentPageRecordsSelected;
+    public allSelected;
+    public name;
     //@ngInject
     constructor(
         public $scope,
@@ -140,7 +137,7 @@ class SWListingDisplayController{
          //add filters
         this.setupColumns();
         angular.forEach(this.filters, (filter)=>{
-            this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator);
+                this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
         //add order bys
         angular.forEach(this.orderBys, (orderBy)=>{
@@ -258,7 +255,7 @@ class SWListingDisplayController{
         if(this.multiselectable && (!this.columns || !this.columns.length)){
             //check if it has an active flag and if so then add the active flag
             if(this.exampleEntity.metaData.activeProperty && !this.hasCollectionPromise){
-                this.collectionConfig.addFilter('activeFlag',1);
+                this.collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
             }
 
         }
@@ -283,7 +280,8 @@ class SWListingDisplayController{
             this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
             //add parent property root filter
             if(!this.hasCollectionPromise){
-                this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS');
+                console.log('HEREEE!!');
+                this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
             }
             //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
             //add children column
@@ -822,7 +820,8 @@ class SWListingDisplay implements ng.IDirective{
             exportAction:"@?",
 
             getChildCount:"=?",
-            hasSearch:"=?"
+            hasSearch:"=?",
+            hasActionBar:"=?"
     };
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";

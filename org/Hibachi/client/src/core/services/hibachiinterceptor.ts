@@ -97,7 +97,7 @@ class HibachiInterceptor implements IInterceptor{
 		this.$injector = $injector;
 		this.alertService = alertService;
 		this.appConfig = appConfig;
-        this.baseUrl = appConfig.baseUrl;
+        this.baseUrl = appConfig.baseURL;
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;

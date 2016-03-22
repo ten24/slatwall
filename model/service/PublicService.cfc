@@ -50,6 +50,7 @@ component extends="HibachiService"  accessors="true" output="false"
 {
     property name="accountService" type="any";
     property name="addressService" type="any";
+    property name="formService" type="any";
     property name="orderService" type="any";
     property name="userUtility" type="any";
     property name="paymentService" type="any";
@@ -660,11 +661,11 @@ component extends="HibachiService"  accessors="true" output="false"
     
     /** exposes the cart and account */
     public void function getCartData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getHibachiScope().getCartData();
+        arguments.data.ajaxResponse = getHibachiScope().getCartData();
     }
     
     public void function getAccountData(any data) {
-        arguments.data.ajaxResponse = getHibachiScope().getHibachiScope().getAccountData();
+        arguments.data.ajaxResponse = getHibachiScope().getAccountData();
     }
     
     /** 

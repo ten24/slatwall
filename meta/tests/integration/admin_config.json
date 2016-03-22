@@ -11,7 +11,9 @@
           "browserOptions": {
             "browserName": "firefox",
             "username": "${SAUCE_USERNAME}",
-            "accessKey": "${SAUCE_ACCESS_KEY}"
+            "accessKey": "${SAUCE_ACCESS_KEY}",
+            "tunnelIdentifier": "${CIRCLE_BUILD_NUM}",
+            "build":"${CIRCLE_BUILD_NUM}"
           }
         },
         {
@@ -22,7 +24,9 @@
           "browserOptions": {
             "browserName": "chrome",
             "username": "${SAUCE_USERNAME}",
-            "accessKey": "${SAUCE_ACCESS_KEY}"
+            "accessKey": "${SAUCE_ACCESS_KEY}",
+            "tunnelIdentifier": "${CIRCLE_BUILD_NUM}",
+            "build":"${CIRCLE_BUILD_NUM}"
           }
         }
       ],

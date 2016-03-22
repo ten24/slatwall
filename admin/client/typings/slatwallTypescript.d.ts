@@ -1,6 +1,7 @@
 //{
 /// <reference path="../src/bootstrap.ts" />
 /// <reference path="../src/content/content.module.ts" />
+/// <reference path="../src/formbuilder/formbuilder.module.ts" />
 /// <reference path="../src/giftcard/giftcard.module.ts" />
 /// <reference path="../src/optiongroup/optiongroup.module.ts" />
 /// <reference path="../src/orderitem/orderitem.module.ts" />
@@ -11,6 +12,7 @@
 /// <reference path="../src/content/components/swcontenteditor.ts" />
 /// <reference path="../src/content/components/swcontentlist.ts" />
 /// <reference path="../src/content/components/swcontentnode.ts" />
+/// <reference path="../src/formbuilder/components/swformresponselisting.ts" />
 /// <reference path="../src/giftcard/components/swaddorderitemgiftrecipient.ts" />
 /// <reference path="../src/giftcard/components/swgiftcardbalance.ts" />
 /// <reference path="../src/giftcard/components/swgiftcarddetail.ts" />
@@ -20,24 +22,17 @@
 /// <reference path="../src/giftcard/components/swgiftcardrecipientinfo.ts" />
 /// <reference path="../src/giftcard/components/sworderitemgiftrecipientrow.ts" />
 /// <reference path="../src/giftcard/controllers/preprocessorderitem_addorderitemgiftrecipient.ts" />
-<<<<<<< HEAD
-/// <reference path="../src/giftcard/models/giftRecipient.ts" />
-=======
->>>>>>> refs/heads/master
 /// <reference path="../src/giftcard/models/giftcard.ts" />
 /// <reference path="../src/giftcard/models/giftrecipient.ts" />
 /// <reference path="../src/optiongroup/components/swaddoptiongroup.ts" />
 /// <reference path="../src/optiongroup/components/swoptionsforoptiongroup.ts" />
-<<<<<<< HEAD
-/// <reference path="../src/product/controllers/preprocessproduct_create.ts" />
-=======
->>>>>>> refs/heads/develop
 /// <reference path="../src/orderitem/components/swchildorderitem.ts" />
 /// <reference path="../src/orderitem/components/swoishippinglabelstamp.ts" />
 /// <reference path="../src/orderitem/components/sworderitem.ts" />
 /// <reference path="../src/orderitem/components/sworderitemdetailstamp.ts" />
 /// <reference path="../src/orderitem/components/sworderitems.ts" />
 /// <reference path="../src/orderitem/components/swresizedimage.ts" />
+/// <reference path="../src/product/controllers/preprocessproduct_create.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroup.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroups.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegrouptype.ts" />

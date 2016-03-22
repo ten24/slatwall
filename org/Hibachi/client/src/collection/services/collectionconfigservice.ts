@@ -387,22 +387,20 @@ class CollectionConfig {
         return this;
     };
 
-    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', hidden:boolean=false, logicalOperator?: string):CollectionConfig =>{
-
+    public addFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
         //create filter
-        var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, hidden, logicalOperator);
+        var filter = this.createFilter(propertyIdentifier, value, comparisonOperator, logicalOperator, hidden);
 
         this.filterGroups[0].filterGroup.push(filter);
         return this;
     };
 
-    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%', hidden:boolean=false, logicalOperator?: string):CollectionConfig =>{
+    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%',  logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
 
         //if filterGroups does not exists then set a default
         if(!this.filterGroups){
             this.filterGroups = [{filterGroup:[]}];
         }
-
         //if filterGroups is longer than 0 then we at least need to default the logical Operator to AND
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
@@ -424,7 +422,7 @@ class CollectionConfig {
         return this;
     };
 
-    public createFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', hidden:boolean=false, logicalOperator?: string):Filter =>{
+    public createFilter= (propertyIdentifier: string, value: any, comparisonOperator: string = '=', logicalOperator?: string, hidden:boolean=false):Filter =>{
 
         //if filterGroups does not exists then set a default
         if(!this.filterGroups){
