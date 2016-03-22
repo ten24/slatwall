@@ -77,6 +77,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
+	property name="calculatedAverageCost" ormtype="big_decimal";
+	property name="calculatedAverageLandedCost" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
