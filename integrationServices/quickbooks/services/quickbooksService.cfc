@@ -46,8 +46,9 @@
 Notes:
 
 */
-component extends="HibachiService" persistent="false" accessors="true" output="false" {
+component extends="HibachiService" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false" {
 
+	property name="accountService";
 	property name="settingService";
 	property name="hibachiUtilityService";
 
@@ -69,7 +70,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		</QBWCXML>
 	 **/
 
-	public function getQWCFile(){
+	public function getQBWCFile(){
 
 		var fileID = createUUID();
 
@@ -108,36 +109,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					'</QBWCXML>'
 			);
 		}
-		var fileName
+		var fileName = fileID & ".qbwc";
 		var filePath = getTempDirectory() & "/" & fileName;
 		FileWrite(filePath,qwcFile);
 
-		getHibachiUtilityService().downloadFile(fileName,filePath,"qwc");
+		getHibachiUtilityService().downloadFile(fileName,filePath,"qbwc");
 	}
 
 	//necessary web service methods
-	public function authenticate(){
+	public array function authenticate(required string strUserName, required string strPassword){
+		var tempAccount = getAccountService().newAccount();
+		var processObject = tempAccount.getProcessObject("login", {emailAddress=strUserName, password=strPassword});
+		var account = getAccountService().processAccount_Login(tempAccount, processObject);
 
+		if(!account.hasErrors()){
+			//generate ticket id
+
+			//look to see if there's any sync action that needs to be performed
+
+			var response = [];
+		} else {
+			var response = ['','nvu'];//non-valid username
+		}
+
+		return response;
 	}
 
-	public function sendRequestXML(){
-
+	public function sendRequestXML(required string ticket,required string strHCPResponse,required string strCompanyFileName,required string qbXMLCountry,required string qbXMLMajorVers,required string qbXMLMinorVers)){
+		return;
 	}
 
-	public function recieveResponseXML(){
-
+	public function recieveResponseXML(required string ticket,required string response,required string hresult,required string message){
+		return;
 	}
 
-	public function connectionError(){
-
+	public function connectionError(required string ticket,required string hresult,required string message){
+		return;
 	}
 
-	public function getLastError(){
-
+	public function getLastError(required string ticket){
+		return;
 	}
 
-	public function closeConnection(){
-
+	public function closeConnection(required string ticket){
+		return;
 	}
 
 	// ===================== START: Logical Methods ===========================
