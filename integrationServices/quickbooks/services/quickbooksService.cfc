@@ -70,6 +70,10 @@ component extends="HibachiService" persistent="false" namespace="http://develope
 		</QBWCXML>
 	 **/
 
+	public function asQBXML(){
+
+	}
+
 	public function getQBWCFile(){
 
 		var fileID = createUUID();
@@ -112,7 +116,6 @@ component extends="HibachiService" persistent="false" namespace="http://develope
 		var fileName = fileID & ".qbwc";
 		var filePath = getTempDirectory() & "/" & fileName;
 		FileWrite(filePath,qwcFile);
-
 		getHibachiUtilityService().downloadFile(fileName,filePath,"qbwc");
 	}
 
@@ -127,6 +130,8 @@ component extends="HibachiService" persistent="false" namespace="http://develope
 
 			//look to see if there's any sync action that needs to be performed
 
+			//If not keeping a data driven queue, override queue and add one of every action that will need to happen assign it to the ticket id
+
 			var response = [];
 		} else {
 			var response = ['','nvu'];//non-valid username
@@ -135,23 +140,38 @@ component extends="HibachiService" persistent="false" namespace="http://develope
 		return response;
 	}
 
-	public function sendRequestXML(required string ticket,required string strHCPResponse,required string strCompanyFileName,required string qbXMLCountry,required string qbXMLMajorVers,required string qbXMLMinorVers)){
+	public array function sendRequestXML(required string ticket,required string strHCPResponse,required string strCompanyFileName,required string qbXMLCountry,required integer qbXMLMajorVers,required integer qbXMLMinorVers){
+
+		//pop off whatever action needs to be taken and execute it
+
 		return;
 	}
 
-	public function recieveResponseXML(required string ticket,required string response,required string hresult,required string message){
+	public array function recieveResponseXML(required string ticket,required string response,required string hresult,required string message){
+
+		//confirm the action was sucessful - log it
+
 		return;
 	}
 
-	public function connectionError(required string ticket,required string hresult,required string message){
+	public array function connectionError(required string ticket,required string hresult,required string message){
+
+		//log the error - perform cleanup if need be
+
 		return;
 	}
 
-	public function getLastError(required string ticket){
+	public array function getLastError(required string ticket){
+
+		//log the error - perform cleanup if need be
+
 		return;
 	}
 
-	public function closeConnection(required string ticket){
+	public array function closeConnection(required string ticket){
+
+		//wipe the queue
+
 		return;
 	}
 
