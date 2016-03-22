@@ -115,6 +115,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		getHibachiUtilityService().downloadFile(fileName,filePath,"qwc");
 	}
 
+	//necessary web service methods
+	public function authenticate(){
+
+	}
+
+	public function sendRequestXML(){
+
+	}
+
+	public function recieveResponseXML(){
+
+	}
+
+	public function connectionError(){
+
+	}
+
+	public function getLastError(){
+
+	}
+
+	public function closeConnection(){
+
+	}
+
 	// ===================== START: Logical Methods ===========================
 
 	// =====================  END: Logical Methods ============================
