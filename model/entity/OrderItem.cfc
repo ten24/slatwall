@@ -155,7 +155,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
 				} else if(getSku().getQuantity('QATS') <= maxQTY) {
-					maxQTY = getSku().getCalculatedQATS();
+					maxQTY = getSku().getQuantity('QATS');
 					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
