@@ -73,7 +73,28 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(!arrayLen(entitiesThatDontHaveSingularNameArray));
 	}
-
+    
+    /** Anytime we have inverse set on a to many, we must also have cascade delete set. */
+    public void function all_entity_properties_with_inverse_attribute_has_cascade_delete_attribute() {
+        //holds all errors
+        var entitiesThatHaveInversePropertiesWithoutCascadeDelete = [];
+        
+        var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+        
+        for(var entityName in allEntities) {
+            var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+            for(var property in properties) {
+            	//if we have a to-many where inverse is set to true - then we also need cascade-all-delete defined
+                if(structkeyExists(property,'singularname') && structkeyExists(property, 'inverse') && (property.inverse == 'true')){
+                    if(!structkeyExists(property,"cascade") || property.cascade != "all-delete-orphan"){
+                        arrayAppend(entitiesThatHaveInversePropertiesWithoutCascadeDelete,{propertyName=property.name, entityName=entityName});
+                    }
+                }
+            }
+        }
+        assert(!arrayLen(entitiesThatHaveInversePropertiesWithoutCascadeDelete));
+    }
+    
 	//Entity Audit Properties Test
 	public void function all_entity_properties_have_audit_properties() {
 
