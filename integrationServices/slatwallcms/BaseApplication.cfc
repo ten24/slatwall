@@ -236,10 +236,12 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
             collectionList.addFilter('site.siteID',currentSite.getSiteID());
             var content = collectionList.getRecords();
             
-            if (!isNull(content) && structKeyExists(content[1], 'contentBody')){
-                return content[1].contentBody;
+            //goes through the content and returns the first it finds with a content body.
+            for (var content in contents){
+           	    if (structKeyExists(content, 'contentBody')){
+           	        return content.contentBody;	
+           	    }
             }
-            
         }
         return "";
     }
