@@ -847,14 +847,14 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		var appURL= "";
 
 
-		if(isNumeric(getSettingService().getSettingValue("integrationquickbooksrequestFrequency"))){
-			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbooksrequestFrequency");
+		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
+			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency");
 		} else {
 			var runEveryNMinutes = 15;
 		}
 
-		if(len(getSettingService().getSettingValue("integrationquickbooksappname")) > 0){
-			var appName = getSettingService().getSettingValue("integrationquickbooksappname");
+		if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorappname")) > 0){
+			var appName = getSettingService().getSettingValue("integrationquickbookswebconnectorappname");
 		} else {
 			var appName = "";
 		}
