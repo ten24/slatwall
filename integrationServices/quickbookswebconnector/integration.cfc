@@ -45,9 +45,6 @@
 
 Notes:
 
-	Paypal Express DOCS
-	https://developer.paypal.com/webapps/developer/docs/classic/express-checkout/ht_ec-singleItemPayment-curl-etc/
-
 */
 component accessors="true" output="false" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
 
@@ -56,7 +53,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 
 	public string function getIntegrationTypes() {
-		return "fw1";
+		return "fw1,custom";
 	}
 
 	public string function getDisplayName() {
@@ -69,9 +66,4 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 		}
 		return variables.adminNavbarHTML;
 	}
-
-	/* belongs in a service
-	* public string function getQWBCFile() {
-
-	}*/
 }
