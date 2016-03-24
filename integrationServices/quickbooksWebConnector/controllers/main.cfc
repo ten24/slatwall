@@ -64,4 +64,9 @@ component accessors="true" output="false" {
 	public void function before() {
 	}
 
+	public void function downloadQBWCFile(){
+		getService("quickbooksService").getQBWCFile();
+		getFW().redirect(action="quickboooksWebConnector:main", queryString="");
+	}
+
 }
