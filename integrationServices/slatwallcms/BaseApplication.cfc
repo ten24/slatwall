@@ -234,7 +234,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
             var collectionList = getHibachiScope().getService("contentService").getContentCollectionList();
             collectionList.addFilter('urlTitle', "#arguments.urlTitle#");
             collectionList.addFilter('site.siteID',currentSite.getSiteID());
-            var content = collectionList.getRecords();
+            var contents = collectionList.getRecords();
             
             //goes through the content and returns the first it finds with a content body.
             for (var content in contents){
