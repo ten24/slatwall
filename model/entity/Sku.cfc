@@ -226,6 +226,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 	}
 
+    public any function getAverageCost(){
+        return 0; // temporary implementation to get errors to shutup
+    }
+    public any function getAverageLandedCost(){
+        return 0; // temporary implementation
+    }
+
 	//returns gift card redemption amount, or 0 if incorrectly configured
 	public any function getRedemptionAmount(){
 		if(structKeyExists(variables, "redemptionAmountType")){
