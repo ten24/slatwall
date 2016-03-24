@@ -1,7 +1,6 @@
 <!--
 <cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
 -->
-{{swActionCaller.angularLinks}}
 <a  ng-if="swActionCaller.type === 'link'"
 	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
