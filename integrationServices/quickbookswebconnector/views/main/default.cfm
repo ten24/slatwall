@@ -49,5 +49,5 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
-<hb:hibachiActionCaller action="quickbooksWebConnector:downloadQBWCFile" text="Download QBWC File">
+<hb:hibachiActionCaller action="quickbooksWebConnector:main.downloadqbwcfile" text="Download QBWC File">
 </cfoutput>

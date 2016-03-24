@@ -49,6 +49,7 @@ Notes:
 component accessors="true" output="false" {
 
 	property name="fw" type="any";
+    property name="QuickbooksService" type="any";
 
 	this.publicMethods='';
 
@@ -64,9 +65,10 @@ component accessors="true" output="false" {
 	public void function before() {
 	}
 
-	public void function downloadQBWCFile(){
-		getService("quickbooksService").getQBWCFile();
-		getFW().redirect(action="quickboooksWebConnector:main", queryString="");
+	public void function downloadqbwcfile(){
+        getFW().setView("admin:main")
+        getQuickbooksService().getQBWCFile();
+		getFW().redirect(action="admin:main", queryString="");
 	}
 
 }
