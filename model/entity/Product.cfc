@@ -717,6 +717,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					for(struct in variables.defaultProductImageFiles){
 						if(struct.ImageFile == record.getImageFile()){
 							arrayIndex = 1;
+							break;
 						}
 					}
 
