@@ -60,12 +60,12 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	}
 
 	public string function getDisplayName() {
-		return "Quickbooks";
+		return "Quickbooks Web Connector";
 	}
 
 	public string function getAdminNavbarHTML() {
 		if(!structKeyExists(variables, "adminNavbarHTML")) {
-			variables.adminNavbarHTML = '<a href="#replace(request.slatwallScope.getSlatwallRootURL(), '/Slatwall', '')#/admin" class="brand" target="_self">Quickbooks</a>';
+			variables.adminNavbarHTML = '<a href="#replace(request.slatwallScope.getSlatwallRootURL(), '/Slatwall', '')#/admin" class="brand" target="_self">Quickbooks Web Connector</a>';
 		}
 		return variables.adminNavbarHTML;
 	}

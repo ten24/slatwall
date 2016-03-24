@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="HibachiService" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false" {
+component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false" {
 
 	property name="accountService";
 	property name="settingService";
