@@ -712,9 +712,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 
 			for(var record in records) {
 				if(!isNull(record.getImageFile())) {
-					arrayIndex = ArrayFind(variables.defaultProductImageFiles, function(struct){
-						return struct.ImageFile == record.getImageFile();
-					});
+					var arrayIndex = 0;
+
+					for(struct in variables.defaultProductImageFiles){
+						if(struct.ImageFile == record.getImageFile()){
+							arrayIndex = 1;
+						}
+					}
+
 					if(arrayIndex == 0){
 						var imageFileStruct = {};
 						imageFileStruct['imageFile'] = record.getImageFile();
