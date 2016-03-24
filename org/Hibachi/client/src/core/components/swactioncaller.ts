@@ -18,6 +18,7 @@ class SWActionCallerController{
     public formCtrl:any;
     public actionUrl:string;
     public queryString:string;
+    public angularLinks;
     //@ngInject
     constructor(
         private $scope,
@@ -52,8 +53,7 @@ class SWActionCallerController{
     public init = ():void =>{
 
         //Check if is NOT a ngRouter
-
-        if(!this.utilityService.isAngularRoute()){
+        if((angular.isDefined(this.angularLinks) && this.angularLinks == false) || !this.utilityService.isAngularRoute()){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
@@ -274,8 +274,9 @@ class SWActionCaller implements ng.IDirective{
         disabledtext:"@",
         modal:"=",
         modalFullWidth:"=",
-        id:"@"
-    };
+        id:"@",
+        angularLinks:"=?"
+};
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
     public templateUrl;
