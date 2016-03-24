@@ -859,6 +859,8 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 			var appName = "";
 		}
 
+		var userName = "testingJimmy"
+
 		savecontent variable="qwcFile" {
 			writeOutput(
 				'<?xml version="1.0"?>
@@ -876,10 +878,11 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 					'</QBWCXML>'
 			);
 		}
-		var fileName = fileID & ".qbwc";
-		var filePath = getTempDirectory() & "/" & fileName;
+		var fileName = fileID 
+		var fileExt = ".qbwc";
+		var filePath = getTempDirectory() & fileName & fileExt;
 		FileWrite(filePath,qwcFile);
-		getHibachiUtilityService().downloadFile(fileName,filePath,"qbwc");
+		getHibachiUtilityService().downloadFile(fileName,filePath,fileExt);
 	}
 
 	//necessary web service methods
