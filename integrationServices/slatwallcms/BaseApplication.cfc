@@ -234,13 +234,12 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
             var collectionList = getHibachiScope().getService("contentService").getContentCollectionList();
             collectionList.addFilter('urlTitle', "#arguments.urlTitle#");
             collectionList.addFilter('site.siteID',currentSite.getSiteID());
-            var contents = collectionList.getRecords();
+            var content = collectionList.getRecords();
             
-            for (var content in contents){
-                if (structKeyExists(content, 'contentBody')){
-                    return content.contentBody;
-                }
+            if (!isNull(content) && structKeyExists(content[1], 'contentBody')){
+                return content[1].contentBody;
             }
+            
         }
         return "";
     }
