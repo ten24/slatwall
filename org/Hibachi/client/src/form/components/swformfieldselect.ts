@@ -57,6 +57,8 @@ class SWFormFieldSelect implements ng.IDirective {
 						$log.debug('selectType:string');
 					}
 
+                console.warn("Miguel",scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+
 
 					scope.formFieldChanged = function(option){
 						$log.debug('formfieldchanged');

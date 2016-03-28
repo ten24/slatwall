@@ -306,7 +306,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!isNull(accountAuthentication)) {
 			//Make sure that the account is not locked 
 			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
-				// If the password matches what it should be, then set the account in the session and 
+				// If the password matches what it should be, then set the account in the session and
 				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {							
 					
 					//Check to see if a password reset is required

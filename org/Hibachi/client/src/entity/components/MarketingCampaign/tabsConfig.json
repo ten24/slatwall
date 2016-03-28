@@ -1,0 +1,17 @@
+[
+  {
+    "openTab":true,
+    "showCreate":false,
+    "tabName":"activity.html"
+  },
+  {
+    "openTab":false,
+    "showCreate":false,
+    "tabName":"list.html"
+  },
+  {
+    "openTab":true,
+    "tabName":"basic.html"
+  }
+]
+
