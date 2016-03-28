@@ -49,6 +49,7 @@ class SWProductBundleGroupController {
 	public totalPages;
 	public skuCollectionConfig;
 	public removeProductBundleGroup;
+    public addProductBundleGroup;
 
 
     // @ngInject
@@ -368,6 +369,25 @@ class SWProductBundleGroupController {
         } else {
             this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
         }
+    }
+    
+    public save = () =>{
+        var savePromise = this.productBundleGroup.$$save();
+        savePromise.then((response)=>{
+            this.productBundleGroup.data.$$toggleEdit()
+        }).catch((data)=>{
+            //error handling handled by $$save
+        });
+    }
+    
+    public saveAndAddBundleGroup = () =>{
+        var savePromise = this.productBundleGroup.$$save();
+        savePromise.then((response)=>{
+            this.productBundleGroup.data.$$toggleEdit()
+            this.addProductBundleGroup();
+        }).catch((data)=>{
+            //error handling handled by $$save
+        });
     }
 
 
