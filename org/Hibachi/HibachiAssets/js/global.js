@@ -767,6 +767,7 @@ function setupEventHandlers() {
 
 	// Hibachi AJAX Submit
 	jQuery('body').on('click', '.hibachi-ajax-submit', function(e) {
+		
 		e.preventDefault();
 
 		var data = {};
@@ -795,7 +796,9 @@ function setupEventHandlers() {
 			success: function( r ) {
 				removeLoadingDiv( updateTableID );
 				if(r.success) {
-					location.reload();
+					//trigger custom event so angular can figure it out
+					$( document ).trigger( "listingDisplayUpdate");
+
 					listingDisplayUpdate(updateTableID, {});	
 				} else {
 
