@@ -8,6 +8,9 @@
     "appID":{  
         "fieldType":"text"
     },
+    "userName":{
+        "fieldType":"text"
+    },
     "requestFrequency":{  
         "fieldType":"numeric"
     }
