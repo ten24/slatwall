@@ -49,6 +49,7 @@ class SWProductBundleGroupController {
 	public totalPages;
 	public skuCollectionConfig;
 	public removeProductBundleGroup;
+    public addProductBundleGroup;
 
 
     // @ngInject
