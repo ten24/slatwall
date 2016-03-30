@@ -12,6 +12,7 @@ class SWListingControlsController {
     private filtersClosed:boolean=true;
     private newFilterPosition;
     private itemInUse;
+    private getCollection;
 
     //@ngInject
     constructor(
@@ -75,7 +76,10 @@ class SWListingControlsController {
         for(var i = 0; i < keywords.length; i++){
             this.collectionConfig.addLikeFilter(
                 this.selectedSearchColumn.propertyIdentifier,
-                keywords[i]
+                keywords[i],
+                '%w%',
+                undefined,
+                this.selectedSearchColumn.title
             );
         }
 
@@ -84,8 +88,12 @@ class SWListingControlsController {
         this.paginator.setCurrentPage(1);
     };
 
-    public toggleDisplayOptions=()=>{
-        this.displayOptionsClosed = !this.displayOptionsClosed;
+    public toggleDisplayOptions=(closeButton:boolean=false)=>{
+        if(this.displayOptionsClosed) {
+            this.displayOptionsClosed = false;
+        }else if(closeButton){
+            this.displayOptionsClosed = true;
+        }
     };
 
     private setItemInUse = (booleanValue)=>{
@@ -109,6 +117,10 @@ class SWListingControlsController {
     public selectFilterItem = (filterItem) =>{
         this.filtersClosed = false;
         this.collectionService.selectFilterItem(filterItem);
+    };
+
+    public saveCollection = ()=>{
+        this.getCollection()();
     };
 
 }

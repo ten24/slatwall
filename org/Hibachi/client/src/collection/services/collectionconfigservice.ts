@@ -147,6 +147,9 @@ class CollectionConfig {
         this.pageShow = jsonCollection.pageShow;
         this.allRecords = jsonCollection.allRecords;
         this.isDistinct = jsonCollection.isDistinct;
+        this.currentPage = jsonCollection.currentPage || 1;
+        this.pageShow = jsonCollection.pageShow || 10;
+        this.keywords = jsonCollection.keywords;
         return this;
     };
 
@@ -380,7 +383,7 @@ class CollectionConfig {
             if(angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
                 title = _DividedTitles[index].trim();
             }else {
-                title = this.rbkeyService.getRBKey("entity."+this.baseEntityName+"."+column);
+                title = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier));
             }
             this.addColumn(this.formatPropertyIdentifier(column),title, options);
         });
@@ -395,7 +398,7 @@ class CollectionConfig {
         return this;
     };
 
-    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%',  logicalOperator?: string, hidden:boolean=false):CollectionConfig =>{
+    public addLikeFilter= (propertyIdentifier: string, value: any, pattern: string = '%w%',  logicalOperator?: string, displayPropertyIdentifier?:string,hidden:boolean=false):CollectionConfig =>{
 
         //if filterGroups does not exists then set a default
         if(!this.filterGroups){
@@ -405,6 +408,9 @@ class CollectionConfig {
         if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
         var join = propertyIdentifier.split('.').length > 1;
+        if(angular.isUndefined(displayPropertyIdentifier)){
+            displayPropertyIdentifier = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier))
+        }
 
         //create filter group
         var filter = new Filter(
@@ -412,7 +418,7 @@ class CollectionConfig {
             value,
             'like',
             logicalOperator,
-            propertyIdentifier.split('.').pop(),
+            displayPropertyIdentifier,
             value,
             hidden,
             pattern
@@ -456,8 +462,8 @@ class CollectionConfig {
                 filterGroup[i].propertyIdentifier,
                 filterGroup[i].comparisonValue,
                 filterGroup[i].comparisonOperator,
-                filterGroup[i].hidden,
-                filterGroup[i].logicalOperator
+                filterGroup[i].logicalOperator,
+                filterGroup[i].hidden
             );
             group.filterGroup.push(filter);
         }
@@ -576,6 +582,10 @@ class CollectionConfig {
     public setCurrentPage= (pageNumber):CollectionConfig =>{
         this.currentPage = pageNumber;
         return this;
+    };
+
+    public getCurrentPage= () =>{
+        return this.currentPage;
     };
 
     public setPageShow= (NumberOfPages):CollectionConfig =>{
