@@ -845,11 +845,11 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		//temp owner ID for testing
 		var ownerID = createUUID();
 		var appID = ""; //leave blank
-		var appURL= "";
+		var appURL= variables.framework.baseURL & "integrationServices/quickbookswebconnector/model/service/WebService.cfc?wsdl";
 
 
 		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
-			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency");
+			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency");
 		} else {
 			var runEveryNMinutes = 15;
 		}
@@ -863,10 +863,10 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorusername"))){
             var userName = getSettingService().getSettingValue("integrationquickbookswebconnectorusername");
 		} else {
-            var userNAme = "";
+            var userName = "";
 		}
 
-        //get the auth token
+        //get the auth token won't need this unless we end up locking down the route
 
         //append it to the url string authToken=#authToken#
 
@@ -918,16 +918,16 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		//queue events
 	    variables.tickets[thisTicket] = ["syncAccountLedger"];
 
-	    var response = [thisTicket, companyFileName, updatePostponeInterval, everyMinute, runEveryNMinutes];
+	    var answer = [thisTicket, companyFileName, updatePostponeInterval, everyMinute, runEveryNMinutes];
 
-		return response;
+		return answer;
 	}
 
 	public array function sendRequestXML(required string ticket,required string strHCPResponse,required string strCompanyFileName,required string qbXMLCountry,required integer qbXMLMajorVers,required integer qbXMLMinorVers){
 
 		//pop off whatever action needs to be taken and execute it
 		var actionQueue = variables.tickets[ticket];
-		var response = [];
+		var answer = [];
 
 		if(arrayLen(actionQueue) > 0){
 			var action = actionQueue[1];
@@ -939,7 +939,7 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 					//get the push product xml
 				case "pushOrders":
 					//get the push order xml
-				case "pushAccounts"
+				case "pushAccounts":
 					//get the push accounts xml
 				default:
 					//we're done let the web connector know
@@ -950,49 +950,53 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 			//we're done let the web connector know
 		}
 
-		return response;
+		return answer;
 	}
 
 	public array function recieveResponseXML(required string ticket,required string response,required string hresult,required string message){
 
-		var response = [];
+		var answer = [];
 
 		//confirm the action was sucessful - log it
 
 		//store data
 
-		return response;
+		return answer;
 	}
 
 	public array function connectionError(required string ticket,required string hresult,required string message){
 
-		var response = [];
+		var answer = "The process encountered an error, the connection will now be closed. The hresult was: " & hresult & " ::::: And the message was: " & message;
 
-		//log the error - perform cleanup if need be
+		//log the error if possible
+
+		structDelete(variables.tickets, ticket);
 
 		//Delete the queue for the ticket
 
-		return response;
+		return answer;
 	}
 
 	public array function getLastError(required string ticket){
 
-		var response = [];
+		var answer = "The process encountered an error, the connection will now be closed.";
 
-		//log the error - perform cleanup if need be
+		//log the error if possible
+
+		structDelete(variables.tickets, ticket);
 
 		//Delete the queue for the ticket
 
-		return response;
+		return answer;
 	}
 
 	public array function closeConnection(required string ticket){
 
-		var response = [];
+		var answer = "The process has completed sucessfully the connection will now be closed.";
 
 		structDelete(variables.tickets, ticket);
 
-		return response;
+		return answer;
 	}
 
 	// ===================== START: Logical Methods ===========================
