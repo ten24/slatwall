@@ -17393,7 +17393,7 @@
 	                }
 	            },
 	            controller: 'routerController'
-	        }).when('/entity/:entityName/:entityID', {
+	        }).when('/entity/:entityName/:entityID/:idk?', {
 	            template: function (params) {
 	                var entityDirectiveExists = $injector.has('sw' + params.entityName + 'DetailDirective');
 	                if (entityDirectiveExists) {
