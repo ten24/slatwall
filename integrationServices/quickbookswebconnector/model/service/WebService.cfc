@@ -52,6 +52,7 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 	property name="settingService";
 	property name="hibachiUtilityService";
 
+	variables.tickets = {};
 
 	public any function asQBXML(required string action){
 
@@ -869,8 +870,6 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 
         //append it to the url string authToken=#authToken#
 
-
-
 		savecontent variable="qwcFile" {
 			writeOutput(
 				'<?xml version="1.0"?>
@@ -898,8 +897,9 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 	//necessary web service methods
 	public array function authenticate(required string strUserName, required string strPassword){
 
-        //We can assume that if this method was hit, that authentication is valid
+		var thisTicket = createUUID();
 
+        //We can assume that if this method was hit, that authentication is valid
         if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename"))){
         	var companyFileName = getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename");
         } else {
@@ -910,14 +910,15 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		var everyMinute = "1";
 
 		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
-			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency");
+			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency");
 		} else {
 			var runEveryNMinutes = 15;
 		}
 
-		//generate ticket id?
+		//queue events
+	    variables.tickets[thisTicket] = ["accountLedger"];
 
-	    var response = [companyFileName,updatePostponeInterval,everyMinute,runEveryNMinutes];
+	    var response = [thisTicket, companyFileName, updatePostponeInterval, everyMinute, runEveryNMinutes];
 
 		return response;
 	}
@@ -926,12 +927,19 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 
 		//pop off whatever action needs to be taken and execute it
 
+		//initial implementation
+			//get the sync account ledger xml
+			//send the request
+			//don't delete it yet
+
 		return;
 	}
 
 	public array function recieveResponseXML(required string ticket,required string response,required string hresult,required string message){
 
 		//confirm the action was sucessful - log it
+
+		//store data
 
 		return;
 	}
@@ -940,12 +948,16 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 
 		//log the error - perform cleanup if need be
 
+		//Delete the queue for the ticket
+
 		return;
 	}
 
 	public array function getLastError(required string ticket){
 
 		//log the error - perform cleanup if need be
+
+		//Delete the queue for the ticket
 
 		return;
 	}
