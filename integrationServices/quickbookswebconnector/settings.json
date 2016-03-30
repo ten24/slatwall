@@ -2,9 +2,6 @@
     "appName":{  
         "fieldType":"text"
     },
-    "appURL":{  
-        "fieldType":"text"
-    },
     "appID":{  
         "fieldType":"text"
     },
