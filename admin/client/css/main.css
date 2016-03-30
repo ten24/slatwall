@@ -1022,6 +1022,10 @@ select.error {
 .navbar .container-fluid .s-right-nav-content {
   height: 60px /*Remove for responsive*/;
 }
+.navbar .container-fluid .s-right-nav-content .dropdown-menu {
+  max-height: 85vh;
+  overflow-y: auto;
+}
 .sidebar {
   width: 190px;
   background: #222;
