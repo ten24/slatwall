@@ -66,7 +66,7 @@ component accessors="true" output="false" {
 	}
 
 	public void function downloadqbwcfile(){
-        getFW().setView("admin:main")
+        getFW().setView("admin:main");
         getQuickbooksWebConnectorWebService().getQBWCFile();
 		getFW().redirect(action="admin:main", queryString="");
 	}

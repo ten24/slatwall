@@ -8,6 +8,9 @@
     "appID":{  
         "fieldType":"text"
     },
+    "companyFilename":{
+    	"fieldType":"text"
+    },
     "userName":{
         "fieldType":"text"
     },

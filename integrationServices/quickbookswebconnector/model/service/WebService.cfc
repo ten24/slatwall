@@ -860,12 +860,12 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		}
 
 		if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorusername"))){
-            var userName = getSettingService().getSettingValue("integrationquickbookswebconnectorusername"); 
-		} else { 
-            var userNAme = ""; 
+            var userName = getSettingService().getSettingValue("integrationquickbookswebconnectorusername");
+		} else {
+            var userNAme = "";
 		}
 
-        //get the auth token 
+        //get the auth token
 
         //append it to the url string authToken=#authToken#
 
@@ -888,7 +888,7 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 					'</QBWCXML>'
 			);
 		}
-		var fileName = fileID 
+		var fileName = fileID;
 		var fileExt = ".qbwc";
 		var filePath = getTempDirectory() & fileName & fileExt;
 		FileWrite(filePath,qwcFile);
@@ -898,15 +898,26 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 	//necessary web service methods
 	public array function authenticate(required string strUserName, required string strPassword){
 
-        //We can assume that if this method was hit, that authentication is valid 
+        //We can assume that if this method was hit, that authentication is valid
 
-		//generate ticket id
+        if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename"))){
+        	var companyFileName = getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename");
+        } else {
+        	var companyFileName = "nvu";//not valid user
+        } //else we cant go on
 
-		//look to see if there's any sync action that needs to be performed or assume 
+		var updatePostponeInterval = "1";
+		var everyMinute = "1";
 
-		//If not keeping a data driven queue, override queue and add one of every action that will need to happen assign it to the ticket id
+		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
+			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency");
+		} else {
+			var runEveryNMinutes = 15;
+		}
 
-	    var response = [];
+		//generate ticket id?
+
+	    var response = [companyFileName,updatePostponeInterval,everyMinute,runEveryNMinutes];
 
 		return response;
 	}
