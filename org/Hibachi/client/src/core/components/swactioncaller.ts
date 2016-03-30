@@ -222,7 +222,7 @@ class SWActionCallerController{
                 this.disabledtext = this.rbkeyService.getRBKey(disabledrbkey);
             }
             //add disabled class
-            this.class += " s-btn-disabled";
+            this.class += " btn-disabled";
             this.confirm = false;
             return this.disabledtext;
         }

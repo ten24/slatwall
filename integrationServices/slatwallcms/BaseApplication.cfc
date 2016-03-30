@@ -115,6 +115,9 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			// First look for the Brand URL Key
 			if (isBrandURLKey) {
 				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.contenturlTitlePath, true);
+				if(isNull(brand)){
+					content = render404(arguments.slatwallScope,site);
+				}
 				arguments.slatwallScope.setBrand( brand );
 				entityName = 'brand';
 			}
@@ -122,6 +125,9 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			// Look for the Product URL Key
 			if(isProductURLKey) {
 				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
+				if(isNull(product)){
+					content = render404(arguments.slatwallScope,site);
+				}
 				arguments.slatwallScope.setProduct( product );
 				entityName = 'product';
 			}
@@ -129,6 +135,9 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			// Look for the Product Type URL Key
 			if (isProductTypeURLKey) {
 				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
+				if(isNull(productType)){
+					content = render404(arguments.slatwallScope,site);
+				}
 				arguments.slatwallScope.setProductType( productType );
 				entityName = 'productType';
 			}
