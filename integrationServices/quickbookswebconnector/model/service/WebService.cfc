@@ -909,14 +909,14 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		var updatePostponeInterval = "1";
 		var everyMinute = "1";
 
-		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
+		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency"))){
 			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency");
 		} else {
 			var runEveryNMinutes = 15;
 		}
 
 		//queue events
-	    variables.tickets[thisTicket] = ["accountLedger"];
+	    variables.tickets[thisTicket] = ["syncAccountLedger"];
 
 	    var response = [thisTicket, companyFileName, updatePostponeInterval, everyMinute, runEveryNMinutes];
 
@@ -926,47 +926,73 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 	public array function sendRequestXML(required string ticket,required string strHCPResponse,required string strCompanyFileName,required string qbXMLCountry,required integer qbXMLMajorVers,required integer qbXMLMinorVers){
 
 		//pop off whatever action needs to be taken and execute it
+		var actionQueue = variables.tickets[ticket];
+		var response = [];
 
-		//initial implementation
-			//get the sync account ledger xml
-			//send the request
-			//don't delete it yet
+		if(arrayLen(actionQueue) > 0){
+			var action = actionQueue[1];
 
-		return;
+			switch(action) {
+				case "syncAccountLedger":
+					//get the sync account ledger xml
+				case "pushProducts":
+					//get the push product xml
+				case "pushOrders":
+					//get the push order xml
+				case "pushAccounts"
+					//get the push accounts xml
+				default:
+					//we're done let the web connector know
+			}
+			//attach the xml to the resposne
+
+		} else {
+			//we're done let the web connector know
+		}
+
+		return response;
 	}
 
 	public array function recieveResponseXML(required string ticket,required string response,required string hresult,required string message){
+
+		var response = [];
 
 		//confirm the action was sucessful - log it
 
 		//store data
 
-		return;
+		return response;
 	}
 
 	public array function connectionError(required string ticket,required string hresult,required string message){
 
+		var response = [];
+
 		//log the error - perform cleanup if need be
 
 		//Delete the queue for the ticket
 
-		return;
+		return response;
 	}
 
 	public array function getLastError(required string ticket){
 
+		var response = [];
+
 		//log the error - perform cleanup if need be
 
 		//Delete the queue for the ticket
 
-		return;
+		return response;
 	}
 
 	public array function closeConnection(required string ticket){
 
-		//wipe the queue
+		var response = [];
 
-		return;
+		structDelete(variables.tickets, ticket);
+
+		return response;
 	}
 
 	// ===================== START: Logical Methods ===========================
