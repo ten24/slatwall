@@ -516,7 +516,7 @@ component output="false" accessors="true" extends="HibachiController" {
 
 		for(var row in transformedData){
 			for(var question in formQuestions){
-				if(!isNull(row[question["questionID"]]) && !isNull(question["questionID"])){
+				if(!isNull(question["questionID"]) && structkeyexists(row, question["questionID"])){
 					exportList = listAppend(exportList, row[question["questionID"]]);
 				} else {
 					exportList = listAppend(exportList, " ");
