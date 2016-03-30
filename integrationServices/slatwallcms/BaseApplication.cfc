@@ -227,21 +227,13 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	}
 	
 	/** Returns the content given a urlTitle or the default content if no urlTitle is given. */
-    public any function getContentBodyByUrlTitle(urlTitle){
+    public any function getContentBodyByUrlTitle(urlTitlePath){
         
         var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
-        if (!isNull(arguments.urlTitle) && !isNull(currentSite)){
-            var collectionList = getHibachiScope().getService("contentService").getContentCollectionList();
-            collectionList.addFilter('urlTitle', "#arguments.urlTitle#");
-            collectionList.addFilter('site.siteID',currentSite.getSiteID());
-            var contents = collectionList.getRecords();
-            
-            //goes through the content and returns the first it finds with a content body.
-            for (var content in contents){
-           	    if (structKeyExists(content, 'contentBody')){
-           	        return content.contentBody;	
-           	    }
-            }
+        
+        if (!isNull(arguments.urlTitlePath) && !isNull(currentSite)){
+            var contentEntity = getHibachiScope().getService("ContentService").getContentBySiteIDAndUrlTitlePath(currentSite.getSiteID(),arguments.urlTitlePath);
+            return contentEntity.getContentBody();
         }
         return "";
     }
