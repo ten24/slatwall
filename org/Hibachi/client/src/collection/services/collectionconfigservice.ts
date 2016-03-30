@@ -464,7 +464,7 @@ class CollectionConfig {
                 filterGroup[i].comparisonOperator,
                 filterGroup[i].logicalOperator,
                 filterGroup[i].hidden
-            );
+        );
             group.filterGroup.push(filter);
         }
 
