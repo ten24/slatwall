@@ -218,7 +218,7 @@ class SWProductBundleGroupController {
                     if(i > 0){
                         var option = this.searchOptions.options[i];
                         ((keyword,option) =>{
-                            if(this.searchAllCollectionConfigs.length < 4){
+                            if(this.searchAllCollectionConfigs.length <= 4){
                                 this.searchAllCollectionConfigs.push(this.collectionConfigService.newCollectionConfig(this.searchOptions.options[i].value));
                             }
 
@@ -326,7 +326,7 @@ class SWProductBundleGroupController {
         }
 
         //Adds filter item to designated filtergroup
-        this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.push(collectionFilterItem);
+        this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
         this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
 
         //reload the list to correct pagination show all takes too long for this to be graceful
