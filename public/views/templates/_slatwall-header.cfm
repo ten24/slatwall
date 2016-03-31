@@ -51,18 +51,12 @@ Notes:
 <html lang="en">
 	<head>
 	    <meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	    <title>Slatwall</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-		<!--- jQuery is only required if you would like to use the Slatwall client side object --->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-
-		<!--- This creates a client side object for Slatwall so that $.slatwall API works from the client side --->
-		<cfoutput>#$.slatwall.renderJSObject( subsystem="public" )#</cfoutput>
 
 		<!--- Bootstrap is just included for demo / example purposes.  Removing it will not stop Slatwall from working --->
-		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 	</head>
 	<body>
 		<!--- This is only used by the sample app that is contained in /meta/sample --->
