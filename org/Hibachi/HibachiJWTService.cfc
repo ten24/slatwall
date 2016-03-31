@@ -67,7 +67,7 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		var jwt = newJwt(key);
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		//hard coded to 15 minutes
-		var tokenExpirationTime = 1;
+		var tokenExpirationTime = 900;
 		var payload = {};
 		payload['iat'] = javaCast( "int", currentTime );
 		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
