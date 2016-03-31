@@ -60,6 +60,10 @@ class HibachiService{
 		}
 		return baseUrl + '?' + actionName + '=' + action + queryString;
 	};
+    
+    public getUrlWithActionPrefix = () => {
+        return this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+"=";
+    }
 
 	getJsEntities= () =>{
 		return this._jsEntities;
@@ -101,7 +105,7 @@ class HibachiService{
 
 	getLastEntityNameInPropertyIdentifier = (entityName,propertyIdentifier)=>{
 		if(!entityName){
-			throw('no entity name supplied');
+			throw('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
 		}
 		//strip alias if it exists
 		if(propertyIdentifier.charAt(0) === '_'){
@@ -207,7 +211,7 @@ class HibachiService{
 		var params:any= {};
 		if(typeof options === 'string') {
 
-			var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.get&entityName='+entityName+'&entityID='+options;
+			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName+'&entityID='+options;
 		} else {
 			params['P:Current'] = options.currentPage || 1;
 			params['P:Show'] = options.pageShow || 10;
@@ -224,7 +228,7 @@ class HibachiService{
 			params.processContext = options.processContext || '';
             console.log(this.appConfig);
             console.log(this.appConfig);
-			var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.get&entityName='+entityName;
+			var urlString = this.getUrlWithActionPrefix()+'api:main.get&entityName='+entityName;
 		}
 
 		var deferred = this.$q.defer();
@@ -282,7 +286,7 @@ class HibachiService{
 	};
 	getResizedImageByProfileName = (profileName, skuIDs) => {
 		var deferred = this.$q.defer();
-		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?'+this.appConfig.action+'=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
 		.success((data) => {
 			deferred.resolve(data);
 		}).error((reason) => {
@@ -291,7 +295,7 @@ class HibachiService{
 	}
 	getEventOptions= (entityName) => {
 		var deferred = this.$q.defer();
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getEventOptionsByEntityName&entityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getEventOptionsByEntityName&entityName='+entityName;
 
 		this.$http.get(urlString)
 		.success((data) => {
@@ -304,7 +308,7 @@ class HibachiService{
 	};
     getProcessOptions= (entityName) => {
         var deferred = this.$q.defer();
-        var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getProcessMethodOptionsByEntityName&entityName='+entityName;
+        var urlString = this.getUrlWithActionPrefix()+'api:main.getProcessMethodOptionsByEntityName&entityName='+entityName;
 
         this.$http.get(urlString)
             .success((data) => {
@@ -316,14 +320,14 @@ class HibachiService{
         return deferred.promise;
     };
 	checkUniqueOrNullValue = (object, property, value) => {
-		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?'+this.appConfig.action+'=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 		'&value=' + escape(value)).then(
 	 (results:any):ng.IPromise<any> =>{
 		return results.data.uniqueStatus;
 		})
 	};
 	checkUniqueValue = (object, property, value) => {
-		return this.$http.get(this.appConfig.baseURL + '/index.cfm/?'+this.appConfig.action+'=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
+		return this.$http.get(this.getUrlWithActionPrefix()+'api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property +
 			'&value=' + escape(value)).then(
 			 (results:any):ng.IPromise<any> =>{
 				return results.data.uniqueStatus;
@@ -331,7 +335,7 @@ class HibachiService{
 	};
 	getPropertyDisplayData = (entityName,options) => {
 		var deferred = this.$q.defer();
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getPropertyDisplayData&entityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayData&entityName='+entityName;
 		var params:any = {};
 		params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 		this.$http.get(urlString,{params:params})
@@ -345,7 +349,7 @@ class HibachiService{
 	};
 	getPropertyDisplayOptions = (entityName,options) => {
 		var deferred = this.$q.defer();
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getPropertyDisplayOptions&entityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getPropertyDisplayOptions&entityName='+entityName;
 		var params:any = {};
 		params.property = options.property || '';
 		if(angular.isDefined(options.argument1))  {
@@ -366,7 +370,7 @@ class HibachiService{
 		//$log.debug('save'+ entityName);
 		var deferred = this.$q.defer();
 
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.post';
+		var urlString = this.getUrlWithActionPrefix()+'api:main.post';
 
 		if(angular.isDefined(entityName))  {
 			params.entityName = entityName;
@@ -395,7 +399,7 @@ class HibachiService{
 	};
 	getExistingCollectionsByBaseEntity= (entityName) => {
 		var deferred = this.$q.defer();
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
 
 		this.$http.get(urlString)
 		.success((data) => {
@@ -408,7 +412,7 @@ class HibachiService{
 	};
 	getFilterPropertiesByBaseEntityName= (entityName) => {
 		var deferred = this.$q.defer();
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
 
 		this.$http.get(urlString)
 		.success((data) => {
@@ -441,7 +445,7 @@ class HibachiService{
 			return this._resourceBundle[locale];
 		}
 
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getResourceBundle&instantiationKey='+this.appConfig.instantiationKey+'&locale='+locale;
 
 		this.$http(
 			{
@@ -461,7 +465,7 @@ class HibachiService{
 	getCurrencies = () =>{
 		var deferred = this.$q.defer();
 
-		var urlString = this.appConfig.baseURL+'/index.cfm/?'+this.appConfig.action+'=api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
+		var urlString = this.getUrlWithActionPrefix()+'api:main.getCurrencies&instantiationKey='+this.appConfig.instantiationKey;
 		this.$http.get(urlString).success((response) => {
 			deferred.resolve(response);
 		}).error((response) => {

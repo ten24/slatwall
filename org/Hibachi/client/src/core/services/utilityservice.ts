@@ -43,7 +43,7 @@ class UtilityService extends BaseService{
     };
 
     public isAngularRoute = () =>{
-        return /![\?&]ng#!/.test(window.location.href);
+        return /[\?&]ng#!/.test(window.location.href);
     };
 
     public ArrayFindByPropertyValue = (arr:any[],property:string,value:any):number =>{

@@ -59,6 +59,11 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
 	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
 
+	//Calculated Properties
+	property name="calculatedQATS" ormtype="integer";
+	property name="calculatedQOH" ormtype="integer";
+	property name="calculatedQNC" ormtype="integer";
+
 	// Remote properties
 	property name="remoteID" ormtype="string";
 
@@ -69,9 +74,10 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
-	property name="calculatedQNC" ormtype="integer";
+
+	property name="QATS" persistent="false";
+	property name="QOH" persistent="false";
+	property name="QNC" persistent="false";
 
 	//Derived Properties
 	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";

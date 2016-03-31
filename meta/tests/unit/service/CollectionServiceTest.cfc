@@ -139,7 +139,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entityName = 'product';
 		var collectionEntity = variables.service.getTransientCollectionByEntityName(entityName,variables.defaultCollectionOptions);
 		assertEquals('product',collectionEntity.getCollectionObject());
-		assertEquals('SlatwallProduct',collectionEntity.getCollectionConfigStruct().baseentityname);
+		assertEquals('product',collectionEntity.getCollectionConfigStruct().baseentityname);
 		assertEquals('_product',collectionEntity.getCollectionConfigStruct().baseentityalias);
 	}
 	
@@ -182,14 +182,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 //	public void function getEntityNameColumnProperties_returns_valid_array() {
 //		var result = variables.service.getEntityNameColumnProperties( 'Account' );
-//		//request.debug(result);
+//		//addToDebug(result);
 //		assert( isArray( result ) );
 //	}
 //	
 //	// getEntityNameProperties()
 //	public void function getEntityNameProperties_returns_valid_array() {
 //		var result = variables.service.getEntityNameProperties( 'Account',variables.defaultCollectionOptions );
-//		//request.debug(result);
+//		//addToDebug(result);
 //		assert( isArray( result ) );
 //	}
 	
@@ -202,7 +202,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 //		assertEquals( "accountEmailAddresses", result[4].propertyIdentifier );
 //		assertEquals( "accountID", result[5].propertyIdentifier );
 //		assertEquals( "accountLoyalties", result[6].propertyIdentifier );
-//		//request.debug(result);
+//		//addToDebug(result);
 //	}
 //	
 //	public void function getEntityNameOptionsTest(){
@@ -212,7 +212,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 //		};
 //		var collectionEntity = createTestEntity('collection',collectionEntityData);
 //		var collectionEntityProperties = variables.service.getEntityNameProperties(collectionEntity.getCollectionObject());
-//		//request.debug(collectionEntityProperties);
+//		//addToDebug(collectionEntityProperties);
 //		assert(isArray(collectionEntityProperties));
 //	}
 	
@@ -226,7 +226,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var propertyIdentifiers = "";
 		var collectionOptions = setupCollectionOptions({propertyIdentifiersList=propertyIdentifiers});
 		var apiResponse = variables.service.getAPIResponseForEntityName('account',collectionOptions);
-		//request.debug(apiResponse);
+		//addToDebug(apiResponse);
 		assert(isStruct(apiResponse));
 	}
 	
@@ -239,7 +239,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('account',accountData);
 		var propertyIdentifiers = "lastName,firstName";
 		var collectionOptions = setupCollectionOptions({propertyIdentifiersList=propertyIdentifiers});
-		var apiResponse = variables.service.getAPIResponseForEntityName('account',collectionOptions);
+		var apiResponse = variables.service.getAPIResponseForEntityName('account',collectionOptions,false);
 		
 		assertTrue(isStruct(apiResponse));
 	}
@@ -254,7 +254,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		
 		var apiResponse = variables.service.getAPIResponseForBasicEntityWithID('account',account.getAccountID(),variables.defaultCollectionOptions);
-		//request.debug(apiResponse);
+		//addToDebug(apiResponse);
 	}
 	
 	/*public void function getAPIResponseForBasicEntityWIthIDTest_with_propertyIdentifier_parameters(){
@@ -295,7 +295,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		
 		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,variables.defaultCollectionOptions);
-		//request.debug(apiResponse);
+		//addToDebug(apiResponse);
 	}
 	
 	public void function getAPIResponseForCollectionTest_with_propertyIdentifier_parameters(){
@@ -323,8 +323,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var propertyIdentifiersList = "firstName,lastName";
 		
-		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,setupCollectionOptions({propertyIdentifiersList=propertyIdentifiersList}));
-		//request.debug(apiResponse);
+		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,setupCollectionOptions({propertyIdentifiersList=propertyIdentifiersList}),false);
+		//addToDebug(apiResponse);
 	}
 	
 	

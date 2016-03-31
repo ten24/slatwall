@@ -3880,7 +3880,7 @@
 	                    _this.disabledtext = _this.rbkeyService.getRBKey(disabledrbkey);
 	                }
 	                //add disabled class
-	                _this.class += " s-btn-disabled";
+	                _this.class += " btn-disabled";
 	                _this.confirm = false;
 	                return _this.disabledtext;
 	            }

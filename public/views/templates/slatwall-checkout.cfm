@@ -128,7 +128,12 @@ Notes:
 
 <cfoutput>
 	<div class="container">
+<<<<<<< HEAD
 		<!--- START CHECKOUT EXAMPLE 1 --->
+=======
+
+		<!--- START CEHECKOUT EXAMPLE 1 --->
+>>>>>>> ten24/develop
 		<div class="row">
 			<div class="col-md-12">
 				<h3>Checkout Example (4 Step)</h3>
@@ -141,29 +146,52 @@ Notes:
 		<!--- Verify that there are items in the cart --->
 		<cfif arrayLen($.slatwall.cart().getOrderItems())>
 			<div class="row">
+<<<<<<< HEAD
 				<!--- START: CHECKOUT DETAIL --->
 				<div class="col-md-8">
+=======
+
+				<!--- START: CHECKOUT DETAIL --->
+				<div class="span8">
+
+>>>>>>> ten24/develop
 
 <!--- ============== ACCOUNT ========================================= --->
 					<cfif listFindNoCase(orderRequirementsList, "account") or url.step eq 'account'>
 
 						<!--- START: ACCOUNT --->
+<<<<<<< HEAD
 						<h4>Step 1 - Account Details</h4>
 
 						<div class="row">
 							<!--- LOGIN --->
 							<div class="col-md-4">
 								<h4>Login with Existing Account</h4>
+=======
+						<h5>Step 1 - Account Details</h5>
+
+						<div class="row">
+
+							<!--- LOGIN --->
+							<div class="span4">
+
+								<h5>Login with Existing Account</h5>
+>>>>>>> ten24/develop
 
 								<!--- Sets up the account login processObject --->
 								<cfset accountLoginObj = $.slatwall.getAccount().getProcessObject('login') />
 
 								<!--- Start: Login Form --->
 								<form action="?s=1" method="post">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 									<!--- This hidden input is what tells slatwall to try and login the account --->
 									<input type="hidden" name="slatAction" value="public:account.login" />
 
 									<!--- Email Address --->
+<<<<<<< HEAD
 									<div class="form-group">
 				    					<label for="emailAddress">Email Address</label>
 										<sw:FormField type="text" valueObject="#accountLoginObj#" valueObjectProperty="emailAddress" class="form-control" />
@@ -175,38 +203,83 @@ Notes:
 				    					<label for="password">Password</label>
 										<sw:FormField type="password" valueObject="#accountLoginObj#" valueObjectProperty="password" class="form-control" />
 										<sw:ErrorDisplay object="#accountLoginObj#" errorName="password" />
+=======
+									<div class="control-group">
+				    					<label class="control-label" for="emailAddress">Email Address</label>
+				    					<div class="controls">
+
+											<sw:FormField type="text" valueObject="#accountLoginObj#" valueObjectProperty="emailAddress" class="span4" />
+											<sw:ErrorDisplay object="#accountLoginObj#" errorName="emailAddress" />
+
+				    					</div>
+				  					</div>
+
+									<!--- Password --->
+									<div class="control-group">
+				    					<label class="control-label" for="password">Password</label>
+				    					<div class="controls">
+
+											<sw:FormField type="password" valueObject="#accountLoginObj#" valueObjectProperty="password" class="span4" />
+											<sw:ErrorDisplay object="#accountLoginObj#" errorName="password" />
+
+				    					</div>
+>>>>>>> ten24/develop
 				  					</div>
 
 									<!--- Login Button --->
 									<div class="form-group">
 				      					<button type="submit" class="btn btn-primary">Login & Continue</button>
 				  					</div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 								</form>
 								<!--- End: Login Form --->
 
 								<hr />
 
+<<<<<<< HEAD
 								<h4>Forgot Password</h4>
+=======
+								<h5>Forgot Password</h5>
+>>>>>>> ten24/develop
 
 								<!--- Sets up the account login processObject --->
 								<cfset forgotPasswordObj = $.slatwall.getAccount().getProcessObject('forgotPassword') />
 
 								<!--- Start: Forgot Password Form --->
 								<form action="?s=1" method="post">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 									<!--- This hidden input is what tells slatwall to try and login the account --->
 									<input type="hidden" name="slatAction" value="public:account.forgotPassword" />
 
 									<!--- Email Address --->
+<<<<<<< HEAD
 									<div class="form-group">
 				    					<label for="emailAddress">Email Address</label>
 										<sw:FormField type="text" valueObject="#accountLoginObj#" valueObjectProperty="emailAddress" class="form-control" />
 										<sw:ErrorDisplay object="#forgotPasswordObj#" errorName="emailAddress" />
+=======
+									<div class="control-group">
+				    					<label class="control-label" for="emailAddress">Email Address</label>
+				    					<div class="controls">
+
+											<sw:FormField type="text" valueObject="#accountLoginObj#" valueObjectProperty="emailAddress" class="span4" />
+											<sw:ErrorDisplay object="#forgotPasswordObj#" errorName="emailAddress" />
+
+				    					</div>
+>>>>>>> ten24/develop
 				  					</div>
 
 									<!--- Reset Email Button --->
 									<div class="form-group">
 				      					<button type="submit" class="btn btn-default">Send Me Reset Email</button>
 				  					</div>
+<<<<<<< HEAD
 								</form>
 								<!--- End: Forgot Password Form --->
 							</div>
@@ -214,6 +287,17 @@ Notes:
 							<!--- CREATE ACCOUNT --->
 							<div class="col-md-4">
 								<h4>Create New Account</h4>
+=======
+
+								</form>
+								<!--- End: Forgot Password Form --->
+
+							</div>
+
+							<!--- CREATE ACCOUNT --->
+							<div class="span4">
+								<h5>Create New Account</h5>
+>>>>>>> ten24/develop
 
 								<!--- Sets up the create account processObject --->
 								<cfset createAccountObj = $.slatwall.account().getProcessObject('create') />
@@ -225,16 +309,31 @@ Notes:
 
 									<!--- Name --->
 									<div class="row">
+<<<<<<< HEAD
 										<!--- First Name --->
 										<div class="col-md-6">
 											<div class="form-group">
 						    					<label for="firstName">First Name</label>
 												<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="firstName" class="form-control" />
 												<sw:ErrorDisplay object="#createAccountObj#" errorName="firstName" />
+=======
+
+										<!--- First Name --->
+										<div class="span2">
+											<div class="control-group">
+						    					<label class="control-label" for="firstName">First Name</label>
+						    					<div class="controls">
+
+													<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="firstName" class="span2" />
+													<sw:ErrorDisplay object="#createAccountObj#" errorName="firstName" />
+
+						    					</div>
+>>>>>>> ten24/develop
 						  					</div>
 										</div>
 
 										<!--- Last Name --->
+<<<<<<< HEAD
 										<div class="col-md-6">
 											<div class="form-group">
 						    					<label for="lastName">Last Name</label>
@@ -270,6 +369,64 @@ Notes:
 				    					<label for="createAuthenticationFlag">Save Account ( No for Guest Checkout )</label>
 										<sw:FormField type="yesno" valueObject="#createAccountObj#" valueObjectProperty="createAuthenticationFlag" />
 										<sw:ErrorDisplay object="#createAccountObj#" errorName="createAuthenticationFlag" />
+=======
+										<div class="span2">
+											<div class="control-group">
+						    					<label class="control-label" for="lastName">Last Name</label>
+						    					<div class="controls">
+
+													<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="lastName" class="span2" />
+													<sw:ErrorDisplay object="#createAccountObj#" errorName="lastName" />
+
+						    					</div>
+						  					</div>
+										</div>
+
+									</div>
+
+									<!--- Phone Number --->
+									<div class="control-group">
+				    					<label class="control-label" for="phoneNumber">Phone Number</label>
+				    					<div class="controls">
+
+											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="phoneNumber" class="span4" />
+											<sw:ErrorDisplay object="#createAccountObj#" errorName="phoneNumber" />
+
+				    					</div>
+				  					</div>
+
+									<!--- Email Address --->
+									<div class="control-group">
+				    					<label class="control-label" for="emailAddress">Email Address</label>
+				    					<div class="controls">
+
+											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="emailAddress" class="span4" />
+											<sw:ErrorDisplay object="#createAccountObj#" errorName="emailAddress" />
+
+				    					</div>
+				  					</div>
+
+									<!--- Email Address Confirm --->
+									<div class="control-group">
+				    					<label class="control-label" for="emailAddressConfirm">Confirm Email Address</label>
+				    					<div class="controls">
+
+											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="emailAddressConfirm" class="span4" />
+											<sw:ErrorDisplay object="#createAccountObj#" errorName="emailAddressConfirm" />
+
+				    					</div>
+				  					</div>
+
+									<!--- Guest Checkout --->
+									<div class="control-group">
+				    					<label class="control-label" for="createAuthenticationFlag">Save Account ( No for Guest Checkout )</label>
+				    					<div class="controls">
+
+											<sw:FormField type="yesno" valueObject="#createAccountObj#" valueObjectProperty="createAuthenticationFlag" />
+											<sw:ErrorDisplay object="#createAccountObj#" errorName="createAuthenticationFlag" />
+
+				    					</div>
+>>>>>>> ten24/develop
 				  					</div>
 
 									<!--- SCRIPT IMPORTANT: This jQuery is just here for example purposes to show/hide the password fields if guestCheckout it set to true / false --->
@@ -292,6 +449,7 @@ Notes:
 
 									<!--- Password --->
 									<div id="password-details" >
+<<<<<<< HEAD
 										<div class="form-group">
 					    					<label for="password">Password</label>
 											<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="form-control" />
@@ -303,6 +461,27 @@ Notes:
 					    					<label for="passwordConfirm">Confirm Password</label>
 											<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="form-control" />
 											<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
+=======
+										<div class="control-group">
+					    					<label class="control-label" for="password">Password</label>
+					    					<div class="controls">
+
+												<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="span4" />
+												<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
+
+					    					</div>
+					  					</div>
+
+										<!--- Password Confirm --->
+										<div class="control-group">
+					    					<label class="control-label" for="passwordConfirm">Confirm Password</label>
+					    					<div class="controls">
+
+												<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="span4" />
+												<sw:ErrorDisplay object="#createAccountObj#" errorName="password" />
+
+					    					</div>
+>>>>>>> ten24/develop
 					  					</div>
 									</div>
 
@@ -310,9 +489,18 @@ Notes:
 									<div class="form-group pull-right">
 				      					<button type="submit" class="btn btn-primary">Create Account & Continue</button>
 				  					</div>
+<<<<<<< HEAD
 								</form>
 								<!--- End: Create Account Form --->
 							</div>
+=======
+
+								</form>
+								<!--- End: Create Account Form --->
+
+							</div>
+
+>>>>>>> ten24/develop
 						</div>
 						<!--- END: ACCOUNT --->
 
@@ -320,9 +508,16 @@ Notes:
 					<cfelseif listFindNoCase(orderRequirementsList, "fulfillment") or url.step eq 'fulfillment'>
 
 						<!--- START: FULFILLMENT --->
+<<<<<<< HEAD
 						<h4>Step 2 - Fulfillment Details</h4>
 
 						<form action="?s=1" method="post">
+=======
+						<h5>Step 2 - Fulfillment Details</h5>
+
+						<form action="?s=1" method="post">
+
+>>>>>>> ten24/develop
 							<!--- Hidden slatAction to trigger a cart update with the new fulfillment information --->
 							<input type="hidden" name="slatAction" value="public:cart.update" />
 
@@ -331,14 +526,25 @@ Notes:
 
 							<!--- We loop over the orderFulfillments and check if they are processable --->
 							<cfloop array="#$.slatwall.cart().getOrderFulfillments()#" index="orderFulfillment">
+<<<<<<< HEAD
 								<!--- We need to check if this order fulfillment is one that needs to be updated, by checking if it is already processable or by checking if it has errors --->
 								<cfif not orderFulfillment.isProcessable( context="placeOrder" ) or orderFulfillment.hasErrors() or url.step eq 'fulfillment'>
+=======
+
+								<!--- We need to check if this order fulfillment is one that needs to be updated, by checking if it is already processable or by checking if it has errors --->
+								<cfif not orderFulfillment.isProcessable( context="placeOrder" ) or orderFulfillment.hasErrors() or url.step eq 'fulfillment'>
+
+>>>>>>> ten24/develop
 									<!--- Increment the orderFulfillment index so that we can update multiple order fulfillments at once --->
 									<cfset orderFulfillmentIndex++ />
 
 									<input type="hidden" name="orderFulfillments[#orderFulfillmentIndex#].orderFulfillmentID" value="#orderFulfillment.getOrderFulfillmentID()#" />
 
 									<div class="row">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 										<!---[DEVELOPER NOTES]
 
 											Based on the fulfillmentMethodType we will display different form elements for the
@@ -350,32 +556,64 @@ Notes:
 
 										<!--- EMAIL --->
 										<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
+<<<<<<< HEAD
 											<div class="col-md-8">
 												<!--- Email Address --->
 												<div class="form-group">
 							    					<label for="emailAddress">Email Address</label>
 													<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].emailAddress" valueObject="#orderFulfillment#" valueObjectProperty="emailAddress" class="form-control" />
 													<sw:ErrorDisplay object="#orderFulfillment#" errorName="emailAddress" />
+=======
+
+											<div class="span8">
+												<!--- Email Address --->
+												<div class="control-group">
+							    					<label class="control-label" for="emailAddress">Email Address</label>
+							    					<div class="controls">
+
+														<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].emailAddress" valueObject="#orderFulfillment#" valueObjectProperty="emailAddress" class="span4" />
+														<sw:ErrorDisplay object="#orderFulfillment#" errorName="emailAddress" />
+
+							    					</div>
+>>>>>>> ten24/develop
 							  					</div>
 											</div>
 
 										<!--- PICKUP --->
 										<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
 
+<<<<<<< HEAD
 											<div class="col-md-8">
 												<!--- Pickup Location --->
 												<div class="form-group">
 							    					<label for="pickupLocation">Pickup Location</label>
 													<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].pickupLocation.locationID" valueObject="#orderFulfillment#" valueObjectProperty="pickupLocation" valueOptions="#orderFulfillment.getPickupLocationOptions()#" class="form-control" />
 													<sw:ErrorDisplay object="#orderFulfillment#" errorName="pickupLocation" />
+=======
+											<div class="span8">
+												<!--- Pickup Location --->
+												<div class="control-group">
+							    					<label class="control-label" for="pickupLocation">Pickup Location</label>
+							    					<div class="controls">
+
+														<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].pickupLocation.locationID" valueObject="#orderFulfillment#" valueObjectProperty="pickupLocation" valueOptions="#orderFulfillment.getPickupLocationOptions()#" class="span4" />
+														<sw:ErrorDisplay object="#orderFulfillment#" errorName="pickupLocation" />
+
+							    					</div>
+>>>>>>> ten24/develop
 							  					</div>
 											</div>
 
 										<!--- SHIPPING --->
 										<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 
+<<<<<<< HEAD
 											<div class="col-md-4">
 												<h4>Shipping Address</h4>
+=======
+											<div class="span4">
+												<h5>Shipping Address</h5>
+>>>>>>> ten24/develop
 
 												<!--- Get the options that the person can choose from --->
 												<cfset accountAddressOptions = orderFulfillment.getAccountAddressOptions() />
@@ -394,11 +632,24 @@ Notes:
 
 												<!--- If there are existing account addresses, then we can allow the user to select one of those --->
 												<cfif arrayLen(accountAddressOptions) gt 1>
+<<<<<<< HEAD
 													<!--- Account Address --->
 													<div class="form-group">
 								    					<label for="accountAddress">Select Address</label>
 														<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].accountAddress.accountAddressID" valueObject="#orderFulfillment#" valueObjectProperty="accountAddress" valueOptions="#accountAddressOptions#" value="#accountAddressID#" class="form-control" />
 														<sw:ErrorDisplay object="#orderFulfillment#" errorName="accountAddress" />
+=======
+
+													<!--- Account Address --->
+													<div class="control-group">
+								    					<label class="control-label" for="accountAddress">Select Address</label>
+								    					<div class="controls">
+
+															<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].accountAddress.accountAddressID" valueObject="#orderFulfillment#" valueObjectProperty="accountAddress" valueOptions="#accountAddressOptions#" value="#accountAddressID#" class="span4" />
+															<sw:ErrorDisplay object="#orderFulfillment#" errorName="accountAddress" />
+
+								    					</div>
+>>>>>>> ten24/develop
 								  					</div>
 
 													<hr />
@@ -416,20 +667,47 @@ Notes:
 
 													<!--- As long as the account is not a guest account, and this is truely new address we are adding, then we can offer to save as an account address for use on later purchases --->
 													<cfif not $.slatwall.getCart().getAccount().getGuestAccountFlag()>
+<<<<<<< HEAD
 														<!--- Save As Account Address --->
 														<div class="form-group">
 									    					<label for="saveAccountAddressFlag">Save In Address Book</label>
 															<sw:FormField type="yesno" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressFlag" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressFlag" />
+=======
+
+														<!--- Save As Account Address --->
+														<div class="control-group">
+									    					<label class="control-label" for="saveAccountAddressFlag">Save In Address Book</label>
+									    					<div class="controls">
+
+																<sw:FormField type="yesno" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressFlag" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressFlag" />
+
+									    					</div>
+>>>>>>> ten24/develop
 									  					</div>
 
 														<!--- Save Account Address Name --->
 														<div id="save-account-address-name#orderFulfillmentIndex#"<cfif not orderFulfillment.getSaveAccountAddressFlag()> class="hide"</cfif>>
+<<<<<<< HEAD
 															<div class="form-group">
 										    					<label for="saveAccountAddressName">Address Nickname (optional)</label>
 																<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressName" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressName" class="form-control" />
 										  					</div>
 														</div>
 													</cfif>
+=======
+															<div class="control-group">
+										    					<label class="control-label" for="saveAccountAddressName">Address Nickname (optional)</label>
+										    					<div class="controls">
+
+																	<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressName" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressName" class="span4" />
+
+										    					</div>
+										  					</div>
+														</div>
+
+													</cfif>
+
+>>>>>>> ten24/develop
 												</div>
 
 												<!--- SCRIPT IMPORTANT: This jQuery is just here for example purposes to show/hide the new address field if there are account addresses --->
@@ -454,16 +732,28 @@ Notes:
 														});
 													})( jQuery )
 												</script>
+<<<<<<< HEAD
 											</div>
 
 											<!--- START: Shipping Method Selection --->
 											<div class="col-md-4">
 												<h4>Shipping Method</h4>
+=======
+
+
+											</div>
+
+
+											<!--- START: Shipping Method Selection --->
+											<div class="span4">
+												<h5>Shipping Method</h5>
+>>>>>>> ten24/develop
 
 												<!--- If there are multiple shipping methods to select from, then display that --->
 												<cfif arrayLen(orderFulfillment.getShippingMethodOptions()) gt 1>
 
 													<!--- Start: Shipping Method Example 1 --->
+<<<<<<< HEAD
 													<div class="form-group">
 								    					<label for="shippingMethod">Shipping Method Example</label>
 														<!--- OPTIONAL: You can use this formField display to show options as a select box
@@ -476,6 +766,24 @@ Notes:
 
 														<sw:FormField type="radiogroup" name="orderFulfillments[#orderFulfillmentIndex#].shippingMethod.shippingMethodID" value="#shippingMethodID#" valueOptions="#orderFulfillment.getShippingMethodOptions()#" class="form-control" />
 														<sw:ErrorDisplay object="#orderFulfillment#" errorName="shippingMethod" />
+=======
+													<div class="control-group">
+								    					<label class="control-label" for="shippingMethod">Shipping Method Example</label>
+								    					<div class="controls">
+
+															<!--- OPTIONAL: You can use this formField display to show options as a select box
+															<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].shippingMethod.shippingMethodID" valueObject="#orderFulfillment#" valueObjectProperty="shippingMethod" valueOptions="#orderFulfillment.getShippingMethodOptions()#" class="span4" />
+															--->
+															<cfset shippingMethodID = "" />
+															<cfif not isNull(orderFulfillment.getShippingMethod())>
+																<cfset shippingMethodID = orderFulfillment.getShippingMethod().getShippingMethodID() />
+															</cfif>
+
+															<sw:FormField type="radiogroup" name="orderFulfillments[#orderFulfillmentIndex#].shippingMethod.shippingMethodID" value="#shippingMethodID#" valueOptions="#orderFulfillment.getShippingMethodOptions()#" />
+															<sw:ErrorDisplay object="#orderFulfillment#" errorName="shippingMethod" />
+
+								    					</div>
+>>>>>>> ten24/develop
 								  					</div>
 													<!--- End: Shipping Method Example 1 --->
 
@@ -498,10 +806,20 @@ Notes:
 													<cfelse>
 
 														<p>Unfortunately the shipping address that you have provided is not one that we ship to.  Please update your shipping address and try again, or contact customer service for more information.</p>
+<<<<<<< HEAD
 													</cfif>
 												</cfif>
 											</div>
 											<!--- END: Shipping Method Selection --->
+=======
+
+													</cfif>
+
+												</cfif>
+											</div>
+											<!--- END: Shipping Method Selection --->
+
+>>>>>>> ten24/develop
 										</cfif>
 
 										<!--- Action Buttons --->
@@ -511,9 +829,19 @@ Notes:
 												<button type="submit" class="btn btn-primary">Save & Continue</button>
 											</div>
 										</div>
+<<<<<<< HEAD
 									</div>
 								</cfif>
 							</cfloop>
+=======
+
+									</div>
+
+								</cfif>
+
+							</cfloop>
+
+>>>>>>> ten24/develop
 						</form>
 						<!--- END: FULFILLMENT --->
 
@@ -524,7 +852,11 @@ Notes:
 						<cfset eligiblePaymentMethods = $.slatwall.cart().getEligiblePaymentMethodDetails() />
 
 						<!--- START: PAYMENT --->
+<<<<<<< HEAD
 						<h4>Step 3 - Payment Details</h4>
+=======
+						<h5>Step 3 - Payment Details</h5>
+>>>>>>> ten24/develop
 
 						<br />
 
@@ -534,7 +866,11 @@ Notes:
 
 						<!--- Display existing order payments, we are using the smart list here so that any non-persisted order payments don't show up --->
 						<cfif appliedPaymentsSmartList.getRecordsCount()>
+<<<<<<< HEAD
 							<h4>Payments Applied</h4>
+=======
+							<h5>Payments Applied</h5>
+>>>>>>> ten24/develop
 
 							<!--- Applied Payments Table --->
 							<table class="table">
@@ -558,7 +894,12 @@ Notes:
 						<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderPayment" />
 
 						<!--- Payment Method Nav Tabs --->
+<<<<<<< HEAD
 						<ul class="nav nav-tabs" role="tablist">
+=======
+						<ul class="nav nav-tabs" id="myTab">
+
+>>>>>>> ten24/develop
 							<!--- This first variables here is only used to define the 'active' tab for bootstrap css to take over --->
 							<cfset first = true />
 
@@ -588,6 +929,10 @@ Notes:
 							<cfif arrayLen($.slatwall.account().getAccountPaymentMethods())>
 								<div class="tab-pane active" id="account-payment-methods">
 									<form action="?s=1" method="post">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 										<!--- Hidden value to setup the slatAction --->
 										<input id="slatActionApplyAccountPaymentMethod" type="hidden" name="slatAction" value="public:cart.addOrderPayment" />
 
@@ -595,6 +940,10 @@ Notes:
 
 										<!--- Loop over all of the account payment methods and display them as a radio button to select --->
 										<cfloop array="#$.slatwall.account().getAccountPaymentMethods()#" index="accountPaymentMethod">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 											<input type="radio" name="accountPaymentMethodID" value="#accountPaymentMethod.getAccountPaymentMethodID()#" <cfif apmFirst>checked="checked" <cfset ampFirst = false /></cfif>/>
 
 											<!--- CASH --->
@@ -622,6 +971,7 @@ Notes:
 											<cfset apmFirst = false />
 										</cfloop>
 
+<<<<<<< HEAD
 										<div class="form-group">
 											<!--- This button will just add the order payment, but not actually process the order --->
 											<button type="submit" class="btn btn-default" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.addOrderPayment');">Apply Payment Method & Review</button>
@@ -629,6 +979,13 @@ Notes:
 											<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
 											<button type="submit" class="btn btn-primary" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.placeOrder');">Apply Payment Method & Place Order</button>
 										</div>
+=======
+										<!--- This button will just add the order payment, but not actually process the order --->
+										<button type="submit" class="btn" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.addOrderPayment');">Apply Payment Method & Review</button>
+
+										<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
+										<button type="submit" class="btn btn-primary" onClick="$('##slatActionApplyAccountPaymentMethod').val('public:cart.placeOrder');">Apply Payment Method & Place Order</button>
+>>>>>>> ten24/develop
 									</form>
 								</div>
 								<cfset first = false />
@@ -665,6 +1022,7 @@ Notes:
 											<!--- CREDIT CARD --->
 											<cfelseif paymentDetails.paymentMethod.getPaymentMethodType() eq "creditCard">
 												<div class="row">
+<<<<<<< HEAD
 													<div class="col-md-4">
 														<h4>Billing Address</h4>
 
@@ -685,10 +1043,41 @@ Notes:
 									    					<label for="nameOnCreditCard">Name on Card</label>
 															<sw:FormField type="text" name="newOrderPayment.nameOnCreditCard" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="nameOnCreditCard" class="form-control" />
 															<sw:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="nameOnCreditCard" />
+=======
+													<div class="span4">
+														<h5>Billing Address</h5>
+
+														<sw:AddressForm id="newBillingAddress" address="#addOrderPaymentObj.getNewOrderPayment().getBillingAddress()#" fieldNamePrefix="newOrderPayment.billingAddress." fieldClass="span4" />
+													</div>
+													<div class="span4">
+														<h5>Credit Card Info</h5>
+
+														<!--- Credit Card Number --->
+														<div class="control-group">
+									    					<label class="control-label" for="creditCardNumber">Credit Card Number</label>
+									    					<div class="controls">
+
+																<sw:FormField type="text" name="newOrderPayment.creditCardNumber" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="creditCardNumber" class="span4" />
+																<sw:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="creditCardNumber" />
+
+									    					</div>
+									  					</div>
+
+														<!--- Name on Credit Card --->
+														<div class="control-group">
+									    					<label class="control-label" for="nameOnCreditCard">Name on Card</label>
+									    					<div class="controls">
+
+																<sw:FormField type="text" name="newOrderPayment.nameOnCreditCard" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="nameOnCreditCard" class="span4" />
+																<sw:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="nameOnCreditCard" />
+
+									    					</div>
+>>>>>>> ten24/develop
 									  					</div>
 
 														<!--- Security & Expiration Row --->
 														<div class="row">
+<<<<<<< HEAD
 															<div class="col-md-4">
 																<!--- Security Code --->
 																<div class="form-group">
@@ -711,15 +1100,60 @@ Notes:
 																		<swc:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="expirationYear" />
 											    					</div>
 											  					</div>
+=======
+
+															<div class="span2">
+
+																<!--- Security Code --->
+																<div class="control-group">
+											    					<label class="control-label" for="securityCode">Security Code</label>
+											    					<div class="controls">
+
+																		<sw:FormField type="text" name="newOrderPayment.securityCode" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="securityCode" class="span2" />
+																		<sw:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="securityCode" />
+
+											    					</div>
+											  					</div>
+
+															</div>
+
+
+															<div class="span2">
+
+																<!--- Expiration --->
+																<div class="control-group">
+											    					<label class="control-label pull-right" for="expirationMonth">Expiration ( MM / YYYY )</label>
+											    					<div class="controls pull-right">
+
+																		<sw:FormField type="select" name="newOrderPayment.expirationMonth" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="expirationMonth" valueOptions="#addOrderPaymentObj.getNewOrderPayment().getExpirationMonthOptions()#" class="span1" />
+																		<sw:FormField type="select" name="newOrderPayment.expirationYear" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="expirationYear" valueOptions="#addOrderPaymentObj.getNewOrderPayment().getExpirationYearOptions()#" class="span1" />
+																		<sw:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="expirationMonth" />
+																		<sw:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="expirationYear" />
+
+											    					</div>
+											  					</div>
+
+>>>>>>> ten24/develop
 															</div>
 														</div>
 
 														<!--- SPLIT PAYMENTS (OPTIONAL) - Just delete this section if you don't want to allow for split payments --->
 														<cfset splitPaymentID = "sp" & lcase(createUUID()) />
+<<<<<<< HEAD
 														<div class="form-group">
 									    					<label for="newOrderPayment.amount">Amount</label>
 								    						#$.slatwall.formatValue(paymentDetails.maximumAmount, 'currency')#
 								    						<a href="##" id='#splitPaymentID#'>Split Payment</a>
+=======
+														<div class="control-group">
+									    					<label class="control-label" for="newOrderPayment.amount">Amount</label>
+									    					<div class="controls">
+
+									    						#$.slatwall.formatValue(paymentDetails.maximumAmount, 'currency')#
+									    						<a href="##" id='#splitPaymentID#'>Split Payment</a>
+
+									    					</div>
+>>>>>>> ten24/develop
 									  					</div>
 														<script type="text/javascript">
 															(function($){
@@ -741,17 +1175,42 @@ Notes:
 											<!--- GIFT CARD --->
 											<cfelseif paymentDetails.paymentMethod.getPaymentMethodType() eq "giftCard">
 
+<<<<<<< HEAD
+=======
+												<sw:FormField valueObject="#addOrderPaymentObj.getNewOrderPayment()#"
+												                          name="newOrderPayment.giftCardNumber" valueObjectProperty="giftCardNumber"
+												                         >
+
+												<sw:FormField valueObject="#addOrderPaymentObj#"
+												                          fieldname="saveGiftCardToAccountFlag" valueObjectProperty="saveGiftCardToAccountFlag"
+																		  value="yes"
+												                          >
+												<sw:ErrorDisplay object="#addOrderPaymentObj.getNewOrderPayment()#" errorName="giftCardNumber" />
+												<sw:ErrorDisplay object="#addOrderPaymentObj#" errorName="saveGiftCardToAccountFlag" />
+
+>>>>>>> ten24/develop
 											<!--- TERM PAYMENT --->
 											<cfelseif paymentDetails.paymentMethod.getPaymentMethodType() eq "termPayment">
 
 											</cfif>
 
+<<<<<<< HEAD
 											<div class="form-group pull-right">
 												<!--- This button will just add the order payment, but not actually process the order --->
 												<button type="submit" class="btn" name="slatAction" onClick="$('##slatActionAddOrderPayment').val('public:cart.addOrderPayment');">Add Payment & Review</button>
 
 												<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
 												<button type="submit" class="btn btn-primary" name="slatAction" onClick="$('##slatActionAddOrderPayment').val('public:cart.placeOrder');">Add Payment & Place Order</button>
+=======
+											<div class="control-group pull-right">
+												<div class="controls">
+													<!--- This button will just add the order payment, but not actually process the order --->
+													<button type="submit" class="btn" name="slatAction" onClick="$('##slatActionAddOrderPayment').val('public:cart.addOrderPayment');">Add Payment & Review</button>
+
+													<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
+													<button type="submit" class="btn btn-primary" name="slatAction" onClick="$('##slatActionAddOrderPayment').val('public:cart.placeOrder');">Add Payment & Place Order</button>
+												</div>
+>>>>>>> ten24/develop
 											</div>
 										</form>
 									</cfif>
@@ -775,8 +1234,13 @@ Notes:
 							<!--- Account Details --->
 							<cfif not listFindNoCase(orderRequirementsList, "account") and not $.slatwall.cart().getAccount().isNew()>
 								<div class="row-fluid">
+<<<<<<< HEAD
 									<div class="col-md-12">
 										<h5>Account Details <cfif $.slatwall.cart().getAccount().getGuestAccountFlag()><a href="?step=account" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a></cfif></h5>
+=======
+									<div class="span12">
+										<h5>Account Details <cfif $.slatwall.cart().getAccount().getGuestAccountFlag()><a href="?step=account">edit</a></cfif></h5>
+>>>>>>> ten24/develop
 
 										<p>
 											<!--- Name --->
@@ -802,11 +1266,19 @@ Notes:
 							<!--- Fulfillment Details --->
 							<cfif not listFindNoCase(orderRequirementsList, "account") and not $.slatwall.cart().getAccount().isNew()>
 								<div class="row-fluid">
+<<<<<<< HEAD
 									<div class="col-md-12">
 										<h4>Fulfillment Details <a href="?step=fulfillment" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a></h4>
 										<cfloop array="#$.slatwall.cart().getOrderFulfillments()#" index="orderFulfillment">
 											<div class="row-fluid">
 												<div class="col-md-6">
+=======
+									<div class="span12">
+										<h5>Fulfillment Details <a href="?step=fulfillment">edit</a></h5>
+										<cfloop array="#$.slatwall.cart().getOrderFulfillments()#" index="orderFulfillment">
+											<div class="row-fluid">
+												<div class="span6">
+>>>>>>> ten24/develop
 													<!--- Fulfillment Method --->
 													<h5>Shipping Via:</h5>
 													#orderFulfillment.getFulfillmentMethod().getFulfillmentMethodName()#<br />
@@ -866,8 +1338,13 @@ Notes:
 
 							<!--- Payment Details --->
 							<div class="row-fluid">
+<<<<<<< HEAD
 								<div class="col-md-12">
 									<h4>Payment Details <a href="?step=payment" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a></h4>
+=======
+								<div class="span12">
+									<h5>Payment Details <a href="?step=payment">edit</a></h5>
+>>>>>>> ten24/develop
 
 									<!--- Get the applied payments smart list, and filter by only payments that are active --->
 									<cfset appliedPaymentsSmartList = $.slatwall.cart().getOrderPaymentsSmartList() />
@@ -877,16 +1354,31 @@ Notes:
 
 									<!--- List the payment methods applied to this order --->
 									<cfloop array="#appliedPaymentsSmartList.getRecords()#" index="orderPayment">
+<<<<<<< HEAD
 										<cfset orderPaymentReviewIndex++ />
 
 										<div class="row-fluid">
 											<!--- Display payment method details and payment amount --->
 											<div class="col-md-6">
 												<h5>Method:</h5>
+=======
+
+										<cfset orderPaymentReviewIndex++ />
+
+										<div class="row-fluid">
+
+											<!--- Display payment method details and payment amount --->
+											<div class="span6">
+												<h6>Method:</h6>
+>>>>>>> ten24/develop
 
 												<input type="hidden" name="orderPayments[#orderPaymentReviewIndex#].orderPaymentID" value="#orderPayment.getOrderPaymentID()#" />
 
 												<cfif orderPayment.getPaymentMethodType() EQ "creditcard">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 													Name on Card: #htmlEditFormat( orderPayment.getNameOnCreditCard() )#<br />
 													Card: #orderPayment.getCreditCardType()# ***#orderPayment.getCreditCardLastFour()#<br />
 													Expiration: #htmlEditFormat( orderPayment.getExpirationMonth() )# / #htmlEditFormat( orderPayment.getExpirationYear() )#<br />
@@ -896,10 +1388,18 @@ Notes:
 														<input type="hidden" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="#orderPayment.getSecurityCode()#" />
 
 													<cfelseif isNull(orderPayment.getProviderToken())>
+<<<<<<< HEAD
 
 														<div class="form-group">
 									    					<label for="securityCode">Re-Enter Security Code</label>
 									    					<input type="text" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="" class="form-control required" />
+=======
+														<div class="control-group">
+									    					<label class="control-label" for="securityCode">Re-Enter Security Code</label>
+									    					<div class="controls">
+									    						<input type="text" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="" class="required" />
+									    					</div>
+>>>>>>> ten24/develop
 									  					</div>
 													</cfif>
 
@@ -932,24 +1432,47 @@ Notes:
 								</div>
 							</div>
 
+<<<<<<< HEAD
 							<div class="form-group pull-right">
 								<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
 								<button type="submit" class="btn btn-primary">Place Order</button>
 							</div>
 						</form>
 					</cfif>
+=======
+							<div class="control-group pull-right">
+								<div class="controls">
+
+									<!--- Clicking this button will not only add the payment, but it will also attempt to place the order. --->
+									<button type="submit" class="btn btn-primary">Place Order</button>
+								</div>
+							</div>
+						</form>
+					</cfif>
+
+>>>>>>> ten24/develop
 				</div>
 				<!--- END: CHECKOUT DETAIL --->
 
 
 				<!--- START: ORDER SUMMARY --->
+<<<<<<< HEAD
 				<div class="col-md-4">
 					<h4>Order Summary</h4>
+=======
+				<div class="span4">
+
+					<h5>Order Summary</h5>
+>>>>>>> ten24/develop
 					<hr />
 
 					<!--- Account Details --->
 					<cfif not listFindNoCase(orderRequirementsList, "account") and not $.slatwall.cart().getAccount().isNew()>
+<<<<<<< HEAD
 						<h5>Account Details <cfif $.slatwall.cart().getAccount().getGuestAccountFlag()><a href="?step=account" title="Edit"><span class="glyphicon glyphicon-pencil"></span></a></cfif></h5>
+=======
+						<h5>Account Details <cfif $.slatwall.cart().getAccount().getGuestAccountFlag()><a href="?step=account">edit</a></cfif></h5>
+>>>>>>> ten24/develop
 
 						<p>
 							<!--- Name --->
@@ -993,6 +1516,10 @@ Notes:
 									<cfif not isNull(orderFulfillment.getShippingMethod())>
 										<strong>Shipping Method:</strong> #orderFulfillment.getShippingMethod().getShippingMethodName()#<br />
 									</cfif>
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 								</cfif>
 							</p>
 
@@ -1033,6 +1560,10 @@ Notes:
 					</table>
 				</div>
 				<!--- END: ORDER SUMMARY --->
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 			</div>
 
 <!--- ======================= ORDER PLACED & CONFIRMATION ============================= --->
@@ -1042,7 +1573,11 @@ Notes:
 			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSession().getLastPlacedOrderID() ) />
 
 			<!--- Overview & Status --->
+<<<<<<< HEAD
 			<h3>Your Order Has Been Placed!</h3>
+=======
+			<h4>Your Order Has Been Placed!</h4>
+>>>>>>> ten24/develop
 
 			<!--- START: SAVE GUEST ACCOUNT --->
 
@@ -1094,6 +1629,10 @@ Notes:
 						<div class="form-group pull-left">
 							<button type="submit" class="btn btn-primary">Save Account Password</button>
 						</div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 					</form>
 
 					<br />
@@ -1102,7 +1641,12 @@ Notes:
 			<!--- END: SAVE GUEST ACCOUNT --->
 
 			<div class="row">
+<<<<<<< HEAD
 				<div class="col-md-4">
+=======
+
+				<div class="span4">
+>>>>>>> ten24/develop
 					<table class="table table-bordered table-condensed">
 						<tr>
 							<td>Order Status</td>
@@ -1149,11 +1693,20 @@ Notes:
 			<hr />
 			<h4>Order Details</h4>
 			<cfloop array="#order.getOrderFulfillments()#" index="orderFulfillment">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 				<!--- Start: Fulfillment Table --->
 				<table class="table table-bordered table-condensed">
 					<tr>
 						<!--- Fulfillment Details --->
+<<<<<<< HEAD
 						<td class="well col-md-3" rowspan="#arrayLen(orderFulfillment.getOrderFulfillmentItems()) + 1#">
+=======
+						<td class="well span3" rowspan="#arrayLen(orderFulfillment.getOrderFulfillmentItems()) + 1#">
+
+>>>>>>> ten24/develop
 							<!--- Fulfillment Name --->
 							<strong>#orderFulfillment.getFulfillmentMethod().getFulfillmentMethodName()#</strong><br />
 
@@ -1172,6 +1725,10 @@ Notes:
 								<cfif not isNull(orderFulfillment.getShippingMethod())>
 									<strong>Shipping Method:</strong> #orderFulfillment.getShippingMethod().getShippingMethodName()#<br />
 								</cfif>
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 							</cfif>
 
 							<br />
@@ -1189,6 +1746,10 @@ Notes:
 
 					<!--- Loop over the actual items in this orderFulfillment --->
 					<cfloop array="#orderFulfillment.getOrderFulfillmentItems()#" index="orderItem">
+<<<<<<< HEAD
+=======
+
+>>>>>>> ten24/develop
 						<tr>
 							<!--- Sku Code --->
 							<td>#orderItem.getSku().getSkuCode()#</td>
@@ -1212,8 +1773,15 @@ Notes:
 							<td>#orderItem.getOrderItemStatusType().getTypeName()#</td>
 						</tr>
 					</cfloop>
+<<<<<<< HEAD
 				</table>
 				<!--- End: Fulfillment Table --->
+=======
+
+				</table>
+				<!--- End: Fulfillment Table --->
+
+>>>>>>> ten24/develop
 			</cfloop>
 			<!--- End: Order Details --->
 
@@ -1242,14 +1810,25 @@ Notes:
 
 <!--- ======================= NO ITEMS IN CART ============================= --->
 		<cfelse>
+<<<<<<< HEAD
 
+=======
+>>>>>>> ten24/develop
 			<div class="row">
 				<div class="col-md-12">
 					<p>There are no items in your cart.</p>
 				</div>
 			</div>
+<<<<<<< HEAD
 		</cfif>
 		<!--- END CHECKOUT EXAMPLE 1 --->
+=======
+
+		</cfif>
+
+		<!--- END CHECKOUT EXAMPLE 1 --->
+
+>>>>>>> ten24/develop
 	</div>
 </cfoutput>
 

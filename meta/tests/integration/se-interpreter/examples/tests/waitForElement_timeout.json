@@ -1,0 +1,19 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 1,
+  "steps": [
+    {
+      "type": "get",
+      "url": "http://saucelabs.com/test/guinea-pig/"
+    },
+    {
+      "type": "waitForElementPresent",
+      "locator": {
+        "type": "id",
+        "value": "nonexistent-element-3998ac91-3b12-453d-a3a7-6a5f66ff5aed"
+      }
+    }
+  ],
+  "timeoutSeconds": 10
+}

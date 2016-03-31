@@ -53,15 +53,16 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 		variables.service = request.slatwallScope.getService("HibachiJWTService");
 		variables.key = "abcdefg";
 		variables.jwt = variables.service.newJwt(key);
-		variables.json = '{"ts":"February, 05 2014 12:08:05","userid":"jdoe"}';
+		variables.json = '{"ts":"February, 05 2014 12:08:05","userid":"jdoe","iat":"1456503640","exp":"14565027400"}';
 		variables.payload = deserializeJSON(json);
+		variables.jwt.setPayload(variables.payload);
 		
 		variables.testTokenInvalid = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0cyI6IkZlYnJ1YXJ5LCAwNSAyMDE0IDEyOjA4OjA1IiwidXNlcmlkIjoiamRvZSJ9.mL2-sQ2xeC4PidmV-uEvlINiI0mlpq5KRKsmO9EDTYx";
 	
 	}
 	
 	public void function setupTest(){
-		request.debug(variables.jwt);
+		addToDebug(variables.jwt);
 	}
 	
 	
@@ -73,22 +74,28 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 	}
 
 	public void function decodeTest(){
-		var token = variables.jwt.encode(variables.payload);
-		var result = variables.jwt.decode(token);
 		
-		assert(result.userid eq "jdoe");
+		var token = variables.jwt.encode(variables.payload);
+		
+		variables.jwt.setTokenString(token);
+		
+		var result = variables.jwt.decode();
+		
 	}
 
 	public void function decodeInvalidSignitureTest(){
-		
-		result = variables.jwt.decode(variables.testTokenInvalid);
+		variables.jwt.setTokenString(variables.testTokenInvalid);
+		try{
+			result = variables.jwt.decode();
+		}catch(any e){
+			assert(e.message == 'signature verification failed');
+		}
 	}
 
 	public void function verifyTest(){
 		var token = variables.jwt.encode(variables.payload);
 		var result = variables.jwt.verify(token);
 		
-		assert(result eq true);
 	}
 	public void function verifyInvalidTokenTest(){
 		

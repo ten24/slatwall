@@ -4,6 +4,7 @@ import {hibachimodule} from "../../../../org/Hibachi/client/src/hibachi/hibachi.
 import {workflowmodule} from "../../../../org/Hibachi/client/src/workflow/workflow.module";
 import {entitymodule} from "../../../../org/Hibachi/client/src/entity/entity.module";
 import {contentmodule} from "../content/content.module";
+import {formbuildermodule} from "../formbuilder/formbuilder.module";
 import {giftcardmodule} from "../giftcard/giftcard.module";
 import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
@@ -27,6 +28,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   hibachimodule.name,
   entitymodule.name,
   contentmodule.name,
+  formbuildermodule.name,
   giftcardmodule.name,
   optiongroupmodule.name,
   orderitemmodule.name,

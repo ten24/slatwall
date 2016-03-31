@@ -334,7 +334,7 @@ function setupEventHandlers() {
 		jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
 		jQuery('#adminConfirm').modal();
 	});
-	jQuery('body').on('click', '.s-btn-disabled', function(e){	
+	jQuery('body').on('click', '.btn-disabled', function(e){	
 		e.preventDefault();
 		jQuery('#adminDisabled .modal-body').html( jQuery(this).data('disabled') );
 		jQuery('#adminDisabled').modal();
@@ -767,6 +767,7 @@ function setupEventHandlers() {
 
 	// Hibachi AJAX Submit
 	jQuery('body').on('click', '.hibachi-ajax-submit', function(e) {
+		
 		e.preventDefault();
 
 		var data = {};
@@ -795,7 +796,9 @@ function setupEventHandlers() {
 			success: function( r ) {
 				removeLoadingDiv( updateTableID );
 				if(r.success) {
-					location.reload();
+					//trigger custom event so angular can figure it out
+					$( document ).trigger( "listingDisplayUpdate");
+
 					listingDisplayUpdate(updateTableID, {});	
 				} else {
 
@@ -984,16 +987,16 @@ function setupEventHandlers() {
 	});
 
 	//[TODO]: Change Up JS
-	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').addClass('s-opened');
 
 	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+		jQuery(this).find('.s-accordion-toggle-icon').addClass('s-opened');
 	});
 
 	jQuery('body').on('hidden.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('s-opened');
 	});
 
 	//UI Collections - show export and delete options
@@ -1240,7 +1243,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 		data[ hibachiConfig.action ] = 'admin:ajax.updateListingDisplay';
 		data[ 'propertyIdentifiers' ] = jQuery('#' + tableID).data('propertyidentifiers');
 		data[ 'processObjectProperties' ] = jQuery('#' + tableID).data('processobjectproperties');
-		if(data[ 'processObjectProperties' ].length) {
+		if(data[ 'processObjectProperties' ] && data[ 'processObjectProperties' ].length) {
 			data[ 'processContext' ] = jQuery('#' + tableID).data('processcontext');
 			data[ 'processEntity' ] = jQuery('#' + tableID).data('processentity');
 			data[ 'processEntityID' ] = jQuery('#' + tableID).data('processentityid');
@@ -1256,148 +1259,151 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 			nextRowDepth = jQuery('#' + afterRowID).find('[data-depth]').attr('data-depth');
 			nextRowDepth++;
 		}
-
-		jQuery.ajax({
-			url: hibachiConfig.baseURL + '/',
-			method: 'post',
-			data: data,
-			dataType: 'json',
-			beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
-			error: function(result) {
-				removeLoadingDiv( tableID );
-				listingUpdateRelease();
-				displayError();
-			},
-			success: function(r) {
-
-				// Setup Selectors
-				var tableBodySelector = '#' + tableID + ' tbody';
-				var tableHeadRowSelector = '#' + tableID + ' thead tr';
-
-				// Clear out the old Body, if there is no afterRowID
-				if(!afterRowID) {
-					jQuery(tableBodySelector).html('');
-				}
-
-				// Loop over each of the records in the response
-				jQuery.each( r["pageRecords"], function(ri, rv) {
-
-					var rowSelector = jQuery('<tr></tr>');
-					jQuery(rowSelector).attr('id', jQuery.trim(rv[ idProperty ]));
-
-					if(afterRowID) {
-						jQuery(rowSelector).attr('data-idpath', jQuery.trim(rv[ idProperty + 'Path' ]));
-						jQuery(rowSelector).data('idpath', jQuery.trim(rv[ idProperty + 'Path' ]));
-						jQuery(rowSelector).attr('data-parentid', afterRowID);
-						jQuery(rowSelector).data('parentid', afterRowID);
+		if(data['entityName']){
+			jQuery.ajax({
+				url: hibachiConfig.baseURL + '/',
+				method: 'post',
+				data: data,
+				dataType: 'json',
+				beforeSend: function (xhr) { xhr.setRequestHeader('X-Hibachi-AJAX', true) },
+				error: function(result) {
+					removeLoadingDiv( tableID );
+					listingUpdateRelease();
+					displayError();
+				},
+				success: function(r) {
+	
+					// Setup Selectors
+					var tableBodySelector = '#' + tableID + ' tbody';
+					var tableHeadRowSelector = '#' + tableID + ' thead tr';
+	
+					// Clear out the old Body, if there is no afterRowID
+					if(!afterRowID) {
+						jQuery(tableBodySelector).html('');
 					}
-
-					// Loop over each column of the header to pull the data out of the response and populate new td's
-					jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
-
-						var newtd = '';
-						var link = '';
-
-						if( jQuery(cv).hasClass('data') ) {
-
-							if( typeof rv[jQuery(cv).data('propertyidentifier')] === 'boolean' && rv[jQuery(cv).data('propertyidentifier')] ) {
-								newtd += '<td class="' + jQuery(cv).attr('class') + '">Yes</td>';
-							} else if ( typeof rv[jQuery(cv).data('propertyidentifier')] === 'boolean' && !rv[jQuery(cv).data('propertyidentifier')] ) {
-								newtd += '<td class="' + jQuery(cv).attr('class') + '">No</td>';
-							} else {
-								if(jQuery(cv).hasClass('primary') && afterRowID) {
-									newtd += '<td class="' + jQuery(cv).attr('class') + '"><a href="#" class="table-action-expand depth' + nextRowDepth + '" data-depth="' + nextRowDepth + '"><i class="glyphicon glyphicon-plus"></i></a> ' + jQuery.trim(rv[jQuery(cv).data('propertyidentifier')]) + '</td>';
+	
+					// Loop over each of the records in the response
+					jQuery.each( r["pageRecords"], function(ri, rv) {
+	
+						var rowSelector = jQuery('<tr></tr>');
+						jQuery(rowSelector).attr('id', jQuery.trim(rv[ idProperty ]));
+	
+						if(afterRowID) {
+							jQuery(rowSelector).attr('data-idpath', jQuery.trim(rv[ idProperty + 'Path' ]));
+							jQuery(rowSelector).data('idpath', jQuery.trim(rv[ idProperty + 'Path' ]));
+							jQuery(rowSelector).attr('data-parentid', afterRowID);
+							jQuery(rowSelector).data('parentid', afterRowID);
+						}
+	
+						// Loop over each column of the header to pull the data out of the response and populate new td's
+						jQuery.each(jQuery(tableHeadRowSelector).children(), function(ci, cv){
+	
+							var newtd = '';
+							var link = '';
+	
+							if( jQuery(cv).hasClass('data') ) {
+	
+								if( typeof rv[jQuery(cv).data('propertyidentifier')] === 'boolean' && rv[jQuery(cv).data('propertyidentifier')] ) {
+									newtd += '<td class="' + jQuery(cv).attr('class') + '">Yes</td>';
+								} else if ( typeof rv[jQuery(cv).data('propertyidentifier')] === 'boolean' && !rv[jQuery(cv).data('propertyidentifier')] ) {
+									newtd += '<td class="' + jQuery(cv).attr('class') + '">No</td>';
 								} else {
-									if(jQuery(cv).data('propertyidentifier') !== undefined) {
-										newtd += '<td class="' + jQuery(cv).attr('class') + '">' + jQuery.trim(rv[jQuery(cv).data('propertyidentifier')]) + '</td>';
-									} else if (jQuery(cv).data('processobjectproperty') !== undefined) {
-										newtd += '<td class="' + jQuery(cv).attr('class') + '">' + jQuery.trim(rv[jQuery(cv).data('processobjectproperty')]) + '</td>';
+									if(jQuery(cv).hasClass('primary') && afterRowID) {
+										newtd += '<td class="' + jQuery(cv).attr('class') + '"><a href="#" class="table-action-expand depth' + nextRowDepth + '" data-depth="' + nextRowDepth + '"><i class="glyphicon glyphicon-plus"></i></a> ' + jQuery.trim(rv[jQuery(cv).data('propertyidentifier')]) + '</td>';
+									} else {
+										if(jQuery(cv).data('propertyidentifier') !== undefined) {
+											newtd += '<td class="' + jQuery(cv).attr('class') + '">' + jQuery.trim(rv[jQuery(cv).data('propertyidentifier')]) + '</td>';
+										} else if (jQuery(cv).data('processobjectproperty') !== undefined) {
+											newtd += '<td class="' + jQuery(cv).attr('class') + '">' + jQuery.trim(rv[jQuery(cv).data('processobjectproperty')]) + '</td>';
+										}
 									}
 								}
+	
+							} else if( jQuery(cv).hasClass('sort') ) {
+	
+								newtd += '<td class="s-table-sort"><a href="#" class="table-action-sort" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '" data-sortpropertyvalue="' + rv.sortOrder + '"><i class="fa fa-arrows"></i></a></td>';
+	
+							} else if( jQuery(cv).hasClass('multiselect') ) {
+	
+								newtd += '<td class="s-table-checkbox"><a href="#" class="table-action-multiselect';
+								if(jQuery(cv).hasClass('disabled')) {
+									newtd += ' disabled';
+								}
+								newtd += '" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '"><i class="hibachi-ui-checkbox"></i></a></td>';
+	
+							} else if( jQuery(cv).hasClass('select') ) {
+	
+								newtd += '<td class="s-table-select"><a href="#" class="table-action-select';
+								if(jQuery(cv).hasClass('disabled')) {
+									newtd += ' disabled';
+								}
+								newtd += '" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '"><i class="hibachi-ui-radio"></i></a></td>';
+	
+	
+							} else if ( jQuery(cv).hasClass('admin') ){
+	
+								newtd += '<td class="admin">' + jQuery.trim(rv[ 'admin' ]) + '</td>';
+	
 							}
-
-						} else if( jQuery(cv).hasClass('sort') ) {
-
-							newtd += '<td class="s-table-sort"><a href="#" class="table-action-sort" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '" data-sortpropertyvalue="' + rv.sortOrder + '"><i class="fa fa-arrows"></i></a></td>';
-
-						} else if( jQuery(cv).hasClass('multiselect') ) {
-
-							newtd += '<td class="s-table-checkbox"><a href="#" class="table-action-multiselect';
-							if(jQuery(cv).hasClass('disabled')) {
-								newtd += ' disabled';
+	
+							jQuery(rowSelector).append(newtd);
+	
+							// If there was a fieldClass then we need to add it to the input or select box
+							if(jQuery(cv).data('fieldclass') !== undefined) {
+								jQuery(rowSelector).children().last().find('input,select').addClass( jQuery(cv).data('fieldclass') )
 							}
-							newtd += '" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '"><i class="hibachi-ui-checkbox"></i></a></td>';
-
-						} else if( jQuery(cv).hasClass('select') ) {
-
-							newtd += '<td class="s-table-select"><a href="#" class="table-action-select';
-							if(jQuery(cv).hasClass('disabled')) {
-								newtd += ' disabled';
-							}
-							newtd += '" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '"><i class="hibachi-ui-radio"></i></a></td>';
-
-
-						} else if ( jQuery(cv).hasClass('admin') ){
-
-							newtd += '<td class="admin">' + jQuery.trim(rv[ 'admin' ]) + '</td>';
-
-						}
-
-						jQuery(rowSelector).append(newtd);
-
-						// If there was a fieldClass then we need to add it to the input or select box
-						if(jQuery(cv).data('fieldclass') !== undefined) {
-							jQuery(rowSelector).children().last().find('input,select').addClass( jQuery(cv).data('fieldclass') )
+						});
+	
+						if(!afterRowID) {
+							jQuery(tableBodySelector).append(jQuery(rowSelector));
+						} else {
+							jQuery(tableBodySelector).find('#' + afterRowID).after(jQuery(rowSelector));
 						}
 					});
-
-					if(!afterRowID) {
-						jQuery(tableBodySelector).append(jQuery(rowSelector));
-					} else {
-						jQuery(tableBodySelector).find('#' + afterRowID).after(jQuery(rowSelector));
+	
+	
+					// If there were no page records then add the blank row
+					if(r["pageRecords"].length === 0 && !afterRowID) {
+						jQuery(tableBodySelector).append( '<tr><td colspan="' + jQuery(tableHeadRowSelector).children('th').length + '" style="text-align:center;"><em>' + jQuery('#' + tableID).data('norecordstext') + '</em></td></tr>' );
 					}
-				});
-
-
-				// If there were no page records then add the blank row
-				if(r["pageRecords"].length === 0 && !afterRowID) {
-					jQuery(tableBodySelector).append( '<tr><td colspan="' + jQuery(tableHeadRowSelector).children('th').length + '" style="text-align:center;"><em>' + jQuery('#' + tableID).data('norecordstext') + '</em></td></tr>' );
+	
+					// Update the paging nav
+	
+					jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
+					pagingShowToggleDefaultHidden();
+					// Update the saved state ID of the table
+					jQuery('#' + tableID).data('savedstateid', r["savedStateID"]);
+					jQuery('#' + tableID).attr('data-savedstateid', r["savedStateID"]);
+	
+					if(jQuery('#' + tableID).data('multiselectfield')) {
+						updateMultiselectTableUI( jQuery('#' + tableID).data('multiselectfield') );
+					}
+	
+					if(jQuery('#' + tableID).data('selectfield')) {
+						updateSelectTableUI( jQuery('#' + tableID).data('selectfield') );
+					}
+	
+					// Unload the loading icon
+					removeLoadingDiv( tableID );
+	
+					// Release the hold
+					listingUpdateRelease();
+	
+					//If there is a pending carriage return and only one record returned, perform it's first action
+					if(pendingCarriageReturn && r["pageRecords"].length==1){
+						var btn=jQuery(tableBodySelector +' tr td:last a.btn:first')[0];
+						jQuery('input[tableid='+tableID+'].general-listing-search').val('').keyup();
+						btn.click();
+						//Clear the search list
+	
+					}
+					pendingCarriageReturn=false;
 				}
-
-				// Update the paging nav
-
-				jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
-				pagingShowToggleDefaultHidden();
-				// Update the saved state ID of the table
-				jQuery('#' + tableID).data('savedstateid', r["savedStateID"]);
-				jQuery('#' + tableID).attr('data-savedstateid', r["savedStateID"]);
-
-				if(jQuery('#' + tableID).data('multiselectfield')) {
-					updateMultiselectTableUI( jQuery('#' + tableID).data('multiselectfield') );
-				}
-
-				if(jQuery('#' + tableID).data('selectfield')) {
-					updateSelectTableUI( jQuery('#' + tableID).data('selectfield') );
-				}
-
-				// Unload the loading icon
-				removeLoadingDiv( tableID );
-
-				// Release the hold
-				listingUpdateRelease();
-
-				//If there is a pending carriage return and only one record returned, perform it's first action
-				if(pendingCarriageReturn && r["pageRecords"].length==1){
-					var btn=jQuery(tableBodySelector +' tr td:last a.btn:first')[0];
-					jQuery('input[tableid='+tableID+'].general-listing-search').val('').keyup();
-					btn.click();
-					//Clear the search list
-
-				}
-				pendingCarriageReturn=false;
-			}
-		});
-
+			});
+		}else{
+			removeLoadingDiv( tableID );
+			listingUpdateRelease();
+		}
 	}
 }
 

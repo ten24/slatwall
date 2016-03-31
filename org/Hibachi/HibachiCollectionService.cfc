@@ -307,7 +307,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 
 	//even though void return type it still makes changes to the collectionConfigStuct
-	private void function addColumnsToCollectionConfigStructByPropertyIdentifierList(required any collectionEntity, required string propertyIdentifierList){
+	private void function addColumnsToCollectionConfigStructByPropertyIdentifierList(required any collectionEntity, required string propertyIdentifierList, boolean enforceAuthorization=true){
 		var collectionConfigStruct = arguments.collectionEntity.getCollectionConfigStruct();
 		if(structKeyExists(collectionConfigStruct,'columns')){
 			var columnsArray = collectionConfigStruct.columns;
@@ -318,7 +318,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		var propertyIdentifiersArray = ListToArray(arguments.propertyIdentifierList);
 		for(propertyIdentifierItem in propertyIdentifiersArray){
 			if(
-				getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, propertyIdentifierItem)
+				!arguments.enforceAuthorization || getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, propertyIdentifierItem)
 			){
 				columnStruct = {
 					propertyIdentifier = "#propertyIdentifierItem#"
@@ -438,7 +438,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return collectionConfigStruct;
 	}
 
-	public any function getAPIResponseForEntityName(required string entityName, required struct collectionOptions){
+	public any function getAPIResponseForEntityName(required string entityName, required struct collectionOptions, boolean enforceAuthorization=true){
 
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
@@ -451,7 +451,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
+		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions,arguments.enforceAuthorization);
 	}
 
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct collectionOptions){
@@ -515,7 +515,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 
 			if(structKeyExists(arguments.collectionOptions,'propertyIdentifiersList') && len(arguments.collectionOptions.propertyIdentifiersList)){
-				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList);
+				addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList,arguments.enforceAuthorization);
 				var collectionPropertyIdentifiers = [];
 			}else{
 				var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
@@ -673,6 +673,28 @@ component output="false" accessors="true" extends="HibachiService" {
 			var headers = StructKeyList(collectionData[1]);
 			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
 	}//<--end function
+
+	public void function collectionConfigExport(required struct data) {
+		param name="arguments.data.collectionConfig" type="string" pattern="^{.*}$";
+
+		arguments.data.collectionConfig = DeserializeJSON(arguments.data.collectionConfig);
+
+		var collectionEntity = getCollectionList(arguments.data.collectionConfig.baseEntityName);
+
+		var exportableColumns = [];
+		for(var column in arguments.data.collectionConfig.columns){
+			if(StructKeyExists(column, "isExportable") && column.isExportable == true){
+				ArrayAppend(exportableColumns, column);
+			}
+		}
+		arguments.data.collectionConfig.columns = exportableColumns;
+		arguments.data.collectionConfig["allRecords"] = true;
+		collectionEntity.setCollectionConfig(serializeJSON(arguments.data.collectionConfig));
+		var collectionData = collectionEntity.getRecords(forExport=true,formatRecords=false);
+		var headers = StructKeyList(collectionData[1]);
+		getService('hibachiService').export( collectionData, headers, headers, arguments.data.collectionConfig.baseEntityName, "csv" );
+
+	}
 
 	// =====================  END: Logical Methods ============================
 

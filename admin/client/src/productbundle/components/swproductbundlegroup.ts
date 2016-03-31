@@ -28,14 +28,14 @@ class SWProductBundleGroupController {
 	public showAll;
 	public currentPage;
 	public pageShow;
-    public recordsPerPage; 
+    public recordsPerPage;
 	public timeoutPromise;
 	public navigation;
 	public filterTemplatePath;
 	public productBundleGroupFilters;
 	public index;
-    public keyword; 
-    public filterTerm; 
+    public keyword;
+    public filterTerm;
 	public loading;
 	public searchOptions;
 	public value;
@@ -52,19 +52,19 @@ class SWProductBundleGroupController {
 
 
     // @ngInject
-	constructor(private $log:ng.ILogService, 
+	constructor(private $log:ng.ILogService,
                 private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
-				private productBundleService,  
-                private metadataService, 
-                private utilityService, 
+				private productBundleService,
+                private metadataService,
+                private utilityService,
                 private formService,
-				private $hibachi, 
+				private $hibachi,
                 private productBundlePartialsPath){
 
 		this.$id = 'productBundleGroup';
         this.maxRecords = 10;
-        this.recordsCount = 0;  
+        this.recordsCount = 0;
         this.pageRecordsStart = 0;
         this.pageRecordsEnd = 0;
         this.recordsPerPage = 10;
@@ -72,8 +72,8 @@ class SWProductBundleGroupController {
         this.showAdvanced = false;
         this.currentPage = 1;
         this.pageShow = 10;
-        this.searchAllCollectionConfigs = [];       
-        
+        this.searchAllCollectionConfigs = [];
+
         if(angular.isUndefined(this.filterPropertiesList)){
             this.filterPropertiesList = {};
             var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
@@ -83,8 +83,8 @@ class SWProductBundleGroupController {
                 metadataService.formatPropertiesList(this.filterPropertiesList['_sku'],'_sku');
             });
         }
-        
-        this.skuCollectionConfig = { 
+
+        this.skuCollectionConfig = {
             baseEntityName:"Sku",
             baseEntityAlias:"_sku",
             collectionConfig:this.productBundleGroup.data.skuCollectionConfig,
@@ -139,22 +139,22 @@ class SWProductBundleGroupController {
 			this.productBundleGroup.productBundleGroupFilters = [];
 		}
 
-		if(!angular.isDefined(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index])){
-			this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index] = {};
-			this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
+		if(!angular.isDefined(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0])){
+			this.productBundleGroup.data.skuCollectionConfig.filterGroups[0] = {};
+			this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
 		}
 
 		var options = {
-				filterGroupsConfig:this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup,
+				filterGroupsConfig:this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup,
 				columnsConfig:this.productBundleGroup.data.skuCollectionConfig.columns,
 		};
-        
-		this.getCollection(); 
+
+		this.getCollection();
 	}
 
 	public openCloseAndRefresh = () => {
 		this.showAdvanced = !this.showAdvanced;
-		if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.length){
+		if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length){
 			this.getCollection();
 		}
 
@@ -164,9 +164,9 @@ class SWProductBundleGroupController {
 		if (angular.isNumber(type)){
             this.removeProductBundleGroupFilter(type);
         }else{
-            this.removeProductBundleGroup({index:this.index});  
-            this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup = [];
-            
+            this.removeProductBundleGroup({index:this.index});
+            this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
+
         }
 	};
 
@@ -174,7 +174,7 @@ class SWProductBundleGroupController {
 		var options = {
             filterGroupsConfig:angular.toJson(this.productBundleGroup.data.skuCollectionConfig.filterGroups),
             columnsConfig:angular.toJson(this.productBundleGroup.data.skuCollectionConfig.columns),
-            currentPage:1, 
+            currentPage:1,
             pageShow:10
         };
         var collectionPromise = this.$hibachi.getEntity('Sku',options);
@@ -196,53 +196,53 @@ class SWProductBundleGroupController {
 	};
 
 	public getFiltersByTerm = (keyword,filterTerm) =>{
-		//save search 
-        this.keyword = keyword; 
-        this.filterTerm = filterTerm; 
+		//save search
+        this.keyword = keyword;
+        this.filterTerm = filterTerm;
         this.loading = true;
         this.showAll = true;
         var _loadingCount;
         if(this.timeoutPromise) {
             this.$timeout.cancel(this.timeoutPromise);
         }
-        
+
         this.timeoutPromise = this.$timeout(()=>{
             if(filterTerm.value === 'All'){
-                this.showAll = true; 
+                this.showAll = true;
                 this.productBundleGroupFilters.value = [];
                 _loadingCount = this.searchOptions.options.length - 1;
-                for(var i in this.searchOptions.options){
+                for(var i = 0; i < this.searchOptions.options.length;i++){
                     this.$log.debug("INT");
                     this.$log.debug(i);
                     if(i > 0){
                         var option = this.searchOptions.options[i];
                         ((keyword,option) =>{
                             if(this.searchAllCollectionConfigs.length < 4){
-                                this.searchAllCollectionConfigs.push(this.collectionConfigService.newCollectionConfig(this.searchOptions.options[i].value)); 
+                                this.searchAllCollectionConfigs.push(this.collectionConfigService.newCollectionConfig(this.searchOptions.options[i].value));
                             }
-                            
-                            this.searchAllCollectionConfigs[i-1].setKeywords(keyword); 
-                            this.searchAllCollectionConfigs[i-1].setCurrentPage(this.currentPage); 
-                            this.searchAllCollectionConfigs[i-1].setPageShow(this.pageShow); 
+
+                            this.searchAllCollectionConfigs[i-1].setKeywords(keyword);
+                            this.searchAllCollectionConfigs[i-1].setCurrentPage(this.currentPage);
+                            this.searchAllCollectionConfigs[i-1].setPageShow(this.pageShow);
                             //searchAllCollectionConfig.setAllRecords(true);
-                            
-                            
+
+
                             this.searchAllCollectionConfigs[i-1].getEntity().then((value)=>{
-                                
+
                                 this.recordsCount = value.recordsCount;
                                 this.pageRecordsStart = value.pageRecordsStart;
                                 this.pageRecordsEnd = value.pageRecordsEnd;
                                 this.totalPages = value.totalPages;
-                                
-                                var formattedProductBundleGroupFilters = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,option,this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup);
-                                
+
+                                var formattedProductBundleGroupFilters = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,option,this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup);
+
                                 for(var j in formattedProductBundleGroupFilters){
-                                    if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1){
+                                    if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1){
                                         this.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
                                         this.$log.debug(formattedProductBundleGroupFilters[j]);
-                                    }   
+                                    }
                                 }
-                                
+
                                 // Increment Down The Loading Count
                                 _loadingCount--;
                                 // If the loadingCount drops to 0, then we can update scope
@@ -253,45 +253,45 @@ class SWProductBundleGroupController {
                                     if(this.productBundleGroupFilters.value.length == 0){
                                         this.currentPage = 0;
                                     }
-                                    
+
                                 }
                                 this.loading = false;
                             });
                         })(keyword, option);
-                    } 
+                    }
                 }
             }else{
-                this.showAll = false; 
-                
+                this.showAll = false;
+
                 if(angular.isUndefined(this.searchCollectionConfig) || filterTerm.value != this.searchCollectionConfig.baseEntityName){
-                    this.searchCollectionConfig = this.collectionConfigService.newCollectionConfig(filterTerm.value); 
-                }       
-                this.searchCollectionConfig.setKeywords(keyword); 
-                this.searchCollectionConfig.setCurrentPage(this.currentPage); 
-                this.searchCollectionConfig.setPageShow(this.pageShow); 
-                    
+                    this.searchCollectionConfig = this.collectionConfigService.newCollectionConfig(filterTerm.value);
+                }
+                this.searchCollectionConfig.setKeywords(keyword);
+                this.searchCollectionConfig.setCurrentPage(this.currentPage);
+                this.searchCollectionConfig.setPageShow(this.pageShow);
+
                 this.searchCollectionConfig.getEntity().then((value)=>{
-                    
-                    this.recordsCount = value.recordsCount;         
+
+                    this.recordsCount = value.recordsCount;
                     this.pageRecordsStart = value.pageRecordsStart;
                     this.pageRecordsEnd = value.pageRecordsEnd;
                     this.totalPages = value.totalPages;
                     this.$log.debug('getFiltersByTerm');
                     this.$log.debug(value);
-                    this.productBundleGroupFilters.value = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,filterTerm,this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup) || [];
+                    this.productBundleGroupFilters.value = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,filterTerm,this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup) || [];
                     this.loading = false;
                 });
             }
-        }, 500);    
+        }, 500);
 	}
 
 
 	public addFilterToProductBundle = (filterItem,include,index) =>{
 
         var collectionFilterItem = new CollectionFilterItem(
-                filterItem.name, filterItem.type, 
-                filterItem.type, filterItem.propertyIdentifier,  
-                filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID'], 
+                filterItem.name, filterItem.type,
+                filterItem.type, filterItem.propertyIdentifier,
+                filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID'],
                 filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']
             );
         if(include === false){
@@ -299,14 +299,14 @@ class SWProductBundleGroupController {
         }else{
             collectionFilterItem.comparisonOperator = '=';
         }
-        
-        if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.length > 0){
+
+        if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
             collectionFilterItem.logicalOperator = 'OR';
         }
-        
+
         if(angular.isDefined(this.searchCollectionConfig)){
             this.searchCollectionConfig.addFilter(this.searchCollectionConfig.baseEntityName+"ID", collectionFilterItem.value, "!=");
-        } 
+        }
         if(this.showAll){
             switch(collectionFilterItem.type){
                 case 'Product Type':
@@ -323,30 +323,31 @@ class SWProductBundleGroupController {
                     break;
             }
         }
-        
+
         //Adds filter item to designated filtergroup
-        this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.push(collectionFilterItem);
-        
+        this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
+        this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
+
         //reload the list to correct pagination show all takes too long for this to be graceful
         if(!this.showAll){
             this.getFiltersByTerm(this.keyword, this.filterTerm);
-        } else { 
+        } else {
             //Removes the filter item from the left hand search result
             this.productBundleGroupFilters.value.splice(index,1);
-        }  
+        }
 	}
 
 	public removeProductBundleGroupFilter = (index) =>{
 		//Pushes item back into array
-        this.productBundleGroupFilters.value.push(this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup[index]);
+        this.productBundleGroupFilters.value.push(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
         //Sorts Array
         this.productBundleGroupFilters.value = this.utilityService.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
         //Removes the filter item from the filtergroup
-        var collectionFilterItem = this.productBundleGroup.data.skuCollectionConfig.filterGroups[this.index].filterGroup.splice(index,1)[0];
-        
+        var collectionFilterItem = this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1)[0];
+
         if(angular.isDefined(this.searchCollectionConfig)){
             this.searchCollectionConfig.removeFilter(this.searchCollectionConfig.baseEntityAlias + '.' + this.searchCollectionConfig.baseEntityName+"ID", collectionFilterItem.value, "!=");
-        } 
+        }
         if(this.showAll){
             switch(collectionFilterItem.type){
                 case 'Product Type':
@@ -365,13 +366,13 @@ class SWProductBundleGroupController {
         }
         if(!this.showAll){
             this.getFiltersByTerm(this.keyword, this.filterTerm);
-        } else { 
+        } else {
             this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
         }
-    }    
-    
+    }
 
-     
+
+
 }
 
 class SWProductBundleGroup implements ng.IDirective{
@@ -392,12 +393,12 @@ class SWProductBundleGroup implements ng.IDirective{
 	public controllerAs="swProductBundleGroup";
 
     // @ngInject
-	constructor(private $log:ng.ILogService, 
+	constructor(private $log:ng.ILogService,
                 private $timeout:ng.ITimeoutService,
 				private collectionConfigService,
-				private productBundleService, 
-                private metadataService, 
-                private utilityService, 
+				private productBundleService,
+                private metadataService,
+                private utilityService,
                 private formService,
 				private $hibachi,
                 private productBundlePartialsPath,

@@ -1,6 +1,5 @@
 /// <reference path='../typings/hibachiTypescript.d.ts' />
 /// <reference path='../typings/tsd.d.ts' />
-require('./vendor.ts')();
 import {coremodule} from "./core/core.module";
 declare var angular:any;
 declare var hibachiConfig:any;
@@ -13,7 +12,8 @@ export class BaseBootStrapper{
     public $q:ng.IQService;
     public appConfig:any;
 
-    constructor(){
+    constructor(myApplication){
+      this.myApplication = myApplication;
       return angular.lazy(this.myApplication)
         .resolve(['$http','$q','$timeout', ($http,$q,$timeout)=> {
             this.$http = $http;
@@ -25,8 +25,7 @@ export class BaseBootStrapper{
                 && localStorage.getItem('resourceBundles')
                 && localStorage.getItem('resourceBundles') !== 'undefined'
             ){
-
-                 return $http.get('/index.cfm/?'+hibachiConfig.action+'=api:main.getInstantiationKey')
+                 return $http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getInstantiationKey')
 
                 .then( (resp)=> {
                     var appConfig = JSON.parse(localStorage.getItem('appConfig'));
@@ -55,7 +54,7 @@ export class BaseBootStrapper{
 
     getData=()=>{
 
-        return this.$http.get('/index.cfm/?'+hibachiConfig.action+'=api:main.getConfig')
+        return this.$http.get(hibachiConfig.baseURL+'?'+hibachiConfig.action+'=api:main.getConfig')
 
         .then( (resp:any)=> {
             coremodule.constant('appConfig',resp.data.data);

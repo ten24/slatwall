@@ -48,38 +48,72 @@ Notes:
 
 <cfoutput>
 	<div class="row s-image-uploader">
-		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
-			<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
+		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFileStruct">
+			<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFileStruct.imageFile#" />
 			<cfif fileExists(expandPath(thisImagePath))>
-				<div class="col-xs-2">
+				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
 						<div class="s-image">
-							<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath)#" target="_blank" alt="#imageFile#">
-								#$.slatwall.getResizedImage(imagePath=thisImagePath, width=210, height=210)#
-								<span class="s-zoom"><i class="fa fa-search"></i></span>
-							</a>
+							#$.slatwall.getResizedImage(imagePath=thisImagePath, width=250, height=250)#
 						</div>
-						<!--- <div class="s-caption">
-							<h4 title="#imageFile#">#imageFile#</h4>
-						</div> --->
+						<div class="s-title">
+							<span class="s-short">
+								<cfset objImage  = imageFileStruct.imageFile>
+								<cfif len( trim( imageFileStruct.imageFile ) ) gt 17>
+									<cfset objImage  = left( trim( imageFileStruct.imageFile ), 17 ) & "...">
+								</cfif>
+								#objImage#
+							</span>
+							<span class="s-long">
+								<ul class="list-unstyled" style="margin:0px;">
+									<li><strong>URL Title:</strong><div>#imageFileStruct.imageFile#</div></li>
+									<li><strong>Sku Definition:</strong><div>#imageFileStruct.skuDefinition#</div></li>
+								</ul>
+							</span>
+						</div>
 						<div class="s-controlls">
 							<div class="btn-group btn-group-justified" role="group">
 								<div class="btn-group" role="group">
-									<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
+									<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFileStruct.imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
 								</div>
 								<div class="btn-group" role="group">
-									<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
+									<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFileStruct.imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
 								</div>
 							</div>
 						</div>
 					</div>
 				</div> 
 			<cfelse>
-				<div class="col-xs-2 s-upload-image s-new-image">
+				<div class="col-xs-2 s-upload-image">
 					<div class="thumbnail">
-						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" icon="picture" iconOnly="false"  modal="true" />
+						<div class="s-image">
+							<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFileStruct.imageFile#" icon="picture" iconOnly="true"  modal="true" />
+						</div>
+						<div class="s-title">
+							<span class="s-short">
+								<cfset objImage  = imageFileStruct.imageFile>
+								<cfif len( trim( imageFileStruct.imageFile ) ) gt 17>
+									<cfset objImage  = left( trim( imageFileStruct.imageFile ), 17 ) & "...">
+								</cfif>
+								#objImage#
+							</span>
+							<span class="s-long">
+								<ul class="list-unstyled" style="margin:0px;">
+									<li><strong>URL Title:</strong><div>#imageFileStruct.imageFile#</div></li>
+									<li><strong>Sku Definition:</strong><div>#imageFileStruct.skuDefinition#</div></li>
+								</ul>
+							</span>
+						</div>
+						<div class="s-controlls">
+							<div class="btn-group btn-group-justified" role="group">
+								<div class="btn-group" role="group">
+									<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFileStruct.imageFile#" icon="plus" iconOnly="true"  modal="true" class="btn btn-default" />
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
+				
 			</cfif>
 		</cfloop>
 	</div>

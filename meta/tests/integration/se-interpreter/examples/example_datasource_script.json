@@ -1,0 +1,22 @@
+{
+  "type": "script",
+  "seleniumVersion": "2",
+  "formatVersion": 2,
+  "steps": [
+    {
+      "type": "get",
+      "url": "http://sebuilder.github.io/se-builder/"
+    },
+    {
+      "type": "print",
+      "text": "${examplekey}"
+    }
+  ],
+  "data": {
+    "configs": {
+      "example": {}
+    },
+    "source": "example"
+  },
+  "inputs": []
+}
