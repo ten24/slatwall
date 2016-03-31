@@ -5,13 +5,13 @@
 		<cfargument name="value" type="any" required="true" />
 		<cfargument name="expires" type="string" />
 		<cfargument name="secure" type="boolean" default="false" />
-		<cfargument name="domain" type="string" default="#CGI.HTTP_HOST#" />
+		<cfargument name="domain" type="string" />
 
-		<cfif structKeyExists(arguments, "expires")>
-			<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#" httponly="true" domain="#arguments.domain#">
-		<cfelse>
-			<cfcookie name="#arguments.name#" value="#arguments.value#" secure="#arguments.secure#" httponly="true" domain="#arguments.domain#">
+		<cfif !structKeyExists(arguments, "domain") and len(getApplicationValue("hibachiConfig").sessionCookieDomain)>
+			<cfset arguments.domain = getApplicationValue("hibachiConfig").sessionCookieDomain />
 		</cfif>
+
+		<cfcookie attributeCollection="#arguments#" />
 	</cffunction>
 
 	<cffunction name="cfhtmlhead">

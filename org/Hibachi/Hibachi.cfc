@@ -90,7 +90,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
-	variables.framework.hibachi.sessionCookieDomain = CGI.HTTP_HOST;
+	variables.framework.hibachi.sessionCookieDomain = "";
 	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 
 	// Allow For Application Config

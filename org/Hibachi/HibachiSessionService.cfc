@@ -145,15 +145,13 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Save session ID in the session Scope & cookie scope for next request
 		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 
-		var domain = getApplicationValue("hibachiConfig").sessionCookieDomain;
-
 		//Generate new session cookies for every time the session is persisted (on every login)
 		var npCookieValue = getValueForCookie();
-			getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
-			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID(), domain=domain);
-	    var cookieValue = getValueForCookie();
-			getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
-			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never", domain=domain);
+		getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
+		getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
+    var cookieValue = getValueForCookie();
+		getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
+		getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 
 	}
 
