@@ -2416,7 +2416,7 @@
 	        };
 	        this.responseError = function (rejection) {
 	            _this.$log.debug('responseReject');
-	            if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401.5) {
+	            if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401) {
 	                if (rejection.data && rejection.data.messages) {
 	                    var alerts = _this.alertService.formatMessagesToAlerts(rejection.data.messages);
 	                    _this.alertService.addAlerts(alerts);
@@ -2429,7 +2429,7 @@
 	                    _this.alertService.addAlert(message);
 	                }
 	            }
-	            if (rejection.status === 401.5) {
+	            if (rejection.status === 401) {
 	                // handle the case where the user is not authenticated
 	                if (rejection.data && rejection.data.messages) {
 	                    //var deferred = $q.defer();

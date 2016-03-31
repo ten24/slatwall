@@ -362,11 +362,11 @@ component extends="FW1.framework" {
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'forbidden';
 				}else if(structKeyExists(authorizationDetails,'timeout') && authorizationDetails.timeout == true){
-					status = 401.5;
+					status = 401;
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'timeout';
 				}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
-					status = 401.5;
+					status = 401;
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'invalid_token';
 				}
