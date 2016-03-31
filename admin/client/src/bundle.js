@@ -2439,11 +2439,15 @@
 	                        _this.dialogService.addPageDialog(_this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'), {});
 	                    }
 	                    else if (rejection.data.messages[0].message === 'invalid_token') {
+	                        console.log('rejectioninvalidtoken');
+	                        console.log(rejection);
 	                        return $http.get(_this.baseUrl + '/index.cfm/api/auth/login').then(function (loginResponse) {
 	                            _this.$window.localStorage.setItem('token', loginResponse.data.token);
 	                            rejection.config.headers = rejection.config.headers || {};
 	                            rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
 	                            return $http(rejection.config).then(function (response) {
+	                                console.log('responseinvalidtoken');
+	                                console.log(response);
 	                                return response;
 	                            });
 	                        }, function (rejection) {
