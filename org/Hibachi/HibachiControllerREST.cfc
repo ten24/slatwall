@@ -107,7 +107,7 @@ component output="false" accessors="true" extends="HibachiController" {
                     }
                 }
                 var pc = getpagecontext().getresponse();
-                pc.getresponse().setstatus(401);
+                pc.getresponse().setstatus(499);
                 return;
             }
         }

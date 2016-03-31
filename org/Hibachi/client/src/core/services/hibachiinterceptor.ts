@@ -118,7 +118,7 @@ class HibachiInterceptor implements IInterceptor{
         config.headers = config.headers || {};
         if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
 
-            angular.extend(config.headers.Authorization,'Bearer ' + this.$window.localStorage.getItem('token'));
+            config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
         }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
@@ -156,7 +156,7 @@ class HibachiInterceptor implements IInterceptor{
     public responseError = (rejection): ng.IPromise<any> => {
 
 		this.$log.debug('responseReject');
-		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401){
+		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
 			if(rejection.data && rejection.data.messages){
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
 				this.alertService.addAlerts(alerts);
@@ -168,7 +168,7 @@ class HibachiInterceptor implements IInterceptor{
 				this.alertService.addAlert(message);
 			}
 		}
-		if (rejection.status === 401) {
+		if (rejection.status === 499) {
 			// handle the case where the user is not authenticated
 			if(rejection.data && rejection.data.messages){
 				//var deferred = $q.defer();
@@ -182,7 +182,7 @@ class HibachiInterceptor implements IInterceptor{
                     return $http.get(this.baseUrl+'/index.cfm/api/auth/login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
                         this.$window.localStorage.setItem('token',loginResponse.data.token);
                         rejection.config.headers = rejection.config.headers || {};
-                        angular.extend(rejection.config.headers.Authorization,'Bearer ' + this.$window.localStorage.getItem('token'));
+                        rejection.config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
                         return $http(rejection.config).then(function(response) {
                             console.log('responseinvalidtoken');
                             console.log(response);

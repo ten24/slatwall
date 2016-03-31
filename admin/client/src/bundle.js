@@ -2381,7 +2381,7 @@
 	            config.cache = true;
 	            config.headers = config.headers || {};
 	            if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
-	                angular.extend(config.headers.Authorization, 'Bearer ' + _this.$window.localStorage.getItem('token'));
+	                config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
 	            }
 	            var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
 	            if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
@@ -2416,7 +2416,7 @@
 	        };
 	        this.responseError = function (rejection) {
 	            _this.$log.debug('responseReject');
-	            if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401) {
+	            if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499) {
 	                if (rejection.data && rejection.data.messages) {
 	                    var alerts = _this.alertService.formatMessagesToAlerts(rejection.data.messages);
 	                    _this.alertService.addAlerts(alerts);
@@ -2429,7 +2429,7 @@
 	                    _this.alertService.addAlert(message);
 	                }
 	            }
-	            if (rejection.status === 401) {
+	            if (rejection.status === 499) {
 	                // handle the case where the user is not authenticated
 	                if (rejection.data && rejection.data.messages) {
 	                    //var deferred = $q.defer();
@@ -2444,7 +2444,7 @@
 	                        return $http.get(_this.baseUrl + '/index.cfm/api/auth/login').then(function (loginResponse) {
 	                            _this.$window.localStorage.setItem('token', loginResponse.data.token);
 	                            rejection.config.headers = rejection.config.headers || {};
-	                            angular.extend(rejection.config.headers.Authorization, 'Bearer ' + _this.$window.localStorage.getItem('token'));
+	                            rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
 	                            return $http(rejection.config).then(function (response) {
 	                                console.log('responseinvalidtoken');
 	                                console.log(response);
