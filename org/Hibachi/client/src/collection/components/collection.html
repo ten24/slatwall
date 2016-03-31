@@ -1,4 +1,4 @@
-<div  >
+<div>
 	<div class="col-xs-12 s-filter-content s-filter-content-table-view">
 
 		<!-- Filters and Display Options -->
@@ -72,67 +72,60 @@
 			
 		</span>
 
-		<div class="s-table-wrapper" style="margin-bottom:20px;">
-			<div class="s-table-header-nav">
-				<div class="col-md-12 s-header-nav">
-					<div class="col-xs-6" style="padding-left:0px;">
-						<!--TODO: implement keyword searching and bulk actions -->
-						<ul class="list-inline list-unstyled">
-							<li><h3 class="s-table-header-title" sw-rbkey="'entity.Collection.collectionTableTitle'"><!--- created by rbkey ---></h3></li>
-						</ul>
-					</div>
-					
-					<div class="col-xs-6 s-table-view-options">
-						<ul class="list-inline list-unstyled">
-							<li>
-								<!--- Generates an exportable collection --->
-								<button type="button" title="Export Collection" class="btn btn-default btn-sm s-table-header-btn" ng-click="exportCollection()" ><i class="fa fa-share-square-o"></i></button>			
-							</li>
-							<!-- <li>
-								<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cogs"></i></button>
-							</li> -->
-							<li>
-								<div class="s-select-list-wrapper">
-									<div class="form-group s-table-search">
-										<input  type="text"
-											class="form-control input-sm"
-											placeholder="Search"
-											name="srch-term"
-											ng-model="keywords"
-											ng-change="searchCollection()"
-											/>
-											<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-											<i ng-show="!loadingCollection" class="fa fa-search"></i>
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
+		<div class="s-table-header-nav s-listing-head-margin">
+			<div class="col-xs-6 s-no-padding-left">
+				<ul class="list-inline list-unstyled">
+					<li>
+						<h4 class="s-table-title" sw-rbkey="'entity.Collection.collectionTableTitle'"><!--- created by rbkey ---></h4>
+					</li>
+				</ul>
 			</div>
-
-			<span sw-loading="collection">
-				
-				<sw-collection-table
-					data-angular-links="false"
-					data-collection="collection"
-					data-collection-config="collectionConfig"
-					data-is-radio="isRadio"
-					sw-scroll-trigger
-					infinite-scroll="appendToCollection()"
-					infinite-scroll-disabled="pagination.autoScrollDisabled"
-					infinite-scroll-distance="1">
-				</sw-collection-table> 
-				<sw-pagination-bar
-					ng-if="paginator"
-					data-collection="collection"
-					data-paginator="paginator"
-					data-get-collection="getCollection()"
-					>
-				</sw-pagination-bar>
-			</span>
+			<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
+				<ul class="list-inline list-unstyled">
+					<li>
+						<div class="btn-group navbar-left dropdown">
+							<button type="button" class="btn btn-xs btn-no-style dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cogs"></i></button>
+							<ul class="dropdown-menu pull-right" role="menu">
+								<li>
+									<a title="Export List" target="_self" ng-click="exportCollection()">Export List</a>
+								</li> 
+							</ul>
+						</div>
+					</li>
+					<li class="s-table-header-search">
+						<input  type="text"
+							class="form-control input-xs"
+							placeholder="Search"
+							name="srch-term"
+							ng-model="keywords"
+							ng-change="searchCollection()"
+							/>
+							<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+					</li>
+				</ul>
+			</div>
 		</div>
 
+		<span sw-loading="collection">
+			
+			<sw-collection-table
+				data-angular-links="false"
+				data-collection="collection"
+				data-collection-config="collectionConfig"
+				data-is-radio="isRadio"
+				sw-scroll-trigger
+				infinite-scroll="appendToCollection()"
+				infinite-scroll-disabled="pagination.autoScrollDisabled"
+				infinite-scroll-distance="1">
+			</sw-collection-table> 
+			<sw-pagination-bar
+				ng-if="paginator"
+				data-collection="collection"
+				data-paginator="paginator"
+				data-get-collection="getCollection()"
+				>
+			</sw-pagination-bar>
+		</span>
 		
 		<!--delete batch action-->
 		<div id="j-delete-link" class="row collapse s-batch-options">

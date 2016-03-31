@@ -34,14 +34,14 @@
 		<span ng-if="orderItem.onWaitlist === true">
 			<br>
 			<div class="s-button-group">
-				<button class="btn btn-xs s-btn-dgrey s-remove">Cancel Deposit</button>
+				<button class="btn btn-xs btn-dgrey s-remove">Cancel Deposit</button>
 			</div>
 		</span>
 		<!-- Handle button "Claim Spot"-->
 		<span ng-if="orderItem.isPending === true ">
 			<br>
 			<div class="s-button-group">
-				<button class="btn btn-xs s-btn-dgrey s-remove" ng-click="cancelDeposit(orderItem)">Cancel Deposit</button>
+				<button class="btn btn-xs btn-dgrey s-remove" ng-click="cancelDeposit(orderItem)">Cancel Deposit</button>
 				<button class="btn btn-xs btn-success" ng-click="claimSpot(orderItem)">Claim Spot</button>
 			</div>
 		</span>

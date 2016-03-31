@@ -62,7 +62,7 @@
 								<td class="s-bold" ng-if-end ng-bind-html="transaction.balance | swcurrency:swGiftCardHistory.giftCard.currencyCode"></td>
 							
 								<!-- All Other Transactions -->
-								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated && !transaction.bouncedEmail"><i class="fa fa-shopping-cart"></i></td>
+								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated && !transaction.bouncedEmail" class="s-status"><i class="fa fa-shopping-cart"></i></td>
 								<td ng-if-end>
 									<span ng-if="transaction.debit">Purchase Applied</span>
 									<span ng-if="!transaction.debit">Return Applied</span> 
