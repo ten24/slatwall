@@ -726,15 +726,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
 		if (foundSubscriptionWithAutoPayFlagSet){
-			//if we have order payments
-			if (!isNull(arguments.processObject.getOrder().getOrderPayments()) && arrayLen(arguments.processObject.getOrder().getOrderPayments())){
-				for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
-					if ((orderPayment.getStatusCode() == 'opstActive') && !isNull(orderPayment.getPaymentMethod()) && !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag()) && orderPayment.getPaymentMethod().getAllowSaveFlag()){
-						arguments.processObject.setSaveAccountPaymentMethodFlag( true );
-						break;
-					}
+			
+			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
+				if ((orderPayment.getStatusCode() == 'opstActive') && !isNull(orderPayment.getPaymentMethod()) && !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag()) && orderPayment.getPaymentMethod().getAllowSaveFlag()){
+					arguments.processObject.setSaveAccountPaymentMethodFlag( true );
+					break;
 				}
 			}
+			
 		}
 
 		// Attach 'createTransaction' errors to the order
