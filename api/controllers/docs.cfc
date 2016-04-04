@@ -38,6 +38,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		entityDocData['extends'] = getExtended(object);
     		entityDocData['functions'] = getFunctions(object);
     		entityDocData['properties'] = object.properties;
+    		if(structKeyExists(entityDocData,'description')){
+    			entityDocData['description'] = object.description;
+    		}
     		if(structKeyExists(object,'cacheuse')){
     			entityDocData['cacheUse'] = object.cacheuse;
     		}
@@ -158,6 +161,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		baseComponentMetaData[componentName] = {};
     		baseComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
     		baseComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
+    		if(structKeyExists(componentMetaData,'description')){
+    			baseComponentMetaData['description'] = componentMetaData.description;
+    		}
     	}
     	return baseComponentMetaData;
     }
@@ -175,6 +181,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		var componentMetaData = getComponentMetaData(serviceComponentPath&componentName);
     		serviceComponentMetaData[componentName] = {};
     		serviceComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
+    		if(structKeyExists(componentMetaData,'description')){
+    			serviceComponentMetaData[componentName]['description'] = componentMetaData.description;
+    		}
     		if(structKeyExists(componentMetaData,'functions')){
     			serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
     		}
@@ -198,6 +207,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		var componentMetaData = getComponentMetaData(daoComponentPath&componentName);
     		daoComponentMetaData[componentName] = {};
     		daoComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
+    		if(structKeyExists(componentMetaData,'description')){
+    			daoComponentMetaData[componentName]['description'] = componentMetaData.description;
+    		}
     		if(structKeyExists(componentMetaData,'functions')){
     			daoComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
     		}
@@ -225,6 +237,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 				if(structKeyExists(componentMetaData,'properties')){
 					processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
 				}
+				if(structKeyExists(componentMetaData,'description')){
+	    			processComponentMetaData[componentName]['description'] = componentMetaData.description;
+	    		}
 			}
 		}
     	return processComponentMetaData;
