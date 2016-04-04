@@ -3,8 +3,6 @@ FROM lucee/lucee4:latest
 MAINTAINER Greg Moser, greg.moser@ten24web.com
 
 RUN apt-get update && apt-get install -y uuid-runtime ant
-RUN apt-get update && \
-apt-get install -y curl
 
 COPY lucee-server.xml /opt/lucee/server/lucee-server/context/lucee-server.xml
 COPY lucee-web.xml.cfm /opt/lucee/web/lucee-web.xml.cfm
