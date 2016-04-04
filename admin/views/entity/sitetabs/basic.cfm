@@ -18,4 +18,21 @@
 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
+	
+	<cfset thisImagePath = #rc.$.slatwall.getResizedImage(imagePath="anywhere", width=250, height=250,siteID=rc.site.getSiteID())#>
+	 
+    <div class="col-xs-2 s-upload-image right">
+        <div class="thumbnail">
+            <div class="s-image">
+                #rc.$.slatwall.getResizedImage(imagePath="anywhere", width=250, height=250, siteID=rc.site.getSiteID())#
+            </div>
+            <div class="s-title">
+                <span>
+                   #rc.$.slatwall.getResizedImagePath(imagePath="anywhere", width=250, height=250, siteID=rc.site.getSiteID())#
+                </span>
+                
+            </div>
+            
+        </div>
+    </div> 
 </cfoutput>

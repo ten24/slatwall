@@ -116,9 +116,8 @@ component persistent="false" extends="HibachiService" output="false" accessors="
     }
 
 	// Image File Methods
-	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
+	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="", string siteID="") {
 		var resizedImagePath = "";
-
 		// If the image can't be found default to a missing image
 		if(!fileExists(expandPath(arguments.imagePath))) {
 			
@@ -128,26 +127,28 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 				arguments.imagePath = arguments.missingImagePath;
 				
 		    //look if this has been supplied at the site level.
-			} else if (!isNull(getCurrentRequestSite()) && fileExists(expandPath(getCurrentRequestSite().setting('siteMissingImagePath'))) ) {
-            
-                arguments.imagePath = getHibachiScope().setting('globalMissingImagePath');
+		    
+			} else if (!isNull(getService('siteService').getSite(arguments.siteID)) && !isNull(getService('siteService').getSiteBySiteID(arguments.siteID).setting('siteMissingImagePath'))) {
+                
+                arguments.imagePath = getService('siteService').getSite(arguments.siteID).setting('siteMissingImagePath');
 			
 			//check the custom location
 			} else if(fileExists(expandPath("#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg"))) {
-            
+               
                 arguments.imagePath = "#getApplicationValue('baseURL')#/custom/assets/images/missingimage.jpg";
                 
 			//check the global location
 			} else if ( fileExists(expandPath(getHibachiScope().setting('globalMissingImagePath'))) ) {
-            
+               
                 arguments.imagePath = getHibachiScope().setting('globalMissingImagePath');
             
             //check the default location
             } else {
-			
+			  
 				arguments.imagePath = "#getApplicationValue('baseURL')#/assets/images/missingimage.jpg";
 			
 			}
+			
 		}
 
 		// if no width and height is passed in, display the original image
