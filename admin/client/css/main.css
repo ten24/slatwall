@@ -1878,6 +1878,9 @@ table .s-edit-elements a:hover {
   text-align: left;
   padding-bottom: 3px;
 }
+.s-options .tab-content h4 > .s-type {
+  font-weight: 600;
+}
 .s-options .tab-content h4 button.s-button-no-style:hover {
   text-decoration: underline;
 }
@@ -1971,73 +1974,6 @@ table .s-edit-elements a:hover {
 }
 .s-table-header-options .s-filters-selected {
   margin-top: 10px;
-}
-.s-add-filter-secondary-layout > .s-close {
-  position: absolute;
-  right: 5px;
-  top: 1px;
-  font-size: 18px;
-  color: #aaa;
-  z-index: 2000;
-}
-.s-add-filter-secondary-layout > .s-close:hover {
-  color: #da5757;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group {
-  opacity: .4;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected {
-  opacity: 1;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option {
-  border-color: #3071a9;
-}
-.s-add-filter-secondary-layout.s-add-filter {
-  background: #fff;
-  color: #000;
-  -webkit-box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.1);
-  border: 2px solid #DCDCDC;
-  border-radius: 4px;
-}
-.s-add-filter-secondary-layout.s-add-filter .well {
-  background: #eee;
-  color: #999;
-  margin-top: 10px;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-criteria {
-  margin-bottom: 0px;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-criteria {
-  border: none;
-  border-right: 3px solid #DCDCDC;
-  border-left: 3px solid #DCDCDC;
-}
-.s-add-filter-secondary-layout.s-add-filter h4 {
-  margin-top: 15px;
-  color: #666;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper:after {
-  content: "\f105";
-  font-family: fontAwesome;
-  right: -26px;
-  position: absolute;
-  font-size: 30px;
-  background: #fff;
-  color: #DCDCDC;
-  padding: 0px;
-  z-index: 400;
-  line-height: 14px;
-  top: 10px;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper .form-control {
-  border: 1px solid #428bca;
 }
 .s-table-header-options {
   background: #fff;
@@ -2511,19 +2447,17 @@ tabel .s-table-header {
   min-width: 52px;
   text-align: center;
 }
+.s-add-filter-wrapper {
+  padding: 0px 15px;
+}
 .s-add-filter {
-  background: #ffffff;
-  -moz-box-shadow: inset 0 0 2px #cccccc;
-  -webkit-box-shadow: inset 0 0 2px #cccccc;
-  box-shadow: inset 0 0 2px #cccccc;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  border-radius: 2px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  margin-top: 8px;
-  margin-bottom: 10px;
+  background: #fff;
+  color: #000;
+  -webkit-box-shadow: 0px 0px 5px 1px rgba(100, 100, 100, 0.1);
+  -moz-box-shadow: 0px 0px 5px 1px rgba(100, 100, 100, 0.1);
+  box-shadow: 0px 0px 5px 1px rgba(100, 100, 100, 0.1);
+  border: 2px solid #DCDCDC;
+  border-radius: 4px;
 }
 .s-add-filter h4 i {
   float: right;
@@ -2537,6 +2471,9 @@ tabel .s-table-header {
   font-size: 16px;
   text-align: left;
   padding-bottom: 3px;
+}
+.s-add-filter .well .s-value {
+  color: #666;
 }
 .s-setting-options-body .s-add-filter label {
   font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
@@ -2611,6 +2548,7 @@ tabel .s-table-header {
   border-top: none;
   margin-bottom: 15px;
   min-height: 140px;
+  margin-bottom: 0px;
 }
 .s-add-filter .s-criteria .selectboxit-container .selectboxit {
   width: 100% !important;
@@ -2621,7 +2559,7 @@ tabel .s-table-header {
 .s-add-filter .s-criteria .selectboxit-container .selectboxit-options {
   width: 100% !important;
 }
-.s-add-filter .s-criteria h4.disabled {
+h4.disabled {
   opacity: .3;
 }
 .s-add-filter .s-button-select-group {
@@ -2652,6 +2590,62 @@ tabel .s-table-header {
 }
 .s-add-filter .s-add-filter-breadcrumb a:hover {
   color: #eee;
+}
+.s-add-filter > .s-close {
+  position: absolute;
+  right: 5px;
+  top: 1px;
+  font-size: 18px;
+  color: #aaa;
+  z-index: 2000;
+}
+.s-add-filter > .s-close:hover {
+  color: #da5757;
+}
+.s-add-filter .s-option-group {
+  opacity: .4;
+}
+.s-add-filter .s-option-group.s-selected {
+  opacity: 1;
+}
+.s-add-filter .s-option-group.s-selected .s-option {
+  border-color: #3071a9;
+}
+.s-add-filter .well {
+  background: #eee;
+  color: #999;
+  margin-top: 10px;
+}
+.s-add-filter .s-criteria {
+  border: none;
+  border-right: 3px solid #DCDCDC;
+  border-left: 3px solid #DCDCDC;
+}
+.s-add-filter h4 {
+  margin-top: 15px;
+  color: #666;
+}
+.s-add-filter .s-option-group.s-selected .s-option-wrapper:after {
+  content: "\f105";
+  font-family: fontAwesome;
+  right: -26px;
+  position: absolute;
+  font-size: 30px;
+  background: #ffffff;
+  color: #DCDCDC;
+  padding: 0px;
+  z-index: 400;
+  top: 9px;
+  padding-left: 4px;
+  line-height: 13px;
+}
+.s-add-filter .s-option-group.s-selected .s-option-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.s-add-filter .s-option-group.s-selected .s-option-wrapper .form-control {
+  border: 1px solid #428bca;
 }
 .s-add-filter-box {
   width: 100%;

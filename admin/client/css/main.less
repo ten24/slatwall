@@ -878,6 +878,7 @@ table .s-edit-elements a:hover {  background-color: #E6E6E6;border-color: #D1D1D
 .s-header-bar .nav-tabs ul li span{font-size:10px;top:-1px;position:relative;}
 .s-edit-btn-group {position: absolute;right: -11px;margin-top: -30px;}
 .s-options .tab-content h4 {border-bottom: 1px solid @black-10;margin-bottom: 15px;font-size: 16px;text-align: left;padding-bottom: 3px;}
+.s-options .tab-content h4 > .s-type {font-weight: 600;}
 .s-options .tab-content h4 button.s-button-no-style:hover {text-decoration: underline;}
 .s-options .tab-pane .dl-horizontal{text-align:left;}
 .tab-pane #tabFiles .admin {width: 100px;text-align: center;}
@@ -901,19 +902,6 @@ table .s-edit-elements a:hover {  background-color: #E6E6E6;border-color: #D1D1D
 .s-new-filter.s-add-btn {margin-left:15px;}
 .s-listing-display-table-wrapper thead a {color: #666;}
 .s-table-header-options .s-filters-selected {margin-top: 10px;}
-.s-add-filter-secondary-layout > .s-close {position: absolute;right: 5px;top: 1px;font-size: 18px;color: #aaa;z-index:2000;}
-.s-add-filter-secondary-layout > .s-close:hover {color:@brand-danger;}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group {opacity: .4;}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected {opacity: 1;}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option {border-color: #3071a9;}
-.s-add-filter-secondary-layout.s-add-filter {background: #fff;color: #000;-webkit-box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);-moz-box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);box-shadow: 0px 0px 20px 1px rgba(0,0,0,0.1);border: 2px solid #DCDCDC;border-radius: 4px;}
-.s-add-filter-secondary-layout.s-add-filter .well {background: #eee;color: #999;margin-top: 10px;}
-.s-add-filter-secondary-layout.s-add-filter .s-criteria {margin-bottom: 0px;}
-.s-add-filter-secondary-layout.s-add-filter .s-criteria {border: none;border-right: 3px solid #DCDCDC;border-left: 3px solid #DCDCDC;}
-.s-add-filter-secondary-layout.s-add-filter h4 {margin-top: 15px;color: #666;}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper:after {content: "\f105";font-family: fontAwesome;right: -26px;position: absolute;font-size: 30px;background: #fff;color: #DCDCDC;padding: 0px;z-index: 400;line-height: 14px;top: 10px;}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper {position: relative;display: inline-block;width: 100%;}
-.s-add-filter-secondary-layout.s-add-filter .s-option-group.s-selected .s-option-wrapper .form-control {border: 1px solid @brand-primary}
 .s-table-header-options {background: #fff;padding-right: 10px;padding-left: 10px;padding-top: 1px;margin-bottom: 5px;border: 1px solid #ddd;}
 .s-multiple-option-btn {float: none}
 .s-multiple-option-btn .dropdown-toggle {border-left: 1px solid #3A73A5;}
@@ -1020,9 +1008,11 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-setting-options-body .s-setting-and-or {width: 100%;padding: 10px 0px 16px 0px;display: block;font-family: @font-family-bold;}
 .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
-.s-add-filter {background:@white;-moz-box-shadow: inset 0 0 2px @black-20;-webkit-box-shadow: inset 0 0 2px @black-20;box-shadow: inset 0 0 2px @black-20;.border-radius();  margin-top: 8px;margin-bottom: 10px;}
+.s-add-filter-wrapper {padding: 0px 15px;}
+.s-add-filter {background: #fff;color: #000;-webkit-box-shadow: 0px 0px 5px 1px rgba(100,100,100,0.1);-moz-box-shadow: 0px 0px 5px 1px rgba(100,100,100,0.1);box-shadow: 0px 0px 5px 1px rgba(100,100,100,0.1);border: 2px solid #DCDCDC;border-radius: 4px;}
 .s-add-filter h4 i {float:right;cursor:pointer;font-size:18px;color:@black-10;}
 .s-add-filter h4 {border-bottom: 1px solid @black-10;margin-bottom:15px;font-size:16px;text-align:left;padding-bottom: 3px;}
+.s-add-filter .well .s-value {color: #666;}
 .s-setting-options-body .s-add-filter label {font-family: @font-family-semibold;padding-left:0px;width: 100%;}
 .s-filter-group-item h4 {font-size:16px;font-wieght:normal;}
 .s-filter-group-item .select.input-sm {display: inline-block;width: 100%;}
@@ -1037,11 +1027,11 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-add-filter > .row > h4 {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: @white;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
 .s-add-filter .row h4.s-heading {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: @white;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
 .s-add-filter > .row {padding-top:0px !important;}
-.s-add-filter .s-criteria {border: 3px dotted @black-10;border-bottom: none;border-top: none;margin-bottom: 15px;min-height:140px;}
+.s-add-filter .s-criteria {border: 3px dotted @black-10;border-bottom: none;border-top: none;margin-bottom: 15px;min-height:140px;margin-bottom: 0px;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit-options {width:100% !important;}
-.s-add-filter .s-criteria h4.disabled {opacity:.3;}
+h4.disabled {opacity:.3;}
 .s-add-filter .s-button-select-group {text-align:center;margin-bottom: 20px;}
 .s-button-select-group.disabled {pointer-events: none;opacity: .3;}
 .s-add-filter .s-or-box {margin-bottom:10px;margin-top:10px;}
@@ -1052,6 +1042,17 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .s-add-filter .s-add-filter-breadcrumb a {color: #fff;text-decoration: underline !important;font-size:12px;}
 .s-add-filter .s-add-filter-breadcrumb a:hover {color: #eee;}
+.s-add-filter > .s-close {position: absolute;right: 5px;top: 1px;font-size: 18px;color: #aaa;z-index:2000;}
+.s-add-filter > .s-close:hover {color:@brand-danger;}
+.s-add-filter .s-option-group {opacity: .4;}
+.s-add-filter .s-option-group.s-selected {opacity: 1;}
+.s-add-filter .s-option-group.s-selected .s-option {border-color: #3071a9;}
+.s-add-filter .well {background: #eee;color: #999;margin-top: 10px;}
+.s-add-filter .s-criteria {border: none;border-right: 3px solid #DCDCDC;border-left: 3px solid #DCDCDC;}
+.s-add-filter h4 {margin-top: 15px;color: #666;}
+.s-add-filter .s-option-group.s-selected .s-option-wrapper:after {content: "\f105";font-family: fontAwesome;right: -26px;position: absolute;font-size: 30px;background: #ffffff;color: #DCDCDC;padding: 0px;z-index: 400;top: 9px;padding-left: 4px;line-height: 13px;}
+.s-add-filter .s-option-group.s-selected .s-option-wrapper {position: relative;display: inline-block;width: 100%;}
+.s-add-filter .s-option-group.s-selected .s-option-wrapper .form-control {border: 1px solid @brand-primary}
 
 .s-add-filter-box {width:100%;}
 
