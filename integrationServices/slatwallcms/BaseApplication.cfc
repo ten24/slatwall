@@ -235,7 +235,6 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
             var contentEntity = getHibachiScope().getService("ContentService").getContentBySiteIDAndUrlTitlePath(currentSite.getSiteID(),arguments.urlTitlePath);
             return contentEntity;
         }
-        return {};
     }
 	
 	public string function renderNav(
