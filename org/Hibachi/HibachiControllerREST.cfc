@@ -423,48 +423,44 @@ component output="false" accessors="true" extends="HibachiController" {
         for(var property in entity.getProperties()){
             //<!--- Make sure that this property is a persistent one --->
             if (!structKeyExists(property, "persistent") && ( !structKeyExists(property,"fieldtype") || listFindNoCase("column,id", property.fieldtype) )){
-                if(!isProcessObject){
-                    try{
-                        var defaultValue = entity.invokeMethod('get#property.name#');
-                    }catch(any e){
-                         defaultValue = javacast('null','');
-                    }
-                    if (isNull(local.defaultValue)){
-                        model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
-                    }else if (structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)){
-                        model.defaultValues[entity.getClassName()][property.name] = defaultValue;
-                    }else if (structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)){
-                        if(structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json"){
-                            model.defaultValues[entity.getClassName()][property.name] = deserializeJson(defaultValue);
-                        }else{
-                            model.defaultValues[entity.getClassName()][property.name] = defaultValue;
-                        }
-                    }else if(structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'){
-                        model.defaultValues[entity.getClassName()][property.name] = defaultValue;
-                    }else{
-                        model.defaultValues[entity.getClassName()][property.name] = defaultValue;
-                    }
-                }else{
-                    try{
-                        var defaultValue = entity.invokeMethod('get#property.name#');
-                    }catch(any e){
-                        defaultValue = javacast('null','');
-                    }
-                    if (!isNull(defaultValue)){
-                        if(isObject(defaultValue)){
-                            model.defaultValues[entity.getClassName()][property.name] = '';
-                        }else{
-                            if(isStruct(defaultValue)){
-                                model.defaultValues[entity.getClassName()][property.name] = defaultValue;
-                            }else{
-                                model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
-                            }
-                        }
 
-                    }else{
-                        //model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
-                    }
-                }
+               try {
+                   var defaultValue = entity.invokeMethod('get#property.name#');
+               }catch(any e){
+                    defaultValue = javacast('null','');
+               }
+               if(!isProcessObject){
+                   if (isNull(local.defaultValue)){
+                       model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
+                   }else if (structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)){
+                       model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+                   }else if (structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)){
+                       if(structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json"){
+                           model.defaultValues[entity.getClassName()][property.name] = deserializeJson(defaultValue);
+                       }else{
+                           model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+                       }
+                   }else if(structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'){
+                       model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+                   }else{
+                       model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+                   }
+               } else {
+                  if(!isNull(defaultValue)){
+                      if(isObject(defaultValue)){
+                          model.defaultValues[entity.getClassName()][property.name] = '';
+                      }else{
+                          if(isStruct(defaultValue)){
+                              model.defaultValues[entity.getClassName()][property.name] = defaultValue;
+                          }else{
+                              model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
+                          }
+                      }
+
+                  }else{
+                      //model.defaultValues[entity.getClassName()][property.name] = '#defaultValue#';
+                  }
+              }
             }
         }
     }

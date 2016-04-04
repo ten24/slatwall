@@ -32,10 +32,10 @@ class ProductBundleService{
                     this.minimumQuantity = this.maximumQuantity;
 
                 }
-            },
+            }
              productBundleGroup.data.$$setActive = function(value){
                 this.active=value;
-            },
+            }
              productBundleGroup.data.$$toggleEdit = function(){
                 if(angular.isUndefined(this.$$editing) || this.$$editing === false){
                     this.$$editing = true;
@@ -45,9 +45,6 @@ class ProductBundleService{
             }
         
         return productBundleGroup; 
-
-        //console.log("what is was", productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup);
-        //productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
     }
 
     public formatProductBundleGroupFilters = (productBundleGroupFilters,filterTerm):any =>{

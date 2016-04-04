@@ -158,10 +158,11 @@ class HibachiServiceDecorator{
                 }
 
                 angular.forEach(entity,function(property){
-                    if(angular.isObject(property) && angular.isDefined(property.name)){
-
-                        if(angular.isDefined(defaultValues[entity.className][property.name])){
+                    if(angular.isObject(property) && angular.isDefined(property.name)){   
+                        if(angular.isDefined(defaultValues[entity.className][property.name]) && defaultValues[entity.className][property.name] !== null){
                             jsEntity.data[property.name] = defaultValues[entity.className][property.name];
+                        }else{
+                            jsEntity.data[property.name] = undefined;
                         }
                     }
                 });
