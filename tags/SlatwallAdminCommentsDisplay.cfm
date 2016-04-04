@@ -65,13 +65,15 @@
 	<div class="tab-pane" id="tabComments">
 		<cfoutput>
 			<table class="table table-bordered table-hover">
-				<tr>
-					<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.comment")#</th>
-					<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
-					<th>#attributes.hibachiScope.rbKey("entity.define.createdByAccount")#</th>
-					<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
-					<cfif attributes.adminComments><th class="admin1">&nbsp;</th></cfif>
-				</tr>
+				<thead>
+					<tr>
+						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.comment")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.define.createdByAccount")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
+						<cfif attributes.adminComments><th class="admin1">&nbsp;</th></cfif>
+					</tr>
+				</thead>
 				<cfloop array="#attributes.object.getComments()#" index="commentRelationship">
 					<tr>
 						<cfif commentRelationship['referencedRelationshipFlag']>

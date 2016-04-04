@@ -156,7 +156,7 @@ class HibachiInterceptor implements IInterceptor{
     public responseError = (rejection): ng.IPromise<any> => {
 
 		this.$log.debug('responseReject');
-		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401){
+		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
 			if(rejection.data && rejection.data.messages){
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
 				this.alertService.addAlerts(alerts);
@@ -168,7 +168,7 @@ class HibachiInterceptor implements IInterceptor{
 				this.alertService.addAlert(message);
 			}
 		}
-		if (rejection.status === 401) {
+		if (rejection.status === 499) {
 			// handle the case where the user is not authenticated
 			if(rejection.data && rejection.data.messages){
 				//var deferred = $q.defer();

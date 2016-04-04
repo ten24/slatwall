@@ -75,18 +75,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			var shippingMethodRatesSmartList = shippingMethods[m].getShippingMethodRatesSmartList();
 			shippingMethodRatesSmartList.addFilter('activeFlag',1);
-			shippingMethodRatesSmartList.addWhereCondition('aslatwallshippingmethodrate.addressZone IS NOT NULL');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) > #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) < #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) > #arguments.orderFulfillment.getTotalShippingWeight()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) < #arguments.orderFulfillment.getTotalShippingWeight()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) <= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) >= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) <= #arguments.orderFulfillment.getTotalShippingWeight()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #arguments.orderFulfillment.getTotalShippingWeight()#');
 			var shippingMethodRates = shippingMethodRatesSmartList.getRecords(); 
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
+			
+			var priceGroups = [];
+			if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+				priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+			}
 			
 			for(var r=1; r<=shippingMethodRatesCount; r++) {
 				
 				// check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity(), arguments.orderFulfillment.getOrder().getAccount().getPriceGroups())) {
+				if(
+					isShippingMethodRateUsable(
+						shippingMethodRates[r], 
+						arguments.orderFulfillment.getShippingAddress(), 
+						arguments.orderFulfillment.getTotalShippingWeight(), 
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups
+					)
+				) {
 					// Add any new shipping integrations in any of the rates the the shippingIntegrations array that we are going to query for rates later
 					if(
 						!isNull(shippingMethodRates[r].getShippingIntegration()) 
@@ -132,19 +145,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var m=1; m<=shippingMethodsCount; m++) {
 			var shippingMethodRatesSmartList = shippingMethods[m].getShippingMethodRatesSmartList();
 			shippingMethodRatesSmartList.addFilter('activeFlag',1);
-			shippingMethodRatesSmartList.addWhereCondition('aslatwallshippingmethodrate.addressZone IS NOT NULL');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) > #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) < #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) > #arguments.orderFulfillment.getTotalShippingWeight()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) < #arguments.orderFulfillment.getTotalShippingWeight()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) <= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) >= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) <= #arguments.orderFulfillment.getTotalShippingWeight()#');
+			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #arguments.orderFulfillment.getTotalShippingWeight()#');
 			var shippingMethodRates = shippingMethodRatesSmartList.getRecords(); 
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
 			
 			var qualifiedRateOptions = [];
+			var priceGroups = [];
+			if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+				priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+			}
+			
 			for(var r=1; r<=shippingMethodRatesCount; r++) {
 
 				// again, check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts(), arguments.orderFulfillment.getTotalShippingQuantity(), arguments.orderFulfillment.getOrder().getAccount().getPriceGroups())) {
+				if(
+					isShippingMethodRateUsable(
+						shippingMethodRates[r], 
+						arguments.orderFulfillment.getShippingAddress(), 
+						arguments.orderFulfillment.getTotalShippingWeight(), 
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups
+					)
+				) {
 
 					// If this rate is a manual one, then use the default amount
 					if(isNull(shippingMethodRates[r].getShippingIntegration())) {
