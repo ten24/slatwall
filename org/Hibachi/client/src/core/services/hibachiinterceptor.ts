@@ -118,7 +118,7 @@ class HibachiInterceptor implements IInterceptor{
         config.headers = config.headers || {};
         if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
 
-            config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
+            config.headers['Auth-Token'] = 'Bearer ' + this.$window.localStorage.getItem('token');
         }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
@@ -180,7 +180,7 @@ class HibachiInterceptor implements IInterceptor{
                     return $http.get(this.baseUrl+'/index.cfm/api/auth/login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
                         this.$window.localStorage.setItem('token',loginResponse.data.token);
                         rejection.config.headers = rejection.config.headers || {};
-                        rejection.config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
+                        rejection.config.headers['Auth-Token'] = 'Bearer ' + this.$window.localStorage.getItem('token');
                         return $http(rejection.config).then(function(response) {
                            return response;
                         });
