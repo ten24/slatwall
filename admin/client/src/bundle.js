@@ -2381,7 +2381,7 @@
 	            config.cache = true;
 	            config.headers = config.headers || {};
 	            if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
-	                config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+	                config.headers['Auth-Token'] = 'Bearer ' + _this.$window.localStorage.getItem('token');
 	            }
 	            var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
 	            if (config.method == 'GET' && (queryParams[_this.appConfig.action] && queryParams[_this.appConfig.action] === 'api:main.get')) {
@@ -2442,7 +2442,7 @@
 	                        return $http.get(_this.baseUrl + '/index.cfm/api/auth/login').then(function (loginResponse) {
 	                            _this.$window.localStorage.setItem('token', loginResponse.data.token);
 	                            rejection.config.headers = rejection.config.headers || {};
-	                            rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+	                            rejection.config.headers['Auth-Token'] = 'Bearer ' + _this.$window.localStorage.getItem('token');
 	                            return $http(rejection.config).then(function (response) {
 	                                return response;
 	                            });

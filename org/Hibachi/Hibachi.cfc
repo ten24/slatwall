@@ -209,9 +209,9 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setPropperSession();
 			//check if we have the authorization header
-			if(structKeyExists(GetHttpRequestData().Headers,'Authorization')){
+			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
 				
-				var authorizationHeader = GetHttpRequestData().Headers.authorization;
+				var authorizationHeader = GetHttpRequestData().Headers['Auth-Token'];
 				var prefix = 'Bearer ';
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
