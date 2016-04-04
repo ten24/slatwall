@@ -499,6 +499,9 @@ component extends="FW1.framework" {
 					if(!coreBF.containsBean("hibachiDataService")) {
 						coreBF.declareBean("hibachiDataService", "#variables.framework.applicationKey#.org.Hibachi.HibachiDataService", true);	
 					}
+					if(!coreBF.containsBean("hibachiDocsService")) {
+						coreBF.declareBean("hibachiDocsService", "#variables.framework.applicationKey#.org.Hibachi.HibachiDocsService", true);
+					}
 					if(!coreBF.containsBean("hibachiEventService")) {
 						coreBF.declareBean("hibachiEventService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEventService", true);	
 					}
