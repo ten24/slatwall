@@ -48,21 +48,21 @@ test:
         background: true
 
     # Wait for Saucelabs connection
-    - while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
+    #- while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
   override:
 
     # Run Sauce Labs Integration Setup Tests
-    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json
+    #- node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json
 
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
-    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json
+    #- node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json
 
     # Kill the Sauce Labs tunnel
-    - cd sc-*-linux && kill $(cat sc.pid)
+    #- cd sc-*-linux && kill $(cat sc.pid)
 
     # Run Unit Tests
-    - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml runUnitTests
-
+    #- sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml runUnitTests
+    - curl --retry 10 --retry-delay 5 -v http://127.0.0.1/?slatAction=api:docs.generateDocsJson
 deployment:
 
   # As long as this build passed, we can commit JS builds, Version #, and do downstream merging when necessary

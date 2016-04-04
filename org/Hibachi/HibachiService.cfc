@@ -786,7 +786,7 @@
 			for(var key in propertiesStruct){
 				var property = propertiesStruct[key];
 				
-				if(structKeyExists(property,'singularname') && lcase(property.singularname) == lcase(arguments.singularName)){
+				if(structKeyExists(property,'singularname') && structKeyExists(arguments,'singularname') && lcase(property.singularname) == lcase(arguments.singularName)){
 					return property;
 				}
 			}
