@@ -133,7 +133,7 @@
 							<div class="col-xs-12 s-title">
 								<h4 class="s-clear-fix">
 									Bundle Items
-									<button type="button" ng-click="swProductBundleGroup.openCloseAndRefresh() " class="pull-right s-button-no-style"> 
+									<button type="button" ng-click="swProductBundleGroup.openCloseAndRefresh() " class="pull-right btn-no-style"> 
 										<span ng-show="!swProductBundleGroup.showAdvanced">Advanced</span> 
 										<span ng-show="swProductBundleGroup.showAdvanced">Basic</span> 
 										View
@@ -149,7 +149,7 @@
 												<li sw-rbkey="'admin.define.no_items_selected'">
 													<!-- #$.slatwall.rbKey('admin.define.no_items_selected')# -->
 												</li>
-												<li sw-key="'entity.ProductBundleBuildItem.selectBundleGroup'">
+												<li sw-rbkey="'entity.ProductBundleBuildItem.selectBundleGroup'">
 													<!-- #$.slatwall.rbKey('entity.ProductBundleBuildItem.selectBundleGroup')# -->
 												</li>
 											</ul>
@@ -179,7 +179,7 @@
 												<ul class="list-unstyled list-inline s-last">
 													<li class="col-xs-1 s-bundle-details-add">
 														<!-- Confirmation Dialog -->
-														<a class="btn s-btn-lgrey s-remove" 
+														<a class="btn btn-lgrey s-remove" 
 															sw-confirm 
 															data-confirm-text="Confirm"
 															data-message-text="Are you sure you want to delete this product bundle group filter?" 
@@ -201,7 +201,7 @@
 								<div class="col-sm-12 col-md-6 s-select-item">
 									<div class="input-group">
 										<div class="dropdown input-group-btn search-panel">
-											<button class="btn btn-sm s-btn-dgrey dropdown-toggle" type="button" id="dropdownMenu1">
+											<button class="btn btn-sm btn-dgrey dropdown-toggle" type="button" id="dropdownMenu1">
 											<span ng-bind="swProductBundleGroup.searchOptions.selected.name" id="j-search-concept">Any</span>
 											<span class="caret"></span>
 											</button>
@@ -253,7 +253,7 @@
 											<!-- //Selected filters -->
 											<!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
 											<div class="s-load-more" ng-hide="swProductBundleGroup.recordsCount <= swProductBundleGroup.recordsPerPage" ng-click="swProductBundleGroup.increaseCurrentCount(); swProductBundleGroup.getFiltersByTerm(swProductBundleGroup.productBundleGroupFilters.keyword,swProductBundleGroup.searchOptions.selected);">
-												<button class="{'btn s-btn-dgrey btn-sm disabled' : swProductBundleGroup.loading === true, 'btn s-btn-dgrey btn-sm' : swProductBundleGroup.loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="swProductBundleGroup.loading"></i>
+												<button class="{'btn btn-dgrey btn-sm disabled' : swProductBundleGroup.loading === true, 'btn btn-dgrey btn-sm' : swProductBundleGroup.loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="swProductBundleGroup.loading"></i>
                                                 <span ng-if="!swProductBundleGroup.showAll">(Showing {{swProductBundleGroup.pageRecordsStart}} to {{swProductBundleGroup.pageRecordsEnd}} of {{swProductBundleGroup.recordsCount}})</span></button>
 											</div>
 											<!-- //Load more button -->

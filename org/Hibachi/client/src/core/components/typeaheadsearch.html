@@ -2,13 +2,14 @@
     <div class="form-group">
         <div class="input-group">
             <div class="s-input-btn">
-                <input
+                <input  ng-if="swTypeaheadSearch.placeholderText"
                         id="searchinput"
                         placeholder="{{swTypeaheadSearch.placeholderText}}"
                         ng-model="swTypeaheadSearch.searchText"
                         ng-change="swTypeaheadSearch.search(swTypeaheadSearch.searchText)"
                         type="search"
                         class="form-control"
+                        autocomplete="off"
                         data-ng-required="swTypeaheadSearch.validateRequired"
                         data-ng-disabled="swTypeaheadSearch.disabled"/>
                 <span class="glyphicon glyphicon-remove" ng-if="swTypeaheadSearch.searchText.length && !swTypeaheadSearch.disabled" ng-click="swTypeaheadSearch.clearSearch()"></span>

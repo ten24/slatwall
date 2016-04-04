@@ -334,7 +334,7 @@ function setupEventHandlers() {
 		jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
 		jQuery('#adminConfirm').modal();
 	});
-	jQuery('body').on('click', '.s-btn-disabled', function(e){	
+	jQuery('body').on('click', '.btn-disabled', function(e){	
 		e.preventDefault();
 		jQuery('#adminDisabled .modal-body').html( jQuery(this).data('disabled') );
 		jQuery('#adminDisabled').modal();
@@ -767,6 +767,7 @@ function setupEventHandlers() {
 
 	// Hibachi AJAX Submit
 	jQuery('body').on('click', '.hibachi-ajax-submit', function(e) {
+		
 		e.preventDefault();
 
 		var data = {};
@@ -795,7 +796,9 @@ function setupEventHandlers() {
 			success: function( r ) {
 				removeLoadingDiv( updateTableID );
 				if(r.success) {
-					location.reload();
+					//trigger custom event so angular can figure it out
+					$( document ).trigger( "listingDisplayUpdate");
+
 					listingDisplayUpdate(updateTableID, {});	
 				} else {
 
@@ -984,16 +987,16 @@ function setupEventHandlers() {
 	});
 
 	//[TODO]: Change Up JS
-	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').addClass('s-opened');
 
 	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+		jQuery(this).find('.s-accordion-toggle-icon').addClass('s-opened');
 	});
 
 	jQuery('body').on('hidden.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('s-opened');
 	});
 
 	//UI Collections - show export and delete options
@@ -1257,8 +1260,6 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 			nextRowDepth++;
 		}
 		if(data['entityName']){
-			
-			
 			jQuery.ajax({
 				url: hibachiConfig.baseURL + '/',
 				method: 'post',
@@ -1399,6 +1400,9 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 					pendingCarriageReturn=false;
 				}
 			});
+		}else{
+			removeLoadingDiv( tableID );
+			listingUpdateRelease();
 		}
 	}
 }
