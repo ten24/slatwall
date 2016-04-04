@@ -1220,7 +1220,7 @@ var coremodule = angular.module('hibachi.core',[
 .controller('globalSearch',GlobalSearchController)
 //filters
 .filter('percentage',[PercentageFilter.Factory])
-.filter('swTrim', [SWTrim.Factory])
+.filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())

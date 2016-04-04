@@ -130,13 +130,10 @@ class SWProductBundleGroupController {
 		this.filterTemplatePath = this.productBundlePartialsPath +"productbundlefilter.html";
 		this.productBundleGroupFilters = {};
 		this.productBundleGroupFilters.value = [];
-
-        console.log("what is the truth",this.productBundleGroup.data.skuCollectionConfig);
+        
         if(angular.isUndefined(this.productBundleGroup.data.skuCollectionConfig) || this.productBundleGroup.data.skuCollectionConfig === null){
             this.productBundleGroup.data.skuCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku").getCollectionConfig();
         }
-        console.log("what is the truth",this.productBundleGroup.data.skuCollectionConfig)
-		
 
 		var options = {
 				filterGroupsConfig:this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup,

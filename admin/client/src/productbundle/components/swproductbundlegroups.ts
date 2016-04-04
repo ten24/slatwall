@@ -31,6 +31,8 @@ class SWProductBundleGroupsController{
     }
  
     public addProductBundleGroup = () =>{
+        
+        console.log("Adding PB")
 
         var productBundleGroup = this.$hibachi.newProductBundleGroup();
 
