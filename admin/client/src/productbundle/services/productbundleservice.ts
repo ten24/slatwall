@@ -1,12 +1,9 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-
 class ProductBundleService{
-    public static $inject = [
-        '$log','$hibachi','utilityService'
-    ];
 
+    //@ngInject
     constructor(private $log:ng.ILogService, private $hibachi, private utilityService){
 
         this.$log = $log;
@@ -16,8 +13,8 @@ class ProductBundleService{
 
     public decorateProductBundleGroup = (productBundleGroup):void =>{
         productBundleGroup.data.$$editing = true;
-        var prototype = {
-            $$setMinimumQuantity:function(quantity) {
+        
+             productBundleGroup.data.$$setMinimumQuantity = function(quantity) {
                 if(quantity < 0 || quantity === null ){
                     this.minimumQuantity = 0;
                 }
@@ -26,8 +23,8 @@ class ProductBundleService{
                     this.maximumQuantity = quantity;
                 }
 
-            },
-            $$setMaximumQuantity:function(quantity){
+             }
+             productBundleGroup.data.$$setMaximumQuantity = function(quantity){
                 if(quantity < 1 || quantity === null ){
                     this.maximumQuantity = 1;
                 }
@@ -36,19 +33,21 @@ class ProductBundleService{
 
                 }
             },
-            $$setActive:function(value){
+             productBundleGroup.data.$$setActive = function(value){
                 this.active=value;
             },
-            $$toggleEdit:function(){
+             productBundleGroup.data.$$toggleEdit = function(){
                 if(angular.isUndefined(this.$$editing) || this.$$editing === false){
                     this.$$editing = true;
                 }else{
                     this.$$editing = false;
                 }
             }
-        };
+        
+        return productBundleGroup; 
 
-        angular.extend(productBundleGroup.data,prototype);
+        //console.log("what is was", productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup);
+        //productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
     }
 
     public formatProductBundleGroupFilters = (productBundleGroupFilters,filterTerm):any =>{

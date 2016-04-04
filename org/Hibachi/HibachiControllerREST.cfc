@@ -427,7 +427,7 @@ component output="false" accessors="true" extends="HibachiController" {
                     try{
                         var defaultValue = entity.invokeMethod('get#property.name#');
                     }catch(any e){
-                        defaultValue = javacast('null','');
+                         defaultValue = javacast('null','');
                     }
                     if (isNull(local.defaultValue)){
                         model.defaultValues[entity.getClassName()][property.name] = javacast('null','');
