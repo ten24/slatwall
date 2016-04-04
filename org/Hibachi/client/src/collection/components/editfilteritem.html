@@ -1,8 +1,8 @@
 <div class="s-add-filter-wrapper collapse in" data-ng-class="{collapse:filterItem.$$isClosed, 's-add-filter-wrapper' : !simple}">
     <div class="col-xs-12 s-add-filter">
         <!--- Note: data-ng-if prevents the "remove" from adding, I don't think this is intended functinality --->
-        <!--- <button class="s-close btn s-button-no-style" data-ng-click="swListingControls.toggleFilters()" data-ng-if="simple"> --->
-        <button class="s-close btn s-button-no-style" data-ng-click="swListingControls.toggleFilters()">
+        <!--- <button class="s-close btn btn-no-style" data-ng-click="swListingControls.toggleFilters()" data-ng-if="simple"> --->
+        <button class="s-close btn btn-no-style" data-ng-click="swListingControls.toggleFilters()">
             <i class="fa fa-times" data-ng-click="cancelFilterItem()" ></i>
         </button>
         <div class="row">
@@ -45,7 +45,7 @@
                                                 for filterProperty in filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].data
                                                  | orderBy:['displayPropertyIdentifier'] track by filterProperty.propertyIdentifier
                                                 " class="form-control input-sm s-selected">
-                                        <option value=""> {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
+                                        <option value="" disabled selected>-Select Option-</option>
                                     </select>
                                 </div>
                             </div>

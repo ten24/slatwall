@@ -1926,7 +1926,7 @@ table .s-edit-elements a:hover {
 .s-options .tab-content h4 > .s-type {
   font-weight: 600;
 }
-.s-options .tab-content h4 button.s-button-no-style:hover {
+.s-options .tab-content h4 button.btn-no-style:hover {
   text-decoration: underline;
 }
 .s-options .tab-pane .dl-horizontal {
