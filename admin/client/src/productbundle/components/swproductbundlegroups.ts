@@ -32,10 +32,12 @@ class SWProductBundleGroupsController{
  
     public addProductBundleGroup = () =>{
         
-        console.log("Adding PB")
+        
 
         var productBundleGroup = this.$hibachi.newProductBundleGroup();
-
+        
+        console.log("Adding PBG", productBundleGroup);
+        
         productBundleGroup.$$setProductBundleSku(this.sku);
 
         productBundleGroup = this.productBundleService.decorateProductBundleGroup(productBundleGroup);
