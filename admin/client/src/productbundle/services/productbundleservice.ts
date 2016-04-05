@@ -1,9 +1,12 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-class ProductBundleService{
 
-    //@ngInject
+class ProductBundleService{
+    public static $inject = [
+        '$log','$hibachi','utilityService'
+    ];
+
     constructor(private $log:ng.ILogService, private $hibachi, private utilityService){
 
         this.$log = $log;
@@ -13,8 +16,8 @@ class ProductBundleService{
 
     public decorateProductBundleGroup = (productBundleGroup):void =>{
         productBundleGroup.data.$$editing = true;
-        
-             productBundleGroup.data.$$setMinimumQuantity = function(quantity) {
+        var prototype = {
+            $$setMinimumQuantity:function(quantity) {
                 if(quantity < 0 || quantity === null ){
                     this.minimumQuantity = 0;
                 }
@@ -23,8 +26,8 @@ class ProductBundleService{
                     this.maximumQuantity = quantity;
                 }
 
-             }
-             productBundleGroup.data.$$setMaximumQuantity = function(quantity){
+            },
+            $$setMaximumQuantity:function(quantity){
                 if(quantity < 1 || quantity === null ){
                     this.maximumQuantity = 1;
                 }
@@ -32,19 +35,20 @@ class ProductBundleService{
                     this.minimumQuantity = this.maximumQuantity;
 
                 }
-            }
-             productBundleGroup.data.$$setActive = function(value){
+            },
+            $$setActive:function(value){
                 this.active=value;
-            }
-             productBundleGroup.data.$$toggleEdit = function(){
+            },
+            $$toggleEdit:function(){
                 if(angular.isUndefined(this.$$editing) || this.$$editing === false){
                     this.$$editing = true;
                 }else{
                     this.$$editing = false;
                 }
             }
-        
-        return productBundleGroup; 
+        };
+
+        angular.extend(productBundleGroup.data,prototype);
     }
 
     public formatProductBundleGroupFilters = (productBundleGroupFilters,filterTerm):any =>{
