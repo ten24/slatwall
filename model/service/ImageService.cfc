@@ -116,7 +116,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
     }
 
 	// Image File Methods
-	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="", string siteID="") {
+	public string function getResizedImagePath(required string imagePath, numeric width, numeric height, string resizeMethod="scale", string cropLocation="center", numeric cropX, numeric cropY, numeric scaleWidth, numeric scaleHeight, string missingImagePath, string canvasColor="") {
 		var resizedImagePath = "";
 		// If the image can't be found default to a missing image
 		if(!fileExists(expandPath(arguments.imagePath))) {
@@ -127,8 +127,7 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 				arguments.imagePath = arguments.missingImagePath;
 				
 		    //look if this has been supplied at the site level.
-		    
-			} else if (!isNull(getService('siteService').getSite(arguments.siteID)) && !isNull(getService('siteService').getSiteBySiteID(arguments.siteID).setting('siteMissingImagePath'))) {
+			} else if (!isNull(getService('siteService').getCurrentRequestSite()) && !isNull(getService('siteService').getCurrentRequestSite().setting('siteMissingImagePath'))) {
                 
                 arguments.imagePath = getService('siteService').getSite(arguments.siteID).setting('siteMissingImagePath');
 			
