@@ -19,7 +19,7 @@
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	
-	<cfset thisImagePath = #rc.$.slatwall.getResizedImage(imagePath="anywhere", width=250, height=250,siteID=rc.site.getSiteID())#>
+	<!---<cfset thisImagePath = #rc.$.slatwall.getResizedImage(imagePath="anywhere", width=250, height=250,siteID=rc.site.getSiteID())#>
 	 
     <div class="col-xs-2 s-upload-image right">
         <div class="thumbnail">
@@ -34,5 +34,5 @@
             </div>
             
         </div>
-    </div> 
+    </div> --->
 </cfoutput>
