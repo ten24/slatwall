@@ -423,7 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public numeric function calculateShippingRateAdjustment(required numeric originalAmount, required any shippingMethodRate) {
 		var returnAmount = arguments.originalAmount;
 		var shippingMethodRateAdjustmentAmount = arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount');
-        if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
+            if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
 
 			switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
 				case "increasePercentage":
