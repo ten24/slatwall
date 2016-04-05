@@ -279,7 +279,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 					if(right(processComponentMetaData[componentName]['description'], "8") != "_missing") {
 						processComponentMetaData[componentName]['description'] = getHibachiScope().rbkey('processObject.#componentName#_hint');
 					}
-					if(right(entityDocData['description'], "8") != "_missing") {
+					if(right(processComponentMetaData[componentName]['description'], "8") != "_missing") {
 						processComponentMetaData[componentName]['description'] = "";
 					}
 	    		}
