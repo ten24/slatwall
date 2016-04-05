@@ -129,7 +129,12 @@ component entityname="SlatwallShippingMethodOption" table="SwShippingMethodOptio
 	// ================== START: Overridden Methods ========================
 
 	public any function getSimpleRepresentation() {
-		return '#getShippingMethodRate().getShippingMethod().getShippingMethodName()# - #getShippingMethodRate().getShippingMethodRateName()# - #getFormattedValue("totalChargeAfterDiscount")#';
+
+		var shippingMethodName = nullReplace(getShippingMethodRate().getShippingMethod().getShippingMethodName(), "");
+		var shippingMethodRateName = nullReplace(getShippingMethodRate().getShippingMethodRateName(), "");
+		var totalChargeAfterDiscount = nullReplace(getFormattedValue("totalChargeAfterDiscount"),"");
+
+		return '#shippingMethodName# - #shippingMethodRateName# - #totalChargeAfterDiscount#';
 	}
 
 	// ==================  END:  Overridden Methods ========================
