@@ -42,12 +42,20 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		for(var property in entityDocData['properties']){
     			//use description on the property else find an rbkey hint
     			if(!structKeyExists(property,'description')){
-    				property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_hint');
+    				property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_description');
+    				if(right(property['description'], "8") != "_missing") {
+    					property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_hint');
+    				}
     			}
     		}
     		
     		if(structKeyExists(entityDocData,'description')){
     			entityDocData['description'] = object.description;
+    		}else{
+    			property['description'] = getHibachiScope().rbkey('entity.#object.entityName#_description');
+				if(right(property['description'], "8") != "_missing") {
+					property['description'] = getHibachiScope().rbkey('entity.#object.entityName#_hint');
+				}
     		}
     		if(structKeyExists(object,'cacheuse')){
     			entityDocData['cacheUse'] = object.cacheuse;
