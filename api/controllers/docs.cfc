@@ -52,7 +52,7 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     			}
     		}
     		
-    		if(structKeyExists(entityDocData,'description')){
+    		if(structKeyExists(object,'description')){
     			entityDocData['description'] = object.description;
     		}else{
     			entityDocData['description'] = getHibachiScope().rbkey('entity.#object.entityName#_description');
