@@ -107,7 +107,7 @@ component output="false" accessors="true" extends="HibachiController" {
                     }
                 }
                 var pc = getpagecontext().getresponse();
-                pc.getresponse().setstatus(401);
+                pc.getresponse().setstatus(getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode());
                 return;
             }
         }
