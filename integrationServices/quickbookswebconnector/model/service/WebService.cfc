@@ -939,7 +939,7 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 					//get the push product xml
 				case "pushOrders":
 					//get the push order xml
-				case "pushAccounts"
+				case "pushAccounts":
 					//get the push accounts xml
 				default:
 					//we're done let the web connector know
