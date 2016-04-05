@@ -46,15 +46,21 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     				if(right(property['description'], "8") != "_missing") {
     					property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_hint');
     				}
+    				if(right(property['description'], "8") != "_missing") {
+						property['description'] = "";
+					}
     			}
     		}
     		
     		if(structKeyExists(entityDocData,'description')){
     			entityDocData['description'] = object.description;
     		}else{
-    			property['description'] = getHibachiScope().rbkey('entity.#object.entityName#_description');
-				if(right(property['description'], "8") != "_missing") {
-					property['description'] = getHibachiScope().rbkey('entity.#object.entityName#_hint');
+    			entityDocData['description'] = getHibachiScope().rbkey('entity.#object.entityName#_description');
+				if(right(entityDocData['description'], "8") != "_missing") {
+					entityDocData['description'] = getHibachiScope().rbkey('entity.#object.entityName#_hint');
+				}
+				if(right(entityDocData['description'], "8") != "_missing") {
+					entityDocData['description'] = "";
 				}
     		}
     		if(structKeyExists(object,'cacheuse')){
