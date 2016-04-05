@@ -54,7 +54,7 @@ Notes:
 
 <cfparam name="rc.edit" type="boolean" />
 
-<cfif structKeyExists(rc, "attributeSet")>
+<cfif structKeyExists(rc, "attributeSet") || !isNull(rc.attribute.getAttributeSet())>
 	<cfparam name="rc.attributeSet" type="any" default="#rc.attribute.getAttributeSet()#" />
 
 	<cfoutput>
@@ -84,7 +84,7 @@ Notes:
 
 		</hb:HibachiEntityDetailForm>
 	</cfoutput>
-<cfelse>
+<cfelseif structKeyExists(rc, "form") || !isNull(rc.attribute.getForm())>
 	<cfparam name="rc.form" type="any" default="#rc.attribute.getForm()#" />
 	<cfoutput>
 		<hb:HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#"
