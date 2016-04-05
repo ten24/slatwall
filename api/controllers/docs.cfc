@@ -43,10 +43,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     			//use description on the property else find an rbkey hint
     			if(!structKeyExists(property,'description')){
     				property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_description');
-    				if(right(property['description'], "8") != "_missing") {
+    				if(right(property['description'], "8") == "_missing") {
     					property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_hint');
     				}
-    				if(right(property['description'], "8") != "_missing") {
+    				if(right(property['description'], "8") == "_missing") {
 						property['description'] = "";
 					}
     			}
@@ -56,10 +56,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     			entityDocData['description'] = object.description;
     		}else{
     			entityDocData['description'] = getHibachiScope().rbkey('entity.#object.entityName#_description');
-				if(right(entityDocData['description'], "8") != "_missing") {
+				if(right(entityDocData['description'], "8") == "_missing") {
 					entityDocData['description'] = getHibachiScope().rbkey('entity.#object.entityName#_hint');
 				}
-				if(right(entityDocData['description'], "8") != "_missing") {
+				if(right(entityDocData['description'], "8") == "_missing") {
 					entityDocData['description'] = "";
 				}
     		}
@@ -261,10 +261,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 		    			//use description on the property else find an rbkey hint
 		    			if(!structKeyExists(property,'description')){
 		    				property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_description');
-		    				if(right(property['description'], "8") != "_missing") {
+		    				if(right(property['description'], "8") == "_missing") {
 		    					property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_hint');
 		    				}
-		    				if(right(property['description'], "8") != "_missing") {
+		    				if(right(property['description'], "8") == "_missing") {
 								property['description'] = "";
 							}
 		    			}
@@ -276,10 +276,10 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 	    			processComponentMetaData[componentName]['description'] = componentMetaData.description;
 	    		}else{
 	    			processComponentMetaData[componentName]['description'] = getHibachiScope().rbkey('processObject.#componentName#_description');
-					if(right(processComponentMetaData[componentName]['description'], "8") != "_missing") {
+					if(right(processComponentMetaData[componentName]['description'], "8") == "_missing") {
 						processComponentMetaData[componentName]['description'] = getHibachiScope().rbkey('processObject.#componentName#_hint');
 					}
-					if(right(processComponentMetaData[componentName]['description'], "8") != "_missing") {
+					if(right(processComponentMetaData[componentName]['description'], "8") == "_missing") {
 						processComponentMetaData[componentName]['description'] = "";
 					}
 	    		}
