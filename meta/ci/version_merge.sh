@@ -88,12 +88,26 @@ else
     # Push the code
     git push origin
 
+    # If this was a taged branch (master)
     if [ $tag = true ]; then
       # Tag this version
       git tag -a -m "Version $newVersion" $newVersion
 
       # Push Tag to github
       git push origin $newVersion
+
+      # Create a zip & hash of this release
+      git archive --format=zip HEAD > slatwall-latest.zip
+      cp slatwall-latest slatwall-$newVersion.zip
+
+      md5sum slatwall-latest.zip > slatwall-latest.md5.txt
+      cp slatwall-latest.md5.txt slatwall-$newVersion.md5.txt
+
+      aws s3 cp slatwall-latest.zip s3://slatwall-releases/slatwall-latest.zip
+      aws s3 cp slatwall-$newVersion.zip s3://slatwall-releases/slatwall-$newVersion.zip
+      aws s3 cp slatwall-latest.md5.txt s3://slatwall-releases/slatwall-latest.md5.txt
+      aws s3 cp slatwall-$newVersion.md5.txt s3://slatwall-releases/slatwall-$newVersion.md5.txt
+
     fi
 fi
 
