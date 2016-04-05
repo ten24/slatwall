@@ -845,8 +845,7 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		//temp owner ID for testing
 		var ownerID = createUUID();
 		var appID = ""; //leave blank
-		var appURL= variables.framework.baseURL & "integrationServices/quickbookswebconnector/model/service/WebService.cfc?wsdl";
-
+		var appURL= getApplicationValue("baseURL") & "integrationServices/quickbookswebconnector/model/service/WebService.cfc?wsdl";
 
 		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
 			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency");
@@ -903,8 +902,9 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
         if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename"))){
         	var companyFileName = getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename");
         } else {
+        	//else we cant go on
         	var companyFileName = "nvu";//not valid user
-        } //else we cant go on
+        }
 
 		var updatePostponeInterval = "1";
 		var everyMinute = "1";

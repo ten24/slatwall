@@ -1,6 +1,7 @@
 {  
     "appName":{  
-        "fieldType":"text"
+        "fieldType":"text",
+        "defaultValue":"Slatwall"
     },
     "appID":{  
         "fieldType":"text"
@@ -12,6 +13,7 @@
         "fieldType":"text"
     },
     "requestFrequency":{  
-        "fieldType":"numeric"
+        "fieldType":"numeric",
+        "defaultValue":"15"
     }
 }
