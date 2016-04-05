@@ -38,6 +38,14 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
     		entityDocData['extends'] = getExtended(object);
     		entityDocData['functions'] = getFunctions(object);
     		entityDocData['properties'] = object.properties;
+    		
+    		for(var property in entityDocData['properties']){
+    			//use description on the property else find an rbkey hint
+    			if(!structKeyExists(property,'description')){
+    				property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_hint');
+    			}
+    		}
+    		
     		if(structKeyExists(entityDocData,'description')){
     			entityDocData['description'] = object.description;
     		}
