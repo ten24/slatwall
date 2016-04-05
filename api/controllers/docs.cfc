@@ -257,10 +257,31 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 					processComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 				}
 				if(structKeyExists(componentMetaData,'properties')){
-					processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
+					for(var property in componentMetaData['properties']){
+		    			//use description on the property else find an rbkey hint
+		    			if(!structKeyExists(property,'description')){
+		    				property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_description');
+		    				if(right(property['description'], "8") != "_missing") {
+		    					property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_hint');
+		    				}
+		    				if(right(property['description'], "8") != "_missing") {
+								property['description'] = "";
+							}
+		    			}
+		    		}
+		    		processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
 				}
+				
 				if(structKeyExists(componentMetaData,'description')){
 	    			processComponentMetaData[componentName]['description'] = componentMetaData.description;
+	    		}else{
+	    			processComponentMetaData[componentName]['description'] = getHibachiScope().rbkey('processObject.#componentName#_description');
+					if(right(processComponentMetaData[componentName]['description'], "8") != "_missing") {
+						processComponentMetaData[componentName]['description'] = getHibachiScope().rbkey('processObject.#componentName#_hint');
+					}
+					if(right(entityDocData['description'], "8") != "_missing") {
+						processComponentMetaData[componentName]['description'] = "";
+					}
 	    		}
 			}
 		}
