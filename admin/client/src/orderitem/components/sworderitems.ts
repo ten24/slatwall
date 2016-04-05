@@ -184,7 +184,14 @@ class SWOrderItems{
                 scope.paginator = paginationService.createPagination();
                 scope.paginator.collection = scope.collection;
                 scope.paginator.getCollection = scope.getCollection;
-
+                
+                
+                //set up custom event as temporary fix to update when new sku is adding via jquery ajax instead of angular scope
+                $( document ).on( "listingDisplayUpdate", {
+                }, ( event, arg1, arg2 )=> {
+                    scope.orderItems = undefined;
+                    scope.getCollection();
+                });
 			}//<--End link
 		};
 	}

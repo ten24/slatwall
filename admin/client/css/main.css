@@ -1,30 +1,30 @@
 @import url("../../../org/Hibachi/client/lib/selectBoxIt/selectBoxIt.css");
 /*Import plugins*/
-.s-btn-ten24 {
+.btn-ten24 {
   background-color: #f58620;
   border-color: #f1790b;
   color: #ffffff;
 }
-.s-btn-ten24:hover,
-.s-btn-ten24:focus,
-.s-btn-ten24:active,
-.s-btn-ten24.active {
+.btn-ten24:hover,
+.btn-ten24:focus,
+.btn-ten24:active,
+.btn-ten24.active {
   background-color: #f1790b;
   border-color: #f1790b;
   color: #ffffff;
 }
-.s-btn-ten24.disabled:hover,
-.s-btn-ten24.disabled:focus,
-.s-btn-ten24.disabled:active,
-.s-btn-ten24.disabled.active,
-.s-btn-ten24[disabled]:hover,
-.s-btn-ten24[disabled]:focus,
-.s-btn-ten24[disabled]:active,
-.s-btn-ten24[disabled].active,
-fieldset[disabled] .s-btn-ten24:hover,
-fieldset[disabled] .s-btn-ten24:focus,
-fieldset[disabled] .s-btn-ten24:active,
-fieldset[disabled] .s-btn-ten24.active {
+.btn-ten24.disabled:hover,
+.btn-ten24.disabled:focus,
+.btn-ten24.disabled:active,
+.btn-ten24.disabled.active,
+.btn-ten24[disabled]:hover,
+.btn-ten24[disabled]:focus,
+.btn-ten24[disabled]:active,
+.btn-ten24[disabled].active,
+fieldset[disabled] .btn-ten24:hover,
+fieldset[disabled] .btn-ten24:focus,
+fieldset[disabled] .btn-ten24:active,
+fieldset[disabled] .btn-ten24.active {
   background-color: #f58620;
 }
 .btn-default {
@@ -52,6 +52,36 @@ fieldset[disabled] .btn-default:hover,
 fieldset[disabled] .btn-default:focus,
 fieldset[disabled] .btn-default:active,
 fieldset[disabled] .btn-default.active {
+  background-color: #f2f2f2 !important;
+  border-color: #f2f2f2;
+  color: #5E5E5E;
+}
+.btn-default-border {
+  background-color: #f2f2f2;
+  border-color: #f2f2f2;
+  color: #5E5E5E;
+  border: 1px solid #dddddd;
+}
+.btn-default-border:hover,
+.btn-default-border:focus,
+.btn-default-border:active,
+.btn-default-border.active {
+  background-color: #e6e6e6;
+  border-color: #d1d1d1;
+  color: #5E5E5E;
+}
+.btn-default-border.disabled:hover,
+.btn-default-border.disabled:focus,
+.btn-default-border.disabled:active,
+.btn-default-border.disabled.active,
+.btn-default-border[disabled]:hover,
+.btn-default-border[disabled]:focus,
+.btn-default-border[disabled]:active,
+.btn-default-border[disabled].active,
+fieldset[disabled] .btn-default-border:hover,
+fieldset[disabled] .btn-default-border:focus,
+fieldset[disabled] .btn-default-border:active,
+fieldset[disabled] .btn-default-border.active {
   background-color: #f2f2f2 !important;
   border-color: #f2f2f2;
   color: #5E5E5E;
@@ -85,57 +115,57 @@ fieldset[disabled] .btn-primary.active {
   border-color: #428bca;
   color: #ffffff;
 }
-.s-btn-lgrey {
+.btn-lgrey {
   background-color: #F2F2F2;
   color: #666;
 }
-.s-btn-lgrey:hover,
-.s-btn-lgrey:focus,
-.s-btn-lgrey:active,
-.s-btn-lgrey.active {
+.btn-lgrey:hover,
+.btn-lgrey:focus,
+.btn-lgrey:active,
+.btn-lgrey.active {
   background-color: #535353;
   border-color: #474747;
 }
-.s-btn-lgrey.disabled:hover,
-.s-btn-lgrey.disabled:focus,
-.s-btn-lgrey.disabled:active,
-.s-btn-lgrey.disabled.active,
-.s-btn-lgrey[disabled]:hover,
-.s-btn-lgrey[disabled]:focus,
-.s-btn-lgrey[disabled]:active,
-.s-btn-lgrey[disabled].active,
-fieldset[disabled] .s-btn-lgrey:hover,
-fieldset[disabled] .s-btn-lgrey:focus,
-fieldset[disabled] .s-btn-lgrey:active,
-fieldset[disabled] .s-btn-lgrey.active {
+.btn-lgrey.disabled:hover,
+.btn-lgrey.disabled:focus,
+.btn-lgrey.disabled:active,
+.btn-lgrey.disabled.active,
+.btn-lgrey[disabled]:hover,
+.btn-lgrey[disabled]:focus,
+.btn-lgrey[disabled]:active,
+.btn-lgrey[disabled].active,
+fieldset[disabled] .btn-lgrey:hover,
+fieldset[disabled] .btn-lgrey:focus,
+fieldset[disabled] .btn-lgrey:active,
+fieldset[disabled] .btn-lgrey.active {
   background-color: #606060;
   border-color: #606060;
 }
-.s-btn-dgrey {
+.btn-dgrey {
   background-color: #606060;
   border-color: #606060;
   color: #ffffff;
 }
-.s-btn-dgrey:hover,
-.s-btn-dgrey:focus,
-.s-btn-dgrey:active,
-.s-btn-dgrey.active {
+.btn-dgrey:hover,
+.btn-dgrey:focus,
+.btn-dgrey:active,
+.btn-dgrey.active {
   background-color: #535353;
   border-color: #474747;
   color: #ffffff;
 }
-.s-btn-dgrey.disabled:hover,
-.s-btn-dgrey.disabled:focus,
-.s-btn-dgrey.disabled:active,
-.s-btn-dgrey.disabled.active,
-.s-btn-dgrey[disabled]:hover,
-.s-btn-dgrey[disabled]:focus,
-.s-btn-dgrey[disabled]:active,
-.s-btn-dgrey[disabled].active,
-fieldset[disabled] .s-btn-dgrey:hover,
-fieldset[disabled] .s-btn-dgrey:focus,
-fieldset[disabled] .s-btn-dgrey:active,
-fieldset[disabled] .s-btn-dgrey.active {
+.btn-dgrey.disabled:hover,
+.btn-dgrey.disabled:focus,
+.btn-dgrey.disabled:active,
+.btn-dgrey.disabled.active,
+.btn-dgrey[disabled]:hover,
+.btn-dgrey[disabled]:focus,
+.btn-dgrey[disabled]:active,
+.btn-dgrey[disabled].active,
+fieldset[disabled] .btn-dgrey:hover,
+fieldset[disabled] .btn-dgrey:focus,
+fieldset[disabled] .btn-dgrey:active,
+fieldset[disabled] .btn-dgrey.active {
   background-color: #606060;
   border-color: #606060;
   color: #ffffff;
@@ -145,85 +175,86 @@ fieldset[disabled] .s-btn-dgrey.active {
   border: 1px solid #DA5757 !important;
   color: #ffffff !important;
 }
-.s-btn-disabled {
+.btn-disabled {
   background-color: #f2f2f2;
   border-color: #f2f2f2;
   color: #cccccc !important;
 }
-.s-btn-disabled:hover,
-.s-btn-disabled:focus,
-.s-btn-disabled:active,
-.s-btn-disabled.active {
+.btn-disabled:hover,
+.btn-disabled:focus,
+.btn-disabled:active,
+.btn-disabled.active {
   background-color: #f2f2f2 !important;
   border-color: #f2f2f2 !important;
   color: #cccccc !important;
 }
-.s-btn-disabled.disabled:hover,
-.s-btn-disabled.disabled:focus,
-.s-btn-disabled.disabled:active,
-.s-btn-disabled.disabled.active,
-.s-btn-disabled[disabled]:hover,
-.s-btn-disabled[disabled]:focus,
-.s-btn-disabled[disabled]:active,
-.s-btn-disabled[disabled].active,
-fieldset[disabled] .s-btn-disabled:hover,
-fieldset[disabled] .s-btn-disabled:focus,
-fieldset[disabled] .s-btn-disabled:active,
-fieldset[disabled] .s-btn-disabled.active {
+.btn-disabled.disabled:hover,
+.btn-disabled.disabled:focus,
+.btn-disabled.disabled:active,
+.btn-disabled.disabled.active,
+.btn-disabled[disabled]:hover,
+.btn-disabled[disabled]:focus,
+.btn-disabled[disabled]:active,
+.btn-disabled[disabled].active,
+fieldset[disabled] .btn-disabled:hover,
+fieldset[disabled] .btn-disabled:focus,
+fieldset[disabled] .btn-disabled:active,
+fieldset[disabled] .btn-disabled.active {
   background-color: #f2f2f2 !important;
   border-color: #f2f2f2;
   color: #e6e6e6 !important;
 }
-.s-button-no-style {
-  color: #000000;
+.btn-no-style {
+  color: #666666;
+  background: none;
+  background-color: none;
+  border-color: none;
+  border: none;
+  font-size: 12px;
+  padding: 2px 5px;
+}
+.btn-no-style:hover,
+.btn-no-style:focus,
+.btn-no-style:active,
+.btn-no-style.active,
+.open .dropdown-toggle.btn-no-style {
+  color: #428bca;
   background: none;
   background-color: none;
   border-color: none;
   border: none;
   font-size: 12px;
 }
-.s-button-no-style:hover,
-.s-button-no-style:focus,
-.s-button-no-style:active,
-.s-button-no-style.active,
-.open .dropdown-toggle.s-button-no-style {
-  color: #000000;
-  background: none;
-  background-color: none;
-  border-color: none;
-  border: none;
-  font-size: 12px;
-}
-.s-button-no-style:active,
-.s-button-no-style.active,
-.open .dropdown-toggle.s-button-no-style {
+.btn-no-style:active,
+.btn-no-style.active,
+.open .dropdown-toggle.btn-no-style {
   background: none;
   background-image: none;
   border: none;
   font-size: 12px;
 }
-.s-button-no-style.disabled,
-.s-button-no-style[disabled],
-fieldset[disabled] .s-button-no-style,
-.s-button-no-style.disabled:hover,
-.s-button-no-style[disabled]:hover,
-fieldset[disabled] .s-button-no-style:hover,
-.s-button-no-style.disabled:focus,
-.s-button-no-style[disabled]:focus,
-fieldset[disabled] .s-button-no-style:focus,
-.s-button-no-style.disabled:active,
-.s-button-no-style[disabled]:active,
-fieldset[disabled] .s-button-no-style:active,
-.s-button-no-style.disabled.active,
-.s-button-no-style[disabled].active,
-fieldset[disabled] .s-button-no-style.active {
+.btn-no-style.disabled,
+.btn-no-style[disabled],
+fieldset[disabled] .btn-no-style,
+.btn-no-style.disabled:hover,
+.btn-no-style[disabled]:hover,
+fieldset[disabled] .btn-no-style:hover,
+.btn-no-style.disabled:focus,
+.btn-no-style[disabled]:focus,
+fieldset[disabled] .btn-no-style:focus,
+.btn-no-style.disabled:active,
+.btn-no-style[disabled]:active,
+fieldset[disabled] .btn-no-style:active,
+.btn-no-style.disabled.active,
+.btn-no-style[disabled].active,
+fieldset[disabled] .btn-no-style.active {
   background: none;
   background-color: none;
   border-color: none;
   border: none;
   font-size: 12px;
 }
-.s-button-no-style .badge {
+.btn-no-style .badge {
   background: none;
   color: none;
   background-color: none;
@@ -272,7 +303,7 @@ input[type="file"] {
 }
 /*Global*/
 body {
-  background-color: #f2f2f2;
+  background-color: #f7f7f7;
   font-family: 'Open Sans', sans-serif;
   color: #666666;
   padding-top: 60px;
@@ -297,6 +328,11 @@ body.s-login-screen .form-group {
   body {
     padding: 0px /*Remove for responsive*/;
   }
+}
+.input-xs {
+  height: 22px;
+  padding: 2px 10px;
+  font-size: 11px;
 }
 .s-image-wrapper > img {
   border: 3px solid #eee;
@@ -380,7 +416,7 @@ a:hover {
   opacity: 0.3;
   pointer-events: none;
 }
-.table-responsive table th {
+table th {
   font-weight: 600;
 }
 .table-responsive .s-table-checkbox {
@@ -472,9 +508,12 @@ a:hover {
   fill: #428bca;
   stroke: #428bca;
 }
-.s-table-title {
+.s-table-header-nav .s-table-title {
   font-size: 14px;
   color: #666;
+  margin-bottom: 0px;
+  margin-top: 5px;
+  margin-left: 6px;
 }
 .s-table-alternate-title {
   position: absolute;
@@ -627,13 +666,6 @@ input[type=number]::-webkit-inner-spin-button {
 }
 input[type=number] {
   -moz-appearance: textfield;
-}
-.input-sm {
-  height: 31px !important;
-  padding: 5px 5px !important;
-  font-size: 11px !important;
-  line-height: 1.5 !important;
-  border-radius: 2px !important;
 }
 a,
 a:active,
@@ -989,6 +1021,10 @@ select.error {
 }
 .navbar .container-fluid .s-right-nav-content {
   height: 60px /*Remove for responsive*/;
+}
+.navbar .container-fluid .s-right-nav-content .dropdown-menu {
+  max-height: 85vh;
+  overflow-y: auto;
 }
 .sidebar {
   width: 190px;
@@ -1395,6 +1431,14 @@ table tr th .glyphicon {
 .panel-heading .fa:hover {
   color: #fff;
 }
+.panel-heading .fa.s-opened {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  transition: transform 0.2s linear;
+}
 .s-header-nav .navbar-collapse {
   padding: 0px;
 }
@@ -1769,10 +1813,8 @@ table .s-edit-elements a:hover {
 }
 .form-control {
   color: #767676;
-  height: 30px;
   box-shadow: none;
   font-weight: normal;
-  font-size: 12px;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   border-radius: 2px;
@@ -1806,6 +1848,9 @@ table .s-edit-elements a:hover {
   position: relative;
   top: -6px;
   left: 3px;
+}
+.panel-collapse .s-table-header-nav {
+  background: #F2F2F2;
 }
 .btn-group-vertical .btn-default:hover {
   background-color: #f58620;
@@ -1878,7 +1923,7 @@ table .s-edit-elements a:hover {
   text-align: left;
   padding-bottom: 3px;
 }
-.s-options .tab-content h4 button.s-button-no-style:hover {
+.s-options .tab-content h4 button.btn-no-style:hover {
   text-decoration: underline;
 }
 .s-options .tab-pane .dl-horizontal {
@@ -2227,7 +2272,7 @@ tabel .s-table-header {
 }
 .s-checkbox label {
   padding-left: 0px;
-  margin-top: 2px;
+  margin-bottom: 0px;
   cursor: pointer;
   font-weight: normal !important;
 }
@@ -2287,6 +2332,7 @@ tabel .s-table-header {
 .s-property .s-checkbox {
   display: inline-block;
   margin-right: 15px;
+  padding-top: 7px;
 }
 .s-property .s-checkbox label {
   font-family: "open_sansregular", Helvetica, Arial, sans-serif;
@@ -2296,13 +2342,15 @@ tabel .s-table-header {
   margin-bottom: 5px;
   margin-right: 20px;
   display: inline-block;
+  padding-top: 5px !important;
 }
 .radio label {
   display: inline-block;
   position: relative;
-  margin-left: 5px;
+  margin-left: 2px;
   font-weight: normal !important;
   padding-left: 0px;
+  font-family: "open_sansregular", Helvetica, Arial, sans-serif;
 }
 .radio label:before {
   content: "";
@@ -2663,6 +2711,11 @@ tabel .s-table-header {
 .s-table-header-nav {
   display: inline-block;
   width: 100%;
+  background: #fff;
+  padding: 4px;
+  border: 1px solid #DDD;
+  vertical-align: bottom;
+  border-bottom: 0px;
 }
 .s-table-header-nav ul {
   vertical-align: bottom;
@@ -2726,6 +2779,13 @@ tabel .s-table-header {
 }
 .s-table-header-nav .s-table-header-search {
   max-width: 200px;
+  position: relative;
+}
+.s-table-header-nav .s-table-header-search i {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  pointer-events: none;
 }
 .s-table-header-nav .s-page-show {
   min-width: 150px;
@@ -4166,6 +4226,9 @@ tabel .s-table-header {
 .s-pannel-group .panel-default {
   overflow: visible;
 }
+a[data-toggle="collapse"] {
+  text-decoration: none;
+}
 .s-tooltip-hint {
   text-decoration: none;
   cursor: pointer;
@@ -4216,10 +4279,10 @@ tabel .s-table-header {
   background-color: #428bca;
   border: none !important;
 }
-.dropdown-menu li a.s-btn-disabled {
+.dropdown-menu li a.btn-disabled {
   background: none !important;
 }
-.dropdown-menu li a.s-btn-disabled:hover {
+.dropdown-menu li a.btn-disabled:hover {
   color: #cccccc !important;
 }
 .navbar-s-navbar-ten24 {
@@ -4262,7 +4325,7 @@ tabel .s-table-header {
   margin-bottom: 36px;
   display: inline-block;
   width: 100%;
-  background-color: #f2f2f2;
+  background-color: #f7f7f7;
   padding-bottom: 20px;
 }
 .s-create-window .s-pannel-group {
@@ -4424,7 +4487,7 @@ tabel .s-table-header {
   margin-left: -2px !important;
   right: -1px;
 }
-.s-search-filter .s-btn-dgrey {
+.s-search-filter .btn-dgrey {
   width: 100%;
   text-align: left;
   border-radius: 0px;
@@ -4879,7 +4942,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   height: 100%;
   width: 100%;
   z-index: 3001;
-  background-color: #f2f2f2 !important;
+  background-color: #f7f7f7 !important;
 }
 .s-dialog-container > .s-swipe-background {
   position: fixed;
