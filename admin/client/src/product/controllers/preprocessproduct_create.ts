@@ -61,7 +61,7 @@ class ProductCreateController{
                 this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option); 
             });
             
-            this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
+            this.$scope.redemptionAmountType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0].value;
             
             var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
              
