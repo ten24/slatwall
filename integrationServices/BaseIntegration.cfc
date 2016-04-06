@@ -71,9 +71,9 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 				throw("The file: #settingsPath# is not valid json.");
 			} else {
 				try{
-					structAppend(settingMetaData, getHibachiUtilityService().evaluateColdfusionInStruct(deserializeJSON( rawCoreJSON )), false);
+					structAppend(settingMetaData, getService("HibachiUtilityService").evaluateColdfusionInStruct(deserializeJSON( rawJSON )), false);
 				} catch(any e){
-					throw("The Setting File: #folderPathsList[i]# has an invalid coldfusion statement");
+					throw("The Setting File: #settingsPath# has an invalid coldfusion statement");
 				}
 			}
 		}

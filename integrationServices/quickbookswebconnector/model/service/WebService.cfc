@@ -879,8 +879,8 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 					'<AppDescription>' & appURL & '</AppDescription>' &
 					'<AppSupport>' & getSettingService().getSettingValue("integrationquickbookswebconnectorappurl") & '</AppSupport>' &
 					'<UserName>' & userName & '</UserName>' &
-					'<OwnerID>' & ownerID & '</OwnerID>' &
-					'<FileID>' & fileID & '</FileID>' &
+					'<OwnerID>{' & ownerID & '}</OwnerID>' &
+					'<FileID>{' & fileID & '}</FileID>' &
 					'<QBType>QBFS</QBType>' &
 					'<Scheduler><RunEveryNMinutes>' & runEveryNMinutes & '</RunEveryNMinutes></Scheduler>' &
 					'</QBWCXML>'
