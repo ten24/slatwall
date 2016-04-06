@@ -46,11 +46,11 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="document" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
+<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="rpc" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
 
-	<cfproperty name="accountService" />
-	<cfproperty name="settingService" />
-	<cfproperty name="hibachiUtilityService" />
+	<cfproperty name="accountService" default="#getService('AccountService')#"/>
+	<cfproperty name="settingService" default="#getService('SettingService')#" />
+	<cfproperty name="hibachiUtilityService" default="#getService('HibachiUtilityService')#" />
 
 	<cfscript>
 		variables.tickets = {};
@@ -907,8 +907,8 @@ Notes:
     	returnType = "array"
     	output = "no"
     	access = "remote">
-		<cfargument name="strUserName" required="true" />
-		<cfargument name="strPassword" required="true" />
+		<cfargument name="strUserName" type="string" required="true" />
+		<cfargument name="strPassword" type="string" required="true" />
 		<cfscript>
 			var thisTicket = getQuickbooksGUID();
 
@@ -943,11 +943,11 @@ Notes:
     	returnType = "array"
     	output = "no"
     	access = "remote">
-		<cfargument name="ticket" required="true" />
-		<cfargument name="strHCPResponse" required="true" />
-		<cfargument name="qbXMLCountry" required="true" />
-		<cfargument name="qbXMLMajorVers" required="true" />
-		<cfargument name="qbXMLMinorVers" required="true" />
+		<cfargument name="ticket" type="string" required="true" />
+		<cfargument name="strHCPResponse" type="string" required="true" />
+		<cfargument name="qbXMLCountry" type="string" required="true" />
+		<cfargument name="qbXMLMajorVers" type="string" required="true" />
+		<cfargument name="qbXMLMinorVers" type="string" required="true" />
 		<cfscript>
 			//pop off whatever action needs to be taken and execute it
 			var actionQueue = variables.tickets[ticket];
@@ -983,10 +983,10 @@ Notes:
     	returnType = "array"
     	output = "no"
     	access = "remote">
-		<cfargument name="ticket" required="true" />
-		<cfargument name="response" required="true" />
-		<cfargument name="hresult" required="true" />
-		<cfargument name="message" required="true" />
+		<cfargument name="ticket" type="string" required="true" />
+		<cfargument name="response" type="string" required="true" />
+		<cfargument name="hresult" type="string" required="true" />
+		<cfargument name="message" type="string" required="true" />
 		<cfscript>
 			var answer = [];
 
@@ -1003,9 +1003,9 @@ Notes:
     	returnType = "array"
     	output = "no"
     	access = "remote">
-		<cfargument name="ticket" required="true" />
-		<cfargument name="hresult" required="true" />
-		<cfargument name="message" required="true" />
+		<cfargument name="ticket" type="string" required="true" />
+		<cfargument name="hresult" type="string" required="true" />
+		<cfargument name="message" type="string" required="true" />
 		<cfscript>
 			var answer = "The process encountered an error, the connection will now be closed. The hresult was: " & hresult & " ::::: And the message was: " & message;
 
@@ -1024,7 +1024,7 @@ Notes:
     	returnType = "array"
     	output = "no"
     	access = "remote">
-		<cfargument name="ticket" required="true" />
+		<cfargument name="ticket" type="string" required="true" />
 		<cfscript>
 			var answer = "The process encountered an error, the connection will now be closed.";
 
@@ -1043,7 +1043,7 @@ Notes:
     	returnType = "array"
     	output = "no"
     	access = "remote">
-		<cfargument name="ticket" required="true" />
+		<cfargument name="ticket" type="string" required="true" />
 		<cfscript>
 			var answer = "The process has completed sucessfully the connection will now be closed.";
 
