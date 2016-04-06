@@ -46,7 +46,7 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="rpc" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
+<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="document" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
 
 	<cfscript>
 		variables.tickets = {};
@@ -900,11 +900,10 @@ Notes:
 	</cfscript>
 
 	<cffunction
-    	name = "authenticate"
-    	returnformat = "plain"
-    	returnType = "array"
-    	output = "no"
-    	access = "remote">
+    	name="authenticate"
+    	returnType="array"
+    	output="no"
+    	access="remote">
 		<cfargument name="strUserName" type="string" required="true" />
 		<cfargument name="strPassword" type="string" required="true" />
 		<cfscript>
@@ -938,7 +937,6 @@ Notes:
 
 	<cffunction
     	name = "sendRequestXML"
-    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -979,7 +977,6 @@ Notes:
 
 	<cffunction
     	name = "recieveResponseXML"
-    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -1000,7 +997,6 @@ Notes:
 
 	<cffunction
     	name = "connectionError"
-    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -1022,7 +1018,6 @@ Notes:
 
 	<cffunction
     	name = "getLastError"
-    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -1042,11 +1037,11 @@ Notes:
 
 	<cffunction
     	name = "closeConnection"
-    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
 		<cfargument name="ticket" type="string" required="true" />
+		<cfargument name="fakeargumenttopass">
 		<cfscript>
 			var answer = "The process has completed sucessfully the connection will now be closed.";
 
