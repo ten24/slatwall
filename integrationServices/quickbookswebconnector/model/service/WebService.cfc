@@ -901,6 +901,7 @@ Notes:
 
 	<cffunction
     	name = "authenticate"
+    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -937,6 +938,7 @@ Notes:
 
 	<cffunction
     	name = "sendRequestXML"
+    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -977,6 +979,7 @@ Notes:
 
 	<cffunction
     	name = "recieveResponseXML"
+    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -997,6 +1000,7 @@ Notes:
 
 	<cffunction
     	name = "connectionError"
+    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -1018,6 +1022,7 @@ Notes:
 
 	<cffunction
     	name = "getLastError"
+    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
@@ -1037,6 +1042,7 @@ Notes:
 
 	<cffunction
     	name = "closeConnection"
+    	returnformat = "plain"
     	returnType = "array"
     	output = "no"
     	access = "remote">
