@@ -11,7 +11,7 @@
     },
     "ownerID":{
         "fieldType":"text",
-        "defaultValue":"#createUUID()#"
+        "defaultValue":"#insert('-',createUUID(),26)#"
     },
     "companyFilename":{
     	"fieldType":"text"
