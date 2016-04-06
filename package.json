@@ -20,7 +20,7 @@
     "gulp-util": "*",
     "ng-annotate-webpack-plugin": "*",
     "run-sequence": "^1.1.4",
-    "strip-loader": "^0.1.0",
+    "strip-loader": "^0.1.2",
     "tsify": "*",
     "typescript": "*",
     "vinyl-source-stream": "^1.1.0",
