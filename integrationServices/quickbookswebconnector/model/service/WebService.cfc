@@ -884,12 +884,13 @@ Notes:
 						'<OwnerID>{' & ownerID & '}</OwnerID>' &
 						'<FileID>{' & fileID & '}</FileID>' &
 						'<QBType>QBFS</QBType>' &
+						'<Style>RPC</Style>' &
 						'<Scheduler><RunEveryNMinutes>' & runEveryNMinutes & '</RunEveryNMinutes></Scheduler>' &
 						'</QBWCXML>'
 				);
 			}
 			var fileName = fileID;
-			var fileExt = ".qwc";
+			var fileExt = "qwc";
 			var filePath = getTempDirectory() & fileName & "." & fileExt;
 			FileWrite(filePath,qwcFile);
 			getService("HibachiUtilityService").downloadFile(fileName,filePath,fileExt);
