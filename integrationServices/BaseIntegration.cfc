@@ -69,8 +69,13 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 			var rawJSON = fileRead(settingsPath);
 			if(!isJson(rawJSON)){
 				throw("The file: #settingsPath# is not valid json.");
+			} else {
+				try{
+					structAppend(settingMetaData, getHibachiUtilityService().evaluateColdfusionInStruct(deserializeJSON( rawCoreJSON )), false);
+				} catch(any e){
+					throw("The Setting File: #folderPathsList[i]# has an invalid coldfusion statement");
+				}
 			}
-			structAppend(settingMetaData, deserializeJson(rawJSON) ,false);
 		}
 
 		return settingMetaData;
