@@ -21,6 +21,31 @@ component accessors="true" output="false" extends="HibachiService" {
 			entityDocData['extends'] = getExtended(object);
 			entityDocData['functions'] = getFunctions(object);
 			entityDocData['properties'] = object.properties;
+    		
+    		for(var property in entityDocData['properties']){
+    			//use description on the property else find an rbkey hint
+    			if(!structKeyExists(property,'description')){
+    				property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_description');
+    				if(right(property['description'], "8") == "_missing") {
+    					property['description'] = getHibachiScope().rbkey('entity.#object.entityName#.#property.name#_hint');
+    				}
+    				if(right(property['description'], "8") == "_missing") {
+						property['description'] = "";
+					}
+    			}
+    		}
+    		
+    		if(structKeyExists(object,'description')){
+    			entityDocData['description'] = object.description;
+    		}else{
+    			entityDocData['description'] = getHibachiScope().rbkey('entity.#object.entityName#_description');
+				if(right(entityDocData['description'], "8") == "_missing") {
+					entityDocData['description'] = getHibachiScope().rbkey('entity.#object.entityName#_hint');
+				}
+				if(right(entityDocData['description'], "8") == "_missing") {
+					entityDocData['description'] = "";
+				}
+    		}
 			if(structKeyExists(object,'cacheuse')){
 				entityDocData['cacheUse'] = object.cacheuse;
 			}
@@ -140,7 +165,10 @@ component accessors="true" output="false" extends="HibachiService" {
 			baseComponentMetaData[componentName] = {};
 			baseComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
 			baseComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
-		}
+    		if(structKeyExists(componentMetaData,'description')){
+    			baseComponentMetaData['description'] = componentMetaData.description;
+			}
+    	}
 		return baseComponentMetaData;
 	}
 
@@ -157,6 +185,9 @@ component accessors="true" output="false" extends="HibachiService" {
 			var componentMetaData = getComponentMetaData(serviceComponentPath&componentName);
 			serviceComponentMetaData[componentName] = {};
 			serviceComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
+    		if(structKeyExists(componentMetaData,'description')){
+    			serviceComponentMetaData[componentName]['description'] = componentMetaData.description;
+    		}
 			if(structKeyExists(componentMetaData,'functions')){
 				serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 			}
@@ -180,6 +211,9 @@ component accessors="true" output="false" extends="HibachiService" {
 			var componentMetaData = getComponentMetaData(daoComponentPath&componentName);
 			daoComponentMetaData[componentName] = {};
 			daoComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
+    		if(structKeyExists(componentMetaData,'description')){
+    			daoComponentMetaData[componentName]['description'] = componentMetaData.description;
+    		}
 			if(structKeyExists(componentMetaData,'functions')){
 				daoComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 			}
@@ -205,10 +239,34 @@ component accessors="true" output="false" extends="HibachiService" {
 				processComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
 			}
 			if(structKeyExists(componentMetaData,'properties')){
+					for(var property in componentMetaData['properties']){
+		    			//use description on the property else find an rbkey hint
+		    			if(!structKeyExists(property,'description')){
+		    				property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_description');
+		    				if(right(property['description'], "8") == "_missing") {
+		    					property['description'] = getHibachiScope().rbkey('processObject.#componentName#.#property.name#_hint');
+		    				}
+		    				if(right(property['description'], "8") == "_missing") {
+								property['description'] = "";
+							}
+		    			}
+		    		}
 				processComponentMetaData[componentName]['properties'] = componentMetaData.properties;
 			}
+				
+				if(structKeyExists(componentMetaData,'description')){
+	    			processComponentMetaData[componentName]['description'] = componentMetaData.description;
+	    		}else{
+	    			processComponentMetaData[componentName]['description'] = getHibachiScope().rbkey('processObject.#componentName#_description');
+					if(right(processComponentMetaData[componentName]['description'], "8") == "_missing") {
+						processComponentMetaData[componentName]['description'] = getHibachiScope().rbkey('processObject.#componentName#_hint');
+					}
+					if(right(processComponentMetaData[componentName]['description'], "8") == "_missing") {
+						processComponentMetaData[componentName]['description'] = "";
+					}
+				}
+			}
 		}
-	}
 		return processComponentMetaData;
 	}
 
@@ -225,47 +283,67 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public array function getFunctions(required any object){
 		var functionArray = [];
-		for(var f in object.functions){
-			var functionItem = {};
-			functionItem['name'] = f.NAME;
-
-			var firstThreeChars = left(f.NAME,3);
-			var firstFiveChars = left(f.NAME,5);
-			var modelComponentPath = 'Slatwall.model.entity';
-			if(
-				left(object.fullname,len(modelComponentPath)) == modelComponentPath
-				&&
-				(
-					(
-						firstThreeChars == 'get'
-						|| firstThreeChars == 'set'
-						|| firstThreeChars == 'add'
+    	for(var f in object.functions){
+    		var functionItem = {};
+    		functionItem['name'] = f.NAME;
+    		
+    		var firstThreeChars = left(f.NAME,3);
+    		var firstSixChars = left(f.NAME,6);
+    		var modelComponentPath = 'Slatwall.model.entity';
+    		if(left(object.fullname,len(modelComponentPath)) == modelComponentPath ){
+    			if(
+	    			(
+	    				firstThreeChars == 'get'
+		    			|| firstThreeChars == 'set'
+		    		) 
+		    		&& 
+		    		(
+		    			getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+						|| getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+					)
+				){
+	    			 functionItem['isImplicit'] = true;
+	    		}else if(
+	    			(
+		    			firstThreeChars == 'add'
 						|| firstThreeChars == 'has'
 					)
-					&& getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
-				)||
-				(
-					(
-						firstFiveChars == 'remove'
+					&& (
+						getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
+						|| getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-3))
 					)
-					&& getService('hibachiService').getEntityHasPropertyByEntityName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-5))
-				)
-		){
-				 functionItem['isImplicit'] = true;
-			}
-			if(structKeyExists(f,'RETURNTYPE')){
-				functionItem['returntype'] = f.RETURNTYPE;
-			}
-			if(structKeyExists(f,'PARAMETERS')){
-				functionItem['parameters'] = f.PARAMETERS;
-			}
-			if(structKeyExists(f,'DESCRIPTION')){
-				functionItem['description'] = f.DESCRIPTION;
-			}
-			arrayAppend(functionArray,functionItem);
-		}
-
-		return functionArray;
+				){
+	    			functionItem['isImplicit'] = true;
+	    		}else if(
+	    			(
+	    				firstSixChars == 'remove'
+		    		) 
+		    		&& (
+		    			getService('hibachiService').hasPropertyByEntityNameAndSinuglarName(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
+		    			|| getService('hibachiService').getHasPropertyByEntityNameAndPropertyIdentifier(listLast(arguments.object.name,'.'),right(f.name,len(f.name)-6))
+		    		)
+	    		){
+	    			
+	    			functionItem['isImplicit'] = true;
+	    		}else{
+	    			
+	    			functionItem['isImplicit'] = false;
+	    		}
+    		}
+    		
+    		if(structKeyExists(f,'RETURNTYPE')){
+    			functionItem['returntype'] = f.RETURNTYPE;
+    		}
+    		if(structKeyExists(f,'PARAMETERS')){
+    			functionItem['parameters'] = f.PARAMETERS;
+    		}
+    		if(structKeyExists(f,'DESCRIPTION')){
+    			functionItem['description'] = f.DESCRIPTION;
+    		}
+    		arrayAppend(functionArray,functionItem);
+    	}
+    	
+    	return functionArray;
 	}
 
 }
