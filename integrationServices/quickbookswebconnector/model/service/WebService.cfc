@@ -840,7 +840,7 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 	 **/
 	public any function getQBWCFile(){
 
-		var fileID = insert("-",createUUID(),26);
+		var fileID = insert("-",createUUID(),23);
 
 		//temp owner ID for testing
 		var ownerID = getSettingService().getSettingValue("integrationquickbookswebconnectorownerid");
@@ -879,8 +879,8 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 					'<AppDescription>' & appURL & '</AppDescription>' &
 					'<AppSupport>' & getSettingService().getSettingValue("integrationquickbookswebconnectorappurl") & '</AppSupport>' &
 					'<UserName>' & userName & '</UserName>' &
-					'<OwnerID>' & ownerID & '</OwnerID>' &
-					'<FileID>' & fileID & '</FileID>' &
+					'<OwnerID>{' & ownerID & '}</OwnerID>' &
+					'<FileID>{' & fileID & '}</FileID>' &
 					'<QBType>QBFS</QBType>' &
 					'<Scheduler><RunEveryNMinutes>' & runEveryNMinutes & '</RunEveryNMinutes></Scheduler>' &
 					'</QBWCXML>'
