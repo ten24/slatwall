@@ -48,10 +48,6 @@ Notes:
 --->
 <cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="rpc" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
 
-	<cfproperty name="accountService" default="#getService('AccountService')#"/>
-	<cfproperty name="settingService" default="#getService('SettingService')#" />
-	<cfproperty name="hibachiUtilityService" default="#getService('HibachiUtilityService')#" />
-
 	<cfscript>
 		variables.tickets = {};
 
@@ -849,24 +845,24 @@ Notes:
 			var fileID = getQuickbooksGUID();
 
 			//temp owner ID for testing
-			var ownerID = getSettingService().getSettingValue("integrationquickbookswebconnectorownerid");
+			var ownerID = getService("SettingService").getSettingValue("integrationquickbookswebconnectorownerid");
 			var appID = ""; //leave blank
-			var appURL= getSettingService().getSettingValue("integrationquickbookswebconnectorappurl") & "/integrationServices/quickbookswebconnector/model/service/WebService.cfc?wsdl";
+			var appURL= getService("SettingService").getSettingValue("integrationquickbookswebconnectorappurl") & "/integrationServices/quickbookswebconnector/model/service/WebService.cfc?wsdl";
 
-			if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
-				var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency");
+			if(isNumeric(getService("SettingService").getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
+				var runEveryNMinutes = getService("SettingService").getSettingValue("integrationquickbookswebconnectorrequestfrequency");
 			} else {
 				var runEveryNMinutes = 15;
 			}
 
-			if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorappname")) > 0){
-				var appName = getSettingService().getSettingValue("integrationquickbookswebconnectorappname");
+			if(len(getService("SettingService").getSettingValue("integrationquickbookswebconnectorappname")) > 0){
+				var appName = getService("SettingService").getSettingValue("integrationquickbookswebconnectorappname");
 			} else {
 				var appName = "";
 			}
 
-			if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorusername"))){
-	            var userName = getSettingService().getSettingValue("integrationquickbookswebconnectorusername");
+			if(len(getService("SettingService").getSettingValue("integrationquickbookswebconnectorusername"))){
+	            var userName = getService("SettingService").getSettingValue("integrationquickbookswebconnectorusername");
 			} else {
 	            var userName = "";
 			}
@@ -883,7 +879,7 @@ Notes:
 						'<AppID>' & appID & '</AppID>' &
 						'<AppURL>' & appURL & '</AppURL>' &
 						'<AppDescription>' & appURL & '</AppDescription>' &
-						'<AppSupport>' & getSettingService().getSettingValue("integrationquickbookswebconnectorappurl") & '</AppSupport>' &
+						'<AppSupport>' & getService("SettingService").getSettingValue("integrationquickbookswebconnectorappurl") & '</AppSupport>' &
 						'<UserName>' & userName & '</UserName>' &
 						'<OwnerID>{' & ownerID & '}</OwnerID>' &
 						'<FileID>{' & fileID & '}</FileID>' &
@@ -896,7 +892,7 @@ Notes:
 			var fileExt = ".qwc";
 			var filePath = getTempDirectory() & fileName & "." & fileExt;
 			FileWrite(filePath,qwcFile);
-			getHibachiUtilityService().downloadFile(fileName,filePath,fileExt);
+			getService("HibachiUtilityService").downloadFile(fileName,filePath,fileExt);
 		}
 
 		/*necessary web service methods*/
@@ -913,8 +909,8 @@ Notes:
 			var thisTicket = getQuickbooksGUID();
 
 	        //We can assume that if this method was hit, that authentication is valid
-	        if(len(getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename"))){
-	        	var companyFileName = getSettingService().getSettingValue("integrationquickbookswebconnectorcompanyfilename");
+	        if(len(getService("SettingService").getSettingValue("integrationquickbookswebconnectorcompanyfilename"))){
+	        	var companyFileName = getService("SettingService").getSettingValue("integrationquickbookswebconnectorcompanyfilename");
 	        } else {
 	        	//else we cant go on
 	        	var companyFileName = "nvu";//not valid user
@@ -923,8 +919,8 @@ Notes:
 			var updatePostponeInterval = "1";
 			var everyMinute = "1";
 
-			if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency"))){
-				var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency");
+			if(isNumeric(getService("SettingService").getSettingValue("integrationquickbookswebconnectorrequestfrequency"))){
+				var runEveryNMinutes = getService("SettingService").getSettingValue("integrationquickbookswebconnectorrequestfrequency");
 			} else {
 				var runEveryNMinutes = 15;
 			}
