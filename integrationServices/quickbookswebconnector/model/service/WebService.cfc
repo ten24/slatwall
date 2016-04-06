@@ -843,9 +843,9 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 		var fileID = createUUID();
 
 		//temp owner ID for testing
-		var ownerID = createUUID();
+		var ownerID = getSettingService().getSettingValue("integrationquickbookswebconnectorownerid");
 		var appID = ""; //leave blank
-		var appURL= getApplicationValue("baseURL") & "integrationServices/quickbookswebconnector/model/service/WebService.cfc?wsdl";
+		var appURL= getSettingService().getSettingValue("integrationquickbookswebconnectorappurl") & "/integrationServices/quickbookswebconnector/model/service/WebService.cfc?wsdl";
 
 		if(isNumeric(getSettingService().getSettingValue("integrationquickbookswebconnectorrequestFrequency"))){
 			var runEveryNMinutes = getSettingService().getSettingValue("integrationquickbookswebconnectorrequestfrequency");
@@ -877,7 +877,7 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 					'<AppID>' & appID & '</AppID>' &
 					'<AppURL>' & appURL & '</AppURL>' &
 					'<AppDescription>' & appURL & '</AppDescription>' &
-					'<AppSupport>http://developer.intuit.com</AppSupport>' &
+					'<AppSupport>' & getSettingService().getSettingValue("integrationquickbookswebconnectorappurl") & '</AppSupport>' &
 					'<UserName>' & userName & '</UserName>' &
 					'<OwnerID>' & ownerID & '</OwnerID>' &
 					'<FileID>' & fileID & '</FileID>' &
@@ -887,8 +887,8 @@ component extends="Slatwall.org.Hibachi.HibachiService" persistent="false" names
 			);
 		}
 		var fileName = fileID;
-		var fileExt = ".qbwc";
-		var filePath = getTempDirectory() & fileName & fileExt;
+		var fileExt = ".qwc";
+		var filePath = getTempDirectory() & fileName & "." & fileExt;
 		FileWrite(filePath,qwcFile);
 		getHibachiUtilityService().downloadFile(fileName,filePath,fileExt);
 	}

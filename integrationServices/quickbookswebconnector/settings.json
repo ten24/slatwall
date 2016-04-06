@@ -6,6 +6,13 @@
     "appID":{  
         "fieldType":"text"
     },
+    "appURL":{
+        "fieldType":"text"
+    },
+    "ownerID":{
+        "fieldType":"text",
+        "defaultValue":"#createUUID()#"
+    },
     "companyFilename":{
     	"fieldType":"text"
     },
