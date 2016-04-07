@@ -46,30 +46,20 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
         } else if ( structKeyExists(arguments.rc, "context") && rc.context != "get" ){
             getPublicService().invokeMethod("#arguments.rc.context#", {data=arguments.rc});
 
-        // In no context exists return the entire hibachiScope
-        } else if ( !structKeyExists(arguments.rc, "context") ) {
-           arguments.rc.ajaxResponse["cart"] = getHibachiScope().getCartData();
         }
+
     }
 
     public any function post( required struct rc ) {
         param name="arguments.rc.context" default="save";
         var publicService = getService('PublicService');
 
-        // TODO: Not sure why we just have a blanket 'process' check
-        if (arguments.rc.context != "get" && arguments.rc.url contains "process"){
-
-            publicService.doProcess(rc);
-
-        } else if (structKeyExists(arguments.rc, "context") && listFindNoCase("cart,getCart,getCartData", arguments.rc.context)){
+        // If this is really a get context request just running through a post, then we can do the getter
+        if (structKeyExists(arguments.rc, "context") && listFindNoCase("get,cart,getCart,getCartData,account,getAccount,getAccountData", arguments.rc.context)){
 
             this.get(rc);
 
-        } else if(structKeyExists(arguments.rc, "context") && listFindNoCase("cart,getCart,getCartData", arguments.rc.context)){
-
-            this.get(rc);
-
-        } else if ( structKeyExists(arguments.rc, "context") && rc.context != "get"){
+        } else if ( structKeyExists(arguments.rc, "context") ){
 
             var actions = [];
             if (arguments.rc.context contains ","){
@@ -90,7 +80,9 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
                 }
             }
         } else {
+
             this.get(rc);
+
         }
     }
 

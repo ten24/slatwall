@@ -160,27 +160,6 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.data.ajaxResponse['processObject']["entityMeta"] = entityMeta.properties;
     }
 
-    /** returns the result of a processObject based action including error information. A form submit.
-        This is the default behavior for a POST request to process context /api/scope/process/ */
-    public any function doProcess(required struct data){
-
-        if (structKeyExists(data, "processObject")){
-            try{
-                var processObject = evaluate("this.#data.processObject#(data)");
-
-            }catch(any e){
-                arguments.data.ajaxResponse['processObject']['errors'] = "#e#";
-            }
-        }
-        if (!isNull(processObject)){
-            arguments.data.ajaxResponse['processObject']                  = processObject.getThisMetaData();
-            arguments.data.ajaxResponse['processObject']['validations']   = processObject.getValidations();
-            arguments.data.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
-            arguments.data.ajaxResponse['processObject']['errors']        = processObject.getErrors();
-            arguments.data.ajaxResponse['processObject']['messages']      = processObject.getMessages();
-        }
-    }
-
     /**
      * @method Logout <b>Log a user account outof Slatwall given the users request_token and deviceID</b>
      * @http-context Logout Use this context in conjunction with the listed http-verb to use this resoudatae.
