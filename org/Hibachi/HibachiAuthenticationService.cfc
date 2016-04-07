@@ -189,9 +189,14 @@ component output="false" accessors="true" extends="HibachiService" {
 	
 	public boolean function isInternalRequest(){
 		//domain contains http://domain/ so parse it
-		var domainReferer = listtoArray(cgi.http_referer,'/')[2];
+		var httpArray = listtoArray(cgi.http_referer,'/');
+		if(arraylen(httpArray) >= 2){
+			var domainReferer = httpArray[2];
 		
-		return domainReferer == cgi.http_host;
+			return domainReferer == cgi.http_host;
+		}else{
+			return false;
+		}
 	} 
 	
 	public numeric function getInvalidCredentialsStatusCode(){
