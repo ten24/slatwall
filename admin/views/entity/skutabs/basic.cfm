@@ -27,11 +27,13 @@
 
 			<cfif rc.product.getBaseProductType() EQ 'gift-card'>
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="giftCardExpirationTerm" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmountType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmountType" edit="#rc.edit#" fieldAttributes="ng-model='redemptionAmountType' ng-init='redemptionAmountType=""#rc.sku.getRedemptionAmountType()#""'">
 				<cfif !rc.edit>
 					<hb:HibachiPropertyDisplay object="#rc.sku#" property="formattedRedemptionAmount">
 				<cfelse>
-					<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmount" edit="#rc.edit#">
+					<div ng-hide="redemptionAmountType == 'sameAsPrice' || redemptionAmountType == ''">
+						<hb:HibachiPropertyDisplay object="#rc.sku#" property="redemptionAmount" edit="#rc.edit#">
+					</div>
 				</cfif>
 			</cfif>
 		</hb:HibachiPropertyList>
