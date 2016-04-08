@@ -22,6 +22,7 @@ import {GlobalSearchController} from "./controllers/globalsearch";
 //filters
 import {PercentageFilter} from "./filters/percentage";
 import {EntityRBKey} from "./filters/entityrbkey";
+import {SWTrim} from "./filters/swtrim";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
@@ -280,10 +281,14 @@ var coremodule = angular.module('hibachi.core',[
                     }
 
                     angular.forEach(entity,function(property){
-                        if(angular.isObject(property) && angular.isDefined(property.name)){
-
-                            if(angular.isDefined(defaultValues[entity.className][property.name])){
-                                jsEntity.data[property.name] = defaultValues[entity.className][property.name];
+                        if(angular.isObject(property) && angular.isDefined(property.name)){   
+                            if(angular.isDefined(defaultValues[entity.className][property.name]) && defaultValues[entity.className][property.name] !== null){ 
+                                if(defaultValues[entity.className][property.name].constructor == {}.constructor){
+                                    //prevent json from being passed by reference
+                                    jsEntity.data[property.name] = JSON.parse(JSON.stringify(defaultValues[entity.className][property.name]));
+                                } else {
+                                    jsEntity.data[property.name] = defaultValues[entity.className][property.name];
+                                }
                             }
                         }
                     });
@@ -1219,6 +1224,7 @@ var coremodule = angular.module('hibachi.core',[
 .controller('globalSearch',GlobalSearchController)
 //filters
 .filter('percentage',[PercentageFilter.Factory])
+.filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
