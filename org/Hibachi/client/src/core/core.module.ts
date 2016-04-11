@@ -395,10 +395,15 @@ var coremodule = angular.module('hibachi.core',[
                                         var metaData = this.metaData;
                                         var manyToManyName = '';
 
+
                                         //if entityInstance is not passed in, clear related object
                                         if(angular.isUndefined(entityInstance)){
                                             if(angular.isDefined(thisEntityInstance.data[property.name])){
                                                 delete thisEntityInstance.data[property.name];
+                                            }
+
+                                            if(!thisEntityInstance.parents){
+                                                return;
                                             }
                                             for(var i = 0; i <= thisEntityInstance.parents.length; i++){
                                                 if(angular.isDefined(thisEntityInstance.parents[i]) &&  thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)){

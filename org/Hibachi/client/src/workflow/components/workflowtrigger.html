@@ -5,7 +5,7 @@
 		</li>
 	</ul>
 	<ul class="list-unstyled list-inline s-middle">
-		<li data-ng-if="workflowTrigger.data.triggerType === 'Event'" class="j-tool-tip-item s-bundle-details" data-ng-bind="workflowTrigger.data.triggerEvent"></li>
+		<li data-ng-if="workflowTrigger.data.triggerType === 'Event'" class="j-tool-tip-item s-bundle-details" data-ng-bind="workflowTrigger.data.triggerEventTitle"></li>
 		<li data-ng-if="workflowTrigger.data.triggerType === 'Schedule'" class="j-tool-tip-item s-bundle-details" data-ng-bind="workflowTrigger.data.scheduleCollection.data.collectionName + ' - ' + workflowTrigger.data.schedule.data.scheduleName"></li>
 	</ul>
 	<ul class="list-unstyled list-inline s-last">

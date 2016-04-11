@@ -140,8 +140,12 @@ class SWWorkflowTasks{
                     console.log("Context: " + context);
                     console.log("saving task");
                     console.log(scope.workflowTasks.selectedTask);
+
+                    //scope.workflowTasks.selectedTask.$$setWorkflow(scope.workflow);
+
                     scope.workflowTasks.selectedTask.$$save().then(function(res){
                         scope.done = true;
+                        scope.workflowTasks.selectedTask = undefined;
                     	if (context === 'add'){
             				logger("SaveWorkflowTask", "Save and New");
             				scope.addWorkflowTask();
@@ -149,7 +153,6 @@ class SWWorkflowTasks{
                         }else if (context == "finish"){
                 			scope.finished = false;
                 		}
-                        scope.setHidden(scope.workflowTasks.selectedTask);
                     }, function (err) {
                     })
                 }//<--end save*/

@@ -120,6 +120,8 @@ class SWWorkflowTaskActionsController {
                 }else if (context == "finish"){
                     this.finished = true;
                 }
+            },(err)=>{
+                console.warn(err);
             });
         }//<--end save
 

@@ -56,7 +56,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function runAllWorkflowsByEventTrigger( required any eventName, required any entity, required struct eventData={} ) {
 		// Pull the workflowTriggerEventsArray out of cache so that it is quick and can be checked to see if we need to trigger an event
 		var allWorkflowTriggerEventsArray = getHibachiCacheService().getOrCacheFunctionValue("workflowDAO_getWorkflowTriggerEventsArray", getWorkflowDAO(), "getWorkflowTriggerEventsArray");
-		
 		// Make sure that this event has workflows attached before creating a thread
 		if(arrayFind(allWorkflowTriggerEventsArray, arguments.eventName)) {
 			
@@ -142,7 +141,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 		//Change WorkflowTrigger runningFlag to TRUE
-		//getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
+		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
 
 		//Attach workflowTrigger to workflowTriggerHistory
 		workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
@@ -155,30 +154,32 @@ component extends="HibachiService" accessors="true" output="false" {
 		try{
 
 			//get workflowTriggers Object
-			var currentObject = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+			var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 			//execute Collection and return only the IDs
 			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs();
 
 			//Loop Collection Data
 			for(i=1; i <= ArrayLen(triggerCollectionResult); i++){
 				//get current ObjectID
+				var workflowTriggerID = arguments.workflowTrigger.getWorkflowTriggerID();
 				var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
-				var currentThreadName = "thread_#i#";
+				var currentThreadName = "thread_#right(workflowTriggerID, 6)&i#";
 
-				thread action="run" name="#currentThreadName#" application="#application#" currentObject="#currentObject#" currentObjectID="#currentObjectID#" workflowTriggerID="#arguments.workflowTrigger.getWorkflowTriggerID()#"{
+				thread action="run" name="#currentThreadName#" currentObjectName="#currentObjectName#" currentObjectID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#"{
 					//load Objects by id
 
 					var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
 					var processData = {
-						entity = getHibachiScope().getEntity(currentObject, currentObjectID),
+						entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
 						workflowTrigger = workflowTrigger
 					};
 
 					//Call proccess method to execute Tasks
 					this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 
-					if(!processData.entity.hasErrors()) {
-						application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
+					if(processData.entity.hasErrors()) {
+						throw("error");
+						//application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
 					}
 				}
 				threadJoin(currentThreadName);
@@ -218,7 +219,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 	}
 
-	private boolean function executeTaskAction(required any workflowTaskAction, required any entity){
+	private boolean function executeTaskAction(required any workflowTaskAction, required any entity, required string type){
 		var actionSuccess = false;
 
 		switch (workflowTaskAction.getActionType()) {
@@ -280,7 +281,11 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			//DELETE
 			case 'delete' :
-				actionSuccess = getHibachiScope().deleteEntity(arguments.entity);
+				if(type != 'Event'){
+					actionSuccess = getHibachiScope().deleteEntity(arguments.entity);
+				}else{
+					actionSuccess = false;
+				}
 				break;
 		}
 		return actionSuccess;
@@ -309,7 +314,7 @@ component extends="HibachiService" accessors="true" output="false" {
 								arguments.data.entity.setAnnounceEvent(false);
 							}
 							//Execute ACTION
-							executeTaskAction(workflowTaskAction, arguments.data.entity);
+							executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType());
 
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
 								arguments.data.entity.setAnnounceEvent(true);

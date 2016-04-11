@@ -81,11 +81,11 @@ class SWTypeaheadSearchController {
 	}
 
     public clearSearch = () =>{
-        this.searchText = "";
-        this.hideSearch = true;
-        if(angular.isDefined(this.addFunction)){
-            this.addFunction()(undefined);
-        }
+        //this.searchText = "";
+        //this.hideSearch = true;
+        //if(angular.isDefined(this.addFunction)){
+        //    this.addFunction()(undefined);
+        //}
     };
 
     public toggleOptions = () =>{
@@ -99,7 +99,7 @@ class SWTypeaheadSearchController {
 	public search = (search:string)=>{
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
-		}
+        }
 
         this.collectionConfig.setKeywords(search);
 

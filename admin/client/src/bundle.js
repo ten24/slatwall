@@ -1585,6 +1585,9 @@
 	                                                if (angular.isDefined(thisEntityInstance.data[property.name])) {
 	                                                    delete thisEntityInstance.data[property.name];
 	                                                }
+	                                                if (!thisEntityInstance.parents) {
+	                                                    return;
+	                                                }
 	                                                for (var i = 0; i <= thisEntityInstance.parents.length; i++) {
 	                                                    if (angular.isDefined(thisEntityInstance.parents[i]) && thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)) {
 	                                                        thisEntityInstance.parents.splice(i, 1);
@@ -4579,11 +4582,11 @@
 	        this.collectionConfigService = collectionConfigService;
 	        this.displayList = [];
 	        this.clearSearch = function () {
-	            _this.searchText = "";
-	            _this.hideSearch = true;
-	            if (angular.isDefined(_this.addFunction)) {
-	                _this.addFunction()(undefined);
-	            }
+	            //this.searchText = "";
+	            //this.hideSearch = true;
+	            //if(angular.isDefined(this.addFunction)){
+	            //    this.addFunction()(undefined);
+	            //}
 	        };
 	        this.toggleOptions = function () {
 	            if (_this.hideSearch && (!_this.searchText || !_this.searchText.length)) {
@@ -5724,11 +5727,12 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWListingDisplayController = (function () {
 	    //@ngInject
-	    function SWListingDisplayController($scope, $transclude, $q, $hibachi, utilityService, collectionConfigService, paginationService, selectionService, observerService, rbkeyService) {
+	    function SWListingDisplayController($scope, $transclude, $q, $parse, $hibachi, utilityService, collectionConfigService, paginationService, selectionService, observerService, rbkeyService) {
 	        var _this = this;
 	        this.$scope = $scope;
 	        this.$transclude = $transclude;
 	        this.$q = $q;
+	        this.$parse = $parse;
 	        this.$hibachi = $hibachi;
 	        this.utilityService = utilityService;
 	        this.collectionConfigService = collectionConfigService;
@@ -5780,6 +5784,9 @@
 	                _this.collectionObject = _this.collection;
 	                _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
 	            }
+	            if (angular.isDefined(_this.pageShow)) {
+	                _this.collectionConfig.setPageShow(_this.pageShow);
+	            }
 	            _this.setupDefaultCollectionInfo();
 	            //if columns doesn't exist then make it
 	            if (!_this.collectionConfig.columns) {
@@ -5826,6 +5833,7 @@
 	            _this.initData();
 	            _this.$scope.$watch('swListingDisplay.collectionPromise', function (newValue, oldValue) {
 	                if (newValue) {
+	                    _this.collectionData = undefined;
 	                    _this.$q.when(_this.collectionPromise).then(function (data) {
 	                        _this.collectionData = data;
 	                        _this.setupDefaultCollectionInfo();
@@ -5848,6 +5856,13 @@
 	            }
 	            _this.paginator.getCollection = _this.getCollection;
 	            //this.getCollection();
+	            _this.observerService.attach(_this.getCollectionObserver, 'getCollection', (_this.name || 'ListingDisplay'));
+	        };
+	        this.getCollectionObserver = function (param) {
+	            console.warn("getCollectionObserver", param);
+	            _this.collectionConfig.loadJson(param.collectionConfig);
+	            _this.collectionData = undefined;
+	            _this.getCollection();
 	        };
 	        this.setupDefaultCollectionInfo = function () {
 	            if (_this.hasCollectionPromise) {
@@ -5855,7 +5870,8 @@
 	                _this.collectionConfig = _this.collectionConfigService.newCollectionConfig(_this.collectionObject);
 	                _this.collectionConfig.loadJson(_this.collection.collectionConfig);
 	            }
-	            _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+	            //this.collectionConfig.setPageShow(this.paginator.getPageShow());
+	            _this.paginator.setPageShow(_this.collectionConfig.getPageShow());
 	            _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
 	            //this.collectionConfig.setKeywords(this.paginator.keywords);
 	        };
@@ -5864,10 +5880,11 @@
 	            return function () {
 	                _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
 	                _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+	                _this.collectionData = undefined;
 	                _this.collectionConfig.getEntity().then(function (data) {
 	                    _this.collectionData = data;
 	                    _this.setupDefaultCollectionInfo();
-	                    _this.setupColumns();
+	                    //this.setupColumns();
 	                    _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
 	                    _this.paginator.setPageRecordsInfo(_this.collectionData);
 	                });
@@ -5921,7 +5938,6 @@
 	                _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-expandable', ' ');
 	                //add parent property root filter
 	                if (!_this.hasCollectionPromise) {
-	                    console.log('HEREEE!!');
 	                    _this.collectionConfig.addFilter(_this.parentPropertyName + '.' + _this.exampleEntity.$$getIDName(), 'NULL', 'IS', undefined, true);
 	                }
 	                //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
@@ -6230,7 +6246,7 @@
 	                    }
 	                ];
 	            }
-	            $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=main.collectionConfigExport" method="post" id="formExport"></form>');
+	            $('body').append('<form action="/?' + _this.$hibachi.getConfigValue('action') + '=admin:main.collectionConfigExport" method="post" id="formExport"></form>');
 	            $('#formExport')
 	                .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
 	                .submit()
@@ -6356,7 +6372,9 @@
 	            exportAction: "@?",
 	            getChildCount: "=?",
 	            hasSearch: "=?",
-	            hasActionBar: "=?"
+	            hasActionBar: "=?",
+	            showPagination: "@?",
+	            pageShow: "@?",
 	        };
 	        this.controller = SWListingDisplayController;
 	        this.controllerAs = "swListingDisplay";
@@ -6432,14 +6450,20 @@
 	                return;
 	            var keywords = _this.searchText.split(" ");
 	            for (var i = 0; i < keywords.length; i++) {
-	                _this.collectionConfig.addLikeFilter(_this.selectedSearchColumn.propertyIdentifier, keywords[i]);
+	                _this.collectionConfig.addLikeFilter(_this.selectedSearchColumn.propertyIdentifier, keywords[i], '%w%', undefined, _this.selectedSearchColumn.title);
 	            }
 	            _this.searchText = '';
 	            _this.collectionConfig.setKeywords(_this.searchText);
 	            _this.paginator.setCurrentPage(1);
 	        };
-	        this.toggleDisplayOptions = function () {
-	            _this.displayOptionsClosed = !_this.displayOptionsClosed;
+	        this.toggleDisplayOptions = function (closeButton) {
+	            if (closeButton === void 0) { closeButton = false; }
+	            if (_this.displayOptionsClosed) {
+	                _this.displayOptionsClosed = false;
+	            }
+	            else if (closeButton) {
+	                _this.displayOptionsClosed = true;
+	            }
 	        };
 	        this.setItemInUse = function (booleanValue) {
 	            _this.itemInUse = booleanValue;
@@ -6460,6 +6484,9 @@
 	        this.selectFilterItem = function (filterItem) {
 	            _this.filtersClosed = false;
 	            _this.collectionService.selectFilterItem(filterItem);
+	        };
+	        this.saveCollection = function () {
+	            _this.getCollection()();
 	        };
 	        this.backupColumnsConfig = this.collectionConfig.getColumns();
 	        this.filterPropertiesList = {};
@@ -8221,6 +8248,9 @@
 	            _this.pageShow = jsonCollection.pageShow;
 	            _this.allRecords = jsonCollection.allRecords;
 	            _this.isDistinct = jsonCollection.isDistinct;
+	            _this.currentPage = jsonCollection.currentPage || 1;
+	            _this.pageShow = jsonCollection.pageShow || 10;
+	            _this.keywords = jsonCollection.keywords;
 	            return _this;
 	        };
 	        this.loadFilterGroups = function (filterGroupsConfig) {
@@ -8416,7 +8446,7 @@
 	                    title = _DividedTitles[index].trim();
 	                }
 	                else {
-	                    title = _this.rbkeyService.getRBKey("entity." + _this.baseEntityName + "." + column);
+	                    title = _this.rbkeyService.getRBKey("entity." + _this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier) + "." + _this.utilityService.listLast(propertyIdentifier));
 	                }
 	                _this.addColumn(_this.formatPropertyIdentifier(column), title, options);
 	            });
@@ -8430,7 +8460,7 @@
 	            _this.filterGroups[0].filterGroup.push(filter);
 	            return _this;
 	        };
-	        this.addLikeFilter = function (propertyIdentifier, value, pattern, logicalOperator, hidden) {
+	        this.addLikeFilter = function (propertyIdentifier, value, pattern, logicalOperator, displayPropertyIdentifier, hidden) {
 	            if (pattern === void 0) { pattern = '%w%'; }
 	            if (hidden === void 0) { hidden = false; }
 	            //if filterGroups does not exists then set a default
@@ -8441,8 +8471,11 @@
 	            if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
 	                logicalOperator = 'AND';
 	            var join = propertyIdentifier.split('.').length > 1;
+	            if (angular.isUndefined(displayPropertyIdentifier)) {
+	                displayPropertyIdentifier = _this.rbkeyService.getRBKey("entity." + _this.$hibachi.getLastEntityNameInPropertyIdentifier(_this.baseEntityName, propertyIdentifier) + "." + _this.utilityService.listLast(propertyIdentifier));
+	            }
 	            //create filter group
-	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, 'like', logicalOperator, propertyIdentifier.split('.').pop(), value, hidden, pattern);
+	            var filter = new Filter(_this.formatPropertyIdentifier(propertyIdentifier, join), value, 'like', logicalOperator, displayPropertyIdentifier, value, hidden, pattern);
 	            _this.filterGroups[0].filterGroup.push(filter);
 	            return _this;
 	        };
@@ -8466,7 +8499,7 @@
 	                filterGroup: []
 	            };
 	            for (var i = 0; i < filterGroup.length; i++) {
-	                var filter = _this.createFilter(filterGroup[i].propertyIdentifier, filterGroup[i].comparisonValue, filterGroup[i].comparisonOperator, filterGroup[i].hidden, filterGroup[i].logicalOperator);
+	                var filter = _this.createFilter(filterGroup[i].propertyIdentifier, filterGroup[i].comparisonValue, filterGroup[i].comparisonOperator, filterGroup[i].logicalOperator, filterGroup[i].hidden);
 	                group.filterGroup.push(filter);
 	            }
 	            _this.filterGroups[0].filterGroup.push(group);
@@ -8568,6 +8601,9 @@
 	        this.setCurrentPage = function (pageNumber) {
 	            _this.currentPage = pageNumber;
 	            return _this;
+	        };
+	        this.getCurrentPage = function () {
+	            return _this.currentPage;
 	        };
 	        this.setPageShow = function (NumberOfPages) {
 	            _this.pageShow = NumberOfPages;
@@ -9424,7 +9460,8 @@
 	            restrict: 'E',
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "addfilterbuttons.html",
 	            scope: {
-	                itemInUse: "="
+	                itemInUse: "=",
+	                readOnly: "="
 	            },
 	            link: function (scope, element, attrs, filterGroupsController) {
 	                scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
@@ -9553,10 +9590,17 @@
 	                                if (angular.isDefined(selectedProperty.ormtype)) {
 	                                    column['ormtype'] = selectedProperty.ormtype;
 	                                }
+	                                if (selectedProperty.hb_formattype) {
+	                                    column['type'] = selectedProperty.hb_formattype;
+	                                }
+	                                else {
+	                                    column['type'] = 'none';
+	                                }
 	                                $scope.columns.push(column);
 	                                $scope.saveCollection();
 	                                if (angular.isDefined(closeDialog) && closeDialog === true) {
 	                                    $scope.addDisplayDialog.toggleDisplayDialog();
+	                                    $scope.selectBreadCrumb(0);
 	                                }
 	                            }
 	                        }
@@ -12525,7 +12569,8 @@
 	                saveCollection: "&",
 	                filterGroup: "=?",
 	                comparisonType: "=?",
-	                simple: "="
+	                simple: "=",
+	                readOnly: "="
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(collectionPartialsPath) + "filtergroups.html",
 	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
@@ -13268,7 +13313,7 @@
 	            }
 	            else if (propertyDisplay.fieldType === 'dateTime') {
 	                template = '<input type="text" class="form-control" ' +
-	                    'datetime-picker future-only ' +
+	                    'datetime-picker ' +
 	                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' +
 	                    'ng-disabled="!propertyDisplay.editable" ' +
 	                    'ng-show="propertyDisplay.editing" ' +
@@ -15820,7 +15865,7 @@
 	            _this.clearSchedulePreview();
 	            console.log(scheduleObject);
 	            var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
-	            var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
+	            var endTime = (scheduleObject.frequencyEndTime) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
 	            var now = new Date();
 	            var startPoint = new Date();
 	            startPoint.setHours(startTime.getHours());
@@ -15835,7 +15880,7 @@
 	            }
 	            if (scheduleObject.recuringType == 'monthly') {
 	                daysToRun = scheduleObject.daysOfMonthToRun.toString().split(',');
-	                if (!daysToRun.length || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
+	                if (!daysToRun.length || !scheduleObject.daysOfWeekToRun || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
 	                    return _this.schedulePreview;
 	                }
 	            }
@@ -15843,7 +15888,7 @@
 	            for (var i = 0;; i++) {
 	                if (datesAdded >= totalOfPreviews || i >= 500)
 	                    break;
-	                var timeToadd = (scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
+	                var timeToadd = (scheduleObject.frequencyInterval && scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
 	                var currentDatetime = new Date(startPoint.getTime() + timeToadd);
 	                if (currentDatetime < now)
 	                    continue;
@@ -16308,6 +16353,8 @@
 	                else if (context == "finish") {
 	                    _this.finished = true;
 	                }
+	            }, function (err) {
+	                console.warn(err);
 	            });
 	        }; //<--end save
 	        /**
@@ -16581,8 +16628,10 @@
 	                    console.log("Context: " + context);
 	                    console.log("saving task");
 	                    console.log(scope.workflowTasks.selectedTask);
+	                    //scope.workflowTasks.selectedTask.$$setWorkflow(scope.workflow);
 	                    scope.workflowTasks.selectedTask.$$save().then(function (res) {
 	                        scope.done = true;
+	                        scope.workflowTasks.selectedTask = undefined;
 	                        if (context === 'add') {
 	                            logger("SaveWorkflowTask", "Save and New");
 	                            scope.addWorkflowTask();
@@ -16591,7 +16640,6 @@
 	                        else if (context == "finish") {
 	                            scope.finished = false;
 	                        }
-	                        scope.setHidden(scope.workflowTasks.selectedTask);
 	                    }, function (err) {
 	                    });
 	                }; //<--end save*/
@@ -16719,6 +16767,9 @@
 	                scope.executeWorkflowTrigger = function (workflowTrigger) {
 	                    if (scope.executingTrigger)
 	                        return;
+	                    if (!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
+	                        return; //show message "you dont have a task yet"
+	                    }
 	                    scope.executingTrigger = true;
 	                    var appConfig = $hibachi.getConfig();
 	                    var urlString = appConfig.baseURL + '/index.cfm/?' + appConfig.action + '=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID=' + workflowTrigger.data.workflowTriggerID;
@@ -16773,7 +16824,7 @@
 	/// <reference path='../../../typings/hibachiTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var SWWorkflowTriggers = (function () {
-	    function SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService) {
+	    function SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout) {
 	        return {
 	            restrict: 'E',
 	            scope: {
@@ -16781,18 +16832,23 @@
 	            },
 	            templateUrl: hibachiPathBuilder.buildPartialsPath(workflowPartialsPath) + "workflowtriggers.html",
 	            link: function (scope, element, attrs, formController) {
-	                var workflowItemAdded = false;
+	                scope.schedule = {};
 	                scope.$watch('workflowTriggers.selectedTrigger', function (newValue, oldValue) {
 	                    if (newValue !== undefined && newValue !== oldValue) {
 	                        console.log('Ooh watch me, watch me', newValue);
 	                        if (newValue.data.triggerType == 'Schedule') {
 	                            if (angular.isDefined(newValue.data.schedule)) {
-	                                scope.selectedSchedule = newValue.data.schedule.data.scheduleName;
+	                                console.warn('LOL');
+	                                scope.schedule.selectedName = newValue.data.schedule.data.scheduleName;
 	                                scope.selectSchedule(newValue.data.schedule.data);
 	                            }
 	                            if (angular.isDefined(newValue.data.scheduleCollection)) {
 	                                scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
 	                            }
+	                        }
+	                        else {
+	                            scope.showEventOptions = true;
+	                            scope.searchEvent.name = newValue.data.triggerEventTitle;
 	                        }
 	                    }
 	                });
@@ -16802,6 +16858,7 @@
 	                observerService.attach(function (item) {
 	                    scope.collectionCollectionConfig.clearFilters();
 	                    scope.collectionCollectionConfig.addFilter("collectionObject", item.value);
+	                    scope.eventOptions = [];
 	                }, 'WorkflowWorkflowObjectOnChange');
 	                scope.scheduleCollectionConfig = collectionConfigService.newCollectionConfig("Schedule");
 	                scope.scheduleCollectionConfig.setDisplayProperties("scheduleID,scheduleName,daysOfMonthToRun,daysOfWeekToRun,recuringType,frequencyStartTime,frequencyEndTime,frequencyInterval");
@@ -16885,12 +16942,18 @@
 	                 * Saves the workflow triggers.
 	                 */
 	                scope.saveWorkflowTrigger = function (context) {
-	                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted() && !workflowItemAdded) {
-	                        workflowItemAdded = true;
-	                        scope.workflow.$$addWorkflowTrigger(scope.workflowTriggers.selectedTrigger);
+	                    if (!scope.workflowTriggers.selectedTrigger.$$isPersisted()) {
+	                        scope.workflowTriggers.selectedTrigger.$$setWorkflow(scope.workflow);
+	                        console.warn(scope.workflow);
 	                    }
 	                    var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 	                    saveWorkflowTriggerPromise.then(function () {
+	                        scope.showEventOptions = true;
+	                        scope.searchEvent = {
+	                            name: ''
+	                        };
+	                        scope.schedule.selectedName = '';
+	                        scope.schedulePreview = {};
 	                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
 	                        if (context == 'add') {
 	                            console.log("Save and New");
@@ -16902,6 +16965,8 @@
 	                    });
 	                };
 	                scope.closeTrigger = function () {
+	                    console.warn("workflow", scope.workflow);
+	                    scope.workflowTriggers.selectedTrigger.$$setWorkflow();
 	                    scope.workflowTriggers.selectedTrigger = undefined;
 	                };
 	                /**
@@ -16911,6 +16976,7 @@
 	                    console.log("SelectEvent");
 	                    console.log(eventOption);
 	                    //Needs to clear old and set new.
+	                    scope.workflowTriggers.selectedTrigger.data.triggerEventTitle = eventOption.name;
 	                    scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
 	                    if (eventOption.entityName == scope.workflow.data.workflowObject) {
 	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
@@ -16948,7 +17014,7 @@
 	                 * Adds a workflow trigger.
 	                 */
 	                scope.addWorkflowTrigger = function () {
-	                    console.log('addWorkflowTrigger');
+	                    console.log('addWorkflowTrigger', scope.schedule);
 	                    var newWorkflowTrigger = $hibachi.newWorkflowTrigger();
 	                    scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
 	                };
@@ -16964,7 +17030,7 @@
 	                        scope.scheduleEntity.data.daysOfMonthToRun = scope.daysOfMonth.filter(Number).join();
 	                    }
 	                    scope.scheduleEntity.$$save().then(function (res) {
-	                        scope.selectedSchedule = angular.copy(scope.scheduleEntity.data.scheduleName);
+	                        scope.schedule.selectedName = angular.copy(scope.scheduleEntity.data.scheduleName);
 	                        scope.selectSchedule(angular.copy(scope.scheduleEntity.data));
 	                        formService.resetForm(scope.scheduleEntity.forms['scheduleForm']);
 	                        scope.createSchedule = false;
@@ -17019,8 +17085,8 @@
 	        };
 	    }
 	    SWWorkflowTriggers.Factory = function () {
-	        var directive = function ($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService) {
-	            return new SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService);
+	        var directive = function ($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout) {
+	            return new SWWorkflowTriggers($hibachi, workflowPartialsPath, formService, observerService, hibachiPathBuilder, collectionConfigService, scheduleService, dialogService, $timeout);
 	        };
 	        directive.$inject = [
 	            '$hibachi',
@@ -17030,7 +17096,8 @@
 	            'hibachiPathBuilder',
 	            'collectionConfigService',
 	            'scheduleService',
-	            'dialogService'
+	            'dialogService',
+	            '$timeout'
 	        ];
 	        return directive;
 	    };
@@ -17393,7 +17460,7 @@
 	                }
 	            },
 	            controller: 'routerController'
-	        }).when('/entity/:entityName/:entityID/:idk?', {
+	        }).when('/entity/:entityName/:entityID', {
 	            template: function (params) {
 	                var entityDirectiveExists = $injector.has('sw' + params.entityName + 'DetailDirective');
 	                if (entityDirectiveExists) {

@@ -76,6 +76,12 @@ class SWWorkflowTrigger{
                 scope.executingTrigger = false;
                 scope.executeWorkflowTrigger = function(workflowTrigger){
                     if(scope.executingTrigger) return;
+
+                    if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
+                        return; //show message "you dont have a task yet"
+                    }
+
+
                     scope.executingTrigger = true;
 
                     var appConfig = $hibachi.getConfig();
