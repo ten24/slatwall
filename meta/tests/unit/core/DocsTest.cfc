@@ -52,7 +52,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		// Call the hibachiDocsService().generateJSONDocs()
 		request.slatwallScope.getService("hibachiDocsService").generateDocsJson();
-
+		
 	}
 
 }
