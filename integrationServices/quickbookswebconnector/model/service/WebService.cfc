@@ -46,7 +46,7 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" wsdlfile="Webservice.wsdl" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
+<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="rpc" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
 
 	<cfscript>
 		variables.tickets = {};
@@ -901,7 +901,7 @@ Notes:
 
 	<cffunction
     	name="authenticate"
-    	returnType="array"
+    	returnType="string[]"
     	output="no"
     	access="remote">
 		<cfargument name="strUserName" type="string" required="true" />
@@ -914,7 +914,7 @@ Notes:
 	        	var companyFileName = getService("SettingService").getSettingValue("integrationquickbookswebconnectorcompanyfilename");
 	        } else {
 	        	//else we cant go on
-	        	var companyFileName = "nvu";//not valid user
+	        	var companyFileName = "";//use the currently open company file
 	        }
 
 			var updatePostponeInterval = "1";
@@ -929,10 +929,28 @@ Notes:
 			//queue events
 		    variables.tickets[thisTicket] = ["syncAccountLedger"];
 
-		    var answer = [thisTicket, companyFileName, updatePostponeInterval, everyMinute, runEveryNMinutes];
-
-			return answer;
+		    var answer = [javaCast("string","nvu"),javaCast("string",updatePostponeInterval),javaCast("string",everyMinute),javaCast("string",runEveryNMinutes)];
+            return javaCast("string[]", answer); 
+		    //return "new String[] { ""one"", ""two"", ""three"" }"
 		</cfscript>
+    </cffunction>
+
+    <cffunction 
+        name = "serverVersion"
+        returnType = "string" 
+        output = "no"
+        access = "remote">
+        <cfargument name="ticket" type="string" />
+        <cfreturn "testImplementation" />
+    </cffunction>
+
+    <cffunction 
+        name = "clientVersion"
+        returnType = "string"
+        output = "no"
+        access = "remote">
+        <cfargument name="strVersion" type="string" required="true" />
+        <cfreturn "" />
     </cffunction>
 
 	<cffunction

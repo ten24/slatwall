@@ -367,10 +367,10 @@
     </wsdl:binding>
     <wsdl:service name="integrationServices.quickbookswebconnector.model.service.WebService.cfc">
         <wsdl:port name="integrationServices.quickbookswebconnector.model.service.WebService.cfcHttpSoap11Endpoint" binding="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcSoap11Binding">
-            <soap:address location="http://cf10.localhost:80/integrationServices/quickbookswebconnector/model/service/WebService.cfc"/>
+            <soap:address location="https://atilla.audio/integrationServices/quickbookswebconnector/model/service/WebService.cfc"/>
         </wsdl:port>
         <wsdl:port name="integrationServices.quickbookswebconnector.model.service.WebService.cfcHttpSoap12Endpoint" binding="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcSoap12Binding">
-            <soap12:address location="http://cf10.localhost:80/integrationServices/quickbookswebconnector/model/service/WebService.cfc"/>
+            <soap12:address location="https://atilla.audio/integrationServices/quickbookswebconnector/model/service/WebService.cfc"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
