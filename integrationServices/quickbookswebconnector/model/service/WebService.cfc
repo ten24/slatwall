@@ -46,7 +46,7 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="document" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
+<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" wsversion="1" style="rpc" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
 
 	<cfscript>
 		variables.tickets = {};
@@ -884,7 +884,7 @@ Notes:
 						'<OwnerID>{' & ownerID & '}</OwnerID>' &
 						'<FileID>{' & fileID & '}</FileID>' &
 						'<QBType>QBFS</QBType>' &
-						'<Style>Document</Style>' &
+						'<Style>DocWrapped</Style>' &
 						'<Scheduler><RunEveryNMinutes>' & runEveryNMinutes & '</RunEveryNMinutes></Scheduler>' &
 						'</QBWCXML>'
 				);
@@ -901,7 +901,7 @@ Notes:
 
 	<cffunction
     	name="authenticate"
-    	returnType="string[]"
+    	returnType="any"
     	output="no"
     	access="remote">
 		<cfargument name="strUserName" type="string" required="true" />
@@ -930,10 +930,14 @@ Notes:
 			//queue events
 		    variables.tickets[thisTicket] = ["syncAccountLedger"];
 
-		    var answer = [javaCast("string",companyFileName),javaCast("string", updatePostponeInterval), javaCast("string",everyMinute), javaCast("string",runEveryNMinutes)];
+		    var answer = [
+		    	javaCast("string",companyFileName),
+		    	javaCast("string", updatePostponeInterval),
+		    	javaCast("string",everyMinute),
+		    	javaCast("string",runEveryNMinutes)
+		    ];
 
-            return javaCast("string[]", answer);
-		    //return "new String[] { ""one"", ""two"", ""three"" }"
+            return convertToJavaArray(answer);
 		</cfscript>
     </cffunction>
 
@@ -942,7 +946,6 @@ Notes:
         returnType = "string"
         output = "no"
         access = "remote">
-        <cfargument name="ticket" type="string" />
         <cfreturn "testImplementation" />
     </cffunction>
 
@@ -1070,6 +1073,20 @@ Notes:
 			return answer;
 		</cfscript>
     </cffunction>
+
+	<cffunction name="convertToJavaArray" access="private">
+		<cfargument name="array">
+		<cfset var objStringClass = CreateObject("java", "java.lang.String").GetClass() />
+		<cfset var objReflect = CreateObject("java", "java.lang.reflect.Array") />
+		<cfset var arrJavaValue = objReflect.NewInstance(objStringClass, JavaCast( "int", ArrayLen(arguments.array) )) />
+		<cfset var x = 0 />
+
+		<cfloop from="1" to="#ArrayLen(arguments.array)#" index="x">
+			<cfset objReflect.Set(arrJavaValue, JavaCast( "int", x-1 ), JavaCast( "string", arguments.array[x] ) ) />
+		</cfloop>
+
+		<cfreturn arrJavaValue/>
+	</cffunction>
 
 	// ===================== START: Logical Methods ===========================
 
