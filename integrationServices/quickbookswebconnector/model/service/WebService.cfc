@@ -46,7 +46,7 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" wsdlfile="Webservice.wsdl" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
+<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" style="document" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
 
 	<cfscript>
 		variables.tickets = {};

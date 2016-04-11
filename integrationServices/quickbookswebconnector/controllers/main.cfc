@@ -46,7 +46,7 @@
 Notes:
 
 */
-component accessors="true" output="false" {
+component extends="Slatwall.org.Hibachi.HibachiController" accessors="true" output="false" {
 
 	property name="fw" type="any";
     property name="quickbookswebconnectorWebService" type="any";
@@ -67,7 +67,7 @@ component accessors="true" output="false" {
 
 	public void function downloadqbwcfile(){
         getFW().setView("admin:main");
-        getQuickbooksWebConnectorWebService().getQBWCFile();
+        getQuickbookswebconnectorWebService().getQBWCFile();
 		getFW().redirect(action="admin:main", queryString="");
 	}
 
