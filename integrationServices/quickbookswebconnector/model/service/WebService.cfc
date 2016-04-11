@@ -914,7 +914,7 @@ Notes:
 	        	var companyFileName = getService("SettingService").getSettingValue("integrationquickbookswebconnectorcompanyfilename");
 	        } else {
 	        	//else we cant go on
-	        	var companyFileName = "nvu";//not valid user
+	        	var companyFileName = "";//not valid user
 	        }
 
 			var updatePostponeInterval = "1";
@@ -929,7 +929,9 @@ Notes:
 			//queue events
 		    variables.tickets[thisTicket] = ["syncAccountLedger"];
 
-		    var answer = [thisTicket, companyFileName, updatePostponeInterval, everyMinute, runEveryNMinutes];
+		    var answer = [javaCast("string",companyFileName),javaCast("string", updatePostponeInterval), javaCast("string",everyMinute), javaCast("string",runEveryNMinutes)];
+
+			var xml = xmlNew();
 
 			return answer;
 		</cfscript>
