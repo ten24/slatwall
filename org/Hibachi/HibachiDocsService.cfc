@@ -80,10 +80,10 @@ component accessors="true" output="false" extends="HibachiService" {
 		var docsJson = {};
 		docsJson['basecomponents'] = generateBaseComponentJson();
 		docsJson['entities'] = generateEntityJson();
-	docsJson['services'] = generateServiceJson();
-	docsJson['processes'] = generateProcessJson();
-	docsJson['daos'] = generateDaoJson();
-	docsJson['validationInfo'] = generateValidationJson();
+		docsJson['services'] = generateServiceJson();
+		docsJson['processes'] = generateProcessJson();
+		docsJson['daos'] = generateDaoJson();
+		docsJson['validationInfo'] = generateValidationJson();
 		var docsJsonPath = expandPath('/'&getService('hibachiDao').getApplicationKey()) & '/meta/docs/json/docs.json';
 		fileWrite(docsJsonPath,serializeJson(docsJson));
 	}
@@ -124,13 +124,26 @@ component accessors="true" output="false" extends="HibachiService" {
 
 				if(processContext != 'save' && processContext != 'delete'){
 					var processValidationStruct = getService('hibachiValidationService').getValidationsByContext(entity.getProcessObject(processContext));
-				for(var propertyKey in processValidationStruct){
-					if(!structKeyExists(validationInfo[entityName]['validations'][processContext]['validations'],propertyKey)){
-						validationInfo[entityName]['validations'][processContext]['validations'][propertyKey] = processValidationStruct[propertyKey];
-					}else{
-						structAppend(validationInfo[entityName]['validations'][processContext]['validations'][propertyKey],processValidationStruct[propertyKey]);
+					for(var propertyKey in processValidationStruct){
+						for(var constraint in processValidationStruct[propertyKey]){
+							var rbkey = getHibachiScope().rbkey(
+								'validate.#entity.getClassName()#_#processContext#.#propertyKey#.#constraint.constraintType#',
+								{
+									entityName=entity.getClassName(),
+									propertyName=propertyKey
+								}
+							);
+							if(!right(rbkey,8) == '_missing'){
+								constraint['rbkey'] = rbkey;
+							}
+						}
+						
+						if(!structKeyExists(validationInfo[entityName]['validations'][processContext]['validations'],propertyKey)){
+							validationInfo[entityName]['validations'][processContext]['validations'][propertyKey] = processValidationStruct[propertyKey];
+						}else{
+							structAppend(validationInfo[entityName]['validations'][processContext]['validations'][propertyKey],processValidationStruct[propertyKey]);
+						}
 					}
-				}
 				}
 
 				try{
