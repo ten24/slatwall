@@ -901,7 +901,7 @@ Notes:
 
 	<cffunction
     	name="authenticate"
-    	returnType="array"
+    	returnType="string[]"
     	output="no"
     	access="remote">
 		<cfargument name="strUserName" type="string" required="true" />
@@ -914,7 +914,8 @@ Notes:
 	        	var companyFileName = getService("SettingService").getSettingValue("integrationquickbookswebconnectorcompanyfilename");
 	        } else {
 	        	//else we cant go on
-	        	var companyFileName = "";//not valid user
+	        	var companyFileName = "";//use the currently open company file
+
 	        }
 
 			var updatePostponeInterval = "1";
@@ -931,10 +932,27 @@ Notes:
 
 		    var answer = [javaCast("string",companyFileName),javaCast("string", updatePostponeInterval), javaCast("string",everyMinute), javaCast("string",runEveryNMinutes)];
 
-			var xml = xmlNew();
-
-			return answer;
+            return javaCast("string[]", answer);
+		    //return "new String[] { ""one"", ""two"", ""three"" }"
 		</cfscript>
+    </cffunction>
+
+    <cffunction
+        name = "serverVersion"
+        returnType = "string"
+        output = "no"
+        access = "remote">
+        <cfargument name="ticket" type="string" />
+        <cfreturn "testImplementation" />
+    </cffunction>
+
+    <cffunction
+        name = "clientVersion"
+        returnType = "string"
+        output = "no"
+        access = "remote">
+        <cfargument name="strVersion" type="string" required="true" />
+        <cfreturn "" />
     </cffunction>
 
 	<cffunction
