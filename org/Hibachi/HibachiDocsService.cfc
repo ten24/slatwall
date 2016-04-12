@@ -98,7 +98,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			if(structKeyExists(entitiesProcessContexts,entityName)){
 				var entityProcessContexts = duplicate(entitiesProcessContexts[entityName]);
 			}else{
-				entityProcessContexts = [];
+				var entityProcessContexts = [];
 			}
 			
 			arrayAppend(entityProcessContexts,'save');
