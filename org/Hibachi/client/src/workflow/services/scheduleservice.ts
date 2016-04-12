@@ -29,7 +29,6 @@ class ScheduleService{
 
     public buildSchedulePreview =(scheduleObject:any, totalOfPreviews:number=10):any=>{
         this.clearSchedulePreview();
-        console.log(scheduleObject);
         var startTime = new Date(Date.parse(scheduleObject.frequencyStartTime));
         var endTime = (scheduleObject.frequencyEndTime) ? new Date(Date.parse(scheduleObject.frequencyEndTime)) : false;
         var now = new Date();
