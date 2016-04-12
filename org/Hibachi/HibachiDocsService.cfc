@@ -92,9 +92,15 @@ component accessors="true" output="false" extends="HibachiService" {
 		var validationInfo = {};
 
 		var entitiesProcessContexts = getService('hibachiService').getEntitiesProcessContexts();
-		for(var entityName in entitiesProcessContexts){
-		var entity = getService('hibachiService').getEntityObject(entityName);
-			var entityProcessContexts = duplicate(entitiesProcessContexts[entityName]);
+		var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
+		for(var entityName in listtoArray(structKeyList(entitiesMetaData))){
+			var entity = getService('hibachiService').getEntityObject(entityName);
+			if(structKeyExists(entitiesProcessContexts,entityName)){
+				var entityProcessContexts = duplicate(entitiesProcessContexts[entityName]);
+			}else{
+				entityProcessContexts = [];
+			}
+			
 			arrayAppend(entityProcessContexts,'save');
 			arrayAppend(entityProcessContexts,'delete');
 			validationInfo[entityName]['validations'] = {};
@@ -102,7 +108,9 @@ component accessors="true" output="false" extends="HibachiService" {
 			var validationStruct = getService('hibachiValidationService').getValidationStruct(entity);
 			if(structKeyExists(validationStruct,'conditions')){
 				validationInfo[entityName]['conditions'] = validationStruct.conditions;
-				
+			}
+			if(structKeyExists(validationStruct,'populatedPropertyValidation')){
+				validationInfo[entityName]['populatedPropertyValidation'] = validationStruct.populatedPropertyValidation;
 			}
 			//get all validations by context
 			for(var processContext in entityProcessContexts){
@@ -170,6 +178,9 @@ component accessors="true" output="false" extends="HibachiService" {
 					validationStruct = getService('hibachiValidationService').getValidationStruct(processObject);
 					if(structKeyExists(validationStruct,'conditions')){
 						validationInfo[entityName]['validations'][processContext]['conditions'] =validationStruct.conditions;
+					}
+					if(structKeyExists(validationStruct,'populatedPropertyValidation')){
+						validationInfo[entityName]['validations'][processContext]['populatedPropertyValidation'] =validationStruct.populatedPropertyValidation;
 					}
 				}catch(any e){
 
