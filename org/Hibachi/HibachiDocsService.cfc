@@ -102,6 +102,7 @@ component accessors="true" output="false" extends="HibachiService" {
 			var validationStruct = getService('hibachiValidationService').getValidationStruct(entity);
 			if(structKeyExists(validationStruct,'conditions')){
 				validationInfo[entityName]['conditions'] = validationStruct.conditions;
+				
 			}
 			//get all validations by context
 			for(var processContext in entityProcessContexts){
@@ -161,8 +162,11 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 
 				try{
-					var processObject = entity.getProcessObject(processContext);
-
+					if(processContext == 'save' || processContext == 'delete'){
+						var processObject = entity;
+					}else{
+						var processObject = entity.getProcessObject(processContext);
+					}
 					validationStruct = getService('hibachiValidationService').getValidationStruct(processObject);
 					if(structKeyExists(validationStruct,'conditions')){
 						validationInfo[entityName]['validations'][processContext]['conditions'] =validationStruct.conditions;
