@@ -109,6 +109,20 @@ component accessors="true" output="false" extends="HibachiService" {
 				if(!isNull(validationsByContext)){
 					validationInfo[entityName]['validations'][processContext] = {};
 					if(processContext == 'save' || processContext == 'delete'){
+						for(var propertyKey in validationsByContext){
+							for(var constraint in validationsByContext[propertyKey]){
+								var rbkey = getHibachiScope().rbkey(
+									'validate.#entity.getClassName()#.#propertyKey#.#constraint.constraintType#',
+									{
+										entityName=entity.getClassName(),
+										propertyName=propertyKey
+									}
+								);
+								if(!right(rbkey,8) == '_missing'){
+									constraint['rbkey'] = rbkey;
+								}
+							}
+						}
 						validationInfo[entityName]['validations'][processContext]['validations'] = validationsByContext;
 					}else{
 						var entityValidationsByContext = {};
