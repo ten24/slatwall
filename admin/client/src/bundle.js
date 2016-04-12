@@ -1989,11 +1989,11 @@
 	                        else {
 	                            //select first, visible, and enabled input with a class of ng-invalid
 	                            var target = $('input.ng-invalid:first:visible:enabled');
-	                            //$log.debug('input is invalid');
-	                            //$log.debug(target);
-	                            target.focus();
-	                            var targetID = target.attr('id');
-	                            $anchorScroll();
+	                            if (angular.isDefined(target)) {
+	                                target.focus();
+	                                var targetID = target.attr('id');
+	                                $anchorScroll();
+	                            }
 	                            deferred.reject('Input is invalid.');
 	                        }
 	                    });
@@ -16354,6 +16354,7 @@
 	                    _this.finished = true;
 	                }
 	            }, function (err) {
+	                angular.element('a[href="/##j-basic-2"]').click();
 	                console.warn(err);
 	            });
 	        }; //<--end save
@@ -16537,7 +16538,7 @@
 	 * Handles adding, editing, and deleting Workflows Tasks.
 	 */
 	var SWWorkflowTasks = (function () {
-	    function SWWorkflowTasks($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
+	    function SWWorkflowTasks($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
 	        return {
 	            restrict: 'A',
 	            scope: {
@@ -16631,7 +16632,7 @@
 	                    //scope.workflowTasks.selectedTask.$$setWorkflow(scope.workflow);
 	                    scope.workflowTasks.selectedTask.$$save().then(function (res) {
 	                        scope.done = true;
-	                        scope.workflowTasks.selectedTask = undefined;
+	                        delete scope.workflowTasks.selectedTask;
 	                        if (context === 'add') {
 	                            logger("SaveWorkflowTask", "Save and New");
 	                            scope.addWorkflowTask();
@@ -16705,15 +16706,13 @@
 	        };
 	    }
 	    SWWorkflowTasks.Factory = function () {
-	        var directive = function ($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder) {
-	            return new SWWorkflowTasks($log, $location, $hibachi, metadataService, collectionService, workflowPartialsPath, hibachiPathBuilder);
+	        var directive = function ($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder) {
+	            return new SWWorkflowTasks($log, $hibachi, metadataService, workflowPartialsPath, hibachiPathBuilder);
 	        };
 	        directive.$inject = [
 	            '$log',
-	            '$location',
 	            '$hibachi',
 	            'metadataService',
-	            'collectionService',
 	            'workflowPartialsPath',
 	            'hibachiPathBuilder'
 	        ];
@@ -16775,6 +16774,11 @@
 	                    var urlString = appConfig.baseURL + '/index.cfm/?' + appConfig.action + '=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID=' + workflowTrigger.data.workflowTriggerID;
 	                    $http.get(urlString).finally(function () {
 	                        scope.executingTrigger = false;
+	                        var alert = alertService.newAlert();
+	                        alert.msg = "Task Triggered Successfully. Check History for Status";
+	                        alert.type = "success";
+	                        alert.fade = true;
+	                        alertService.addAlert(alert);
 	                    });
 	                };
 	                /**
@@ -16838,7 +16842,6 @@
 	                        console.log('Ooh watch me, watch me', newValue);
 	                        if (newValue.data.triggerType == 'Schedule') {
 	                            if (angular.isDefined(newValue.data.schedule)) {
-	                                console.warn('LOL');
 	                                scope.schedule.selectedName = newValue.data.schedule.data.scheduleName;
 	                                scope.selectSchedule(newValue.data.schedule.data);
 	                            }
@@ -16846,8 +16849,7 @@
 	                                scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
 	                            }
 	                        }
-	                        else {
-	                            scope.showEventOptions = true;
+	                        else if (newValue.data.triggerEventTitle) {
 	                            scope.searchEvent.name = newValue.data.triggerEventTitle;
 	                        }
 	                    }
@@ -16919,11 +16921,6 @@
 	                 */
 	                scope.showEventOptions = false;
 	                scope.eventOptions = [];
-	                scope.$watch('searchEvent.name', function (newValue, oldValue) {
-	                    if (newValue !== oldValue) {
-	                        scope.getEventOptions(scope.workflow.data.workflowObject);
-	                    }
-	                });
 	                /**
 	                 * Retrieves the event options for a workflow trigger item.
 	                 */
@@ -16985,6 +16982,7 @@
 	                        scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
 	                    }
 	                    scope.searchEvent.name = eventOption.name;
+	                    scope.showEventOptions = false;
 	                    console.log(eventOption);
 	                    console.log(scope.workflowTriggers);
 	                };

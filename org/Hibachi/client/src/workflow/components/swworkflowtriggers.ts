@@ -63,15 +63,13 @@ class SWWorkflowTriggers{
                         console.log('Ooh watch me, watch me', newValue);
                         if(newValue.data.triggerType == 'Schedule'){
                             if(angular.isDefined(newValue.data.schedule)){
-                                console.warn('LOL')
                                 scope.schedule.selectedName = newValue.data.schedule.data.scheduleName;
                                 scope.selectSchedule(newValue.data.schedule.data);
                             }
                             if(angular.isDefined(newValue.data.scheduleCollection)){
                                 scope.selectedCollection = newValue.data.scheduleCollection.data.collectionName;
                             }
-                        }else{
-                            scope.showEventOptions = true;
+                        }else if(newValue.data.triggerEventTitle) {
                             scope.searchEvent.name = newValue.data.triggerEventTitle;
                         }
                     }
@@ -155,11 +153,6 @@ class SWWorkflowTriggers{
 				 */
 				scope.showEventOptions = false;
 				scope.eventOptions = [];
-				scope.$watch('searchEvent.name', function(newValue, oldValue){
-					if(newValue !== oldValue){
-						scope.getEventOptions(scope.workflow.data.workflowObject);
-					}
-				});
 
 				/**
 				 * Retrieves the event options for a workflow trigger item.
@@ -228,6 +221,7 @@ class SWWorkflowTriggers{
 						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
 					}
 					scope.searchEvent.name = eventOption.name;
+                    scope.showEventOptions = false;
 					console.log(eventOption);
 					console.log(scope.workflowTriggers);
 				};

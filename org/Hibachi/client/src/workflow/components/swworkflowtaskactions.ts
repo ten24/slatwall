@@ -121,6 +121,7 @@ class SWWorkflowTaskActionsController {
                     this.finished = true;
                 }
             },(err)=>{
+                angular.element('a[href="/##j-basic-2"]').click();
                 console.warn(err);
             });
         }//<--end save

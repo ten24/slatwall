@@ -7,27 +7,21 @@ class SWWorkflowTasks{
 	public static Factory(){
 		var directive = (
 			$log,
-			$location,
 			$hibachi,
 			metadataService,
-			collectionService,
 			workflowPartialsPath,
 			hibachiPathBuilder
 		)=>new SWWorkflowTasks(
 			$log,
-			$location,
 			$hibachi,
 			metadataService,
-			collectionService,
 			workflowPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
 			'$log',
-			'$location',
 			'$hibachi',
 			'metadataService',
-			'collectionService',
 			'workflowPartialsPath',
 			'hibachiPathBuilder'
 		];
@@ -35,10 +29,8 @@ class SWWorkflowTasks{
 	}
 	constructor(
 		$log,
-		$location,
 		$hibachi,
 		metadataService,
-		collectionService,
 		workflowPartialsPath,
 			hibachiPathBuilder
 	){
@@ -145,7 +137,7 @@ class SWWorkflowTasks{
 
                     scope.workflowTasks.selectedTask.$$save().then(function(res){
                         scope.done = true;
-                        scope.workflowTasks.selectedTask = undefined;
+                        delete scope.workflowTasks.selectedTask;
                     	if (context === 'add'){
             				logger("SaveWorkflowTask", "Save and New");
             				scope.addWorkflowTask();

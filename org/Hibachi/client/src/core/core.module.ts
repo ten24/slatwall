@@ -856,11 +856,11 @@ var coremodule = angular.module('hibachi.core',[
                         //select first, visible, and enabled input with a class of ng-invalid
 
                         var target = $('input.ng-invalid:first:visible:enabled');
-                        //$log.debug('input is invalid');
-                        //$log.debug(target);
-                        target.focus();
-                        var targetID = target.attr('id');
-                        $anchorScroll();
+                        if(angular.isDefined(target)){
+                            target.focus();
+                            var targetID = target.attr('id');
+                            $anchorScroll();
+                        }
                         deferred.reject('Input is invalid.');
                     }
                 });

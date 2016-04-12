@@ -80,14 +80,17 @@ class SWWorkflowTrigger{
                     if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
                         return; //show message "you dont have a task yet"
                     }
-
-
                     scope.executingTrigger = true;
 
                     var appConfig = $hibachi.getConfig();
                     var urlString = appConfig.baseURL+'/index.cfm/?'+appConfig.action+'=admin:workflow.executeScheduleWorkflowTrigger&workflowTriggerID='+workflowTrigger.data.workflowTriggerID;
                     $http.get(urlString).finally(()=>{
                         scope.executingTrigger = false;
+                        var alert = alertService.newAlert();
+                        alert.msg =  "Task Triggered Successfully. Check History for Status";
+                        alert.type = "success";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
                     })
                 };
 
