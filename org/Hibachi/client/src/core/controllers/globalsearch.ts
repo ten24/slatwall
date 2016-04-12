@@ -28,7 +28,7 @@ class GlobalSearchController{
 				}
 			},
 			'brand' : {
-				'title': rbkeyService.getRBKey('entity.Brands'),
+				'title': rbkeyService.getRBKey('entity.brand_plural'),
 				'resultNameFilter': function(data) {
 					return data['brandName'];
 				},
