@@ -55,8 +55,8 @@ Notes:
 		<cfsetting requesttimeout="600" />
 		<cftry>
 			<cfset var updateCopyStarted = false />
-			<cfset var downloadURL = "http://slatwall-releases.s3-website-us-west-2.amazonaws.com/slatwall-latest.zip" />
-			<cfset var downloadHashURL = "http://slatwall-releases.s3-website-us-west-2.amazonaws.com/slatwall-latest.md5.txt" />
+			<cfset var downloadURL = "https://s3.amazonaws.com/slatwall-releases/slatwall-latest.zip" />
+			<cfset var downloadHashURL = "https://s3.amazonaws.com/slatwall-releases/slatwall-latest.md5.txt" />
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadUUID = createUUID() />
 			<cfset var downloadFileName = "slatwall-#downloadUUID#.zip" />
