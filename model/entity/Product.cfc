@@ -475,7 +475,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getSkuOptionDetails(string selectedOptionIDList="") {
 
 		// Setup return structure
-		var skuOptionDetials = {};
+		var skuOptionDetails = {};
 
 		// Get all the skus for this product with options fetched
 		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
@@ -521,18 +521,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				var ogCode = option.getOptionGroup().getOptionGroupCode();
 
 				// Create a struct for this optionGroup if it doesn't exist
-				if(!structKeyExists(skuOptionDetials, ogCode)) {
-					skuOptionDetials[ ogCode ] = {};
-					skuOptionDetials[ ogCode ][ "options" ] = [];
-					skuOptionDetials[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
-					skuOptionDetials[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
-					skuOptionDetials[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
-					skuOptionDetials[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
+				if(!structKeyExists(skuOptionDetails, ogCode)) {
+					skuOptionDetails[ ogCode ] = {};
+					skuOptionDetails[ ogCode ][ "options" ] = [];
+					skuOptionDetails[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
+					skuOptionDetails[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
+					skuOptionDetails[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
+					skuOptionDetails[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
 				}
 
 				// Create a struct for this option if one doesn't exist
 				var existingOptionFound = false;
-				for(var existingOption in skuOptionDetials[ ogCode ][ "options" ]) {
+				for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
 					if( existingOption.optionID == option.getOptionID() ) {
 						existingOption['totalQATS'] += sku.getQuantity("QATS");
 						if(allSelectedInSku) {
@@ -554,13 +554,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					if(allSelectedInSku) {
 						newOption['selectedQATS'] = sku.getQuantity("QATS");
 					}
-					arrayAppend(skuOptionDetials[ ogCode ].options, newOption);
+					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 				}
 			}
 
 		}
 
-		return skuOptionDetials;
+		return skuOptionDetails;
 	}
 
 	public struct function getCrumbData(required string path, required string siteID, required array baseCrumbArray) {
