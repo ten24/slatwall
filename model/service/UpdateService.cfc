@@ -49,8 +49,7 @@ Notes:
 <cfcomponent extends="HibachiService" accessors="true">
 
 	<cffunction name="update">
-		<cfargument name="branch" type="string" default="master">
-
+		
 		<!--- this could take a while... --->
 		<cfsetting requesttimeout="600" />
 		<cftry>
