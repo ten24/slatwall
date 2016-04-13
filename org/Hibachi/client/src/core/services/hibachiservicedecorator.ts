@@ -161,7 +161,7 @@ class HibachiServiceDecorator{
                         if(angular.isObject(property) && angular.isDefined(property.name)){
 
                             if(angular.isDefined(defaultValues[entity.className][property.name])){
-                                jsEntity.data[property.name] = defaultValues[entity.className][property.name];
+                                jsEntity.data[property.name] = angular.copy(defaultValues[entity.className][property.name]);
                             }
                         }
                     });
@@ -437,7 +437,7 @@ class HibachiServiceDecorator{
             });
             $delegate.setJsEntities(_jsEntities);
 
-            angular.forEach(_jsEntities,(jsEntity)=>{
+            angular.forEach(_jsEntities,function(jsEntity){
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
             });
@@ -445,13 +445,14 @@ class HibachiServiceDecorator{
             $delegate.setJsEntityInstances(_jsEntityInstances);
 
             var _init = function(entityInstance,data){
+                
                 for(var key in data) {
                     if(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])){
 
                         var propertyMetaData = entityInstance.metaData[key];
                         if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
                             if(data[key].trim() !== ''){
-                                entityInstance.data[key] = angular.fromJson(data[key]);
+                                entityInstance.data[key] =angular.fromJson(data[key]);
                             }
 
                         }else{
@@ -711,7 +712,7 @@ class HibachiServiceDecorator{
                             entityName = modifiedData.objectLevel.metaData.className;
                         }
                         var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
-                        savePromise.then((response)=>{
+                        savePromise.then(function(response){
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
 
