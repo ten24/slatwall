@@ -90,34 +90,78 @@ component accessors="true" output="false" extends="HibachiService" {
 
 	public struct function generateValidationJson(){
 		var validationInfo = {};
-
-		var entitiesProcessContexts = getService('hibachiService').getEntitiesProcessContexts();
+		var entityContexts = ['save','delete'];
+		var entitiesProcessContexts = duplicate(getService('hibachiService').getEntitiesProcessContexts());
 		var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
-		for(var entityName in listtoArray(structKeyList(entitiesMetaData))){
+		var entityNamesArray = listtoArray(structKeyList(entitiesMetaData));
+		for(var entityName in entityNamesArray){
 			var entity = getService('hibachiService').getEntityObject(entityName);
 			if(structKeyExists(entitiesProcessContexts,entityName)){
 				var entityProcessContexts = duplicate(entitiesProcessContexts[entityName]);
 			}else{
 				var entityProcessContexts = [];
 			}
-			
-			arrayAppend(entityProcessContexts,'save');
-			arrayAppend(entityProcessContexts,'delete');
+			if(!ArrayFind(entityProcessContexts,'save')){
+				arrayAppend(entityProcessContexts,'save');
+			}
+			if(!ArrayFind(entityProcessContexts,'delete')){
+				arrayAppend(entityProcessContexts,'delete');
+			}
 			validationInfo[entityName]['validations'] = {};
 
 			var validationStruct = getService('hibachiValidationService').getValidationStruct(entity);
 			if(structKeyExists(validationStruct,'conditions')){
 				validationInfo[entityName]['conditions'] = validationStruct.conditions;
 			}
+		}
+		for(var entityName in entityNamesArray){
+			var entity = getService('hibachiService').getEntityObject(entityName);
+			var validationStruct = getService('hibachiValidationService').getValidationStruct(entity);
 			if(structKeyExists(validationStruct,'populatedPropertyValidation')){
+				
 				validationInfo[entityName]['populatedPropertyValidation'] = validationStruct.populatedPropertyValidation;
+				for(var relatedProperty in validationStruct.populatedPropertyValidation){
+					var populatedPropertyValidation = validationInfo[entityName]['populatedPropertyValidation'][relatedProperty];
+					var relatedObjectName = getService('hibachiService').getPropertiesStructByEntityName( entityName )[relatedProperty].cfc;
+					var relatedObject = getService('hibachiService').getEntityObject(relatedObjectName);
+					for(var item in populatedPropertyValidation){
+						var validationContexts = listToArray(item.validate);
+						for(var validationContext in validationContexts){
+							if(!structKeyExists(entitiesProcessContexts,relatedObjectName)){
+								entitiesProcessContexts[relatedObjectName] = [];
+							}
+							if(!ArrayFind(entitiesProcessContexts[relatedObjectName],validationContext)){
+								arrayAppend(entityContexts,validationContext);
+								arrayAppend(entitiesProcessContexts[relatedObjectName],validationContext);
+							}
+						}
+					}
+				}
 			}
+		}
+		for(var entityName in entityNamesArray){
+			var entity = getService('hibachiService').getEntityObject(entityName);
+			if(structKeyExists(entitiesProcessContexts,entityName)){
+				var entityProcessContexts = duplicate(entitiesProcessContexts[entityName]);
+			}else{
+				var entityProcessContexts = [];
+			}
+			if(!ArrayFind(entityProcessContexts,'save')){
+				arrayAppend(entityProcessContexts,'save');
+			}
+			if(!ArrayFind(entityProcessContexts,'delete')){
+				arrayAppend(entityProcessContexts,'delete');
+			}
+			if(!structKeyExists(validationInfo[entityName],'validations')){
+				validationInfo[entityName]['validations'] = {};
+			}
+			
 			//get all validations by context
 			for(var processContext in entityProcessContexts){
 				var validationsByContext = getService('hibachiValidationService').getValidationsByContext(entity,processContext);
 				if(!isNull(validationsByContext)){
 					validationInfo[entityName]['validations'][processContext] = {};
-					if(processContext == 'save' || processContext == 'delete'){
+					if(arrayFind(entityContexts,processContext)){
 						for(var propertyKey in validationsByContext){
 							for(var constraint in validationsByContext[propertyKey]){
 								var rbkey = getHibachiScope().rbkey(
@@ -145,7 +189,7 @@ component accessors="true" output="false" extends="HibachiService" {
 
 				}
 
-				if(processContext != 'save' && processContext != 'delete'){
+				if(!arrayFind(entityContexts,processContext)){
 					var processValidationStruct = getService('hibachiValidationService').getValidationsByContext(entity.getProcessObject(processContext));
 					for(var propertyKey in processValidationStruct){
 						for(var constraint in processValidationStruct[propertyKey]){
@@ -170,7 +214,7 @@ component accessors="true" output="false" extends="HibachiService" {
 				}
 
 				try{
-					if(processContext == 'save' || processContext == 'delete'){
+					if(arrayFind(entityContexts,processContext)){
 						var processObject = entity;
 					}else{
 						var processObject = entity.getProcessObject(processContext);
