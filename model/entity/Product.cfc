@@ -708,19 +708,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var sl = getService("skuService").getSkuSmartList();
 			sl.addFilter('product.productID', getProductID());
 			sl.setSelectDistinctFlag( true );
-			var records = sl.getRecords();
+			var skus = sl.getRecords();
 
-			for(var record in records) {
-				if(!isNull(record.getImageFile())) {
-					arrayIndex = ArrayFind(variables.defaultProductImageFiles, function(struct){
-						return struct.ImageFile == record.getImageFile();
-					});
-					if(arrayIndex == 0){
-						var imageFileStruct = {};
-						imageFileStruct['imageFile'] = record.getImageFile();
-						imageFileStruct['skuDefinition'] = record.getSkuDefinition();
-						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
-					}
+			for(var sku in skus) {
+				if(!isNull(sku.getImageFile()) && !isNull(sku.getSkuDefinition())){
+					var skuImageStruct = {};
+					skuImageStruct['imageFile'] = sku.getImageFile();
+					skuImageStruct['skuDefinition'] = sku.getSkuDefinition();
+					arrayAppend(variables.defaultProductImageFiles, skuImageStruct);
 				}
 			}
 		}
