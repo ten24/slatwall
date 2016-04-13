@@ -140,12 +140,9 @@ class HibachiInterceptor implements IInterceptor{
 		return config;
     }
     public requestError = (rejection): ng.IPromise<any> => {
-         this.$log.debug('requestError');
 		return this.$q.reject(rejection);
     }
     public response = (response): ng.IPromise<any> => {
-        this.$log.debug('response');
-		console.log(response);
 		if(response.data.messages){
             var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
             this.alertService.addAlerts(alerts);
@@ -155,7 +152,6 @@ class HibachiInterceptor implements IInterceptor{
     }
     public responseError = (rejection): ng.IPromise<any> => {
 
-		this.$log.debug('responseReject');
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
 			if(rejection.data && rejection.data.messages){
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);

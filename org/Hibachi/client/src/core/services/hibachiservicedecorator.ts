@@ -15,7 +15,8 @@ class HibachiServiceDecorator{
         utilityService,
         formService,
         rbkeyService,
-        appConfig
+        appConfig,
+        observerService
     ){
             var _deferred = {};
             var _config = appConfig;
@@ -42,6 +43,7 @@ class HibachiServiceDecorator{
                         }else{
                             entityInstance.$$init(response);
                         }
+                        
                     });
                     return {
                         promise:entityDataPromise,
@@ -722,11 +724,17 @@ class HibachiServiceDecorator{
                                 _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
 
                                 deferred.resolve(returnedIDs);
+                                observerService.notify('saveSuccess',returnedIDs);
+                                observerService.notify('saveSuccess'+entityName,returnedIDs);
                             }else{
                                 deferred.reject(angular.isDefined(response.messages) ? response.messages : response);
+                                observerService.notify('saveFailed',response);
+                                observerService.notify('saveFailed'+entityName,response);
                             }
                         }, function(reason){
                             deferred.reject(reason);
+                            observerService.notify('saveFailed',reason);
+                            observerService.notify('saveFailed'+entityName,reason);
                         });
                     }else{
 
@@ -739,6 +747,8 @@ class HibachiServiceDecorator{
                         var targetID = target.attr('id');
                         $anchorScroll();
                         deferred.reject('Input is invalid.');
+                        observerService.notify('validationFailed');
+                        observerService.notify('validationFailed'+entityName);
                     }
                 });
                 //return timeoutPromise;
