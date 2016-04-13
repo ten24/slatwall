@@ -71,6 +71,11 @@ elif [ $mergedFrom != "master" ] && [ $CIRCLE_BRANCH = "develop" ]; then
   # Write File
   echo $newVersion > version.txt.cfm
   echo "Updated $version -> $newVersion"
+
+  # ability to push up BE
+  git archive --format=zip HEAD > slatwall-be.zip
+  md5sum slatwall-be.zip > slatwall-be.md5.txt
+  aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
 fi
 
 # Find out if any files changed as part of this build
@@ -92,7 +97,7 @@ else
     if [ $tag = true ]; then
       # Create a zip & hash of this release
       git archive --format=zip HEAD > slatwall-latest.zip
-      cp slatwall-latest slatwall-$newVersion.zip
+      cp slatwall-latest.zip slatwall-$newVersion.zip
 
       md5sum slatwall-latest.zip > slatwall-latest.md5.txt
       cp slatwall-latest.md5.txt slatwall-$newVersion.md5.txt
