@@ -3192,8 +3192,6 @@
 	    //@ngInject
 	    function HibachiServiceDecorator($delegate, $http, $timeout, $log, $rootScope, $location, $anchorScroll, $q, utilityService, formService, rbkeyService, appConfig) {
 	        var _deferred = {};
-	        console.log($delegate);
-	        console.log(appConfig);
 	        var _config = appConfig;
 	        var _jsEntities = {};
 	        var _jsEntityInstances = {};
@@ -3454,8 +3452,6 @@
 	                                };
 	                            }
 	                            else if (['one-to-many', 'many-to-many'].indexOf(property.fieldtype) >= 0) {
-	                                console.log(entity.className);
-	                                console.log(property);
 	                                _jsEntities[entity.className].prototype['$$add' + property.singularname.charAt(0).toUpperCase() + property.singularname.slice(1)] = function (entityInstance) {
 	                                    if (angular.isUndefined(entityInstance)) {
 	                                        var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
