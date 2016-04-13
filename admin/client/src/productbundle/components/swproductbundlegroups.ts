@@ -100,30 +100,8 @@ class SWProductBundleGroups implements ng.IDirective{
 		productBundleService,
 	   slatwallPathBuilder
     ){
-        return {
-			restrict: 'EA',
-
-			templateUrl:slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html",
-			scope:{
-				sku:"=",
-				productBundleGroups:"="
-			},
-			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
-				$scope.$id = 'productBundleGroups';
-				$log.debug('productBundleGroups');
-				$log.debug($scope.productBundleGroups);
-				$scope.editing = $scope.editing || true;
-				angular.forEach($scope.productBundleGroups,function(obj){
-					productBundleService.decorateProductBundleGroup(obj);
-					obj.data.$$editing = false;
-				});
-
-				$scope.removeProductBundleGroup = function(index){
-                    if(angular.isDefined($scope.productBundleGroups[index])&&$scope.productBundleGroups[index].$$isPersisted()){ 
-                        $scope.productBundleGroups[index].$$delete().then((data)=>{
-                            //no more logic to run     
-                        });
-                    } 
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html";
+    }
 }
 export{
     SWProductBundleGroups,

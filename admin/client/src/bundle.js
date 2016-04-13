@@ -8138,11 +8138,11 @@
 	var product_module_1 = __webpack_require__(193);
 	var productbundle_module_1 = __webpack_require__(195);
 	//constant
-	var slatwallpathbuilder_1 = __webpack_require__(201);
+	var slatwallpathbuilder_1 = __webpack_require__(202);
 	//directives
-	var swcurrencyformatter_1 = __webpack_require__(202);
+	var swcurrencyformatter_1 = __webpack_require__(203);
 	//filters
-	var swcurrency_1 = __webpack_require__(203);
+	var swcurrency_1 = __webpack_require__(204);
 	var slatwalladminmodule = angular.module('slatwalladmin', [
 	    //custom modules
 	    hibachi_module_1.hibachimodule.name,
@@ -20919,6 +20919,7 @@
 	var swproductbundlegrouptype_1 = __webpack_require__(198);
 	var swproductbundlegroups_1 = __webpack_require__(199);
 	var swproductbundlegroup_1 = __webpack_require__(200);
+	var swproductbundlecollectionfilteritemtypeahead_1 = __webpack_require__(201);
 	//filters
 	var productbundlemodule = angular.module('hibachi.productbundle', [core_module_1.coremodule.name]).config(function () {
 	})
@@ -20927,7 +20928,8 @@
 	    .controller('create-bundle-controller', create_bundle_controller_1.CreateBundleController)
 	    .directive('swProductBundleGroupType', swproductbundlegrouptype_1.SWProductBundleGroupType.Factory())
 	    .directive('swProductBundleGroups', swproductbundlegroups_1.SWProductBundleGroups.Factory())
-	    .directive('swProductBundleGroup', swproductbundlegroup_1.SWProductBundleGroup.Factory());
+	    .directive('swProductBundleGroup', swproductbundlegroup_1.SWProductBundleGroup.Factory())
+	    .directive('swProductBundleCollectionFilterItemTypeahead', swproductbundlecollectionfilteritemtypeahead_1.SWProductBundleCollectionFilterItemTypeahead.Factory());
 	exports.productbundlemodule = productbundlemodule;
 
 
@@ -21131,6 +21133,7 @@
 	                            var parentType = $hibachi.newType();
 	                            parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 	                            productBundleGroupType.$$setParentType(parentType);
+	                            $scope.productBundleGroup.data.productBundleGroupType.data.typeName = "";
 	                            productBundleGroupType.data.typeName = $scope.productBundleGroup.data.productBundleGroupType.data.typeName;
 	                            productBundleGroupType.data.typeDescription = '';
 	                            productBundleGroupType.data.typeNameCode = '';
@@ -21267,39 +21270,53 @@
 	"use strict";
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../../typings/tsd.d.ts' />
+	var SWProductBundleGroupsController = (function () {
+	    //@ngInject
+	    function SWProductBundleGroupsController($scope, $element, $attrs, $log, productBundleService, $hibachi) {
+	        var _this = this;
+	        this.$scope = $scope;
+	        this.$element = $element;
+	        this.$attrs = $attrs;
+	        this.$log = $log;
+	        this.productBundleService = productBundleService;
+	        this.$hibachi = $hibachi;
+	        this.removeProductBundleGroup = function (index) {
+	            if (angular.isDefined(_this.productBundleGroups[index]) && _this.productBundleGroups[index].$$isPersisted()) {
+	                _this.productBundleGroups[index].$$delete().then(function (data) {
+	                    //no more logic to run     
+	                });
+	            }
+	            _this.productBundleGroups.splice(index, 1);
+	        };
+	        this.addProductBundleGroup = function () {
+	            var productBundleGroup = _this.$hibachi.newProductBundleGroup();
+	            console.log("Adding PBG", productBundleGroup);
+	            productBundleGroup.$$setProductBundleSku(_this.sku);
+	            productBundleGroup = _this.productBundleService.decorateProductBundleGroup(productBundleGroup);
+	        };
+	        $scope.editing = $scope.editing || true;
+	        angular.forEach(this.productBundleGroups, function (obj) {
+	            productBundleService.decorateProductBundleGroup(obj);
+	            obj.data.$$editing = false;
+	        });
+	    }
+	    return SWProductBundleGroupsController;
+	}());
+	exports.SWProductBundleGroupsController = SWProductBundleGroupsController;
 	var SWProductBundleGroups = (function () {
 	    function SWProductBundleGroups($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
-	        return {
-	            restrict: 'EA',
-	            templateUrl: slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html",
-	            scope: {
-	                sku: "=",
-	                productBundleGroups: "="
-	            },
-	            controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
-	                    $scope.$id = 'productBundleGroups';
-	                    $log.debug('productBundleGroups');
-	                    $log.debug($scope.productBundleGroups);
-	                    $scope.editing = $scope.editing || true;
-	                    angular.forEach($scope.productBundleGroups, function (obj) {
-	                        productBundleService.decorateProductBundleGroup(obj);
-	                        obj.data.$$editing = false;
-	                    });
-	                    $scope.removeProductBundleGroup = function (index) {
-	                        if (angular.isDefined($scope.productBundleGroups[index]) && $scope.productBundleGroups[index].$$isPersisted()) {
-	                            $scope.productBundleGroups[index].$$delete().then(function (data) {
-	                                //no more logic to run     
-	                            });
-	                        }
-	                        $scope.productBundleGroups.splice(index, 1);
-	                    };
-	                    $scope.addProductBundleGroup = function () {
-	                        var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-	                        productBundleService.decorateProductBundleGroup(productBundleGroup);
-	                        $scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
-	                    };
-	                }]
+	        this.restrict = 'EA';
+	        this.scope = {
+	            sku: "=",
+	            productBundleGroups: "="
 	        };
+	        this.bindToController = {
+	            sku: "=",
+	            productBundleGroups: "="
+	        };
+	        this.controller = SWProductBundleGroupsController;
+	        this.controllerAs = "swProductBundleGroups";
+	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroups.html";
 	    }
 	    SWProductBundleGroups.Factory = function () {
 	        var directive = function ($http, $log, $hibachi, metadataService, productBundlePartialsPath, productBundleService, slatwallPathBuilder) {
@@ -21343,7 +21360,7 @@
 	}());
 	var SWProductBundleGroupController = (function () {
 	    // @ngInject
-	    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, observerService) {
+	    function SWProductBundleGroupController($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
 	        var _this = this;
 	        this.$log = $log;
 	        this.$timeout = $timeout;
@@ -21354,9 +21371,279 @@
 	        this.formService = formService;
 	        this.$hibachi = $hibachi;
 	        this.productBundlePartialsPath = productBundlePartialsPath;
-	        this.observerService = observerService;
-	        this.testEvent = function () {
-	            console.log('testEvent!');
+	        this.init = function () {
+	            _this.maxRecords = 10;
+	            _this.recordsCount = 0;
+	            _this.pageRecordsStart = 0;
+	            _this.pageRecordsEnd = 0;
+	            _this.recordsPerPage = 10;
+	            _this.showAll = false;
+	            _this.showAdvanced = false;
+	            _this.currentPage = 1;
+	            _this.pageShow = 10;
+	            _this.searchAllCollectionConfigs = [];
+	            if (angular.isUndefined(_this.filterPropertiesList)) {
+	                _this.filterPropertiesList = {};
+	                var filterPropertiesPromise = _this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
+	                filterPropertiesPromise.then(function (value) {
+	                    _this.metadataService.setPropertiesList(value, '_sku');
+	                    _this.filterPropertiesList['_sku'] = _this.metadataService.getPropertiesListByBaseEntityAlias('_sku');
+	                    _this.metadataService.formatPropertiesList(_this.filterPropertiesList['_sku'], '_sku');
+	                });
+	            }
+	            _this.searchOptions = {
+	                options: [
+	                    {
+	                        name: "All",
+	                        value: "All"
+	                    },
+	                    {
+	                        name: "Product Type",
+	                        value: "productType"
+	                    },
+	                    {
+	                        name: "Brand",
+	                        value: "brand"
+	                    },
+	                    {
+	                        name: "Products",
+	                        value: "product"
+	                    },
+	                    {
+	                        name: "Skus",
+	                        value: "sku"
+	                    }
+	                ],
+	                selected: {
+	                    name: "All",
+	                    value: "All"
+	                },
+	                setSelected: function (searchOption) {
+	                    _this.searchOptions.selected = searchOption;
+	                }
+	            };
+	            _this.navigation = {
+	                value: 'Basic',
+	                setValue: function (value) {
+	                    _this.value = value;
+	                }
+	            };
+	            _this.filterTemplatePath = _this.productBundlePartialsPath + "productbundlefilter.html";
+	            _this.productBundleGroupFilters = {};
+	            _this.productBundleGroupFilters.value = [];
+	            if (angular.isUndefined(_this.productBundleGroup.data.skuCollectionConfig) || _this.productBundleGroup.data.skuCollectionConfig === null) {
+	                _this.productBundleGroup.data.skuCollectionConfig = _this.collectionConfigService.newCollectionConfig("Sku").getCollectionConfig();
+	            }
+	            var options = {
+	                filterGroupsConfig: _this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup,
+	                columnsConfig: _this.productBundleGroup.data.skuCollectionConfig.columns,
+	            };
+	            _this.getCollection();
+	        };
+	        this.deleteEntity = function (type) {
+	            _this.removeProductBundleGroup({ index: _this.index });
+	            _this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
+	        };
+	        this.getCollection = function () {
+	            var options = {
+	                filterGroupsConfig: angular.toJson(_this.productBundleGroup.data.skuCollectionConfig.filterGroups),
+	                columnsConfig: angular.toJson(_this.productBundleGroup.data.skuCollectionConfig.columns),
+	                currentPage: 1,
+	                pageShow: 10
+	            };
+	            var collectionPromise = _this.$hibachi.getEntity('Sku', options);
+	            collectionPromise.then(function (response) {
+	                _this.collection = response;
+	            });
+	        };
+	        this.increaseCurrentCount = function () {
+	            if (angular.isDefined(_this.totalPages) && _this.totalPages != _this.currentPage) {
+	                _this.currentPage++;
+	            }
+	            else {
+	                _this.currentPage = 1;
+	            }
+	        };
+	        this.resetCurrentCount = function () {
+	            _this.currentPage = 1;
+	        };
+	        this.save = function () {
+	            var savePromise = _this.productBundleGroup.$$save();
+	            savePromise.then(function (response) {
+	                _this.productBundleGroup.data.$$toggleEdit();
+	            }).catch(function (data) {
+	                //error handling handled by $$save
+	            });
+	        };
+	        this.saveAndAddBundleGroup = function () {
+	            var savePromise = _this.productBundleGroup.$$save();
+	            savePromise.then(function (response) {
+	                _this.productBundleGroup.data.$$toggleEdit();
+	                _this.addProductBundleGroup();
+	            }).catch(function (data) {
+	                //error handling handled by $$save
+	            });
+	        };
+	        this.init();
+	    }
+	    return SWProductBundleGroupController;
+	}());
+	var SWProductBundleGroup = (function () {
+	    // @ngInject
+	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
+	        this.$log = $log;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.productBundleService = productBundleService;
+	        this.metadataService = metadataService;
+	        this.utilityService = utilityService;
+	        this.formService = formService;
+	        this.$hibachi = $hibachi;
+	        this.productBundlePartialsPath = productBundlePartialsPath;
+	        this.restrict = "EA";
+	        this.scope = {};
+	        this.bindToController = {
+	            productBundleGroup: "=",
+	            productBundleGroups: "=",
+	            index: "=",
+	            addProductBundleGroup: "&",
+	            removeProductBundleGroup: "&",
+	            formName: "@"
+	        };
+	        this.controller = SWProductBundleGroupController;
+	        this.controllerAs = "swProductBundleGroup";
+	        this.link = function ($scope, element, attrs, ctrl) {
+	        };
+	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
+	    }
+	    SWProductBundleGroup.Factory = function () {
+	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
+	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder);
+	        };
+	        directive.$inject = [
+	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
+	            "slatwallPathBuilder"
+	        ];
+	        return directive;
+	    };
+	    return SWProductBundleGroup;
+	}());
+	exports.SWProductBundleGroup = SWProductBundleGroup;
+
+
+/***/ },
+/* 201 */
+/***/ function(module, exports) {
+
+	/// <reference path='../../../typings/slatwallTypescript.d.ts' />
+	/// <reference path='../../../typings/tsd.d.ts' />
+	"use strict";
+	var CollectionFilterItem = (function () {
+	    function CollectionFilterItem(name, type, displayPropertyIdentifier, propertyIdentifier, displayValue, value, comparisonOperator, logicalOperator) {
+	        this.name = name;
+	        this.type = type;
+	        this.displayPropertyIdentifier = displayPropertyIdentifier;
+	        this.propertyIdentifier = propertyIdentifier;
+	        this.displayValue = displayValue;
+	        this.value = value;
+	        this.comparisonOperator = comparisonOperator;
+	        this.logicalOperator = logicalOperator;
+	    }
+	    return CollectionFilterItem;
+	}());
+	var SWProductBundleCollectionFilterItemTypeaheadController = (function () {
+	    // @ngInject
+	    function SWProductBundleCollectionFilterItemTypeaheadController($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath) {
+	        var _this = this;
+	        this.$log = $log;
+	        this.$timeout = $timeout;
+	        this.collectionConfigService = collectionConfigService;
+	        this.productBundleService = productBundleService;
+	        this.metadataService = metadataService;
+	        this.utilityService = utilityService;
+	        this.formService = formService;
+	        this.$hibachi = $hibachi;
+	        this.productBundlePartialsPath = productBundlePartialsPath;
+	        this.init = function () {
+	            _this.maxRecords = 10;
+	            _this.recordsCount = 0;
+	            _this.pageRecordsStart = 0;
+	            _this.pageRecordsEnd = 0;
+	            _this.recordsPerPage = 10;
+	            _this.showAll = false;
+	            _this.showAdvanced = false;
+	            _this.currentPage = 1;
+	            _this.pageShow = 10;
+	            _this.searchAllCollectionConfigs = [];
+	            if (angular.isUndefined(_this.filterPropertiesList)) {
+	                _this.filterPropertiesList = {};
+	                var filterPropertiesPromise = _this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
+	                filterPropertiesPromise.then(function (value) {
+	                    _this.metadataService.setPropertiesList(value, '_sku');
+	                    _this.filterPropertiesList['_sku'] = _this.metadataService.getPropertiesListByBaseEntityAlias('_sku');
+	                    _this.metadataService.formatPropertiesList(_this.filterPropertiesList['_sku'], '_sku');
+	                });
+	            }
+	            _this.skuCollectionConfig = {
+	                baseEntityName: "Sku",
+	                baseEntityAlias: "_sku",
+	                collectionConfig: _this.productBundleGroup.data.skuCollectionConfig,
+	                collectionObject: 'Sku'
+	            };
+	            _this.searchOptions = {
+	                options: [
+	                    {
+	                        name: "All",
+	                        value: "All"
+	                    },
+	                    {
+	                        name: "Product Type",
+	                        value: "productType"
+	                    },
+	                    {
+	                        name: "Brand",
+	                        value: "brand"
+	                    },
+	                    {
+	                        name: "Products",
+	                        value: "product"
+	                    },
+	                    {
+	                        name: "Skus",
+	                        value: "sku"
+	                    }
+	                ],
+	                selected: {
+	                    name: "All",
+	                    value: "All"
+	                },
+	                setSelected: function (searchOption) {
+	                    _this.searchOptions.selected = searchOption;
+	                    _this.getFiltersByTerm(_this.productBundleGroupFilters.keyword, searchOption);
+	                }
+	            };
+	            _this.navigation = {
+	                value: 'Basic',
+	                setValue: function (value) {
+	                    _this.value = value;
+	                }
+	            };
+	            _this.filterTemplatePath = _this.productBundlePartialsPath + "productbundlefilter.html";
+	            _this.productBundleGroupFilters = {};
+	            _this.productBundleGroupFilters.value = [];
+	            if (angular.isUndefined(_this.productBundleGroup.data.skuCollectionConfig)) {
+	                _this.productBundleGroup.data.skuCollectionConfig = {};
+	                _this.productBundleGroup.data.skuCollectionConfig.filterGroups = [];
+	            }
+	            if (!angular.isDefined(_this.productBundleGroup.data.skuCollectionConfig.filterGroups[0])) {
+	                _this.productBundleGroup.data.skuCollectionConfig.filterGroups[0] = {};
+	                _this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
+	            }
+	            var options = {
+	                filterGroupsConfig: _this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup,
+	                columnsConfig: _this.productBundleGroup.data.skuCollectionConfig.columns,
+	            };
+	            _this.getCollection();
 	        };
 	        this.openCloseAndRefresh = function () {
 	            _this.showAdvanced = !_this.showAdvanced;
@@ -21412,12 +21699,10 @@
 	                    _this.productBundleGroupFilters.value = [];
 	                    _loadingCount = _this.searchOptions.options.length - 1;
 	                    for (var i = 0; i < _this.searchOptions.options.length; i++) {
-	                        _this.$log.debug("INT");
-	                        _this.$log.debug(i);
 	                        if (i > 0) {
 	                            var option = _this.searchOptions.options[i];
 	                            (function (keyword, option) {
-	                                if (_this.searchAllCollectionConfigs.length < 4) {
+	                                if (_this.searchAllCollectionConfigs.length <= 4) {
 	                                    _this.searchAllCollectionConfigs.push(_this.collectionConfigService.newCollectionConfig(_this.searchOptions.options[i].value));
 	                                }
 	                                _this.searchAllCollectionConfigs[i - 1].setKeywords(keyword);
@@ -21466,8 +21751,6 @@
 	                        _this.pageRecordsStart = value.pageRecordsStart;
 	                        _this.pageRecordsEnd = value.pageRecordsEnd;
 	                        _this.totalPages = value.totalPages;
-	                        _this.$log.debug('getFiltersByTerm');
-	                        _this.$log.debug(value);
 	                        _this.productBundleGroupFilters.value = _this.productBundleService.formatProductBundleGroupFilters(value.pageRecords, filterTerm, _this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup) || [];
 	                        _this.loading = false;
 	                    });
@@ -21504,8 +21787,8 @@
 	                        break;
 	                }
 	            }
-	            //Adds filter item to designated filtergroup
 	            _this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
+	            console.log("now this is bundles", _this.productBundleGroup.forms, _this.formName);
 	            _this.productBundleGroup.forms[_this.formName].skuCollectionConfig.$setDirty();
 	            //reload the list to correct pagination show all takes too long for this to be graceful
 	            if (!_this.showAll) {
@@ -21549,92 +21832,14 @@
 	                _this.productBundleGroupFilters.value.splice(index, 0, collectionFilterItem);
 	            }
 	        };
-	        this.$id = 'productBundleGroup';
-	        this.maxRecords = 10;
-	        this.recordsCount = 0;
-	        this.pageRecordsStart = 0;
-	        this.pageRecordsEnd = 0;
-	        this.recordsPerPage = 10;
-	        this.showAll = false;
-	        this.showAdvanced = false;
-	        this.currentPage = 1;
-	        this.pageShow = 10;
-	        this.searchAllCollectionConfigs = [];
-	        this.observerService.attach(this.testEvent, 'saveSuccess');
-	        if (angular.isUndefined(this.filterPropertiesList)) {
-	            this.filterPropertiesList = {};
-	            var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
-	            filterPropertiesPromise.then(function (value) {
-	                metadataService.setPropertiesList(value, '_sku');
-	                _this.filterPropertiesList['_sku'] = metadataService.getPropertiesListByBaseEntityAlias('_sku');
-	                metadataService.formatPropertiesList(_this.filterPropertiesList['_sku'], '_sku');
-	            });
-	        }
-	        this.skuCollectionConfig = {
-	            baseEntityName: "Sku",
-	            baseEntityAlias: "_sku",
-	            collectionConfig: this.productBundleGroup.data.skuCollectionConfig,
-	            collectionObject: 'Sku'
-	        };
-	        this.searchOptions = {
-	            options: [
-	                {
-	                    name: "All",
-	                    value: "All"
-	                },
-	                {
-	                    name: "Product Type",
-	                    value: "productType"
-	                },
-	                {
-	                    name: "Brand",
-	                    value: "brand"
-	                },
-	                {
-	                    name: "Products",
-	                    value: "product"
-	                },
-	                {
-	                    name: "Skus",
-	                    value: "sku"
-	                }
-	            ],
-	            selected: {
-	                name: "All",
-	                value: "All"
-	            },
-	            setSelected: function (searchOption) {
-	                _this.searchOptions.selected = searchOption;
-	                _this.getFiltersByTerm(_this.productBundleGroupFilters.keyword, searchOption);
-	            }
-	        };
-	        this.navigation = {
-	            value: 'Basic',
-	            setValue: function (value) {
-	                _this.value = value;
-	            }
-	        };
-	        this.filterTemplatePath = this.productBundlePartialsPath + "productbundlefilter.html";
-	        this.productBundleGroupFilters = {};
-	        this.productBundleGroupFilters.value = [];
-	        if (angular.isUndefined(this.productBundleGroup.productBundleGroupFilters)) {
-	            this.productBundleGroup.productBundleGroupFilters = [];
-	        }
-	        if (!angular.isDefined(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0])) {
-	            this.productBundleGroup.data.skuCollectionConfig.filterGroups[0] = {};
-	            this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
-	        }
-	        var options = {
-	            filterGroupsConfig: this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup,
-	            columnsConfig: this.productBundleGroup.data.skuCollectionConfig.columns,
-	        };
-	        this.getCollection();
+	        this.init();
 	    }
-	    return SWProductBundleGroupController;
+	    return SWProductBundleCollectionFilterItemTypeaheadController;
 	}());
-	var SWProductBundleGroup = (function () {
+	exports.SWProductBundleCollectionFilterItemTypeaheadController = SWProductBundleCollectionFilterItemTypeaheadController;
+	var SWProductBundleCollectionFilterItemTypeahead = (function () {
 	    // @ngInject
-	    function SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
+	    function SWProductBundleCollectionFilterItemTypeahead($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
 	        this.$log = $log;
 	        this.$timeout = $timeout;
 	        this.collectionConfigService = collectionConfigService;
@@ -21649,19 +21854,17 @@
 	        this.bindToController = {
 	            productBundleGroup: "=",
 	            index: "=",
-	            addProductBundleGroup: "&",
-	            removeProductBundleGroup: "&",
 	            formName: "@"
 	        };
-	        this.controller = SWProductBundleGroupController;
-	        this.controllerAs = "swProductBundleGroup";
+	        this.controller = SWProductBundleCollectionFilterItemTypeaheadController;
+	        this.controllerAs = "swProductBundleCollectionFilteritemTypeahead";
 	        this.link = function ($scope, element, attrs, ctrl) {
 	        };
-	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlegroup.html";
+	        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath) + "productbundlecollectionfilteritemtypeahead.html";
 	    }
-	    SWProductBundleGroup.Factory = function () {
+	    SWProductBundleCollectionFilterItemTypeahead.Factory = function () {
 	        var directive = function ($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder) {
-	            return new SWProductBundleGroup($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder);
+	            return new SWProductBundleCollectionFilterItemTypeahead($log, $timeout, collectionConfigService, productBundleService, metadataService, utilityService, formService, $hibachi, productBundlePartialsPath, slatwallPathBuilder);
 	        };
 	        directive.$inject = [
 	            "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
@@ -21669,14 +21872,13 @@
 	        ];
 	        return directive;
 	    };
-	    SWProductBundleGroup.$inject = ["$http", "$hibachi", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath"];
-	    return SWProductBundleGroup;
+	    return SWProductBundleCollectionFilterItemTypeahead;
 	}());
-	exports.SWProductBundleGroup = SWProductBundleGroup;
+	exports.SWProductBundleCollectionFilterItemTypeahead = SWProductBundleCollectionFilterItemTypeahead;
 
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21708,7 +21910,7 @@
 
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21767,7 +21969,7 @@
 
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports) {
 
 	/// <reference path='../../../typings/slatwallTypescript.d.ts' />

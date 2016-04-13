@@ -52,7 +52,6 @@ class SWProductBundleGroupController {
     public addProductBundleGroup;
     public productBundleGroups; 
 
-
     // @ngInject
 	constructor(private $log:ng.ILogService,
                 private $timeout:ng.ITimeoutService,
@@ -62,9 +61,10 @@ class SWProductBundleGroupController {
                 private utilityService,
                 private formService,
 				private $hibachi,
-                private productBundlePartialsPath,
-                public observerService
-        ){
+                private productBundlePartialsPath            
+    ){
+		this.init(); 
+	}
 
     public init = () => {
         this.maxRecords = 10;
@@ -77,10 +77,6 @@ class SWProductBundleGroupController {
         this.currentPage = 1;
         this.pageShow = 10;
         this.searchAllCollectionConfigs = [];
-        
-        
-        
-        this.observerService.attach(this.testEvent,'saveSuccess');
 
         if(angular.isUndefined(this.filterPropertiesList)){
             this.filterPropertiesList = {};
@@ -134,10 +130,10 @@ class SWProductBundleGroupController {
 		this.filterTemplatePath = this.productBundlePartialsPath +"productbundlefilter.html";
 		this.productBundleGroupFilters = {};
 		this.productBundleGroupFilters.value = [];
-
+        
         if(angular.isUndefined(this.productBundleGroup.data.skuCollectionConfig) || this.productBundleGroup.data.skuCollectionConfig === null){
             this.productBundleGroup.data.skuCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku").getCollectionConfig();
-		}
+        }
 
 		var options = {
 				filterGroupsConfig:this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup,
@@ -145,15 +141,11 @@ class SWProductBundleGroupController {
 		};
 
 		this.getCollection();
-	}
-    
-    public testEvent = () =>{
-        console.log('testEvent!');    
     }
-    
+
 	public deleteEntity = (type?) =>{
-            this.removeProductBundleGroup({index:this.index});
-            this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
+        this.removeProductBundleGroup({index:this.index});
+        this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
 	};
 
 	public getCollection = () =>{
@@ -181,16 +173,16 @@ class SWProductBundleGroupController {
 			this.currentPage = 1;
 	};
 
-
+	
     public save = () =>{
         var savePromise = this.productBundleGroup.$$save();
         savePromise.then((response)=>{
             this.productBundleGroup.data.$$toggleEdit()
         }).catch((data)=>{
             //error handling handled by $$save
-                            });
-                }
-
+        });
+    }
+    
     public saveAndAddBundleGroup = () =>{
         var savePromise = this.productBundleGroup.$$save();
         savePromise.then((response)=>{
@@ -198,10 +190,10 @@ class SWProductBundleGroupController {
             this.addProductBundleGroup();
         }).catch((data)=>{
             //error handling handled by $$save
-                });
-            }
+        });
+    }
 
-            }
+}
 
 class SWProductBundleGroup implements ng.IDirective{
 
@@ -250,6 +242,7 @@ class SWProductBundleGroup implements ng.IDirective{
             "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
 			"slatwallPathBuilder"
         ];
+        
         return directive;
 	}
 }
