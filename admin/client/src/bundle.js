@@ -3308,7 +3308,7 @@
 	                angular.forEach(entity, function (property) {
 	                    if (angular.isObject(property) && angular.isDefined(property.name)) {
 	                        if (angular.isDefined(defaultValues[entity.className][property.name])) {
-	                            jsEntity.data[property.name] = defaultValues[entity.className][property.name];
+	                            jsEntity.data[property.name] = angular.copy(defaultValues[entity.className][property.name]);
 	                        }
 	                    }
 	                });
