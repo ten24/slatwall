@@ -78,6 +78,7 @@ class SWProductBundleGroupType{
                         var parentType = $hibachi.newType();
                         parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
                         productBundleGroupType.$$setParentType(parentType);
+                        $scope.productBundleGroup.data.productBundleGroupType.data.typeName = "";
                         productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
                         productBundleGroupType.data.typeDescription = '';
                         productBundleGroupType.data.typeNameCode='';
