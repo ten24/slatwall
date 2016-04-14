@@ -206,7 +206,7 @@ component extends="FW1.framework" {
 			// Verify that the application is setup
 			verifyApplicationSetup();
 			// Verify that the session is setup
-			getHibachiScope().getService("hibachiSessionService").setPropperSession();
+			getHibachiScope().getService("hibachiSessionService").setProperSession();
 			//check if we have the authorization header
 			if(structKeyExists(GetHttpRequestData().Headers,'Authorization')){
 				var authorizationHeader = GetHttpRequestData().Headers.authorization;

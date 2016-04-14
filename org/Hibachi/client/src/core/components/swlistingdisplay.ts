@@ -90,13 +90,13 @@ class SWListingDisplayController{
         this.selectionService = selectionService;
         this.observerService = observerService;
         this.rbkeyService = rbkeyService;
-        this.intialSetup();
+        this.initialSetup();
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
         });
     }
 
-    private intialSetup = () => {
+    private initialSetup = () => {
         //default search is available
         if(angular.isUndefined(this.hasSearch)){
             this.hasSearch = true;
