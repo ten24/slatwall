@@ -50,15 +50,15 @@ Notes:
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 
+	<cfif !structKeyExists(attributes, "hibachiScope")>
+		<cfset attributes.hibachiScope = request.context.fw.getHibachiScope() />
+	</cfif>
+
 	<cfparam name="attributes.hibachiScope" type="any" />
 	<cfparam name="attributes.attributeSet" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default=false />
 	<cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 	<cfparam name="attributes.entity" type="any" default="" />
-
-	<cfif !structKeyExists(attributes, "hibachiScope")>
-		<cfset attributes.hibachiScope = request.context.fw.getHibachiScope() />
-	</cfif>
 
 	<cfset thisTag.attributeSmartList = attributes.attributeSet.getAttributesSmartList() />
 	<cfset thisTag.attributeSmartList.addFilter('activeFlag', 1) />
