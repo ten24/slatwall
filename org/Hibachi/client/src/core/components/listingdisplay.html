@@ -215,7 +215,9 @@
                                                       data-action="{{column.action}}"
                                                       data-query-string="{{swListingDisplay.replaceStringWithProperties(column.queryString,pageRecord)}}"
                                                       data-text="{{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}"
-                                                      data-tooltip-text="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}">
+                                                      data-tooltip-text="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
+                                    				  
+                                    >
                                     </sw-action-caller>
 					            </span>
                             </td>
@@ -230,7 +232,9 @@
                                         data-class="btn btn-default btn-xs"
                                         data-icon="eye-open"
                                         data-iconOnly="true"
-                                        data-modal="swListingDisplay.recordDetailModal">
+                                        data-modal="swListingDisplay.recordDetailModal"
+                                        data-is-angular-route="swListingDisplay.isAngularRoute"
+                                >
                                 </sw-action-caller>
 
                                 <!--Edit-->
@@ -241,7 +245,9 @@
                                         data-class="btn btn-default btn-xs"
                                         data-icon="pencil"
                                         data-iconOnly="true"
-                                        data-modal="swListingDisplay.recordEditModal">
+                                        data-modal="swListingDisplay.recordEditModal"
+                                        data-is-angular-route="swListingDisplay.isAngularRoute"
+                                >
                                 </sw-action-caller>
 
                                 <!-- Delete -->
@@ -252,7 +258,9 @@
                                         data-class="btn btn-default btn-xs"
                                         data-icon="trash"
                                         data-iconOnly="true"
-                                        data-confirm="true">
+                                        data-confirm="true"
+                                        data-is-angular-route="swListingDisplay.isAngularRoute"
+                                >
                                 </sw-action-caller>
 
                                 <!-- Add -->
@@ -263,7 +271,9 @@
                                         data-class="btn btn-default btn-xs"
                                         data-icon="plus"
                                         data-iconOnly="true"
-                                        data-confirm="true">
+                                        data-confirm="true"
+                                        data-is-angular-route="swListingDisplay.isAngularRoute"
+                                >
                                 </sw-action-caller>
 
                                 <sw-action-caller
@@ -273,7 +283,9 @@
                                         data-class="{{action.tdclass}}"
                                         data-icon="{{action.icon}}"
                                         data-iconOnly="{{action.iconOnly}}"
-                                        data-confirm="action.confirm">
+                                        data-confirm="action.confirm"
+                                        data-is-angular-route="swListingDisplay.isAngularRoute"
+                                >
                                 </sw-action-caller>
                             </td>
 
@@ -284,7 +296,7 @@
             </div>
         </div>
         <sw-pagination-bar
-                data-ng-if="swListingDisplay.paginator && !swListingDisplay.expandable && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
+                data-ng-if="swListingDisplay.paginator && swListingDisplay.collectionData.recordsCount && swListingDisplay.collectionPromise.$$state.status !== 0"
                 data-paginator="swListingDisplay.paginator">
         </sw-pagination-bar>
     </div>

@@ -18,6 +18,7 @@
 	<cfset variables.entityObjects = {} />
 	<cfset variables.entityHasProperty = {} />
 	<cfset variables.entityHasAttribute = {} />
+	<cfset variables.processComponentDirectoryListing = [] />
 	
 	<cfscript>
 		public any function get(required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
@@ -780,20 +781,53 @@
 			return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ]; 
 		}
 		
-		public any function getEntitiesProcessContexts() {
-			if(!structCount(variables.entitiesProcessContexts)) {
-				var processContexts = {};
-				var emd = getEntitiesMetaData();
-				for(var entityName in emd) {
-					if(structKeyExists(emd[ entityName ], "hb_processContexts")) {
-						processContexts[ entityName ] = listToArray(emd[ entityName ].hb_processContexts);
-					}
-				}
+		public any function getPropertyByEntityNameAndSingularName( required string entityName, required string singularName ) {
+			var propertiesStruct = getPropertiesStructByEntityName( entityName=arguments.entityName );
+			for(var key in propertiesStruct){
+				var property = propertiesStruct[key];
 				
-				variables.entitiesProcessContexts = processContexts;
+				if(structKeyExists(property,'singularname') && structKeyExists(arguments,'singularname') && lcase(property.singularname) == lcase(arguments.singularName)){
+					return property;
+				}
 			}
-			return variables.entitiesProcessContexts;
 		}
+		
+		public boolean function hasPropertyByEntityNameAndSinuglarName( required string entityName, required string singularName){
+			return !isNull(getPropertyByEntityNameAndSingularName(arguments.entityName,arguments.singularName));
+		}
+		
+		public string function getProcessComponentPath(){
+	    	return getDao('hibachiDao').getApplicationValue('applicationKey')&'.model.process.';
+	    }
+	    
+	    public array function getProcessComponentDirectoryListing(){
+	    	if(!arrayLen(variables.processComponentDirectoryListing)){
+	    		var processComponentPath = getProcessComponentPath();
+		    	var processComponentDirectoryPath = expandPath('/'&getDao('hibachiDao').getApplicationKey()) & '/model/process';
+		    	variables.processComponentDirectoryListing = directoryList(processComponentDirectoryPath,false,'name','*.cfc');
+	    	}
+	    	
+	    	return variables.processComponentDirectoryListing;
+	    }
+
+		public struct function getEntitiesProcessContexts(){
+			if(!structCount(variables.entitiesProcessContexts)) {
+		    	var processComponentDirectoryListing = getProcessComponentDirectoryListing();
+		    	
+		    	for(var processComponent in processComponentDirectoryListing){
+		    		if(processComponent != 'HibachiProcess.cfc'){
+		    			var processObjectName = listFirst(processComponent,'.');
+		    			var entityName = listFirst(processObjectName,'_');
+		    			var processName = listLast(processObjectName,"_");
+		    			if(!structKeyExists(variables.entitiesProcessContexts,entityName)){
+		    				variables.entitiesProcessContexts[entityName] = [];
+		    			}
+		    			arrayAppend(variables.entitiesProcessContexts[entityName],processName);
+		    		}
+		    	}
+		    }
+	    	return variables.entitiesProcessContexts;
+	    }
 		
 		// =====================  END: Cached Entity Meta Data Methods ============================
 		
@@ -833,6 +867,7 @@
 				return false;	
 			}
 		}
+		
 		
 		// @hint traverses a propertyIdentifier to find the last entityName in the list... this is then used by the hasProperty and hasAttribute methods()
 		public string function getLastEntityNameInPropertyIdentifier( required string entityName, required string propertyIdentifier ) {

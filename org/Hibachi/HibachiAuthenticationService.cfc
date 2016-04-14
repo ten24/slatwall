@@ -187,6 +187,28 @@ component output="false" accessors="true" extends="HibachiService" {
 		return false;
 	}
 	
+	public boolean function isInternalRequest(){
+		//domain contains http://domain/ so parse it
+		var httpArray = listtoArray(cgi.http_referer,'/');
+		if(arraylen(httpArray) >= 2){
+			var domainReferer = httpArray[2];
+		
+			return domainReferer == cgi.http_host;
+		}else{
+			return false;
+		}
+	} 
+	
+	public numeric function getInvalidCredentialsStatusCode(){
+		if(isInternalRequest()){
+			//499 for angular requests so we don't interfere with existing iis or apache 401 authentications on the internal app
+			return 499;
+		}else{
+			//401 for external api requests
+			return 401;
+		}
+	}
+	
 	public boolean function authenticateCollectionPropertyIdentifierCrudByAccount(required crudType, required any collection, required string propertyIdentifier, required any account){
 		var propertyIdentifierWithoutAlias = getService('hibachiCollectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
 		var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
