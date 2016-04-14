@@ -203,6 +203,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.previousOrderPaymentIDOptions = [];
 			var orderPaymentsSmartList = getOrder().getOrderPaymentsSmartList();
 			orderPaymentsSmartList.addFilter('paymentMethod.activeFlag', 1);
+			orderPaymentsSmartList.addFilter('orderPaymentStatusType.systemcode','opstActive');
  			orderPaymentsSmartList.addOrder('sortOrder|ASC');
 			var orderPaymentsArray = orderPaymentsSmartList.getRecords();
 			for(var i=1; i<=arrayLen(orderPaymentsArray); i++) {
