@@ -50,7 +50,10 @@ Notes:
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 
-	<cfif !structKeyExists(attributes, "hibachiScope") && structKeyExists(request.context, "fw") && structKeyExists(request.context.fw,"getHibachiScope")>
+	<cfif !structKeyExists(attributes, "hibachiScope")
+		  && structKeyExists(request.context, "fw")
+		  && structKeyExists(request.context.fw,"getHibachiScope")
+	>
 		<cfset attributes.hibachiScope = request.context.fw.getHibachiScope() />
 	</cfif>
 
