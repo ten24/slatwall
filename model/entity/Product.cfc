@@ -713,7 +713,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			for(var sku in skus) {
 				if(!isNull(sku.getImageFile())) {
 					var imageAlreadyIncluded = false;
-					for(image in variables.defaultProductImageFiles){
+					for(var image in variables.defaultProductImageFiles){
 						if(image.imageFile == sku.getImageFile()){
 							imageAlreadyIncluded = true;
 						}
