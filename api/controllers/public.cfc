@@ -15,75 +15,54 @@ component accessors="true" extends="Slatwall.org.Hibachi.HibachiController"{
 
     public any function before( required struct rc ) {
         getFW().setView("public:main.blank");
+
         arguments.rc.requestHeaderData = getHTTPRequestData();
         arguments.rc['ajaxRequest'] = true;
         param name="rc.headers.contentType" default="application/json";
         arguments.rc.headers["Content-Type"] = rc.headers.contentType;
     }
 
-    public any function get( required struct rc ) {
-        param name="arguments.rc.propertyIdentifiers" defualt="";
+    public any function scope( required struct rc ) {
+        param name="arguments.rc.context" default="";
 
-        // If the request is specifically just asking for cart data
-        if ( structKeyExists(arguments.rc, "context") && listFindNoCase("cart,getCart,getCartData", arguments.rc.context) ){
+        if(!len(arguments.rc.context)) {
 
-            arguments.rc.ajaxResponse = getHibachiScope().getCartData( arguments.rc.propertyIdentifiers );
+            arguments.rc.ajaxResponse[ "account" ] = getHibachiScope().getAccountData( arguments.rc.propertyIdentifiers );
+            arguments.rc.ajaxResponse[ "cart" ] = getHibachiScope().getCartData( arguments.rc.propertyIdentifiers );
+            arguments.rc.ajaxResponse[ "loggedInFlag" ] = getHibachiScope().getLoggedInFlag();
+            arguments.rc.ajaxResponse[ "loggedInAsAdminFlag" ] = getHibachiScope().getLoggedInAsAdminFlag();
 
-        // If the request is specifically just asking for account data
-        } else if ( structKeyExists(arguments.rc, "context") && listFindNoCase("account,getAccount,getAccountData", arguments.rc.context) ){
-
-            arguments.rc.ajaxResponse = getHibachiScope().getAccountData( arguments.rc.propertyIdentifiers );
-
-        // If the context was just 'get' or it wasn't defined, then we return the contents of this hibachiScope
-        } else if ( !structKeyExists(arguments.rc, "context") OR (structKeyExists(arguments.rc, "context") && rc.context == "get") ){
-
-            arguments.rc.ajaxResponse['account'] = getHibachiScope().getAccountData( arguments.rc.propertyIdentifiers );
-            arguments.rc.ajaxResponse['cart'] = getHibachiScope().getCartData( arguments.rc.propertyIdentifiers );
-            arguments.rc.ajaxResponse['loggedInFlag'] = getHibachiScope().getLoggedInFlag();
-            arguments.rc.ajaxResponse['loggedInAsAdminFlag'] = getHibachiScope().getLoggedInAsAdminFlag();
-
-        // If this is a get method request for a regular processing context such as 'logout' where no additional data is required
-        } else if ( structKeyExists(arguments.rc, "context") && rc.context != "get" ){
-            getPublicService().invokeMethod("#arguments.rc.context#", {data=arguments.rc});
-
-        }
-
-    }
-
-    public any function post( required struct rc ) {
-        param name="arguments.rc.context" default="save";
-        var publicService = getService('PublicService');
-
-        // If this is really a get context request just running through a post, then we can do the getter
-        if (structKeyExists(arguments.rc, "context") && listFindNoCase("get,cart,getCart,getCartData,account,getAccount,getAccountData", arguments.rc.context)){
-
-            this.get(rc);
-
-        } else if ( structKeyExists(arguments.rc, "context") ){
-
-            var actions = [];
-            if (arguments.rc.context contains ","){
-                actions = listToArray(arguments.rc.context);
-            }
-            if (!arrayLen(actions)){
-                publicService.invokeMethod("#arguments.rc.context#", {data=arguments.rc});
-            }else{
-                //iterate through all the actions calling the method.
-                for (var eachAction in actions){
-                    //Make sure there are no errors if we have multiple.
-                    if (!arguments.rc.$.slatwall.cart().hasErrors() && !arguments.rc.$.slatwall.account().hasErrors()){
-                          getHibachiScope().flushORMSession();
-                          publicService.invokeMethod("#eachAction#", {data=arguments['rc']});
-                    }else{
-                        return; //return here to push errors to the form that errored.
-                    }
-                }
-            }
         } else {
 
-            this.get(rc);
+            var contextArray = listToArray(arguments.rc.context);
 
+            for(var context in contextArray) {
+
+                if ( listFindNoCase("cart,getCart,getCartData", context) ){
+
+                    arguments.rc.ajaxResponse[ "cart" ] = getHibachiScope().getCartData( arguments.rc.propertyIdentifiers );
+
+                // If the request is specifically just asking for account data
+                } else if ( listFindNoCase("account,getAccount,getAccountData", context) ){
+
+                    arguments.rc.ajaxResponse[ "account" ] = getHibachiScope().getAccountData( arguments.rc.propertyIdentifiers );
+
+                // IMPORTANT TODO: MAKE THIS A WHITELIST OF FUNCTIONS IN THE PUBLIC SERVICE
+                } else {
+
+                    arguments.rc.ajaxResponse[ context ] = getPublicService().invokeMethod(context, {data=arguments.rc});
+                }
+
+                // If no errors flush to the DB, if there are then break out of this loop and stop processing
+                if (!getHibachiScope().getORMHasErrors()){
+                    getHibachiScope().flushORMSession();
+                } else {
+                    break;
+                }
+
+            }
         }
     }
+
 
 }

@@ -54,9 +54,9 @@ component extends="FW1.framework" {
 	variables.framework.routes = [
 		//api routes
 
-		 { "$GET/api/scope/$" = "/api:public/get/" }
-		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
-		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
+		 { "$GET/api/scope/$" = "/api:public/scope/" }
+		,{ "$GET/api/scope/:context/$" = "/api:public/scope/context/:context"}
+		,{ "$POST/api/scope/:context/$" = "/api:public/scope/context/:context"}
 
 		,{ "$POST/api/auth/login/$" = "/api:main/login"}
 		,{ "$GET/api/auth/login/$" = "/api:main/login"}
