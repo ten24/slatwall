@@ -229,7 +229,12 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 
 	public void function setupEncryptedProperties() {
-		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
+		if( len(getCreditCardNumber()) > 0
+			&& getCreditCardType() != "Invalid"
+			&& !isNull(getPaymentMethod())
+			&& !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag())
+			&& getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()
+		) {
 			encryptProperty('creditCardNumber');
 		}
 	}
@@ -284,7 +289,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(this.getGiftCardBalanceAmount() EQ False){
 			return "";
 		} else {
-			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCard().getBalanceAmount(), this.getGiftCard().getCurrencyCode());
+			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCard().getBalanceAmount(), {currencyCode=this.getGiftCard().getCurrencyCode()});
 		}
 	}
 
