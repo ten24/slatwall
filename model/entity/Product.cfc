@@ -722,7 +722,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					if(!imageAlreadyIncluded){
 						var imageFileStruct = {};
 						imageFileStruct['imageFile'] = sku.getImageFile();
-						imageFileStruct['skuDefinition'] = skuc.getSkuDefinition();
+						imageFileStruct['skuDefinition'] = sku.getSkuDefinition();
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 					}
 				}
