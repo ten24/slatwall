@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	public void function doctest(){
-		request.slatwallScope.getService("hibachiDocsService").generatePublicProcessingJson();
-	}
+//	public void function doctest(){
+//		request.slatwallScope.getService("hibachiDocsService").generatePublicProcessingJson();
+//	}
 
 }
