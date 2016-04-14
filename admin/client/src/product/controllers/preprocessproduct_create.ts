@@ -49,19 +49,6 @@ class ProductCreateController{
             
             this.$scope.preprocessproduct_createCtrl.renewalSkuChoice =  this.$scope.preprocessproduct_createCtrl.renewalMethodOptions[1];
             
-            var jQueryOptionsRedemptionAmountType = $("select[name='redemptionAmountType'")[0];
-            
-            this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions = [];
-            
-            angular.forEach(jQueryOptionsRedemptionAmountType,(jQueryOption)=>{
-                var option = {
-                    label:jQueryOption.label,
-                    value:jQueryOption.value    
-                }
-                this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions.push(option); 
-            });
-            
-            this.$scope.redemptionType = this.$scope.preprocessproduct_createCtrl.redemptionAmountTypeOptions[0];
             
             var productTypeOptions = $("select[name='product.productType.productTypeID']")[0];
              

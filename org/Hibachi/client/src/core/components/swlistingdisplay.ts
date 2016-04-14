@@ -79,13 +79,13 @@ class SWListingDisplayController{
         public rbkeyService
     ){
         
-        this.intialSetup();
+        this.initialSetup();
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
         });
     }
 
-    private intialSetup = () => {
+    private initialSetup = () => {
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = true;    
         }
