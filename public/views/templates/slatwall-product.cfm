@@ -48,7 +48,7 @@ Notes:
 --->
 
 <!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work --->
-<cfinclude template="_slatwall-header.cfm" />
+<cfinclude template="inc/_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
 <cfimport prefix="sw" taglib="../../tags" />
@@ -69,9 +69,8 @@ Notes:
 
 <cfoutput>
 	<div class="container">
-
 		<div class="row">
-			<div class="span12">
+			<div class="col-md-12">
 				<!--- We use the getTitle() method which uses the title template setting to pull in brand name or whatever else you might want in your titles --->
 				<h2>#$.slatwall.product().getTitle()#</h2>
 			</div>
@@ -79,24 +78,26 @@ Notes:
 
 		<!--- Start: General Info Display Example --->
 		<div class="row">
-			<div class="span4">
+			<div class="col-md-4">
 				<div class="well">
 					<!--- Display primary product image if it exists or the product image placeholder  --->
 					<cfif $.slatwall.product().getImageExistsFlag()>
 						<!--- If the image exists, display image with link to full version --->
 						<a href="#$.slatwall.product().getImagePath()#" target="_blank">#$.slatwall.product().getImage(size="m")#</a>
+
 					<cfelse>
+
 						<!--- If the image doesn't exists, display image with link to full version --->
 						#$.slatwall.product().getImage(size="m")#
 					</cfif>
 				</div>
 			</div>
 
-			<div class="span8">
+			<div class="col-md-8">
 				<div class="row">
-					<div class="span5">
+					<div class="col-md-5">
 						<!--- START: PRODUCT DETAILS EXAMPLE --->
-						<h5>Product Details Example</h5>
+						<h4>Product Details Example</h4>
 						<dl class="dl-horizontal">
 							<!--- Product Code --->
 							<dt>Product Code</dt>
@@ -134,14 +135,16 @@ Notes:
 						</dl>
 						<!--- END: PRODUCT DETAILS EXAMPLE --->
 					</div>
-					<div class="span3">
+					<div class="col-md-3">
 						<!--- Start: PRICE DISPLAY EXAMPLE --->
-						<h5>Price Display Example</h5>
+						<h4>Price Display Example</h4>
 						<br />
 						<cfif $.slatwall.product('price') gt $.slatwall.product('livePrice')>
 							<span style="text-decoration:line-through;color:##cc0000;">#$.slatwall.product().getFormattedValue('price')#</span><br />
 							<span style="font-size:24px;color:##333333;">#$.slatwall.product().getFormattedValue('livePrice')#</span>
+
 						<cfelse>
+
 							<span style="font-size:24px;color:##333333;">#$.slatwall.product().getFormattedValue('livePrice')#</span>
 						</cfif>
 						<!---[ DEVELOPER NOTES ]
@@ -166,15 +169,16 @@ Notes:
 
 		<!--- Start: Add to Cart Examples --->
 		<div class="row">
-
 			<!--- If this item was just added show the success message --->
 			<cfif $.slatwall.hasSuccessfulAction( "public:cart.addOrderItem" )>
-				<div class="alert alert-success">
+				<p class="bg-success">
 					The item was successfully added to your cart.  You might want to change the action="" of the add to cart form so that it points directly to shopping cart page that way the user ends up there.  Or you can add a 'sRedirectURL' hidden field value to specify where you would like the user to be redirected after a succesful addToCart
-				</div>
-			<!--- If this item was just tried to be added, but failed then show the failure message --->
+				</p>
+
 			<cfelseif $.slatwall.hasFailureAction( "public:cart.addOrderItem" )>
-				<div class="alert alert-error">
+			<!--- If this item was just tried to be added, but failed then show the failure message --->
+
+				<div class="bg-danger">
 					<!--- Display whatever errors might have been associated with the specific options --->
 					<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" />
 
@@ -184,10 +188,9 @@ Notes:
 			</cfif>
 
 			<cfif #$.slatwall.product().getAvailableForPurchaseFlag()#>
-
-				<div class="span4">
+				<div class="col-md-4">
 					<!--- START: ADD TO CART EXAMPLE 1 --->
-					<h5>Add To Cart Form 1 (Simple Sku Dropdown, No Inventory)</h5>
+					<h4>Add To Cart Form 1 (Simple Sku Dropdown, No Inventory)</h4>
 
 					<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. --->
 					<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
@@ -207,53 +210,46 @@ Notes:
 						<cfif arrayLen(skus) gt 1>
 
 							<!--- Sku Selector --->
-							<div class="control-group">
-		    					<label class="control-label">Select Options</label>
-		    					<div class="controls">
+							<div class="form-group">
+		    					<label for="skuID">Select Options</label>
+								<!--- Sku Select Dropdown --->
+								<select name="skuID" class="form-control required">
+									<!--- Blank option to force user to select (this is optional) --->
+									<option value="">Select Option</option>
 
-									<!--- Sku Select Dropdown --->
-									<select name="skuID" class="required">
-
-										<!--- Blank option to force user to select (this is optional) --->
-										<option value="">Select Option</option>
-
-										<!--- Loop over the skus to display options --->
-										<cfloop array="#skus#" index="sku">
-											<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
-											<option value="#sku.getSkuID()#">#sku.displayOptions()#</option>
-										</cfloop>
-
-									</select>
-									<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="sku" />
-
-		    					</div>
+									<!--- Loop over the skus to display options --->
+									<cfloop array="#skus#" index="sku">
+										<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
+										<option value="#sku.getSkuID()#">#sku.displayOptions()#</option>
+									</cfloop>
+								</select>
+								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="sku" />
 		  					</div>
 
-						<!--- If there are only 1 skus, then add a hidden field --->
 						<cfelse>
+
+							<!--- If there are only 1 skus, then add a hidden field --->
 							<input type="hidden" name="skuID" value="#$.slatwall.product().getDefaultSku().getSkuID()#" />
 						</cfif>
 
 						<!--- Quantity --->
-						<div class="control-group">
-	    					<label class="control-label" for="quantity">Quantity</label>
-	    					<div class="controls">
-
-								<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
-								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
-
-	    					</div>
+						<div class="form-group">
+	    					<label for="quantity">Quantity</label>
+							<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="form-control" />
+							<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
 	  					</div>
 
 						<!--- Add to Cart Button --->
-						<button type="submit" class="btn">Add To Cart</button>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary">Add To Cart</button>
+						</div>
 					</form>
 					<!--- END: ADD TO CART EXAMPLE 1 --->
 				</div>
 
-				<div class="span4">
+				<div class="col-md-4">
 					<!--- START: ADD TO CART EXAMPLE 2 --->
-					<h5>Add To Cart Form 2 (Split Option Groups, Default Sku Selected, No Inventory Check)</h5>
+					<h4>Add To Cart Form 2 (Split Option Groups, Default Sku Selected, No Inventory Check)</h4>
 
 					<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. --->
 					<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
@@ -271,46 +267,37 @@ Notes:
 							<cfset optionsArr = $.slatwall.product().getOptionsByOptionGroup( optionGroup.getOptionGroupID() ) />
 
 							<!--- Option Selector --->
-							<div class="control-group">
-		    					<label class="control-label">#optionGroup.getOptionGroupName()#</label>
-		    					<div class="controls">
-
-									<!--- Option Select Dropdown --->
-									<select name="selectedOptionIDList">
-
-										<cfloop array="#optionsArr#" index="option">
-											<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
-										</cfloop>
-
-									</select>
-
-
-		    					</div>
+							<div class="form-group">
+		    					<label for="selectedOptionIDList">#optionGroup.getOptionGroupName()#</label>
+								<!--- Option Select Dropdown --->
+								<select name="selectedOptionIDList" class="form-control">
+									<cfloop array="#optionsArr#" index="option">
+										<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
+									</cfloop>
+								</select>
 		  					</div>
 						</cfloop>
 
 						<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="selectedOptionIDList" />
 
 						<!--- Quantity --->
-						<div class="control-group">
-	    					<label class="control-label" for="quantity">Quantity</label>
-	    					<div class="controls">
-
-								<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
-								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
-
-	    					</div>
+						<div class="form-group">
+	    					<label for="quantity">Quantity</label>
+							<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="form-control" />
+							<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
 	  					</div>
 
 						<!--- Add to Cart Button --->
-						<button type="submit" class="btn">Add To Cart</button>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary">Add To Cart</button>
+						</div>
 					</form>
 					<!--- END: ADD TO CART EXAMPLE 2 --->
 				</div>
 
-				<div class="span4">
+				<div class="col-md-4">
 					<!--- START: ADD TO CART EXAMPLE 3 --->
-					<h5>Add To Cart Form Example 3 (Split Option Groups, Ajax Inventory Update)</h5>
+					<h4>Add To Cart Form Example 3 (Split Option Groups, Ajax Inventory Update)</h4>
 
 					<!--- Start of form, note that the action can be set to whatever URL you would like the user to end up on. --->
 					<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
@@ -330,35 +317,24 @@ Notes:
 							<cfloop array="#optionGroupsArr#" index="optionGroup">
 
 								<!--- Option Selector --->
-								<div class="control-group">
-			    					<label class="control-label">#optionGroup.getOptionGroupName()#</label>
-			    					<div class="controls">
+								<div class="form-group">
+			    					<label for="selectedOptionIDList">#optionGroup.getOptionGroupName()#</label>
+									<!--- We can pull this optionGroup's Option out of the skuOptionDetails --->
+									<cfset optionGroupOptions = skuOptionDetails[ optionGroup.getOptionGroupCode() ].options />
+									<!--- Option Select Dropdown --->
+									<select name="selectedOptionIDList" data-optiongroupcode="#optionGroup.getOptionGroupCode()#" class="form-control ajax-option-selector">
+										<!--- First we include the unselected option --->
+										<option value="" selected="selected">Select #optionGroup.getOptionGroupName()#...</option>
 
-										<!--- We can pull this optionGroup's Option out of the skuOptionDetails --->
-										<cfset optionGroupOptions = skuOptionDetails[ optionGroup.getOptionGroupCode() ].options />
-
-										<!--- Option Select Dropdown --->
-										<select name="selectedOptionIDList" data-optiongroupcode="#optionGroup.getOptionGroupCode()#" class="ajax-option-selector">
-
-											<!--- First we include the unselected option --->
-											<option value="" selected="selected">Select #optionGroup.getOptionGroupName()#...</option>
-
-											<!--- New we loop over all options for this optionGroup --->
-											<cfloop array="#optionGroupOptions#" index="optionDetails">
-
-												<!--- Make sure that this option has a totalQATS > 0 --->
-												<cfif optionDetails.totalQATS gte 1>
-													<option value="#optionDetails.optionID#">#optionDetails.optionName#</option>
-												</cfif>
-
-											</cfloop>
-
-										</select>
-
-
-			    					</div>
+										<!--- New we loop over all options for this optionGroup --->
+										<cfloop array="#optionGroupOptions#" index="optionDetails">
+											<!--- Make sure that this option has a totalQATS > 0 --->
+											<cfif optionDetails.totalQATS gte 1>
+												<option value="#optionDetails.optionID#">#optionDetails.optionName#</option>
+											</cfif>
+										</cfloop>
+									</select>
 			  					</div>
-
 							</cfloop>
 
 							<!--- jQuery that allows for dynamic updating of options --->
@@ -421,24 +397,23 @@ Notes:
 						<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="selectedOptionIDList" />
 
 						<!--- Quantity --->
-						<div class="control-group">
-	    					<label class="control-label" for="quantity">Quantity</label>
-	    					<div class="controls">
-
-								<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="span1" />
-								<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
-
-	    					</div>
+						<div class="form-group">
+	    					<label for="quantity">Quantity</label>
+							<sw:FormField type="text" valueObject="#$.slatwall.cart().getProcessObject('addOrderItem')#" valueObjectProperty="quantity" class="form-control" />
+							<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="quantity" />
 	  					</div>
 
 						<!--- Add to Cart Button --->
-						<button type="submit" class="btn">Add To Cart</button>
+						<div class="form-group">
+							<button type="submit" class="btn">Add To Cart</button>
+						</div>
 					</form>
 					<!--- END: ADD TO CART EXAMPLE 2 --->
-
 				</div>
+
 			<cfelse>
-				<div class="span12"><p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p></div>
+
+				<div class="col-md-12"><p>Available for purchase #dateFormat($.slatwall.product().getPurchaseStartDateTime(),"long")#</p></div>
 			</cfif>
 		</div>
 		<!--- End: Add to Cart Examples --->
@@ -447,16 +422,12 @@ Notes:
 
 		<!--- Start: Add Product Review Example --->
 		<div class="row">
-
-			<div class="span12">
-
-				<h4>Product Review Example</h4>
+			<div class="col-md-12">
+				<h3>Product Review Example</h3>
 
 				<div class="row">
-
-					<div class="span6">
-
-						<h5>Product Reviews</h5>
+					<div class="col-md-6">
+						<h4>Product Reviews</h4>
 						<!---[DEVELOPER NOTES]
 
 							We recommend setting up an email for "Product Reviews" that will go to someone
@@ -477,44 +448,40 @@ Notes:
 
 						<!--- Check to see if there are any product reviews --->
 						<cfif productReviewsSmartList.getRecordsCount()>
-
 							<!--- Loop Over All Existing product reviews --->
 							<cfloop array="#productReviewsSmartList.getPageRecords()#" index="productReview">
-
 								<!--- Each Review --->
 								<article>
-
 									<!--- Show Title and Rating Stars --->
-									<h5>#productReview.getReviewTitle()#
+									<h4>#productReview.getReviewTitle()#
 										<cfif not isNull(productReview.getRating()) and productReview.getRating() gt 0>
-											<i class="icon-star"></i>
+											<span class="glyphicon glyphicon-star"></span>
 											<cfif productReview.getRating() gte 2>
-												<i class="icon-star"></i>
+												<span class="glyphicon glyphicon-star"></span>
 											</cfif>
 											<cfif productReview.getRating() gte 3>
-												<i class="icon-star"></i>
+												<span class="glyphicon glyphicon-star"></span>
 											</cfif>
 											<cfif productReview.getRating() gte 4>
-												<i class="icon-star"></i>
+												<span class="glyphicon glyphicon-star"></span>
 											</cfif>
 											<cfif productReview.getRating() gte 5>
-												<i class="icon-star"></i>
+												<span class="glyphicon glyphicon-star"></span>
 											</cfif>
 										</cfif>
-									</h5>
+									</h4>
 
 									<!--- Show the reviewer info --->
-									<h6>
+									<h5>
 										<cfif not isNull(productReview.getReviewerName()) and len(productReview.getReviewerName())>
 											<em>#productReview.getReviewerName()#</em>
 										<cfelse>
 											<em>Anonymous</em>
 										</cfif>
-									</h6>
+									</h5>
 
 									<!--- Show the actual Review --->
 									<p>#productReview.getFormattedValue('review')#</p>
-
 								</article>
 
 								<hr style="border-top-style:dashed;" />
@@ -523,21 +490,17 @@ Notes:
 						<cfelse>
 
 							<p>The are currently no reviews for this product, be the first!</p>
-
 						</cfif>
-
 					</div>
 
-					<div class="span6">
-
+					<div class="col-md-6">
 						<!--- Start: Add Product Review Form --->
-						<h5>Add Product Review</h5>
+						<h4>Add Product Review</h4>
 
 						<!--- Check to see if this was just submitted successfully --->
 						<cfif $.slatwall.hasSuccessfulAction( "public:product.addProductReview" )>
-
 							<!--- Show success Message --->
-							<p class="success">Your product review was successfully added. <cfif not $.slatwall.product().setting('productAutoApproveReviewsFlag')>Please note that products reviews are reviewed by our staff before being published to the site.</cfif></p>
+							<p class="text-success">Your product review was successfully added. <cfif not $.slatwall.product().setting('productAutoApproveReviewsFlag')>Please note that products reviews are reviewed by our staff before being published to the site.</cfif></p>
 
 						<cfelse>
 
@@ -546,7 +509,6 @@ Notes:
 
 							<!--- Add Product Review Form --->
 							<form action="?productID=#$.slatwall.product().getProductID()#&s=1" method="post">
-
 								<!--- This hidden input is what tells slatwall to add the contents submitted --->
 								<input type="hidden" name="slatAction" value="public:product.addProductReview" />
 
@@ -557,71 +519,49 @@ Notes:
 								<input type="hidden" name="newProductReview.productReviewID" value="" />
 
 								<!--- Rating --->
-								<div class="control-group">
-			    					<label class="control-label" for="rating">Rating</label>
-			    					<div class="controls">
-
-										<!--- This select box allows you to add ratings along with your review, but it is not required.  If you would just like to do ratings that is fine too --->
-										<sw:FormField type="select" name="newProductReview.rating" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueOptions="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview().getRatingOptions()#" valueObjectProperty="rating" class="span6" />
-										<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="rating" />
-
-			    					</div>
+								<div class="form-group">
+			    					<label for="rating">Rating</label>
+									<!--- This select box allows you to add ratings along with your review, but it is not required.  If you would just like to do ratings that is fine too --->
+									<sw:FormField type="select" name="newProductReview.rating" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueOptions="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview().getRatingOptions()#" valueObjectProperty="rating" class="form-control" />
+									<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="rating" />
 			  					</div>
 
 								<!--- Reviewer Name --->
-								<div class="control-group">
-			    					<label class="control-label" for="reviewerName">Reviewer Name</label>
-			    					<div class="controls">
+								<div class="form-group">
+			    					<label for="reviewerName">Reviewer Name</label>
+									<!--- Little bit of logic to set the default reviewers name to the current account if they are logged in.  This is totally optional --->
+									<cfif isNull($.slatwall.product().getProcessObject('addProductReview').getNewProductReview().getReviewerName()) and $.slatwall.getLoggedInFlag()>
+										<cfset $.slatwall.product().getProcessObject('addProductReview').getNewProductReview().setReviewerName( $.slatwall.getAccount().getFullName() ) />
+		    						</cfif>
 
-										<!--- Little bit of logic to set the default reviewers name to the current account if they are logged in.  This is totally optional --->
-										<cfif isNull($.slatwall.product().getProcessObject('addProductReview').getNewProductReview().getReviewerName()) and $.slatwall.getLoggedInFlag()>
-											<cfset $.slatwall.product().getProcessObject('addProductReview').getNewProductReview().setReviewerName( $.slatwall.getAccount().getFullName() ) />
-			    						</cfif>
-
-			    						<!--- This form field allows you to let users add titles to reviews, but it is not required --->
-										<sw:FormField type="text" name="newProductReview.reviewerName" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueObjectProperty="reviewerName" class="span6" />
-										<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="reviewerName" />
-
-			    					</div>
+		    						<!--- This form field allows you to let users add titles to reviews, but it is not required --->
+									<sw:FormField type="text" name="newProductReview.reviewerName" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueObjectProperty="reviewerName" class="form-control" />
+									<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="reviewerName" />
 			  					</div>
 
 								<!--- Review Title --->
-								<div class="control-group">
-			    					<label class="control-label" for="reviewTitle">Review Title</label>
-			    					<div class="controls">
-
-			    						<!--- This form field allows you to let users add titles to reviews, but it is not required --->
-										<sw:FormField type="text" name="newProductReview.reviewTitle" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueObjectProperty="reviewTitle" class="span6" />
-										<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="reviewTitle" />
-
-			    					</div>
+								<div class="form-group">
+			    					<label for="reviewTitle">Review Title</label>
+		    						<!--- This form field allows you to let users add titles to reviews, but it is not required --->
+									<sw:FormField type="text" name="newProductReview.reviewTitle" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueObjectProperty="reviewTitle" class="form-control" />
+									<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="reviewTitle" />
 			  					</div>
 
 								<!--- Review --->
-								<div class="control-group">
-			    					<label class="control-label" for="review">Review</label>
-			    					<div class="controls">
-
-			    						<!--- This input is the primary review section, but it is also not required by default --->
-										<sw:FormField type="textarea" name="newProductReview.review" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueObjectProperty="review" class="span6" />
-										<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="review" />
-
-
-			    					</div>
+								<div class="form-group">
+			    					<label for="review">Review</label>
+		    						<!--- This input is the primary review section, but it is also not required by default --->
+									<sw:FormField type="textarea" name="newProductReview.review" valueObject="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" valueObjectProperty="review" class="form-control" />
+									<sw:ErrorDisplay object="#$.slatwall.product().getProcessObject('addProductReview').getNewProductReview()#" errorName="review" />
 			  					</div>
 
 								<!--- Submit Button --->
-								<div class="control-group">
-			    					<div class="controls">
-			      						<button type="submit" class="btn">Add Review</button>
-			    					</div>
+								<div class="form-group">
+			      					<button type="submit" class="btn btn-primary">Add Review</button>
 			  					</div>
-
 							</form>
 							<!--- End: Add Product Review Form --->
-
 						</cfif>
-
 					</div>
 				</div>
 			</div>
@@ -632,9 +572,9 @@ Notes:
 
 		<!--- Start: Related Products Example --->
 		<div class="row">
-			<div class="span12">
+			<div class="col-md-12">
 
-				<h5>Related Products Example</h5>
+				<h4>Related Products Example</h4>
 
 				<!--- Get the related products smart list --->
 				<cfset relatedProductsSmartList = $.slatwall.product().getRelatedProductsSmartList() />
@@ -648,40 +588,34 @@ Notes:
 
 				<!--- Verify that there are records --->
 				<cfif relatedProductsSmartList.getRecordsCount()>
-					<ul class="thumbnails">
+					<!--- Promary loop for each related product --->
+					<cfloop array="#relatedProductsSmartList.getPageRecords()#" index="product">
+						<!--- Individual Product --->
+						<div class="col-md-3">
+							<div class="thumbnail">
+								<!--- Product Image --->
+								<img src="#product.getResizedImagePath(size='m')#" alt="#product.getCalculatedTitle()#" />
 
-						<!--- Promary loop for each related product --->
-						<cfloop array="#relatedProductsSmartList.getPageRecords()#" index="product">
+								<!--- The Calculated Title allows you to setup a title string as a dynamic setting.  When you call getTitle() it generates the title based on that title string setting. To be more perfomant this value is cached as getCalculatedTitle() --->
+								<h4>#product.getCalculatedTitle()#</h4>
 
-							<!--- Individual Product --->
-							<li class="span3">
+								<!--- Check to see if the products price is > the sale price.  If so, then display the original price with a line through it --->
+								<cfif product.getPrice() gt product.getCalculatedSalePrice()>
+									<p><span style="text-decoration:line-through;">#product.getPrice()#</span> <span class="text-error">#product.getFormattedValue('calculatedSalePrice')#</span></p>
+								<cfelse>
+									<p>#product.getFormattedValue('calculatedSalePrice')#</p>
+								</cfif>
 
-								<div class="thumbnail">
+								<!--- This is the link to the product detail page.  sense we aren't on a listing page you should always just use the standard getProductURL() --->
+								<a href="#product.getProductURL()#">Details / Buy</a>
+							</div>
+						</div>
+					</cfloop>
 
-									<!--- Product Image --->
-									<img src="#product.getResizedImagePath(size='m')#" alt="#product.getCalculatedTitle()#" />
-
-									<!--- The Calculated Title allows you to setup a title string as a dynamic setting.  When you call getTitle() it generates the title based on that title string setting. To be more perfomant this value is cached as getCalculatedTitle() --->
-									<h5>#product.getCalculatedTitle()#</h5>
-
-									<!--- Check to see if the products price is > the sale price.  If so, then display the original price with a line through it --->
-									<cfif product.getPrice() gt product.getCalculatedSalePrice()>
-										<p><span style="text-decoration:line-through;">#product.getPrice()#</span> <span class="text-error">#product.getFormattedValue('calculatedSalePrice')#</span></p>
-									<cfelse>
-										<p>#product.getFormattedValue('calculatedSalePrice')#</p>
-									</cfif>
-
-									<!--- This is the link to the product detail page.  sense we aren't on a listing page you should always just use the standard getProductURL() --->
-									<a href="#product.getProductURL()#">Details / Buy</a>
-
-								</div>
-							</li>
-						</cfloop>
-					</ul>
 				<cfelse>
+
 					<p>There are no related products.</p>
 				</cfif>
-
 			</div>
 		</div>
 		<!--- End: Related Products Example --->
@@ -690,8 +624,8 @@ Notes:
 
 		<!--- Start: Image Gallery Example --->
 		<div class="row">
-			<div class="span12">
-				<h5>Image Gallery Example</h5>
+			<div class="col-md-12">
+				<h4>Image Gallery Example</h4>
 
 				<cfset galleryDetails = $.slatwall.product().getImageGalleryArray() />
 
@@ -729,27 +663,26 @@ Notes:
 
 				<!--- If the product has more than the default image assigned, let's display all images --->
 				<cfif arraylen(galleryDetails) GT "1">
-					<ul class="thumbnails">
-						<cfloop array="#galleryDetails#" index="image">
-							<!---[ DEVELOPER NOTES ]
-								Now that we are inside of the loop of images being returned, you have access to the
-								following detials insilde of the image struct that came back in the array
-							--->
-							<li class="span3">
-								<a href="#image.resizedimagepaths[2]#" target="_blank" class="thumbnail" title="zoom">
-									<img src="#image.resizedimagepaths[1]#" alt="#image.name#">
-									<i class="icon-zoom-in"></i>
-									<span class="pull-right">
-										#image.name#
-									</span>
-								</a>
-							</li>
-						</cfloop>
-					</ul>
+					<cfloop array="#galleryDetails#" index="image">
+						<!---[ DEVELOPER NOTES ]
+							Now that we are inside of the loop of images being returned, you have access to the
+							following detials insilde of the image struct that came back in the array
+						--->
+						<div class="col-md-3">
+							<a href="#image.resizedimagepaths[2]#" target="_blank" class="thumbnail" title="zoom">
+								<img src="#image.resizedimagepaths[1]#" alt="#image.name#">
+								<span class="glyphicon glyphicon-zoom-in"></span>
+								<span class="pull-right">
+									#image.name#
+								</span>
+							</a>
+						</div>
+					</cfloop>
+
 				<cfelse>
+
 					<p>There are no additional images.</p>
 				</cfif>
-
 			</div>
 		</div>
 		<!--- End: Image Gallery Example --->
@@ -757,4 +690,4 @@ Notes:
 </cfoutput>
 
 <!--- This footer should be replaced with the footer of your site --->
-<cfinclude template="_slatwall-footer.cfm" />
+<cfinclude template="inc/_slatwall-footer.cfm" />
