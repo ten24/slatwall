@@ -6,6 +6,6 @@
 		"emailAddressConfirm":	        [{"required":true,"dataType":"email"}],
 		"password":				        [{"required":true,"eqProperty":"passwordConfirm","regex":"^.*(?=.{7,})(?=.*[0-9])(?=.*[a-zA-Z]).*$"}],
 		"passwordConfirm":		        [{"required":true}],
-        "accountAuthenticationExists":  [{"eq":false}]
+        "accountExists":  [{"eq":false}]
 	}
 }

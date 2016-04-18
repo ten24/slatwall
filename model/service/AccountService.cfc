@@ -100,6 +100,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return getAccountDAO().getAccountAuthenticationExists();
 	}
 	
+	public boolean function getAccountExists(){
+		return getAccountDAO().getAccountExists();
+	}
+	
 	public any function getAccountWithAuthenticationByEmailAddress( required string emailAddress ) {
 		return getAccountDAO().getAccountWithAuthenticationByEmailAddress( argumentcollection=arguments );
 	}
