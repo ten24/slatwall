@@ -294,6 +294,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		accountAuthentication.setAuthenticationPublicKey(arguments.processObject.getAuthenticationPublicKey());
 		accountAuthentication.setAuthenticationPrivateKey(arguments.processObject.getAuthenticationPrivateKey());
 		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
+		accountAuthentication.setAuthenticationIsViewable(true);
 		accountAuthentication.setAuthToken(createUUID());
 		
 		return arguments.account;

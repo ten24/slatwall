@@ -59,7 +59,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	property name="integrationRefreshToken" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
 	property name="updatePasswordOnNextLoginFlag" ormtype="boolean";
-	property name="isViewable" ormtype="boolean" default="true";
+	property name="authenticationIsViewable" ormtype="boolean" default="true";
 	property name="authenticationPublicKey" ormtype="string";
 	property name="authenticationPrivateKey" ormtype="string";
 	property name="authenticationDescription" ormtype="string";
@@ -143,9 +143,8 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(!isNull(getAuthToken()) && getIsViewable()){
-				rep &= "Important: This is the only time you will see this token! <br>";
-				rep &= "API Token<br>";
+		if(!isNull(getAuthToken()) && getAuthenticationIsViewable() != false){
+				rep &= "This key will only be visible for 5 minutes.<br>";
 				if(!isNull(getAuthenticationDescription())){
 					rep &="#getAuthenticationDescription()#<br>";
 				}
@@ -154,13 +153,16 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 				 	var oneTimeKey = hash("#getAuthToken#_#getAuthenticationPrivateKey()#", "MD5");
 					rep &="AuthKey: #oneTimeKey#";
 				}
-		}else if(!isNull(getAuthToken()) && !getIsViewable()){
+				
+				if (dateDiff('n', createdDateTime, now()) > 5){
+					setAuthenticationIsViewable(false);
+				}
+		}else if(!isNull(getAuthToken()) && !getAuthenticationIsViewable()){
 				rep &= "API Token";
 				if(!isNull(getAuthenticationDescription())){
 					
 					rep &=" - #getAuthenticationDescription()#";
 				}
-				
 		}
 		else if(isNull(getIntegration())) {
 			rep &= "Slatwall";
@@ -170,12 +172,11 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 		} else {
 			rep &= getIntegration().getIntegrationName();
 		}
+		
 		if(!isNull(getExpirationDateTime())) {
 			rep &= " - #rbKey('define.expires')#: #getFormattedValue('expirationDateTime')#";
 		}
-		if (len(getAuthToken()) && isViewable){
-			setIsViewable(false);
-		}
+		
 		return rep;
 	}
 	
