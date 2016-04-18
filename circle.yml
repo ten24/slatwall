@@ -11,9 +11,12 @@ dependencies:
     - git config --global user.name "Big Boy (Slatwall Robot)"
     - git config --global push.default current
 
+    # Install node modules for building JS
     - npm install -g webpack gulp
-
     - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack
+
+    # Install awscli so that we can push builds to S3
+    - pip install awscli
 
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - cd meta/tests/integration/se-interpreter && npm install
