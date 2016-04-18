@@ -196,6 +196,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
+			globalFileTypeWhiteList = {fieldtype="text", defaultValue="jpg,jpeg,gif,pdf,csv"},
+			globalMIMETypeWhiteList = {fieldtype="text", defaultValue="*"},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
 			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
