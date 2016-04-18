@@ -87,7 +87,7 @@
                             <th data-ng-if-end class="select" data-ng-class="{'disabled':!swListingDisplay.edit}" data-ng-bind="swListingDisplay.selectTitle"></th>
                             <!-- Multiselectable -->
                             <input data-ng-if-start="swListingDisplay.multiselectable" type="hidden" data-ng-attr-name="{{swListingDisplay.multiselectFieldName}}" data-ng-value="swListingDisplay.multiselectValues.toString()" />
-                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'disabled':!swListingDisplay.edit}">
+                            <th data-ng-if-end class="multiselect s-table-checkbox s-detail-hidden-content" data-ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
                             <div class="s-checkbox" data-ng-if="!swListingDisplay.isRadio">
                                     <input type="checkbox" id="exampleID" data-ng-model="swListingDisplay.isCurrentPageRecordsSelected" data-ng-click="swListingDisplay.selectCurrentPageRecords()">
                                     <label for="exampleID"></label>
