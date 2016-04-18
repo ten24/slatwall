@@ -60,9 +60,24 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<cfoutput>
-				Would you like to generate an API Authentication Token for #rc.account.getFullName()#? </br></br>
+				Generate an authentication token for #rc.account.getFullName()#?<br>
 			</cfoutput>
-			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
+			
+			<cfoutput>
+				Enter a public key: </br></br>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationPublicKey" edit="#rc.edit#">
+			</cfoutput>
+			
+			<cfoutput>
+				Enter a private key:</br></br>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationPrivateKey" edit="#rc.edit#">
+			</cfoutput>
+			
+				<cfoutput>
+				Enter a description for this token. </br></br>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
+			</cfoutput>
+			
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </hb:HibachiEntityProcessForm>

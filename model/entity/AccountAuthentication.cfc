@@ -59,6 +59,9 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	property name="integrationRefreshToken" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
 	property name="updatePasswordOnNextLoginFlag" ormtype="boolean";
+	property name="isViewable" ormtype="boolean" default="true";
+	property name="authenticationPublicKey" ormtype="string";
+	property name="authenticationPrivateKey" ormtype="string";
 	property name="authenticationDescription" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
@@ -140,14 +143,24 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(!isNull(getAuthToken())){
+		if(!isNull(getAuthToken()) && getIsViewable()){
+				rep &= "Important: This is the only time you will see this token! <br>";
+				rep &= "API Token<br>";
+				if(!isNull(getAuthenticationDescription())){
+					rep &="#getAuthenticationDescription()#<br>";
+				}
+				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID() && !isNull(getAuthenticationPublicKey()) && !isNull(getAuthenticationPrivateKey())){
+				    //this is a hash of the private key and auth token. We don't save this.
+				 	var oneTimeKey = hash("#getAuthToken#_#getAuthenticationPrivateKey()#", "MD5");
+					rep &="AuthKey: #oneTimeKey#";
+				}
+		}else if(!isNull(getAuthToken()) && !getIsViewable()){
 				rep &= "API Token";
 				if(!isNull(getAuthenticationDescription())){
+					
 					rep &=" - #getAuthenticationDescription()#";
 				}
-				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID()){
-					rep &=" - #getAuthToken()#";
-				}
+				
 		}
 		else if(isNull(getIntegration())) {
 			rep &= "Slatwall";
@@ -159,6 +172,9 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 		}
 		if(!isNull(getExpirationDateTime())) {
 			rep &= " - #rbKey('define.expires')#: #getFormattedValue('expirationDateTime')#";
+		}
+		if (len(getAuthToken()) && isViewable){
+			setIsViewable(false);
 		}
 		return rep;
 	}

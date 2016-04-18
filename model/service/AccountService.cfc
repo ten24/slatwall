@@ -290,9 +290,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		var accountAuthentication = this.newAccountAuthentication();
 		accountAuthentication.setAccount( arguments.account );
 	
-		// Set the authToken
-		accountAuthentication.setAuthToken(createUUID());
+		//set the data from the process object.
+		accountAuthentication.setAuthenticationPublicKey(arguments.processObject.getAuthenticationPublicKey());
+		accountAuthentication.setAuthenticationPrivateKey(arguments.processObject.getAuthenticationPrivateKey());
 		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
+		accountAuthentication.setAuthToken(createUUID());
 		
 		return arguments.account;
 		
