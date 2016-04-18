@@ -55,7 +55,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var file = this.getFile(arguments.fileID, true);
 		
 		if (!file.getNewFlag() && fileExists(file.getFilePath())) {
-			// Download file
+			// Download files
 			try {
 				getService("hibachiUtilityService").downloadFile(fileType=file.getFileType(),fileName=file.getURLTitle(), filePath=file.getFilePath(), contentType=file.getMimeType(), deleteFile=false);
 			} catch (any error) {
