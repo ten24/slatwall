@@ -49,13 +49,20 @@ Notes:
 <cfcomponent extends="HibachiService" accessors="true">
 
 	<cffunction name="update">
+		<cfargument name="branch" type="string" default="master">
 		
 		<!--- this could take a while... --->
 		<cfsetting requesttimeout="600" />
 		<cftry>
 			<cfset var updateCopyStarted = false />
-			<cfset var downloadURL = "https://s3.amazonaws.com/slatwall-releases/slatwall-latest.zip" />
-			<cfset var downloadHashURL = "https://s3.amazonaws.com/slatwall-releases/slatwall-latest.md5.txt" />
+			<cfset var zipName  = ''/> 		
+			<cfif arguments.branch == 'master'>
+				<cfset zipName  = 'slatwall-latest'/> 		
+			<cfelseif arguments.branch == 'develop'>
+				<cfset zipName  = 'slatwall-be'/> 		
+			</cfif>
+			<cfset var downloadURL = "https://s3.amazonaws.com/slatwall-releases/#zipName#.zip" />
+			<cfset var downloadHashURL = "https://s3.amazonaws.com/slatwall-releases/#zipName#.md5.txt" />
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadUUID = createUUID() />
 			<cfset var downloadFileName = "slatwall-#downloadUUID#.zip" />

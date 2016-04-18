@@ -82,7 +82,7 @@ Notes:
 				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.bleedingEdge')#" />
 			</cfif>
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
-			<!--- <hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" /> --->
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
 			<hr />
 			<form method="post" action="?s=1" class="s-update-branch">
 				<input type="hidden" name="slatAction" value="admin:main.update" />
@@ -94,7 +94,7 @@ Notes:
 					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="custom" /></label>
 					<input type="text" class="col-xs-10" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
 				</div>
-
+				--->
 				<!--- Standard --->
 				<div class="form-group">
 					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="standard" checked="checked" /></label>
@@ -106,7 +106,7 @@ Notes:
 						</select>
 					</div>
 				</div>
-				--->
+				
 
 				<button class="btn adminmainupdate btn-primary" title="#$.slatwall.rbKey('admin.main.update_title')#" type="submit">#$.slatwall.rbKey('admin.main.update_title')#</button>
 			</form>
