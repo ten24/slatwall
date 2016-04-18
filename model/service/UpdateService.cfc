@@ -56,9 +56,9 @@ Notes:
 		<cftry>
 			<cfset var updateCopyStarted = false />
 			<cfset var zipName  = ''/> 		
-			<cfif arguments.branch == 'master'>
+			<cfif arguments.branch eq 'master'>
 				<cfset zipName  = 'slatwall-latest'/> 		
-			<cfelseif arguments.branch == 'develop'>
+			<cfelseif arguments.branch eq 'develop'>
 				<cfset zipName  = 'slatwall-be'/> 		
 			</cfif>
 			<cfset var downloadURL = "https://s3.amazonaws.com/slatwall-releases/#zipName#.zip" />
