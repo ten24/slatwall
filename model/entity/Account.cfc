@@ -108,6 +108,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non Persistent
+	property name="accountAuthenticationExists" persistent="false";
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
 	property name="activeSubscriptionUsageBenefitsSmartList" persistent="false";
 	property name="address" persistent="false";
@@ -231,6 +232,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		giftCardSmartList.addFilter("ownerAccount.AccountID", this.getAccountID());
 
 		return giftCardSmartList;
+	}
+	
+	public any function getAccountAuthenticationExists(){
+		if(!structKeyExists(variables,'accountAuthenticationExists')){
+			variables.accountAuthenticationExists = getHibachiScope().getService('accountService').getAccountAuthenticationExists();
+		}
+		return variables.accountAuthenticationExists;
 	}
 
 	public any function getOrdersPlacedSmartList() {
