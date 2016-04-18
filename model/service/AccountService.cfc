@@ -292,10 +292,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 		//set the data from the process object.
 		accountAuthentication.setAuthenticationPublicKey(arguments.processObject.getAuthenticationPublicKey());
-		accountAuthentication.setAuthenticationPrivateKey(arguments.processObject.getAuthenticationPrivateKey());
 		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
 		accountAuthentication.setAuthenticationIsViewable(true);
 		accountAuthentication.setAuthToken(createUUID());
+		var encryptedPrivateKey = encrypt(arguments.processObject.getAuthenticationPrivateKey(), accountAuthentication.getAuthToken());
+		accountAuthentication.setAuthenticationPrivateKey(encryptedPrivateKey);
 		
 		return arguments.account;
 		

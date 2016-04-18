@@ -60,10 +60,6 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<cfoutput>
-				Generate an authentication token for #rc.account.getFullName()#?<br>
-			</cfoutput>
-			
-			<cfoutput>
 				Enter a public key: </br></br>
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationPublicKey" edit="#rc.edit#">
 			</cfoutput>
