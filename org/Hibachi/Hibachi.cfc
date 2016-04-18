@@ -224,11 +224,20 @@ component extends="FW1.framework" {
 				}
 			}
 			
-			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
-			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
-				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
-				if(!isNull(authTokenAccount)) {
-					getHibachiScope().getSession().setAccount( authTokenAccount );
+			// If there is no account on the session, then we can look for an authToken and public key to setup that account for this one request.
+			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(httpRequestData, "headers") && structKeyExists(httpRequestData.headers, "authToken") && len(httpRequestData.headers.authToken) && structKeyExists(httpRequestData.headers, "publicKey") && len(httpRequestData.headers.publicKey)) {
+				var usersAuthToken = httpRequestData.headers.authToken;
+				var publicKey = httpRequestData.publicKey;
+				
+				var authentication = getAccountAuthenticationByAuthenticationPublicKey(publicKey);
+				if (!isNull(authentication)){
+					var authTokenAccount = authentication.getAccount();
+					var privateKeyEncrypted = authTokenAccount.getAuthenticationPrivateKey();
+					var signature = hash("#authentication.getAuthToken()#_#decrypt(privateKeyEncrypted, authentication.getAuthToken())#", "MD5");
+					
+					if(signature == usersAuthToken && !isNull(authTokenAccount)) {
+						getHibachiScope().getSession().setAccount( authTokenAccount );
+					}
 				}
 			}
 			
