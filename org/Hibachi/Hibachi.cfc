@@ -196,6 +196,8 @@ component extends="FW1.framework" {
 	}
 	
 	public void function setupGlobalRequest() {
+		var httpRequestData = GetHttpRequestData();
+		
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
             if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
                 request["#variables.framework.applicationKey#Scope"] = createObject("component", "#variables.framework.applicationKey#.custom.model.transient.HibachiScope").init();
