@@ -236,7 +236,7 @@ component extends="FW1.framework" {
 				
 				//recreate the hash from the users data to find an account by....
 				var hashedSecretKey = hash(httpRequestData.headers.secretAccessKey);
-				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(hashedSecretKey, httpRequestData.headers.accessKey);
+				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(hashedSecretKey, httpRequestData.headers.secretAccessKey);
 				var authentication =  getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedSaltedPassword);
 				
 				//now set the account on the session.

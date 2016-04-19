@@ -295,7 +295,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		accountAuthentication.setAccessKey(arguments.processObject.getAccessKey());
 		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
 		//Hash the auth token like it was/is a password (because it is).
-		accountAuthentication.setAuthToken( getHashedAndSaltedPassword(arguments.processObject.getAuthToken(), arguments.processObject.getAccessKey()));
+		accountAuthentication.setAuthToken( getHashedAndSaltedPassword(arguments.processObject.getAuthToken(), arguments.processObject.getPrivateAccessKey()));
 		
 		return arguments.account;
 	}

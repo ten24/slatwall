@@ -64,6 +64,7 @@ Notes:
 			<cfoutput>
 			<h5>You will need to remember the two values below in order to access the API.</h5><br>
 			<input type="hidden" name="accessKey" value="#newPublicKey#">
+			<input type="hidden" name="privateAccessKey" value="#newPrivateKey#">
 			<input type="hidden" name="authToken" value="#hash(newPrivateKey)#">
 			</cfoutput>
 			<cfoutput>
