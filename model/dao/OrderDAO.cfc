@@ -189,12 +189,16 @@ Notes:
 		<cfset var rs = "" />
 
 		<cfquery name="rs">
-			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem AS oi
-    		LEFT JOIN SwSku AS s ON s.skuID = oi.skuID
-    		LEFT JOIN SwProduct AS p ON s.productID = p.productID
-    		WHERE p.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
-    		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
+		SELECT SwOrderItem.orderItemID, SwOrderItem.quantity, SwSku.giftCardExpirationTermID FROM SwOrderItem
+		
+		
+		    LEFT JOIN SwSku ON SwSku.skuID = SwOrderItem.skuID
+		    LEFT JOIN SwProduct ON SwSku.productID = SwProduct.productID
+		    WHERE SwProduct.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
+		    AND SwOrderItem.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
+
+
 
 
 		<cfset var giftCardOrderItems = ArrayNew(1) />
