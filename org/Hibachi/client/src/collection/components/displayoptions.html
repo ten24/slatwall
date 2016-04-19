@@ -40,6 +40,7 @@
                                     for property in propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].data 
                                     | filter:{fieldtype:'!one-to-many'}
                                     | filter:{fieldtype:'!many-to-many'}
+                                    | orderBy:['displayPropertyIdentifier'] track by property.propertyIdentifier
                                     " 
                                     class="form-control input-sm">
                                     <option value="">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span>{{propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
@@ -57,7 +58,7 @@
                         >
                     </span>
                     <div class="col-xs-3">
-                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null}">
+                        <div class="s-button-select-group" ng-class="{'disabled' : selectedProperty == null || selectedProperty.cfc != undefined}">
                             <button  type="button" 
                                 class="btn btn-sm btn-primary"
                                 ng-click="addColumn(selectedProperty)">
