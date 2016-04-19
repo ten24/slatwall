@@ -227,30 +227,24 @@ component extends="FW1.framework" {
 			}
 			
 			// If there is no account on the session, then we can look for an authToken,public key, and timestamp to setup that account for this one request.
-			/*if(!getHibachiScope().getLoggedInFlag() && 
+			if(!getHibachiScope().getLoggedInFlag() && 
 				structKeyExists(httpRequestData, "headers") && 
-				structKeyExists(httpRequestData.headers, "authToken") && 
-				len(httpRequestData.headers.authToken) && 
-				structKeyExists(httpRequestData.headers, "publicKey") && 
-				len(httpRequestData.headers.publicKey)) {
+				structKeyExists(httpRequestData.headers, "secretAccessKey") && 
+				len(httpRequestData.headers.secretAccessKey) && 
+				structKeyExists(httpRequestData.headers, "accessKey") && 
+				len(httpRequestData.headers.accessKey)) {
 				
-				var usersAuthToken = httpRequestData.headers.authToken;
-				var publicKey = httpRequestData.headers.publicKey;
-				var timeStamp = httpRequestData.headers.timestamp;
-				var authentication = getAccountAuthenticationByAuthenticationPublicKey(publicKey);
+				//recreate the hash from the users data to find an account by....
+				var hashedSecretKey = hash(httpRequestData.headers.secretAccessKey);
+				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(hashedSecretKey, httpRequestData.headers.accessKey);
+				var authentication =  getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedSaltedPassword);
 				
-				if (!isNull(authentication) && !isNull(timeStamp)){
-					var authTokenAccount = authentication.getAccount();
-					var privateKeyEncrypted = authTokenAccount.getAuthenticationPrivateKey();
-					var hashedPrivateKey = hash("#decrypt(privateKeyEncrypted, authentication.getAuthToken())#", "sha1");
-					var timeKeyString = uCase("#timeStamp#_#authentication.getAuthenticationPublicKey()#_#hashedPrivateKey#");
-					var signature = hash("#timeKeyString#", "SHA");
-					
-					if(signature == usersAuthToken && !isNull(authTokenAccount)) {
-						getHibachiScope().getSession().setAccount( authTokenAccount );
-					}
+				//now set the account on the session.
+				if (!isNull(authentication)){
+					getHibachiScope().getSession().setAccount( authentication.getAccount() );
 				}
-			}*/
+				
+			}
 			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
