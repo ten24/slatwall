@@ -143,18 +143,15 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(!isNull(getAuthToken()) && getAuthenticationIsViewable() != false){
-				rep &= "This key will only be visible for 5 minutes.<br>";
+		if(!isNull(getAuthToken()) && getAuthenticationIsViewable() != false && !isNull(getAuthenticationIsViewable())){
+				rep &= "This key will only be visible until you reload the page.<br>";
 				
 				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID() && !isNull(getAuthenticationPublicKey()) && !isNull(getAuthenticationPrivateKey())){
 				    //this is a hash of the private key and auth token. We don't save this.
 				 	var oneTimeKey = hash("#getAuthToken#_#decrypt(getAuthenticationPrivateKey(), getAuthToken())#", "MD5");
 					rep &="AuthKey: #oneTimeKey#";
 				}
-				
-				if (dateDiff('n', createdDateTime, now()) > 5){
-					setAuthenticationIsViewable(false);
-				}
+				setAuthenticationIsViewable(false); //<--can only view once.
 		}else if(!isNull(getAuthToken()) && !getAuthenticationIsViewable()){
 				rep &= "API Token";
 				if(!isNull(getAuthenticationDescription())){
