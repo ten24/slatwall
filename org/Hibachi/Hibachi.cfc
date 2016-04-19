@@ -227,7 +227,12 @@ component extends="FW1.framework" {
 			}
 			
 			// If there is no account on the session, then we can look for an authToken,public key, and timestamp to setup that account for this one request.
-			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(httpRequestData, "headers") && structKeyExists(httpRequestData.headers, "authToken") && len(httpRequestData.headers.authToken) && structKeyExists(httpRequestData.headers, "publicKey") && len(httpRequestData.headers.publicKey)) {
+			if(!getHibachiScope().getLoggedInFlag() && 
+				structKeyExists(httpRequestData, "headers") && 
+				structKeyExists(httpRequestData.headers, "authToken") && 
+				len(httpRequestData.headers.authToken) && 
+				structKeyExists(httpRequestData.headers, "publicKey") && 
+				len(httpRequestData.headers.publicKey)) {
 				
 				var usersAuthToken = httpRequestData.headers.authToken;
 				var publicKey = httpRequestData.headers.publicKey;
