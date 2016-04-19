@@ -229,13 +229,15 @@ component extends="FW1.framework" {
 			// If there is no account on the session, then we can look for an authToken and public key to setup that account for this one request.
 			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(httpRequestData, "headers") && structKeyExists(httpRequestData.headers, "authToken") && len(httpRequestData.headers.authToken) && structKeyExists(httpRequestData.headers, "publicKey") && len(httpRequestData.headers.publicKey)) {
 				var usersAuthToken = httpRequestData.headers.authToken;
-				var publicKey = httpRequestData.publicKey;
-				
+				var publicKey = httpRequestData.headers.publicKey;
+				var timeStamp = httpRequestData.headers.timestamp;
 				var authentication = getAccountAuthenticationByAuthenticationPublicKey(publicKey);
 				if (!isNull(authentication)){
 					var authTokenAccount = authentication.getAccount();
 					var privateKeyEncrypted = authTokenAccount.getAuthenticationPrivateKey();
-					var signature = hash("#authentication.getAuthToken()#_#decrypt(privateKeyEncrypted, authentication.getAuthToken())#", "MD5");
+					var hashedPrivateKey = hash("#decrypt(privateKeyEncrypted, authentication.getAuthToken())#", "sha1");
+					var timeKeyString = uCase("#timeStamp#_#authentication.getAuthenticationPublicKey()#_#hashedPrivateKey#");
+					var signature = hash("#timeKeyString#", "SHA");
 					
 					if(signature == usersAuthToken && !isNull(authTokenAccount)) {
 						getHibachiScope().getSession().setAccount( authTokenAccount );
