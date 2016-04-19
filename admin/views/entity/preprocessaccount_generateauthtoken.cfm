@@ -59,19 +59,26 @@ Notes:
 	<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#"></hb:HibachiEntityActionBar>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
+			<cfset newPublicKey = "#createUUID()#">
+			<cfset newPrivateKey = "#toBase64(createUUID())#">
 			<cfoutput>
-				Enter a public key: </br></br>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationPublicKey" edit="#rc.edit#">
+			<h5>You will need to remember the two values below in order to access the API.</h5><br>
+			<input type="hidden" name="accessKey" value="#newPublicKey#">
+			<input type="hidden" name="authToken" value="#hash(newPrivateKey)#">
+			</cfoutput>
+			<cfoutput>
+				Your public access key: </br>
+				<b>#newPublicKey#</b> <br><br>
 			</cfoutput>
 			
 			<cfoutput>
-				Enter a private key:</br></br>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationPrivateKey" edit="#rc.edit#">
+				Your secret access Key:</br>
+				<b>#newPrivateKey#</b> <br><br>
 			</cfoutput>
 			
-				<cfoutput>
-				Enter a description for this token. </br></br>
-				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
+			<cfoutput>
+			Enter a description for this token. </br>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
 			</cfoutput>
 			
 		</hb:HibachiPropertyList>

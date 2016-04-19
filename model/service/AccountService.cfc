@@ -287,19 +287,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_generateAuthToken(required any account, required any processObject){
+		
 		var accountAuthentication = this.newAccountAuthentication();
 		accountAuthentication.setAccount( arguments.account );
 	
 		//set the data from the process object.
-		accountAuthentication.setAuthenticationPublicKey(arguments.processObject.getAuthenticationPublicKey());
+		accountAuthentication.setAccessKey(arguments.processObject.getAccessKey());
 		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
-		accountAuthentication.setAuthenticationIsViewable(true);
-		accountAuthentication.setAuthToken(createUUID());
-		var encryptedPrivateKey = encrypt(arguments.processObject.getAuthenticationPrivateKey(), accountAuthentication.getAuthToken());
-		accountAuthentication.setAuthenticationPrivateKey(encryptedPrivateKey);
+		//Hash the auth token like it was/is a password (because it is).
+		accountAuthentication.setAuthToken( getHashedAndSaltedPassword(arguments.processObject.getAuthToken(), arguments.processObject.getAccessKey()));
 		
 		return arguments.account;
-		
 	}
 	
 	public any function processAccount_login(required any account, required any processObject) {

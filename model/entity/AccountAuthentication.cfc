@@ -51,6 +51,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	// Persistent Properties
 	property name="accountAuthenticationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="password" ormtype="string";
+	property name="accessKey" ormtype="string";
 	property name="authToken" ormtype="string";
 	property name="expirationDateTime" ormtype="timestamp";
 	property name="integrationAccountID" ormtype="string";
@@ -59,9 +60,6 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	property name="integrationRefreshToken" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
 	property name="updatePasswordOnNextLoginFlag" ormtype="boolean";
-	property name="authenticationIsViewable" ormtype="boolean" default="true";
-	property name="authenticationPublicKey" ormtype="string";
-	property name="authenticationPrivateKey" ormtype="string";
 	property name="authenticationDescription" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
@@ -143,23 +141,14 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(!isNull(getAuthToken()) && getAuthenticationIsViewable() != false && !isNull(getAuthenticationIsViewable())){
-				rep &= "This key will only be visible until you reload the page.<br>";
+		if(!isNull(getAuthToken())){
+				rep &= "";
 				
-				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID() && !isNull(getAuthenticationPublicKey()) && !isNull(getAuthenticationPrivateKey())){
-				    //this is a hash of the private key and auth token. We don't save this.
-				 	var oneTimeKey = hash("#decrypt(getAuthenticationPrivateKey(), getAuthToken())#", "SHA");
-					rep &="AuthKey: #oneTimeKey#";
+				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID() && !isNull(getAccessKey())){
+				 	var rep = "API Token - #getAuthenticationDescription()# - #getAccessKey()#";
 				}
-				//setAuthenticationIsViewable(false); //<--can only view once.
-		}else if(!isNull(getAuthToken()) && !getAuthenticationIsViewable()){
-				rep &= "API Token";
-				if(!isNull(getAuthenticationDescription())){
-					
-					rep &=" - #getAuthenticationDescription()#";
-				}
-		}
-		else if(isNull(getIntegration())) {
+				
+		}else if(isNull(getIntegration())) {
 			rep &= "Slatwall";
 			if(isNull(getPassword())) {
 				rep &= " - #rbKey('define.temporary')# #rbKey('define.reset')#";	

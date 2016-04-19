@@ -227,7 +227,7 @@ component extends="FW1.framework" {
 			}
 			
 			// If there is no account on the session, then we can look for an authToken,public key, and timestamp to setup that account for this one request.
-			if(!getHibachiScope().getLoggedInFlag() && 
+			/*if(!getHibachiScope().getLoggedInFlag() && 
 				structKeyExists(httpRequestData, "headers") && 
 				structKeyExists(httpRequestData.headers, "authToken") && 
 				len(httpRequestData.headers.authToken) && 
@@ -250,7 +250,7 @@ component extends="FW1.framework" {
 						getHibachiScope().getSession().setAccount( authTokenAccount );
 					}
 				}
-			}
+			}*/
 			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
