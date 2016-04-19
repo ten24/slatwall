@@ -259,6 +259,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			sl.addSelect('paymentMethodType', 'paymentmethodtype');
 
 			variables.paymentMethodOptions = sl.getRecords();
+			arrayPrepend(variables.paymentMethodOptions, {name=getHibachiScope().getRBKey("entity.accountPaymentMethod.paymentMethod.select"), value=""});
 		}
 		return variables.paymentMethodOptions;
 	}

@@ -23,6 +23,6 @@
 		"paymentTransactions":	[{"contexts":"delete","maxCollection":0}]
 	},
 	"populatedPropertyValidation":{
-	    "billingAddress":[{"conditions":"paymentTypeCreditCard","validate":"full"}]
+	    "billingAddress":[{"validate":"full"}]
 	}
 }
