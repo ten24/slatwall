@@ -54,6 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="authToken";
 	property name="accessKey";
+	property name="privateAccessKey";
 	property name="authenticationDescription";
 	
 }
