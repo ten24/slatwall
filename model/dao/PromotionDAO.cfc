@@ -857,7 +857,7 @@ Notes:
 			WHERE
 				allDiscountsQuery.promotionPeriodID = noQualifierCurrentActivePromotionPeriodsQuery.promotionPeriodID
 				
-		</cfquery>
+		</cfquery> 
 		
 		<cfreturn noQualifierDiscountsQuery >
 	</cffunction>
