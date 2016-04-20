@@ -106,12 +106,12 @@ Notes:
 				<cfset var dirList = "" />
 				<cfzip action="unzip" destination="#getTempDirectory()#" file="#getTempDirectory()##downloadFileName#" >
 				<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
-				<cfset var sourcePath = getTempDirectory() & "#listFirst(dirList.name[1],'/')#" />
+				<cfset var sourcePath = getTempDirectory() />
 				<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
 					<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
 				</cfif>
 				<cfset updateCopyStarted = true />
-				<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
+				<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath&'\', overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
 
 				<!--- Delete .zip file and unzipped folder --->
 				<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
