@@ -211,7 +211,6 @@ fieldset[disabled] .btn-disabled.active {
   border-color: none;
   border: none;
   font-size: 12px;
-  padding: 2px 5px;
 }
 .btn-no-style:hover,
 .btn-no-style:focus,
@@ -669,7 +668,7 @@ table tr.s-child.s-price-group-child {
   font-size: 14px;
   color: #666;
   margin-bottom: 0px;
-  margin-top: 5px;
+  margin-top: 8px;
   margin-left: 6px;
 }
 .s-table-alternate-title {
