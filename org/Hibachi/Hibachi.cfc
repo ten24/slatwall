@@ -239,8 +239,8 @@ component extends="FW1.framework" {
 				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(hashedSecretKey, httpRequestData.headers.secretAccessKey);
 				var authentication =  getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedSaltedPassword);
 				
-				//now set the account on the session.
-				if (!isNull(authentication)){
+				//now set the account on the session if this is not a super user account and the authentication exists.
+				if (!isNull(authentication) && authentication.getAccount().getSuperUserFlag() != 'true'){
 					getHibachiScope().getSession().setAccount( authentication.getAccount() );
 				}
 				
