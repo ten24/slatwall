@@ -218,9 +218,11 @@ component extends="FW1.framework" {
 				structKeyExists(httpRequestData.headers, "accessKey") && 
 				len(httpRequestData.headers.accessKey)) {
 				
+				var secretAccessKey = httpRequestData.headers.secretAccessKey;
+				var accessKey 		= httpRequestData.headers.accessKey;
+				
 				//recreate the hash from the users data to find an account by....
-				var hashedSecretKey = hash(httpRequestData.headers.secretAccessKey);
-				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(hashedSecretKey, httpRequestData.headers.secretAccessKey);
+				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(secretAccessKey, accessKey);
 				var authentication =  getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedSaltedPassword);
 				
 				//now set the account on the session if this is not a super user account and the authentication exists.

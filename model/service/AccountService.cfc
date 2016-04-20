@@ -286,19 +286,32 @@ component extends="HibachiService" accessors="true" output="false" {
 		return account;	
 	}
 	
-	public any function processAccount_generateAuthToken(required any account, required any processObject){
-		if (getHibachiScope().getAccount().getAccountID() != account.getAccountID() || getHibachiScope().getAccount().getSuperUserFlag() == "true"){
-			return;
-		}
-		var accountAuthentication = this.newAccountAuthentication();
-		accountAuthentication.setAccount( arguments.account );
-	
-		//set the data from the process object.
-		accountAuthentication.setAccessKey(arguments.processObject.getAccessKey());
-		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
-		//Hash the auth token like it was/is a password (because it is).
-		accountAuthentication.setAuthToken( getHashedAndSaltedPassword(arguments.processObject.getAuthToken(), arguments.processObject.getPrivateAccessKey()));
+	public any function processAccount_generateAuthToken(required any account, required any processObject){	
 		
+		if (getHibachiScope().getAccount().getAccountID() != account.getAccountID() || getHibachiScope().getAccount().getSuperUserFlag() == "true"){
+			return account;
+		}
+		
+		var secret_access_key = toBase64(hash(createUUID(),"sha"));
+		var public_access_key = toBase64(hash(createUUID(),"sha"));
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( getHibachiScope().getAccount() );
+	
+		//set the generated data.
+		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
+		var hashedAndSaltedPassword = getHashedAndSaltedPassword(secret_access_key, public_access_key);
+		
+		//set these values to the object if and only if they are unique.
+		if (isNull(getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedAndSaltedPassword)) && isNull(getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(public_access_key))){
+			accountAuthentication.setAuthToken( hashedAndSaltedPassword );
+			accountAuthentication.setAccessKey( public_access_key );	
+		}else{
+			arguments.account.addMessage(messagename="GenerateKeysError", message="#rbKey('entity.account.generateAuthToken')#");
+		}
+		
+		//Display the generated keys to the user
+		arguments.account.addMessage(messagename="PublicKeyInfo", message="Access_Key: #public_access_key#");
+		arguments.account.addMessage(messagename="PrivateKeyInfo", message="Secret_Access_Key: #secret_access_key#");
 		return arguments.account;
 	}
 	
