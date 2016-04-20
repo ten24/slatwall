@@ -310,8 +310,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		//Display the generated keys to the user
-		arguments.account.addMessage(messagename="PublicKeyInfo", message="Access_Key: #public_access_key#");
-		arguments.account.addMessage(messagename="PrivateKeyInfo", message="Secret_Access_Key: #secret_access_key#");
+		arguments.account.addMessage(messagename="PublicKeyInfo", message="Access_Key: #public_access_key# <br> Secret_Access_Key: #secret_access_key#");
+		
 		return arguments.account;
 	}
 	

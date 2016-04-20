@@ -145,7 +145,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 				rep &= "";
 				
 				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID() && !isNull(getAccessKey())){
-				 	var rep = "API Token - #getAuthenticationDescription()# - #getAccessKey()#";
+				 	var rep = "API Token - #getAuthenticationDescription()#";
 				}
 				
 		}else if(isNull(getIntegration())) {
