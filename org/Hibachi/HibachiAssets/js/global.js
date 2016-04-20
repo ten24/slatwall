@@ -160,8 +160,6 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
 		jQuery(value).on('submit', function(e){
 			
-			jQuery ("button[type='submit']").prop('disabled', true);
-			
 			jQuery.each(jQuery( this ).find(jQuery('input[data-emptyvalue]')), function(i, v){
 				if(jQuery(v).val() == jQuery(v).data('emptyvalue')) {
 					jQuery(v).val('');
@@ -183,7 +181,6 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value){
 		jQuery(value).validate({
 			invalidHandler: function() {
-				jQuery ("button[type='submit']").prop('disabled', false);
 			}
 		});
 	});
