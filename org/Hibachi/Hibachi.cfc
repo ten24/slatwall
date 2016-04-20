@@ -209,22 +209,6 @@ component extends="FW1.framework" {
 			verifyApplicationSetup();
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
-			//check if we have the authorization header
-			if(structKeyExists(GetHttpRequestData().Headers,'Authorization')){
-				var authorizationHeader = GetHttpRequestData().Headers.authorization;
-				var prefix = 'Bearer ';
-				//get token by stripping prefix
-				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
-				var jwt = getHibachiScope().getService('jwtService').getJwtByToken(token);
-				
-				if(jwt.verify()){
-					var account = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
-					if(!isNull(account)){
-						account.setJwtToken(jwt);
-						getHibachiScope().getSession().setAccount( account );
-					}
-				}
-			}
 			
 			// If there is no account on the session, then we can look for an authToken,public key, and timestamp to setup that account for this one request.
 			if(!getHibachiScope().getLoggedInFlag() && 
@@ -240,10 +224,26 @@ component extends="FW1.framework" {
 				var authentication =  getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedSaltedPassword);
 				
 				//now set the account on the session if this is not a super user account and the authentication exists.
-				if (!isNull(authentication) && authentication.getAccount().getSuperUserFlag() != 'true'){
+				if (!isNull(authentication)){
 					getHibachiScope().getSession().setAccount( authentication.getAccount() );
 				}
+			}
+			
+			//check if we have the authorization header
+			if(structKeyExists(GetHttpRequestData().Headers,'Authorization')){
+				var authorizationHeader = GetHttpRequestData().Headers.authorization;
+				var prefix = 'Bearer ';
+				//get token by stripping prefix
+				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+				var jwt = getHibachiScope().getService('jwtService').getJwtByToken(token);
 				
+				if(jwt.verify()){
+					var account = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+					if(!isNull(account)){
+						account.setJwtToken(jwt);
+						getHibachiScope().getSession().setAccount( account );
+					}
+				}
 			}
 			
 			// Call the onEveryRequest() Method for the parent Application.cfc
@@ -314,9 +314,8 @@ component extends="FW1.framework" {
 		
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);	
 		// Verify Authentication before anything happens
-		if(
-			!authorizationDetails.authorizedFlag 
-		) {
+		if(!authorizationDetails.authorizedFlag) {
+			
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 			

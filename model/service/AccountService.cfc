@@ -287,7 +287,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_generateAuthToken(required any account, required any processObject){
-		if (getHibachiScope().getAccount().getAccountID() != account.getAccountID() || getHibachiScope().getAccount().getSuperUserFlag() == 'true'){
+		if (getHibachiScope().getAccount().getAccountID() != account.getAccountID() || getHibachiScope().getAccount().getSuperUserFlag() == "true"){
 			return;
 		}
 		var accountAuthentication = this.newAccountAuthentication();
