@@ -100,6 +100,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return getAccountDAO().getAccountAuthenticationExists();
 	}
 	
+	public boolean function getAccountExists(){
+		return getAccountDAO().getAccountExists();
+	}
+	
 	public any function getAccountWithAuthenticationByEmailAddress( required string emailAddress ) {
 		return getAccountDAO().getAccountWithAuthenticationByEmailAddress( argumentcollection=arguments );
 	}
@@ -480,42 +484,43 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_setupInitialAdmin(required any account, required struct data={}, required any processObject) {
-		
-		// Populate the account with the correct values that have been previously validated
-		arguments.account.setFirstName( processObject.getFirstName() );
-		arguments.account.setLastName( processObject.getLastName() );
-		if(!isNull(processObject.getCompany())) {
-			arguments.account.setCompany( processObject.getCompany() );	
-		}
-		arguments.account.setSuperUserFlag( 1 );
-		
-		// Setup the email address
-		var accountEmailAddress = this.newAccountEmailAddress();
-		accountEmailAddress.setAccount(arguments.account);
-		accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
-		
-		// Setup the authentication
-		var accountAuthentication = this.newAccountAuthentication();
-		accountAuthentication.setAccount( arguments.account );
-		
-		// Put the accountAuthentication into the hibernate scope so that it has an id
-		getHibachiDAO().save(accountAuthentication);
-		
-		// Set the password
-		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.data.password, accountAuthentication.getAccountAuthenticationID()) );
-		
-		// Call save on the account now that it is all setup
-		arguments.account = this.saveAccount(arguments.account);
-		
-		// Setup the Default to & from emails in the system to this users account
-		var defaultSetupData = {
-			emailAddress = processObject.getEmailAddress() 
-		};
-		getSettingService().setupDefaultValues( defaultSetupData );
-		
-		// Login the new account
-		if(!arguments.account.hasErrors()) {
-			getHibachiSessionService().loginAccount(account=arguments.account, accountAuthentication=accountAuthentication);	
+		if(!getAccountExists()){
+			// Populate the account with the correct values that have been previously validated
+			arguments.account.setFirstName( processObject.getFirstName() );
+			arguments.account.setLastName( processObject.getLastName() );
+			if(!isNull(processObject.getCompany())) {
+				arguments.account.setCompany( processObject.getCompany() );	
+			}
+			arguments.account.setSuperUserFlag( 1 );
+			
+			// Setup the email address
+			var accountEmailAddress = this.newAccountEmailAddress();
+			accountEmailAddress.setAccount(arguments.account);
+			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+			
+			// Setup the authentication
+			var accountAuthentication = this.newAccountAuthentication();
+			accountAuthentication.setAccount( arguments.account );
+			
+			// Put the accountAuthentication into the hibernate scope so that it has an id
+			getHibachiDAO().save(accountAuthentication);
+			
+			// Set the password
+			accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.data.password, accountAuthentication.getAccountAuthenticationID()) );
+			
+			// Call save on the account now that it is all setup
+			arguments.account = this.saveAccount(arguments.account);
+			
+			// Setup the Default to & from emails in the system to this users account
+			var defaultSetupData = {
+				emailAddress = processObject.getEmailAddress() 
+			};
+			getSettingService().setupDefaultValues( defaultSetupData );
+			
+			// Login the new account
+			if(!arguments.account.hasErrors()) {
+				getHibachiSessionService().loginAccount(account=arguments.account, accountAuthentication=accountAuthentication);	
+			}
 		}
 		
 		return arguments.account;
