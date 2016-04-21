@@ -232,7 +232,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 		return giftCardSmartList;
 	}
-
+	
 	public any function getOrdersPlacedSmartList() {
 		if(!structKeyExists(variables, "ordersPlacedSmartList")) {
 			var osl = getService("orderService").getOrderSmartList();

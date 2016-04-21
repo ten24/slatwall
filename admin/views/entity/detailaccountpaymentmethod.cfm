@@ -57,7 +57,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.accountPaymentMethod#" edit="#rc.edit#"
 								saveActionQueryString="accountID=#rc.account.getAccountID()#"
-								saveActionHash="tabaccountpaymentmethods" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
+								forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 
 		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPaymentMethod#" edit="#rc.edit#"
 					backAction="admin:entity.detailAccount"
@@ -73,7 +73,7 @@ Notes:
 			<hb:HibachiPropertyList divClass="col-md-6">
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="accountPaymentMethodName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#" fieldAttributes="ng-model=""paymentMethodType""" >
 				<cfif ArrayLen(rc.accountPaymentMethod.getPaymentMethodOptions())>
 					<cfset loadPaymentMethodType = rc.accountPaymentMethod.getPaymentMethodOptions()[1]['paymentmethodtype'] />
 				</cfif>
@@ -96,7 +96,11 @@ Notes:
 				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="giftCard" loadVisable="#loadPaymentMethodType eq 'giftCard'#">
 					<hr />
 					<h5>#$.slatwall.rbKey('admin.define.giftCardDetails')#</h5>
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="giftCardNumberEncrypted" edit="#rc.edit#" valueLink="#$.slatwall.buildUrl(action="admin:entity.detailgiftcard", queryString='giftCardID=' & rc.accountPaymentMethod.getGiftCard().getGiftCardID())#" />
+					<cfif !rc.edit>
+						<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="giftCardNumberEncrypted" edit="#rc.edit#" valueLink="#$.slatwall.buildUrl(action="admin:entity.detailgiftcard", queryString='giftCardID=' & rc.accountPaymentMethod.getGiftCard().getGiftCardID())#" />
+					<cfelse>
+						<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="giftCardNumberEncrypted" edit="#rc.edit#" />
+					</cfif>
 				</hb:HibachiDisplayToggle>
 
 				<!--- Term Payment Details --->
@@ -109,7 +113,7 @@ Notes:
 			</hb:HibachiPropertyList>
 			<hb:HibachiPropertyList divClass="col-md-6">
 				<!--- Billing Address Details --->
-				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment" loadVisable="#listFindNoCase('creditCard,termPayment', loadPaymentMethodType)#">
+				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment" loadVisable="#listFindNoCase('creditCard,termPayment', loadPaymentMethodType)#" fieldAttributes="ng-if=""paymentMethodType != 'giftCard'""">
 					<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
 					<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>

@@ -23,8 +23,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		return config;
 	}
-
-	public void function setPropperSession() {
+	
+	public void function setProperSession() {
 		var requestHeaders = getHTTPRequestData();
 
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
