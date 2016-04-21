@@ -221,7 +221,7 @@ component extends="HibachiService"  accessors="true" output="false"
      *  @param createAuthenticationFlag {string}
      *  @param password {string}
      *  @param passwordConfirm {string}
-     *  @ProcessMethod Account_Login
+     *  @ProcessMethod Account_Create
      */
     public any function createAccount( required struct data ) {
         param name="arguments.data.createAuthenticationFlag" default="1";
@@ -538,7 +538,9 @@ component extends="HibachiService"  accessors="true" output="false"
         }
     }
     
-    /** adds a billing address to an order. */
+    /** adds a billing address to an order. 
+    @ProcessMethod Address_Save
+    */
     public void function addBillingAddress(required data){
         param name="data.saveAsAccountAddressFlag" default="1"; 
         //if we have that data and don't have any suggestions to make, than try to populate the address
@@ -564,6 +566,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context addAccountPaymentMethod
      * @description Account Payment Method - Add 
      * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
+     * @ProcessMethod AccountPaymentMethod_Save
      */
     public void function addAccountPaymentMethod() {
         
@@ -592,6 +595,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context guestAccount
      * @description Logs in a user with a guest account 
      * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
+     * @ProcessMethod Account_Create
      */
     public void function guestAccount(required any data) {
         param name="arguments.data.createAuthenticationFlag" default="0";
@@ -616,6 +620,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context guestAccountCreatePassword
      * @description Save Guest Account
      * @http-return <b>(200)</b> Successfully Created Password or <b>(400)</b> Bad or Missing Input Data
+     * @ProcessMethod Account_CreatePassword
      */
     public void function guestAccountCreatePassword( required struct data ) {
         param name="arguments.data.orderID" default="";
@@ -639,6 +644,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context updateSubscriptionUsage
      * @description Subscription Usage - Update
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod SubscriptionUsage_Save
      */
     public void function updateSubscriptionUsage() {
         param name="data.subscriptionUsageID" default="";
@@ -659,6 +665,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context renewSubscriptionUsage
      * @description Subscription Usage - Renew
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod SubscriptionUsage_Renew
      */
     public void function renewSubscriptionUsage() {
         param name="data.subscriptionUsageID" default="";
@@ -687,6 +694,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context duplicateOrder
      * @description Duplicate - Order
      * @http-return <b>(200)</b> Successfully Created Duplicate Order or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_DuplicateOrder
      */
     public void function duplicateOrder() {
         param name="arguments.data.orderID" default="";
@@ -715,13 +723,14 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context updateOrder
      * @description  Update Order Data
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_ForceItemQuantityUpdate
      */
     public void function updateOrder( required struct data ) {
         var cart = getOrderService().saveOrder( getHibachiScope().cart(), arguments.data );
         
         // Insure that all items in the cart are within their max constraint
         if(!cart.hasItemsQuantityWithinMaxOrderQuantity()) {
-            cart = getOrderService().processOrder(cart, 'fodataeItemQuantityUpdate');
+            cart = getOrderService().processOrder(cart, 'forceItemQuantityUpdate');
         }
         
         getHibachiScope().addActionResult( "public:cart.update", cart.hasErrors() );
@@ -731,6 +740,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context clearOrder
      * @description  Clear the order data
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_Clear
      */
     public void function clearOrder( required struct data ) {
         var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'clear');
@@ -759,6 +769,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context deleteOrder
      * @description Delete an Order
      * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_Delete
      */
     public void function deleteOrder( required struct data ) {
         param name="arguments.data.orderID" default="";
@@ -776,6 +787,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context addOrderItem
      * @description Add Order Item to an Order
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_addOrderItem
      */
     public void function addOrderItem(required any data) {
         // Setup the frontend defaults
@@ -812,6 +824,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context updateOrderItemQuantity
      * @description Update Order Item on an Order
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_Save
      */
     public void function updateOrderItemQuantity(required any data) {
         
@@ -849,6 +862,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context removeOrderItem
      * @description Remove Order Item from an Order
      * @http-return <b>(200)</b> Successfully Removed or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_RemoveOrderItem
      */
     public void function removeOrderItem(required any data) {
         var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'removeOrderItem');
@@ -860,6 +874,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context updateOrderFulfillment
      * @description Update Order Fulfillment 
       * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+      @ProcessMethod Order_UpdateOrderFulfillment
      */
     public void function updateOrderFulfillment(required any data) {
         var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'updateOrderFulfillment');
@@ -871,6 +886,7 @@ component extends="HibachiService"  accessors="true" output="false"
      * @http-context addPromotionCode
      * @description Add Promotion Code
      * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+     @ProcessMethod Order_addPromotionCode
      */
     public void function addPromotionCode(required any data) {
         var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'addPromotionCode');
@@ -887,6 +903,7 @@ component extends="HibachiService"  accessors="true" output="false"
     /** 
      * @http-context removePromotionCode
      * @description Remove Promotion Code
+     @ProcessMethod Order_RemovePromotionCode
      */
     public void function removePromotionCode(required any data) {
         var cart = getOrderService().processOrder( getHibachiScope().cart(), arguments.data, 'removePromotionCode');
@@ -897,6 +914,7 @@ component extends="HibachiService"  accessors="true" output="false"
     /** 
      * @http-context addOrderPayment
      * @description Add Order Payment
+     @ProcessMethod Order_AddOrderPayment
      */
     public void function addOrderPayment(required any data) {
         param name="data.newOrderPayment" default="#structNew()#";
@@ -949,12 +967,13 @@ component extends="HibachiService"  accessors="true" output="false"
     /** 
      * @http-context placeOrder
      * @description Place Order
+     @ProcessMethod Order_PlaceOrder
      */
     public void function placeOrder(required any data) {
         
         // Insure that all items in the cart are within their max constraint
         if(!getHibachiScope().cart().hasItemsQuantityWithinMaxOrderQuantity()) {
-            getOrderService().processOrder(getHibachiScope().cart(), 'fodataeItemQuantityUpdate');
+            getOrderService().processOrder(getHibachiScope().cart(), 'forceItemQuantityUpdate');
             getHibachiScope().addActionResult( "public:cart.placeOrder", true );
         } else {
             // Setup newOrderPayment requirements
@@ -991,6 +1010,7 @@ component extends="HibachiService"  accessors="true" output="false"
     /** 
      * @http-context addProductReview
      *  @description Add Product Review
+     @ProcessMethod Order_addProductReview
      */
     public void function addProductReview(required any data) {
         param name="data.newProductReview.product.productID" default="";
