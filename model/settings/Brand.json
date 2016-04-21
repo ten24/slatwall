@@ -1,0 +1,17 @@
+{  
+    "brandDisplayTemplate":{  
+        "fieldType":"select"
+    },
+    "brandHTMLTitleString":{  
+        "fieldType":"text",
+        "defaultValue":"${brandName}"
+    },
+    "brandMetaDescriptionString":{  
+        "fieldType":"textarea",
+        "defaultValue":"${brandName}"
+    },
+    "brandMetaKeywordsString":{  
+        "fieldType":"textarea",
+        "defaultValue":"${brandName}"
+    }
+}

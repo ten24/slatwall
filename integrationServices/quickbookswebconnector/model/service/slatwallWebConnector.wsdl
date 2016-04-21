@@ -1,0 +1,1519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://developer.intuit.com/" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://developer.intuit.com/" xmlns:intf="http://developer.intuit.com/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns1="http://rpc.xml.coldfusion" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by ColdFusion version 10,0,18,296330-->
+ <wsdl:types>
+  <schema targetNamespace="http://rpc.xml.coldfusion" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://developer.intuit.com/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="CFCInvocationException">
+    <sequence/>
+   </complexType>
+   <complexType name="QueryBean">
+    <sequence>
+     <element name="columnList" nillable="true" type="impl:ArrayOf_xsd_string"/>
+     <element name="data" nillable="true" type="impl:ArrayOfArrayOf_xsd_anyType"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://developer.intuit.com/" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://rpc.xml.coldfusion"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_anyType">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:anyType[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOf_xsd_string">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:string[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfArrayOf_xsd_anyType">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:anyType[][]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://rpc.xml.coldfusion"/>
+   <import namespace="http://developer.intuit.com/"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="mapItem">
+    <sequence>
+     <element name="key" nillable="true" type="xsd:anyType"/>
+     <element name="value" nillable="true" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+   <complexType name="Map">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="apachesoap:mapItem"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getLastErrorResponse">
+
+      <wsdl:part name="getLastErrorReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiRBServiceResponse">
+
+      <wsdl:part name="getHibachiRBServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiInstanceApplicationScopeKeyResponse">
+
+      <wsdl:part name="getHibachiInstanceApplicationScopeKeyReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiAuthenticationServiceResponse">
+
+      <wsdl:part name="getHibachiAuthenticationServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="sendRequestXMLRequest">
+
+      <wsdl:part name="ticket" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="strHCPResponse" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="qbXMLCountry" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="qbXMLMajorVers" type="xsd:int">
+
+      </wsdl:part>
+
+      <wsdl:part name="qbXMLMinorVers" type="xsd:int">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiEventServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiCacheServiceResponse">
+
+      <wsdl:part name="getHibachiCacheServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="serverVersionResponse">
+
+      <wsdl:part name="serverVersionReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiUtilityServiceRequest">
+
+      <wsdl:part name="hibachiUtilityService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiEventServiceResponse">
+
+      <wsdl:part name="getHibachiEventServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiSessionServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateRequest">
+
+      <wsdl:part name="strUserName" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="strPassword" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiRBServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiRBServiceRequest">
+
+      <wsdl:part name="hibachiRBService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="clientVersionResponse">
+
+      <wsdl:part name="clientVersionReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="recieveResponseXMLResponse">
+
+      <wsdl:part name="recieveResponseXMLReturn" type="impl:ArrayOf_xsd_anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiCacheServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="sendRequestXMLResponse">
+
+      <wsdl:part name="sendRequestXMLReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="serverVersionRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiRBServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiEventServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="connectionErrorResponse">
+
+      <wsdl:part name="connectionErrorReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiSessionServiceResponse">
+
+      <wsdl:part name="getHibachiSessionServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiValidationServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiCacheServiceRequest">
+
+      <wsdl:part name="hibachiCacheService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiDAORequest">
+
+      <wsdl:part name="hibachiDAO" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiDAORequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiDAOResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="CFCInvocationException">
+
+      <wsdl:part name="fault" type="tns1:CFCInvocationException">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiValidationServiceResponse">
+
+      <wsdl:part name="getHibachiValidationServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiUtilityServiceResponse">
+
+      <wsdl:part name="getHibachiUtilityServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiUtilityServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiEventServiceRequest">
+
+      <wsdl:part name="hibachiEventService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiSessionServiceRequest">
+
+      <wsdl:part name="hibachiSessionService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiTagServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiDAOResponse">
+
+      <wsdl:part name="getHibachiDAOReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiInstanceApplicationScopeKeyRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiTagServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiValidationServiceRequest">
+
+      <wsdl:part name="hibachiValidationService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiUtilityServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getLastErrorRequest">
+
+      <wsdl:part name="ticket" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiInstanceApplicationScopeKeyRequest">
+
+      <wsdl:part name="hibachiInstanceApplicationScopeKey" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiInstanceApplicationScopeKeyResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiAuthenticationServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiAuthenticationServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiAuthenticationServiceRequest">
+
+      <wsdl:part name="hibachiAuthenticationService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="connectionErrorRequest">
+
+      <wsdl:part name="ticket" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="hresult" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="message" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="closeConnectionResponse">
+
+      <wsdl:part name="closeConnectionReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="recieveResponseXMLRequest">
+
+      <wsdl:part name="ticket" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="response" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="hresult" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="message" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiTagServiceResponse">
+
+      <wsdl:part name="getHibachiTagServiceReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiTagServiceRequest">
+
+      <wsdl:part name="hibachiTagService" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="closeConnectionRequest">
+
+      <wsdl:part name="ticket" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="fakeargumenttopass" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiValidationServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="getHibachiCacheServiceRequest">
+
+   </wsdl:message>
+
+   <wsdl:message name="authenticateResponse">
+
+      <wsdl:part name="authenticateReturn" type="xsd:anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="setHibachiSessionServiceResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="clientVersionRequest">
+
+      <wsdl:part name="strVersion" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="WebService">
+
+      <wsdl:operation name="closeConnection" parameterOrder="ticket fakeargumenttopass">
+
+         <wsdl:input message="impl:closeConnectionRequest" name="closeConnectionRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:closeConnectionResponse" name="closeConnectionResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticate" parameterOrder="strUserName strPassword">
+
+         <wsdl:input message="impl:authenticateRequest" name="authenticateRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:authenticateResponse" name="authenticateResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLastError" parameterOrder="ticket">
+
+         <wsdl:input message="impl:getLastErrorRequest" name="getLastErrorRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getLastErrorResponse" name="getLastErrorResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clientVersion" parameterOrder="strVersion">
+
+         <wsdl:input message="impl:clientVersionRequest" name="clientVersionRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:clientVersionResponse" name="clientVersionResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="connectionError" parameterOrder="ticket hresult message">
+
+         <wsdl:input message="impl:connectionErrorRequest" name="connectionErrorRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:connectionErrorResponse" name="connectionErrorResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="serverVersion">
+
+         <wsdl:input message="impl:serverVersionRequest" name="serverVersionRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:serverVersionResponse" name="serverVersionResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sendRequestXML" parameterOrder="ticket strHCPResponse qbXMLCountry qbXMLMajorVers qbXMLMinorVers">
+
+         <wsdl:input message="impl:sendRequestXMLRequest" name="sendRequestXMLRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:sendRequestXMLResponse" name="sendRequestXMLResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="recieveResponseXML" parameterOrder="ticket response hresult message">
+
+         <wsdl:input message="impl:recieveResponseXMLRequest" name="recieveResponseXMLRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:recieveResponseXMLResponse" name="recieveResponseXMLResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiAuthenticationService" parameterOrder="hibachiAuthenticationService">
+
+         <wsdl:input message="impl:setHibachiAuthenticationServiceRequest" name="setHibachiAuthenticationServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiAuthenticationServiceResponse" name="setHibachiAuthenticationServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiAuthenticationService">
+
+         <wsdl:input message="impl:getHibachiAuthenticationServiceRequest" name="getHibachiAuthenticationServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiAuthenticationServiceResponse" name="getHibachiAuthenticationServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiDAO">
+
+         <wsdl:input message="impl:getHibachiDAORequest" name="getHibachiDAORequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiDAOResponse" name="getHibachiDAOResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiEventService">
+
+         <wsdl:input message="impl:getHibachiEventServiceRequest" name="getHibachiEventServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiEventServiceResponse" name="getHibachiEventServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiCacheService">
+
+         <wsdl:input message="impl:getHibachiCacheServiceRequest" name="getHibachiCacheServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiCacheServiceResponse" name="getHibachiCacheServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiUtilityService">
+
+         <wsdl:input message="impl:getHibachiUtilityServiceRequest" name="getHibachiUtilityServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiUtilityServiceResponse" name="getHibachiUtilityServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiTagService">
+
+         <wsdl:input message="impl:getHibachiTagServiceRequest" name="getHibachiTagServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiTagServiceResponse" name="getHibachiTagServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiUtilityService" parameterOrder="hibachiUtilityService">
+
+         <wsdl:input message="impl:setHibachiUtilityServiceRequest" name="setHibachiUtilityServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiUtilityServiceResponse" name="setHibachiUtilityServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiCacheService" parameterOrder="hibachiCacheService">
+
+         <wsdl:input message="impl:setHibachiCacheServiceRequest" name="setHibachiCacheServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiCacheServiceResponse" name="setHibachiCacheServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiDAO" parameterOrder="hibachiDAO">
+
+         <wsdl:input message="impl:setHibachiDAORequest" name="setHibachiDAORequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiDAOResponse" name="setHibachiDAOResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiRBService">
+
+         <wsdl:input message="impl:getHibachiRBServiceRequest" name="getHibachiRBServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiRBServiceResponse" name="getHibachiRBServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiSessionService">
+
+         <wsdl:input message="impl:getHibachiSessionServiceRequest" name="getHibachiSessionServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiSessionServiceResponse" name="getHibachiSessionServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiRBService" parameterOrder="hibachiRBService">
+
+         <wsdl:input message="impl:setHibachiRBServiceRequest" name="setHibachiRBServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiRBServiceResponse" name="setHibachiRBServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiSessionService" parameterOrder="hibachiSessionService">
+
+         <wsdl:input message="impl:setHibachiSessionServiceRequest" name="setHibachiSessionServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiSessionServiceResponse" name="setHibachiSessionServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiTagService" parameterOrder="hibachiTagService">
+
+         <wsdl:input message="impl:setHibachiTagServiceRequest" name="setHibachiTagServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiTagServiceResponse" name="setHibachiTagServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiValidationService" parameterOrder="hibachiValidationService">
+
+         <wsdl:input message="impl:setHibachiValidationServiceRequest" name="setHibachiValidationServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiValidationServiceResponse" name="setHibachiValidationServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiValidationService">
+
+         <wsdl:input message="impl:getHibachiValidationServiceRequest" name="getHibachiValidationServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiValidationServiceResponse" name="getHibachiValidationServiceResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiEventService" parameterOrder="hibachiEventService">
+
+         <wsdl:input message="impl:setHibachiEventServiceRequest" name="setHibachiEventServiceRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiEventServiceResponse" name="setHibachiEventServiceResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiInstanceApplicationScopeKey">
+
+         <wsdl:input message="impl:getHibachiInstanceApplicationScopeKeyRequest" name="getHibachiInstanceApplicationScopeKeyRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHibachiInstanceApplicationScopeKeyResponse" name="getHibachiInstanceApplicationScopeKeyResponse">
+
+       </wsdl:output>
+
+         <wsdl:fault message="impl:CFCInvocationException" name="CFCInvocationException">
+
+       </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiInstanceApplicationScopeKey" parameterOrder="hibachiInstanceApplicationScopeKey">
+
+         <wsdl:input message="impl:setHibachiInstanceApplicationScopeKeyRequest" name="setHibachiInstanceApplicationScopeKeyRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:setHibachiInstanceApplicationScopeKeyResponse" name="setHibachiInstanceApplicationScopeKeyResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="WebService.cfcSoapBinding" type="impl:WebService">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="closeConnection">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="closeConnectionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="closeConnectionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="authenticate">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="authenticateRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="authenticateResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getLastError">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getLastErrorRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getLastErrorResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="clientVersion">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="clientVersionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="clientVersionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="connectionError">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="connectionErrorRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="connectionErrorResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="serverVersion">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="serverVersionRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="serverVersionResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="sendRequestXML">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="sendRequestXMLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="sendRequestXMLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="recieveResponseXML">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="recieveResponseXMLRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="recieveResponseXMLResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiAuthenticationService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiAuthenticationServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiAuthenticationServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiAuthenticationService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiAuthenticationServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiAuthenticationServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiDAO">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiDAORequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiDAOResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiEventService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiEventServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiEventServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiCacheService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiCacheServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiCacheServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiUtilityService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiUtilityServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiUtilityServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiTagService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiTagServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiTagServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiUtilityService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiUtilityServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiUtilityServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiCacheService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiCacheServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiCacheServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiDAO">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiDAORequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiDAOResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiRBService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiRBServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiRBServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiSessionService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiSessionServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiSessionServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiRBService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiRBServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiRBServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiSessionService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiSessionServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiSessionServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiTagService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiTagServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiTagServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiValidationService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiValidationServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiValidationServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiValidationService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiValidationServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiValidationServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiEventService">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiEventServiceRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiEventServiceResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHibachiInstanceApplicationScopeKey">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHibachiInstanceApplicationScopeKeyRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHibachiInstanceApplicationScopeKeyResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+         <wsdl:fault name="CFCInvocationException">
+
+            <wsdlsoap:fault encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" name="CFCInvocationException" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:fault>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="setHibachiInstanceApplicationScopeKey">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="setHibachiInstanceApplicationScopeKeyRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="setHibachiInstanceApplicationScopeKeyResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://developer.intuit.com/" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="WebServiceService">
+
+      <wsdl:port binding="impl:WebService.cfcSoapBinding" name="WebService.cfc">
+
+         <wsdlsoap:address location="http://localhost/slatwall/integrationServices/quickbookswebconnector/model/service/WebService.cfc"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

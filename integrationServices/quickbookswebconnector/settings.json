@@ -1,0 +1,26 @@
+{  
+    "appName":{  
+        "fieldType":"text",
+        "defaultValue":"Slatwall"
+    },
+    "appID":{  
+        "fieldType":"text"
+    },
+    "appURL":{
+        "fieldType":"text"
+    },
+    "ownerID":{
+        "fieldType":"text",
+        "defaultValue":"#insert('-',createUUID(),23)#"
+    },
+    "companyFilename":{
+    	"fieldType":"text"
+    },
+    "userName":{
+        "fieldType":"text"
+    },
+    "requestFrequency":{  
+        "fieldType":"numeric",
+        "defaultValue":"15"
+    }
+}

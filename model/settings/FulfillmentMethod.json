@@ -1,0 +1,27 @@
+{  
+    "fulfillmentMethodShippingOptionSortType":{  
+        "fieldType":"select",
+        "defaultValue":"sortOrder"
+    },
+    "fulfillmentMethodEmailFrom":{  
+        "fieldType":"text"
+    },
+    "fulfillmentMethodEmailCC":{  
+        "fieldType":"text"
+    },
+    "fulfillmentMethodEmailBCC":{  
+        "fieldType":"text"
+    },
+    "fulfillmentMethodEmailSubjectString":{  
+        "fieldType":"text"
+    },
+    "fulfillmentMethodAutoLocation":{  
+        "fieldType":"select",
+        "defaultValue":"88e6d435d3ac2e5947c81ab3da60eba2"
+    },
+    "fulfillmentMethodAutoMinReceivedPercentage":{  
+        "fieldType":"text",
+        "formatType":"percentage",
+        "defaultValue":100
+    }
+}

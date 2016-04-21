@@ -1,0 +1,36 @@
+{  
+    "emailFromAddress":{  
+        "fieldType":"text",
+        "defaultValue":"email@youremaildomain.com"
+    },
+    "emailToAddress":{  
+        "fieldType":"text",
+        "defaultValue":"email@youremaildomain.com"
+    },
+    "emailCCAddress":{  
+        "fieldType":"text"
+    },
+    "emailBCCAddress":{  
+        "fieldType":"text"
+    },
+    "emailFailToAddress":{  
+        "fieldType":"text",
+        "defaultValue":"email@youremaildomain.com"
+    },
+    "emailSubject":{  
+        "fieldType":"text",
+        "defaultValue":"Notification From Slatwall"
+    },
+    "emailIMAPServer":{  
+        "fieldType":"text"
+    },
+    "emailIMAPServerPort":{  
+        "fieldType":"text"
+    },
+    "emailIMAPServerUsername":{  
+        "fieldType":"text"
+    },
+    "emailIMAPServerPassword":{  
+        "fieldType":"password"
+    }
+}

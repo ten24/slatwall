@@ -1,0 +1,14 @@
+{  
+    "subscriptionUsageAutoRetryPaymentDays":{  
+        "fieldType":"text",
+        "defaultValue":""
+    },
+    "subscriptionUsageRenewalReminderDays":{  
+        "fieldType":"text",
+        "defaultValue":""
+    },
+    "subscriptionUsageRenewalReminderEmailTemplate":{  
+        "fieldType":"select",
+        "defaultValue":""
+    }
+}

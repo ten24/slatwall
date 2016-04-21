@@ -66,256 +66,70 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="taskService" type="any";
 	property name="taxService" type="any";
 	property name="typeService" type="any";
+	property name="hibachiUtilityService" type="any";
+
+	// ====================== START: NEW JSON FUNCTION ==========================
+
+	public struct function getAllCoreSettingMetaData(){
+		return this.inspectFolderForSettingsFiles(expandPath("/#getApplicationValue('applicationKey')#/model/settings"));
+	}
+
+	public struct function getAllCustomSettingMetaData(){
+		return this.inspectFolderForSettingsFiles(expandPath("/#getApplicationValue('applicationKey')#/custom/model/settings"));
+	}
+
+	public struct function inspectFolderForSettingsFiles(required string folderPath){
+		var allSettingMetaData = {};
+		var folderPathsList = directoryList(arguments.folderPath);
+
+		for(var i=1; i<= arrayLen(folderPathsList); i++) {
+			var fileExt = lcase(ListLast(getFileInfo(folderPathsList[i]).name,"."));
+			if(fileExists( folderPathsList[i] )
+				&& fileExt  == "json"
+				&& FindNoCase("settings.config.json", folderPathsList[i]) == 0
+			) {
+				var rawCoreJSON = fileRead( folderPathsList[i] );
+				if(isJSON( rawCoreJSON )) {
+					try{
+						structAppend(allSettingMetaData, getHibachiUtilityService().evaluateColdfusionInStruct(deserializeJSON( rawCoreJSON )), false);
+					} catch(any e){
+						throw("The Setting File: #folderPathsList[i]# has an invalid coldfusion statement");
+					}
+				} else {
+					throw("The Setting File: #folderPathsList[i]# is not a valid JSON object");
+				}
+			}
+		}
+
+		return allSettingMetaData;
+	}
+
+	public struct function getSettingsConfig(){
+		var settingsConfigPath = expandPath("/#getApplicationValue('applicationKey')#/model/settings/settings.config.json");
+		var settingsConfigJson = fileRead( settingsConfigPath );
+		if(!isJSON( settingsConfigJson )) {
+			throw("The Setting File: #folderPathsList[i]# is not a valid JSON object");
+		}
+		return deserializeJSON( settingsConfigJson );
+	}
 
 	// ====================== START: META DATA SETUP ============================
 
 	public array function getSettingPrefixInOrder() {
-		return [
-			"accountAuthentication",
-			"locationConfiguration",
-			"shippingMethodRate",
-			"fulfillmentMethod",
-			"subscriptionUsage",
-			"subscriptionTerm",
-			"orderFulfillment",
-			"shippingMethod",
-			"paymentMethod",
-			"productType",
-			"product",
-			"content",
-			"account",
-			"image",
-			"brand",
-			"email",
-			"stock",
-			"site",
-			"task",
-			"sku"
-		];
+		return getSettingsConfig()["PrefixOrder"];
 	}
 
 	public struct function getSettingLookupOrder() {
-		return {
-			stock = ["sku.skuID", "sku.product.productID", "sku.product.productType.productTypeIDPath&sku.product.brand.brandID", "sku.product.productType.productTypeIDPath"],
-			locationConfiguration = ["location.locationID"	],
-			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
-			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
-			productType = ["productTypeIDPath"],
-			content = ["contentIDPath","contentID","site.siteID"],
-			email = ["emailTemplate.emailTemplateID"],
-			shippingMethodRate = ["shippingMethod.shippingMethodID"],
-			accountAuthentication = [ "integration.integrationID" ],
-			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
-			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ]
-		};
+		return getSettingsConfig()["LookupOrder"];
 	}
 
 	public struct function getAllSettingMetaData() {
-		var allSettingMetaData = {
 
-			// Account
-			accountEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
-			accountEligiblePaymentTerms = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentTerm", defaultValue=getPaymentService().getAllActivePaymentTermIDList()},
-			accountPaymentTerm = {fieldType="select"},
-			accountTermCreditLimit = {fieldType="text", formatType="currency",defaultValue=0},
-			accountFailedAdminLoginAttemptCount = {fieldType="text", defaultValue=6, validate={dataType="numeric", required=true, maxValue=6}},
-			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
-			accountAdminForcePasswordResetAfterDays = {fieldType="text", defaultValue=90, validate={dataType="numeric", required=true, maxValue=90}},
-			accountLockMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true, minValue=30}},
+		var allSettingMetaData = {};
 
-			// Account Authentication
-			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
-
-			// Brand
-			brandDisplayTemplate = {fieldType="select"},
-			brandHTMLTitleString = {fieldType="text", defaultValue="${brandName}"},
-			brandMetaDescriptionString = {fieldType="textarea", defaultValue="${brandName}"},
-			brandMetaKeywordsString = {fieldType="textarea", defaultValue="${brandName}"},
-
-			// Content
-			contentRestrictAccessFlag = {fieldType="yesno",defaultValue=0},
-			contentRequirePurchaseFlag = {fieldType="yesno",defaultValue=0},
-			contentRequireSubscriptionFlag = {fieldType="yesno",defaultValue=0},
-			contentIncludeChildContentProductsFlag = {fieldType="yesno",defaultValue=1},
-			contentRestrictedContentDisplayTemplate = {fieldType="select"},
-			contentHTMLTitleString = {fieldType="text"},
-			contentMetaDescriptionString = {fieldType="textarea"},
-			contentMetaKeywordsString = {fieldType="textarea"},
-			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
-
-			// Email
-			emailFromAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailCCAddress = {fieldType="text"},
-			emailBCCAddress = {fieldType="text"},
-			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
-			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
-			emailIMAPServer = {fieldType="text"},
-			emailIMAPServerPort = {fieldType="text"},
-			emailIMAPServerUsername = {fieldType="text"},
-			emailIMAPServerPassword = {fieldType="password"},
-
-			// Fulfillment Method
-			fulfillmentMethodShippingOptionSortType = {fieldType="select", defaultValue="sortOrder"},
-			fulfillmentMethodEmailFrom = {fieldType="text"},
-			fulfillmentMethodEmailCC = {fieldType="text"},
-			fulfillmentMethodEmailBCC = {fieldType="text"},
-			fulfillmentMethodEmailSubjectString = {fieldType="text"},
-			fulfillmentMethodAutoLocation = {fieldType="select", defaultValue="88e6d435d3ac2e5947c81ab3da60eba2"},
-			fulfillmentMethodAutoMinReceivedPercentage = {fieldType="text", formatType="percentage", defaultValue=100},
-
-			// Global
-			globalUsageStats = {fieldType="yesno",defaultValue=0},
-			globalCurrencyLocale = {fieldType="select",defaultValue="English (US)"},
-			globalCurrencyType = {fieldType="select",defaultValue="Local"},
-			globalDateFormat = {fieldType="text",defaultValue="mmm dd, yyyy"},
-			globalAssetsImageFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/images'},
-			globalAssetsFileFolderPath = {fieldType="text", defaultValue=getApplicationValue('applicationRootMappingPath') & '/custom/assets/files'},
-			globalAuditAutoArchiveVersionLimit = {fieldType="text", defaultValue=10, validate={dataType="numeric", minValue=0}},
-			globalAuditCommitMode = {fieldType="select", defaultValue="thread", valueOptions=[{name="separate thread",value="thread"}, {name="same request",value="sameRequest"}]},
-			globalEncryptionAlgorithm = {fieldType="select",defaultValue="AES"},
-			globalEncryptionEncoding = {fieldType="select",defaultValue="Base64"},
-			globalEncryptionKeyLocation = {fieldType="text"},
-			globalEncryptionKeySize = {fieldType="select",defaultValue="128"},
-			globalEncryptionService = {fieldType="select",defaultValue="internal"},
-            globalGiftCardMessageLength = {fieldType="text", defaultValue="250", validate={dataType="numeric",required=true,maxValue=4000}},
-			globalLogMessages = {fieldType="select",defaultValue="General"},
-			globalMaximumFulfillmentsPerOrder = {fieldtype="text", defaultValue=1000, validate={dataType="numeric", required=true}},
-			globalMissingImagePath = {fieldType="text", defaultValue=getURLFromPath(getApplicationValue('applicationRootMappingPath')) & '/custom/assets/images/missingimage.jpg'},
-			globalNoSessionIPRegex = {fieldType="text",defaultValue=""},
-			globalNoSessionPersistDefault = {fieldType="yesno",defaultValue=0},
-			globalOrderNumberGeneration = {fieldType="select",defaultValue="Internal"},
-			globalRemoteIDShowFlag = {fieldType="yesno",defaultValue=0},
-			globalRemoteIDEditFlag = {fieldType="yesno",defaultValue=0},
-			globalTimeFormat = {fieldType="text",defaultValue="hh:mm tt"},
-			globalURLKeyBrand = {fieldType="text",defaultValue="sb"},
-			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
-			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
-			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
-			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
-			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
-			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
-			globalAllowedOutsideRedirectSites = {fieldtype="text"},
-			globalAdminDomainNames = {fieldtype="text"},
-			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
-			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=1},
-
-			// Image
-			imageAltString = {fieldType="text",defaultValue=""},
-			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
-
-			// Location Configuration
-			locationConfigurationCapacity = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
-			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
-			locationConfigurationAdditionalPostReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
-
-			//Order Fulfillment
-			orderFulfillmentEmailTemplate = {fieldtype="select", defaultValue=""},
-
-			// Payment Method
-			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
-
-			// Product
-			productDisplayTemplate = {fieldType="select"},
-			productImageDefaultExtension = {fieldType="text",defaultValue="jpg"},
-			productImageOptionCodeDelimiter = {fieldType="select", defaultValue="-"},
-			productTitleString = {fieldType="text", defaultValue="${brand.brandName} ${productName}"},
-			productHTMLTitleString = {fieldType="text", defaultValue="${brand.brandName} ${productName} - ${productType.productTypeName}"},
-			productMetaDescriptionString = {fieldType="textarea", defaultValue="${productDescription}"},
-			productMetaKeywordsString = {fieldType="textarea", defaultValue="${productName}, ${productType.productTypeName}, ${brand.brandName}"},
-			productShowDetailWhenNotPublishedFlag = {fieldType="yesno", defaultValue=0},
-			productAutoApproveReviewsFlag = {fieldType="yesno", defaultValue=0},
-
-			// Product Type
-			productTypeDisplayTemplate = {fieldType="select"},
-			productTypeHTMLTitleString = {fieldType="text", defaultValue="${productTypeName}"},
-			productTypeMetaDescriptionString = {fieldType="textarea", defaultValue="${productTypeDescription}"},
-			productTypeMetaKeywordsString = {fieldType="textarea", defaultValue="${productTypeName}, ${parentProductType.productTypeName}"},
-
-			// Site
-			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
-			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
-			siteOrderOrigin = {fieldType="select"},
-
-			// Shipping Method
-			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
-
-			// Shipping Method Rate
-			shippingMethodRateAdjustmentType = {fieldType="select", defaultValue="increasePercentage"},
-			shippingMethodRateAdjustmentAmount = {fieldType="text", defaultValue=0},
-			shippingMethodRateMinimumAmount = {fieldType="text", defaultValue=0},
-			shippingMethodRateMaximumAmount = {fieldType="text", defaultValue=1000},
-
-			// Sku
-			skuAllowBackorderFlag = {fieldType="yesno", defaultValue=0},
-			skuAllowPreorderFlag = {fieldType="yesno", defaultValue=0},
-			skuAllowWaitlistingFlag = {fieldType="yesno", defaultValue=0},
-			skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
-			skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
-			skuCurrency = {fieldType="select", defaultValue="USD"},
-			skuDefaultImageNamingConvention = {fieldType="text", defaultValue="${product.productCode}-${allImageOptionCodes}"},
-			skuEligibleCurrencies = {fieldType="listingMultiselect", listingMultiselectEntityName="Currency", defaultValue=getCurrencyService().getAllActiveCurrencyIDList()},
-			skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
-			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
-			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
-			skuEmailFulfillmentTemplate = {fieldType="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
-			skuGiftCardEmailFulfillmentTemplate = {fieldtype="select", listingMultiselectEntityName="EmailTemplate", defaultValue=""},
-			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
-			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
-            skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
-			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
-			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
-			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
-			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},
-			skuOrderMinimumQuantity = {fieldType="text", defaultValue=1},
-			skuOrderMaximumQuantity = {fieldType="text", defaultValue=1000},
-			skuQATSIncludesQNROROFlag = {fieldType="yesno", defaultValue=0},
-			skuQATSIncludesQNROVOFlag = {fieldType="yesno", defaultValue=0},
-			skuQATSIncludesQNROSAFlag = {fieldType="yesno", defaultValue=0},
-			skuRegistrationApprovalRequiredFlag = {fieldType="yesno", defaultValue=0},
-			skuShippingWeight = {fieldType="text", defaultValue=1},
-			skuShippingWeightUnitCode = {fieldType="select", defaultValue="lb"},
-			skuTaxCategory = {fieldType="select", defaultValue="444df2c8cce9f1417627bd164a65f133"},
-			skuTrackInventoryFlag = {fieldType="yesno", defaultValue=0},
-			skuShippingCostExempt = {fieldType="yesno", defaultValue=0},
-
-			// Subscription Term
-			subscriptionUsageAutoRetryPaymentDays = {fieldType="text", defaultValue=""},
-			subscriptionUsageRenewalReminderDays = {fieldType="text", defaultValue=""},
-			subscriptionUsageRenewalReminderEmailTemplate = {fieldType="select", defaultValue=""},
-
-			// Task
-			taskFailureEmailTemplate = {fieldType="select", defaultValue=""},
-			taskSuccessEmailTemplate = {fieldType="select", defaultValue=""},
-
-			// DEPRECATED***
-			globalImageExtension = {fieldType="text",defaultValue="jpg"},
-			globalOrderPlacedEmailFrom = {fieldType="text",defaultValue="info@mySlatwallStore.com"},
-			globalOrderPlacedEmailCC = {fieldType="text",defaultValue=""},
-			globalOrderPlacedEmailBCC = {fieldType="text",defaultValue=""},
-			globalOrderPlacedEmailSubjectString = {fieldType="text",defaultValue="Order Confirmation - Order Number: ${orderNumber}"},
-			globalPageShoppingCart = {fieldType="text", defaultValue="shopping-cart"},
-			globalPageOrderStatus = {fieldType="text", defaultValue="order-status"},
-			globalPageOrderConfirmation = {fieldType="text", defaultValue="order-confirmation"},
-			globalPageMyAccount = {fieldType="text", defaultValue="my-account"},
-			globalPageCreateAccount = {fieldType="text", defaultValue="create-account"},
-			globalPageCheckout = {fieldType="text", defaultValue="checkout"},
-			paymentMethodStoreCreditCardNumberWithOrder = {fieldType="yesno", defaultValue=0},
-			paymentMethodStoreCreditCardNumberWithAccount = {fieldType="yesno", defaultValue=0},
-			paymentMethodCheckoutTransactionType = {fieldType="select", defaultValue="none"},
-			productImageSmallWidth = {fieldType="text", defaultValue="150", formatType="pixels", validate={dataType="numeric", required=true}},
-			productImageSmallHeight = {fieldType="text", defaultValue="150", formatType="pixels", validate={dataType="numeric", required=true}},
-			productImageMediumWidth = {fieldType="text", defaultValue="300", formatType="pixels", validate={dataType="numeric", required=true}},
-			productImageMediumHeight = {fieldType="text", defaultValue="300", formatType="pixels", validate={dataType="numeric", required=true}},
-			productImageLargeWidth = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
-			productImageLargeHeight = {fieldType="text", defaultValue="600", formatType="pixels", validate={dataType="numeric", required=true}},
-			productMissingImagePath = {fieldType="text", defaultValue="/plugins/Slatwall/assets/images/missingimage.jpg"}
-
-		};
-
-		var integrationSettingMetaData = getIntegrationService().getAllSettingMetaData();
-
-		structAppend(allSettingMetaData, integrationSettingMetaData, false);
+		structAppend(allSettingMetaData, getAllCoreSettingMetaData(), false);
+		structAppend(allSettingMetaData, getAllCustomSettingMetaData(), false);
+		structAppend(allSettingMetaData, getIntegrationService().getAllSettingMetaData(), false);
 
 		return allSettingMetaData;
 	}

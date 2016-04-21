@@ -1,0 +1,18 @@
+{  
+    "shippingMethodRateAdjustmentType":{  
+        "fieldType":"select",
+        "defaultValue":"increasePercentage"
+    },
+    "shippingMethodRateAdjustmentAmount":{  
+        "fieldType":"text",
+        "defaultValue":0
+    },
+    "shippingMethodRateMinimumAmount":{  
+        "fieldType":"text",
+        "defaultValue":0
+    },
+    "shippingMethodRateMaximumAmount":{  
+        "fieldType":"text",
+        "defaultValue":1000
+    }
+}

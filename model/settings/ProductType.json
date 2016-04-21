@@ -1,0 +1,17 @@
+{  
+    "productTypeDisplayTemplate":{  
+        "fieldType":"select"
+    },
+    "productTypeHTMLTitleString":{  
+        "fieldType":"text",
+        "defaultValue":"${productTypeName}"
+    },
+    "productTypeMetaDescriptionString":{  
+        "fieldType":"textarea",
+        "defaultValue":"${productTypeDescription}"
+    },
+    "productTypeMetaKeywordsString":{  
+        "fieldType":"textarea",
+        "defaultValue":"${productTypeName}, ${parentProductType.productTypeName}"
+    }
+}

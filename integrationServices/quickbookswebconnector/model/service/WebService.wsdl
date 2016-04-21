@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ax233="http://service.model.quickbookswebconnector.integrationServices.Slatwall" xmlns:ns="http://developer.intuit.com/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ax231="http://rpc.xml.coldfusion/xsd" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://org.apache.axis2/xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://developer.intuit.com/">
+    <wsdl:types>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://service.model.quickbookswebconnector.integrationServices.Slatwall">
+            <xs:complexType name="document">
+                <xs:sequence>
+                    <xs:any/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://rpc.xml.coldfusion/xsd">
+            <xs:complexType name="CFCInvocationException">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="StructDelegate">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="entries" nillable="true" type="ax231:EntryDelegate"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="EntryDelegate">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="key" nillable="true" type="xs:anyType"/>
+                    <xs:element minOccurs="0" name="value" nillable="true" type="xs:anyType"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="QueryBean">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="columnList" nillable="true" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="data" nillable="true" type="ax231:ArrayOfObject"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="ArrayOfObject">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="array" nillable="true" type="xs:anyType"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="DocumentDelegate">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="document" nillable="true" type="ax233:document"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="ArrayDelegate">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="array" nillable="true" type="xs:anyType"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+        <xs:schema xmlns:ax232="http://rpc.xml.coldfusion/xsd" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://developer.intuit.com/">
+            <xs:import namespace="http://rpc.xml.coldfusion/xsd"/>
+            <xs:element name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="CFCInvocationException" nillable="true" type="ax232:CFCInvocationException"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="authenticate">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="strUserName" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="strPassword" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="authenticateResult">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:anyType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="closeConnection">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="ticket" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="fakeargumenttopass" nillable="true" type="xs:anyType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="closeConnectionResult">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:anyType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="recieveResponseXML">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="ticket" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="response" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="hresult" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="recieveResponseXMLResult">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:anyType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sendRequestXML">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="ticket" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="strHCPResponse" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="qbXMLCountry" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="qbXMLMajorVers" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="qbXMLMinorVers" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sendRequestXMLResult">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:anyType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ticket" nillable="true" type="xs:string"/>
+            <xs:element name="getLastErrorResult">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:anyType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="connectionError">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="ticket" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="hresult" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="connectionErrorResult">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element maxOccurs="unbounded" minOccurs="0" name="return" nillable="true" type="xs:anyType"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="getLastErrorRequestMessage">
+        <wsdl:part name="ticket" element="ns:ticket"/>
+    </wsdl:message>
+    <wsdl:message name="getLastErrorResponseMessage">
+        <wsdl:part name="getLastErrorResult" element="ns:getLastErrorResult"/>
+    </wsdl:message>
+    <wsdl:message name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+        <wsdl:part name="parameters" element="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+    </wsdl:message>
+    <wsdl:message name="authenticateRequestMessage">
+        <wsdl:part name="authenticate" element="ns:authenticate"/>
+    </wsdl:message>
+    <wsdl:message name="authenticateResponseMessage">
+        <wsdl:part name="authenticateResult" element="ns:authenticateResult"/>
+    </wsdl:message>
+    <wsdl:message name="connectionErrorRequestMessage">
+        <wsdl:part name="connectionError" element="ns:connectionError"/>
+    </wsdl:message>
+    <wsdl:message name="connectionErrorResponseMessage">
+        <wsdl:part name="connectionErrorResult" element="ns:connectionErrorResult"/>
+    </wsdl:message>
+    <wsdl:message name="sendRequestXMLRequestMessage">
+        <wsdl:part name="sendRequestXML" element="ns:sendRequestXML"/>
+    </wsdl:message>
+    <wsdl:message name="sendRequestXMLResponseMessage">
+        <wsdl:part name="sendRequestXMLResult" element="ns:sendRequestXMLResult"/>
+    </wsdl:message>
+    <wsdl:message name="recieveResponseXMLRequestMessage">
+        <wsdl:part name="recieveResponseXML" element="ns:recieveResponseXML"/>
+    </wsdl:message>
+    <wsdl:message name="recieveResponseXMLResponseMessage">
+        <wsdl:part name="recieveResponseXMLResult" element="ns:recieveResponseXMLResult"/>
+    </wsdl:message>
+    <wsdl:message name="closeConnectionRequestMessage">
+        <wsdl:part name="closeConnection" element="ns:closeConnection"/>
+    </wsdl:message>
+    <wsdl:message name="closeConnectionResponseMessage">
+        <wsdl:part name="closeConnectionResult" element="ns:closeConnectionResult"/>
+    </wsdl:message>
+    <wsdl:portType name="integrationServices.quickbookswebconnector.model.service.WebService.cfcPortType">
+        <wsdl:operation name="getLastError">
+            <wsdl:input message="ns:getLastErrorRequestMessage" wsaw:Action="urn:getLastError"/>
+            <wsdl:output message="ns:getLastErrorResponseMessage" wsaw:Action="urn:getLastErrorResponse"/>
+            <wsdl:fault message="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" wsaw:Action="urn:getLastErrorintegrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="authenticate">
+            <wsdl:input message="ns:authenticateRequestMessage" wsaw:Action="urn:authenticate"/>
+            <wsdl:output message="ns:authenticateResponseMessage" wsaw:Action="urn:authenticateResponse"/>
+            <wsdl:fault message="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" wsaw:Action="urn:authenticateintegrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="connectionError">
+            <wsdl:input message="ns:connectionErrorRequestMessage" wsaw:Action="urn:connectionError"/>
+            <wsdl:output message="ns:connectionErrorResponseMessage" wsaw:Action="urn:connectionErrorResponse"/>
+            <wsdl:fault message="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" wsaw:Action="urn:connectionErrorintegrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="sendRequestXML">
+            <wsdl:input message="ns:sendRequestXMLRequestMessage" wsaw:Action="urn:sendRequestXML"/>
+            <wsdl:output message="ns:sendRequestXMLResponseMessage" wsaw:Action="urn:sendRequestXMLResponse"/>
+            <wsdl:fault message="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" wsaw:Action="urn:sendRequestXMLintegrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="recieveResponseXML">
+            <wsdl:input message="ns:recieveResponseXMLRequestMessage" wsaw:Action="urn:recieveResponseXML"/>
+            <wsdl:output message="ns:recieveResponseXMLResponseMessage" wsaw:Action="urn:recieveResponseXMLResponse"/>
+            <wsdl:fault message="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" wsaw:Action="urn:recieveResponseXMLintegrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+        </wsdl:operation>
+        <wsdl:operation name="closeConnection">
+            <wsdl:input message="ns:closeConnectionRequestMessage" wsaw:Action="urn:closeConnection"/>
+            <wsdl:output message="ns:closeConnectionResponseMessage" wsaw:Action="urn:closeConnectionResponse"/>
+            <wsdl:fault message="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException" wsaw:Action="urn:closeConnectionintegrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="integrationServices.quickbookswebconnector.model.service.WebService.cfcSoap11Binding" type="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getLastError">
+            <soap:operation soapAction="urn:getLastError" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="authenticate">
+            <soap:operation soapAction="urn:authenticate" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="connectionError">
+            <soap:operation soapAction="urn:connectionError" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="sendRequestXML">
+            <soap:operation soapAction="urn:sendRequestXML" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="recieveResponseXML">
+            <soap:operation soapAction="urn:recieveResponseXML" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="closeConnection">
+            <soap:operation soapAction="urn:closeConnection" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:binding name="integrationServices.quickbookswebconnector.model.service.WebService.cfcSoap12Binding" type="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcPortType">
+        <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="getLastError">
+            <soap12:operation soapAction="urn:getLastError" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap12:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="authenticate">
+            <soap12:operation soapAction="urn:authenticate" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap12:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="connectionError">
+            <soap12:operation soapAction="urn:connectionError" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap12:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="sendRequestXML">
+            <soap12:operation soapAction="urn:sendRequestXML" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap12:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="recieveResponseXML">
+            <soap12:operation soapAction="urn:recieveResponseXML" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap12:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="closeConnection">
+            <soap12:operation soapAction="urn:closeConnection" style="document"/>
+            <wsdl:input>
+                <soap12:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap12:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException">
+                <soap12:fault use="literal" name="integrationServices.quickbookswebconnector.model.service.WebService.cfcCFCInvocationException"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="integrationServices.quickbookswebconnector.model.service.WebService.cfc">
+        <wsdl:port name="integrationServices.quickbookswebconnector.model.service.WebService.cfcHttpSoap11Endpoint" binding="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcSoap11Binding">
+            <soap:address location="https://atilla.audio/integrationServices/quickbookswebconnector/model/service/WebService.cfc"/>
+        </wsdl:port>
+        <wsdl:port name="integrationServices.quickbookswebconnector.model.service.WebService.cfcHttpSoap12Endpoint" binding="ns:integrationServices.quickbookswebconnector.model.service.WebService.cfcSoap12Binding">
+            <soap12:address location="https://atilla.audio/integrationServices/quickbookswebconnector/model/service/WebService.cfc"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

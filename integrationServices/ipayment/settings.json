@@ -1,0 +1,21 @@
+{  
+    "accountId":{  
+        "fieldType":"text"
+    },
+    "applicationId":{  
+        "fieldType":"text"
+    },
+    "applicationPassword":{  
+        "fieldType":"text"
+    },
+    "currency":{  
+        "fieldType":"text",
+        "defaultValue":"EUR"
+    },
+    "transactionSecurityKey":{  
+        "fieldType":"text"
+    },
+    "invoiceText":{  
+        "fieldType":"text"
+    }
+}
