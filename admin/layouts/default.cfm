@@ -225,7 +225,6 @@ Notes:
 							</hb:HibachiActionCallerDropdown>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.tools_nav')#" icon="magnet icon-white" type="nav">
 								<hb:HibachiDividerHider>
-                                    <hb:HibachiActionCaller action="admin:entity.marketingcampaigns" type="list">
 									<hb:HibachiActionCaller action="admin:report" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listeventtrigger" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listschedule" type="list">
