@@ -46,9 +46,11 @@
 Notes:
 
 --->
-<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" wsversion="1" style="rpc" persistent="false" namespace="http://developer.intuit.com/" accessors="true" output="false">
-
+<cfcomponent extends="Slatwall.org.Hibachi.HibachiService" wsdlfile="slatwallWebConnector.wsdl" persistent="false" accessors="true" output="false">
+	<!--- namespace="http://developer.intuit.com/" wsversion="1" style="rpc" --->
 	<cfscript>
+		writeLog(file="WS",text="#getSoapRequest()#");
+
 		variables.tickets = {};
 
 		public string function getQuickbooksGUID(){
@@ -65,50 +67,8 @@ Notes:
 			//function for each action we need
 
 		}
-
-		/* Example QBXML For Account Query
-		<?xml version="1.0" encoding="utf-8"?>
-		<?qbxml version="13.0"?>
-		<QBXML>
-			<QBXMLMsgsRq onError="stopOnError">
-			<AccountQueryRq metaData="ENUMTYPE">
-					<!-- BEGIN OR -->
-					<ListID >IDTYPE</ListID> <!-- optional, may repeat -->
-					<!-- OR -->
-					<FullName >STRTYPE</FullName> <!-- optional, may repeat -->
-					<!-- OR -->
-					<MaxReturned >INTTYPE</MaxReturned> <!-- optional -->
-					<!-- ActiveStatus may have one of the following values: ActiveOnly [DEFAULT], InactiveOnly, All -->
-					<ActiveStatus >ENUMTYPE</ActiveStatus> <!-- optional -->
-					<FromModifiedDate >DATETIMETYPE</FromModifiedDate> <!-- optional -->
-					<ToModifiedDate >DATETIMETYPE</ToModifiedDate> <!-- optional -->
-					<!-- BEGIN OR -->
-					<NameFilter> <!-- optional -->
-					<!-- MatchCriterion may have one of the following values: StartsWith, Contains, EndsWith -->
-					<MatchCriterion >ENUMTYPE</MatchCriterion> <!-- required -->
-					<Name >STRTYPE</Name> <!-- required -->
-					</NameFilter>
-					<!-- OR -->
-					<NameRangeFilter> <!-- optional -->
-					<FromName >STRTYPE</FromName> <!-- optional -->
-					<ToName >STRTYPE</ToName> <!-- optional -->
-					</NameRangeFilter>
-					<!-- END OR -->
-					<!-- AccountType may have one of the following values: AccountsPayable, AccountsReceivable, Bank, CostOfGoodsSold, CreditCard, Equity, Expense, FixedAsset, Income, LongTermLiability, NonPosting, OtherAsset, OtherCurrentAsset, OtherCurrentLiability, OtherExpense, OtherIncome -->
-					<AccountType >ENUMTYPE</AccountType> <!-- optional, may repeat -->
-					<CurrencyFilter> <!-- optional -->
-					<!-- BEGIN OR -->
-					<ListID >IDTYPE</ListID> <!-- optional, may repeat -->
-					<!-- OR -->
-					<FullName >STRTYPE</FullName> <!-- optional, may repeat -->
-					<!-- END OR -->
-					</CurrencyFilter>
-					<!-- END OR -->
-					<IncludeRetElement >STRTYPE</IncludeRetElement> <!-- optional, may repeat -->
-					<OwnerID >GUIDTYPE</OwnerID> <!-- optional, may repeat -->
-			</AccountQueryRq>
-
-
+		</cfscript>
+		/*
 			<AccountQueryRs statusCode="INTTYPE" statusSeverity="STRTYPE" statusMessage="STRTYPE" retCount="INTTYPE">
 					<AccountRet> <!-- optional, may repeat -->
 					<ListID >IDTYPE</ListID> <!-- required -->
@@ -153,14 +113,9 @@ Notes:
 			</AccountQueryRs>
 			</QBXMLMsgsRq>
 		</QBXML>
-
-
-
 		*/
-		public any function syncAccountLedger(){
 
-		}
-
+		<cfscript>
 		/* Example QBXML for Inventory Item Add
 		<?xml version="1.0" encoding="utf-8"?>
 		<?qbxml version="13.0"?>
@@ -918,7 +873,7 @@ Notes:
 
 	        }
 
-			var updatePostponeInterval = "1";
+			var updatePostponeInterval = "60";//60 seconds is the lowest possible it rounds by the minute
 			var everyMinute = "1";
 
 			if(isNumeric(getService("SettingService").getSettingValue("integrationquickbookswebconnectorrequestfrequency"))){
@@ -927,15 +882,13 @@ Notes:
 				var runEveryNMinutes = 15;
 			}
 
-			//queue events
-		    variables.tickets[thisTicket] = ["syncAccountLedger"];
-
 		    var answer = [
-		    	javaCast("string",companyFileName),
-		    	javaCast("string", updatePostponeInterval),
-		    	javaCast("string",everyMinute),
-		    	javaCast("string",runEveryNMinutes)
+		    	thisTicket,
+		    	companyFileName,
+		    	""
 		    ];
+		    writeLog(file="slatwall" text="QWC: Authenticated");
+		    writeLog(file="slatwall" text=thisTicket);
 
             return convertToJavaArray(answer);
 		</cfscript>
@@ -960,25 +913,40 @@ Notes:
 
 	<cffunction
     	name = "sendRequestXML"
-    	returnType = "array"
+    	returnType = "any"
     	output = "no"
     	access = "remote">
 		<cfargument name="ticket" type="string" required="true" />
 		<cfargument name="strHCPResponse" type="string" required="true" />
 		<cfargument name="qbXMLCountry" type="string" required="true" />
-		<cfargument name="qbXMLMajorVers" type="string" required="true" />
-		<cfargument name="qbXMLMinorVers" type="string" required="true" />
+		<cfargument name="qbXMLMajorVers" type="numeric" required="true" />
+		<cfargument name="qbXMLMinorVers" type="numeric" required="true" />
+
 		<cfscript>
-			//pop off whatever action needs to be taken and execute it
+			writeLog(file="slatwall" text="QWC: SENDREQUESTXML");
+			writeLog(file="slatwall" text=arguments.ticket);
+			writeLog(file="slatwall" text=arguments.strHCPResponse);
+			writeLog(file="slatwall" text=arguments.qbXMLCountry);
+			writeLog(file="slatwall" text=arguments.qbXMLMajorVers);
+			writeLog(file="slatwall" text=arguments.qbXMLMinorVers);
+
+			if(!structKeyExists(variables.tickets,arguments.ticket)){
+				variables.tickets[arguments.ticket] = ["syncAccountLedger"];
+			}
+
 			var actionQueue = variables.tickets[ticket];
-			var answer = [];
 
 			if(arrayLen(actionQueue) > 0){
-				var action = actionQueue[1];
 
+				//pop off whatever action needs to be taken and execute it
+				//var action = actionQueue[1];
+				var action = "syncAccountLedger";
+				var headers = '<?xml version="1.0" encoding="utf-8"?><?qbxml version="13.0"?>';
 				switch(action) {
 					case "syncAccountLedger":
 						//get the sync account ledger xml
+						//return headers & toString(getAccountLedgerRequest());
+						return getAccountLedgerRequest();
 					case "pushProducts":
 						//get the push product xml
 					case "pushOrders":
@@ -986,7 +954,7 @@ Notes:
 					case "pushAccounts":
 						//get the push accounts xml
 					default:
-						//we're done let the web connector know
+						//return XmlNew();
 				}
 				//attach the xml to the resposne
 
@@ -994,9 +962,53 @@ Notes:
 				//we're done let the web connector know
 			}
 
-			return answer;
+			return "";
 		</cfscript>
     </cffunction>
+
+	<cffunction
+			name="getAccountLedgerRequest"
+			returnType="xml"
+			access="private"
+			output = "no"
+		>
+			<cfxml variable="accountLedgerRequest">
+							<QBXML>
+								<QBXMLMsgsRq onError="stopOnError">
+									<CustomerQueryRq requestID="whatever">
+									</CustomerQueryRq>
+								</QBXMLMsgsRq>
+							</QBXML>
+			</cfxml>
+			<cfscript>
+				/*savecontent variable="accountLedgerRequest" {
+					writeOutput(
+						'
+							<?xml version="1.0" encoding="utf-8"?>
+							<?qbxml version="13.0"?>
+							<QBXML>
+								<QBXMLMsgsRq onError="stopOnError">
+									<AccountQueryRq metaData="ENUMTYPE">
+									</AccountQueryRq>
+								</QBXMLMsgsRq>
+							</QBXML>
+						'
+					);
+				}
+
+				var accountLedgerRequest = xmlNew();
+				accountLedgerRequest.qbxml = XmlElemNew(accountLedgerRequest,"QBXML");
+				accountLedgerRequest.qbxml.qbxmlmsgsrq = XmlElemNew(accountLedgerRequest, "QBXMLMsgsRq");
+				accountLedgerRequest.qbxml.qbxmlmsgsrq.accountqueryrq = XmlElemNew(accountLedgerRequest, "AccountQueryRq");
+				accountLedgerRequest.qbxml.qbxmlmsgsrq.XmlAttributes["onError"] = "stopOnError";
+				accountLedgerRequest.qbxml.qbxmlmsgsrq.accountqueryrq.XmlAttributes["metaData"] = "ENUMTYPE";
+				*/
+				//writeLog("looky looky");
+				//writeLog(toString(accountLedgerRequest));
+
+				return accountLedgerRequest;
+			</cfscript>
+		</cffunction>
 
 	<cffunction
     	name = "recieveResponseXML"
@@ -1020,7 +1032,7 @@ Notes:
 
 	<cffunction
     	name = "connectionError"
-    	returnType = "array"
+    	returnType = "string"
     	output = "no"
     	access = "remote">
 		<cfargument name="ticket" type="string" required="true" />
@@ -1031,7 +1043,7 @@ Notes:
 
 			//log the error if possible
 
-			structDelete(variables.tickets, ticket);
+			//structDelete(variables.tickets, ticket);
 
 			//Delete the queue for the ticket
 
@@ -1041,7 +1053,7 @@ Notes:
 
 	<cffunction
     	name = "getLastError"
-    	returnType = "array"
+    	returnType = "string"
     	output = "no"
     	access = "remote">
 		<cfargument name="ticket" type="string" required="true" />
@@ -1050,7 +1062,7 @@ Notes:
 
 			//log the error if possible
 
-			structDelete(variables.tickets, ticket);
+			//structDelete(variables.tickets, ticket);
 
 			//Delete the queue for the ticket
 
@@ -1060,7 +1072,7 @@ Notes:
 
 	<cffunction
     	name = "closeConnection"
-    	returnType = "array"
+    	returnType = "string"
     	output = "no"
     	access = "remote">
 		<cfargument name="ticket" type="string" required="true" />
@@ -1068,7 +1080,7 @@ Notes:
 		<cfscript>
 			var answer = "The process has completed sucessfully the connection will now be closed.";
 
-			structDelete(variables.tickets, ticket);
+			//structDelete(variables.tickets, ticket);
 
 			return answer;
 		</cfscript>
