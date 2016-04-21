@@ -46,21 +46,24 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
+component {
 
-	public any function redeemToAccount(required struct rc){
+	// Allow For Application Config
+	try{include "../../config/configApplication.cfm";}catch(any e){}
+	// Allow For Instance Config
+	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 
-		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
-		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
+	this.sessionManagement = true;
 
-		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
-			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
+	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/", "");
 
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
-		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
-		}
-	}
+	this.ormEnabled = true;
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.dbcreate = "update";
+	this.ormSettings.flushAtRequestEnd = false;
+	this.ormsettings.eventhandling = true;
+	this.ormSettings.automanageSession = false;
+
+
 
 }

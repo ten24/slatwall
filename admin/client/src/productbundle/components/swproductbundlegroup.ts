@@ -49,7 +49,8 @@ class SWProductBundleGroupController {
 	public totalPages;
 	public skuCollectionConfig;
 	public removeProductBundleGroup;
-
+    public addProductBundleGroup;
+    public productBundleGroups; 
 
     // @ngInject
 	constructor(private $log:ng.ILogService,
@@ -60,9 +61,12 @@ class SWProductBundleGroupController {
                 private utilityService,
                 private formService,
 				private $hibachi,
-                private productBundlePartialsPath){
+                private productBundlePartialsPath            
+    ){
+		this.init(); 
+	}
 
-		this.$id = 'productBundleGroup';
+    public init = () => {
         this.maxRecords = 10;
         this.recordsCount = 0;
         this.pageRecordsStart = 0;
@@ -78,18 +82,11 @@ class SWProductBundleGroupController {
             this.filterPropertiesList = {};
             var filterPropertiesPromise = this.$hibachi.getFilterPropertiesByBaseEntityName('_sku');
             filterPropertiesPromise.then((value)=>{
-                metadataService.setPropertiesList(value,'_sku');
-                this.filterPropertiesList['_sku'] = metadataService.getPropertiesListByBaseEntityAlias('_sku');
-                metadataService.formatPropertiesList(this.filterPropertiesList['_sku'],'_sku');
+                this.metadataService.setPropertiesList(value,'_sku');
+                this.filterPropertiesList['_sku'] = this.metadataService.getPropertiesListByBaseEntityAlias('_sku');
+                this.metadataService.formatPropertiesList(this.filterPropertiesList['_sku'],'_sku');
             });
         }
-
-        this.skuCollectionConfig = {
-            baseEntityName:"Sku",
-            baseEntityAlias:"_sku",
-            collectionConfig:this.productBundleGroup.data.skuCollectionConfig,
-            collectionObject:'Sku'
-        };
 
 		this.searchOptions = {
 			options:[
@@ -120,7 +117,6 @@ class SWProductBundleGroupController {
 			},
 			setSelected:(searchOption)=>{
 				this.searchOptions.selected = searchOption;
-				this.getFiltersByTerm(this.productBundleGroupFilters.keyword,searchOption);
 			}
 		};
 
@@ -134,15 +130,10 @@ class SWProductBundleGroupController {
 		this.filterTemplatePath = this.productBundlePartialsPath +"productbundlefilter.html";
 		this.productBundleGroupFilters = {};
 		this.productBundleGroupFilters.value = [];
-
-		if(angular.isUndefined(this.productBundleGroup.productBundleGroupFilters)){
-			this.productBundleGroup.productBundleGroupFilters = [];
-		}
-
-		if(!angular.isDefined(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0])){
-			this.productBundleGroup.data.skuCollectionConfig.filterGroups[0] = {};
-			this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
-		}
+        
+        if(angular.isUndefined(this.productBundleGroup.data.skuCollectionConfig) || this.productBundleGroup.data.skuCollectionConfig === null){
+            this.productBundleGroup.data.skuCollectionConfig = this.collectionConfigService.newCollectionConfig("Sku").getCollectionConfig();
+        }
 
 		var options = {
 				filterGroupsConfig:this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup,
@@ -150,24 +141,11 @@ class SWProductBundleGroupController {
 		};
 
 		this.getCollection();
-	}
-
-	public openCloseAndRefresh = () => {
-		this.showAdvanced = !this.showAdvanced;
-		if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length){
-			this.getCollection();
-		}
-
-	}
+    }
 
 	public deleteEntity = (type?) =>{
-		if (angular.isNumber(type)){
-            this.removeProductBundleGroupFilter(type);
-        }else{
-            this.removeProductBundleGroup({index:this.index});
-            this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
-
-        }
+        this.removeProductBundleGroup({index:this.index});
+        this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup = [];
 	};
 
 	public getCollection = () =>{
@@ -195,200 +173,43 @@ class SWProductBundleGroupController {
 			this.currentPage = 1;
 	};
 
-	public getFiltersByTerm = (keyword,filterTerm) =>{
-		//save search
-        this.keyword = keyword;
-        this.filterTerm = filterTerm;
-        this.loading = true;
-        this.showAll = true;
-        var _loadingCount;
-        if(this.timeoutPromise) {
-            this.$timeout.cancel(this.timeoutPromise);
-        }
-
-        this.timeoutPromise = this.$timeout(()=>{
-            if(filterTerm.value === 'All'){
-                this.showAll = true;
-                this.productBundleGroupFilters.value = [];
-                _loadingCount = this.searchOptions.options.length - 1;
-                for(var i = 0; i < this.searchOptions.options.length;i++){
-                    this.$log.debug("INT");
-                    this.$log.debug(i);
-                    if(i > 0){
-                        var option = this.searchOptions.options[i];
-                        ((keyword,option) =>{
-                            if(this.searchAllCollectionConfigs.length < 4){
-                                this.searchAllCollectionConfigs.push(this.collectionConfigService.newCollectionConfig(this.searchOptions.options[i].value));
-                            }
-
-                            this.searchAllCollectionConfigs[i-1].setKeywords(keyword);
-                            this.searchAllCollectionConfigs[i-1].setCurrentPage(this.currentPage);
-                            this.searchAllCollectionConfigs[i-1].setPageShow(this.pageShow);
-                            //searchAllCollectionConfig.setAllRecords(true);
-
-
-                            this.searchAllCollectionConfigs[i-1].getEntity().then((value)=>{
-
-                                this.recordsCount = value.recordsCount;
-                                this.pageRecordsStart = value.pageRecordsStart;
-                                this.pageRecordsEnd = value.pageRecordsEnd;
-                                this.totalPages = value.totalPages;
-
-                                var formattedProductBundleGroupFilters = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,option,this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup);
-
-                                for(var j in formattedProductBundleGroupFilters){
-                                    if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.indexOf(formattedProductBundleGroupFilters[j]) == -1){
-                                        this.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
-                                        this.$log.debug(formattedProductBundleGroupFilters[j]);
-                                    }
-                                }
-
-                                // Increment Down The Loading Count
-                                _loadingCount--;
-                                // If the loadingCount drops to 0, then we can update scope
-                                if(_loadingCount == 0){
-                                    //This sorts the array of objects by the objects' "type" property alphabetically
-                                    this.productBundleGroupFilters.value = this.utilityService.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
-                                    this.$log.debug(this.productBundleGroupFilters.value);
-                                    if(this.productBundleGroupFilters.value.length == 0){
-                                        this.currentPage = 0;
-                                    }
-
-                                }
-                                this.loading = false;
-                            });
-                        })(keyword, option);
-                    }
-                }
-            }else{
-                this.showAll = false;
-
-                if(angular.isUndefined(this.searchCollectionConfig) || filterTerm.value != this.searchCollectionConfig.baseEntityName){
-                    this.searchCollectionConfig = this.collectionConfigService.newCollectionConfig(filterTerm.value);
-                }
-                this.searchCollectionConfig.setKeywords(keyword);
-                this.searchCollectionConfig.setCurrentPage(this.currentPage);
-                this.searchCollectionConfig.setPageShow(this.pageShow);
-
-                this.searchCollectionConfig.getEntity().then((value)=>{
-
-                    this.recordsCount = value.recordsCount;
-                    this.pageRecordsStart = value.pageRecordsStart;
-                    this.pageRecordsEnd = value.pageRecordsEnd;
-                    this.totalPages = value.totalPages;
-                    this.$log.debug('getFiltersByTerm');
-                    this.$log.debug(value);
-                    this.productBundleGroupFilters.value = this.productBundleService.formatProductBundleGroupFilters(value.pageRecords,filterTerm,this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup) || [];
-                    this.loading = false;
-                });
-            }
-        }, 500);
-	}
-
-
-	public addFilterToProductBundle = (filterItem,include,index) =>{
-
-        var collectionFilterItem = new CollectionFilterItem(
-                filterItem.name, filterItem.type,
-                filterItem.type, filterItem.propertyIdentifier,
-                filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID'],
-                filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']
-            );
-        if(include === false){
-            collectionFilterItem.comparisonOperator = '!=';
-        }else{
-            collectionFilterItem.comparisonOperator = '=';
-        }
-
-        if(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
-            collectionFilterItem.logicalOperator = 'OR';
-        }
-
-        if(angular.isDefined(this.searchCollectionConfig)){
-            this.searchCollectionConfig.addFilter(this.searchCollectionConfig.baseEntityName+"ID", collectionFilterItem.value, "!=");
-        }
-        if(this.showAll){
-            switch(collectionFilterItem.type){
-                case 'Product Type':
-                    this.searchAllCollectionConfigs[0].addFilter("productTypeID", collectionFilterItem.value, "!=");
-                    break;
-                case 'Brand':
-                    this.searchAllCollectionConfigs[1].addFilter("brandID", collectionFilterItem.value, "!=");
-                    break;
-                case 'Products':
-                    this.searchAllCollectionConfigs[2].addFilter("productID", collectionFilterItem.value, "!=");
-                    break;
-                case 'Skus':
-                    this.searchAllCollectionConfigs[3].addFilter("skuID", collectionFilterItem.value, "!=");
-                    break;
-            }
-        }
-
-        //Adds filter item to designated filtergroup
-        this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
-        this.productBundleGroup.forms[this.formName].skuCollectionConfig.$setDirty();
-
-        //reload the list to correct pagination show all takes too long for this to be graceful
-        if(!this.showAll){
-            this.getFiltersByTerm(this.keyword, this.filterTerm);
-        } else {
-            //Removes the filter item from the left hand search result
-            this.productBundleGroupFilters.value.splice(index,1);
-        }
-	}
-
-	public removeProductBundleGroupFilter = (index) =>{
-		//Pushes item back into array
-        this.productBundleGroupFilters.value.push(this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
-        //Sorts Array
-        this.productBundleGroupFilters.value = this.utilityService.arraySorter(this.productBundleGroupFilters.value, ["type","name"]);
-        //Removes the filter item from the filtergroup
-        var collectionFilterItem = this.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1)[0];
-
-        if(angular.isDefined(this.searchCollectionConfig)){
-            this.searchCollectionConfig.removeFilter(this.searchCollectionConfig.baseEntityAlias + '.' + this.searchCollectionConfig.baseEntityName+"ID", collectionFilterItem.value, "!=");
-        }
-        if(this.showAll){
-            switch(collectionFilterItem.type){
-                case 'Product Type':
-                    this.searchAllCollectionConfigs[0].removeFilter("_productType.productTypeID", collectionFilterItem.value, "!=");
-                    break;
-                case 'Brand':
-                    this.searchAllCollectionConfigs[1].removeFilter("_brand.brandID", collectionFilterItem.value, "!=");
-                    break;
-                case 'Products':
-                    this.searchAllCollectionConfigs[2].removeFilter("_product.productID", collectionFilterItem.value, "!=");
-                    break;
-                case 'Skus':
-                    this.searchAllCollectionConfigs[3].removeFilter("_sku.skuID", collectionFilterItem.value, "!=");
-                    break;
-            }
-        }
-        if(!this.showAll){
-            this.getFiltersByTerm(this.keyword, this.filterTerm);
-        } else {
-            this.productBundleGroupFilters.value.splice(index,0,collectionFilterItem);
-        }
+	
+    public save = () =>{
+        var savePromise = this.productBundleGroup.$$save();
+        savePromise.then((response)=>{
+            this.productBundleGroup.data.$$toggleEdit()
+        }).catch((data)=>{
+            //error handling handled by $$save
+        });
     }
-
-
+    
+    public saveAndAddBundleGroup = () =>{
+        var savePromise = this.productBundleGroup.$$save();
+        savePromise.then((response)=>{
+            this.productBundleGroup.data.$$toggleEdit()
+            this.addProductBundleGroup();
+        }).catch((data)=>{
+            //error handling handled by $$save
+        });
+    }
 
 }
 
 class SWProductBundleGroup implements ng.IDirective{
 
-	public static $inject=["$http", "$hibachi", "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "$hibachi", "productBundlePartialsPath"];
 	public templateUrl;
 	public restrict = "EA";
-	public scope = {}
+	public scope = {};
 
 	public bindToController = {
 		productBundleGroup:"=",
+        productBundleGroups:"=",
 		index:"=",
 		addProductBundleGroup:"&",
 		removeProductBundleGroup:"&",
 		formName:"@"
-	}
+	};
+    
 	public controller=SWProductBundleGroupController;
 	public controllerAs="swProductBundleGroup";
 
@@ -421,6 +242,7 @@ class SWProductBundleGroup implements ng.IDirective{
             "$log", "$timeout", "collectionConfigService", "productBundleService", "metadataService", "utilityService", "formService", "$hibachi", "productBundlePartialsPath",
 			"slatwallPathBuilder"
         ];
+        
         return directive;
 	}
 }

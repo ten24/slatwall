@@ -285,6 +285,10 @@ class CollectionConfig {
                 lastProperty=column.split('.').pop()
                 ;
             var lastEntity = this.$hibachi.getEntityExample(this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column));
+            if(angular.isUndefined(lastEntity)){
+                throw("You have passed an incorrect entity name to a collection config");
+            }
+            
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
@@ -354,7 +358,7 @@ class CollectionConfig {
         }
         var column = {
             propertyIdentifier:this.formatPropertyIdentifier(propertyIdentifier, true),
-            title : this.rbkeyService.getRBKey("entity."+this.baseEntityName+"."+propertyIdentifier),
+            title : this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier)),
             aggregate:{
                 aggregateFunction:aggregateFunction,
                 aggregateAlias:aggregateAlias
@@ -383,7 +387,7 @@ class CollectionConfig {
             if(angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
                 title = _DividedTitles[index].trim();
             }else {
-                title = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier));
+                title = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column)+"."+this.utilityService.listLast(column, "."));
             }
             this.addColumn(this.formatPropertyIdentifier(column),title, options);
         });
