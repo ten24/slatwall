@@ -56,9 +56,9 @@ Notes:
 		<cftry>
 			<cfset var updateCopyStarted = false />
 			<cfset var zipName  = ''/> 		
-			<cfif arguments.branch == 'master'>
+			<cfif arguments.branch eq 'master'>
 				<cfset zipName  = 'slatwall-latest'/> 		
-			<cfelseif arguments.branch == 'develop'>
+			<cfelseif arguments.branch eq 'develop'>
 				<cfset zipName  = 'slatwall-be'/> 		
 			</cfif>
 			<cfset var downloadURL = "https://s3.amazonaws.com/slatwall-releases/#zipName#.zip" />
@@ -104,15 +104,18 @@ Notes:
 			<cfif downloadedZipHash eq hashFileValue>
 				<!--- now read and unzip the downloaded file --->
 				<cfset var dirList = "" />
-				<cfzip action="unzip" destination="#getTempDirectory()#" file="#getTempDirectory()##downloadFileName#" >
+				<cfset unzipDirectoryName = "#getTempDirectory()#"&zipName/>
+				<cfset directoryCreate(unzipDirectoryName)/>
+				<cfzip action="unzip" destination="#unzipDirectoryName#" file="#getTempDirectory()##downloadFileName#" >
 				<cfzip action="list" file="#getTempDirectory()##downloadFileName#" name="dirList" >
-				<cfset var sourcePath = getTempDirectory() & "#listFirst(dirList.name[1],'/')#" />
+				<cfset var sourcePath = unzipDirectoryName />
 				<cfif fileExists( "#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" )>
 					<cffile action="delete" file="#slatwallRootPath#/custom/config/lastFullUpdate.txt.cfm" >
 				</cfif>
 				<cfset updateCopyStarted = true />
+				
+				
 				<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
-
 				<!--- Delete .zip file and unzipped folder --->
 				<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
 				<cfdirectory action="delete" directory="#sourcePath#" recurse="true">
