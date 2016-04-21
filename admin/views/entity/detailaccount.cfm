@@ -66,7 +66,10 @@ Notes:
 		<hb:HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
-			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAuthToken" type="list" modal="true" />
+			<!--- If this user owns this account and this user is not a super user then allow api token generation. (if you are a super-user that wants to use the api, create a non-super-user account and set permissions.) --->
+			<cfif rc.account.getAccountID() EQ rc.$.slatwall.getAccount().getAccountID() AND rc.$.slatwall.getAccount().getSuperUserFlag() not equal "true">
+				<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAuthToken"  type="list" modal="true" />
+			</cfif>
 			<li class="divider"></li>
 			<hb:HibachiActionCaller action="admin:entity.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
 			<hb:HibachiActionCaller action="admin:entity.createaccountemailaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />

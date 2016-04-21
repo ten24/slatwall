@@ -196,6 +196,7 @@ component extends="FW1.framework" {
 	}
 	
 	public void function setupGlobalRequest() {
+		var httpRequestData = GetHttpRequestData();
 		
 		if(!structKeyExists(request, "#variables.framework.applicationKey#Scope")) {
             if(fileExists(expandPath('/#variables.framework.applicationKey#') & "/custom/model/transient/HibachiScope.cfc")) {
@@ -208,6 +209,28 @@ component extends="FW1.framework" {
 			verifyApplicationSetup();
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setProperSession();
+			
+			// If there is no account on the session, then we can look for an authToken,public key, and timestamp to setup that account for this one request.
+			if(!getHibachiScope().getLoggedInFlag() && 
+				structKeyExists(httpRequestData, "headers") && 
+				structKeyExists(httpRequestData.headers, "secretAccessKey") && 
+				len(httpRequestData.headers.secretAccessKey) && 
+				structKeyExists(httpRequestData.headers, "accessKey") && 
+				len(httpRequestData.headers.accessKey)) {
+				
+				var secretAccessKey = httpRequestData.headers.secretAccessKey;
+				var accessKey 		= httpRequestData.headers.accessKey;
+				
+				//recreate the hash from the users data to find an account by....
+				var hashedSaltedPassword = getHibachiScope().getService("AccountService").getHashedAndSaltedPassword(secretAccessKey, accessKey);
+				var authentication =  getHibachiScope().getService("AccountService").getAccountAuthenticationByAuthToken(hashedSaltedPassword);
+				
+				//now set the account on the session if this is not a super user account and the authentication exists.
+				if (!isNull(authentication)){
+					getHibachiScope().getSession().setAccount( authentication.getAccount() );
+				}
+			}
+			
 			//check if we have the authorization header
 			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
 				
@@ -306,7 +329,8 @@ component extends="FW1.framework" {
 		if(
 			!authorizationDetails.authorizedFlag 
 		) {
-			
+			// Get the hibachiConfig out of the application scope in case any changes were made to it
+			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 			
 			// setup the success redirect URL as this current page
 			request.context.sRedirectURL = getHibachiScope().getURL();
