@@ -194,7 +194,7 @@ Notes:
 	
 	<cffunction name="getAccountExists" returntype="any" access="public">
 		<cfset var accountCount = ormExecuteQuery("Select count(a.accountID) FROM #getApplicationKey()#Account a") />
-		<cfreturn accountCount gt 0 />
+		<cfreturn accountCount[1] gt 0 />
 	</cffunction>
 
 	<cffunction name="getAccountWithAuthenticationByEmailAddress" returntype="any" access="public">
