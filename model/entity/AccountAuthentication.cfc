@@ -51,6 +51,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	// Persistent Properties
 	property name="accountAuthenticationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="password" ormtype="string";
+	property name="accessKey" ormtype="string";
 	property name="authToken" ormtype="string";
 	property name="expirationDateTime" ormtype="timestamp";
 	property name="integrationAccountID" ormtype="string";
@@ -141,15 +142,13 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	public string function getSimpleRepresentation() {
 		var rep = "";
 		if(!isNull(getAuthToken())){
-				rep &= "API Token";
-				if(!isNull(getAuthenticationDescription())){
-					rep &=" - #getAuthenticationDescription()#";
+				rep &= "";
+				
+				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID() && !isNull(getAccessKey())){
+				 	var rep = "API Token - #getAuthenticationDescription()#";
 				}
-				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID()){
-					rep &=" - #getAuthToken()#";
-				}
-		}
-		else if(isNull(getIntegration())) {
+				
+		}else if(isNull(getIntegration())) {
 			rep &= "Slatwall";
 			if(isNull(getPassword())) {
 				rep &= " - #rbKey('define.temporary')# #rbKey('define.reset')#";	
@@ -157,9 +156,11 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 		} else {
 			rep &= getIntegration().getIntegrationName();
 		}
+		
 		if(!isNull(getExpirationDateTime())) {
 			rep &= " - #rbKey('define.expires')#: #getFormattedValue('expirationDateTime')#";
 		}
+		
 		return rep;
 	}
 	
