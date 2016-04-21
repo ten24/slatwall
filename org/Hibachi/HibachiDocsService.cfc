@@ -428,8 +428,8 @@ component accessors="true" output="false" extends="HibachiService" {
     		if(structKeyExists(f,'DESCRIPTION')){
     			functionItem['description'] = f.DESCRIPTION;
     		}
-    		if(structKeyExists(f,'PROCESSINGMETHOD')){
-    			functionItem['processingMethod'] = f.PROCESSINGMETHOD;
+    		if(structKeyExists(f,'ProcessMethod')){
+    			functionItem['ProcessMethod'] = f.ProcessMethod;
     		}
     		arrayAppend(functionArray,functionItem);
     	}
