@@ -58,6 +58,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="minimumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.0";
 	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.unlimited";
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
+	property name="surchargeAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
 	property name="shippingIntegrationMethod" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
 	
