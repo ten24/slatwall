@@ -88,7 +88,7 @@ class SWCollectionConfig implements ng.IDirective{
                 angular.forEach(scope.swCollectionConfig.filters, (filter)=>{
                         newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
                 }); 
-                if(angular.isDefined(parentDirective) && angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])){
+                if(angular.isDefined(parentDirective)){
                     parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
                 }
             },
