@@ -8,26 +8,23 @@
 		<cfargument name="expires" type="string" />
 		<cfargument name="domain" type="string" />
 		<!--- cfcookie cannot accept null arguments so using struct to make this easier to work with--->
-		<cfset var cookieInfo = {
-			name=arguments.name,
-			value=arguments.value,
-			secure=arguments.secure,
-			httpOnly=arguments.httpOnly
-		} />
-		
-		<cfif structKeyExists(arguments, "expires")>
-			<cfset cookieInfo.expires = arguments.expires />
-		</cfif>
 
 		<cfif !structKeyExists(arguments, "domain") and len(getApplicationValue("hibachiConfig").sessionCookieDomain)>
 			<cfset arguments.domain = getApplicationValue("hibachiConfig").sessionCookieDomain />
 		</cfif>
 		
-		<cfif structKeyExists(arguments, "domain")>
-			<cfset cookieInfo.expires = arguments.domain />
-		</cfif>
-		
-		<cfcookie attributeCollection="#cookieInfo#" />
+		<cfcookie attributeCollection="#removeNullStructValues(arguments)#" />
+	</cffunction>
+	
+	<cffunction name="removeNullStructValues" returntype="struct" >
+		<cfargument name="oldStruct" type="struct">
+		<cfset var newStruct = {}/>
+		<cfloop collection="#arguments.oldStruct#" item="key">
+			<cfif structKeyExists(arguments.oldStruct,key) && !isNull(arguments.oldStruct[key])>
+				<cfset newStruct[key] = arguments.oldStruct[key]/>
+			</cfif>
+		</cfloop>
+		<cfreturn newStruct/>
 	</cffunction>
 	
 	<cffunction name="cfhtmlhead">
