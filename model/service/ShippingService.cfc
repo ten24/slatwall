@@ -161,25 +161,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=shippingMethodRatesCount; r++) {
 
 				// again, check to make sure that this rate applies to the current orderFulfillment
-				if(
-					isShippingMethodRateUsable(
+				    if(
+						isShippingMethodRateUsable(
 						shippingMethodRates[r], 
 						arguments.orderFulfillment.getShippingAddress(), 
 						arguments.orderFulfillment.getTotalShippingWeight(), 
 						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
 						arguments.orderFulfillment.getTotalShippingQuantity(), 
-						priceGroups
-					)
-				) {
+						priceGroups)
+					) {
 
 					// If this rate is a manual one, then use the default amount
 					if(isNull(shippingMethodRates[r].getShippingIntegration())) {
-
-						arrayAppend(qualifiedRateOptions, {
-							shippingMethodRate=shippingMethodRates[r],
-							totalCharge=nullReplace(shippingMethodRates[r].getDefaultAmount(), 0),
-							integrationFailed=false}
-						);
+						
+						//check if there is a surcharge being added and if there is, multiply that by quantity or weight and add it to the defaultAmount.
+						var defaultAmount = shippingMethodRates[r].getDefaultAmount();
+						var surchargeAmount = shippingMethodRates[r].getSurchargeAmount();
+						var shipmentItemMultiplier = 0;
+						
+						if (arguments.orderFulfillment.getTotalShippingQuantity() > 0){
+							shipmentItemMultiplier = arguments.orderFulfillment.getTotalShippingQuantity();
+						}else if(arguments.orderFulfillment.getTotalShippingWeight() > 0){
+							shipmentItemMultiplier = arguments.orderFulfillment.getTotalShippingWeight();	
+						}
+						
+						if (!isNull(shipmentItemMultiplier) && shipmentItemMultiplier > 0 && !isNull(surchargeAmount) && surchargeAmount > 0){
+							var calculatedChargeAmount = shippingMethodRates[r].getDefaultAmount() + (surchargeAmount * shipmentItemMultiplier);
+							if (isNull(calculatedChargeAmount) || calculatedChargeAmount == 0){
+								calculatedChargeAmount = shippingMethodRates[r].getDefaultAmount();
+							}
+							arrayAppend(qualifiedRateOptions, 
+							{
+								shippingMethodRate=shippingMethodRates[r],
+								totalCharge=nullReplace(calculatedChargeAmount, 0),
+								integrationFailed=false
+							});
+						}else{
+							arrayAppend(qualifiedRateOptions, 
+							{
+								shippingMethodRate=shippingMethodRates[r],
+								totalCharge=nullReplace(shippingMethodRates[r].getDefaultAmount(), 0),
+								integrationFailed=false
+							});	
+						}
+						
 
 					// If we got a response bean from the shipping integration then find those details inside the response
 					} else if (structKeyExists(responseBeans, shippingMethodRates[r].getShippingIntegration().getIntegrationID())) {
