@@ -3,15 +3,32 @@
 	<cffunction name="cfcookie">
 		<cfargument name="name" type="string" required="true" />
 		<cfargument name="value" type="any" required="true" />
-		<cfargument name="expires" type="string" />
 		<cfargument name="secure" type="boolean" default="false" />
+		<cfargument name="httpOnly" type="boolean"  default="true" />	
+		<cfargument name="expires" type="string" />
 		<cfargument name="domain" type="string" />
+		<!--- cfcookie cannot accept null arguments so using struct to make this easier to work with--->
+		<cfset var cookieInfo = {
+			name=arguments.name,
+			value=arguments.value,
+			secure=arguments.secure,
+			httpOnly=arguments.httpOnly
+		} />
+		
+		<cfif structKeyExists(arguments, "expires")>
+			<cfset cookieInfo.expires = arguments.expires />
+		</cfif>
 
 		<cfif !structKeyExists(arguments, "domain") and len(getApplicationValue("hibachiConfig").sessionCookieDomain)>
 			<cfset arguments.domain = getApplicationValue("hibachiConfig").sessionCookieDomain />
 		</cfif>
-
-		<cfcookie attributeCollection="#arguments#" />
+		
+		<cfif structKeyExists(arguments, "domain")>
+			<cfset cookieInfo.expires = arguments.domain />
+		</cfif>
+		
+		<cfcookie attributeCollection="#cookieInfo#" />
+		
 	</cffunction>
 
 	<cffunction name="cfhtmlhead">
