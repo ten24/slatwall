@@ -350,8 +350,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			return false;
 		}
 
-		
-
 		// Make sure that the orderFulfillment Item Price is within the min and max of rate
 		var lowerPrice = 0;
 		var higherPrice = 100000000;
@@ -425,8 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public numeric function calculateShippingRateAdjustment(required numeric originalAmount, required any shippingMethodRate) {
 		var returnAmount = arguments.originalAmount;
 		var shippingMethodRateAdjustmentAmount = arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount');
-
-		if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
+              if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
 
 			switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
 				case "increasePercentage":
@@ -453,7 +450,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return returnAmount;
 	}
-
 
 	// ===================== START: Logical Methods ===========================
 

@@ -129,7 +129,7 @@ component accessors="true" output="false" displayname="MerchanteSolutions" imple
 
 		} else if(requestBean.getTransactionType() == "chargePreAuthorization") {
 
-			requestData["transaction_id"] = requestBean.getOriginalProviderTransactionID();
+			requestData["transaction_id"] = requestBean.getOriginalAuthorizationProviderTransactionID();
 			requestData["transaction_amount"] = requestBean.getTransactionAmount();
 			requestData["invoice_number"] = requestBean.getOrder().getShortReferenceID(true);
 
