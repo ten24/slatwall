@@ -1,43 +1,4 @@
 component accessors="true" output="false" extends="HibachiService" {
-	public struct function generatePublicProcessingJson(){
-		var serviceComponentMetaData = {};
-
-		var serviceComponentDirectoryPath = expandPath('/'&getDao('hibachiDao').getApplicationKey()) & '/model/service/';
-
-		var serviceComponentPath = getDao('hibachiDao').getApplicationValue('applicationKey')&'.model.service.';
-		
-		var componentName = 'PublicService';
-		var componentMetaData = getComponentMetaData(serviceComponentPath&componentName);
-		request.debug(componentMetaData);
-//		serviceComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
-//		if(structKeyExists(componentMetaData,'description')){
-//			serviceComponentMetaData[componentName]['description'] = componentMetaData.description;
-//		}
-//		if(structKeyExists(componentMetaData,'functions')){
-//			serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
-//		}
-//		if(structKeyExists(componentMetaData,'properties')){
-//			serviceComponentMetaData[componentName]['properties'] = componentMetaData.properties;
-//		}
-//
-//		for(var componentCFCName in serviceComponentDirectoryListing){
-//			var componentName = listFirst(componentCFCName,'.');
-//			var componentMetaData = getComponentMetaData(serviceComponentPath&componentName);
-//			serviceComponentMetaData[componentName] = {};
-//			serviceComponentMetaData[componentName]['extends'] = getExtended(componentMetaData);
-//    		if(structKeyExists(componentMetaData,'description')){
-//    			serviceComponentMetaData[componentName]['description'] = componentMetaData.description;
-//    		}
-//			if(structKeyExists(componentMetaData,'functions')){
-//				serviceComponentMetaData[componentName]['functions'] = getFunctions(componentMetaData);
-//			}
-//			if(structKeyExists(componentMetaData,'properties')){
-//				serviceComponentMetaData[componentName]['properties'] = componentMetaData.properties;
-//			}
-//		}
-		return serviceComponentMetaData;
-	}
-
 	public struct function generateEntityJson(){
 
 		//get all metadata for components related to model
@@ -466,6 +427,9 @@ component accessors="true" output="false" extends="HibachiService" {
     		}
     		if(structKeyExists(f,'DESCRIPTION')){
     			functionItem['description'] = f.DESCRIPTION;
+    		}
+    		if(structKeyExists(f,'ProcessMethod')){
+    			functionItem['ProcessMethod'] = f.ProcessMethod;
     		}
     		arrayAppend(functionArray,functionItem);
     	}
