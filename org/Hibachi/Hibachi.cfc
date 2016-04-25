@@ -91,7 +91,8 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
-	variables.framework.hibachi.lineBreakStyle="#server.os.name#";
+	variables.framework.hibachi.sessionCookieDomain = "";
+	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -274,14 +275,6 @@ component extends="FW1.framework" {
 						account.setJwtToken(jwt);
 						getHibachiScope().getSession().setAccount( account );
 					}
-				}
-			}
-
-			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
-			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
-				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
-				if(!isNull(authTokenAccount)) {
-					getHibachiScope().getSession().setAccount( authTokenAccount );
 				}
 			}
 
