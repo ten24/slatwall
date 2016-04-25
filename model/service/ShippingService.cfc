@@ -179,10 +179,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						var surchargeAmount = shippingMethodRates[r].getSurchargeAmount();
 						var shipmentItemMultiplier = 0;
 						
-						if (arguments.orderFulfillment.getTotalShippingQuantity() > 0){
+						//if we have weight, use that, otherwise use quantity if and only if we have a surcharge amount
+						if(arguments.orderFulfillment.getTotalShippingWeight() > 0 && surchargeAmount){
+							shipmentItemMultiplier = ceiling(arguments.orderFulfillment.getTotalShippingWeight()); //round up.	
+						}
+						else if (arguments.orderFulfillment.getTotalShippingQuantity() > 0 && surchargeAmount){
 							shipmentItemMultiplier = arguments.orderFulfillment.getTotalShippingQuantity();
-						}else if(arguments.orderFulfillment.getTotalShippingWeight() > 0){
-							shipmentItemMultiplier = arguments.orderFulfillment.getTotalShippingWeight();	
 						}
 						
 						if (!isNull(shipmentItemMultiplier) && shipmentItemMultiplier > 0 && !isNull(surchargeAmount) && surchargeAmount > 0){
