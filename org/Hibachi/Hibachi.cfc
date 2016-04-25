@@ -222,7 +222,7 @@ component extends="FW1.framework" {
 								request.context.sRedirectQS = "";
 						}
 						if(structKeyExists(request.context, "sRedirectURL")) {
-								request.context.sRedirectURL = ReplaceNoCase(request.context.sRedirectAction, "detail", "list");
+								request.context.sRedirectURL = ReplaceNoCase(request.context.sRedirectURL, "detail", "list");
 								getHibachiScope().getApplicationValue("application").redirectExact( redirectlocation=request.context.sRedirectURL );
 						} else if (structKeyExists(request.context, "sRedirectAction")) {
 								if(FindNoCase("detail", request.context.sRedirectAction)){
