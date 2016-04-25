@@ -32,9 +32,9 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getConfig');
     this.publicMethods=listAppend(this.publicMethods, 'getInstantiationKey');
     
-    //  this.secureMethods='';
-    //  this.secureMethods=listAppend(this.secureMethods, 'get');
-    //  this.secureMethods=listAppend(this.secureMethods, 'post');
+    this.secureMethods='';
+    this.secureMethods=listAppend(this.secureMethods, 'get');
+    this.secureMethods=listAppend(this.secureMethods, 'post');
     
     
     public void function init( required any fw ) {
