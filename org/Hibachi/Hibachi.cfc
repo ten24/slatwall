@@ -347,9 +347,7 @@ component extends="FW1.framework" {
 
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);
 		// Verify Authentication before anything happens
-		if(
-			!authorizationDetails.authorizedFlag
-		) {
+		if(!authorizationDetails.authorizedFlag) {
 			
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
