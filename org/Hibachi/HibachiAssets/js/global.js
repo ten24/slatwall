@@ -180,7 +180,6 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value){
 		jQuery(value).validate({
 			invalidHandler: function() {
-                jQuery ("button[type='submit']").prop('disabled', false);
 			}
 		});
 	});
