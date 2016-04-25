@@ -91,7 +91,8 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
-	variables.framework.hibachi.lineBreakStyle="#server.os.name#";
+	variables.framework.hibachi.sessionCookieDomain = "";
+	variables.framework.hibachi.lineBreakStyle = SERVER.OS.NAME;
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}

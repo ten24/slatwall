@@ -493,346 +493,346 @@ Notes:
 		<cfreturn noQualifierCurrentActivePromotionPeriodQuery>
 	</cffunction>
 	
-	<!--- function to get all discount amount at the sku level --->
-	<cffunction name="getAllDiscounts" returntype="any" access="public">
-		<cfargument name="productID" type="string">
-		<cfargument name="timeNow" type="date">
-		<cfargument name="currencyCode" type="string">
+      <!--- function to get all discount amount at the sku level --->
+      <cffunction name="getAllDiscounts" returntype="any" access="public">
+          <cfargument name="productID" type="string">
+          <cfargument name="timeNow" type="date">
+          <cfargument name="currencyCode" type="string">
+      
+          <cfset var defaultSkuCurrency=getHibachiScope().setting('skuCurrency') />
+          <cfset var allDiscountsQuery = "" />
+          <cfquery name="allDiscountsQuery">
+              <cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
+              SELECT 
+              skuID,
+              originalPrice,
+              discountLevel,
+              salePriceDiscountType,
+              CAST(CASE salePriceDiscountType
+                  WHEN 'percentageOff' THEN originalPrice - (originalPrice * (discountAmount / 100)) 
+                  WHEN 'amount' THEN discountAmount
+                  WHEN 'amountOff' THEN (originalPrice - discountAmount) 
+              END as DECIMAL(19,2)) as salePrice,
+              discountAmount as amount,
+              roundingRuleID,
+              salePriceExpirationDateTime,
+              promotionPeriodID,
+              promotionID
+              FROM (   
+                  SELECT combinedPromotionLevels.skuID,
+                      CASE
+                          WHEN combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+                              THEN COALESCE(skuCurrency.price,combinedPromotionLevels.originalPrice*skuConversionRate.conversionRate )
+                          ELSE combinedPromotionLevels.originalPrice
+                      END AS originalPrice,
+                      CASE
+                          WHEN combinedPromotionLevels.prCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">  AND combinedPromotionLevels.salePriceDiscountType !='percentageOff'
+                              THEN COALESCE(prCurrency.amount,combinedPromotionLevels.discountAmount*prConversionRate.conversionRate )
+                          ELSE combinedPromotionLevels.discountAmount
+                      END AS discountAmount,
+                      combinedPromotionLevels.discountLevel,
+                      combinedPromotionLevels.salePriceDiscountType,
+                      combinedPromotionLevels.roundingRuleID,
+                      combinedPromotionLevels.salePriceExpirationDateTime,
+                      combinedPromotionLevels.promotionPeriodID,
+                      combinedPromotionLevels.promotionID
+              FROM (
+              </cfif>
+              <!---Start: Original query--->
+              SELECT
+                  SwSku.skuID as skuID,
+                  SwSku.price as originalPrice,
+                  'sku' as discountLevel,
+                  prSku.amount,
+                  prSku.amountType as salePriceDiscountType,
+                  round(CASE prSku.amountType
+                      WHEN 'amount' THEN prSku.amount
+                      WHEN 'amountOff' THEN SwSku.price - prSku.amount
+                      WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prSku.amount / 100))
+                  END *100,0)/100 as salePrice,
+                  prSku.roundingRuleID as roundingRuleID,
+                  ppSku.endDateTime as salePriceExpirationDateTime,
+                  ppSku.promotionPeriodID as promotionPeriodID,
+                  ppSku.promotionID as promotionID,
+                  prSku.promotionRewardID as promotionRewardID,
+                  prSku.amount as discountAmount,
+                  COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
+                  COALESCE(prSku.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode 
+              FROM
+                  SwSku
+                INNER JOIN
+                  SwPromoRewardSku on SwPromoRewardSku.skuID = SwSku.skuID
+                INNER JOIN
+                  SwPromoReward prSku on prSku.promotionRewardID = SwPromoRewardSku.promotionRewardID
+                INNER JOIN
+                  SwPromotionPeriod ppSku on ppSku.promotionPeriodID = prSku.promotionPeriodID
+              WHERE
+                  (ppSku.startDateTime is null or ppSku.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+                AND
+                  (ppSku.endDateTime is null or ppSku.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+              <cfif structKeyExists(arguments, "productID")>
+                AND
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+              </cfif>
+            UNION
+              SELECT
+                  SwSku.skuID as skuID,
+                  SwSku.price as originalPrice,
+                  'product' as discountLevel,
+                  prProduct.amount,
+                  prProduct.amountType as salePriceDiscountType,
+                  ROUND(CASE prProduct.amountType
+                      WHEN 'amount' THEN prProduct.amount
+                      WHEN 'amountOff' THEN SwSku.price - prProduct.amount
+                      WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProduct.amount / 100))
+                  END *100,0)/100 as salePrice,
+                  prProduct.roundingRuleID as roundingRuleID,
+                  ppProduct.endDateTime as salePriceExpirationDateTime,
+                  ppProduct.promotionPeriodID as promotionPeriodID,
+                  ppProduct.promotionID as promotionID,
+                  prProduct.promotionRewardID as promotionRewardID,
+                  prProduct.amount as discountAmount,
+                  COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
+                  COALESCE(prProduct.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
+              FROM
+                  SwSku
+                INNER JOIN
+                  SwPromoRewardProduct on SwPromoRewardProduct.productID = SwSku.productID
+                INNER JOIN
+                  SwPromoReward prProduct on prProduct.promotionRewardID = SwPromoRewardProduct.promotionRewardID
+                INNER JOIN
+                  SwPromotionPeriod ppProduct on ppProduct.promotionPeriodID = prProduct.promotionPeriodID
+              WHERE
+                  (ppProduct.startDateTime is null or ppProduct.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+                AND
+                  (ppProduct.endDateTime is null or ppProduct.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+              <cfif structKeyExists(arguments, "productID")>
+                AND
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+              </cfif>
+            UNION
+              SELECT
+                  SwSku.skuID as skuID,
+                  SwSku.price as originalPrice,
+                  'brand' as discountLevel,
+                  prBrand.amount,
+                  prBrand.amountType as salePriceDiscountType,
+                  ROUND(CASE prBrand.amountType
+                      WHEN 'amount' THEN prBrand.amount
+                      WHEN 'amountOff' THEN SwSku.price - prBrand.amount
+                      WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prBrand.amount / 100))
+                  END *100,0)/100 as salePrice,
+                  prBrand.roundingRuleID as roundingRuleID,
+                  ppBrand.endDateTime as salePriceExpirationDateTime,
+                  ppBrand.promotionPeriodID as promotionPeriodID,
+                  ppBrand.promotionID as promotionID,
+                  prBrand.promotionRewardID as promotionRewardID,
+                  prBrand.amount as discountAmount,
+                  COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
+                  COALESCE(prBrand.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
+              FROM
+                  SwSku
+                INNER JOIN
+                  SwProduct on SwProduct.productID = SwSku.productID
+                INNER JOIN
+                  SwPromoRewardBrand on SwPromoRewardBrand.brandID = SwProduct.brandID
+                INNER JOIN
+                  SwPromoReward prBrand on prBrand.promotionRewardID = SwPromoRewardBrand.promotionRewardID
+                INNER JOIN
+                  SwPromotionPeriod ppBrand on ppBrand.promotionPeriodID = prBrand.promotionPeriodID
+              WHERE
+                  (ppBrand.startDateTime is null or ppBrand.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+                AND
+                  (ppBrand.endDateTime is null or ppBrand.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+              <cfif structKeyExists(arguments, "productID")>
+                AND
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+              </cfif>
+            UNION
+              SELECT
+                  SwSku.skuID as skuID,
+                  SwSku.price as originalPrice,
+                  'option' as discountLevel,
+                  prOption.amount,
+                  prOption.amountType as salePriceDiscountType,
+                  ROUND(CASE prOption.amountType
+                      WHEN 'amount' THEN prOption.amount
+                      WHEN 'amountOff' THEN SwSku.price - prOption.amount
+                      WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prOption.amount / 100))
+                  END *100,0)/100 as salePrice,
+                  prOption.roundingRuleID as roundingRuleID,
+                  ppOption.endDateTime as salePriceExpirationDateTime,
+                  ppOption.promotionPeriodID as promotionPeriodID,
+                  ppOption.promotionID as promotionID,
+                  prOption.promotionRewardID as promotionRewardID,
+                  prOption.amount as discountAmount,
+                  COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
+                  COALESCE(prOption.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
+              FROM
+                  SwSku
+                INNER JOIN
+                  SwSkuOption on SwSkuOption.skuID = SwSku.skuID
+                INNER JOIN
+                  SwPromoRewardOption on SwPromoRewardOption.optionID = SwSkuOption.optionID
+                INNER JOIN
+                  SwPromoReward prOption on prOption.promotionRewardID = SwPromoRewardOption.promotionRewardID
+                INNER JOIN
+                  SwPromotionPeriod ppOption on ppOption.promotionPeriodID = prOption.promotionPeriodID
+              WHERE
+                  (ppOption.startDateTime is null or ppOption.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+                AND
+                  (ppOption.endDateTime is null or ppOption.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+              <cfif structKeyExists(arguments, "productID")>
+                AND
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+              </cfif>
+            UNION
+              SELECT
+                  SwSku.skuID as skuID,
+                  SwSku.price as originalPrice,
+                  'productType' as discountLevel,
+                  prProductType.amount,
+                  prProductType.amountType as salePriceDiscountType,
+                  ROUND(CASE prProductType.amountType
+                      WHEN 'amount' THEN prProductType.amount
+                      WHEN 'amountOff' THEN SwSku.price - prProductType.amount
+                      WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProductType.amount / 100))
+                  END *100,0)/100 as salePrice,
+                  prProductType.roundingRuleID as roundingRuleID,
+                  ppProductType.endDateTime as salePriceExpirationDateTime,
+                  ppProductType.promotionPeriodID as promotionPeriodID,
+                  ppProductType.promotionID as promotionID,
+                  prProductType.promotionRewardID as promotionRewardID,
+                  prProductType.amount as discountAmount,
+                  COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
+                  COALESCE(prProductType.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
+              FROM
+                  SwSku
+                INNER JOIN
+                  SwProduct on SwProduct.productID = SwSku.productID
+                INNER JOIN
+                  SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
+                INNER JOIN
+                <cfif getApplicationValue("databaseType") eq "MySQL">
+                  SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE concat('%', SwPromoRewardProductType.productTypeID, '%')
+                <cfelseif getApplicationValue("databaseType") eq "Oracle10g">
+                  SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE ('%' || SwPromoRewardProductType.productTypeID || '%')
+                <cfelse>
+                  SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE ('%' + SwPromoRewardProductType.productTypeID + '%')
+                </cfif>
+                INNER JOIN
+                  SwPromoReward prProductType on prProductType.promotionRewardID = SwPromoRewardProductType.promotionRewardID
+                INNER JOIN
+                  SwPromotionPeriod ppProductType on ppProductType.promotionPeriodID = prProductType.promotionPeriodID
+              WHERE
+                  (ppProductType.startDateTime is null or ppProductType.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+                AND
+                  (ppProductType.endDateTime is null or ppProductType.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+              <cfif structKeyExists(arguments, "productID")>
+                AND
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+              </cfif>
+            UNION
+              SELECT
+                  SwSku.skuID as skuID,
+                  SwSku.price as originalPrice,
+                  'global' as discountLevel,
+                  prGlobal.amount,
+                  prGlobal.amountType as salePriceDiscountType,
+                  ROUND(CASE prGlobal.amountType
+                      WHEN 'amount' THEN prGlobal.amount
+                      WHEN 'amountOff' THEN SwSku.price - prGlobal.amount
+                      WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prGlobal.amount / 100))
+                  END *100,0)/100 as salePrice,
+                  prGlobal.roundingRuleID as roundingRuleID,
+                  ppGlobal.endDateTime as salePriceExpirationDateTime,
+                  ppGlobal.promotionPeriodID as promotionPeriodID,
+                  ppGlobal.promotionID as promotionID,
+                  prGlobal.promotionRewardID as promotionRewardID,
+                  prGlobal.amount as discountAmount,
+                  COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
+                  COALESCE(prGlobal.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
+              FROM
+                  SwSku
+                INNER JOIN
+                  SwProduct on SwProduct.productID = SwSku.productID
+                CROSS JOIN
+                  SwPromoReward prGlobal
+                INNER JOIN
+                  SwPromotionPeriod ppGlobal on prGlobal.promotionPeriodID = ppGlobal.promotionPeriodID
+              WHERE
+                  prGlobal.rewardType IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="merchandise,subscription,contentAccess" list="true">)
+                AND
+                  NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardSku WHERE SwPromoRewardSku.promotionRewardID = prGlobal.promotionRewardID)
+                AND
+                  NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardProduct WHERE SwPromoRewardProduct.promotionRewardID = prGlobal.promotionRewardID)
+                AND
+                  NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardBrand WHERE SwPromoRewardBrand.promotionRewardID = prGlobal.promotionRewardID)
+                AND
+                  NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardOption WHERE SwPromoRewardOption.promotionRewardID = prGlobal.promotionRewardID)
+                AND
+                  NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardProductType WHERE SwPromoRewardProductType.promotionRewardID = prGlobal.promotionRewardID)
+                AND
+                  (ppGlobal.startDateTime is null or ppGlobal.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+                AND
+                  (ppGlobal.endDateTime is null or ppGlobal.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
+              <cfif structKeyExists(arguments, "productID")>
+                AND
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+              </cfif>
+              <!---END: Original query--->
+              
+              <cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
+              
+               ) combinedPromotionLevels
+                  LEFT JOIN SwSkuCurrency skuCurrency
+                      ON combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">  
+                      AND combinedPromotionLevels.skuID=skuCurrency.skuID
+                      AND skuCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">   
+                  LEFT JOIN SwPromotionRewardCurrency prCurrency
+                      ON combinedPromotionLevels.prCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">  
+                      AND combinedPromotionLevels.promotionRewardID=prCurrency.promotionRewardID
+                      AND prCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">   
+                  LEFT JOIN (
+                      SELECT cr1.currencyCode, cr1.conversionRate
+                      FROM SwCurrencyRate cr1
+                          LEFT JOIN SwCurrencyRate cr2
+                              ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
+                                  AND cr1.currencyCode=cr2.currencyCode 
+                                  AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 
+                                  AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
+                                  AND cr2.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
+                              )
+                              WHERE cr2.currencyRateID IS NULL AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
+                              AND cr1.conversionCurrencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
+                      ) skuConversionRate ON skuCurrencyCode=skuConversionRate.currencyCode
+                  LEFT JOIN (
+                      SELECT cr1.currencyCode, cr1.conversionCurrencyCode, cr1.conversionRate
+                      FROM SwCurrencyRate cr1
+                          LEFT JOIN SwCurrencyRate cr2
+                              ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
+                                  AND cr1.currencyCode=cr2.currencyCode 
+                                  AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 
+                                  AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
+                                  AND cr2.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
+                              )
+                              WHERE cr2.currencyRateID IS NULL AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
+                              
+                      ) prConversionRate 
+                      ON prConversionRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
+                          AND combinedPromotionLevels.prCurrencyCode=prConversionRate.currencyCode
+                  ) convertedDiscounts WHERE 
+                      CASE salePriceDiscountType
+                          WHEN 'percentageOff' THEN originalPrice - (originalPrice * (discountAmount / 100)) 
+                          WHEN 'amount' THEN CAST(discountAmount AS DECIMAL(19,2))
+                          WHEN 'amountOff' THEN CAST((originalPrice - discountAmount) AS DECIMAL(19,2))
+                      END IS NOT NULL
+              </cfif>
+          </cfquery>
+          
+          <cfreturn allDiscountsQuery />
+      </cffunction>
 
-		<cfset var defaultSkuCurrency=getHibachiScope().setting('skuCurrency') />
-		<cfset var allDiscountsQuery = "" />
-		<cfquery name="allDiscountsQuery">
-			<cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
-			SELECT 
-			skuID,
-			originalPrice,
-			discountLevel,
-			salePriceDiscountType,
-			CAST(CASE salePriceDiscountType
-				WHEN 'percentageOff' THEN originalPrice - (originalPrice * (discountAmount / 100)) 
-				WHEN 'amount' THEN discountAmount
-				WHEN 'amountOff' THEN (originalPrice - discountAmount) 
-			END as DECIMAL(19,2)) as salePrice,
-			discountAmount as amount,
-			roundingRuleID,
-			salePriceExpirationDateTime,
-			promotionPeriodID,
-			promotionID
-			FROM (	 
-				SELECT combinedPromotionLevels.skuID,
-					CASE
-						WHEN combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
-							THEN COALESCE(skuCurrency.price,combinedPromotionLevels.originalPrice*skuConversionRate.conversionRate )
-						ELSE combinedPromotionLevels.originalPrice
-					END AS originalPrice,
-					CASE
-						WHEN combinedPromotionLevels.prCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">  AND combinedPromotionLevels.salePriceDiscountType !='percentageOff'
-							THEN COALESCE(prCurrency.amount,combinedPromotionLevels.discountAmount*prConversionRate.conversionRate )
-						ELSE combinedPromotionLevels.discountAmount
-					END AS discountAmount,
-					combinedPromotionLevels.discountLevel,
-					combinedPromotionLevels.salePriceDiscountType,
-					combinedPromotionLevels.roundingRuleID,
-					combinedPromotionLevels.salePriceExpirationDateTime,
-					combinedPromotionLevels.promotionPeriodID,
-					combinedPromotionLevels.promotionID
-			FROM (
-			</cfif>
-			<!---Start: Original query--->
-			SELECT
-				SwSku.skuID as skuID,
-				SwSku.price as originalPrice,
-				'sku' as discountLevel,
-				prSku.amount,
-				prSku.amountType as salePriceDiscountType,
-				round(CASE prSku.amountType
-					WHEN 'amount' THEN prSku.amount
-					WHEN 'amountOff' THEN SwSku.price - prSku.amount
-					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prSku.amount / 100))
-				END *100,0)/100 as salePrice,
-				prSku.roundingRuleID as roundingRuleID,
-				ppSku.endDateTime as salePriceExpirationDateTime,
-				ppSku.promotionPeriodID as promotionPeriodID,
-				ppSku.promotionID as promotionID,
-				prSku.promotionRewardID as promotionRewardID,
-				prSku.amount as discountAmount,
-				COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
-				COALESCE(prSku.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode 
-			FROM
-				SwSku
-			  INNER JOIN
-			  	SwPromoRewardSku on SwPromoRewardSku.skuID = SwSku.skuID
-			  INNER JOIN
-			  	SwPromoReward prSku on prSku.promotionRewardID = SwPromoRewardSku.promotionRewardID
-			  INNER JOIN
-			    SwPromotionPeriod ppSku on ppSku.promotionPeriodID = prSku.promotionPeriodID
-			WHERE
-				(ppSku.startDateTime is null or ppSku.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			  AND
-			  	(ppSku.endDateTime is null or ppSku.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			<cfif structKeyExists(arguments, "productID")>
-			  AND
-				SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
-			</cfif>
-		  UNION
-			SELECT
-				SwSku.skuID as skuID,
-				SwSku.price as originalPrice,
-				'product' as discountLevel,
-				prProduct.amount,
-				prProduct.amountType as salePriceDiscountType,
-				ROUND(CASE prProduct.amountType
-					WHEN 'amount' THEN prProduct.amount
-					WHEN 'amountOff' THEN SwSku.price - prProduct.amount
-					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProduct.amount / 100))
-				END *100,0)/100 as salePrice,
-				prProduct.roundingRuleID as roundingRuleID,
-				ppProduct.endDateTime as salePriceExpirationDateTime,
-				ppProduct.promotionPeriodID as promotionPeriodID,
-				ppProduct.promotionID as promotionID,
-				prProduct.promotionRewardID as promotionRewardID,
-				prProduct.amount as discountAmount,
-				COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
-				COALESCE(prProduct.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
-			FROM
-				SwSku
-			  INNER JOIN
-			  	SwPromoRewardProduct on SwPromoRewardProduct.productID = SwSku.productID
-			  INNER JOIN
-			  	SwPromoReward prProduct on prProduct.promotionRewardID = SwPromoRewardProduct.promotionRewardID
-			  INNER JOIN
-			    SwPromotionPeriod ppProduct on ppProduct.promotionPeriodID = prProduct.promotionPeriodID
-			WHERE
-				(ppProduct.startDateTime is null or ppProduct.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			  AND
-			  	(ppProduct.endDateTime is null or ppProduct.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			<cfif structKeyExists(arguments, "productID")>
-			  AND
-				SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
-			</cfif>
-		  UNION
-			SELECT
-				SwSku.skuID as skuID,
-				SwSku.price as originalPrice,
-				'brand' as discountLevel,
-				prBrand.amount,
-				prBrand.amountType as salePriceDiscountType,
-				ROUND(CASE prBrand.amountType
-					WHEN 'amount' THEN prBrand.amount
-					WHEN 'amountOff' THEN SwSku.price - prBrand.amount
-					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prBrand.amount / 100))
-				END *100,0)/100 as salePrice,
-				prBrand.roundingRuleID as roundingRuleID,
-				ppBrand.endDateTime as salePriceExpirationDateTime,
-				ppBrand.promotionPeriodID as promotionPeriodID,
-				ppBrand.promotionID as promotionID,
-				prBrand.promotionRewardID as promotionRewardID,
-				prBrand.amount as discountAmount,
-				COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
-				COALESCE(prBrand.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
-			FROM
-				SwSku
-			  INNER JOIN
-			  	SwProduct on SwProduct.productID = SwSku.productID
-			  INNER JOIN
-			  	SwPromoRewardBrand on SwPromoRewardBrand.brandID = SwProduct.brandID
-			  INNER JOIN
-			  	SwPromoReward prBrand on prBrand.promotionRewardID = SwPromoRewardBrand.promotionRewardID
-			  INNER JOIN
-			    SwPromotionPeriod ppBrand on ppBrand.promotionPeriodID = prBrand.promotionPeriodID
-			WHERE
-				(ppBrand.startDateTime is null or ppBrand.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			  AND
-			  	(ppBrand.endDateTime is null or ppBrand.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			<cfif structKeyExists(arguments, "productID")>
-			  AND
-			  	SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
-			</cfif>
-		  UNION
-		  	SELECT
-		  		SwSku.skuID as skuID,
-				SwSku.price as originalPrice,
-				'option' as discountLevel,
-				prOption.amount,
-				prOption.amountType as salePriceDiscountType,
-				ROUND(CASE prOption.amountType
-					WHEN 'amount' THEN prOption.amount
-					WHEN 'amountOff' THEN SwSku.price - prOption.amount
-					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prOption.amount / 100))
-				END *100,0)/100 as salePrice,
-				prOption.roundingRuleID as roundingRuleID,
-				ppOption.endDateTime as salePriceExpirationDateTime,
-				ppOption.promotionPeriodID as promotionPeriodID,
-				ppOption.promotionID as promotionID,
-				prOption.promotionRewardID as promotionRewardID,
-				prOption.amount as discountAmount,
-				COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
-				COALESCE(prOption.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
-			FROM
-				SwSku
-			  INNER JOIN
-			  	SwSkuOption on SwSkuOption.skuID = SwSku.skuID
-			  INNER JOIN
-			  	SwPromoRewardOption on SwPromoRewardOption.optionID = SwSkuOption.optionID
-			  INNER JOIN
-			  	SwPromoReward prOption on prOption.promotionRewardID = SwPromoRewardOption.promotionRewardID
-			  INNER JOIN
-			    SwPromotionPeriod ppOption on ppOption.promotionPeriodID = prOption.promotionPeriodID
-			WHERE
-				(ppOption.startDateTime is null or ppOption.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			  AND
-			  	(ppOption.endDateTime is null or ppOption.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			<cfif structKeyExists(arguments, "productID")>
-			  AND
-			  	SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
-			</cfif>
-		  UNION
-		  	SELECT
-		  		SwSku.skuID as skuID,
-				SwSku.price as originalPrice,
-				'productType' as discountLevel,
-				prProductType.amount,
-				prProductType.amountType as salePriceDiscountType,
-				ROUND(CASE prProductType.amountType
-					WHEN 'amount' THEN prProductType.amount
-					WHEN 'amountOff' THEN SwSku.price - prProductType.amount
-					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProductType.amount / 100))
-				END *100,0)/100 as salePrice,
-				prProductType.roundingRuleID as roundingRuleID,
-				ppProductType.endDateTime as salePriceExpirationDateTime,
-				ppProductType.promotionPeriodID as promotionPeriodID,
-				ppProductType.promotionID as promotionID,
-				prProductType.promotionRewardID as promotionRewardID,
-				prProductType.amount as discountAmount,
-				COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
-				COALESCE(prProductType.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
-			FROM
-				SwSku
-			  INNER JOIN
-			  	SwProduct on SwProduct.productID = SwSku.productID
-			  INNER JOIN
-			  	SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
-			  INNER JOIN
-			  <cfif getApplicationValue("databaseType") eq "MySQL">
-			  	SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE concat('%', SwPromoRewardProductType.productTypeID, '%')
-			  <cfelseif getApplicationValue("databaseType") eq "Oracle10g">
-			  	SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE ('%' || SwPromoRewardProductType.productTypeID || '%')
-			  <cfelse>
-			  	SwPromoRewardProductType on SwProductType.productTypeIDPath LIKE ('%' + SwPromoRewardProductType.productTypeID + '%')
-			  </cfif>
-			  INNER JOIN
-			  	SwPromoReward prProductType on prProductType.promotionRewardID = SwPromoRewardProductType.promotionRewardID
-			  INNER JOIN
-			    SwPromotionPeriod ppProductType on ppProductType.promotionPeriodID = prProductType.promotionPeriodID
-			WHERE
-				(ppProductType.startDateTime is null or ppProductType.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			  AND
-			  	(ppProductType.endDateTime is null or ppProductType.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			<cfif structKeyExists(arguments, "productID")>
-			  AND
-			  	SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
-			</cfif>
-		  UNION
-			SELECT
-				SwSku.skuID as skuID,
-				SwSku.price as originalPrice,
-				'global' as discountLevel,
-				prGlobal.amount,
-				prGlobal.amountType as salePriceDiscountType,
-				ROUND(CASE prGlobal.amountType
-					WHEN 'amount' THEN prGlobal.amount
-					WHEN 'amountOff' THEN SwSku.price - prGlobal.amount
-					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prGlobal.amount / 100))
-				END *100,0)/100 as salePrice,
-				prGlobal.roundingRuleID as roundingRuleID,
-				ppGlobal.endDateTime as salePriceExpirationDateTime,
-				ppGlobal.promotionPeriodID as promotionPeriodID,
-				ppGlobal.promotionID as promotionID,
-				prGlobal.promotionRewardID as promotionRewardID,
-				prGlobal.amount as discountAmount,
-				COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
-				COALESCE(prGlobal.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
-			FROM
-				SwSku
-			  INNER JOIN
-			  	SwProduct on SwProduct.productID = SwSku.productID
-			  CROSS JOIN
-				SwPromoReward prGlobal
-			  INNER JOIN
-			  	SwPromotionPeriod ppGlobal on prGlobal.promotionPeriodID = ppGlobal.promotionPeriodID
-			WHERE
-			  	prGlobal.rewardType IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="merchandise,subscription,contentAccess" list="true">)
-			  AND
-			  	NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardSku WHERE SwPromoRewardSku.promotionRewardID = prGlobal.promotionRewardID)
-			  AND
-			  	NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardProduct WHERE SwPromoRewardProduct.promotionRewardID = prGlobal.promotionRewardID)
-			  AND
-			  	NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardBrand WHERE SwPromoRewardBrand.promotionRewardID = prGlobal.promotionRewardID)
-			  AND
-			  	NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardOption WHERE SwPromoRewardOption.promotionRewardID = prGlobal.promotionRewardID)
-			  AND
-			  	NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardProductType WHERE SwPromoRewardProductType.promotionRewardID = prGlobal.promotionRewardID)
-			  AND
-				(ppGlobal.startDateTime is null or ppGlobal.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			  AND
-			  	(ppGlobal.endDateTime is null or ppGlobal.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
-			<cfif structKeyExists(arguments, "productID")>
-			  AND
-				SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
-			</cfif>
-			<!---END: Original query--->
-			
-			<cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
-			
-			 ) as combinedPromotionLevels
-				LEFT JOIN SwSkuCurrency AS skuCurrency
-					ON combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">  
-					AND combinedPromotionLevels.skuID=skuCurrency.skuID
-					AND skuCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">   
-				LEFT JOIN SwPromotionRewardCurrency AS prCurrency
-					ON combinedPromotionLevels.prCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">  
-					AND combinedPromotionLevels.promotionRewardID=prCurrency.promotionRewardID
-					AND prCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">   
-				LEFT JOIN (
-					SELECT cr1.currencyCode, cr1.conversionRate
-					FROM SwCurrencyRate AS cr1
-						LEFT JOIN SwCurrencyRate AS cr2
-							ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
-								AND cr1.currencyCode=cr2.currencyCode 
-								AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 
-								AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-								AND cr2.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-							)
-							WHERE cr2.currencyRateID IS NULL AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-							AND cr1.conversionCurrencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
-					) AS skuConversionRate ON skuCurrencyCode=skuConversionRate.currencyCode
-				LEFT JOIN (
-					SELECT cr1.currencyCode, cr1.conversionCurrencyCode, cr1.conversionRate
-					FROM SwCurrencyRate AS cr1
-						LEFT JOIN SwCurrencyRate AS cr2
-							ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
-								AND cr1.currencyCode=cr2.currencyCode 
-								AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 
-								AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-								AND cr2.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-							)
-							WHERE cr2.currencyRateID IS NULL AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-							
-					) AS prConversionRate 
-					ON prConversionRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
-						AND combinedPromotionLevels.prCurrencyCode=prConversionRate.currencyCode
-				) as convertedDiscounts WHERE 
-					CASE salePriceDiscountType
-						WHEN 'percentageOff' THEN originalPrice - (originalPrice * (discountAmount / 100)) 
-						WHEN 'amount' THEN CAST(discountAmount AS DECIMAL(19,2))
-						WHEN 'amountOff' THEN CAST((originalPrice - discountAmount) AS DECIMAL(19,2))
-					END IS NOT NULL
-			</cfif>
-		</cfquery>
-		
-		<cfreturn allDiscountsQuery />
-	</cffunction>
-	
 	<!--- function to only return price of the active noQualifer Discount Prices --->
 	<cffunction name="getNoQualifierDiscounts" returntype="any" access="public">
 		<cfargument name="noQualifierCurrentActivePromotionPeriodsQuery" type="any">
