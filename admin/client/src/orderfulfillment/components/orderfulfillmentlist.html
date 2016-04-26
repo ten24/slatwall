@@ -23,6 +23,17 @@
             data-title="{{entityName}}"
             data-multiselect-field-name="test"
             data-multiselect-property-identifier="test"
-            data-edit="true">
+            data-edit="true"
+    >
+    	<sw-listing-column
+				data-property-identifier="order.orderNumber"
+		></sw-listing-column>
+		<sw-listing-column
+				data-property-identifier="modifiedDateTime"
+		></sw-listing-column>
+		<sw-listing-column
+				data-property-identifier="shippingMethod.shippingMethodName"
+		></sw-listing-column>
+    </sw-listing-display>
 
 </section>
