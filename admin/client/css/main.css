@@ -835,6 +835,8 @@ input[type=number] {
   display: inline-block !important;
   height: 22px !important;
   vertical-align: bottom !important;
+  font-size: 12px;
+  padding: 0px 5px;
 }
 a,
 a:active,
@@ -5596,6 +5598,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-input-group {
   display: inline-block;
   position: relative;
+  white-space: nowrap;
 }
 .s-input-group .s-title {
   background: #F2F2F2;
@@ -5616,21 +5619,52 @@ a.disabled > i.hibachi-ui-radio-checked {
   vertical-align: top;
 }
 .s-input-group .btn {
-  margin-left: -5px;
+  margin-left: -3px;
   border: 1px solid #CCC;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
 }
+.s-input-group .btn.s-revert-btn {
+  margin-left: -4px;
+}
 .s-input-group .s-action-btn {
   border-color: #5cb85c;
-  position: absolute;
-  right: 0px;
-  top: 0px;
+  z-index: 2;
+  margin-left: -3px;
+  display: none;
+}
+.s-input-group.s-edit .s-action-btn {
+  display: inline-block;
+}
+.s-input-group.s-edit .s-indicator-icon {
+  display: none;
+}
+.s-input-group.s-edit .s-revert-btn {
+  display: none;
 }
 .s-input-group .s-indicator-icon {
   padding: 2px;
   display: inline-block;
   vertical-align: top;
+}
+.s-input-group .s-remove-change {
+  position: absolute;
+  top: 1px;
+  right: 44px;
+  font-size: 15px;
+  color: #aaa;
+  display: none;
+}
+.s-input-group.s-edit .s-remove-change {
+  display: inline-block;
+}
+.s-input-group .s-remove-change:hover {
+  color: #E43030;
+}
+.s-input-group.s-edit input {
+  border-color: #5CB85C;
+  border-radius: 0px;
+  padding-right: 10px;
 }
 /*-- Custom Modal Amount Change --*/
 .s-modal-module-wrapper .s-modal-module {
@@ -6578,7 +6612,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-detail-content-table tbody tr td.s-input-table-cell ul li:first-child {
   margin-top: 0px;
 }
-.s-detail-content-table tbody tr td.s-input-table-cell.s-qty .s-input-group input {
+.s-detail-content-table tbody tr td.s-input-table-cell .s-input-group input {
   max-width: 90px;
 }
 .s-detail-content-table tbody tr td.s-qty-range input {

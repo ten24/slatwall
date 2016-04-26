@@ -590,7 +590,7 @@ input[type=number]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 
 input[type=number] {-moz-appearance:textfield;}
 
 .input-sm {height: 31px !important;padding: 5px 5px !important;font-size: 11px !important;line-height: 1.5 !important;border-radius: 2px !important;}
-.input-xs {width: auto !important;display: inline-block !important;height: 22px !important;vertical-align: bottom !important;}
+.input-xs {width: auto !important;display: inline-block !important;height: 22px !important;vertical-align: bottom !important;font-size: 12px;padding: 0px 5px;}
 
 a, a:active, a:focus {outline: none;}
 label {font-family: @font-family-semibold;font-weight: normal;}
@@ -2027,12 +2027,20 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-select-list-wrapper .input-group-btn button.btn-default {border-top:1px solid @black-20;border-bottom:1px solid @black-20;left: -1px;margin-right: -1px;}
 
 /*Custom button group component*/
-.s-input-group {display: inline-block;position: relative;}
+.s-input-group {display: inline-block;position: relative;white-space: nowrap;}
 .s-input-group .s-title {background: #F2F2F2;border: 1px solid #CCC;border-right: 0px;padding: 3px 4px 3px 4px;display: inline-block;vertical-align: top;margin-right: -4px;border-top-left-radius: 2px;border-bottom-left-radius: 2px;font-size: 10px;color: #aaa;}
 .s-input-group .btn, .s-input-group input, .s-input-group span {vertical-align: top;}
-.s-input-group .btn {margin-left: -5px;border: 1px solid #CCC;border-top-left-radius: 0px;border-bottom-left-radius: 0px;}
-.s-input-group .s-action-btn {border-color: #5cb85c;position: absolute;right: 0px;top: 0px;}
+.s-input-group .btn {margin-left: -3px;border: 1px solid #CCC;border-top-left-radius: 0px;border-bottom-left-radius: 0px;}
+.s-input-group .btn.s-revert-btn {margin-left: -4px;}
+.s-input-group .s-action-btn {border-color: #5cb85c;z-index: 2;margin-left: -3px;display: none;}
+.s-input-group.s-edit .s-action-btn {display: inline-block;}
+.s-input-group.s-edit .s-indicator-icon {display:none;}
+.s-input-group.s-edit .s-revert-btn {display: none;}
 .s-input-group .s-indicator-icon {padding: 2px;display: inline-block;vertical-align: top;}
+.s-input-group .s-remove-change {position: absolute;top: 1px;right: 44px;font-size: 15px;color: #aaa;display: none;}
+.s-input-group.s-edit .s-remove-change {display: inline-block;}
+.s-input-group .s-remove-change:hover {color: #E43030;}
+.s-input-group.s-edit input {border-color: #5CB85C;border-radius: 0px;padding-right: 10px;}
 
 /*-- Custom Modal Amount Change --*/
 .s-modal-module-wrapper .s-modal-module {background: #F7F7F7;border: 2px solid #e9e9e9;padding: 6px;text-align: center;min-height: 58px;margin-bottom: 10px;}
@@ -2651,7 +2659,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-detail-content-table tbody tr td.s-input-table-cell ul {margin:0px;margin-top: -2px;}
 .s-detail-content-table tbody tr td.s-input-table-cell ul li {margin-top: 8px;}
 .s-detail-content-table tbody tr td.s-input-table-cell ul li:first-child {margin-top: 0px;}
-.s-detail-content-table tbody tr td.s-input-table-cell.s-qty .s-input-group input {max-width: 90px;}
+.s-detail-content-table tbody tr td.s-input-table-cell .s-input-group input {max-width: 90px;}
 .s-detail-content-table tbody tr td.s-qty-range input {max-width: 80px;}
 .s-detail-content-table tbody tr td.s-qty-range .s-inherited {color: #aaa;font-style: italic;background: #FBFBFB;}
 .s-detail-content-table tbody tr td.s-input-table-cell span.s-sale-price {cursor: pointer;}
