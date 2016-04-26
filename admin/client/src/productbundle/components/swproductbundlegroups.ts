@@ -1,6 +1,64 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWProductBundleGroups{
+class SWProductBundleGroupsController{
+    
+    public sku;
+    public productBundleGroups; 
+    
+    //@ngInject
+    constructor(public $scope, 
+                public $element, 
+                public $attrs, 
+                public $log, 
+                public productBundleService, 
+                public $hibachi
+    ){
+        $scope.editing = $scope.editing || true;
+        
+        angular.forEach(this.productBundleGroups,(obj)=>{
+            productBundleService.decorateProductBundleGroup(obj);
+            obj.data.$$editing = false;
+        });
+    }    
+    
+    public removeProductBundleGroup = (index)=>{
+        if(angular.isDefined(this.productBundleGroups[index]) && this.productBundleGroups[index].$$isPersisted()){ 
+            this.productBundleGroups[index].$$delete().then((data)=>{
+                //no more logic to run     
+            });
+        } 
+        this.productBundleGroups.splice(index,1);
+    }
+ 
+    public addProductBundleGroup = () =>{
+        var productBundleGroup = this.$hibachi.newProductBundleGroup();
+        
+        console.log("Adding PBG", productBundleGroup);
+        
+        productBundleGroup.$$setProductBundleSku(this.sku);
+
+        productBundleGroup = this.productBundleService.decorateProductBundleGroup(productBundleGroup);
+        
+    }
+    
+}
+
+
+class SWProductBundleGroups implements ng.IDirective{
+    public templateUrl;
+    public restrict = 'EA';
+    public scope = {
+        sku:"=",
+        productBundleGroups:"="
+    };
+    public bindToController = {
+        sku:"=",
+        productBundleGroups:"="
+    };
+    public controller = SWProductBundleGroupsController;
+    public controllerAs="swProductBundleGroups";
+   
+   
     public static Factory(){
         var directive = (
             $http,
@@ -39,43 +97,10 @@ class SWProductBundleGroups{
 		productBundleService,
 	   slatwallPathBuilder
     ){
-        return {
-			restrict: 'EA',
-
-			templateUrl:slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html",
-			scope:{
-				sku:"=",
-				productBundleGroups:"=",
-				addProductBundleGroup:"&"
-			},
-			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
-				$scope.$id = 'productBundleGroups';
-				$log.debug('productBundleGroups');
-				$log.debug($scope.productBundleGroups);
-				$scope.editing = $scope.editing || true;
-				angular.forEach($scope.productBundleGroups,function(obj){
-					productBundleService.decorateProductBundleGroup(obj);
-					obj.data.$$editing = false;
-				});
-
-				$scope.removeProductBundleGroup = function(index){
-                    if(angular.isDefined($scope.productBundleGroups[index])&&$scope.productBundleGroups[index].$$isPersisted()){ 
-                        $scope.productBundleGroups[index].$$delete().then((data)=>{
-                            //no more logic to run     
-                        });
-                    } 
-                    $scope.productBundleGroups.splice(index,1);
-				};
-				$scope.addProductBundleGroup = function(){
-
-					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
-					productBundleService.decorateProductBundleGroup(productBundleGroup);
-					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
-				};
-			}]
-		};
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(productBundlePartialsPath)+"productbundlegroups.html";
     }
 }
 export{
-    SWProductBundleGroups
+    SWProductBundleGroups,
+    SWProductBundleGroupsController
 }

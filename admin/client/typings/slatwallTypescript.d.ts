@@ -33,6 +33,7 @@
 /// <reference path="../src/orderitem/components/sworderitems.ts" />
 /// <reference path="../src/orderitem/components/swresizedimage.ts" />
 /// <reference path="../src/product/controllers/preprocessproduct_create.ts" />
+/// <reference path="../src/productbundle/components/swproductbundlecollectionfilteritemtypeahead.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroup.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegroups.ts" />
 /// <reference path="../src/productbundle/components/swproductbundlegrouptype.ts" />

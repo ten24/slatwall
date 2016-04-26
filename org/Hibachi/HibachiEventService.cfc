@@ -210,12 +210,6 @@ component output="false" update="true" extends="HibachiService" {
 	public any function getEventNameOptionsForObject(required string objectName, boolean doOneToManyOptions = true) {
 		if(!structKeyExists(variables.EventNameOptions,arguments.objectName)){
 			var opArr = [];
-		
-			if(arguments.doOneToManyOptions){
-				optionStruct['name'] ="#getHibachiScope().rbKey('define.select')#";
-				optionStruct['value']="";
-				arrayAppend(opArr, optionStruct);
-			}
 			
 			var emd = getEntityMetaData(arguments.objectName);
 			

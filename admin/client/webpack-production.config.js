@@ -26,7 +26,7 @@ devConfig.plugins= [
     }),
     function()
     {
-        this.plugin("done", function(stats)
+        /*this.plugin("done", function(stats)
         {
             if (stats.compilation.errors && stats.compilation.errors.length)
             {
@@ -35,7 +35,7 @@ devConfig.plugins= [
                 process.exit(1);
             }
             
-        });
+        });*/
     }
   ];
 devConfig.watch = false;

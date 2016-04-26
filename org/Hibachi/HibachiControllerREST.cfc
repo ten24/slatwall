@@ -35,9 +35,9 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getFormResponses');
     this.publicMethods=listAppend(this.publicMethods, 'exportFormResponses');
 
-    //  this.secureMethods='';
-    //  this.secureMethods=listAppend(this.secureMethods, 'get');
-    //  this.secureMethods=listAppend(this.secureMethods, 'post');
+    this.secureMethods='';
+    this.secureMethods=listAppend(this.secureMethods, 'get');
+    this.secureMethods=listAppend(this.secureMethods, 'post');
 
 
     public void function init( required any fw ) {

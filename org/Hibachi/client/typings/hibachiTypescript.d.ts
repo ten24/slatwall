@@ -84,6 +84,7 @@
 /// <reference path="../src/core/filters/entityrbkey.ts" />
 /// <reference path="../src/core/filters/percentage.ts" />
 /// <reference path="../src/core/filters/swcurrency.ts" />
+/// <reference path="../src/core/filters/swtrim.ts" />
 /// <reference path="../src/core/services/baseservice.ts" />
 /// <reference path="../src/core/services/expandableservice.ts" />
 /// <reference path="../src/core/services/formservice.ts" />

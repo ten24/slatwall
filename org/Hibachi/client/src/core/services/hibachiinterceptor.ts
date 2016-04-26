@@ -28,6 +28,7 @@ interface IParams{
 
 interface IHibachiInterceptorPromise<T> extends ng.IPromise<any>{
 	data:any;
+    status:number;
 }
 
 
@@ -140,12 +141,9 @@ class HibachiInterceptor implements IInterceptor{
 		return config;
     }
     public requestError = (rejection): ng.IPromise<any> => {
-         this.$log.debug('requestError');
 		return this.$q.reject(rejection);
     }
     public response = (response): ng.IPromise<any> => {
-        this.$log.debug('response');
-		console.log(response);
 		if(response.data.messages){
             var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
             this.alertService.addAlerts(alerts);
@@ -155,7 +153,6 @@ class HibachiInterceptor implements IInterceptor{
     }
     public responseError = (rejection): ng.IPromise<any> => {
 
-		this.$log.debug('responseReject');
 		if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 499){
 			if(rejection.data && rejection.data.messages){
 				var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
@@ -178,12 +175,14 @@ class HibachiInterceptor implements IInterceptor{
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
                     return $http.get(this.baseUrl+'/index.cfm/api/auth/login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
-                        this.$window.localStorage.setItem('token',loginResponse.data.token);
-                        rejection.config.headers = rejection.config.headers || {};
-                        rejection.config.headers['Auth-Token'] = 'Bearer ' + this.$window.localStorage.getItem('token');
-                        return $http(rejection.config).then(function(response) {
-                           return response;
-                        });
+                        if(loginResponse.status === 200){
+                            this.$window.localStorage.setItem('token',loginResponse.data.token);
+                            rejection.config.headers = rejection.config.headers || {};
+                            rejection.config.headers['Auth-Token'] = 'Bearer ' + this.$window.localStorage.getItem('token');
+                            return $http(rejection.config).then(function(response) {
+                               return response;
+                            });
+                        }
 					},function(rejection){
                         return rejection;
                     });
