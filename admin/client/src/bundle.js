@@ -1825,6 +1825,9 @@
 	    function UtilityService() {
 	        var _this = this;
 	        _super.call(this);
+	        this.snakeToCapitalCase = function (s) {
+	            return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function (m) { return m[1].toUpperCase(); }).slice(1);
+	        };
 	        this.getQueryParamsFromUrl = function (url) {
 	            // This function is anonymous, is executed immediately and
 	            // the return value is assigned to QueryString!
@@ -17835,7 +17838,7 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var RouterController = (function () {
 	    //@ngInject
-	    function RouterController($scope, $routeParams, $location, $log, partialsPath, baseURL) {
+	    function RouterController($scope, $routeParams, $location, $log, partialsPath, baseURL, utilityService) {
 	        $scope.$id = "routerController";
 	        $scope.partialRoute = '';
 	        $log.debug($routeParams);
@@ -17845,7 +17848,7 @@
 	        var type;
 	        if ($scope.controllerType === 'entity') {
 	            //remove all dashes
-	            $scope.entityName = $routeParams.entityName.replace(/-/g, '');
+	            $scope.entityName = utilityService.snakeToCapitalCase($routeParams.entityName);
 	            if (angular.isDefined($routeParams.entityID)) {
 	                $scope.entityID = $routeParams.entityID || '';
 	            }

@@ -8,7 +8,8 @@ class RouterController{
 		$location,
 		$log,
 		partialsPath,
-		baseURL
+		baseURL,
+        utilityService
 	){
 		$scope.$id="routerController";
 		$scope.partialRoute = '';
@@ -21,7 +22,7 @@ class RouterController{
 
 		if($scope.controllerType === 'entity'){
             //remove all dashes
-			$scope.entityName = $routeParams.entityName.replace(/-/g, '');
+			$scope.entityName = utilityService.snakeToCapitalCase($routeParams.entityName);
 			if(angular.isDefined($routeParams.entityID)){
 				$scope.entityID = $routeParams.entityID || '';
 			}

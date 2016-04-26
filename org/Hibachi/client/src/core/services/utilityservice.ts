@@ -9,6 +9,10 @@ class UtilityService extends BaseService{
 
     }
     
+    public snakeToCapitalCase = (s)=>{
+        return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();}).slice(1);
+    }
+    
     public getQueryParamsFromUrl = (url) =>{
       // This function is anonymous, is executed immediately and
       // the return value is assigned to QueryString!
