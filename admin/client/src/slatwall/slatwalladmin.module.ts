@@ -10,6 +10,7 @@ import {optiongroupmodule} from "../optiongroup/optiongroup.module";
 import {orderitemmodule} from "../orderitem/orderitem.module";
 import {productmodule} from "../product/product.module";
 import {productbundlemodule} from "../productbundle/productbundle.module";
+import {orderfulfillmentmodule} from "../orderfulfillment/orderfulfillment.module";
 
 //constant
 import {SlatwallPathBuilder} from "./services/slatwallpathbuilder";
@@ -31,6 +32,7 @@ var slatwalladminmodule = angular.module('slatwalladmin',[
   formbuildermodule.name,
   giftcardmodule.name,
   optiongroupmodule.name,
+  orderfulfillmentmodule.name,
   orderitemmodule.name,
   productmodule.name,
   productbundlemodule.name,

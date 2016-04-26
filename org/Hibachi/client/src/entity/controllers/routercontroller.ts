@@ -20,7 +20,8 @@ class RouterController{
 		var type;
 
 		if($scope.controllerType === 'entity'){
-			$scope.entityName = $routeParams.entityName;
+            //remove all dashes
+			$scope.entityName = $routeParams.entityName.replace(/-/g, '');
 			if(angular.isDefined($routeParams.entityID)){
 				$scope.entityID = $routeParams.entityID || '';
 			}
