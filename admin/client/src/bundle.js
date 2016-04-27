@@ -7060,6 +7060,8 @@
 	        this.bindToController = {
 	            propertyIdentifier: "@",
 	            processObjectProperty: "@?",
+	            //defined as aggregate = {aggregateFunction:'COUNT',aggregateAlias:'aliasstring'}
+	            aggregate: "=?",
 	            title: "@?",
 	            tdclass: "@?",
 	            search: "=?",
@@ -7084,8 +7086,17 @@
 	                editable: scope.swListingColumn.editable,
 	                buttonGroup: scope.swListingColumn.buttonGroup
 	            };
+	            if (scope.swListingColumn.aggregate) {
+	                column.aggregate = scope.swListingColumn.aggregate;
+	                column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;
+	            }
 	            if (_this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
-	                scope.$parent.swListingDisplay.columns.unshift(column);
+	                if (column.aggregate) {
+	                    scope.$parent.swListingDisplay.aggregates.unshift(column);
+	                }
+	                else {
+	                    scope.$parent.swListingDisplay.columns.unshift(column);
+	                }
 	            }
 	        };
 	    }

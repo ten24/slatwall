@@ -21,6 +21,8 @@ class SWListingColumn implements ng.IDirective{
     public bindToController={
         propertyIdentifier:"@",
         processObjectProperty:"@?",
+        //defined as aggregate = {aggregateFunction:'COUNT',aggregateAlias:'aliasstring'}
+        aggregate:"=?",
         title:"@?",
         tdclass:"@?",
         search:"=?",
@@ -51,7 +53,7 @@ class SWListingColumn implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
 
-        var column = {
+        var column:any = {
             propertyIdentifier:scope.swListingColumn.propertyIdentifier,
             processObjectProperty:scope.swListingColumn.processObjectProperty,
             title:scope.swListingColumn.title,
@@ -63,8 +65,16 @@ class SWListingColumn implements ng.IDirective{
             editable:scope.swListingColumn.editable,
             buttonGroup:scope.swListingColumn.buttonGroup
         };
+        if(scope.swListingColumn.aggregate){
+            column.aggregate = scope.swListingColumn.aggregate; 
+            column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;   
+        }
         if(this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
-            scope.$parent.swListingDisplay.columns.unshift(column);
+            if(column.aggregate){
+                scope.$parent.swListingDisplay.aggregates.unshift(column);
+            }else{
+                scope.$parent.swListingDisplay.columns.unshift(column);    
+            }
         }
     }
 }
