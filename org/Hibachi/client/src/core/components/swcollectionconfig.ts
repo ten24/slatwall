@@ -64,9 +64,21 @@ class SWCollectionConfig implements ng.IDirective{
                 
                 var newCollectionConfig = this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
                 newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);               
+                
+                var parentScope = scope.$parent;
+                
+                for(var tries = 0; tries < 3; tries++){
+                    if(tries > 0){
+                        var parentScope = parentScope.$parent;
+                    }   
+                    if(angular.isDefined(parentScope)){
+                        var parentDirective = parentScope[scope.swCollectionConfig.parentDirectiveControllerAsName];
+                    } 
+                    if(angular.isDefined(parentDirective)){
+                        break; 
+                    }
+                }   
                
-                var parentDirective = scope[scope.swCollectionConfig.parentDirectiveControllerAsName];
-            
                 //populate the columns and the filters
                 transclude(scope,()=>{});
                 
@@ -76,7 +88,9 @@ class SWCollectionConfig implements ng.IDirective{
                 angular.forEach(scope.swCollectionConfig.filters, (filter)=>{
                         newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
                 }); 
-                parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+                if(angular.isDefined(parentDirective)){
+                    parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+                }
             },
             post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}
         };
