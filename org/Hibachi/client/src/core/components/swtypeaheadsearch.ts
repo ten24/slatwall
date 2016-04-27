@@ -9,6 +9,7 @@ class SWTypeaheadSearchController {
 	public propertiesToDisplay:string;
 	public filterGroupsConfig:any;
 	public allRecords:boolean;
+	public maxRecords; 
 	public searchText:string;
 	public results;
 	public addFunction;
@@ -21,6 +22,7 @@ class SWTypeaheadSearchController {
     public resultsPromise;
     public resultsDeferred;
     public showAddButton;
+	public propertyToShow; 
     public placeholderText:string;
     public placeholderRbKey:string;
 
@@ -44,7 +46,7 @@ class SWTypeaheadSearchController {
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
 
-        if(angular.isUndefined(this.searchText)){
+        if(angular.isUndefined(this.searchText) || this.searchText == null){
             this.searchText = "";
         }
 
@@ -74,6 +76,7 @@ class SWTypeaheadSearchController {
         }
 
         if(angular.isDefined(this.addButtonFunction)){
+			console.warn("there is an add button function")
             this.showAddButton = true;
         }
 
@@ -100,6 +103,10 @@ class SWTypeaheadSearchController {
 			this.collectionConfig.setAllRecords(this.allRecords);
 		} else {
 			this.collectionConfig.setAllRecords(true);
+		}
+		
+		if(angular.isDefined(this.maxRecords)){
+			this.collectionConfig.setPageShow(this.maxRecords);
 		}
 	}
 
@@ -156,12 +163,14 @@ class SWTypeaheadSearchController {
 			this.hideSearch = true;
 		}
 
-		if(angular.isDefined(this.columns) && 
+		if(angular.isDefined(this.propertyToShow)){
+			this.searchText = item[this.propertyToShow];
+		} else if(angular.isDefined(this.columns) && 
            this.columns.length && 
            angular.isDefined(this.columns[0].propertyIdentifier)
         ){
 			this.searchText = item[this.columns[0].propertyIdentifier];
-		}
+		} 
 
 		if(angular.isDefined(this.addFunction)){
 			this.addFunction()(item);
@@ -219,7 +228,10 @@ class SWTypeaheadSearch implements ng.IDirective{
         viewFunction:"&?",
         validateRequired:"=?",
         clickOutsideArguments:"=?",
+		propertyToShow:"=?",
 		hideSearch:"=?",
+		allRecords:"=?",
+		maxRecords:"=?",
         disabled:"=?"
 	};
 	public controller=SWTypeaheadSearchController;
@@ -234,23 +246,30 @@ class SWTypeaheadSearch implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                var target = element.find(".dropdown-menu");
+                
+				var target = element.find(".dropdown-menu");
                 var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
                 var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
                 var transcludeContent = transclude($scope,()=>{});
-                //strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
-                if(angular.isDefined(transcludeContent[1])){
-                    if(angular.isDefined(transcludeContent[1].localName) && 
-                       transcludeContent[1].localName == 'sw-collection-config'
-                    ){
-                        transcludeContent.splice(1,1);
-                    }
-                    if(angular.isDefined(transcludeContent[1].localName) && 
-                       transcludeContent[1].localName == 'ng-transclude'
-                    ){
-                        transcludeContent = transcludeContent.children();
-                    }
-                }
+                
+				//strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive (causes infinite compilation error)
+				for(var i=0; i < transcludeContent.length; i++){
+					if(angular.isDefined(transcludeContent[i].localName) && 
+					transcludeContent[i].localName == 'ng-transclude'
+					){
+						transcludeContent = transcludeContent.children();
+					}
+				}
+				
+				//prevent collection config from being recompiled  (also causes infinite compilation error)
+				for(var i=0; i < transcludeContent.length; i++){
+					if(angular.isDefined(transcludeContent[i].localName) && 
+					transcludeContent[i].localName == 'sw-collection-config'
+					){
+						transcludeContent.splice(i,1);
+					}
+				}
+                
                 actionTemplate.append(transcludeContent); 
                 listItemTemplate.append(actionTemplate); 
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{

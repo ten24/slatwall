@@ -4710,7 +4710,10 @@
 	            if (!_this.hideSearch) {
 	                _this.hideSearch = true;
 	            }
-	            if (angular.isDefined(_this.columns) &&
+	            if (angular.isDefined(_this.propertyToShow)) {
+	                _this.searchText = item[_this.propertyToShow];
+	            }
+	            else if (angular.isDefined(_this.columns) &&
 	                _this.columns.length &&
 	                angular.isDefined(_this.columns[0].propertyIdentifier)) {
 	                _this.searchText = item[_this.columns[0].propertyIdentifier];
@@ -4742,7 +4745,7 @@
 	        this.$transclude($scope, function () { });
 	        this.resultsDeferred = $q.defer();
 	        this.resultsPromise = this.resultsDeferred.promise;
-	        if (angular.isUndefined(this.searchText)) {
+	        if (angular.isUndefined(this.searchText) || this.searchText == null) {
 	            this.searchText = "";
 	        }
 	        if (angular.isUndefined(this.results)) {
@@ -4769,6 +4772,7 @@
 	            this.placeholderText = this.rbkeyService.getRBKey('define.search');
 	        }
 	        if (angular.isDefined(this.addButtonFunction)) {
+	            console.warn("there is an add button function");
 	            this.showAddButton = true;
 	        }
 	        if (angular.isDefined(this.viewFunction)) {
@@ -4790,6 +4794,9 @@
 	        }
 	        else {
 	            this.collectionConfig.setAllRecords(true);
+	        }
+	        if (angular.isDefined(this.maxRecords)) {
+	            this.collectionConfig.setPageShow(this.maxRecords);
 	        }
 	    }
 	    return SWTypeaheadSearchController;
@@ -4819,7 +4826,10 @@
 	            viewFunction: "&?",
 	            validateRequired: "=?",
 	            clickOutsideArguments: "=?",
+	            propertyToShow: "=?",
 	            hideSearch: "=?",
+	            allRecords: "=?",
+	            maxRecords: "=?",
 	            disabled: "=?"
 	        };
 	        this.controller = SWTypeaheadSearchController;
@@ -4832,15 +4842,18 @@
 	                    var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
 	                    var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
 	                    var transcludeContent = transclude($scope, function () { });
-	                    //strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
-	                    if (angular.isDefined(transcludeContent[1])) {
-	                        if (angular.isDefined(transcludeContent[1].localName) &&
-	                            transcludeContent[1].localName == 'sw-collection-config') {
-	                            transcludeContent.splice(1, 1);
-	                        }
-	                        if (angular.isDefined(transcludeContent[1].localName) &&
-	                            transcludeContent[1].localName == 'ng-transclude') {
+	                    //strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive (causes infinite compilation error)
+	                    for (var i = 0; i < transcludeContent.length; i++) {
+	                        if (angular.isDefined(transcludeContent[i].localName) &&
+	                            transcludeContent[i].localName == 'ng-transclude') {
 	                            transcludeContent = transcludeContent.children();
+	                        }
+	                    }
+	                    //prevent collection config from being recompiled  (also causes infinite compilation error)
+	                    for (var i = 0; i < transcludeContent.length; i++) {
+	                        if (angular.isDefined(transcludeContent[i].localName) &&
+	                            transcludeContent[i].localName == 'sw-collection-config') {
+	                            transcludeContent.splice(i, 1);
 	                        }
 	                    }
 	                    actionTemplate.append(transcludeContent);
@@ -4889,6 +4902,12 @@
 	        this.addFunction = function (value) {
 	            _this.modelValue = value[_this.propertyToSave];
 	        };
+	        if (angular.isUndefined(this.allRecords)) {
+	            this.allRecords = false;
+	        }
+	        if (angular.isUndefined(this.maxRecords)) {
+	            this.maxRecords = 100;
+	        }
 	        if (angular.isUndefined(this.entityName)) {
 	            throw ("The typeahead input field directive requires an entity name.");
 	        }
@@ -4922,8 +4941,11 @@
 	        this.bindToController = {
 	            fieldName: "@",
 	            entityName: "@",
+	            allRecords: "=?",
+	            maxRecords: "@",
 	            propertiesToLoad: "@?",
 	            placeholderRbKey: "@?",
+	            propertyToShow: "@",
 	            propertyToSave: "@"
 	        };
 	        this.controller = SWTypeaheadInputFieldController;
@@ -4972,17 +4994,6 @@
 	                pre: function (scope, element, attrs) {
 	                    var innerHTML = '<span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
 	                    element.append(innerHTML);
-	                    //below is deprecated code pre dates swCollection, swCollectionFilter, and swCollectionColumn
-	                    var column = {
-	                        propertyIdentifier: scope.swTypeaheadSearchLineItem.propertyIdentifier,
-	                        isSearchable: scope.swTypeaheadSearchLineItem.isSearchable
-	                    };
-	                    if (angular.isDefined(scope.$parent.swTypeaheadSearch)) {
-	                        scope.$parent.swTypeaheadSearch.columns.push(column);
-	                    }
-	                    if (angular.isDefined(scope.$parent.swTypeaheadInputField)) {
-	                        scope.$parent.swTypeaheadInputField.columns.push(column);
-	                    }
 	                },
 	                post: function (scope, element, attrs) { }
 	            };
@@ -5051,7 +5062,18 @@
 	                    }
 	                    var newCollectionConfig = _this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
 	                    newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);
-	                    var parentDirective = scope[scope.swCollectionConfig.parentDirectiveControllerAsName];
+	                    var parentScope = scope.$parent;
+	                    for (var tries = 0; tries < 3; tries++) {
+	                        if (tries > 0) {
+	                            var parentScope = parentScope.$parent;
+	                        }
+	                        if (angular.isDefined(parentScope)) {
+	                            var parentDirective = parentScope[scope.swCollectionConfig.parentDirectiveControllerAsName];
+	                        }
+	                        if (angular.isDefined(parentDirective)) {
+	                            break;
+	                        }
+	                    }
 	                    //populate the columns and the filters
 	                    transclude(scope, function () { });
 	                    angular.forEach(scope.swCollectionConfig.columns, function (column) {
@@ -5060,7 +5082,9 @@
 	                    angular.forEach(scope.swCollectionConfig.filters, function (filter) {
 	                        newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
 	                    });
-	                    parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+	                    if (angular.isDefined(parentDirective)) {
+	                        parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+	                    }
 	                },
 	                post: function (scope, element, attrs) { }
 	            };
