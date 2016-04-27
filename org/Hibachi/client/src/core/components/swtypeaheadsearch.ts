@@ -129,7 +129,7 @@ class SWTypeaheadSearchController {
 	public search = (search:string)=>{
         if(this._timeoutPromise){
 			this.$timeout.cancel(this._timeoutPromise);
-		}
+        }
 
         this.collectionConfig.setKeywords(search);
 

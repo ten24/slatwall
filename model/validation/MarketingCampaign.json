@@ -1,0 +1,8 @@
+{
+  "contexts":	["save","edit","delete"],
+  "properties":{
+    "campaignName":         [{"contexts":"save","required":true}],
+    "startDateTime":		[{"contexts":"save","required":true}],
+    "endDateTime":			[{"contexts":"save","required":true}]
+  }
+}

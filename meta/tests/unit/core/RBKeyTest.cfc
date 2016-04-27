@@ -87,7 +87,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		}
 
-		assert(allFound);
+		assert(allFound, ArrayToList(variables.debugArray));
 	}
 
 }

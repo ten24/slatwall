@@ -3280,7 +3280,7 @@ tabel .s-table-header {
   position: absolute;
   right: 4px;
   top: 4px;
-  z-index: 2;
+  z-index: 3;
 }
 .s-table-tabs {
   padding: 0px;
