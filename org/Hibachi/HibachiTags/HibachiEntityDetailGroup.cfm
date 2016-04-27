@@ -100,7 +100,7 @@
 						<div id="tabSystem" class="panel-collapse collapse">
 							<content class="s-body-box">
 								<cfoutput>
-									<div <cfif !isNull(tab) && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabSystem">
+									<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabSystem">
 
 											<hb:HibachiPropertyList>
 												<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
