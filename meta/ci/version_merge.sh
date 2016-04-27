@@ -76,6 +76,7 @@ elif [ $mergedFrom != "master" ] && [ $CIRCLE_BRANCH = "develop" ]; then
   git archive --format=zip HEAD > slatwall-be.zip
   md5sum slatwall-be.zip > slatwall-be.md5.txt
   aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
+  aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
 fi
 
 # Find out if any files changed as part of this build
