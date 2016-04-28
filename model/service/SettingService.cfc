@@ -116,7 +116,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Account
 			accountEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			accountEligiblePaymentTerms = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentTerm", defaultValue=getPaymentService().getAllActivePaymentTermIDList()},
-			accountPaymentTerm = {fieldType="select", defaultValue=ListGetAt(getPaymentService().getAllActivePaymentTermIDList(),1)},
+			accountPaymentTerm = {fieldType="select"},
 			accountTermCreditLimit = {fieldType="text", formatType="currency",defaultValue=0},
 			accountFailedAdminLoginAttemptCount = {fieldType="text", defaultValue=6, validate={dataType="numeric", required=true, maxValue=6}},
 			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
