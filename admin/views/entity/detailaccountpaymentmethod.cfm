@@ -74,19 +74,18 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="accountPaymentMethodName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#" fieldAttributes="ng-model=""paymentMethodType""" >
-				<span ng-bind="paymentMethodType"></span>
 				<!--- Credit Card Details --->
 				<!--- Insure that credit card info doesn't get posted to the gift card payment --->
 				<div ng-if="paymentMethodType != '50d8cd61009931554764385482347f3a'">
-				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" >
-					<hr />
-					<h5>#$.slatwall.rbKey('admin.define.creditCardDetails')#</h5>
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="creditCardNumber" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="nameOnCreditCard" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationMonth" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationYear" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="securityCode" edit="#rc.edit#" />
-				</hb:HibachiDisplayToggle>
+					<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" >
+						<hr />
+						<h5>#$.slatwall.rbKey('admin.define.creditCardDetails')#</h5>
+						<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="creditCardNumber" edit="#rc.edit#" />
+						<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="nameOnCreditCard" edit="#rc.edit#" />
+						<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationMonth" edit="#rc.edit#" />
+						<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationYear" edit="#rc.edit#" />
+						<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="securityCode" edit="#rc.edit#" />
+					</hb:HibachiDisplayToggle>
 				</div>
 
 				<!--- Gift Card Details --->
@@ -112,10 +111,10 @@ Notes:
 				<!--- Billing Address Details --->
 				<!--- Insure that credit card info doesn't get posted to the gift card payment --->
 				<div ng-if="paymentMethodType != '50d8cd61009931554764385482347f3a'">
-				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment">
-					<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
-					<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
-				</hb:HibachiDisplayToggle>
+					<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment">
+						<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
+						<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 				</div>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
