@@ -121,14 +121,14 @@ if [ $CIRCLE_BRANCH = "master" ]; then
   # checkout hotfix
   git checkout hotfix
   # merge master into hotfix
-  git merge master
+  git merge -m "Merge branch 'master' into 'hotfix'" master
   # push hotfix back up
   git push origin
 
   # checkout develop
   git checkout develop
   # merge master into develop
-  git merge master
+  git merge -m "Merge branch 'master' into 'develop'"  master
   # Read all the conflicts of the repository
   conflicts=$(git diff --name-only --diff-filter=U)
 

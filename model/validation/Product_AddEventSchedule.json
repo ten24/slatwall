@@ -4,7 +4,7 @@
 		"eventEndDateTime": [{"required":true,"dataType":"date","gtDateTimeProperty":"eventStartDateTime","gtNow":true}],
 		"locationConfigurations":[{"required":true}],
 		"schedulingType": [{"required":true}],
-		"price": [{"required":true}],
+		"price": [{"required":false}],
 		"eventCapacity": [{"required":true}]
 		
 	}

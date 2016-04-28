@@ -375,8 +375,8 @@ function setupEventHandlers() {
 			error:function(response,status){
 				//returns 401 in the case of unauthorized access and boots to the appropriate login page
 				//Hibachi.cfc 308-311
-				if(xhr.status == 401){
-					window.location.href = "/?slataction=" + xhr.statusText;
+				if(response.status == 401){
+					window.location.href = "/?slataction=" + response.statusText;
 				}
 			}
 		});
