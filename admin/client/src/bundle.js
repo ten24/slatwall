@@ -6228,6 +6228,7 @@
 	                _this.collectionConfig.addOrderBy(orderBy.orderBy);
 	            });
 	            angular.forEach(_this.aggregates, function (aggregate) {
+	                console.log('agg', aggregate);
 	                _this.collectionConfig.addDisplayAggregate(aggregate.propertyIdentifier, aggregate.aggregateFunction, aggregate.aggregateAlias);
 	            });
 	            //make sure we have necessary properties to make the actions 
@@ -7092,7 +7093,7 @@
 	            }
 	            if (_this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns, 'propertyIdentifier', column.propertyIdentifier) === -1) {
 	                if (column.aggregate) {
-	                    scope.$parent.swListingDisplay.aggregates.unshift(column);
+	                    scope.$parent.swListingDisplay.aggregates.unshift(column.aggregate);
 	                }
 	                else {
 	                    scope.$parent.swListingDisplay.columns.unshift(column);
@@ -8863,6 +8864,7 @@
 	                }
 	            };
 	            angular.extend(column, options);
+	            console.log('agg2', column);
 	            //Add columns
 	            _this.addColumn(column.propertyIdentifier, undefined, column);
 	            return _this;

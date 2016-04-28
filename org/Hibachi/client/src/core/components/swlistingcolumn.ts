@@ -71,7 +71,7 @@ class SWListingColumn implements ng.IDirective{
         }
         if(this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
             if(column.aggregate){
-                scope.$parent.swListingDisplay.aggregates.unshift(column);
+                scope.$parent.swListingDisplay.aggregates.unshift(column.aggregate);
             }else{
                 scope.$parent.swListingDisplay.columns.unshift(column);    
             }

@@ -363,6 +363,7 @@ class CollectionConfig {
         };
 
         angular.extend(column,options);
+        console.log('agg2',column);
         //Add columns
         this.addColumn(column.propertyIdentifier,undefined,column);
         return this;

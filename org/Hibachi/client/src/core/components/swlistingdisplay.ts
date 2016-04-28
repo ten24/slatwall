@@ -146,7 +146,6 @@ class SWListingDisplayController{
         angular.forEach(this.orderBys, (orderBy)=>{
             this.collectionConfig.addOrderBy(orderBy.orderBy);
         });
-        
         angular.forEach(this.aggregates, (aggregate)=>{
             this.collectionConfig.addDisplayAggregate(aggregate.propertyIdentifier, aggregate.aggregateFunction, aggregate.aggregateAlias);
         });
@@ -283,7 +282,6 @@ class SWListingDisplayController{
             this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
             //add parent property root filter
             if(!this.hasCollectionPromise){
-                console.log('HEREEE!!');
                 this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
             }
             //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
@@ -323,8 +321,6 @@ class SWListingDisplayController{
 
         if(this.multiselectValues && this.multiselectValues.length){
             //select all owned ids
-            console.log('swListingDisplay');
-            console.log(this.multiselectValues);
             angular.forEach(this.multiselectValues,(value)=>{
                 this.selectionService.addSelection(this.name,value);
             });
