@@ -25,6 +25,8 @@ class SWTypeaheadSearchController {
 	public propertyToShow; 
     public placeholderText:string;
     public placeholderRbKey:string;
+    public initialEntityId:string;
+    public initialEntityCollectionConfig; 
 
 	private _timeoutPromise;
     public showViewButton;
@@ -48,6 +50,8 @@ class SWTypeaheadSearchController {
 
         if(angular.isUndefined(this.searchText) || this.searchText == null){
             this.searchText = "";
+        } else {
+            this.search(this.searchText);
         }
 
         if(angular.isUndefined(this.results)){
@@ -76,7 +80,6 @@ class SWTypeaheadSearchController {
         }
 
         if(angular.isDefined(this.addButtonFunction)){
-			console.warn("there is an add button function")
             this.showAddButton = true;
         }
 
@@ -92,22 +95,38 @@ class SWTypeaheadSearchController {
         }
         
         angular.forEach(this.columns, (column)=>{
-                this.collectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
+            this.collectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
         });
         
         angular.forEach(this.filters, (filter)=>{
-                this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+            this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
 
-        if(angular.isDefined(this.allRecords)){
-			this.collectionConfig.setAllRecords(this.allRecords);
-		} else {
-			this.collectionConfig.setAllRecords(true);
+        if(angular.isUndefined(this.allRecords)){
+			this.allRecords = this.collectionConfig.allRecords;
 		}
+
+        this.collectionConfig.setAllRecords(this.allRecords);
 		
 		if(angular.isDefined(this.maxRecords)){
 			this.collectionConfig.setPageShow(this.maxRecords);
 		}
+        
+        if(angular.isDefined(this.initialEntityId) && this.initialEntityId.length){
+            this.initialEntityCollectionConfig = collectionConfigService.newCollectionConfig(this.collectionConfig.baseEntityName);
+            this.initialEntityCollectionConfig.loadColumns(this.collectionConfig.columns);
+            var primaryIDProperty = $hibachi.getPrimaryIDPropertyNameByEntityName(this.initialEntityCollectionConfig.baseEntityName);
+            this.initialEntityCollectionConfig.addFilter(primaryIDProperty,this.initialEntityId,"=");
+           
+            var promise = this.initialEntityCollectionConfig.getEntity();
+            promise.then( (response) =>{
+                this.results = response.pageRecords;
+                if(this.results.length){
+                    this.addItem(this.results[0]); 
+                }
+            });
+            
+        }
 	}
 
     public clearSearch = () =>{
@@ -121,9 +140,9 @@ class SWTypeaheadSearchController {
     public toggleOptions = () =>{
         if(this.hideSearch && !this.searchText.length){
             this.search(this.searchText);
-        } else {
-            this.hideSearch = !this.hideSearch;
         }
+        this.hideSearch = !this.hideSearch;
+        
     };
 
 	public search = (search:string)=>{
@@ -145,7 +164,7 @@ class SWTypeaheadSearchController {
             var promise = this.collectionConfig.getEntity();
 
             promise.then( (response) =>{
-                if(angular.isDefined(this.allRecords) && this.allRecords == false){
+                if(angular.isDefined(response.pageRecords)){
                     this.results = response.pageRecords;
                 } else {
                     this.results = response.records;
@@ -232,7 +251,8 @@ class SWTypeaheadSearch implements ng.IDirective{
 		hideSearch:"=?",
 		allRecords:"=?",
 		maxRecords:"=?",
-        disabled:"=?"
+        disabled:"=?",
+        initialEntityId:"@"
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
@@ -252,7 +272,7 @@ class SWTypeaheadSearch implements ng.IDirective{
                 var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
                 var transcludeContent = transclude($scope,()=>{});
                 
-				//strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive (causes infinite compilation error)
+				//strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
 				for(var i=0; i < transcludeContent.length; i++){
 					if(angular.isDefined(transcludeContent[i].localName) && 
 					transcludeContent[i].localName == 'ng-transclude'
@@ -261,7 +281,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 					}
 				}
 				
-				//prevent collection config from being recompiled  (also causes infinite compilation error)
+				//prevent collection config from being recompiled
 				for(var i=0; i < transcludeContent.length; i++){
 					if(angular.isDefined(transcludeContent[i].localName) && 
 					transcludeContent[i].localName == 'sw-collection-config'
