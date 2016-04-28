@@ -823,7 +823,7 @@ Notes:
                           AND combinedPromotionLevels.prCurrencyCode=prConversionRate.currencyCode
                   ) convertedDiscounts WHERE
                       CASE salePriceDiscountType
-                          WHEN 'percentageOff' THEN CAST((originalPrice - (originalPrice * (discountAmount / 100))) AS DECIMAL(19,2) )
+                          WHEN 'percentageOff' THEN CAST( ((round(originalPrice - (originalPrice * (discountAmount / 100)))*100)/100) AS DECIMAL(19,2) )
                           WHEN 'amount' THEN CAST(discountAmount AS DECIMAL(19,2))
                           WHEN 'amountOff' THEN CAST((originalPrice - discountAmount) AS DECIMAL(19,2))
                       END IS NOT NULL
