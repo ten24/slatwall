@@ -7,6 +7,7 @@ import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 //controllers
 //directives
 import {SWOrderFulfillmentList} from "./components/sworderfulfillmentlist";
+import {SWTest} from "./components/swtest";
 //filters
 
 
@@ -18,6 +19,7 @@ var orderfulfillmentmodule = angular.module('hibachi.orderfulfillment',[coremodu
 //controllers
 //directives
 .directive('swOrderFulfillmentList',SWOrderFulfillmentList.Factory())
+.directive('swTest',SWTest.Factory())
 //filters
 
 ;

@@ -244,16 +244,20 @@
 				data-property-identifier="modifiedDateTime"
 		></sw-listing-column>
 		<sw-listing-column
+				data-property-identifier="orderFulfillmentItems"
+				data-aggregate="{aggregateFunction:'COUNT',aggregateAlias:'ItemCount'}"
+		></sw-listing-column>
+		<sw-listing-column
 				data-property-identifier="shippingMethod.shippingMethodName"
 		></sw-listing-column>
 		<sw-listing-column
 				data-property-identifier="shippingAddress.stateCode"
 		></sw-listing-column>
 		<sw-listing-column
-				data-property-identifier="orderFulfillmentItems"
-				data-aggregate="{aggregateFunction:'COUNT',aggregateAlias:'ItemCount'}"
-				
+				data-property-identifier="orderFulfillmentStatusType.typeName"
+				data-cell-view="swTest"
 		></sw-listing-column>
+		
     </sw-listing-display>
 
 </section>

@@ -3,15 +3,27 @@
 
 class SWListingColumnController{
     public editable:boolean;
-
+    public cellView:string;
+    public hasCellView:boolean=false;
+    //@ngInject
     constructor(
-
+        public $injector
     ){
+        this.$injector = $injector;
         this.init();
     }
 
     public init = () =>{
         this.editable = this.editable || false;
+        //did a cellView get suggested, if so does it exist
+        if(this.cellView){
+            if(this.$injector.has(this.cellView+'Directive')){
+                console.log('directive Found!');
+                this.hasCellView = true;
+            }else{
+                throw(this.cellView+' is not an existing directive');    
+            }
+        }
     }
 }
 
@@ -30,7 +42,8 @@ class SWListingColumn implements ng.IDirective{
         filter:"=?",
         range:"=?",
         editable:"=?",
-        buttonGroup:"=?"
+        buttonGroup:"=?",
+        cellView:"@?"
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
@@ -65,6 +78,12 @@ class SWListingColumn implements ng.IDirective{
             editable:scope.swListingColumn.editable,
             buttonGroup:scope.swListingColumn.buttonGroup
         };
+        
+        if(scope.swListingColumn.hasCellVeiw){
+            column.cellView = scope.swListingColumn.cellView;    
+        }
+        
+        //aggregate logic
         if(scope.swListingColumn.aggregate){
             column.aggregate = scope.swListingColumn.aggregate; 
             column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;   

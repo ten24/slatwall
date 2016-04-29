@@ -423,7 +423,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						columnStruct['ormtype'] = defaultProperty.fieldtype;
 					}
                     if(structKeyExists(defaultProperty,"hb_formatType")){
-                        columnStruct['ormtype'] = defaultProperty.hb_formatType;
+                        columnStruct['hb_formatType'] = defaultProperty.hb_formatType;
                     }
 
 					arrayAppend(columnsArray,columnStruct);

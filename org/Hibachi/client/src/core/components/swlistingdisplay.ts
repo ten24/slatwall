@@ -521,7 +521,7 @@ class SWListingDisplayController{
             }
             var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
             if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                column.type = metadata.hb_formattype;
+                column.type = metadata.hb_formatType;
             } else { 
                 column.type = "none";
             }
