@@ -110,7 +110,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	}
 	/*Create an hash of provided string using the secret key and algorithm*/
 	public string function sign(required string msg, string algorithm="SHA"){
-		var result = hash(variables.key,arguments.algorithm);
+		var result = hash(arguments.msg&variables.key,arguments.algorithm);
 		return base64UrlEscape(toBase64(result,'UTF-8'));
 	}
 	/*Escapes unsafe url characters from a base64 string*/
