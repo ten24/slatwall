@@ -59,11 +59,11 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 	public scope = {};
 
 	public bindToController = {
-        placeholderRbKey:"@",
-        typeaheadDataKey:"@?",
-        multiselectModeOn:"=?", 
-        addButtonFunction:"&?", 
-        viewFunction:"&?"
+        placeholderRbKey:"@"
+        ,typeaheadDataKey:"@?"
+        ,multiselectModeOn:"=?"
+        ,addButtonFunction:"&?" 
+        ,viewFunction:"&?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;
@@ -93,7 +93,9 @@ class SWTypeaheadMultiselect implements ng.IDirective{
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                console.log("white whale", attrs);
+            },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
 				var target = element.find(".s-selected-list");

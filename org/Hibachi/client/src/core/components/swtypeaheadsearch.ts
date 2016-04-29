@@ -78,12 +78,12 @@ class SWTypeaheadSearchController {
         } else if (angular.isUndefined(this.placeholderText)){
             this.placeholderText = this.rbkeyService.getRBKey('define.search');
         }
-
-        if(angular.isDefined(this.addButtonFunction)){
+   
+        if(angular.isDefined(this.addButtonFunction) || this.addButtonFunction != null){
             this.showAddButton = true;
         }
 
-        if(angular.isDefined(this.viewFunction)){
+        if(angular.isDefined(this.viewFunction) || this.viewFunction != null){
             this.showViewButton = true;
         }
 
