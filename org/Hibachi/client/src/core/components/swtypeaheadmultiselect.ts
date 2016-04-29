@@ -9,6 +9,9 @@ class SWTypeaheadMultiselectController {
     public placeholderRbKey:string;
     public typeaheadDataKey:string; 
     public multiselectModeOn:boolean;
+    public collectionConfig:any; 
+    public addButtonFunction; 
+    public viewFunction;
       
     // @ngInject
 	constructor(private $scope, 
@@ -58,7 +61,9 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 	public bindToController = {
         placeholderRbKey:"@",
         typeaheadDataKey:"@?",
-        multiselectModeOn:"=?"
+        multiselectModeOn:"=?", 
+        addButtonFunction:"&?", 
+        viewFunction:"&?"
 	};
     
 	public controller=SWTypeaheadMultiselectController;
@@ -94,30 +99,10 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 				var target = element.find(".s-selected-list");
                 var selectedItemTemplate  = angular.element('<div class="alert s-selected-item" ng-repeat="item in swTypeaheadMultiselect.getSelections() track by $index">');
                 var closeButton = angular.element('<button ng-click="swTypeaheadMultiselect.removeSelection($index)" type="button" class="close"><span>×</span><span class="sr-only" sw-rbkey="&apos;define.close&apos;"></span></button>'); 
-                var transcludeContent = transclude($scope,()=>{});
-                
-				//strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
-				for(var i=0; i < transcludeContent.length; i++){
-					if(angular.isDefined(transcludeContent[i].localName) && 
-					transcludeContent[i].localName == 'ng-transclude'
-					){
-						transcludeContent = transcludeContent.children();
-					}
-				}
 				
-				//prevent collection config from being recompiled
-				for(var i=0; i < transcludeContent.length; i++){
-					if(angular.isDefined(transcludeContent[i].localName) && 
-					transcludeContent[i].localName == 'sw-collection-config'
-					){
-						transcludeContent.splice(i,1);
-					}
-				}
                selectedItemTemplate.append(closeButton);
-               selectedItemTemplate.append(transcludeContent);
-               target.append(this.$compile(selectedItemTemplate)($scope));
-
-                
+               selectedItemTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{})));
+               target.append(this.$compile(selectedItemTemplate)($scope));               
             }
         };
     }

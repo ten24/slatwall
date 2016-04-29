@@ -3,7 +3,7 @@
 
 class SWTypeaheadSearchController {
 
-	public collectionConfig; 
+	public collectionConfig:any; 
 	public entity:string;
 	public properties:string;
 	public propertiesToDisplay:string;
@@ -11,22 +11,22 @@ class SWTypeaheadSearchController {
 	public allRecords:boolean;
 	public maxRecords; 
 	public searchText:string;
-	public results;
-	public addFunction;
+	public results:any[];
     public validateRequired:boolean; 
     public columns = [];
     public filters = [];
+    public addFunction;
 	public addButtonFunction;
     public viewFunction;
 	public hideSearch:boolean;
     public resultsPromise;
     public resultsDeferred;
-    public showAddButton;
-	public propertyToShow; 
+    public showAddButton:boolean;
+	public propertyToShow:string; 
     public placeholderText:string;
     public placeholderRbKey:string;
     public initialEntityId:string;
-    public initialEntityCollectionConfig; 
+    public initialEntityCollectionConfig:any; 
 
 	private _timeoutPromise;
     public showViewButton;
@@ -41,8 +41,6 @@ class SWTypeaheadSearchController {
                 private rbkeyService, 
                 private collectionConfigService
      ){
-       
-       console.log("THETYPE", this);
        
         //populates all needed variables
         this.$transclude($scope,()=>{});
@@ -260,7 +258,7 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public controllerAs="swTypeaheadSearch";
     
     // @ngInject
-	constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
+	constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
     
@@ -272,27 +270,8 @@ class SWTypeaheadSearch implements ng.IDirective{
 				var target = element.find(".dropdown-menu");
                 var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
                 var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
-                var transcludeContent = transclude($scope,()=>{});
-                
-				//strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
-				for(var i=0; i < transcludeContent.length; i++){
-					if(angular.isDefined(transcludeContent[i].localName) && 
-					transcludeContent[i].localName == 'ng-transclude'
-					){
-						transcludeContent = transcludeContent.children();
-					}
-				}
-				
-				//prevent collection config from being recompiled
-				for(var i=0; i < transcludeContent.length; i++){
-					if(angular.isDefined(transcludeContent[i].localName) && 
-					transcludeContent[i].localName == 'sw-collection-config'
-					){
-						transcludeContent.splice(i,1);
-					}
-				}
-                
-                actionTemplate.append(transcludeContent); 
+               
+                actionTemplate.append(this.typeaheadService.stripTranscludedContent(transclude($scope,()=>{}))); 
                 listItemTemplate.append(actionTemplate); 
                 $scope.swTypeaheadSearch.resultsPromise.then(()=>{
                     target.append(this.$compile(listItemTemplate)($scope));
@@ -305,15 +284,17 @@ class SWTypeaheadSearch implements ng.IDirective{
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
             $compile
+            ,typeaheadService
 			,corePartialsPath
             ,hibachiPathBuilder
 
 		)=> new SWTypeaheadSearch(
             $compile
+            ,typeaheadService
 			,corePartialsPath
             ,hibachiPathBuilder
 		);
-		directive.$inject = ["$compile","corePartialsPath",
+		directive.$inject = ["$compile","typeaheadService","corePartialsPath",
 			'hibachiPathBuilder'];
 		return directive;
 	}
