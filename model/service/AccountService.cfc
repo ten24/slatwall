@@ -346,7 +346,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				message=getHibachiUtilityService().replaceStringTemplate(rbKey('entity.account.generateAPIAccessKey.accessKeyInfo'), {accessKey=accessKey,accessKeySecret=accessKeySecret})
 			);
 		} else {
-			writeDump(getHibachiScope().getAccount().getSuperUserFlag());
 			arguments.account.addError(errorName="generateAPIAccessKey", errorMessage=rbKey('entity.account.generateAPIAccessKey.nonValidAccount'));
 		}
 
