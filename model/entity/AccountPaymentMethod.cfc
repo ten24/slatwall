@@ -135,7 +135,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 			if(datePart("yyyy", now()) < this.getExpirationYear()){
 				return false;
 			} else {
-				return datePart("m", now()) >= this.getExpirationMonth();
+				return datePart("m", now()) >= this.getExpirationMonth() && datePart("yyyy", now()) == this.getExpirationYear();
 			}
 		} else {
 			return false;
