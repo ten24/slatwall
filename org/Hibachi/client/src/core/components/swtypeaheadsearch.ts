@@ -42,6 +42,8 @@ class SWTypeaheadSearchController {
                 private collectionConfigService
      ){
        
+       console.log("THETYPE", this);
+       
         //populates all needed variables
         this.$transclude($scope,()=>{});
 
