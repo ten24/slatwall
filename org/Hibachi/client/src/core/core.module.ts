@@ -11,6 +11,7 @@ import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
 import {ObserverService} from "./services/observerservice";
 import {FormService} from "./services/formservice";
+import {TypeaheadService} from "./services/typeaheadservice";
 import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
@@ -139,6 +140,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('observerService',ObserverService)
 .service('expandableService',ExpandableService)
 .service('formService',FormService)
+.service('typeaheadService', TypeaheadService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
 .provider('$hibachi',$Hibachi)

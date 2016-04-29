@@ -7,14 +7,14 @@ class SWTypeaheadMultiselectController {
     public selections:any[];
     public singleSelection:any;
     public placeholderRbKey:string;
+    public typeaheadDataKey:string; 
     public multiselectModeOn:boolean;
       
     // @ngInject
 	constructor(private $scope, 
-                private $q, 
                 private $transclude, 
                 private $hibachi, 
-                private $timeout:ng.ITimeoutService, 
+                private typeaheadService,
                 private utilityService, 
                 private collectionConfigService
     ){
@@ -22,22 +22,29 @@ class SWTypeaheadMultiselectController {
         if(angular.isUndefined(this.multiselectModeOn)){
             this.multiselectModeOn = true; 
         }
+        if(angular.isUndefined(this.typeaheadDataKey)){
+            this.typeaheadDataKey = this.utilityService.createID(32); 
+        }
+        this.typeaheadService.addRecord(this.typeaheadDataKey,[]);
     }
     
     public addSelection = (item) => {
-        if(this.multiselectModeOn){
-            this.selections.push(item);
-        } else  {
-            this.singleSelection = item;
-        }
+        if(!this.multiselectModeOn){
+            this.getSelections().length = 0; 
+        } 
+        this.getSelections().push(item);
     }
     
     public removeSelection = (index) => {
         if(this.multiselectModeOn){
-            this.selections.splice(index,1);
+            this.getSelections().splice(index,1);
         } else {
-            this.singleSelection = null;
+            this.getSelections().length = 0; 
         }
+    }
+    
+    public getSelections = () =>{
+        return this.typeaheadService.getData(this.typeaheadDataKey)
     }
 }
 
@@ -50,6 +57,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 
 	public bindToController = {
         placeholderRbKey:"@",
+        typeaheadDataKey:"@?",
         multiselectModeOn:"=?"
 	};
     
@@ -57,22 +65,24 @@ class SWTypeaheadMultiselect implements ng.IDirective{
 	public controllerAs="swTypeaheadMultiselect";
 
     // @ngInject
-	constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
+	constructor(public $compile, public typeaheadService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadmultiselect.html";
 	}
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-            $compile,
-			corePartialsPath
+            $compile
+            ,typeaheadService
+			,corePartialsPath
             ,hibachiPathBuilder
 
 		)=> new SWTypeaheadMultiselect(
-            $compile,
-            corePartialsPath
+            $compile
+            ,typeaheadService
+            ,corePartialsPath
             ,hibachiPathBuilder
 		);
-		directive.$inject = ["$compile","corePartialsPath",'hibachiPathBuilder'];
+		directive.$inject = ["$compile","typeaheadService","corePartialsPath",'hibachiPathBuilder'];
 		return directive;
 	}
     
@@ -82,7 +92,7 @@ class SWTypeaheadMultiselect implements ng.IDirective{
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
 				var target = element.find(".s-selected-list");
-                var selectedItemTemplate  = angular.element('<div class="alert s-selected-item" ng-repeat="item in swTypeaheadMultiselect.selections track by $index">');
+                var selectedItemTemplate  = angular.element('<div class="alert s-selected-item" ng-repeat="item in swTypeaheadMultiselect.getSelections() track by $index">');
                 var closeButton = angular.element('<button ng-click="swTypeaheadMultiselect.removeSelection($index)" type="button" class="close"><span>×</span><span class="sr-only" sw-rbkey="&apos;define.close&apos;"></span></button>'); 
                 var transcludeContent = transclude($scope,()=>{});
                 
