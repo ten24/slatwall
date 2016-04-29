@@ -146,7 +146,7 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 
 			// If this is a
 			if(getHibachiScope().getAccount().getSuperUserFlag() || getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID()){
-				 rep &= "#getAccessKey()#";
+				 rep &= "<br />#getAccessKey()#";
 			}
 		} else if(isNull(getIntegration())) {
 			rep &= "Slatwall";
