@@ -94,7 +94,6 @@ class SWTypeaheadMultiselect implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                console.log("white whale", attrs);
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
