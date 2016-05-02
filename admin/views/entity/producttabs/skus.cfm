@@ -119,6 +119,10 @@ Notes:
 		</hb:HibachiListingDisplay>
 	</cfif>
 
+	<sw-pricing-manager>
+
+	</sw-pricing-manager>
+
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn btn-primary" modal="false" />
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn btn-primary" modal="true" />
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn btn-primary" modal="true" />
