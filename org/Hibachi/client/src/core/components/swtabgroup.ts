@@ -2,6 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWTabGroupController {
 
+    public tabs; 
+
     // @ngInject
     constructor(private $scope, 
                 private $q,
@@ -12,7 +14,9 @@ class SWTabGroupController {
                 private rbkeyService, 
                 private collectionConfigService
         ){
-        
+        if(angular.isUndefined(this.tabs)){
+            this.tabs = []; 
+        }
     }
     }
 

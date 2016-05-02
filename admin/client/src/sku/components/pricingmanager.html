@@ -2,7 +2,8 @@
 <div class="s-detail-content-wrapper">
     <div id="collapse2" class="panel-collapse collapse in">
        <sw-tab-group>
-           <sw-tab-content> 
+           <!-- RB support here -->
+           <sw-tab-content data-name="basic"> 
                <div role="tabpanel" class="tab-pane active" id="j-basic">
                         <div class="row s-table-inner-nav ">
                             <div class="s-search-wrapper">
@@ -467,7 +468,7 @@
                         <a title="Add Option" class="btn btn-primary" target="_self" href="##" data-toggle="modal" data-target="#adminModal">Add Option</a> 
                     </div>
            </sw-tab-content>
-           <sw-tab-content> 
+           <sw-tab-content data-name="pricing"> 
                <div role="tabpanel" class="tab-pane" id="j-pricing">
                         <div class="row s-table-inner-nav ">
                             <div class="s-search-wrapper">
@@ -1594,16 +1595,14 @@
                     </div>
                     <!-- ///Second Tab -->
            </sw-tab-content>
-           
-           <sw-tab-content>
+           <sw-tab-content data-name="inventory">
                <!-- Third Tab -->
                 <div role="tabpanel" class="tab-pane" id="j-inventory">
                     <h1>Coming soon to a theater near you!</h1>
                 </div>
                 <!-- ///Third Tab -->
-           </sw-tab-content>
-           
-           <sw-tab-content> 
+           </sw-tab-content> 
+           <sw-tab-content data-name="other"> 
                <!-- Fourth Tab -->
                 <div role="tabpanel" class="tab-pane" id="j-sku-bundle">
                     <div class="row s-table-inner-nav ">

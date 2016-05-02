@@ -2,6 +2,9 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWTabContentController {
 
+    public active; 
+    public name; 
+
     // @ngInject
     constructor(private $scope, 
                 private $q,
@@ -12,9 +15,16 @@ class SWTabContentController {
                 private rbkeyService, 
                 private collectionConfigService
         ){
-        
+        if(angular.isUndefined(this.active)){
+            this.active = false; 
+        }
+        if(angular.isUndefined(this.name)){
+            //generate a unique name
+        }
+        //make a tab service? 
     }
-    }
+
+}
 
 class SWTabContent implements ng.IDirective{
 
@@ -24,7 +34,8 @@ class SWTabContent implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-
+        "active":"=?",
+        "name":"@?"
     };
     public controller=SWTabContentController;
     public controllerAs="swTabGroup";
