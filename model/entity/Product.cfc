@@ -487,7 +487,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
 			for(var sku in skus) {
-				var skuOptionSmartList = sku.getOptionsSmartList()
+				var skuOptionSmartList = sku.getOptionsSmartList();
 				skuOptionSmartList.addOrder("sortOrder|asc");
 				for(var option in skuOptionSmartList.getRecords()) {
 					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
@@ -504,7 +504,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		for(var sku in skus) {
 
 			var skuOptionIDArray = [];
-			var skuOptionSmartList = sku.getOptionsSmartList()
+			var skuOptionSmartList = sku.getOptionsSmartList();
 			skuOptionSmartList.addOrder("sortOrder|asc");
 			for(var option in skuOptionSmartList) {
 				arrayAppend(skuOptionIDArray, option.getOptionID());
