@@ -223,13 +223,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
         return getService("skuService").getProductSkus(product=this, sorted=arguments.sorted, fetchOptions=arguments.fetchOptions);
     }
 
-    public array function getOptions(boolean sorted=false){
-    	if(!arguments.sorted){
-    		return variables.options;
-    	}
-    	return getService("HibachiUtilityService").sortObjectArray(variables.options, "sortOrder", "numeric", "desc");
-    }
-
 	public any function getSkuByID(required string skuID) {
 		var skus = getSkus();
 		for(var i = 1; i <= arrayLen(skus); i++) {
@@ -494,7 +487,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
 			for(var sku in skus) {
-				for(var option in sku.getOptions(sorted=true)) {
+				for(var option in sku.getOptions()) {
 					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
 						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
 					}
@@ -512,8 +505,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			for(var option in sku.getOptions()) {
 				arrayAppend(skuOptionIDArray, option.getOptionID());
 			}
+
 			// Loop over the options for this sku
-			for(var option in sku.getOptions(sorted=true)) {
+			for(var option in sku.getOptions()) {
 
 				var allSelectedInSku = true;
 				for(var selected in listToArray(arguments.selectedOptionIDList)) {
