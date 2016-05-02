@@ -11,7 +11,9 @@ class SWTypeaheadMultiselectController {
     public multiselectModeOn:boolean;
     public collectionConfig:any; 
     public addButtonFunction; 
+    public hasAddButtonFunction:boolean;
     public viewFunction;
+    public hasViewFunction:boolean;
       
     // @ngInject
 	constructor(private $scope, 
@@ -27,6 +29,12 @@ class SWTypeaheadMultiselectController {
         }
         if(angular.isUndefined(this.typeaheadDataKey)){
             this.typeaheadDataKey = this.utilityService.createID(32); 
+        }
+        if(angular.isUndefined(this.hasAddButtonFunction)){
+            this.hasAddButtonFunction = false; 
+        }
+        if(angular.isUndefined(this.hasViewFunction)){
+            this.hasViewFunction = false; 
         }
         this.typeaheadService.addRecord(this.typeaheadDataKey,[]);
     }
@@ -93,8 +101,20 @@ class SWTypeaheadMultiselect implements ng.IDirective{
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                console.log("white whale", attrs);
+            pre: ($scope: any, element: JQuery, attrs: any) => {
+                //because callbacks are defined even when they're not passed in, this needs to be communicated to the typeahead
+                if(angular.isDefined(attrs.addButtonFunction)){
+                    $scope.swTypeaheadMultiselect.hasAddButtonFunction = true;  
+                } else {
+                    $scope.swTypeaheadMultiselect.hasAddButtonFunction = false; 
+                }
+                
+                if(angular.isDefined(attrs.viewFunction)){
+                    $scope.swTypeaheadMultiselect.viewFunction = true;  
+                } else {
+                    $scope.swTypeaheadMultiselect.viewFunction = false; 
+                }
+                console.log("william",$scope);
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 

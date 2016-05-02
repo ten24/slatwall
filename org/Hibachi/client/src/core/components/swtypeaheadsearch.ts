@@ -22,6 +22,7 @@ class SWTypeaheadSearchController {
     public resultsPromise;
     public resultsDeferred;
     public showAddButton:boolean;
+    public showViewButton:boolean;
 	public propertyToShow:string; 
     public placeholderText:string;
     public placeholderRbKey:string;
@@ -29,8 +30,7 @@ class SWTypeaheadSearchController {
     public initialEntityCollectionConfig:any; 
 
 	private _timeoutPromise;
-    public showViewButton;
-
+    
     // @ngInject
 	constructor(private $scope, 
                 private $q,
@@ -77,14 +77,6 @@ class SWTypeaheadSearchController {
             this.placeholderText = this.rbkeyService.getRBKey(this.placeholderRbKey);
         } else if (angular.isUndefined(this.placeholderText)){
             this.placeholderText = this.rbkeyService.getRBKey('define.search');
-        }
-   
-        if(angular.isDefined(this.addButtonFunction) || this.addButtonFunction != null){
-            this.showAddButton = true;
-        }
-
-        if(angular.isDefined(this.viewFunction) || this.viewFunction != null){
-            this.showViewButton = true;
         }
 
         //init timeoutPromise for link
@@ -245,6 +237,8 @@ class SWTypeaheadSearch implements ng.IDirective{
 		addFunction:"&?",
 		addButtonFunction:"&?",
         viewFunction:"&?",
+        showAddButton:"=?",
+        showViewButton:"=?",
         validateRequired:"=?",
         clickOutsideArguments:"=?",
 		propertyToShow:"=?",
@@ -264,7 +258,23 @@ class SWTypeaheadSearch implements ng.IDirective{
     
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
+            pre: ($scope: any, element: JQuery, attrs: any) => {
+                console.log("WILLY WOnK", attrs);
+                if(angular.isDefined(attrs.addButtonFunction) && angular.isUndefined(attrs.showAddButton)){
+                    console.log("wilbam");
+                    $scope.swTypeaheadSearch.showAddButton = true;  
+                } else if(angular.isUndefined(attrs.showAddButton)) {
+                    console.log("wilboom")
+                    $scope.swTypeaheadSearch.showAddButton = false; 
+                }
+                
+                if(angular.isDefined(attrs.viewFunction) && angular.isUndefined(attrs.showViewButton)){
+                    $scope.swTypeaheadSearch.showViewButton = true;  
+                } else if(angular.isUndefined(attrs.showViewButton)) {
+                    $scope.swTypeaheadSearch.showViewButton = false; 
+                }   
+                console.log("WIL",$scope);
+            },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
 				var target = element.find(".dropdown-menu");
