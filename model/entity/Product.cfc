@@ -502,12 +502,14 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		for(var sku in skus) {
 
 			var skuOptionIDArray = [];
-			for(var option in sku.getOptions()) {
+			var skuOptionSmartList = sku.getOptionsSmartList()
+			skuOptionSmartList.addOrder("sortOrder|asc");
+			for(var option in skuOptionSmartList) {
 				arrayAppend(skuOptionIDArray, option.getOptionID());
 			}
 
 			// Loop over the options for this sku
-			for(var option in sku.getOptions()) {
+			for(var option in skuOptionSmartList) {
 
 				var allSelectedInSku = true;
 				for(var selected in listToArray(arguments.selectedOptionIDList)) {
