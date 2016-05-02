@@ -487,7 +487,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
 			for(var sku in skus) {
-				for(var option in sku.getOptions()) {
+				var skuOptionSmartList = sku.getOptionsSmartList()
+				skuOptionSmartList.addOrder("sortOrder|asc");
+				for(var option in skuOptionSmartList.getRecords()) {
 					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
 						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
 					}
