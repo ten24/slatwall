@@ -511,7 +511,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			}
 
 			// Loop over the options for this sku
-			for(var option in skuOptionSmartList) {
+			for(var option in skuOptionSmartList.getRecords()) {
 
 				var allSelectedInSku = true;
 				for(var selected in listToArray(arguments.selectedOptionIDList)) {
