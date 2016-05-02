@@ -15,7 +15,7 @@ import {SWPricingManager} from "./components/swpricingmanager";
 var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 })
 //constants
-
+.constant('skuPartialsPath','sku/components/')
 //services
 
 //controllers

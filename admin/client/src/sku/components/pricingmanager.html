@@ -1,36 +1,9 @@
 <!-- Start of content that you should care about in this mock (-:)-->
-<div class="j-panel-remove-this panel panel-default s-detail-content-wrapper">
-    <a data-toggle="collapse" href="#collapse2">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <span>Skus</span> 
-                <i class="fa fa-caret-left s-accordion-toggle-icon"></i>
-        </h4>
-        </div>
-    </a>
+<div class="s-detail-content-wrapper">
     <div id="collapse2" class="panel-collapse collapse in">
-        <content class="s-body-box">
-            <div class="s-tab-table">
-                <div class="row s-tabs">
-                    <ul class="nav nav-tabs" role="tablist"> 
-                        <li role="presentation" class="active">
-                            <a href="#j-basic" role="tab" data-toggle="tab" aria-controls="basic" aria-expanded="true">Basic</a>
-                        </li> 
-                        <li role="presentation">
-                            <a href="#j-pricing" role="tab" data-toggle="tab" aria-controls="pricing">Pricing</a>
-                        </li>
-                        <li role="presentation">
-                            <a href="#j-inventory" role="tab" data-toggle="tab" aria-controls="inventory">Inventory</a>
-                        </li> 
-                        <!-- <li role="presentation">
-                            <a href="#j-sku-bundle" role="tab" data-toggle="tab" aria-controls="inventory">Sku Bundles</a>
-                        </li> 	 -->
-                    </ul> 
-                </div>
-                <div class="tab-content">
-                    
-                    <!-- First Tab -->
-                    <div role="tabpanel" class="tab-pane active" id="j-basic">
+       <sw-tab-group>
+           <sw-tab-content> 
+               <div role="tabpanel" class="tab-pane active" id="j-basic">
                         <div class="row s-table-inner-nav ">
                             <div class="s-search-wrapper">
                                 <div class="input-group">
@@ -493,10 +466,9 @@
                         <a title="Add Option Group" class="btn btn-primary modalload" target="_self" href="/Slatwall/?slatAction=entity.preprocessproduct&amp;processContext=addOptionGroup&amp;productID=5124bffa420605de01422b75f4d30289" data-toggle="modal" data-target="#adminModal">Add Option Group</a> 
                         <a title="Add Option" class="btn btn-primary" target="_self" href="##" data-toggle="modal" data-target="#adminModal">Add Option</a> 
                     </div>
-                    <!-- ///First Tab -->
-                
-                    <!-- Second Tab -->
-                    <div role="tabpanel" class="tab-pane" id="j-pricing">
+           </sw-tab-content>
+           <sw-tab-content> 
+               <div role="tabpanel" class="tab-pane" id="j-pricing">
                         <div class="row s-table-inner-nav ">
                             <div class="s-search-wrapper">
                                 <div class="input-group">
@@ -1621,90 +1593,149 @@
                         <a title="Add Option" class="btn btn-primary" target="_self" href="##" data-toggle="modal" data-target="#adminModal">Add Option</a> 
                     </div>
                     <!-- ///Second Tab -->
-                    
-                    <!-- Third Tab -->
-                    <div role="tabpanel" class="tab-pane" id="j-inventory">
-                        <h1>Coming soon to a theater near you!</h1>
-                    </div>
-                    <!-- ///Third Tab -->
-                    
-                    <!-- Fourth Tab -->
-                    <div role="tabpanel" class="tab-pane" id="j-sku-bundle">
-                        <div class="row s-table-inner-nav ">
-                            <div class="s-search-wrapper">
-                                <div class="input-group">
-                                    <div class="input-group-btn search-panel">
-                                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
-                                        <span>All</span> <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Price</a></li>
-                                            <li><a href="#">Qty. Max</a></li>
-                                            <li><a href="#">Qty. Min</a></li>
-                                            <li><a href="#">Currency</a></li>
-                                            <li><a href="#">Price Group</a></li>
-                                            <li><a href="#">Sku Definition </a></li>
-                                            <li><a href="#">SKU Code</a></li>
-                                        </ul>
-                                    </div>
-                                    <span class="s-search">
-                                        <input type="text" class="form-control s-search" name="" placeholder="Search skus...">
-                                        <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom>
-                                    </span>
+           </sw-tab-content>
+           
+           <sw-tab-content>
+               <!-- Third Tab -->
+                <div role="tabpanel" class="tab-pane" id="j-inventory">
+                    <h1>Coming soon to a theater near you!</h1>
+                </div>
+                <!-- ///Third Tab -->
+           </sw-tab-content>
+           
+           <sw-tab-content> 
+               <!-- Fourth Tab -->
+                <div role="tabpanel" class="tab-pane" id="j-sku-bundle">
+                    <div class="row s-table-inner-nav ">
+                        <div class="s-search-wrapper">
+                            <div class="input-group">
+                                <div class="input-group-btn search-panel">
+                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span>All</span> <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#">Price</a></li>
+                                        <li><a href="#">Qty. Max</a></li>
+                                        <li><a href="#">Qty. Min</a></li>
+                                        <li><a href="#">Currency</a></li>
+                                        <li><a href="#">Price Group</a></li>
+                                        <li><a href="#">Sku Definition </a></li>
+                                        <li><a href="#">SKU Code</a></li>
+                                    </ul>
                                 </div>
+                                <span class="s-search">
+                                    <input type="text" class="form-control s-search" name="" placeholder="Search skus...">
+                                    <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom>
+                                </span>
                             </div>
-                            <!-- <div class="s-filter-wrapper">
-                                <div class="s-filters">
-                                    
-                                    <div class="btn-group">
-                                        <button class="btn s-btn-dgrey btn-sm s-remove-pointer">Sku Definition = Finish: Black</button>
-                                        <button type="button" class="btn btn-sm s-btn-dgrey s-remove">
+                        </div>
+                        <!-- <div class="s-filter-wrapper">
+                            <div class="s-filters">
+                                
+                                <div class="btn-group">
+                                    <button class="btn s-btn-dgrey btn-sm s-remove-pointer">Sku Definition = Finish: Black</button>
+                                    <button type="button" class="btn btn-sm s-btn-dgrey s-remove">
+                                    <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="btn-group">
+                                    <button class="btn s-btn-dgrey btn-sm s-remove-pointer">Sku Code = EDGE-BLK</button>
+                                    <button type="button" class="btn btn-sm s-btn-dgrey s-remove">
                                         <i class="fa fa-remove"></i>
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="btn-group">
-                                        <button class="btn s-btn-dgrey btn-sm s-remove-pointer">Sku Code = EDGE-BLK</button>
-                                        <button type="button" class="btn btn-sm s-btn-dgrey s-remove">
-                                            <i class="fa fa-remove"></i>
-                                        </button>
-                                    </div>
-                                    
+                                    </button>
                                 </div>
-                            </div> -->
-                        </div>
-                        <div class="s-detail-notifications ">
-                            <div class="row">
-                                <div class="col-sm-4 s-message" style="margin-top: 6px;">
-                                    <span><b>6</b> items are selected.</span> 
-                                    <a href="##">Select all <b>8</b> items</a>
-                                </div>
-                                <div class="col-sm-8" style="text-align:right;">
-                                    <div class="dropdown">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                            <span>Bulk Action</span>
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#" data-toggle="modal" data-target="#pricingChange">Change Pricing</a></li>
-                                            <li><a href="#">Change Images</a></li>
-                                        </ul>
-                                    </div>                                                                
-                                </div>
+                                
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="s-detail-notifications ">
+                        <div class="row">
+                            <div class="col-sm-4 s-message" style="margin-top: 6px;">
+                                <span><b>6</b> items are selected.</span> 
+                                <a href="##">Select all <b>8</b> items</a>
+                            </div>
+                            <div class="col-sm-8" style="text-align:right;">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                        <span>Bulk Action</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#" data-toggle="modal" data-target="#pricingChange">Change Pricing</a></li>
+                                        <li><a href="#">Change Images</a></li>
+                                    </ul>
+                                </div>                                                                
                             </div>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered s-detail-content-table">
-                                <thead>
-                                    <tr>
-                                        <th class="s-table-checkbox ">
-                                            <div class="s-checkbox">
-                                                <input type="checkbox" id="exampleID">
-                                                <label for="exampleID"></label>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <span>SKU Code</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered s-detail-content-table">
+                            <thead>
+                                <tr>
+                                    <th class="s-table-checkbox ">
+                                        <div class="s-checkbox">
+                                            <input type="checkbox" id="exampleID">
+                                            <label for="exampleID"></label>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <span>SKU Code</span>
+                                        <a href="#" class="s-sort-arrows">
+                                            <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                                                <g transform="translate(0.5, 0.5)"> 
+                                                    <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                                                    <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                                                </g>
+                                            </svg>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <span>Sku Definition</span>
+                                        <a href="#" class="s-sort-arrows">
+                                            <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                                                <g transform="translate(0.5, 0.5)"> 
+                                                    <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                                                    <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                                                </g>
+                                            </svg>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <span>Price Group</span>
+                                        <a href="#" class="s-sort-arrows">
+                                            <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                                                <g transform="translate(0.5, 0.5)"> 
+                                                    <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                                                    <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                                                </g>
+                                            </svg>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <span>Qty. Min</span>
+                                        <a href="#" class="s-sort-arrows">
+                                            <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                                                <g transform="translate(0.5, 0.5)"> 
+                                                    <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                                                    <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                                                </g>
+                                            </svg>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <span>Qty. Max</span>
+                                        <a href="#" class="s-sort-arrows">
+                                            <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                                                <g transform="translate(0.5, 0.5)"> 
+                                                    <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                                                    <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                                                </g>
+                                            </svg>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <span>Price
                                             <a href="#" class="s-sort-arrows">
                                                 <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
                                                     <g transform="translate(0.5, 0.5)"> 
@@ -1713,301 +1744,242 @@
                                                     </g>
                                                 </svg>
                                             </a>
-                                        </th>
-                                        <th>
-                                            <span>Sku Definition</span>
-                                            <a href="#" class="s-sort-arrows">
-                                                <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                                                    <g transform="translate(0.5, 0.5)"> 
-                                                        <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                                                        <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                                                    </g>
-                                                </svg>
-                                            </a>
-                                        </th>
-                                        <th>
-                                            <span>Price Group</span>
-                                            <a href="#" class="s-sort-arrows">
-                                                <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                                                    <g transform="translate(0.5, 0.5)"> 
-                                                        <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                                                        <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                                                    </g>
-                                                </svg>
-                                            </a>
-                                        </th>
-                                        <th>
-                                            <span>Qty. Min</span>
-                                            <a href="#" class="s-sort-arrows">
-                                                <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                                                    <g transform="translate(0.5, 0.5)"> 
-                                                        <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                                                        <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                                                    </g>
-                                                </svg>
-                                            </a>
-                                        </th>
-                                        <th>
-                                            <span>Qty. Max</span>
-                                            <a href="#" class="s-sort-arrows">
-                                                <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                                                    <g transform="translate(0.5, 0.5)"> 
-                                                        <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                                                        <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                                                    </g>
-                                                </svg>
-                                            </a>
-                                        </th>
-                                        <th>
-                                            <span>Price
-                                                <a href="#" class="s-sort-arrows">
-                                                    <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
-                                                        <g transform="translate(0.5, 0.5)"> 
-                                                            <polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
-                                                            <polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
-                                                        </g>
-                                                    </svg>
-                                                </a>
-                                            </span>
-                                            <div class="dropdown" id="j-currency-dropdown-remove-this" style="display:inline-block;font-size: 11px;margin-left: 4px;margin-top:-2px;top: -1px;float:right;">
-                                                <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="border-color: #ccc;padding: 4px;line-height: 9px;margin-top: -5px;bottom: -2px;position: relative;">
-                                                    <span class="s-title">USD</span>
-                                                    <span class="caret"></span>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a href="#" data-currency="ALL">All</a></li>
-                                                    <li><a href="#" data-currency="USD">USD</a></li>
-                                                    <li><a href="#" data-currency="AUD">AUD</a></li>
+                                        </span>
+                                        <div class="dropdown" id="j-currency-dropdown-remove-this" style="display:inline-block;font-size: 11px;margin-left: 4px;margin-top:-2px;top: -1px;float:right;">
+                                            <button class="btn btn-xs btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="border-color: #ccc;padding: 4px;line-height: 9px;margin-top: -5px;bottom: -2px;position: relative;">
+                                                <span class="s-title">USD</span>
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a href="#" data-currency="ALL">All</a></li>
+                                                <li><a href="#" data-currency="USD">USD</a></li>
+                                                <li><a href="#" data-currency="AUD">AUD</a></li>
+                                            </ul>
+                                        </div>
+                                        
+                                    </th>
+                                    <th class="s-actions">
+                                        <div class="s-toggle-panels">
+                                            <a href="#" class="s-openall" ><i class="fa fa-expand"></i></a>
+                                            <a href="#" class="s-closeall"><i class="fa fa-compress"></i></a>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="s-table-checkbox">
+                                        <div class="s-checkbox">
+                                            <input type="checkbox">
+                                            <label for="exampleID"></label>
+                                        </div>
+                                    </td>
+                                    <td class="s-levels">
+                                        <div class="s-levels-wrapper">
+                                            <i class="fa fa-caret-down s-listing-arrow"></i> 
+                                            <span data-placement="bottom" title="Bundle Skus" data-toggle="popover" data-container="body" data-placement="top" data-html="true" data-trigger="hover">OTB_DrinkingTeam-1826-1</span>
+                                            <div id="popover-content" class="hide">
+                                                <ul style="padding-left:20px;">
+                                                    <li>OTB_DrinkingTeam-1826-1</li>
+                                                    <li>Gift-Card-25</li>
                                                 </ul>
                                             </div>
+                                        </div>
+                                    </td>
+                                    <td class="s-number-group"></td>
+                                    <td class="s-price-group"></td>
+                                    <td class="s-number"></td>
+                                    <td class="s-number"></td>
+                                    <td class="s-input-table-cell">
+                                        <ul class="list-unstyled">
+                                            <li data-currency="USD">
+                                                <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                                    <span class="s-title">USD</span>
+                                                    <input type="text" value="150.00" class="form-control input-xs  s-inherited">
+                                                    <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                                    <!-- <button class="btn btn-xs btn-default">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button> -->
+                                                </div>
+                                                <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
+                                            </li>
+                                            <li data-currency="AUD">
+                                                <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                                    <span class="s-title" data-toggle="popover" data-trigger="hover" data-content="Current exchange rate: 1.1">AUD</span>
+                                                    <input type="text" value="201.68" class="form-control input-xs  s-inherited">
+                                                    <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                                    <!-- <button class="btn btn-xs btn-default" data-toggle="popover" data-trigger="hover" data-content="Revert price to default AUD currency rate">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button> -->
+                                                </div>
+                                                <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td class="s-actions">
+                                        <a href="##" class="btn btn-default btn-xs" target="_self" data-toggle="popover" data-placement="left" data-trigger="click" title="Are you sure you want to disable?" data-content="<button class='btn btn-default s-remove' type='button'>Yes</button><button class='btn btn-default' type='button'>No</button>">
+                                            <i class="fa fa-eye"></i> 
+                                        </a> 
+                                        <a  href="#" title="Add Price" class="btn btn-default btn-xs" data-toggle="modal" data-target="#j-add-sku-item-remove-this">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr class="s-child s-inherited">
+                                    <td class="s-table-checkbox">
+                                        <div class="s-checkbox">
+                                            <input type="checkbox">
+                                            <label for="exampleID"></label>
+                                        </div>
+                                    </td>
+                                    <td class="s-levels" style="padding-left: 45px !important;">
+                                        <div class="s-levels-wrapper">
+                                            <span class="s-title">OTB_DrinkingTeam-bundle</span>
+                                        </div>
+                                    </td>
+                                    <td class="s-number-group"></td>
+                                    <td class="s-price-group">Employee Price</td>
+                                    <td class="s-number"></td>
+                                    <td class="s-number"></td>
+                                    <td class="s-input-table-cell">
+                                        <ul class="list-unstyled">
+                                            <li data-currency="USD">
+                                                <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                                    <span class="s-title">USD</span>
+                                                    <input type="text" value="140.00" class="form-control input-xs  s-inherited">
+                                                    <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                                    <!-- <button class="btn btn-xs btn-default">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button> -->
+                                                </div>
+                                                <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
+                                            </li>
+                                            <li data-currency="AUD">
+                                                <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                                    <span class="s-title" data-toggle="popover" data-trigger="hover" data-content="Current exchange rate: 1.1">AUD</span>
+                                                    <input type="text" value="191.68" class="form-control input-xs  s-inherited">
+                                                    <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                                    <!-- <button class="btn btn-xs btn-default" data-toggle="popover" data-trigger="hover" data-content="Revert price to default AUD currency rate">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button> -->
+                                                </div>
+                                                <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td class="s-actions">
+                                        <div class="s-toggle-switch">
+                                            <input name="t9" type="hidden" value="0" />
+                                            <input id="t9" name="t9" type="checkbox" value="1" checked />
+                                            <div class="btn">
+                                                <label for='t9'>
+                                                    <div class="s-toggle-switch-on btn btn-success"> 
+                                                        On
+                                                    </div>
+                                                    <div class="s-toggle-switch-handle btn btn-default"></div>
+                                                    <div class="s-toggle-switch-off btn">
+                                                        Off
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <i class="fa fa-info-circle " data-toggle="popover" data-trigger="click" data-placement="left" title="" data-content="Inherited from price rule <a href='##'>XYZ</a>"></i>
+                                    </td>
+                                </tr>
+                                <tr class="s-child s-inherited">
+                                    <td class="s-table-checkbox">
+                                        <div class="s-checkbox">
+                                            <input type="checkbox">
+                                            <label for="exampleID"></label>
+                                        </div>
+                                    </td>
+                                    <td class="s-levels" style="padding-left: 45px !important;">
+                                        <div class="s-levels-wrapper">
+                                            <span class="s-title">OTB_DrinkingTeam-bundle</span>
+                                        </div>
+                                    </td>
+                                    <td class="s-number-group"></td>
+                                    <td class="s-price-group">Wholesale</td>
+                                    <td class="s-input-table-cell s-qty-range">
+                                        <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                            <input type="text" value="50" placeholder="any" class="form-control input-xs  s-inherited">
+                                            <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                            <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                            <!-- <button class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="right" data-original-title="Revert to default wholesale value (50)">
+                                                <i class="fa fa-refresh"></i>
+                                            </button> -->
                                             
-                                        </th>
-                                        <th class="s-actions">
-                                            <div class="s-toggle-panels">
-                                                <a href="#" class="s-openall" ><i class="fa fa-expand"></i></a>
-                                                <a href="#" class="s-closeall"><i class="fa fa-compress"></i></a>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="s-table-checkbox">
-                                            <div class="s-checkbox">
-                                                <input type="checkbox">
-                                                <label for="exampleID"></label>
-                                            </div>
-                                        </td>
-                                        <td class="s-levels">
-                                            <div class="s-levels-wrapper">
-                                                <i class="fa fa-caret-down s-listing-arrow"></i> 
-                                                <span data-placement="bottom" title="Bundle Skus" data-toggle="popover" data-container="body" data-placement="top" data-html="true" data-trigger="hover">OTB_DrinkingTeam-1826-1</span>
-                                                <div id="popover-content" class="hide">
-                                                    <ul style="padding-left:20px;">
-                                                        <li>OTB_DrinkingTeam-1826-1</li>
-                                                        <li>Gift-Card-25</li>
-                                                    </ul>
+                                        </div>
+                                    </td>
+                                    <td class="s-input-table-cell s-qty-range">
+                                        <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                            <input type="text" value="99" placeholder="any" class="form-control input-xs">
+                                            <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                            <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                            <!-- <button class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="right" data-original-title="Revert to default wholesale value (50)">
+                                                <i class="fa fa-refresh"></i>
+                                            </button> -->
+                                            
+                                        </div>
+                                    </td>
+                                    <td class="s-input-table-cell">
+                                        <ul class="list-unstyled">
+                                            <li data-currency="USD">
+                                                <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                                    <span class="s-title">USD</span>
+                                                    <input type="text" value="120.00" class="form-control input-xs  s-inherited">
+                                                    <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                                    <!-- <button class="btn btn-xs btn-default">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button> -->
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td class="s-number-group"></td>
-                                        <td class="s-price-group"></td>
-                                        <td class="s-number"></td>
-                                        <td class="s-number"></td>
-                                        <td class="s-input-table-cell">
-                                            <ul class="list-unstyled">
-                                                <li data-currency="USD">
-                                                    <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                        <span class="s-title">USD</span>
-                                                        <input type="text" value="150.00" class="form-control input-xs  s-inherited">
-                                                        <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                        <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                        <!-- <button class="btn btn-xs btn-default">
-                                                            <i class="fa fa-refresh"></i>
-                                                        </button> -->
-                                                    </div>
-                                                    <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
-                                                </li>
-                                                <li data-currency="AUD">
-                                                    <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                        <span class="s-title" data-toggle="popover" data-trigger="hover" data-content="Current exchange rate: 1.1">AUD</span>
-                                                        <input type="text" value="201.68" class="form-control input-xs  s-inherited">
-                                                        <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                        <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                        <!-- <button class="btn btn-xs btn-default" data-toggle="popover" data-trigger="hover" data-content="Revert price to default AUD currency rate">
-                                                            <i class="fa fa-refresh"></i>
-                                                        </button> -->
-                                                    </div>
-                                                    <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td class="s-actions">
-                                            <a href="##" class="btn btn-default btn-xs" target="_self" data-toggle="popover" data-placement="left" data-trigger="click" title="Are you sure you want to disable?" data-content="<button class='btn btn-default s-remove' type='button'>Yes</button><button class='btn btn-default' type='button'>No</button>">
-                                                <i class="fa fa-eye"></i> 
-                                            </a> 
-                                            <a  href="#" title="Add Price" class="btn btn-default btn-xs" data-toggle="modal" data-target="#j-add-sku-item-remove-this">
-                                                <i class="fa fa-plus"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    <tr class="s-child s-inherited">
-                                        <td class="s-table-checkbox">
-                                            <div class="s-checkbox">
-                                                <input type="checkbox">
-                                                <label for="exampleID"></label>
-                                            </div>
-                                        </td>
-                                        <td class="s-levels" style="padding-left: 45px !important;">
-                                            <div class="s-levels-wrapper">
-                                                <span class="s-title">OTB_DrinkingTeam-bundle</span>
-                                            </div>
-                                        </td>
-                                        <td class="s-number-group"></td>
-                                        <td class="s-price-group">Employee Price</td>
-                                        <td class="s-number"></td>
-                                        <td class="s-number"></td>
-                                        <td class="s-input-table-cell">
-                                            <ul class="list-unstyled">
-                                                <li data-currency="USD">
-                                                    <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                        <span class="s-title">USD</span>
-                                                        <input type="text" value="140.00" class="form-control input-xs  s-inherited">
-                                                        <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                        <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                        <!-- <button class="btn btn-xs btn-default">
-                                                            <i class="fa fa-refresh"></i>
-                                                        </button> -->
-                                                    </div>
-                                                    <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
-                                                </li>
-                                                <li data-currency="AUD">
-                                                    <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                        <span class="s-title" data-toggle="popover" data-trigger="hover" data-content="Current exchange rate: 1.1">AUD</span>
-                                                        <input type="text" value="191.68" class="form-control input-xs  s-inherited">
-                                                        <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                        <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                        <!-- <button class="btn btn-xs btn-default" data-toggle="popover" data-trigger="hover" data-content="Revert price to default AUD currency rate">
-                                                            <i class="fa fa-refresh"></i>
-                                                        </button> -->
-                                                    </div>
-                                                    <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td class="s-actions">
-                                            <div class="s-toggle-switch">
-                                                <input name="t9" type="hidden" value="0" />
-                                                <input id="t9" name="t9" type="checkbox" value="1" checked />
-                                                <div class="btn">
-                                                    <label for='t9'>
-                                                        <div class="s-toggle-switch-on btn btn-success"> 
-                                                            On
-                                                        </div>
-                                                        <div class="s-toggle-switch-handle btn btn-default"></div>
-                                                        <div class="s-toggle-switch-off btn">
-                                                            Off
-                                                        </div>
-                                                    </label>
+                                                <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
+                                            </li>
+                                            <li data-currency="AUD">
+                                                <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
+                                                    <span class="s-title" data-toggle="popover" data-trigger="hover" data-content="Current exchange rate: 1.1">AUD</span>
+                                                    <input type="text" value="171.68" class="form-control input-xs  s-inherited">
+                                                    <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                                    <!-- <button class="btn btn-xs btn-default" data-toggle="popover" data-trigger="hover" data-content="Revert price to default AUD currency rate">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </button> -->
                                                 </div>
-                                            </div>
-                                            <i class="fa fa-info-circle " data-toggle="popover" data-trigger="click" data-placement="left" title="" data-content="Inherited from price rule <a href='##'>XYZ</a>"></i>
-                                        </td>
-                                    </tr>
-                                    <tr class="s-child s-inherited">
-                                        <td class="s-table-checkbox">
-                                            <div class="s-checkbox">
-                                                <input type="checkbox">
-                                                <label for="exampleID"></label>
-                                            </div>
-                                        </td>
-                                        <td class="s-levels" style="padding-left: 45px !important;">
-                                            <div class="s-levels-wrapper">
-                                                <span class="s-title">OTB_DrinkingTeam-bundle</span>
-                                            </div>
-                                        </td>
-                                        <td class="s-number-group"></td>
-                                        <td class="s-price-group">Wholesale</td>
-                                        <td class="s-input-table-cell s-qty-range">
-                                            <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                <input type="text" value="50" placeholder="any" class="form-control input-xs  s-inherited">
-                                                <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                <!-- <button class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="right" data-original-title="Revert to default wholesale value (50)">
-                                                    <i class="fa fa-refresh"></i>
-                                                </button> -->
-                                                
-                                            </div>
-                                        </td>
-                                        <td class="s-input-table-cell s-qty-range">
-                                            <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                <input type="text" value="99" placeholder="any" class="form-control input-xs">
-                                                <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                <!-- <button class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="right" data-original-title="Revert to default wholesale value (50)">
-                                                    <i class="fa fa-refresh"></i>
-                                                </button> -->
-                                                
-                                            </div>
-                                        </td>
-                                        <td class="s-input-table-cell">
-                                            <ul class="list-unstyled">
-                                                <li data-currency="USD">
-                                                    <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                        <span class="s-title">USD</span>
-                                                        <input type="text" value="120.00" class="form-control input-xs  s-inherited">
-                                                        <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                        <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                        <!-- <button class="btn btn-xs btn-default">
-                                                            <i class="fa fa-refresh"></i>
-                                                        </button> -->
+                                                <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                    <td class="s-actions">
+                                        <div class="s-toggle-switch">
+                                            <input name="t10" type="hidden" value="0" />
+                                            <input id="t10" name="t10" type="checkbox" value="1" checked />
+                                            <div class="btn">
+                                                <label for="t10">
+                                                    <div class="s-toggle-switch-on btn btn-success"> 
+                                                        On
                                                     </div>
-                                                    <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
-                                                </li>
-                                                <li data-currency="AUD">
-                                                    <div class="s-input-group"><!--- Adding s-edit will show the edit mode. --->
-                                                        <span class="s-title" data-toggle="popover" data-trigger="hover" data-content="Current exchange rate: 1.1">AUD</span>
-                                                        <input type="text" value="171.68" class="form-control input-xs  s-inherited">
-                                                        <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                        <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
-                                                        <!-- <button class="btn btn-xs btn-default" data-toggle="popover" data-trigger="hover" data-content="Revert price to default AUD currency rate">
-                                                            <i class="fa fa-refresh"></i>
-                                                        </button> -->
+                                                    <div class="s-toggle-switch-handle btn btn-default"></div>
+                                                    <div class="s-toggle-switch-off btn">
+                                                        Off
                                                     </div>
-                                                    <span class="s-sale-price j-popover-sale-price" data-toggle="popover" data-trigger="click" data-content="<div>Name: <a href='##'>10OFF</a></div>">140.00</span>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                        <td class="s-actions">
-                                            <div class="s-toggle-switch">
-                                                <input name="t10" type="hidden" value="0" />
-                                                <input id="t10" name="t10" type="checkbox" value="1" checked />
-                                                <div class="btn">
-                                                    <label for="t10">
-                                                        <div class="s-toggle-switch-on btn btn-success"> 
-                                                            On
-                                                        </div>
-                                                        <div class="s-toggle-switch-handle btn btn-default"></div>
-                                                        <div class="s-toggle-switch-off btn">
-                                                            Off
-                                                        </div>
-                                                    </label>
-                                                </div>
+                                                </label>
                                             </div>
-                                            <i class="fa fa-info-circle " data-toggle="popover" data-trigger="click" data-placement="left" title="" data-content="Inherited from price rule <a href='##'>XYZ</a>"></i>
-                                        </td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                        <a title="Add Sku Bundle" class="btn btn-primary modalload" target="_self" href="" data-toggle="modal" data-target="#adminModal">Add Sku Bundle</a> 
-                        
+                                        </div>
+                                        <i class="fa fa-info-circle " data-toggle="popover" data-trigger="click" data-placement="left" title="" data-content="Inherited from price rule <a href='##'>XYZ</a>"></i>
+                                    </td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- ///fourth Tab -->
-                    
+                    <a title="Add Sku Bundle" class="btn btn-primary modalload" target="_self" href="" data-toggle="modal" data-target="#adminModal">Add Sku Bundle</a> 
                 </div>
-            </div>
-        </content>
+           </sw-tab-content>
+       </sw-tab-group>
     </div>
 </div>

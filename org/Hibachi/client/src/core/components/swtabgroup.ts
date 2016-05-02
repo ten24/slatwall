@@ -46,7 +46,6 @@ class SWTabGroup implements ng.IDirective{
             $compile
             ,corePartialsPath
             ,hibachiPathBuilder
-
         )=> new SWTabGroup(
             $compile
             ,corePartialsPath

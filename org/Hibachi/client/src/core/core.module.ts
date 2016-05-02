@@ -62,6 +62,8 @@ import {SWExportAction} from "./components/swexportaction";
 import {SWHref} from "./components/swhref";
 import {SWProcessCaller} from "./components/swprocesscaller";
 import {SWSortable} from "./components/swsortable";
+import {SWTabGroup} from "./components/swtabgroup";
+import {SWTabContent} from "./components/swtabcontent";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
 
 declare var $:any;
@@ -187,6 +189,8 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swHref',SWHref.Factory())
 .directive('swProcessCaller',SWProcessCaller.Factory())
 .directive('sw:sortable',SWSortable.Factory())
+.directive('swTabGroup', SWTabGroup.Factory())
+.directive('swTabContent', SWTabContent.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
 ;
 export{

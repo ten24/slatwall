@@ -47,7 +47,7 @@ class SWTabContent implements ng.IDirective{
             ,corePartialsPath
             ,hibachiPathBuilder
 
-        )=> new SWTabGroup(
+        )=> new SWTabContent(
             $compile
             ,corePartialsPath
             ,hibachiPathBuilder

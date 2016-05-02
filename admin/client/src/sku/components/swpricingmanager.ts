@@ -15,8 +15,6 @@ class SWPricingManager implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
-        sku:"=",
-        productBundleGroups:"="
     };
     public controller = SWPricingManagerController;
     public controllerAs="SWPricingManager";
