@@ -506,7 +506,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var skuOptionIDArray = [];
 			var skuOptionSmartList = sku.getOptionsSmartList();
 			skuOptionSmartList.addOrder("sortOrder|asc");
-			for(var option in skuOptionSmartList) {
+			for(var option in skuOptionSmartList.getRecords()) {
 				arrayAppend(skuOptionIDArray, option.getOptionID());
 			}
 
