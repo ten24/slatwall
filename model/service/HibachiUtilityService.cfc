@@ -474,7 +474,7 @@ Notes:
 
 	// @hint utility function to sort array of ojbects can be used to override getCollection() method to add sorting.
 	// From Aaron Greenlee http://cookbooks.adobe.com/post_How_to_sort_an_array_of_objects_or_entities_with_C-17958.html
-	public array function sortObjectArray(required array objects, required string orderByProperty, string sorttype="text", string direction = "asc") {
+	public array function sortObjectArray(required array objects, required string orderByProperty, string sortType="text", string direction = "asc") {
 		var sortedStruct = {};
 		var sortedArray = [];
         for (var i=1; i <= arrayLen(arguments.objects); i++) {
@@ -485,7 +485,7 @@ Notes:
                 var sortedStruct[ evaluate("arguments.objects[i].get#arguments.orderByProperty#() & '.' & rn") ] = objects[i];
 		}
 		var keyArray = structKeyArray(sortedStruct);
-		arraySort(keyArray,arguments.sorttype,arguments.direction);
+		arraySort(keyArray,arguments.sortType,arguments.direction);
 		for(var i=1; i<=arrayLen(keyArray);i++) {
 			arrayAppend(sortedArray, sortedStruct[keyArray[i]]);
 		}
