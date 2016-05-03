@@ -19,15 +19,15 @@
 	<cfparam name="attributes.sRedirectQS" type="string" default="#request.context.entityActionDetails.sRedirectQS#">
 	<cfparam name="attributes.fRedirectQS" type="string" default="#request.context.entityActionDetails.fRedirectQS#">
 	<cfparam name="attributes.forceSSLFlag" type="boolean" default="false" />
-	
+
 	<cfset formAction ="">
-	
+
 	<cfif attributes.forceSSLFlag AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
 		<cfset formAction &= "https://#cgi.SERVER_NAME##attributes.hibachiScope.getApplicationValue('baseURL')#/" >
 	</cfif>
-	
+
 	<cfset formAction &= "?s=1" />
-	
+
 	<cfif len(attributes.processActionQueryString)>
 		<cfset formAction &= "&#attributes.processActionQueryString#" />
 	</cfif>
@@ -38,6 +38,7 @@
 
 	<cfoutput>
 		<form method="post" action="#formAction#" class="form-horizontal" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.processAction),':','','all'),'.','','all')#_#lcase(attributes.processContext)#">
+			<input type="hidden" name="urv" value="#request.context.urv#">
 			<input type="hidden" name="#request.context.fw.getAction()#" value="#attributes.processAction#" />
 			<input type="hidden" name="processContext" value="#attributes.processContext#" />
 			<input type="hidden" name="#attributes.entity.getPrimaryIDPropertyName()#" value="#attributes.entity.getPrimaryIDValue()#" />
