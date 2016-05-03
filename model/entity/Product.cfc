@@ -487,9 +487,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		// Create an array of the selectOptions
 		if(listLen(arguments.selectedOptionIDList)) {
 			for(var sku in skus) {
-				var skuOptionSmartList = sku.getOptionsSmartList();
-				skuOptionSmartList.addOrder("sortOrder|asc");
-				for(var option in skuOptionSmartList.getRecords()) {
+				for(var option in sku.getOptions()) {
 					if(listFindNoCase(arguments.selectedOptionIDList, option.getOptionID())) {
 						selectedOptionGroupsByOptionID[ option.getOptionID() ] = option.getOptionGroup().getOptionGroupID();
 					}
@@ -504,14 +502,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		for(var sku in skus) {
 
 			var skuOptionIDArray = [];
-			var skuOptionSmartList = sku.getOptionsSmartList();
-			skuOptionSmartList.addOrder("sortOrder|asc");
-			for(var option in skuOptionSmartList.getRecords()) {
+			for(var option in sku.getOptions()) {
 				arrayAppend(skuOptionIDArray, option.getOptionID());
 			}
 
 			// Loop over the options for this sku
-			for(var option in skuOptionSmartList.getRecords()) {
+			for(var option in sku.getOptions()) {
 
 				var allSelectedInSku = true;
 				for(var selected in listToArray(arguments.selectedOptionIDList)) {
@@ -553,6 +549,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					newOption['optionName'] = option.getOptionName();
 					newOption['name'] = option.getOptionName();
 					newOption['value'] = option.getOptionID();
+					newOption['sortOrder'] = option.getSortOrder();
 					newOption['totalQATS'] = sku.getQuantity("QATS");
 					newOption['selectedQATS'] = 0;
 					if(allSelectedInSku) {
@@ -561,7 +558,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 				}
 			}
-
+		}
+		for(var ogCode in skuOptionDetails){
+			skuOptionDetails[ ogCode ].options = getService("HibachiUtilityService").structArraySort(skuOptionDetails[ ogCode ].options, "sortOrder");
 		}
 
 		return skuOptionDetails;

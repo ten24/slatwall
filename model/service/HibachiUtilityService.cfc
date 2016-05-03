@@ -492,6 +492,23 @@ Notes:
 		return sortedArray;
 	}
 
+	/**
+	* Sorts an array of structures based on a key in the structures.
+	*/
+	function structArraySort(arrayOfStructs,key,sortType="numeric", sortOrder="asc"){
+	        var tempStruct = {};
+	        var structArrayLength = arrayLen(arrayOfStructs);
+	        for(var i=1; i<=structArrayLength; i++){
+	        	tempStruct[i] = StructCopy(arrayOfStructs[i]);
+	        }
+	        var keys = StructSort(tempStruct, sortType, sortOrder, key);
+	        var sortedArray = arrayNew(1);
+	        for(var i=1; i<=structArrayLength; i++){
+	        	arrayAppend(sortedArray, tempStruct[keys[i]]);
+	        }
+	        return sortedArray;
+	}
+
 
 
 	public struct function queryToStructOfStructures(theQuery, primaryKey){
