@@ -2,6 +2,8 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWPricingManagerController{
     
+    public productId;
+    
     //@ngInject
     constructor(
     ){
@@ -15,6 +17,7 @@ class SWPricingManager implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
+        productId:"@"
     };
     public controller = SWPricingManagerController;
     public controllerAs="SWPricingManager";
