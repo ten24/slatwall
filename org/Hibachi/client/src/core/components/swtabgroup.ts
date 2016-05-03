@@ -2,7 +2,7 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWTabGroupController {
 
-    public tabs; 
+    public tabs:any[]; 
 
     // @ngInject
     constructor(private $scope, 
@@ -18,7 +18,14 @@ class SWTabGroupController {
             this.tabs = []; 
         }
     }
+
+    public switchTab = (tabToActivate) => {
+        for(var i = 0; i < this.tabs.length; i++){
+            this.tabs[i].active = false; 
+        }
+        tabToActivate.active = true;    
     }
+}
 
 class SWTabGroup implements ng.IDirective{
 

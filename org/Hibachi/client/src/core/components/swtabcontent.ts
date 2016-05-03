@@ -38,7 +38,7 @@ class SWTabContent implements ng.IDirective{
         "name":"@?"
     };
     public controller=SWTabContentController;
-    public controllerAs="swTabGroup";
+    public controllerAs="swTabContent";
 
     // @ngInject
     constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
@@ -47,8 +47,25 @@ class SWTabContent implements ng.IDirective{
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
         return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {}
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                
+            },
+            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                var currentScope = $scope  
+                for(var tries = 0; tries < 5; tries++){
+                    currentScope = currentScope.$parent;
+                    if(angular.isDefined(currentScope)){
+                        var parentDirective = currentScope["swTabGroup"];
+                    } 
+                    if(angular.isDefined(parentDirective)){
+                        break; 
+                    }
+                }
+                if(angular.isDefined(parentDirective) && angular.isDefined(parentDirective.tabs)){
+                    console.log("white whale", $scope.swTabContent, parentDirective);
+                    parentDirective.tabs.push($scope.swTabContent)
+                }
+            }
         };
     }
 
