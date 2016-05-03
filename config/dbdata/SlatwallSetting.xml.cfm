@@ -22,5 +22,7 @@
 		<Record settingID="dbb32805d4bb4e6e86c6df25b91a6c17" settingName="taskFailureEmailTemplate" settingValue="dbb327e9ac9051b06c902de4bf83eaa8" />
 		<Record settingID="dbb32804977b1824636aa1e075e7b690" settingName="taskSuccessEmailTemplate" settingValue="dbb327e89546f9916ed8316f4fcc70e1" />
         <Record settingID="4028852150f34ff80150f713d974000b" settingName="emailToAddress" settingValue="${emailAddress}" emailTemplateID="dbb327e796334dee73fb9d8fd801df91" />
+
+		<Record settingID="4028289a5430359501545db6df460848" settingName="accountPaymentTerm" settingValue="27f223d1a5b7cba92e783c926e29efc6" />
 	</Records>
 </Table>
