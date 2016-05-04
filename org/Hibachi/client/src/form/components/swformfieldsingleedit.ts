@@ -49,6 +49,7 @@ class SWFormFieldSingleEdit implements ng.IDirective{
 
     public templateUrl;
     public restrict = "EA";
+    public require = "ngModel";
     public scope = {};
 
     public bindToController = {
@@ -71,7 +72,7 @@ class SWFormFieldSingleEdit implements ng.IDirective{
     public controllerAs="swFormFieldSingleEdit";
 
     // @ngInject
-    constructor(public $compile, public ngModelController, private coreFormPartialsPath,hibachiPathBuilder){
+    constructor(public $compile, private coreFormPartialsPath,hibachiPathBuilder){
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "formfieldsingleedit.html";
     }
 
@@ -103,19 +104,16 @@ class SWFormFieldSingleEdit implements ng.IDirective{
     public static Factory(){
         var directive:ng.IDirectiveFactory = (
             $compile
-            ,NgModelController
             ,coreFormPartialsPath
             ,hibachiPathBuilder
 
         )=> new SWFormFieldSingleEdit(
             $compile
-            ,NgModelController
             ,coreFormPartialsPath
             ,hibachiPathBuilder
         );
         directive.$inject = [
-            "$compile",
-            ,"NgModelController"
+            "$compile"
             ,"coreFormPartialsPath"
             ,'hibachiPathBuilder'
         ];
