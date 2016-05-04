@@ -1,6 +1,21 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWSingleEditFieldController {
+    
+    public property;
+    public object;
+    public options;
+    public editable;
+    public editing;
+    public isHidden;
+    public title;
+    public hint;
+    public optionsArguments;
+    public eagerLoadOptions;
+    public isDirty;
+    public onChange;
+    public fieldType;
+    public noValidate;
 
     // @ngInject
     constructor(private $scope, 

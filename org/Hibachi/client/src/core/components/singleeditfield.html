@@ -1,17 +1,10 @@
-<sw-property-display 
-        data-property="swSingleEditField.property"
-        data-object="swSingleEditField.object"
-        data-options="swSingleEditField.options"
-        data-editabled="swSingleEditField.editable"
-        data-editing="swSingleEditField.editing"
-        data-is-hidden="swSingleEditField.isHidden"
-        data-title="swSingleEditField.title"
-        data-hint="swSingleEditField.hint"
-        data-options-arguments="swSingleEditField.hint"
-        data-eager-load-options="swSingleEditField.eagerLoadOptions"
-        data-is-dirty="swSingleEditField.isDirty"
-        data-on-change="swSingleEditField.onChange"
-        data-field-type="swSingleEditField.fieldType"
-        data-no-validate="swSingleEditField.noValidate"
-    > 
-</sw-property-display>
+<div class="s-input-group" ng-class="{'s-edit':swSignleEditField.edited}"><!--- Removing s-edit will hide the edit mode. --->
+    <span class="s-title">USD</span>
+    <input type="text" value="151.00" class="form-control input-xs  s-inherited">
+    <a class="s-remove-change"><i class="fa fa-remove"></i></a>
+    <a class="btn btn-xs btn-success s-action-btn" >save</a>
+    <a class="s-indicator-icon"><i class="fa fa-list" data-toggle="popover" data-content="(2) price groups"></i></a>
+    <!-- <button class="btn btn-xs btn-default">
+        <i class="fa fa-refresh"></i>
+    </button> -->
+</div>
