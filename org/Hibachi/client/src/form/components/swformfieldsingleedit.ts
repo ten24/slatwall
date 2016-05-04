@@ -83,8 +83,12 @@ class SWFormFieldSingleEdit implements ng.IDirective{
             var modelValue = modelCtrl.$modelValue;
             
             //figure out if the model value has changed
-            
-            //update editable
+            //was it a revert?
+            if(modelValue !== inputValue){
+                thisDirectiveScope.valueToRevertTo = modelValue;
+                thisDirectiveScope.singleEditedObject[thisDirectiveScope.property] = inputValue; 
+                thisDirectiveScope.edited = true; 
+            }
                 
             return modelValue;
         });
