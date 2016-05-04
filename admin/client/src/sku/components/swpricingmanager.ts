@@ -4,10 +4,15 @@ class SWPricingManagerController{
     
     public productId;
     
+    //temporary var
+    public singleEditTest; 
+    
     //@ngInject
     constructor(
+        private $hibachi 
     ){
-       
+       this.singleEditTest = $hibachi.newEntity("SkuPrice");
+       console.log("white whale", this.singleEditTest);  
     }    
 
 }
