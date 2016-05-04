@@ -64,7 +64,8 @@ class SWFormFieldSingleEdit implements ng.IDirective{
         isDirty:"=?",
         onChange:"=?",
         fieldType:"@?",
-        noValidate:"=?"
+        noValidate:"=?",
+        propertyDisplay:"=?"
     };
     public controller=SWFormFieldSingleEdit;
     public controllerAs="swFormFieldSingleEdit";
@@ -74,7 +75,11 @@ class SWFormFieldSingleEdit implements ng.IDirective{
         this.templateUrl = hibachiPathBuilder.buildPartialsPath(coreFormPartialsPath) + "formfieldsingleedit.html";
     }
 
-    public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, modelCtrl: ng.INgModelController) =>{
+    public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:any, modelCtrl: ng.INgModelController) =>{
+
+         if(angular.isDefined($scope.propertyDisplay)){
+             angular.extend($scope.swFormFieldSingleEdit, $scope.propertyDisplay);
+         }
 
          var thisDirectiveScope = $scope[this.controllerAs];
 
