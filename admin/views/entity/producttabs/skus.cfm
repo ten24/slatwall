@@ -119,7 +119,7 @@ Notes:
 		</hb:HibachiListingDisplay>
 	</cfif>
 
-	<sw-pricing-manager>
+	<sw-pricing-manager data-product-id="#rc.product.getProductID()#">
 
 	</sw-pricing-manager>
 

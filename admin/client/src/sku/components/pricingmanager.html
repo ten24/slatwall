@@ -6,6 +6,7 @@
            <sw-tab-content data-name="basic"> 
                
                
+               <!-- Attempting to incorporate needs into existing listing -->
                <sw-listing-display
                     data-collection="'Sku'"
                     data-edit="true"
@@ -15,14 +16,29 @@
                     data-has-action-bar="false"
                     data-multiselect-field-name="placeholder"
                                 >
+                    
+                                
+                                
                 <sw-listing-column data-property-identifier="skuDefinition"></sw-listing-column>
                 <sw-listing-column data-property-identifier="skuCode"></sw-listing-column>
                 
                 <sw-listing-column data-property-identifier="calculatedQATS"></sw-listing-column>
                 
-                <sw-collection-config>
-                    <sw-collection-column></sw-collection-column>
-                </sw-collection-config> 
+                
+                
+                <sw-listing-column>
+                    <sw-collection-config 
+                        data-entity-name="Sku"
+                        data-parent-directive-controller-as-name="swListingDisplay"
+                        data-collection-config-property="collectionConfig"
+                        data-all-records="true"
+                    >
+                        <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
+                        <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
+                        <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
+                        <sw-collection-filter data-property-identifier="sku.product.productID" data-comparison-operator="=" data-comparison-value="swPricingManager.productId"></sw-collection-filter>
+                    </sw-collection-config>
+                </sw-listing-column>
                 
             </sw-listing-display>
                 
