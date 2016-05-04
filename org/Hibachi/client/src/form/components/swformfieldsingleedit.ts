@@ -16,9 +16,10 @@ class SWFormFieldSingleEditController {
     public fieldType:string;
     public noValidate:boolean;
     
+    public valueToRevertTo:any; 
     public ngModelValue:any; 
     
-    public valueToRevertTo:any; 
+
     public singleEditedObject:any; 
 
     // @ngInject
@@ -49,7 +50,6 @@ class SWFormFieldSingleEdit implements ng.IDirective{
 
     public templateUrl;
     public restrict = "EA";
-    public require = "ngModel";
     public scope = {};
 
     public bindToController = {
@@ -77,28 +77,9 @@ class SWFormFieldSingleEdit implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:any, modelCtrl: ng.INgModelController) =>{
-
          if(angular.isDefined($scope.propertyDisplay)){
              angular.extend($scope.swFormFieldSingleEdit, $scope.propertyDisplay);
          }
-
-         var thisDirectiveScope = $scope[this.controllerAs];
-
-         modelCtrl.$parsers.unshift((inputValue) =>{
-            var modelValue = modelCtrl.$modelValue;
-            
-            //figure out if the model value has changed
-            //was it a revert?
-            if(modelValue !== inputValue){
-                thisDirectiveScope.valueToRevertTo = modelValue;
-                thisDirectiveScope.singleEditedObject[thisDirectiveScope.property] = inputValue; 
-                thisDirectiveScope.edited = true; 
-            }
-                
-            return modelValue;
-        });
-
-
     }
 
     public static Factory(){
