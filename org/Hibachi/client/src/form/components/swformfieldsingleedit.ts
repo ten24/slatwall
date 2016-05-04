@@ -5,8 +5,7 @@ class SWFormFieldSingleEditController {
     public property:string;
     public object:any;
     public options:{};
-    public editable:boolean;
-    public editing:boolean;
+    public edited:boolean; 
     public isHidden:boolean;
     public title:string;
     public hint:string;
@@ -36,6 +35,7 @@ class SWFormFieldSingleEditController {
         this.singleEditedObject.$$save().then((response)=>{
             //do anything?
         });
+        this.edited = false;
     }
     
     public revert = () => {
@@ -55,8 +55,7 @@ class SWFormFieldSingleEdit implements ng.IDirective{
         property:"@",
         object:"=",
         options:"=?",
-        editable:"=?",
-        editing:"=?",
+        edited:"=?",
         isHidden:"=?",
         title:"=?",
         hint:"@?",
