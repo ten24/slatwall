@@ -1226,21 +1226,29 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public any function hasSavableOrderPaymentForSubscription(){
 		//Check if there is subscription with autopay flag without order payment with account payment method.
 		var hasSubscriptionWithAutoPay = false;
-		var hasOrderPaymentWithAccountPaymentMethod = false;
+		var hasOrderPaymentWithSavablePaymentMethod = false;
 
 		for (var orderItem in getOrderItems()){
-			if (orderItem.getSku().getBaseProductType() == "subscription" && !isNull(orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()) && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
+			if (orderItem.getSku().getBaseProductType() == "subscription"
+				&& !isNull(orderItem.getSku().getSubscriptionTerm().getAutoPayFlag())
+				&& orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()
+			){
 				hasSubscriptionWithAutoPay = true;
 
 				for (orderPayment in getOrderPayments()){
-					if (!isNull(orderPayment.getAccountPaymentMethod())){
-						hasOrderPaymentWithAccountPaymentMethod = true;
+					if (!isNull(orderPayment.getAccountPaymentMethod())
+							|| (!isNull(orderPayment.getPaymentMethod())
+							&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
+							&& orderPayment.getPaymentMethod().getAllowSaveFlag())
+					){
+						hasOrderPaymentWithSavablePaymentMethod = true;
 					}
 				}
 			}
 		}
 
-		return hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod;
+		return (!hasSubscriptionWithAutoPay && !hasOrderPaymentWithSavablePaymentMethod)
+			|| (hasSubscriptionWithAutoPay && hasOrderPaymentWithSavablePaymentMethod);
 	}
 
 	// =================== START: ORM Event Hooks  =========================

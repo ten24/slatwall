@@ -726,14 +726,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
 		if (foundSubscriptionWithAutoPayFlagSet){
-			
+
 			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
 				if ((orderPayment.getStatusCode() == 'opstActive') && !isNull(orderPayment.getPaymentMethod()) && !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag()) && orderPayment.getPaymentMethod().getAllowSaveFlag()){
 					arguments.processObject.setSaveAccountPaymentMethodFlag( true );
 					break;
 				}
 			}
-			
+
 		}
 
 		// Attach 'createTransaction' errors to the order
@@ -1312,7 +1312,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					//Check if we have a Subscription with auto pay without an order payments method that allows accounts to save.
-					if (arguments.order.hasSavableOrderPaymentForSubscription()){
+					if (!arguments.order.hasSavableOrderPaymentForSubscription()){
 						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 					}
 
@@ -2256,9 +2256,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			accountContentAccessSmartList.addFilter("OrderItem.orderItemID", stockReceiverItem.getOrderItem().getReferencedOrderItem().getOrderItemID());
 			var accountContentAccesses = accountContentAccessSmartList.getRecords();
 			for (var accountContentAccess in accountContentAccesses){
-    			
+
     			getAccountService().deleteAccountContentAccess( accountContentAccess );
-    			
+
 			}
 		}
 
