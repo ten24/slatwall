@@ -1150,7 +1150,7 @@
 
 		<!--- Create the filename variables --->
 		<cfset var filename = "" />
-		<cfif not isNull(getReportEntity())>
+		<cfif !isNull(getReportEntity()) && !isNull(getReportEntity().getReportTitle()) >
 			<cfset filename = getService("HibachiUtilityService").createSEOString(getReportEntity().getReportTitle()) />
 			<cfset filename &= "_" />
 		<cfelse>
