@@ -714,26 +714,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
 
-		// If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term AND the orderPayment's paymentMethod
-		//  is set to allow accounts to save... then auto set the 'save account payment method flag'.
-		var foundSubscriptionWithAutoPayFlagSet = false;
-		for (var orderItem in arguments.order.getOrderItems()){
-			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
-				foundSubscriptionWithAutoPayFlagSet = true;
-				break;
-			}
-		}
-
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
-		if (foundSubscriptionWithAutoPayFlagSet){
-
+		if (arguments.order.hasSubscriptionWithAutoPay() && arguments.order.hasSavableOrderPaymentForSubscription()){
 			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
-				if ((orderPayment.getStatusCode() == 'opstActive') && !isNull(orderPayment.getPaymentMethod()) && !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag()) && orderPayment.getPaymentMethod().getAllowSaveFlag()){
+				if ((orderPayment.getStatusCode() == 'opstActive')
+					&& !isNull(orderPayment.getPaymentMethod())
+					&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
+					&& orderPayment.getPaymentMethod().getAllowSaveFlag()){
 					arguments.processObject.setSaveAccountPaymentMethodFlag( true );
 					break;
 				}
 			}
-
+		} else {
+			arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 		}
 
 		// Attach 'createTransaction' errors to the order
@@ -1312,7 +1305,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					//Check if we have a Subscription with auto pay without an order payments method that allows accounts to save.
-					if (!arguments.order.hasSavableOrderPaymentForSubscription()){
+					if (!arguments.order.hasSavedAccountPaymentMethodForSubscriptionWithAutoPay()){
 						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 					}
 

@@ -1223,32 +1223,45 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// ==================  END:  Overridden Methods ========================
 
-	public any function hasSavableOrderPaymentForSubscription(){
-		//Check if there is subscription with autopay flag without order payment with account payment method.
+	public boolean function hasSubscriptionWithAutoPay(){
 		var hasSubscriptionWithAutoPay = false;
-		var hasOrderPaymentWithSavablePaymentMethod = false;
-
 		for (var orderItem in getOrderItems()){
 			if (orderItem.getSku().getBaseProductType() == "subscription"
 				&& !isNull(orderItem.getSku().getSubscriptionTerm().getAutoPayFlag())
 				&& orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()
 			){
 				hasSubscriptionWithAutoPay = true;
+			}
+		}
+		return hasSubscriptionWithAutoPay;
+	}
 
-				for (orderPayment in getOrderPayments()){
-					if (!isNull(orderPayment.getAccountPaymentMethod())
-							|| (!isNull(orderPayment.getPaymentMethod())
-							&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
-							&& orderPayment.getPaymentMethod().getAllowSaveFlag())
-					){
-						hasOrderPaymentWithSavablePaymentMethod = true;
-					}
-				}
+	public boolean function hasSavableOrderPaymentForSubscription(){
+		var hasSubscriptionWithAutoPay = this.hasSubscriptionWithAutoPay();
+		var hasOrderPaymentWithSavablePaymentMethod = false;
+
+		for (orderPayment in getOrderPayments()){
+			if (!isNull(orderPayment.getAccountPaymentMethod())
+					|| (!isNull(orderPayment.getPaymentMethod())
+					&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
+					&& orderPayment.getPaymentMethod().getAllowSaveFlag())
+			){
+				hasOrderPaymentWithSavablePaymentMethod = true;
 			}
 		}
 
 		return (!hasSubscriptionWithAutoPay && !hasOrderPaymentWithSavablePaymentMethod)
 			|| (hasSubscriptionWithAutoPay && hasOrderPaymentWithSavablePaymentMethod);
+	}
+
+	public boolean function hasSavedAccountPaymentMethodForSubscriptionWithAutoPay(){
+		var savedAccountPaymentMethod = false;
+		for (orderPayment in getOrderPayments()){
+			if (!isNull(orderPayment.getAccountPaymentMethod())){
+				savedAccountPaymentMethod = true;
+			}
+		}
+		return hasSavableOrderPaymentForSubscription() && savedAccountPaymentMethod;
 	}
 
 	// =================== START: ORM Event Hooks  =========================
