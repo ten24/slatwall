@@ -401,7 +401,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	public string function getSimpleRepresentation() {
 		var rep = "";
 		if(!isNull(getAccountPaymentMethodName()) && len(getAccountPaymentMethodName())) {
-			var rep = getAccountPaymentMethodName() & " ";
+			rep = getAccountPaymentMethodName() & " ";
 		}
 		if(!isNull(getPaymentMethod())) {
 			if(getPaymentMethodType() == "creditCard") {
