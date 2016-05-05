@@ -99,6 +99,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
+		//Check if we have a Subscription with auto pay without an order payments method that allows accounts to save.
+		if (!arguments.order.hasSavedAccountPaymentMethodForSubscriptionWithAutoPay()){
+			arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
+			orderRequirementsList = listAppend(orderRequirementsList, "payment");
+		}
+
 		if(arguments.order.getPaymentAmountTotal() != arguments.order.getTotal()) {
 			orderRequirementsList = listAppend(orderRequirementsList, "payment");
 
@@ -725,8 +731,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					break;
 				}
 			}
-		} else {
-			arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 		}
 
 		// Attach 'createTransaction' errors to the order
@@ -767,6 +771,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Save it
 			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
+
+			newOrderPayment.setAccountPaymentMethod(newAccountPaymentMethod);
 
 		}
 
@@ -1302,11 +1308,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
 					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || arguments.order.hasSavableOrderPaymentForSubscription() ) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
-					}
-
-					//Check if we have a Subscription with auto pay without an order payments method that allows accounts to save.
-					if (!arguments.order.hasSavedAccountPaymentMethodForSubscriptionWithAutoPay()){
-						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 					}
 
 					// Generate the order requirements list, to see if we still need action to be taken
