@@ -1187,7 +1187,7 @@
 
 			<!--- Add the column headers --->
 			<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderRow()) />
-			<cfset spreadsheetrowcount &= 1 />
+			<cfset spreadsheetrowcount += 1 />
 			<cfset spreadsheetFormatRow(spreadsheet, {bold=true}, 1) />
 
 			<!--- Add compare row --->
@@ -1200,7 +1200,7 @@
 				</cfloop>
 
 				<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetHeaderCompareRow()) />
-				<cfset spreadsheetrowcount &= 1 />
+				<cfset spreadsheetrowcount += 1 />
 
 				<cfset spreadsheetFormatRow(spreadsheet, {fontsize=8}, spreadsheet.rowcount) />
 				<cfset spreadsheetMergeCells(spreadsheet, spreadsheetrowcount, spreadsheetrowcount, 1, listLen(getDimensions()) ) />
@@ -1212,11 +1212,11 @@
 			<!--- Add the data --->
 			<cfset var dataQuery = getSpreadsheetData() />
 			<cfset spreadsheetAddRows(spreadsheet, dataQuery) />
-			<cfset spreadsheetrowcount &= dataQuery.recordcount />
+			<cfset spreadsheetrowcount += dataQuery.recordcount />
 
 			<!--- Add the totals --->
 			<cfset spreadsheetAddRow(spreadsheet, getSpreadsheetTotals()) />
-			<cfset spreadsheetrowcount &= 1 />
+			<cfset spreadsheetrowcount += 1 />
 
 			<cfset spreadsheetMergeCells(spreadsheet, spreadsheetrowcount, spreadsheetrowcount, 1, listLen(getDimensions())) />
 			<cfset spreadsheetSetCellValue(spreadsheet, rbKey('define.totals'), spreadsheetrowcount, 1) />
