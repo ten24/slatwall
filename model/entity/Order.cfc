@@ -1270,7 +1270,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				break;
 			}
 		}
-		return hasSavableOrderPaymentForSubscription() && savedAccountPaymentMethod;
+		return savedAccountPaymentMethod;
 	}
 
 	// =================== START: ORM Event Hooks  =========================

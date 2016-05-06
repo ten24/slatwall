@@ -714,7 +714,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
 
 		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
-		if (arguments.order.hasSubscriptionWithAutoPay() && arguments.order.hasSavableOrderPaymentForSubscription()){
+		if (arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()){
 			for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
 				if ((orderPayment.getStatusCode() == 'opstActive')
 					&& !isNull(orderPayment.getPaymentMethod())
@@ -1301,13 +1301,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()
 						|| (
 							arguments.order.hasSavableOrderPaymentAndSubscriptionWithAutoPay()
-							&& !arguments.order.hasSavedAccountPaymentMethodForSubscriptionWithAutoPay()
+							&& !arguments.order.hasSavedAccountPaymentMethod()
 						)
 					) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 					}
 
-					if(!arguments.order.hasSavedAccountPaymentMethodForSubscriptionWithAutoPay()){
+					if(!arguments.order.hasSavedAccountPaymentMethod() && arguments.order.hasSubscriptionWithAutoPay()){
 						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 					}
 
