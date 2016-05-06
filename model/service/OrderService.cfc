@@ -118,7 +118,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only do this check if no payment has been added yet.
 		if (!listFindNoCase(orderRequirementsList, "payment")){
 			//Check if there is subscription with autopay flag without order payment with account payment method.
-			if (arguments.order.hasSubscriptionWithAutoPay() && arguments.order.hasSavableOrderPaymentForSubscription()){
+			if (arguments.order.hasSubscriptionWithAutoPay() && !arguments.order.hasSavableOrderPaymentForSubscription()){
 				orderRequirementsList = listAppend(orderRequirementsList, "payment");
 				arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 			}
