@@ -99,12 +99,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-		//Check if we have a Subscription with auto pay without an order payments method that allows accounts to save.
-		if (!arguments.order.hasSavedAccountPaymentMethodForSubscriptionWithAutoPay()){
-			arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
-			orderRequirementsList = listAppend(orderRequirementsList, "payment");
-		}
-
 		if(arguments.order.getPaymentAmountTotal() != arguments.order.getTotal()) {
 			orderRequirementsList = listAppend(orderRequirementsList, "payment");
 
@@ -124,9 +118,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		//only do this check if no payment has been added yet.
 		if (!listFindNoCase(orderRequirementsList, "payment")){
 			//Check if there is subscription with autopay flag without order payment with account payment method.
-			var result = arguments.order.hasSavableOrderPaymentForSubscription();
-			if (result){
+			if (!arguments.order.hasSavableOrderPaymentForSubscription()){
 				orderRequirementsList = listAppend(orderRequirementsList, "payment");
+				arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));
 			}
 		}
 		return orderRequirementsList;
@@ -777,7 +771,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
-			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
+			newOrderPayment.setPaymentDueDate( newOrderPayment.getPaymentTerm().getTerm().getEndDate() );
 		}
 
 		return arguments.order;
@@ -1285,7 +1279,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrder_placeOrder(required any order, required struct data) {
 		// First we need to lock the session so that this order doesn't get placed twice.
-
 		lock scope="session" timeout="60" {
 
 			// Reload the order in case it was already in cache
@@ -1306,7 +1299,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
-					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || arguments.order.hasSavableOrderPaymentForSubscription() ) {
+					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || !arguments.order.hasSavedAccountPaymentMethodForSubscriptionWithAutoPay() ) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 					}
 

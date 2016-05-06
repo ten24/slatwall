@@ -1231,6 +1231,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				&& orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()
 			){
 				hasSubscriptionWithAutoPay = true;
+				break;
 			}
 		}
 		return hasSubscriptionWithAutoPay;
@@ -1247,6 +1248,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 					&& orderPayment.getPaymentMethod().getAllowSaveFlag())
 			){
 				hasOrderPaymentWithSavablePaymentMethod = true;
+				break;
 			}
 		}
 
@@ -1259,6 +1261,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		for (orderPayment in getOrderPayments()){
 			if (!isNull(orderPayment.getAccountPaymentMethod())){
 				savedAccountPaymentMethod = true;
+				break;
 			}
 		}
 		return hasSavableOrderPaymentForSubscription() && savedAccountPaymentMethod;
