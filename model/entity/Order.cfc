@@ -1237,26 +1237,32 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return hasSubscriptionWithAutoPay;
 	}
 
-	public boolean function hasSavableOrderPaymentForSubscription(){
-		var hasSubscriptionWithAutoPay = this.hasSubscriptionWithAutoPay();
+	public boolean function hasSavableOrderPaymentAndSubscriptionWithAutoPay(){
+		return this.hasSubscriptionWithAutoPay() && this.hasOrderPaymentWithSavablePaymentMethod();
+	}
+
+
+	public boolean function hasOrderPaymentWithSavablePaymentMethod(){
 		var hasOrderPaymentWithSavablePaymentMethod = false;
 
 		for (orderPayment in getOrderPayments()){
 			if (!isNull(orderPayment.getAccountPaymentMethod())
-					|| (orderPayment.getStatusCode() == 'opstActive'
+				|| (
+					orderPayment.getStatusCode() == 'opstActive'
 					&& !isNull(orderPayment.getPaymentMethod())
 					&& !isNull(orderPayment.getPaymentMethod().getAllowSaveFlag())
-					&& orderPayment.getPaymentMethod().getAllowSaveFlag())
+					&& orderPayment.getPaymentMethod().getAllowSaveFlag()
+				)
 			){
 				hasOrderPaymentWithSavablePaymentMethod = true;
 				break;
 			}
 		}
 
-		return hasSubscriptionWithAutoPay && hasOrderPaymentWithSavablePaymentMethod;
+		return hasOrderPaymentWithSavablePaymentMethod;
 	}
 
-	public boolean function hasSavedAccountPaymentMethodForSubscriptionWithAutoPay(){
+	public boolean function hasSavedAccountPaymentMethod(){
 		var savedAccountPaymentMethod = false;
 		for (orderPayment in getOrderPayments()){
 			if (!isNull(orderPayment.getAccountPaymentMethod())){
