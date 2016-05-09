@@ -11,8 +11,7 @@ class SWPricingManagerController{
     constructor(
         private $hibachi 
     ){
-       this.singleEditTest = $hibachi.newEntity("SkuPrice");
-       console.log("white whale", this.singleEditTest);  
+       this.singleEditTest = $hibachi.newEntity("SkuPrice"); 
     }    
 
 }
@@ -25,7 +24,7 @@ class SWPricingManager implements ng.IDirective{
         productId:"@"
     };
     public controller = SWPricingManagerController;
-    public controllerAs="SWPricingManager";
+    public controllerAs="swPricingManager";
    
    
     public static Factory(){
