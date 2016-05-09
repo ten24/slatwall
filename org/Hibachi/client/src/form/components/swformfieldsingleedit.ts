@@ -7,6 +7,8 @@ class SWFormFieldSingleEditController {
     public options:{};
     public edited:boolean; 
     public saved:boolean; 
+    public disabled:boolean;
+    public revertSet:boolean; 
     public isHidden:boolean;
     public title:string;
     public hint:string;
@@ -38,6 +40,12 @@ class SWFormFieldSingleEditController {
         if(angular.isUndefined(this.saved)){
             this.saved = false; 
         }
+        if(angular.isUndefined(this.disabled)){
+            this.disabled = false; 
+        }
+        if(angular.isUndefined(this.revertSet)){
+            this.revertSet = false; 
+        }
         if(angular.isUndefined(this.hasIndicatorCallback)){
             this.hasIndicatorCallback = false; 
         }
@@ -49,7 +57,6 @@ class SWFormFieldSingleEditController {
     }
     
     public save = () => {
-        console.log("cpt", this.singleEditedObject);
         this.singleEditedObject.$$save().then((response)=>{
             this.edited = false;           
             this.saved = true; 
@@ -57,8 +64,13 @@ class SWFormFieldSingleEditController {
     }
     
     public revert = () => {
-        this.ngModelValue = angular.copy(this.valueToRevertTo);
-        //call save? or handle save internally
+        console.log("reverting to", this.valueToRevertTo);
+        this.ngModelValue = this.valueToRevertTo;
+        this.singleEditedObject.$$save().then((response)=>{
+            this.edited = false; 
+            this.saved = false; 
+            this.revertSet = false; 
+        });
     }
 
 }
@@ -85,7 +97,8 @@ class SWFormFieldSingleEdit implements ng.IDirective{
         noValidate:"=?",
         propertyDisplay:"=?",
         indicatorCallback:"&?", 
-        currencyCode:"@"
+        currencyCode:"@",
+        disabled:"=?"
     };
     public controller=SWFormFieldSingleEditController;
     public controllerAs="swFormFieldSingleEdit";

@@ -45,10 +45,17 @@ class SWFormFieldRevertHelper implements ng.IDirective{
             if(modelValue !== inputValue 
                 && angular.isDefined(parentDirectiveScope) 
                 && angular.isDefined(parentDirectiveScope.singleEditedObject.data[parentDirectiveScope.property])
+                && angular.isDefined(parentDirectiveScope.revertSet)
+                && !parentDirectiveScope.revertSet
             ){
                 parentDirectiveScope.valueToRevertTo = modelValue;
                 parentDirectiveScope.singleEditedObject.data[parentDirectiveScope.property] = inputValue; 
                 parentDirectiveScope.edited = true; 
+                parentDirectiveScope.saved = false; 
+                parentDirectiveScope.revertSet = true; 
+            } else {
+                modelValue = inputValue;
+                parentDirectiveScope.singleEditedObject.data[parentDirectiveScope.property] = inputValue;
             }
                 
             return modelValue;
@@ -58,14 +65,8 @@ class SWFormFieldRevertHelper implements ng.IDirective{
     }
 
     public static Factory(){
-        var directive:ng.IDirectiveFactory = (
-
-        )=> new SWFormFieldRevertHelper(
-
-        );
-        directive.$inject = [
-
-        ];
+        var directive:ng.IDirectiveFactory = ()=> new SWFormFieldRevertHelper();
+        directive.$inject = [];
         return directive;
     }
 }
