@@ -129,7 +129,7 @@
 
                                     <i class="hibachi-ui-radio"></i>
                                 </a>
-                                
+
                                 <!--multiselectable-->
                                 <sw-selection
                                 		ng-if="swListingDisplay.multiselectable"
@@ -141,16 +141,16 @@
                                         data-disabled="swListingDisplay.edit === false">
                                 </sw-selection>
                             </td>
-                            
+
                             <!--cell contents -->
 							<td
                                     data-ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns"
                                     class="column.tdclass"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
-                                    
+
                                     sw-expandable-record
-                                    
+
                                     data-action="column.action"
                                     data-query-string="column.queryString"
                                     data-expandable="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
@@ -170,8 +170,9 @@
                             		data-column="column"
                             		data-sw-listing-display="swListingDisplay"
                             		data-page-record="pageRecord"
+                                    data-cell-view="{{column.cellView}}"
                             	>
-                            		
+
                             	</sw-listing-display-cell>
 							</td>
 
@@ -250,7 +251,7 @@
                                                       data-query-string="{{swListingDisplay.replaceStringWithProperties(column.queryString,pageRecord)}}"
                                                       data-text="{{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}"
                                                       data-tooltip-text="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                                    				  
+
                                     >
                                     </sw-action-caller>
 					            </span>

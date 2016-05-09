@@ -1851,6 +1851,9 @@
 	        this.snakeToCapitalCase = function (s) {
 	            return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function (m) { return m[1].toUpperCase(); }).slice(1);
 	        };
+	        this.camelCaseToSnakeCase = function (s) {
+	            return s.replace(/([A-Z])/g, function ($1) { return "-" + $1.toLowerCase(); });
+	        };
 	        this.replaceStringWithProperties = function (stringItem, context) {
 	            var properties = _this.getPropertiesFromString(stringItem);
 	            if (!properties)
@@ -7156,7 +7159,7 @@
 	                editable: scope.swListingColumn.editable,
 	                buttonGroup: scope.swListingColumn.buttonGroup
 	            };
-	            if (scope.swListingColumn.hasCellVeiw) {
+	            if (scope.swListingColumn.hasCellView) {
 	                column.cellView = scope.swListingColumn.cellView;
 	            }
 	            //aggregate logic
@@ -7934,23 +7937,24 @@
 	    //@ngInject
 	    function SWDirective($compile) {
 	        return {
-	            restrict: 'A',
+	            restrict: 'AE',
 	            replace: true,
 	            scope: {
 	                variables: "=",
 	                directive: "="
 	            },
 	            link: function (scope, element, attrs) {
-	                var template = '<span ' + scope.directive + ' ';
+	                var template = '<' + scope.directive + ' ';
 	                if (angular.isDefined(scope.variables)) {
 	                    angular.forEach(scope.variables, function (value, key) {
 	                        template += ' ' + key + '=' + value + ' ';
 	                    });
 	                }
-	                template += +'>';
-	                template += '</span>';
+	                template += '>';
+	                template += '</' + scope.directive + '>';
 	                // Render the template.
-	                element.html('').append($compile(template)(scope));
+	                console.log('renderDirective', template);
+	                element.html($compile(template)(scope));
 	            }
 	        };
 	    }
@@ -8250,15 +8254,20 @@
 	        this.utilityService = utilityService;
 	        this.$scope = $scope;
 	        this.getDirectiveTemplate = function () {
-	            console.log('test');
-	            console.log(_this);
-	            var templateUrl = 'none';
+	            var templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.corePartialsPath) + 'listingdisplaycell.html';
 	            if (_this.swListingDisplay.expandable && _this.column.tdclass && _this.column.tdclass === 'primary') {
 	                templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.corePartialsPath) + 'listingdisplayselectablecellexpandable.html';
 	            }
 	            if (!_this.swListingDisplay.expandable || !_this.column.tdclass || _this.column.tdclass !== 'primary') {
 	                if (_this.column.ormtype === 'timestamp') {
 	                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.corePartialsPath) + 'listingdisplaycelldate.html';
+	                }
+	                else if (_this.column.type === 'currency') {
+	                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.corePartialsPath) + 'listingdisplaycellcurrency.html';
+	                }
+	                else if (_this.column.aggregate) {
+	                    _this.value = _this.pageRecord[_this.swListingDisplay.getPageRecordKey(_this.column.aggregate.aggregateAlias)];
+	                    templateUrl = _this.hibachiPathBuilder.buildPartialsPath(_this.corePartialsPath) + 'listingdisplaycellaggregate.html';
 	                }
 	            }
 	            return templateUrl;
@@ -8269,7 +8278,23 @@
 	        this.$scope = $scope;
 	        this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.propertyIdentifier)];
 	        this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord);
-	        this.templateUrl = this.getDirectiveTemplate();
+	        this.hasActionCaller = false;
+	        if (this.column.action && this.column.queryString) {
+	            this.hasActionCaller = true;
+	            this.actionCaller = {
+	                action: this.column.action
+	            };
+	            if (this.column.queryString) {
+	                this.actionCaller.action.queryString = this.swListingDisplay.replaceStringWithProperties(this.column.queryString, this.pageRecord);
+	            }
+	        }
+	        if (this.cellView) {
+	            var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
+	            this.template = htmlCellView;
+	        }
+	        else {
+	            this.templateUrl = this.getDirectiveTemplate();
+	        }
 	    }
 	    return SWListingDisplayCellController;
 	}());
@@ -8281,11 +8306,12 @@
 	        this.bindToController = {
 	            swListingDisplay: "=?",
 	            column: "=?",
-	            pageRecord: "=?"
+	            pageRecord: "=?",
+	            cellView: "@?"
 	        };
 	        this.controller = SWListingDisplayCellController;
 	        this.controllerAs = "swListingDisplayCell";
-	        this.template = '{{swListingDisplayCell.templateUrl}}<div ng-include src="swListingDisplayCell.templateUrl"></div>';
+	        this.template = "\n        <div ng-if=\"swListingDisplayCell.template\" sw-directive data-directive=\"swListingDisplayCell.template\"></div>\n        <div ng-if=\"swListingDisplayCell.templateUrl\" ng-include src=\"swListingDisplayCell.templateUrl\"></div>\n        <sw-action-caller ng-if=\"swListingDisplayCell.hasActionCaller\"\n                    data-action=\"{{swListingDisplayCell.actionCaller.action}}\"\n                    data-query-string=\"{{swListingDisplayCell.actionCaller.action.queryString}}\"\n                    data-text=\"{{swListingDisplayCell.value}}\"\n                    data-tooltip-text=\"{{swListingDisplayCell.popover}}\"\n\n        >\n        </sw-action-caller>\n    ";
 	    }
 	    SWListingDisplayCell.Factory = function () {
 	        var directive = function () {

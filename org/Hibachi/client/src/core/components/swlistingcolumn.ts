@@ -21,7 +21,7 @@ class SWListingColumnController{
                 console.log('directive Found!');
                 this.hasCellView = true;
             }else{
-                throw(this.cellView+' is not an existing directive');    
+                throw(this.cellView+' is not an existing directive');
             }
         }
     }
@@ -78,21 +78,22 @@ class SWListingColumn implements ng.IDirective{
             editable:scope.swListingColumn.editable,
             buttonGroup:scope.swListingColumn.buttonGroup
         };
-        
-        if(scope.swListingColumn.hasCellVeiw){
-            column.cellView = scope.swListingColumn.cellView;    
+
+        if(scope.swListingColumn.hasCellView){
+
+            column.cellView = scope.swListingColumn.cellView;
         }
-        
+
         //aggregate logic
         if(scope.swListingColumn.aggregate){
-            column.aggregate = scope.swListingColumn.aggregate; 
-            column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;   
+            column.aggregate = scope.swListingColumn.aggregate;
+            column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;
         }
         if(this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
             if(column.aggregate){
                 scope.$parent.swListingDisplay.aggregates.unshift(column.aggregate);
             }else{
-                scope.$parent.swListingDisplay.columns.unshift(column);    
+                scope.$parent.swListingDisplay.columns.unshift(column);
             }
         }
     }

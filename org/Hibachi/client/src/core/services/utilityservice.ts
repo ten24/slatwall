@@ -10,26 +10,30 @@ class UtilityService extends BaseService{
         super();
 
     }
-    
+
     public snakeToCapitalCase = (s)=>{
         return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();}).slice(1);
     }
-    
+
+    public camelCaseToSnakeCase = (s)=>{
+        return s.replace(/([A-Z])/g, function($1){return "-"+$1.toLowerCase();});
+    }
+
     public replaceStringWithProperties = (stringItem:string, context:any) =>{
-        var properties = this.getPropertiesFromString(stringItem); 
+        var properties = this.getPropertiesFromString(stringItem);
          if(!properties) return;
         var data = [];
         angular.forEach(properties, (property)=>{
             if(property.indexOf('.') != -1){
                 property = property.replace('.','_');
             }
-            var parseFunction = this.$parse(property); 
-            data.push(parseFunction(context)); 
-        }); 
-        return this.replacePropertiesWithData(stringItem, data); 
-        
+            var parseFunction = this.$parse(property);
+            data.push(parseFunction(context));
+        });
+        return this.replacePropertiesWithData(stringItem, data);
+
     }
-    
+
     public getQueryParamsFromUrl = (url) =>{
       // This function is anonymous, is executed immediately and
       // the return value is assigned to QueryString!
@@ -174,7 +178,7 @@ class UtilityService extends BaseService{
         var end = start + count;
         return stringItem.substring(start,end);
     }
-    
+
     public getPropertiesFromString = (stringItem:string):Array<string> =>{
         if(!stringItem) return;
         var capture = false;
@@ -197,7 +201,7 @@ class UtilityService extends BaseService{
 
     public replacePropertiesWithData = (stringItem:string, data)=>{
         var results = this.getPropertiesFromString(stringItem);
-        for(var i=0; i < results.length; i++){ 
+        for(var i=0; i < results.length; i++){
             stringItem = stringItem.replace('${'+results[i]+'}', data[i]);
         }
         return stringItem;
@@ -230,7 +234,7 @@ class UtilityService extends BaseService{
               return array.join();
           }
       }
-      
+
       public isDescendantElement = (parent, child) => {
         var node = child.parentNode;
         while (node != null) {
