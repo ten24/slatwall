@@ -6,6 +6,7 @@ class SWFormFieldSingleEditController {
     public object:any;
     public options:{};
     public edited:boolean; 
+    public saved:boolean; 
     public isHidden:boolean;
     public title:string;
     public hint:string;
@@ -19,6 +20,8 @@ class SWFormFieldSingleEditController {
     public valueToRevertTo:any; 
     public ngModelValue:any; 
     
+    public indicatorCallback;
+    public hasIndicatorCallback;
 
     public singleEditedObject:any; 
 
@@ -30,10 +33,18 @@ class SWFormFieldSingleEditController {
          * that have been changed on the past object)
          */
         angular.copy(this.object, this.singleEditedObject);
+        if(angular.isUndefined(this.saved)){
+            this.saved = false; 
+        }
+        if(angular.isUndefined(this.hasIndicatorCallback)){
+            this.hasIndicatorCallback = false; 
+        }
     }
     
     public clear = () => {
         //todo
+        console.log("white whale", "Clear");
+        this.ngModelValue = "";
     }
     
     public save = () => {
@@ -70,7 +81,8 @@ class SWFormFieldSingleEdit implements ng.IDirective{
         onChange:"=?",
         fieldType:"@?",
         noValidate:"=?",
-        propertyDisplay:"=?"
+        propertyDisplay:"=?",
+        indicatorCallback:"&?"
     };
     public controller=SWFormFieldSingleEdit;
     public controllerAs="swFormFieldSingleEdit";
@@ -81,8 +93,12 @@ class SWFormFieldSingleEdit implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:any, modelCtrl: ng.INgModelController) =>{
-         if(angular.isDefined($scope.propertyDisplay)){
+         if(angular.isDefined(attrs.propertyDisplay) && angular.isDefined($scope.propertyDisplay)){
+             //populate itself with propertyDisplay's properties
              angular.extend($scope.swFormFieldSingleEdit, $scope.propertyDisplay);
+         }
+         if(angular.isDefined(attrs.indicatorCallback)){
+             $scope.swFormFieldSingleEdit.hasIndicatorCallback = true;    
          }
     }
 
