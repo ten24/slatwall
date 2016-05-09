@@ -18,6 +18,7 @@ import {SWForm} from "./components/swform";
 import {SWFormField} from "./components/swformfield";
 import {SWFormFieldJson} from "./components/swformfieldjson";
 import {SWFormFieldNumber} from "./components/swformfieldnumber";
+import {SWFormFieldCurrency} from "./components/swformfieldcurrency"
 import {SWFormFieldPassword} from "./components/swformfieldpassword";
 import {SWFormFieldRadio} from "./components/swformfieldradio";
 import {SWFormFieldRevertHelper} from "./components/swformfieldreverthelper";
@@ -44,6 +45,7 @@ var formmodule = angular.module('hibachi.form',['angularjs-datetime-picker']).co
 .directive('swFormField',SWFormField.Factory())
 .directive('swFormFieldJson',SWFormFieldJson.Factory())
 .directive('swFormFieldNumber',SWFormFieldNumber.Factory())
+.directive('swFormFieldCurrency',SWFormFieldCurrency.Factory())
 .directive('swFormFieldPassword',SWFormFieldPassword.Factory())
 .directive('swFormFieldRadio',SWFormFieldRadio.Factory())
 .directive('swFormFieldRevertHelper',SWFormFieldRevertHelper.Factory())

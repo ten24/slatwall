@@ -32,6 +32,10 @@ class SWFormFieldSingleEditController {
         angular.copy(this.object, this.singleEditedObject);
     }
     
+    public clear = () => {
+        //todo
+    }
+    
     public save = () => {
         this.singleEditedObject.$$save().then((response)=>{
             //do anything?

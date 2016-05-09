@@ -1,10 +1,21 @@
 <div class="s-input-group" ng-class="{'s-edit':swFormFieldSingleEdit.edited}"><!--- Removing s-edit will hide the edit mode. --->
     <span class="s-title">USD</span>
-    <input type="text" ng-model="swFormFieldSingleEdit.object.data[swFormFieldSingleEdit.property]" class="form-control input-xs  s-inherited">
-    <a class="s-remove-change"><i class="fa fa-remove"></i></a>
-    <a class="btn btn-xs btn-success s-action-btn" >save</a>
-    <a class="s-indicator-icon"><i class="fa fa-list" data-toggle="popover" data-content="(2) price groups"></i></a>
-    <!-- <button class="btn btn-xs btn-default">
+    <input type="text" 
+           sw-form-field-revert-helper 
+           data-parent-directive-controller-as="swFormFieldSingleEdit" 
+           data-parent-directive-bind-property="swFormFieldSingleEdit.ngModelValue" 
+           data-value-to-revert-to-property="swFormFieldSingleEdit.valueToRevertTo" 
+           ng-model="swFormFieldSingleEdit.object.data[swFormFieldSingleEdit.property]" 
+           class="form-control input-xs s-inherited"
+           />
+    <button class="btn btn-xs btn-default" ng-click="swFormFieldSingleEdit.clear()">
         <i class="fa fa-refresh"></i>
-    </button> -->
+    </button>
+    <a class="s-remove-change" ng-click="swFormFieldSingleEdit.clear()"><i class="fa fa-remove"></i></a>
+    <a class="btn btn-xs btn-success s-action-btn" ng-click="swFormFieldSingleEdit.save()" >save</a>
+   
+    <!-- Need to find a way to integrate this 
+    <a class="s-indicator-icon"><i class="fa fa-list" data-toggle="popover" data-content="(2) price groups"></i></a>
+    -->
+    
 </div>

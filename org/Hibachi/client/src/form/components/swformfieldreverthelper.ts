@@ -34,17 +34,17 @@ class SWFormFieldRevertHelper implements ng.IDirective{
 
     public link:ng.IDirectiveLinkFn = ($scope, element: ng.IAugmentedJQuery, attrs:any, modelCtrl: ng.INgModelController) =>{
 
-         var parentDirectiveScope = $scope.$parent;
-         var thisDirective = $scope.swFormFieldRevertHelper;
+         var parentScope = $scope.$parent;
+         var parentDirectiveScope = parentScope[$scope.swFormFieldRevertHelper.parentDirectiveControllerAs];
 
          modelCtrl.$parsers.unshift((inputValue) =>{
             var modelValue = modelCtrl.$modelValue;
             
             //figure out if the model value has changed
             //was it a revert?
-            if(modelValue !== inputValue){
+            if(modelValue !== inputValue && angular.isDefined(parentDirectiveScope)){
                 parentDirectiveScope.valueToRevertTo = modelValue;
-                parentDirectiveScope.singleEditedObject[parentDirectiveScope.property] = inputValue; 
+                parentDirectiveScope[parentDirectiveScope.property] = inputValue; 
                 parentDirectiveScope.edited = true; 
             }
                 
