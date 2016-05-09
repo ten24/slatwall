@@ -50,6 +50,7 @@ import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
 import {SWListingOrderBy} from "./components/swlistingorderby";
 import {SWLogin} from "./components/swlogin";
 import {SWModalLauncher} from "./components/swModalLauncher";
+import {SWModalWindow} from "./components/swModalWindow"; 
 import {SWNumbersOnly} from "./components/swnumbersonly";
 import {SWLoading} from "./components/swloading";
 import {SWScrollTrigger} from "./components/swscrolltrigger";
@@ -178,6 +179,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swListingOrderBy',SWListingOrderBy.Factory())
 .directive('swLogin',SWLogin.Factory())
 .directive('swModalLauncher',SWModalLauncher.Factory())
+.directive('swModalWindow', SWModalWindow.Factory())
 .directive('swNumbersOnly',SWNumbersOnly.Factory())
 .directive('swLoading',SWLoading.Factory())
 .directive('swScrollTrigger',SWScrollTrigger.Factory())
