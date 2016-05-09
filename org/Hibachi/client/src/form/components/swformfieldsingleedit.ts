@@ -22,17 +22,19 @@ class SWFormFieldSingleEditController {
     
     public indicatorCallback;
     public hasIndicatorCallback;
+    
+    public currencyCode:string; 
 
     public singleEditedObject:any; 
 
     // @ngInject
     constructor(private $hibachi
         ){
-        /* init the object that will actually be saved 
-         * (so we don't accidentily change other fields 
-         * that have been changed on the past object)
-         */
-        angular.copy(this.object, this.singleEditedObject);
+        if(angular.isDefined(this.object)){
+            angular.copy(this.object, this.singleEditedObject);
+        } else {
+            throw("You must provide SWFormFieldSingleEditController an object!");
+        }        
         if(angular.isUndefined(this.saved)){
             this.saved = false; 
         }
@@ -43,15 +45,15 @@ class SWFormFieldSingleEditController {
     
     public clear = () => {
         //todo
-        console.log("white whale", "Clear");
         this.ngModelValue = "";
     }
     
     public save = () => {
+        console.log("cpt", this.singleEditedObject);
         this.singleEditedObject.$$save().then((response)=>{
-            //do anything?
-        });
-        this.edited = false;
+            this.edited = false;           
+            //do anything else?
+        });     
     }
     
     public revert = () => {
@@ -82,9 +84,10 @@ class SWFormFieldSingleEdit implements ng.IDirective{
         fieldType:"@?",
         noValidate:"=?",
         propertyDisplay:"=?",
-        indicatorCallback:"&?"
+        indicatorCallback:"&?", 
+        currencyCode:"@"
     };
-    public controller=SWFormFieldSingleEdit;
+    public controller=SWFormFieldSingleEditController;
     public controllerAs="swFormFieldSingleEdit";
 
     // @ngInject
