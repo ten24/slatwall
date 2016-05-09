@@ -31,7 +31,7 @@ class SWFormFieldSingleEditController {
     constructor(private $hibachi
         ){
         if(angular.isDefined(this.object)){
-            angular.copy(this.object, this.singleEditedObject);
+            this.singleEditedObject = angular.copy(this.object);
         } else {
             throw("You must provide SWFormFieldSingleEditController an object!");
         }        
@@ -52,13 +52,13 @@ class SWFormFieldSingleEditController {
         console.log("cpt", this.singleEditedObject);
         this.singleEditedObject.$$save().then((response)=>{
             this.edited = false;           
-            //do anything else?
+            this.saved = true; 
         });     
     }
     
     public revert = () => {
-        angular.copy(this.valueToRevertTo, this.ngModelValue);
-        //call save? 
+        this.ngModelValue = angular.copy(this.valueToRevertTo);
+        //call save? or handle save internally
     }
 
 }

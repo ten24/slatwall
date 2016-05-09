@@ -42,9 +42,12 @@ class SWFormFieldRevertHelper implements ng.IDirective{
             
             //figure out if the model value has changed
             //was it a revert?
-            if(modelValue !== inputValue && angular.isDefined(parentDirectiveScope)){
+            if(modelValue !== inputValue 
+                && angular.isDefined(parentDirectiveScope) 
+                && angular.isDefined(parentDirectiveScope.singleEditedObject.data[parentDirectiveScope.property])
+            ){
                 parentDirectiveScope.valueToRevertTo = modelValue;
-                parentDirectiveScope[parentDirectiveScope.property] = inputValue; 
+                parentDirectiveScope.singleEditedObject.data[parentDirectiveScope.property] = inputValue; 
                 parentDirectiveScope.edited = true; 
             }
                 

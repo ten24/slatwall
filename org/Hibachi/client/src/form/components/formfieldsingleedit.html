@@ -11,7 +11,7 @@
     <button class="btn btn-xs btn-default" ng-click="swFormFieldSingleEdit.revert()"  ng-show="swFormFieldSingleEdit.saved">
         <i class="fa fa-refresh"></i>
     </button>
-    <a class="s-remove-change" ng-click="swFormFieldSingleEdit.clear()" ng-show="swFormFieldSingleEdit.edited"><i class="fa fa-remove"></i></a>
+    <a class="s-remove-change" ng-click="swFormFieldSingleEdit.clear()" ng-if="swFormFieldSingleEdit.edited"><i class="fa fa-remove"></i></a>
     <a class="btn btn-xs btn-success s-action-btn" ng-click="swFormFieldSingleEdit.save()" >save</a>
     <a class="s-indicator-icon" 
        ng-if="swFormFieldSingleEdit.hasIndicatorCallback"  
