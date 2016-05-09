@@ -2,11 +2,19 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWModalLauncherController {
 
-
+    public showModal:boolean; 
+    
     // @ngInject
     constructor(
         ){
-
+            if(angular.isUndefined(this.showModal)){
+                this.showModal = false; 
+            }
+    }
+    
+    public launchModal = () =>{
+        //activate the necessary modal
+        this.showModal = true; 
     }
 
 }
@@ -14,7 +22,10 @@ class SWModalLauncherController {
 class SWModalLauncher implements ng.IDirective{
 
     public templateUrl;
-    public transclude=true; 
+    transclude: {
+        button: 'button',
+        window: 'window'
+    };
     public restrict = "EA";
     public scope = {};
 

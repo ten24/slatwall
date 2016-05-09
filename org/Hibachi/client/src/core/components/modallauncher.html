@@ -1,0 +1,7 @@
+<span ng-click="swModalLauncher.launchModal()">
+    <!-- Transcluded Content Here -->
+    <ng-transclude="button"></ng-transclude>
+</span>
+<sw-modal-window ng-if="swModalLauncher.showModal">
+    <ng-transclude="window"></ng-transclude>
+</sw-modal-window>
