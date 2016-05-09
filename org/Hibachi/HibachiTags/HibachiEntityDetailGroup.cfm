@@ -15,33 +15,33 @@
 
 	<cfparam name="thistag.tabs" default="#arrayNew(1)#" />
 	<cfparam name="activeTab" default="basic" />
-	
+
 	<cfloop array="#thistag.tabs#" index="tab">
 		<!--- Make sure there is a view --->
 		<cfif not len(tab.view) and len(tab.property)>
 			<cfset tab.view = "#attributes.subsystem#:#attributes.section#/#lcase(attributes.object.getClassName())#tabs/#lcase(tab.property)#" />
-			
+
 			<cfset propertyMetaData = attributes.object.getPropertyMetaData( tab.property ) />
-			
+
 			<cfif not len(tab.text)>
 				<cfset tab.text = attributes.object.getPropertyTitle( tab.property ) />
 			</cfif>
-			
+
 			<cfif not len(tab.count) and structKeyExists(propertyMetaData, "fieldtype") and listFindNoCase("many-to-one,one-to-many,many-to-many", propertyMetaData.fieldtype)>
 				<cfset thisCount = attributes.object.getPropertyCount( tab.property ) />
 			</cfif>
 		</cfif>
-		
+
 		<!--- Make sure there is a tabid --->
 		<cfif not len(tab.tabid)>
 			<cfset tab.tabid = "tab" & listLast(tab.view, '/') />
 		</cfif>
-		
+
 		<!--- Make sure there is text for the tab name --->
 		<cfif not len(tab.text)>
-			<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />	
+			<cfset tab.text = attributes.hibachiScope.rbKey( replace( replace(tab.view, '/', '.', 'all') ,':','.','all' ) ) />
 		</cfif>
-		
+
 		<cfif not len(tab.tabcontent) and (not attributes.createOrModalFlag or tab.showOnCreateFlag)>
 			<cfif fileExists(expandPath(request.context.fw.parseViewOrLayoutPath(tab.view, 'view')))>
 				<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
@@ -63,7 +63,7 @@
 			</div>
 
 			<cfset iteration = 0 />
-			<div class="panel-group s-pannel-group" id="accordion">		  
+			<div class="panel-group s-pannel-group" id="accordion">
 				<cfloop array="#thistag.tabs#" index="tab">
 					<cfset iteration++ />
 					<div class="j-panel panel panel-default">
@@ -100,9 +100,9 @@
 						<div id="tabSystem" class="panel-collapse collapse">
 							<content class="s-body-box">
 								<cfoutput>
-									<div <cfif activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabSystem">
-										
-											<hb:HibachiPropertyList> 
+									<div <cfif !isNull(tab) && structKeyExists(tab, "tabid") && activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabSystem">
+
+											<hb:HibachiPropertyList>
 												<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
 												<cfif attributes.object.hasProperty('remoteID') and attributes.hibachiScope.setting('globalRemoteIDShowFlag')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
@@ -123,15 +123,15 @@
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
 												</cfif>
 											</hb:HibachiPropertyList>
-											
+
 											<hb:HibachiTimeline object="#attributes.object#" />
-										
+
 									</div>
 								</cfoutput>
 							</content><!--- s-body-box --->
-						
+
 					</div><!--- panel panel-default --->
-				</cfif>	
+				</cfif>
 			</div>
 		<cfelse>
 			<cfloop array="#thistag.tabs#" index="tab">
@@ -141,4 +141,4 @@
 			</cfloop>
 		</cfif>
 	</cfoutput>
-</cfif>	
+</cfif>
