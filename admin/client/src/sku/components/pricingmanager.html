@@ -198,9 +198,17 @@
                                             789
                                         </td>
                                         <td class="s-image">
-                                            <a data-toggle="modal" href="#j-image-detail">
-                                                <img src='//placehold.it/30x30/' data-toggle="popover" data-trigger="hover" data-content="OTB_DrinkingTeam-1799.jpg" />
-                                            </a>
+                                            <sw-modal-launcher>
+                                              <sw-modal-button>
+                                                  <a>
+                                                    <img src='//placehold.it/30x30/' data-toggle="popover" data-trigger="hover" data-content="OTB_DrinkingTeam-1799.jpg" />
+                                                  </a>
+                                              </sw-modal-button>
+                                              <sw-modal-window>
+                                                  <sw-image-detail-modal>
+                                                  </sw-image-detail-modal>
+                                              </sw-modal-window>
+                                            </sw-modal-launcher>
                                         </td>
                                         <td class="s-table-select">
                                             <a href="#" class="table-action-select">

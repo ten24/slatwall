@@ -9,6 +9,7 @@ import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 
 //directives
 import {SWPricingManager} from "./components/swpricingmanager";
+import {SWImageDetailModal} from "./components/swimagedetailmodal";
 //filters
 
 
@@ -22,6 +23,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 
 //directives
 .directive('swPricingManager', SWPricingManager.Factory())
+.directive('swImageDetailModal', SWImageDetailModal.Factory())
 //filters
 
 ;

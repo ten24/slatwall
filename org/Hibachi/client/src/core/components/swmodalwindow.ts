@@ -2,11 +2,14 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWModalWindowController {
 
+    public modalTitle;
 
     // @ngInject
-    constructor(
-        ){
-
+    constructor(){
+        if(angular.isUndefined(this.modalTitle)){
+            console.warn("You did not pass a modal title to SWModalWindowController");
+            this.modalTitle = ""; 
+        }
     }
 
 }
@@ -19,14 +22,14 @@ class SWModalWindow implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-
+        modalTitle:"@"
     };
     public controller=SWModalWindowController;
     public controllerAs="swModalWindow";
 
     // @ngInject
     constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modallauncher.html";
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "modalwindow.html";
     }
 
     public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
