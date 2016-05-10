@@ -22,6 +22,7 @@ class SWListingDisplayCellController{
         public utilityService,
         public $scope
     ){
+        console.log("pageRecord", this.pageRecord);
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.corePartialsPath = corePartialsPath;
         this.$scope = $scope;
@@ -43,8 +44,14 @@ class SWListingDisplayCellController{
         if(this.cellView){
 
             var htmlCellView = this.utilityService.camelCaseToSnakeCase(this.cellView);
-
             this.template = htmlCellView;
+            
+            //convert the page records into attrs
+            this.templateVariables = {}; 
+            for(var key in pageRecord){
+                this.templateVariables[this.utilityService.keyToAttributeString(key)] = pageRecord[key];
+            }
+            
         }else{
             this.templateUrl = this.getDirectiveTemplate();
         }
@@ -88,7 +95,7 @@ class SWListingDisplayCell {
     public controller=SWListingDisplayCellController;
     public controllerAs="swListingDisplayCell";
     public template=`
-        <div ng-if="swListingDisplayCell.template" sw-directive data-directive-template="swListingDisplayCell.template"></div>
+        <div ng-if="swListingDisplayCell.template" sw-directive data-variables="swListingDisplayCell.templateVariables" data-directive-template="swListingDisplayCell.template"></div>
         <div ng-if="swListingDisplayCell.templateUrl" ng-include src="swListingDisplayCell.templateUrl"></div>
         <sw-action-caller ng-if="swListingDisplayCell.hasActionCaller"
                     data-action="{{swListingDisplayCell.actionCaller.action}}"

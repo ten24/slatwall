@@ -10,6 +10,29 @@ class UtilityService extends BaseService{
         super();
 
     }
+    
+    public keyToAttributeString = (key)=> {
+        var attributeString = "data-"; 
+        for(var i=0; i<key.length; i++){
+            if(key.charAt(i).isUpperCase()){
+                attributeString += "-" + key.charAt(i).toLowerCase(); 
+            } else if(key.charAt(i) == "_"){ 
+                attributeString += "-"
+            } else { 
+                attributeString += key.charAt(i); 
+            }
+        }
+        console.log("keyToAttributeString", attributeString); 
+        return attributeString; 
+    }
+    
+    public isUpperCase = (character)=>{
+        return character == character.toUpperCase()
+    }
+    
+     public isLowerCase = (character)=>{
+        return character == character.toLowerCase()
+    }
 
     public snakeToCapitalCase = (s)=>{
         return s.charAt(0).toUpperCase() + s.replace(/(\-\w)/g, function(m){return m[1].toUpperCase();}).slice(1);
