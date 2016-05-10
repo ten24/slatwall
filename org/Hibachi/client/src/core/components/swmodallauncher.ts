@@ -22,9 +22,9 @@ class SWModalLauncherController {
 class SWModalLauncher implements ng.IDirective{
 
     public templateUrl;
-    transclude: {
-        button: 'swModalButton',
-        window: 'swModalWindow'
+    transclude = {
+        button: '?swModalButton',
+        window: '?swModalWindow'
     };
     public restrict = "EA";
     public scope = {};
