@@ -4,10 +4,29 @@ class SWSkuPriceSingleEditController{
     
     public skuId;
     
+    public sku; 
+    
+    public collectionConfig; 
+    
     //@ngInject
     constructor(
-        private $hibachi 
+        private collectionConfigService
     ){
+        if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
+            throw("You must provide a skuID to SWSkuPriceSingleEditController");
+        }
+        if(angular.isUndefined(this.sku)){
+            this.collectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
+            this.collectionConfig.addFilter("skuID", this.skuId, "=");
+            this.collectionConfig.setAllRecords(true);
+            this.collectionConfig.getEntity().then((response)=>{
+                if(angular.isDefined(response.records[0])){
+                    this.sku = response.records[0];
+                } else { 
+                    throw("There was a problem fetching the sku in SWSkuPriceSingleEditController")
+                }
+            }); 
+        }
     }    
 
 }
@@ -17,7 +36,8 @@ class SWSkuPriceSingleEdit implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
-        skuId:"@"
+        skuId:"@",
+        sku:"=?"
     };
     public controller = SWSkuPriceSingleEditController;
     public controllerAs="SWSkuPriceSingleEdit";
