@@ -78,7 +78,7 @@ class SWListingDisplayController{
         public observerService,
         public rbkeyService
     ){
-        
+        console.log("priority","listing display constructor");
         this.initialSetup();
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
@@ -130,6 +130,7 @@ class SWListingDisplayController{
 
         //if a collectionConfig was not passed in then we can run run swListingColumns
         //this is performed early to populate columns with swlistingcolumn info
+        console.log("cellScope", "listing display transcluding now")
         this.$transclude(this.$scope,()=>{});
         
         //add filterGroups
@@ -725,6 +726,7 @@ class SWListingDisplay implements ng.IDirective{
     public restrict:string = 'E';
     public scope = {};
     public transclude=true;
+    public priority=0; 
     public bindToController={
 
             isRadio:"=?",

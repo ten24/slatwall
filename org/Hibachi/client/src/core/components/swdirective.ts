@@ -22,7 +22,6 @@ class SWDirective{
 			scope:{
 				variables:"=", //{key:value}
 				directiveTemplate:"="
-				directiveScope:"="
 			},
 			link: function(scope, element, attrs) {
 
@@ -38,12 +37,7 @@ class SWDirective{
 		        template += '</'+scope.directiveTemplate+'>';
 
 		        // Render the template.
-				console.log('renderDirective',template);
-				if(angular.isUndefined(scope.directiveScope)){
-		        	element.html($compile(template)(scope));
-				} else { 
-					element.html($compile(template)(scope.directiveScope));
-				}
+		        element.html($compile(template)(scope));
 		    }
 		};
 	}

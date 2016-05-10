@@ -3,9 +3,7 @@
     <div id="collapse2" class="panel-collapse collapse in">
        <sw-tab-group>
            <!-- RB support here -->
-           <sw-tab-content data-name="basic"> 
-               
-               
+           <sw-tab-content data-name="basic">               
                <!-- Attempting to incorporate needs into existing listing -->
                <sw-listing-display
                     data-collection="'Sku'"
@@ -27,6 +25,7 @@
                  <sw-listing-column
 				    data-property-identifier="price"
 				    data-cell-view="swSkuPriceSingleEdit"
+                    data-cell-scope="{'swSkuPriceSingleEdit':{'skuId':'102884f951c510620151c571cb020122'}}"
 		        >
                 </sw-listing-column>
                 

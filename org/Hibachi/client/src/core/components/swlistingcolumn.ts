@@ -43,8 +43,7 @@ class SWListingColumn implements ng.IDirective{
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",
-        cellView:"@?",
-        cellScope:"=?"
+        cellView:"@?"
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
@@ -82,9 +81,6 @@ class SWListingColumn implements ng.IDirective{
 
         if(scope.swListingColumn.hasCellView){
             column.cellView = scope.swListingColumn.cellView;
-            if(angular.isDefined(scope.swListingColumn.cellScope)){
-                column.cellScope = scope.swListingColumn.cellScope; 
-            }
         }
 
         //aggregate logic

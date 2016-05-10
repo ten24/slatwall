@@ -6,12 +6,13 @@ class SWPricingManagerController{
     
     //temporary var
     public singleEditTest; 
+    public testScope; 
     
     //@ngInject
     constructor(
         private $hibachi 
     ){
-       this.singleEditTest = $hibachi.newEntity("SkuPrice"); 
+       console.log("priority","pricing manager constructor");
     }    
 
 }
@@ -19,6 +20,7 @@ class SWPricingManagerController{
 class SWPricingManager implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
+    public priority = 1000;
     public scope = {}; 
     public bindToController = {
         productId:"@"
@@ -26,26 +28,42 @@ class SWPricingManager implements ng.IDirective{
     public controller = SWPricingManagerController;
     public controllerAs="swPricingManager";
    
-   
     public static Factory(){
         var directive = (
+            $hibachi, 
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWPricingManager(
+            $hibachi, 
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
+            '$hibachi',
             'skuPartialsPath',
 			'slatwallPathBuilder'
         ];
         return directive;
     }
+    
     constructor(
+        $hibachi, 
 		skuPartialsPath,
 	    slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"pricingmanager.html";
+    }
+    
+    public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
+        return {
+            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                console.log("priority","pricemanager pre");
+                $scope.swPricingManager.singleEditTest = $hibachi.newEntity("SkuPrice"); 
+            },
+            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                console.log("priority","pricemanager post");
+            }
+        };
     }
 }
 export{

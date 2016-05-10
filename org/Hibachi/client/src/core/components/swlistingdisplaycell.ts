@@ -22,7 +22,6 @@ class SWListingDisplayCellController{
         public utilityService,
         public $scope
     ){
-        console.log('controller');
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.corePartialsPath = corePartialsPath;
         this.$scope = $scope;
@@ -84,13 +83,12 @@ class SWListingDisplayCell {
         swListingDisplay:"=?",
         column:"=?",
         pageRecord:"=?",
-        cellView:"@?",
-        cellScope:"=?"
+        cellView:"@?"
     }
     public controller=SWListingDisplayCellController;
     public controllerAs="swListingDisplayCell";
     public template=`
-        <div ng-if="swListingDisplayCell.template" sw-directive data-directive-scope="swListingDisplayCell.cellScope"  data-directive-template="swListingDisplayCell.template"></div>
+        <div ng-if="swListingDisplayCell.template" sw-directive data-directive-template="swListingDisplayCell.template"></div>
         <div ng-if="swListingDisplayCell.templateUrl" ng-include src="swListingDisplayCell.templateUrl"></div>
         <sw-action-caller ng-if="swListingDisplayCell.hasActionCaller"
                     data-action="{{swListingDisplayCell.actionCaller.action}}"
