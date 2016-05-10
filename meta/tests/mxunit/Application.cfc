@@ -46,48 +46,22 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component {
 
-	public void function all_entity_properties_have_keys() {
-		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
-		var allFound = true;
+	// Allow For Application Config
+	try{include "../../../config/configApplication.cfm";}catch(any e){}
+	// Allow For Instance Config
+	try{include "../../../custom/config/configApplication.cfm";}catch(any e){}
 
-		for(var entityName in allEntities) {
+	this.sessionManagement = true;
 
-			var thisEntityName = replace(entityName, "Slatwall","","all");
+	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/tests/mxunit/", "");
 
-			// Check for the entity key
-			var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#');
-			if(right(keyValue,8) == '_missing') {
-				addToDebug(keyValue);
-				allFound = false;
-			}
-
-			// Check for the entity key plural
-			var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#_plural');
-			if(right(keyValue,8) == '_missing') {
-				addToDebug(keyValue);
-				allFound = false;
-			}
-
-			// Check for the entity property keys
-			var exampleEntity = request.slatwallScope.newEntity( thisEntityName );
-			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
-			for(var property in properties) {
-				if(!structKeyExists(property, "persistent") || property.persistent) {
-					//var keyValue = request.slatwallScope.rbKey('entity.#thisEntityName#.#property.name#');
-					if(exampleEntity.getClassName() != "AttributeValue"){
-						var keyValue = exampleEntity.getPropertyTitle( property.name );
-						if(right(keyValue,8) == '_missing' && thisEntityName != 'setting' && property.name != 'settingValue') {
-							addToDebug( "#thisEntityName# | #property.name# | #keyValue#" );
-							allFound = false;
-						}
-					}
-				}
-			}
-		}
-
-		assert(allFound);
-	}
+	this.ormEnabled = true;
+	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
+	this.ormSettings.dbcreate = "update";
+	this.ormSettings.flushAtRequestEnd = false;
+	this.ormsettings.eventhandling = true;
+	this.ormSettings.automanageSession = false;
 
 }
