@@ -72,7 +72,7 @@ class SWCollectionConfig implements ng.IDirective{
                 
                 var currentScope = scope
                  
-                for(var tries = 0; tries < 3; tries++){
+                while(angular.isDefined(currentScope){
                     currentScope = currentScope.$parent;
                     if(angular.isDefined(currentScope)){
                         var parentDirective = currentScope[scope.swCollectionConfig.parentDirectiveControllerAsName];
