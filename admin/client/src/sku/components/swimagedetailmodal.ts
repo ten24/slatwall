@@ -6,8 +6,8 @@ class SWImageDetailModalController{
     constructor(
         private $hibachi 
     ){
+    
     }    
-
 }
 
 class SWImageDetailModal implements ng.IDirective{
