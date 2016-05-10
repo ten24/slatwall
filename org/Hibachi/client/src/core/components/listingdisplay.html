@@ -117,20 +117,22 @@
                             data-ng-if="pageRecord.dataIsVisible !== false"
                             data-ng-class="{{swListingDisplay.getColorFilterNGClassObject(pageRecord)}}">
 
-                            <!--Selectable-->
-                            <td data-ng-if="swListingDisplay.selectable" class="s-table-select">
-                                <a href="#"
+                            <!--Selectable/Multiselectable-->
+                            <td ng-if="swListingDisplay.selectable || swListingDisplay.multiselectable"
+                            	ng-class="{'s-table-select':swListingDisplay.selectable,'s-table-checkbox':swListingDisplay.multiselectable}"
+                            >
+                            	<!--selectable-->
+                            	<a href="#"
+                            		ng-if="swListingDisplay.selectable"
                                    data-ng-class="(!swListingDisplay.edit) ? 'table-action-selectdisabled':'table-action-select'"
                                    data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
 
                                     <i class="hibachi-ui-radio"></i>
                                 </a>
-                            </td>
 
-                            <!-- Multiselectable-->
-                            <td data-ng-if="swListingDisplay.multiselectable"
-                                class="s-table-checkbox">
+                                <!--multiselectable-->
                                 <sw-selection
+                                		ng-if="swListingDisplay.multiselectable"
                                         data-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
                                         data-is-radio="swListingDisplay.isRadio"
                                         data-selectionid="{{swListingDisplay.name || 'ListingDisplay'}}"
@@ -140,9 +142,42 @@
                                 </sw-selection>
                             </td>
 
+                            <!--cell contents -->
+							<td
+                                    data-ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns"
+                                    class="column.tdclass"
+                                    data-ng-cloak
+                                    data-ng-if="column.isVisible"
+
+                                    sw-expandable-record
+
+                                    data-action="column.action"
+                                    data-query-string="column.queryString"
+                                    data-expandable="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
+                                    data-auto-open="swListingDisplay.expandableOpenRoot"
+                                    data-link="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}"
+                                    data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+                                    data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
+                                    data-child-count="pageRecord[swListingDisplay.childPropertyName+'Count']"
+                                    data-entity="swListingDisplay.exampleEntity"
+                                    data-collection-config="swListingDisplay.collectionConfig"
+                                    data-records="swListingDisplay.collectionData.pageRecords || swListingDisplay.collectionData.records"
+                                    data-record-index="pageRecordKey"
+                                    data-record-depth="pageRecord.depth"
+                                    data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
+                            >
+                            	<sw-listing-display-cell
+                            		data-column="column"
+                            		data-sw-listing-display="swListingDisplay"
+                            		data-page-record="pageRecord"
+                                    data-cell-view="{{column.cellView}}"
+                            	>
+
+                            	</sw-listing-display-cell>
+							</td>
 
                             <!--Expandable Check-->
-                            <td
+                            <!--<td
                                     data-ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns"
                                     class="column.tdclass"
                                     data-ng-cloak
@@ -164,8 +199,6 @@
                                     data-multiselect-id-paths="swListingDisplay.multiselectIdPaths"
                                     >
 
-                                <!-- TODO: REFACTOR THIS LOGIC TO APPLY FILTERS -->
-                                <!--indent the primary for expandable-->
                                 <a 	ng-if="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary'" class="s-contents-page-title s-no-arrow"
                                       href="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)+'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]}}">
                                     <span style="margin-left:{{(pageRecord.depth*40)||0}}px;padding-left: 12px;"
@@ -174,7 +207,8 @@
                                           popover-trigger="mouseenter"
                                           popover-placement="bottom"
                                           popover-popup-delay="50"
-                                          popover-append-to-body="true">
+                                          popover-append-to-body="true"
+                                          sw-tool-tip>
                                     </span>
                                 </a>
 
@@ -202,8 +236,9 @@
                                           popover-placement="bottom"
                                           popover-popup-delay="50"
                                           popover-append-to-body="true">
-                                    </span><!--Hardcoded to USD for phia-->
-                                    <span ng-if="column.aggregate"
+                                    </span>-->
+                                    <!--Hardcoded to USD for phia-->
+                                    <!--<span ng-if="column.aggregate"
                                           ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.aggregate.aggregateAlias)]"
                                           popover="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
                                           popover-trigger="mouseenter"
@@ -216,11 +251,11 @@
                                                       data-query-string="{{swListingDisplay.replaceStringWithProperties(column.queryString,pageRecord)}}"
                                                       data-text="{{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}"
                                                       data-tooltip-text="{{swListingDisplay.replaceStringWithProperties(column.tooltip, pageRecord)}}"
-                                    				  
+
                                     >
                                     </sw-action-caller>
 					            </span>
-                            </td>
+                            </td>-->
 
 
                             <td class="admin admin{{swListingDisplay.administrativeCount}} s-detail-hidden-content" data-ng-if="swListingDisplay.administrativeCount">

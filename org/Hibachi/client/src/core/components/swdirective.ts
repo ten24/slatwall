@@ -17,7 +17,7 @@ class SWDirective{
 		$compile
 	){
 		return {
-			restrict: 'A',
+			restrict: 'AE',
 			replace:true,
 			scope:{
 				variables:"=", //{key:value}
@@ -25,18 +25,20 @@ class SWDirective{
 			},
 			link: function(scope, element, attrs) {
 
-		        var template = '<span ' + scope.directive + ' ';
+		        var template = '<' + scope.directive + ' ';
+
 		        if(angular.isDefined(scope.variables)){
 			        angular.forEach(scope.variables, function(value,key){
 			        	template += ' ' + key + '=' + value + ' ';
 			        });
 			    }
 
-		        template += + '>';
-		        template += '</span>';
+		        template += '>';
+		        template += '</'+scope.directive+'>';
 
 		        // Render the template.
-		        element.html('').append($compile(template)(scope));
+				console.log('renderDirective',template);
+		        element.html($compile(template)(scope));
 		    }
 		};
 	}

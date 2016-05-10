@@ -6,6 +6,7 @@ import {HibachiInterceptor,IHibachi,IHibachiConfig,HibachiJQueryStatic} from "./
 import {HibachiPathBuilder} from "./services/hibachipathbuilder";
 
 //services
+import {TemplateService} from "./services/templateservice";
 import {PublicService} from "./services/publicservice";
 import {UtilityService} from "./services/utilityservice";
 import {SelectionService} from "./services/selectionservice";
@@ -24,6 +25,7 @@ import {GlobalSearchController} from "./controllers/globalsearch";
 import {PercentageFilter} from "./filters/percentage";
 import {EntityRBKey} from "./filters/entityrbkey";
 import {SWTrim} from "./filters/swtrim";
+import {DateFilter} from "./filters/datefilter";
 //directives
 //  components
 import {SWActionCaller} from "./components/swactioncaller";
@@ -67,6 +69,7 @@ import {SWSortable} from "./components/swsortable";
 import {SWTabGroup} from "./components/swtabgroup";
 import {SWTabContent} from "./components/swtabcontent";
 import {SWListingGlobalSearch} from "./components/swlistingglobalsearch";
+import {SWListingDisplayCell} from "./components/swlistingdisplaycell";
 
 declare var $:any;
 
@@ -136,6 +139,7 @@ var coremodule = angular.module('hibachi.core',[
 .constant('hibachiPathBuilder',new HibachiPathBuilder())
 .constant('corePartialsPath','core/components/')
 //services
+.service('templateService',TemplateService)
 .service('publicService',PublicService)
 .service('utilityService',UtilityService)
 .service('selectionService',SelectionService)
@@ -154,6 +158,7 @@ var coremodule = angular.module('hibachi.core',[
 .filter('percentage',[PercentageFilter.Factory])
 .filter('trim', [SWTrim.Factory])
 .filter('entityRBKey',['rbkeyService',EntityRBKey.Factory])
+.filter('swdate',['$log','$filter',DateFilter.Factory])
 //directives
 .directive('swCollectionConfig',SWCollectionConfig.Factory())
 .directive('swCollectionColumn',SWCollectionColumn.Factory())
@@ -196,6 +201,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swTabGroup', SWTabGroup.Factory())
 .directive('swTabContent', SWTabContent.Factory())
 .directive('swListingGlobalSearch',SWListingGlobalSearch.Factory())
+.directive('swListingDisplayCell',SWListingDisplayCell.Factory())
 ;
 export{
 	coremodule
