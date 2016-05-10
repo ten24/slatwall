@@ -48,10 +48,12 @@ class SWListingDisplayCellController{
             
             //convert the page records into attrs
             this.templateVariables = {}; 
-            for(var key in pageRecord){
-                this.templateVariables[this.utilityService.keyToAttributeString(key)] = pageRecord[key];
-            }
-            
+           angular.forEach(this.pageRecord, (value,key)=>{
+                if(key.toString().charAt(0) != "$"){
+                    this.templateVariables[this.utilityService.keyToAttributeString(key)] = value;
+                }
+            });
+            console.log("templateVariables", this.templateVariables);
         }else{
             this.templateUrl = this.getDirectiveTemplate();
         }
