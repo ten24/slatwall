@@ -21,11 +21,12 @@ class SWDirective{
 			replace:true,
 			scope:{
 				variables:"=", //{key:value}
-				directive:"="
+				directiveTemplate:"="
+				directiveScope:"="
 			},
 			link: function(scope, element, attrs) {
 
-		        var template = '<' + scope.directive + ' ';
+		        var template = '<' + scope.directiveTemplate + ' ';
 
 		        if(angular.isDefined(scope.variables)){
 			        angular.forEach(scope.variables, function(value,key){
@@ -34,11 +35,15 @@ class SWDirective{
 			    }
 
 		        template += '>';
-		        template += '</'+scope.directive+'>';
+		        template += '</'+scope.directiveTemplate+'>';
 
 		        // Render the template.
 				console.log('renderDirective',template);
-		        element.html($compile(template)(scope));
+				if(angular.isUndefined(scope.directiveScope)){
+		        	element.html($compile(template)(scope));
+				} else { 
+					element.html($compile(template)(scope.directiveScope));
+				}
 		    }
 		};
 	}

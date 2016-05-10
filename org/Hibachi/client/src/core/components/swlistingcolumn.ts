@@ -21,7 +21,7 @@ class SWListingColumnController{
                 console.log('directive Found!');
                 this.hasCellView = true;
             }else{
-                throw(this.cellView+' is not an existing directive');
+                throw(this.cellView + ' is not an existing directive');
             }
         }
     }
@@ -43,7 +43,8 @@ class SWListingColumn implements ng.IDirective{
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",
-        cellView:"@?"
+        cellView:"@?",
+        cellScope:"=?"
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
@@ -80,8 +81,8 @@ class SWListingColumn implements ng.IDirective{
         };
 
         if(scope.swListingColumn.hasCellView){
-
             column.cellView = scope.swListingColumn.cellView;
+            column.cellScope = scope.swListingColumn.cellScope; 
         }
 
         //aggregate logic
