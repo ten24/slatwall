@@ -610,7 +610,7 @@
                                                                                 <div class="s-input-group s-edit"><!--- Removing s-edit will hide the edit mode. --->
                                                                                     <input type="text" value="789" class="form-control input-xs  s-inherited">
                                                                                     <a href="#" class="s-remove-change"><i class="fa fa-remove"></i></a>
-                                                                                    <a class="btn btn-xs btn-success s-action-btn" href="#">save</a>
+                                                                                    <a class="btn btn-xs btn-success s-action-btn" href="#j-change-qty-remove-this" data-toggle="modal">save</a>
                                                                                     <!-- <a class="btn btn-xs btn-success s-action-btn" data-toggle="modal" href="#j-change-qty-remove-this">save</a> -->
                                                                                 </div>
                                                                             </li>
@@ -1146,7 +1146,7 @@
                                                                         </a>
                                                                     </td>
                                                                 </tr>
-                                                                <tr class="s-child s-inherited s-disabled">
+                                                                <tr class="s-child s-inherited s-disabled"><!--- Removing s-disabled will show the checkbox and enable click event --->
                                                                     <td class="s-table-checkbox">
                                                                         <div class="s-checkbox">
                                                                             <input type="checkbox">
@@ -2497,6 +2497,7 @@
             </div>
         </div>
         
+            
         <!-- Change Price Modal -->
         <div class="modal" id="pricingChange" tabindex="-1" role="dialog">
             <div class="modal-dialog">
@@ -2592,7 +2593,7 @@
                                         </div>  
                                         <div class="form-group" style="display:none;" id="j-custom-image-name">
                                             <label for="" class="control-label">Custom Image Name</label>
-                                            <input type="text" name="" value="" class="form-control">
+                                            <input type="text" name="" value="OTB_DrinkingTeam-1826-1.jpg" class="form-control">
                                         </div>    
                                         <div class="s-checkbox" id="j-toggle-image-type">
 							                <input type="checkbox" id="checkbox1">
@@ -2671,7 +2672,7 @@
                                     <div class="col-md-4">
                                         <div class="s-modal-module">
                                             <div class="s-title">Adjustment</div>
-                                            <div class="s-value s-negative">
+                                            <div class="s-value s-negative"><!--- s-positive class will turn green for positive number --->
                                                 <span>-10</span>
                                             </div>
                                         </div>
@@ -2816,14 +2817,26 @@
                 				</div>
                 			</div>
                             <div class="col-sm-8">
-                                <div class="form-group j-adjustmentType-remove-this">
-                                    <label for="" class="control-label">Price Group</label>
-                                    <select class="form-control">
-                                        <option value="manualIn" selected>None</option>
-                                        <option value="manualOut">Employee Price</option>
-                                        <option value="manualOut">Wholesale</option>
-                                    </select>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group j-adjustmentType-remove-this">
+                                            <label for="" class="control-label">Price Group</label>
+                                            <select class="form-control">
+                                                <option value="manualIn" selected>None</option>
+                                                <option value="manualOut">All Price Groups (2)</option>
+                                                <option value="manualOut">Employee Price</option>
+                                                <option value="manualOut">Wholesale</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="" class="control-label">Price</label>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                    </div>
                                 </div>
+                                
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
