@@ -7,6 +7,7 @@
 	"properties":{
 		"firstName":							[{"contexts":"save","required":true}],
 		"lastName":								[{"contexts":"save","required":true}],
+		"superUserFlag":						[{"contexts":"generateAPIAccessKey","eq":false}],
 		"emailAddress":							[{"contexts":"save","dataType":"email"}],
 		"orders":								[{"contexts":"delete","maxCollection":0}],
 		"productReviews":						[{"contexts":"delete","maxCollection":0}],
