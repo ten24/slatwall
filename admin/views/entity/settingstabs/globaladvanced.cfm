@@ -66,7 +66,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalRemoteIDEditFlag" />
 		<swa:SlatwallSetting settingName="globalDisplayIntegrationProcessingErrors" />
 		<swa:SlatwallSetting settingName="globalFileTypeWhiteList" />
-		<swa:SlatwallSetting settingName="globalFileTypeMIMEType" />
+		<swa:SlatwallSetting settingName="globalMIMETypeWhiteList" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 
