@@ -47,9 +47,9 @@ class SWPricingManager implements ng.IDirective{
     }
     
     constructor(
-        $hibachi, 
-		skuPartialsPath,
-	    slatwallPathBuilder
+        private $hibachi, 
+		private skuPartialsPath,
+	    private slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"pricingmanager.html";
     }
@@ -58,7 +58,7 @@ class SWPricingManager implements ng.IDirective{
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 console.log("priority","pricemanager pre");
-                $scope.swPricingManager.singleEditTest = $hibachi.newEntity("SkuPrice"); 
+                $scope.swPricingManager.singleEditTest = this.$hibachi.newEntity("SkuPrice"); 
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 console.log("priority","pricemanager post");

@@ -18,7 +18,7 @@ class SWDirective{
 	){
 		return {
 			restrict: 'AE',
-			replace:true,
+			//replace:true,
 			scope:{
 				variables:"=", //{key:value}
 				directiveTemplate:"="

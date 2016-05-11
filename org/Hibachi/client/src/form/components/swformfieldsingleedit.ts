@@ -34,6 +34,7 @@ class SWFormFieldSingleEditController {
         ){
         if(angular.isDefined(this.object)){
             this.singleEditedObject = angular.copy(this.object);
+            console.log("singleEditedObject", this.singleEditedObject)
         } else {
             throw("You must provide SWFormFieldSingleEditController an object!");
         }        
@@ -64,7 +65,6 @@ class SWFormFieldSingleEditController {
     }
     
     public revert = () => {
-        console.log("reverting to", this.valueToRevertTo);
         this.ngModelValue = this.valueToRevertTo;
         this.singleEditedObject.$$save().then((response)=>{
             this.edited = false; 

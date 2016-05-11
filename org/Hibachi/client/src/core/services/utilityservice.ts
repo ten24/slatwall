@@ -16,7 +16,7 @@ class UtilityService extends BaseService{
         for(var i=0; i<key.length; i++){
             if(this.isUpperCase(key.charAt(i))){
                 //special case for ID and Acronyms because it doesn't follow naming conventions
-                if(i+1 <= key.length && this.isUpperCase(key.charAt(i+1)){
+                if(i+1 <= key.length && this.isUpperCase(key.charAt(i+1))){
                     if(key.charAt(i) + key.charAt(i+1) == "ID"){
                         attributeString += "-id";
                         i++;//skip ahead

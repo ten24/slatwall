@@ -14,6 +14,7 @@ class SWListingDisplayCellController{
     //string that should translate to a custom directive
     public cellView:string;
     public template:string;
+    public templateVariables:any; 
 
     //@ngInject
     constructor(

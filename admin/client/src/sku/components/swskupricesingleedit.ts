@@ -3,6 +3,7 @@
 class SWSkuPriceSingleEditController{
     
     public skuId;
+    public currencyCode;
     
     public sku; 
     
@@ -10,7 +11,8 @@ class SWSkuPriceSingleEditController{
     
     //@ngInject
     constructor(
-        private collectionConfigService
+        private collectionConfigService,
+        private $hibachi
     ){
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWSkuPriceSingleEditController");
@@ -21,7 +23,8 @@ class SWSkuPriceSingleEditController{
             this.collectionConfig.setAllRecords(true);
             this.collectionConfig.getEntity().then((response)=>{
                 if(angular.isDefined(response.records[0])){
-                    this.sku = response.records[0];
+                    this.sku = this.$hibachi.newEntity('Sku');
+                    angular.extend(this.sku.data, response.records[0]);
                 } else { 
                     throw("There was a problem fetching the sku in SWSkuPriceSingleEditController")
                 }
@@ -37,6 +40,7 @@ class SWSkuPriceSingleEdit implements ng.IDirective{
     public scope = {}; 
     public bindToController = {
         skuId:"@",
+        currencyCode:"@",
         sku:"=?"
     };
     public controller = SWSkuPriceSingleEditController;
