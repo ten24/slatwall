@@ -148,8 +148,8 @@ function initUIElements( scopeSelector ) {
 			}
 
 			if( jQuery( '#' + bindData.id ).hasClass('hide') 
-                && (bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
-                || bindData.showValues === '*' && selectedValue.length) 
+                && ( bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) > -1 
+                     || bindData.showValues === '*' && selectedValue.length) 
             ) {
 				
                 jQuery( '#' + bindData.id ).removeClass('hide');
@@ -158,8 +158,9 @@ function initUIElements( scopeSelector ) {
                 $('#' + bindData.id).find('*').attr('disabled', false);
 			
             } else if ( !jQuery( '#' + bindData.id ).hasClass('hide') 
-                        && ((bindData.showValues !== '*' && bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) === -1) 
-                        || (bindData.showValues === '*' && !selectedValue.length)) ) {
+                        && ( (bindData.showValues !== '*' && bindData.showValues.toString().split(",").indexOf(selectedValue.toString()) === -1) 
+                            || (bindData.showValues === '*' && !selectedValue.length) ) 
+            ) {
 			
                 jQuery( '#' + bindData.id ).addClass('hide');
                 
