@@ -285,23 +285,18 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		if(this.isGiftCardAccountPaymentMethod()){
 			return getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDbyCode(this.getGiftCardNumberEncrypted()));
 		}
-		return false;
 	}
 
 	public any function getGiftCardBalanceAmount(){
 
 		if(this.isGiftCardAccountPaymentMethod()){
 			return this.getGiftCard().getBalanceAmount();
-		} else {
-			return false;
 		}
 	}
 
 	public string function getGiftCardBalanceAmountFormatted(){
 
-		if(this.getGiftCardBalanceAmount() EQ False){
-			return "";
-		} else {
+		if(!isNull(this.getGiftCardBalanceAmount())){
 			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCard().getBalanceAmount(), {currencyCode=this.getGiftCard().getCurrencyCode()});
 		}
 	}
