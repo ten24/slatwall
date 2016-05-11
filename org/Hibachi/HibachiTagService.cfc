@@ -20,7 +20,7 @@
 		<cfargument name="oldStruct" type="struct">
 		<cfset var newStruct = {}/>
 		<cfloop collection="#arguments.oldStruct#" item="key">
-			<cfif structKeyExists(arguments.oldStruct,key) && !isNull(arguments.oldStruct[key])>
+			<cfif structKeyExists(arguments.oldStruct,key) AND NOT isNull(arguments.oldStruct[key])>
 				<cfset newStruct[key] = arguments.oldStruct[key]/>
 			</cfif>
 		</cfloop>

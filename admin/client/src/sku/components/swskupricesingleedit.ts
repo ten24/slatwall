@@ -40,7 +40,7 @@ class SWSkuPriceSingleEdit implements ng.IDirective{
         sku:"=?"
     };
     public controller = SWSkuPriceSingleEditController;
-    public controllerAs="SWSkuPriceSingleEdit";
+    public controllerAs="swSkuPriceSingleEdit";
    
    
     public static Factory(){

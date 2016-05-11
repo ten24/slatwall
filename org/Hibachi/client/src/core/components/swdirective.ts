@@ -29,7 +29,7 @@ class SWDirective{
 
 		        if(angular.isDefined(scope.variables)){
 			        angular.forEach(scope.variables, function(value,key){
-			        	template += ' ' + key + '=' + value + ' ';
+			        	template += ' ' + key + '="' + value + '" ';
 			        });
 			    }
 

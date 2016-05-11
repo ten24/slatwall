@@ -15,10 +15,19 @@ class UtilityService extends BaseService{
         var attributeString = "data-"; 
         for(var i=0; i<key.length; i++){
             if(this.isUpperCase(key.charAt(i))){
-                //special case for ID because it doesn't follow naming conventions
-                if(i+1 == key.length && key.charAt(i) + key.charAt(i+1) == "ID"){
-                    attributeString += "-id";
-                    break; 
+                //special case for ID and Acronyms because it doesn't follow naming conventions
+                if(i+1 <= key.length && this.isUpperCase(key.charAt(i+1)){
+                    if(key.charAt(i) + key.charAt(i+1) == "ID"){
+                        attributeString += "-id";
+                        i++;//skip ahead
+                    } else if(this.isUpperCase(key.charAt(i+1))) {
+                        attributeString += "-"; 
+                        //this handles acronyms IE QATS 
+                        while( i+1 <= key.length && this.isUpperCase(key.charAt(i+1))){
+                            attributeString += key.charAt(i).toLowerCase();
+                            i++; 
+                        }
+                    }
                 } else { 
                     attributeString += "-" + key.charAt(i).toLowerCase(); 
                 } 
@@ -28,7 +37,6 @@ class UtilityService extends BaseService{
                 attributeString += key.charAt(i); 
             }
         }
-        console.log("keyToAttributeString", attributeString); 
         return attributeString; 
     }
     

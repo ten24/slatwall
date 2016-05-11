@@ -49,7 +49,7 @@ class SWListingDisplayCellController{
             //convert the page records into attrs
             this.templateVariables = {}; 
            angular.forEach(this.pageRecord, (value,key)=>{
-                if(key.toString().charAt(0) != "$"){
+                if(key.toString().charAt(0) != "$" && value != " "){
                     this.templateVariables[this.utilityService.keyToAttributeString(key)] = value;
                 }
             });
