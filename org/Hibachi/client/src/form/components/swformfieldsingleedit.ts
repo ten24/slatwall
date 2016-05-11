@@ -50,6 +50,10 @@ class SWFormFieldSingleEditController {
         if(angular.isUndefined(this.hasIndicatorCallback)){
             this.hasIndicatorCallback = false; 
         }
+        if(angular.isDefined(this.singleEditedObject.data[this.property])){
+            console.log("setting the prop", this.property, this.singleEditedObject.data[this.property])
+            this.ngModelValue = this.singleEditedObject.data[this.property];
+        }
     }
     
     public clear = () => {

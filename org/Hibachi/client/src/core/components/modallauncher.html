@@ -2,5 +2,7 @@
     <div ng-transclude="button"></div>
 </a>
 <sw-modal-window data-title="{{swModalLauncher.title}}" data-modal-name="{{swModalLauncher.modalName}}">
-    <div ng-transclude="window"></div>
+    <sw-modal-body>
+        <div ng-transclude="content"></div>
+    </sw-modal-body>
 </sw-modal-window>

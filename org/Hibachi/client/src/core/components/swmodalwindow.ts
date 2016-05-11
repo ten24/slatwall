@@ -19,7 +19,7 @@ class SWModalWindow implements ng.IDirective{
 
     public templateUrl;
     public transclude={
-        modalContent:"?swModalContent"
+        modalBody:"?swModalBody"
     }; 
     public restrict = "EA";
     public scope = {};
