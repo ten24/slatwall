@@ -137,7 +137,7 @@ Notes:
 
 		<cfquery name="local.giftCardOrderPayment">
 			SELECT SUM(SwGiftCardTransaction.debitAmount) AS amount FROM SwGiftCardTransaction
-			    LEFT JOIN SwOrderPayment on SwGiftCardTransaction.orderPaymentID=op.orderPaymentID
+			    LEFT JOIN SwOrderPayment on SwGiftCardTransaction.orderPaymentID=SwOrderPayment.orderPaymentID
 			WHERE
 				SwOrderPayment.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a" />
 			AND
