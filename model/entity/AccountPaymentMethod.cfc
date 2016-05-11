@@ -297,7 +297,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	public string function getGiftCardBalanceAmountFormatted(){
 
 		if(!isNull(this.getGiftCardBalanceAmount())){
-			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCard().getBalanceAmount(), {currencyCode=this.getGiftCard().getCurrencyCode()});
+			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCardBalanceAmount(), {currencyCode=this.getGiftCard().getCurrencyCode()});
 		}
 	}
 
