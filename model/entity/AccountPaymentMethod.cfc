@@ -288,17 +288,16 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 
 	public any function getGiftCardBalanceAmount(){
-
 		if(this.isGiftCardAccountPaymentMethod()){
 			return this.getGiftCard().getBalanceAmount();
 		}
 	}
 
 	public string function getGiftCardBalanceAmountFormatted(){
-
 		if(!isNull(this.getGiftCardBalanceAmount())){
 			return getService("HibachiUtilityService").formatValue_currency(this.getGiftCardBalanceAmount(), {currencyCode=this.getGiftCard().getCurrencyCode()});
 		}
+		return ""; 
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================
