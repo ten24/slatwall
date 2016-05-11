@@ -77,6 +77,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// ================= Overrides =================================
 	
+	public any function getCurrentRequestSite() {
+		var domain = listFirst(cgi.HTTP_HOST,':');
+		return getDAO('siteDAO').getSiteByDomainName(domain);
+	}
+
+	public any function getCurrentDomain() {
+		return listFirst(cgi.HTTP_HOST,':');
+	}
+	
 	public string function renderJSObject() {
 		var config = {};
 		config[ 'baseURL' ] = getApplicationValue('baseURL');

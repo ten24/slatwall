@@ -35,9 +35,9 @@ component output="false" accessors="true" extends="HibachiController" {
     this.publicMethods=listAppend(this.publicMethods, 'getFormResponses');
     this.publicMethods=listAppend(this.publicMethods, 'exportFormResponses');
 
-    //  this.secureMethods='';
-    //  this.secureMethods=listAppend(this.secureMethods, 'get');
-    //  this.secureMethods=listAppend(this.secureMethods, 'post');
+    this.secureMethods='';
+    this.secureMethods=listAppend(this.secureMethods, 'get');
+    this.secureMethods=listAppend(this.secureMethods, 'post');
 
 
     public void function init( required any fw ) {
@@ -509,33 +509,34 @@ component output="false" accessors="true" extends="HibachiController" {
 		var formQuestions = getDAO('FormDAO').getFormQuestionColumnHeaderData(arguments.rc.formID);
 		var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(arguments.rc.formID);
 		var exportList = "";
-		for(var question in formQuestions){
-			exportList = listAppend(exportList, question["question"]);
-		}
-		var transformedData = getService("FormService").transformFormResponseData(untransformedData);
-
-		for(var row in transformedData){
+		if(arrayLen(formQuestions) && arrayLen(untransformedData)){
 			for(var question in formQuestions){
-				if(!isNull(question["questionID"]) && structkeyexists(row, question["questionID"])){
-					exportList = listAppend(exportList, row[question["questionID"]]);
-				} else {
-					exportList = listAppend(exportList, " ");
+				exportList = listAppend(exportList, question["question"]);
+			}
+			var transformedData = getService("FormService").transformFormResponseData(untransformedData);
+
+			for(var row in transformedData){
+				for(var question in formQuestions){
+					if(!isNull(question["questionID"]) && structkeyexists(row, question["questionID"])){
+						exportList = listAppend(exportList, row[question["questionID"]]);
+					} else {
+						exportList = listAppend(exportList, " ");
+					}
 				}
 			}
+
+			var fileNameWithExt = "formResponse.csv";
+
+			if(structKeyExists(application,"tempDir")){
+				var filePath = application.tempDir & "/" & fileNameWithExt;
+			} else {
+				var filePath = GetTempDirectory() & fileNameWithExt;
+			}
+
+			fileWrite(filePath,exportList);
+
+			getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/csv",true);
 		}
-
-		var fileNameWithExt = "formResponse.csv";
-
-		if(structKeyExists(application,"tempDir")){
-			var filePath = application.tempDir & "/" & fileNameWithExt;
-		} else {
-			var filePath = GetTempDirectory() & fileNameWithExt;
-		}
-
-		fileWrite(filePath,exportList);
-
-		getService("HibachiUtilityService").downloadFile(fileNameWithExt,filePath,"application/csv",true);
-
     }
 
 
@@ -548,18 +549,23 @@ component output="false" accessors="true" extends="HibachiController" {
 
     	var untransformedData = getDAO('FormDAO').getFormQuestionAndFormResponsesRawData(arguments.rc.formID, numberOfQuestions, arguments.rc.currentPage, arguments.rc.pageShow);
 
-		arguments.rc.apiResponse.content['columnRecords'] = formQuestions;
-		arguments.rc.apiResponse.content['pageRecords'] = getService("FormService").transformFormResponseData(untransformedData);
+		if(numberOfQuestions && arrayLen(untransformedData)){
+			arguments.rc.apiResponse.content['columnRecords'] = formQuestions;
+			arguments.rc.apiResponse.content['pageRecords'] = getService("FormService").transformFormResponseData(untransformedData);
 
-		//pagination properties
-		arguments.rc.apiResponse.content['recordsCount'] = formToFetch.getFormResponsesCount();
-		arguments.rc.apiResponse.content['pageRecordsStart'] = ((arguments.rc.currentPage-1)*arguments.rc.pageShow) + 1;
-		var pageRecordsEnd = arguments.rc.apiResponse.content['pageRecordsStart'] + arguments.rc.pageShow - 1;
-		if(pageRecordsEnd > arguments.rc.apiResponse.content['recordsCount']) {
-			pageRecordsEnd = arguments.rc.apiResponse.content['recordsCount'];
+			//pagination properties
+			arguments.rc.apiResponse.content['recordsCount'] = formToFetch.getFormResponsesCount();
+			arguments.rc.apiResponse.content['pageRecordsStart'] = ((arguments.rc.currentPage-1)*arguments.rc.pageShow) + 1;
+			var pageRecordsEnd = arguments.rc.apiResponse.content['pageRecordsStart'] + arguments.rc.pageShow - 1;
+			if(pageRecordsEnd > arguments.rc.apiResponse.content['recordsCount']) {
+				pageRecordsEnd = arguments.rc.apiResponse.content['recordsCount'];
+			}
+			arguments.rc.apiResponse.content['pageRecordsEnd'] = pageRecordsEnd;
+			arguments.rc.apiResponse.content['totalPages'] = ceiling(formToFetch.getFormResponsesCount() / arguments.rc.pageShow);
+		} else {
+			arguments.rc.apiResponse.content['columnRecords'] = [];
+			arguments.rc.apiResponse.content['pageRecords'] = [];
 		}
-		arguments.rc.apiResponse.content['pageRecordsEnd'] = pageRecordsEnd;
-		arguments.rc.apiResponse.content['totalPages'] = ceiling(formToFetch.getFormResponsesCount() / arguments.rc.pageShow);
     }
 
     public any function get( required struct rc ) {
@@ -689,18 +695,18 @@ component output="false" accessors="true" extends="HibachiController" {
         	if(isNull(arguments.rc.apiResponse.content.messages)){
 	            arguments.rc.apiResponse.content['messages'] = [];
 	        }
-	
+
 	        if(structKEyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
 	            var structuredData = deserializeJSON(arguments.rc.serializedJSONData);
 	        } else {
 	            var structuredData = arguments.rc;
 	        }
-	
+
 	        if(structKeyExists(arguments.rc,'swProcess')){
 	            arguments.rc.context = arguments.rc.swProcess;
 	            structDelete(arguments.rc,'swProcess');
 	        }
-	
+
 	        //if entityname is not specified then we are using the public api and it should act upon the current users session
 	        if(!structKeyExists(arguments.rc, "entityName")) {
 	            arguments.rc.entityName = 'Session';
@@ -710,7 +716,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	            var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
 	            var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
 	        }
-	
+
 	        // SAVE
 	        if(arguments.rc.context eq 'save') {
 	            entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
@@ -721,17 +727,17 @@ component output="false" accessors="true" extends="HibachiController" {
 	        } else {
 	            entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});
 	        }
-	
+
 	        // respond with data
 	        arguments.rc.apiResponse.content['data'] = {};
-	
+
 	        // Add ID's of any sub-property population
 	        arguments.rc.apiResponse.content['data'] = addPopulatedSubPropertyIDsToData(entity=entity, data=arguments.rc.apiResponse.content['data']);
-	
+
 	        // Get any new ID's created by the post
 	        arguments.rc.apiResponse.content['data'][ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
-	
-	
+
+
 	        if(!isnull(arguments.rc.propertyIdentifiersList)){
 	            //respond with data
 	            arguments.rc.apiResponse.content['data'] = {};
@@ -751,35 +757,35 @@ component output="false" accessors="true" extends="HibachiController" {
 	                //}
 	            }
 	        }
-	
+
 	        if(entity.hasErrors()){
 	            arguments.rc.apiResponse.content.success = false;
 	            var context = getPageContext();
 	            context.getOut().clearBuffer();
 	            var response = context.getResponse();
 	            response.setStatus(500);
-	
+
 	        }else{
 	            arguments.rc.apiResponse.content.success = true;
-	
+
 	            // Setup success response message
 	            var replaceValues = {
 	                entityName = rbKey('entity.#entity.getClassName()#')
 	            };
-	
+
 	            var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entity.getClassName()#.#rc.context#_success" ), replaceValues);
 	            getHibachiScope().showMessage( successMessage, "success" );
-	
+
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", replaceValues.entityName, "all" ) , "success");
 	        }
-	
+
 	        if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 	            arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 	            getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 	        }
         }
 
-        
+
     }
 
     private struct function addPopulatedSubPropertyIDsToData(required any entity, required struct data) {

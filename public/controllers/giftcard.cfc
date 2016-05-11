@@ -54,12 +54,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
 
 		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			giftCardRedeemProcessObject.setAccount(getHibachiScope().getAccount());
+			giftCardRedeemProcessObject.setAccount(arguments.rc.$.slatwall.getAccount());
 			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
 
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
+			arguments.rc.$.slatwall.addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
 		} else {
-			getHibachiScope().addActionResult("public:giftCard.redeemForAccount", false);
+			arguments.rc.$.slatwall.addActionResult("public:giftCard.redeemForAccount", false);
 		}
 	}
 

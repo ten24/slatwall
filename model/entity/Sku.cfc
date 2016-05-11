@@ -188,9 +188,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	public array function getRedemptionAmountTypeOptions(){
 		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){
+
 			variables.redemptionAmountTypeOptions = [];
 			var optionValues = 'sameAsPrice,fixedAmount,percentage';
 			var optionValuesArray = listToArray(optionValues);
+
+			var option = {};
+			option['name'] = rbKey('entity.Sku.redemptionAmountType.select');
+			option['value'] = "";
+			arrayAppend(variables.redemptionAmountTypeOptions,option);
+
 			for(var optionValue in optionValuesArray){
 				var option = {};
 				option['name'] = rbKey('define.#optionValue#');
@@ -278,6 +285,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 		}
 		return optionString;
+	}
+
+	//@hint normally on missing method would handle this, but in the case of options it tries to use the wrong function.
+	public any function getOptionsSmartList() {
+    	return getPropertySmartList(propertyName="options");
 	}
 
 	//@hint Generates the image path based upon product code, and image options for this sku

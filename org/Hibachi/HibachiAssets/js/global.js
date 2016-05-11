@@ -42,9 +42,6 @@ jQuery(document).ready(function() {
 });
 
 function initUIElements( scopeSelector ) {
-    
-    jQuery("input[name='redemptionAmount']").hide();
-    jQuery("label[for='redemptionAmount']").hide();
 
 	var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
 	var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
@@ -163,7 +160,10 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
 		jQuery(value).on('submit', function(e){
 			
-			jQuery ("button[type='submit']").prop('disabled', true);
+            
+            if(jQuery("button[type='submit']").attr("value") == undefined){
+                jQuery ("button[type='submit']").prop('disabled', true);
+            }
 			
 			jQuery.each(jQuery( this ).find(jQuery('input[data-emptyvalue]')), function(i, v){
 				if(jQuery(v).val() == jQuery(v).data('emptyvalue')) {
@@ -378,8 +378,8 @@ function setupEventHandlers() {
 			error:function(response,status){
 				//returns 401 in the case of unauthorized access and boots to the appropriate login page
 				//Hibachi.cfc 308-311
-				if(xhr.status == 401){
-					window.location.href = "/?slataction=" + xhr.statusText;
+				if(response.status == 401){
+					window.location.href = "/?slataction=" + response.statusText;
 				}
 			}
 		});
@@ -422,16 +422,6 @@ function setupEventHandlers() {
 		});
 
 	});
-    
-    jQuery("select[name='redemptionAmountType']").change(function(){
-        if( jQuery("select[name='redemptionAmountType']").val() == "sameAsPrice"){
-            jQuery("input[name='redemptionAmount']").hide();
-            jQuery("label[for='redemptionAmount']").hide();
-        } else { 
-            jQuery("input[name='redemptionAmount']").show();   
-            jQuery("label[for='redemptionAmount']").show();
-        }
-    }); 
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
