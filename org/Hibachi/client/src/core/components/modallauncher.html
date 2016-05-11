@@ -1,6 +1,6 @@
-<div ng-click="swModalLauncher.launchModal()">
-    <a ng-transclude="button"></a>
-    <sw-modal-window ng-if="swModalLauncher.showModal">
-        <div ng-transclude="window"></div>
-    </sw-modal-window>
-</div>
+<a data-toggle="modal" href="#{{swModalLauncher.modalName}}">
+    <div ng-transclude="button"></div>
+</a>
+<sw-modal-window data-title="{{swModalLauncher.title}}" data-modal-name="{{swModalLauncher.modalName}}">
+    <div ng-transclude="window"></div>
+</sw-modal-window>

@@ -1,11 +1,11 @@
 <!-- Change Image Modal -->
-<div class="modal" id="j-image-detail" tabindex="-1" role="dialog" aria-hidden="false">
+<div class="modal" id="{{swModalWindow.modalName}}" tabindex="-1" role="dialog" aria-hidden="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <a class="close" data-dismiss="modal">×</a>
                 <!-- HEADER TITLE HERE -->
-                <h3 ng-bind="swModalWindow.modalTitle"></h3>
+                <h3><span ng-bind="swModalWindow.title"></span></h3>
             </div>
             <div class="modal-body">
                     <!-- Transcluded Content Here -->

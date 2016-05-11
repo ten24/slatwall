@@ -3,6 +3,8 @@
 class SWModalLauncherController {
 
     public showModal:boolean; 
+    public modalName:string; 
+    public title:string; 
     
     // @ngInject
     constructor(
@@ -30,7 +32,9 @@ class SWModalLauncher implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-
+        showModal:"=?",
+        modalName:"@", 
+        title:"@"
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";

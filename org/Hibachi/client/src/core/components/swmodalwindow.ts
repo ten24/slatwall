@@ -2,13 +2,14 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWModalWindowController {
 
-    public modalTitle;
+    public modalName;
+    public title; 
 
     // @ngInject
     constructor(){
-        if(angular.isUndefined(this.modalTitle)){
+        if(angular.isUndefined(this.modalName)){
             console.warn("You did not pass a modal title to SWModalWindowController");
-            this.modalTitle = ""; 
+            this.modalName = ""; 
         }
     }
 
@@ -24,7 +25,8 @@ class SWModalWindow implements ng.IDirective{
     public scope = {};
 
     public bindToController = {
-        modalTitle:"@"
+        modalName:"@",
+        title:"@"
     };
     public controller=SWModalWindowController;
     public controllerAs="swModalWindow";
