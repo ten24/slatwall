@@ -42,6 +42,7 @@ class SWOptions{
                 scope.swOptions = {};
                 scope.swOptions.objectName=scope.objectName;
                 //sets up drop down options via collections
+
                 scope.getOptions = function(){
                     scope.swOptions.object = $hibachi['new'+scope.swOptions.objectName]();
                     var columnsConfig = [
@@ -61,11 +62,17 @@ class SWOptions{
 
                 scope.getOptions();
 
-                var selectFirstOption = function(){
-                    scope.swOptions.selectOption(scope.swOptions.options[0]);
+                var selectOption = function(option){
+
+                    if(option){
+                        scope.swOptions.selectOption(option);
+                    }else{
+                        scope.swOptions.selectOption(scope.swOptions.options[0]);
+                    }
+
                 };
 
-                observerService.attach(selectFirstOption,'selectFirstOption','selectFirstOption');
+                observerService.attach(selectOption,'selectOption','selectOption');
 
                 //use by ng-change to record changes
                 scope.swOptions.selectOption = function(selectedOption){
