@@ -460,25 +460,66 @@
                                                 <!-- First Tab -->
                                                 <div role="tabpanel" class="tab-pane active" id="j-basic">
                                                     <div class="row s-table-inner-nav ">
-                                                        <div class="s-search-wrapper">
-                                                            
-                                                            <input type="text" class="form-control" style="padding-left: 30px;" placeholder="Add product...">
-                                                            <i style="position: absolute;top: 10px;left: 10px;font-size: 16px;color: #aaa;pointer-events:none;" class="fa fa-search"></i>
-                                                            <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
-                    									        <ul class="dropdown-menu">
-                                                                    <li><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
-                    									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
-                    									            <li><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
-                                                                    <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
-                                                                    <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
-                    									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
-                                                                    <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
-                                                                    <li><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
-                    									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
-                                                                    <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
-                    									        </ul>
-                    									    </div>
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-md-10">
+                                                                <div class="s-search-wrapper">
+                                                                    <input type="text" class="form-control" style="padding-left: 30px;" placeholder="Add product...">
+                                                                    <i style="position: absolute;top: 10px;left: 10px;font-size: 16px;color: #aaa;pointer-events:none;" class="fa fa-search"></i>
+                                                                    <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
+                            									        <ul class="dropdown-menu">
+                                                                            <li><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
+                            									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
+                            									            <li><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
+                                                                            <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
+                            									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
+                            									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
+                                                                            <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
+                            									        </ul>
+                            									    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <div class="s-table-setting">
+                                                                    <span class="s-title">Manual Sort</span>
+                                                                    <div class="s-toggle-switch">
+                                                                        <input id="sampleCheckboxToggle" name="sampleCheckboxToggle" type="checkbox" value="1" />
+                                                                        <div class="btn">
+                                                                            <label for="sampleCheckboxToggle">
+                                                                                <div class="s-toggle-switch-on btn btn-success"> 
+                                                                                    On
+                                                                                </div>
+                                                                                <div class="s-toggle-switch-handle btn btn-default"></div>
+                                                                                <div class="s-toggle-switch-off btn btn-dgrey">
+                                                                                    Off
+                                                                                </div>
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
+                                                        
+                                                        
+                                                        <style>
+                                                            .s-table-setting {
+                                                                height: 34px;
+                                                                border: 1px solid #DDD;
+                                                                border-radius: 2px;
+                                                                padding: 7px;
+                                                                text-align: center;
+                                                                font-weight: 600;
+                                                                background: #F2F2F2;
+                                                            }
+                                                            .s-table-setting .s-title {
+                                                                position: relative;
+                                                                bottom: -1px;
+                                                                margin-right: 4px;
+                                                            }
+                                                        </style>
                                                         <script>
                                                             $('#j-basic input').keyup(function() { 
                                                                 
@@ -558,23 +599,74 @@
                                                         <table class="table table-bordered s-detail-content-table">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>
-                                                                        Name
+                                                                    <th class="s-order-table">
+                                                                        
                                                                     </th>
                                                                     <th>
-                                                                        Code
+                                                                        <span>Name</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
                                                                     </th>
                                                                     <th>
-                                                                        Type
+                                                                        <span>Code</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
                                                                     </th>
                                                                     <th>
-                                                                        Active
+                                                                        <span>Type</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
                                                                     </th>
                                                                     <th>
-                                                                        Published
+                                                                        <span>Active</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
                                                                     </th>
                                                                     <th>
-                                                                        Price
+                                                                        <span>Published</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Price</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
                                                                     </th>
                                                                     <th class="s-actions">
                                                                         
@@ -583,6 +675,28 @@
                                                             </thead>
                                                             <tbody>    
                                                                 <tr>
+                                                                    <td class="s-order-table">
+                                                                        <a href="##" title="Move Order" target="_self">
+                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                        </a>
+                                                                        <style>
+                                                                            .s-order-table {
+                                                                                width: 44px;
+                                                                                padding: 0px !important;
+                                                                                display: none;
+                                                                            }
+                                                                            .s-order-table > a {
+                                                                                width: 100%;
+                                                                                height: 100%;
+                                                                                vertical-align: bottom;
+                                                                                position: absolute;
+                                                                                background: #F2F2F2;
+                                                                                color: #666;
+                                                                                text-align: center;
+                                                                                padding-top: 10px;
+                                                                            }
+                                                                        </style>
+                                                                    </td>
                                                                     <td>
                                                                         Casio Gold Player Special Watch 
                                                                     </td>
@@ -730,7 +844,7 @@
                                                                 <tr>
                                                                     <td class="s-table-checkbox">
                                                                         <div class="s-checkbox">
-                                                                            <input type="checkbox" id="exampleID2">
+                                                                            <input type="checkbox" id="exampleID2" checked>
                                                                             <label for="exampleID2"></label>
                                                                         </div>
                                                                     </td>
@@ -787,6 +901,22 @@
                                     </content>
                                 </div>
                             </div>
+                            
+                            <script>
+                                
+                                $('#sampleCheckboxToggle').change(function() {    
+                                    if ($(this).is(':checked')) {
+                                        $('.s-order-table').show();
+                                        $('.s-sort-arrows').hide();
+                                    } else {
+                                        $('.s-order-table').hide();
+                                        $('.s-sort-arrows').show();
+                                    }
+                                });
+                                
+                            </script>
+                            
+                            
                              <!--// End of content that you should care about in this mock (-:)-->
                             <!--  ///////////////////////
                             /////////////////////////////
