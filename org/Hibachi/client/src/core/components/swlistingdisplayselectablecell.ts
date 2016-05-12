@@ -8,7 +8,7 @@ class SWListingDisplaySelectableCellController{
     ){
         
     }
-
+}
 
 class SWListingDisplaySelectableCell implements ng.IDirective{
 

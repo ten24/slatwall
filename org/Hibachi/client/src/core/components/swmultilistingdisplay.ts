@@ -1,7 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-class SWListingDisplayController{
+class SWMultiListingDisplayController{
     /* local state variables */
     public  actions = [];
     public adminattributes;
@@ -15,6 +15,7 @@ class SWListingDisplayController{
     public collectionData;
     public collectionObject;
     public collectionConfig;
+    public collectionConfigs = [];
     public collection;
     public childPropertyName;
     public colorFilters = [];
@@ -78,7 +79,6 @@ class SWListingDisplayController{
         public observerService,
         public rbkeyService
     ){
-        
         this.initialSetup();
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
@@ -123,14 +123,16 @@ class SWListingDisplayController{
 
         this.setupDefaultCollectionInfo();
 
-            //if columns doesn't exist then make it
+        /*if columns doesn't exist then make it
         if(!this.collectionConfig.columns){
             this.collectionConfig.columns = [];
-        }
+        }*/
 
         //if a collectionConfig was not passed in then we can run run swListingColumns
         //this is performed early to populate columns with swlistingcolumn info
+        console.log("cellScope", "listing display transcluding now")
         this.$transclude(this.$scope,()=>{});
+        console.log("multicc",this.collectionConfigs);
         
         //add filterGroups
         angular.forEach(this.filterGroups, (filterGroup)=>{
@@ -146,7 +148,6 @@ class SWListingDisplayController{
         angular.forEach(this.orderBys, (orderBy)=>{
             this.collectionConfig.addOrderBy(orderBy.orderBy);
         });
-        
         angular.forEach(this.aggregates, (aggregate)=>{
             this.collectionConfig.addDisplayAggregate(aggregate.propertyIdentifier, aggregate.aggregateFunction, aggregate.aggregateAlias);
         });
@@ -174,7 +175,7 @@ class SWListingDisplayController{
 
 
         this.initData();
-        this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
+        this.$scope.$watch('swMultiListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
                 this.$q.when(this.collectionPromise).then((data)=>{
                     this.collectionData = data;
@@ -200,35 +201,50 @@ class SWListingDisplayController{
     };
 
     private setupDefaultCollectionInfo = () =>{
-        if(this.hasCollectionPromise){
-            this.collectionObject = this.collection.collectionObject;
-            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-            this.collectionConfig.loadJson(this.collection.collectionConfig);
+        if(this.collectionConfigs.length == 0 && false){//temp override
+            if(this.hasCollectionPromise){
+                this.collectionObject = this.collection.collectionObject;
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+                this.collectionConfig.loadJson(this.collection.collectionConfig);
+            }
+            this.collectionConfig.setPageShow(this.paginator.getPageShow());
+            this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
+            //this.collectionConfig.setKeywords(this.paginator.keywords);
+        } else { 
+            //Multi Collection Config Info Here
+            
         }
-        this.collectionConfig.setPageShow(this.paginator.getPageShow());
-        this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-        //this.collectionConfig.setKeywords(this.paginator.keywords);
     };
 
     private setupDefaultGetCollection = () =>{
-        this.collectionPromise = this.collectionConfig.getEntity();
+        if(this.collectionConfigs.length == 0){
+            this.collectionPromise = this.collectionConfig.getEntity();
 
-        return ()=>{
-            this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-            this.collectionConfig.setPageShow(this.paginator.getPageShow());
-            this.collectionConfig.getEntity().then((data)=>{
-                this.collectionData = data;
-                this.setupDefaultCollectionInfo();
-                this.setupColumns();
-                this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
-                this.paginator.setPageRecordsInfo(this.collectionData);
-            });
-        };
+            return ()=>{
+                this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
+                this.collectionConfig.setPageShow(this.paginator.getPageShow());
+                this.collectionConfig.getEntity().then((data)=>{
+                    this.collectionData = data;
+                    this.setupDefaultCollectionInfo();
+                    this.setupColumns();
+                    this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
+                    this.paginator.setPageRecordsInfo(this.collectionData);
+                });
+            };
+        } else { 
+            //Multi Collection Config Info Here
+            
+        }
     };
 
     public initData = () =>{
-        this.collectionConfig.setPageShow(this.paginator.pageShow);
-        this.collectionConfig.setCurrentPage(this.paginator.currentPage);
+        if(this.collectionConfigs.length == 0){
+            this.collectionConfig.setPageShow(this.paginator.pageShow);
+            this.collectionConfig.setCurrentPage(this.paginator.currentPage);
+        } else { 
+            //Multi Collection Config Info Here
+            
+        }
 
         //setup export action
         if(angular.isDefined(this.exportAction)){
@@ -257,8 +273,12 @@ class SWListingDisplayController{
         }
         if(this.multiselectable && (!this.columns || !this.columns.length)){
             //check if it has an active flag and if so then add the active flag
-            if(this.exampleEntity.metaData.activeProperty && !this.hasCollectionPromise){
-                this.collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
+            if(this.collectionConfigs.length == 0){
+                if(this.exampleEntity.metaData.activeProperty && !this.hasCollectionPromise){
+                    this.collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
+                }
+            } else { 
+                //Multi Collection Config Info Here
             }
 
         }
@@ -281,21 +301,24 @@ class SWListingDisplayController{
             }
 
             this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
-            //add parent property root filter
-            if(!this.hasCollectionPromise){
-                console.log('HEREEE!!');
-                this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
-            }
-            //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
-            //add children column
-            if(this.childPropertyName && this.childPropertyName.length) {
-                if(this.getChildCount || !this.hasCollectionPromise){
-                    this.collectionConfig.addDisplayAggregate(
-                        this.childPropertyName,
-                        'COUNT',
-                        this.childPropertyName+'Count'
-                    );
+            if(this.collectionConfigs.length == 0){
+                //add parent property root filter
+                if(!this.hasCollectionPromise){
+                    this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
                 }
+                //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
+                //add children column
+                if(this.childPropertyName && this.childPropertyName.length) {
+                    if(this.getChildCount || !this.hasCollectionPromise){
+                        this.collectionConfig.addDisplayAggregate(
+                            this.childPropertyName,
+                            'COUNT',
+                            this.childPropertyName+'Count'
+                        );
+                    }
+                }
+            } else { 
+                //Multi Collection Config Info Here
             }
             this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
             this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),' ');
@@ -323,8 +346,6 @@ class SWListingDisplayController{
 
         if(this.multiselectValues && this.multiselectValues.length){
             //select all owned ids
-            console.log('swListingDisplay');
-            console.log(this.multiselectValues);
             angular.forEach(this.multiselectValues,(value)=>{
                 this.selectionService.addSelection(this.name,value);
             });
@@ -525,7 +546,7 @@ class SWListingDisplayController{
             }
             var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
             if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                column.type = metadata.hb_formattype;
+                column.type = metadata.hb_formatType;
             } else { 
                 column.type = "none";
             }
@@ -534,8 +555,11 @@ class SWListingDisplayController{
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
                 
                 if(parsedProperties && parsedProperties.length){
-              
-                    this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    if(this.collectionConfigs.length == 0){
+                        this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    } else { 
+                        //Multi Collection Config
+                    }
                 }
             } else { 
                 column.tooltip = '';
@@ -543,25 +567,36 @@ class SWListingDisplayController{
             if(angular.isDefined(column.queryString)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
                 if(parsedProperties && parsedProperties.length){
-                    this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    if(this.collectionConfigs.length == 0){
+                        this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    } else { 
+                         //Multi Collection Config
+                    }
                 }
             }
             this.columnOrderBy(column);
             
-            
-            this.collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
+            if(this.collectionConfigs.length == 0){
+                this.collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
+            } else { 
+                //Multi Collection Config
+            }
         });
         //if the passed in collection has columns perform some formatting
         if(this.hasCollectionPromise){
             //assumes alias formatting from collectionConfig
-            angular.forEach(this.collectionConfig.columns, (column)=>{
+            if(this.collectionConfigs.length == 0){
+                angular.forEach(this.collectionConfig.columns, (column)=>{
 
-                var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
-                column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-                if(angular.isUndefined(column.isVisible)){
-                    column.isVisible = true;
-                }
-            });
+                    var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
+                    column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+                    if(angular.isUndefined(column.isVisible)){
+                        column.isVisible = true;
+                    }
+                });
+            } else { 
+                 //Multi Collection Config
+            }
         }
     };
     
@@ -585,19 +620,26 @@ class SWListingDisplayController{
     };
     
     public toggleOrderBy = (column) => {
-        this.collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+        if(this.collectionConfigs.length == 0){
+            this.collectionConfig.toggleOrderBy(column.propertyIdentifier, true);
+        } else {
+            //multicollection logic here
+        }
         this.getCollection();
     };
     
     public columnOrderBy = (column) => {
         var isfound = false;
-        
-        angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
-             if(column.propertyIdentifier == orderBy.propertyIdentifier){
-                 isfound = true;
-                   this.orderByStates[column.propertyIdentifier] = orderBy.direction;
-             }
-        });
+        if(this.collectionConfigs.length == 0){
+            angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
+                if(column.propertyIdentifier == orderBy.propertyIdentifier){
+                    isfound = true;
+                    this.orderByStates[column.propertyIdentifier] = orderBy.direction;
+                }
+            });
+        } else { 
+            //multicollection logic here
+        }
         if(!isfound){
             this.orderByStates[column.propertyIdentifier] = '';
         }
@@ -606,13 +648,16 @@ class SWListingDisplayController{
     
     public columnOrderByIndex = (column) =>{
         var isfound = false;
-        
-        angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
-             if(column.propertyIdentifier == orderBy.propertyIdentifier){
-                 isfound = true;
-                   this.orderByIndices[column.propertyIdentifier] = index + 1;
-             }
-        });
+        if(this.collectionConfigs.length == 0){
+            angular.forEach(this.collectionConfig.orderBy, (orderBy, index)=>{
+                if(column.propertyIdentifier == orderBy.propertyIdentifier){
+                    isfound = true;
+                    this.orderByIndices[column.propertyIdentifier] = index + 1;
+                }
+            });
+        } else {
+            //multicollection logic here
+        }
         if(!isfound){
             this.orderByIndices[column.propertyIdentifier] = '';
         }
@@ -674,24 +719,26 @@ class SWListingDisplayController{
     };
 
     public exportCurrentList =(selection:boolean=false)=>{
-
-        var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
-        if (selection && !angular.isUndefined(this.selectionService.getSelections(this.name))
-            && (this.selectionService.getSelections(this.name).length > 0)) {
-            exportCollectionConfig.filterGroups[0].filterGroup = [
-                {
-                    "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
-                    "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
-                    "comparisonOperator": (this.allSelected) ? "not in":"in",
-                    "value": this.selectionService.getSelections(this.name).join(),
-                    "displayValue": this.selectionService.getSelections(this.name).join(),
-                    "ormtype": "string",
-                    "fieldtype": "id",
-                    "conditionDisplay": "In List"
-                }
-            ];
+        if(this.collectionConfigs.length == 0){
+            var exportCollectionConfig = angular.copy(this.collectionConfig.getCollectionConfig());
+            if (selection && !angular.isUndefined(this.selectionService.getSelections(this.name))
+                && (this.selectionService.getSelections(this.name).length > 0)) {
+                exportCollectionConfig.filterGroups[0].filterGroup = [
+                    {
+                        "displayPropertyIdentifier": this.rbkeyService.getRBKey("entity."+exportCollectionConfig.baseEntityName.toLowerCase()+"."+this.exampleEntity.$$getIDName().toLowerCase()),
+                        "propertyIdentifier": exportCollectionConfig.baseEntityAlias + "."+this.exampleEntity.$$getIDName(),
+                        "comparisonOperator": (this.allSelected) ? "not in":"in",
+                        "value": this.selectionService.getSelections(this.name).join(),
+                        "displayValue": this.selectionService.getSelections(this.name).join(),
+                        "ormtype": "string",
+                        "fieldtype": "id",
+                        "conditionDisplay": "In List"
+                    }
+                ];
+            }
+        } else { 
+            //multiCollectionConfig logic 
         }
-
         $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
         $('#formExport')
             .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
@@ -724,11 +771,15 @@ class SWListingDisplayController{
     };
 }
 
-class SWListingDisplay implements ng.IDirective{
+class SWMultiListingDisplay implements ng.IDirective{
 
     public restrict:string = 'E';
     public scope = {};
-    public transclude=true;
+    public transclude={
+        columns:"?swListingColumns", 
+        collectionConfigs:"?swCollectionConfigs"
+    };
+    public priority=0; 
     public bindToController={
 
             isRadio:"=?",
@@ -827,15 +878,15 @@ class SWListingDisplay implements ng.IDirective{
             hasSearch:"=?",
             hasActionBar:"=?"
     };
-    public controller=SWListingDisplayController;
-    public controllerAs="swListingDisplay";
+    public controller=SWMultiListingDisplayController;
+    public controllerAs="SWMultiListingDisplay";
     public templateUrl;
     
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             corePartialsPath,
             hibachiPathBuilder
-        ) => new SWListingDisplay(
+        ) => new SWMultiListingDisplay(
             corePartialsPath,
             hibachiPathBuilder
         );
@@ -856,7 +907,7 @@ class SWListingDisplay implements ng.IDirective{
 
 }
 export{
-    SWListingDisplay
+    SWMultiListingDisplay
 }
 
 
