@@ -3,7 +3,9 @@
 class SWCollectionConfigController{
     public filters = []; 
     public columns = []; 
-    public collectionConfig;
+    public collectionConfig:any;
+    public collectionConfigProperty:string;
+    public multiCollectionConfigProperty:string;
     
     //@ngInject
     constructor(
@@ -21,7 +23,8 @@ class SWCollectionConfig implements ng.IDirective{
         entityName:"@",
         allRecords:"@?",
         parentDirectiveControllerAsName:"@",
-        collectionConfigProperty:"@?"
+        collectionConfigProperty:"@?",
+        multiCollectionConfigProperty:"@?"
     };
     public controller=SWCollectionConfigController;
     public controllerAs="swCollectionConfig";
@@ -89,7 +92,15 @@ class SWCollectionConfig implements ng.IDirective{
                         newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
                 }); 
                 if(angular.isDefined(parentDirective)){
-                    parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+                    if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
+                        && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
+                    ){
+                        parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
+                    } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
+                        parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+                    } else { 
+                        throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
+                    }
                 }
             },
             post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}
