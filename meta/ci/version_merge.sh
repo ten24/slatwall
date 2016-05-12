@@ -72,11 +72,6 @@ elif [ $mergedFrom != "master" ] && [ $CIRCLE_BRANCH = "develop" ]; then
   echo $newVersion > version.txt.cfm
   echo "Updated $version -> $newVersion"
 
-  # ability to push up BE
-  git archive --format=zip HEAD > slatwall-be.zip
-  md5sum slatwall-be.zip > slatwall-be.md5.txt
-  aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
-  aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
 fi
 
 # Find out if any files changed as part of this build
@@ -113,6 +108,14 @@ else
 
       # Push Tag to github
       git push origin $newVersion
+    fi
+
+    # If this is the develop branch then we can push up BE Release to S3
+    if [ $CIRCLE_BRANCH = "develop" ]; then
+      git archive --format=zip HEAD > slatwall-be.zip
+      md5sum slatwall-be.zip > slatwall-be.md5.txt
+      aws s3 cp slatwall-be.zip s3://slatwall-releases/slatwall-be.zip
+      aws s3 cp slatwall-be.md5.txt s3://slatwall-releases/slatwall-be.md5.txt
     fi
 fi
 
