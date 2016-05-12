@@ -329,6 +329,10 @@ body.s-login-screen .form-group {
     padding: 0px /*Remove for responsive*/;
   }
 }
+sw-listing-display {
+  display: inline-block;
+  width: 100%;
+}
 .input-xs {
   height: 22px;
   padding: 2px 10px;
@@ -512,7 +516,7 @@ table th {
   font-size: 14px;
   color: #666;
   margin-bottom: 0px;
-  margin-top: 5px;
+  margin-top: 8px;
   margin-left: 6px;
 }
 .s-table-alternate-title {
@@ -2746,6 +2750,9 @@ tabel .s-table-header {
   position: relative;
   top: 3px;
   width: 13px;
+}
+.s-table-header-nav .s-table-view-options .s-table-action {
+  margin-top: 5px;
 }
 .s-select-wrapper select {
   -webkit-appearance: none;
@@ -5373,7 +5380,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-select-list-wrapper .s-input-btn span,
 .s-select-list-wrapper .s-input-btn i {
   position: absolute;
-  top: 8px;
+  top: 9px;
   right: 8px;
   height: 14px;
   margin: auto;

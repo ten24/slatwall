@@ -86,6 +86,7 @@
 /// <reference path="../src/core/services/hibachipathbuilder.ts" />
 /// <reference path="../src/core/services/hibachiservice.ts" />
 /// <reference path="../src/core/services/hibachiservicedecorator.ts" />
+/// <reference path="../src/core/services/localstorageservice.ts" />
 /// <reference path="../src/core/services/metadataservice.ts" />
 /// <reference path="../src/core/services/observerservice.ts" />
 /// <reference path="../src/core/services/publicservice.ts" />
