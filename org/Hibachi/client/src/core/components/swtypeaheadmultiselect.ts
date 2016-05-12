@@ -114,7 +114,6 @@ class SWTypeaheadMultiselect implements ng.IDirective{
                 } else {
                     $scope.swTypeaheadMultiselect.viewFunction = false; 
                 }
-                console.log("william",$scope);
             },
             post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 
