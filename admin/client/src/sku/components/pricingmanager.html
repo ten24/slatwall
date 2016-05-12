@@ -14,37 +14,37 @@
                     data-has-action-bar="false"
                     data-multiselect-field-name="placeholder"
                                 >
-                <sw-listing-column data-property-identifier="skuDefinition"></sw-listing-column>
-                <sw-listing-column data-property-identifier="skuCode"></sw-listing-column>
-                <sw-listing-column data-property-identifier="currencyCode"></sw-listing-column>
-                <sw-listing-column data-property-identifier="calculatedQATS"></sw-listing-column>
-                <sw-listing-column
-				    data-property-identifier="skuID"
-				    data-cell-view="swImageDetailModalLauncher"
-		        >
-                </sw-listing-column>
-                 <sw-listing-column
-				    data-property-identifier="price"
-				    data-cell-view="swSkuPriceSingleEdit"
-                    data-cell-scope="{'swSkuPriceSingleEdit':{'skuId':'102884f951c510620151c571cb020122'}}"
-		        >
-                </sw-listing-column>
-                
-                <!-- blank column coming from somewhere 
-                <sw-listing-column>
-                    <sw-collection-config 
-                        data-entity-name="Sku"
-                        data-parent-directive-controller-as-name="swListingDisplay"
-                        data-collection-config-property="collectionConfig"
-                        data-all-records="true"
-                    >
-                        <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
-                        <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
-                        <sw-collection-filter data-property-identifier="sku.product.productID" data-comparison-operator="=" data-comparison-value="swPricingManager.productId"></sw-collection-filter>
-                    </sw-collection-config>
-                </sw-listing-column>-->
-                
+                    <sw-listing-columns>
+                        <sw-listing-column data-property-identifier="skuDefinition"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="skuCode"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="currencyCode"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="calculatedQATS"></sw-listing-column>
+                        <sw-listing-column
+                            data-property-identifier="skuID"
+                            data-cell-view="swImageDetailModalLauncher"
+                        >
+                        </sw-listing-column>
+                        <sw-listing-column
+                            data-property-identifier="price"
+                            data-cell-view="swSkuPriceSingleEdit"
+                            data-cell-scope="{'swSkuPriceSingleEdit':{'skuId':'102884f951c510620151c571cb020122'}}"
+                        >
+                        </sw-listing-column>
+                    </sw-listing-columns>
+                    
+                    <sw-collection-configs>
+                        <sw-collection-config 
+                            data-entity-name="Sku"
+                            data-parent-directive-controller-as-name="swListingDisplay"
+                            data-collection-config-property="collectionConfig"
+                            data-all-records="true"
+                        >
+                            <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
+                            <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
+                            <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
+                            <sw-collection-filter data-property-identifier="sku.product.productID" data-comparison-operator="=" data-comparison-value="swPricingManager.productId"></sw-collection-filter>
+                        </sw-collection-config>
+                    </sw-collection-configs>
             </sw-listing-display>
                 
                <!-- MOCK BELOW --> 

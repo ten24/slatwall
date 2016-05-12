@@ -46,6 +46,7 @@ class SWPricingManager implements ng.IDirective{
         return directive;
     }
     
+    // @ngInject
     constructor(
         private $hibachi, 
 		private skuPartialsPath,

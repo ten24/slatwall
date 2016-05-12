@@ -725,7 +725,10 @@ class SWListingDisplay implements ng.IDirective{
 
     public restrict:string = 'E';
     public scope = {};
-    public transclude=true;
+    public transclude={
+        columns:"?swListingColumns", 
+        collectionConfigs:"?swCollectionConfigs"
+    };
     public priority=0; 
     public bindToController={
 

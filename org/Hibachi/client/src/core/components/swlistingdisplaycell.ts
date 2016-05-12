@@ -66,7 +66,7 @@ class SWListingDisplayCellController{
 
         var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplaycell.html';
         if(this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary'){
-            templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplayselectablecellexpandable.html';
+            //templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplayselectablecellexpandable.html';
         }
 
         if(!this.swListingDisplay.expandable || !this.column.tdclass || this.column.tdclass !== 'primary'){
