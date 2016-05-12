@@ -2,6 +2,7 @@
 FROM lucee/lucee4:latest
 MAINTAINER Greg Moser, greg.moser@ten24web.com
 
+RUN apt-get clean
 RUN apt-get update
 RUN apt-get install -y uuid-runtime
 RUN apt-get install -y ant
