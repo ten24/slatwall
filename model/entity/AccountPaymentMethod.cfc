@@ -132,10 +132,16 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	public boolean function isExpired(){
 		if(!isNull(this.getExpirationMonth()) && !isNull(this.getExpirationYear())){
-			if(datePart("yyyy", now()) < this.getExpirationYear()){
+			var expirationYearAsInteger =  LSParseNumber(this.getExpirationYear());
+			var expirationMonthAsInteger = LSParseNumber(this.getExpirationMonth());
+			var currentYear = right(year(now()),2);
+			var currentMonth = month(now());
+
+			if(currentYear < expirationYearAsInteger){
 				return false;
 			} else {
-				return datePart("m", now()) >= this.getExpirationMonth() && datePart("yyyy", now()) == this.getExpirationYear();
+				return currentMonth >= expirationMonthAsInteger
+					&& currentYear == expirationYearAsInteger;
 			}
 		} else {
 			return false;
@@ -414,7 +420,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 				rep = listAppend(rep, " #getGiftCardNumber()#", "|");
 			}
 		}
-		if(this.isExpired()){
+		if(isExpired()){
 			rep = rep & ' (' & rbkey('define.expired') & ')';
 		}
 		return rep;
