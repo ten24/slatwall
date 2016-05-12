@@ -72,16 +72,32 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		return "http://www.fedex.com/Tracking?tracknumber_list=${trackingNumber}";
 	}
 	
-	public any function getRates(required any requestBean) {
-		
-		// Build Request XML
+	public any function getProcessShipmentRequestXmlPacket(required any requestBean){
 		var xmlPacket = "";
 		
 		savecontent variable="xmlPacket" {
-			include "RatesRequestTemplate.cfm";
+			include "ProcessShipmentRequestTemplate.cfm";
         }
+        return xmlPacket;
+	}
+	
+	public any function generateShippingLabel(required any requestBean){
+		// Build Request XML
+		var xmlPacket = getProcessShipmentRequestXmlPacket(arguments.requestBean);
         
-        // Setup Request to push to FedEx
+        var xmlResponse = getXMLResponse(xmlPacket);
+        
+        var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
+        return responseBean;
+	}
+	
+	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
+		var responseBean = {};
+		return responseBean;
+	}
+	
+	private string function getXMLResponse(string xmlPacket){
+		// Setup Request to push to FedEx
         var httpRequest = new http();
         httpRequest.setMethod("POST");
 		httpRequest.setPort("443");
@@ -92,38 +108,53 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 			httpRequest.setUrl("https://gateway.fedex.com/xml");
 		}
 		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=xmlPacket);
+		httpRequest.addParam(type="XML", name="name",value=arguments.xmlPacket);
 		
-		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-		
+		return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+	}
+	
+	private any function getShippingRatesResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
-		responseBean.setData(xmlResponse);
+		responseBean.setData(arguments.xmlResponse);
 		
-		if(isDefined('xmlResponse.Fault')) {
+		if(isDefined('arguments.xmlResponse.Fault')) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
 			// Log all messages from FedEx into the response bean
-			for(var i=1; i<=arrayLen(xmlResponse.RateReply.Notifications); i++) {
+			for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.Notifications); i++) {
 				responseBean.addMessage(
-					messageName=xmlResponse.RateReply.Notifications[i].Code.xmltext,
-					message=xmlResponse.RateReply.Notifications[i].Message.xmltext
+					messageName=arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext,
+					message=arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext
 				);
-				if(FindNoCase("Error", xmlResponse.RateReply.Notifications[i].Severity.xmltext)) {
-					responseBean.addError(xmlResponse.RateReply.Notifications[i].Code.xmltext, xmlResponse.RateReply.Notifications[i].Message.xmltext);
+				if(FindNoCase("Error", arguments.xmlResponse.RateReply.Notifications[i].Severity.xmltext)) {
+					responseBean.addError(arguments.xmlResponse.RateReply.Notifications[i].Code.xmltext, arguments.xmlResponse.RateReply.Notifications[i].Message.xmltext);
 				}
 			}
 			
 			if(!responseBean.hasErrors()) {
-				for(var i=1; i<=arrayLen(xmlResponse.RateReply.RateReplyDetails); i++) {
+				for(var i=1; i<=arrayLen(arguments.xmlResponse.RateReply.RateReplyDetails); i++) {
 					responseBean.addShippingMethod(
-						shippingProviderMethod=xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
-						totalCharge=xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext
+						shippingProviderMethod=arguments.xmlResponse.RateReply.RateReplyDetails[i].ServiceType.xmltext,
+						totalCharge=arguments.xmlResponse.RateReply.RateReplyDetails[i].RatedShipmentDetails.ShipmentRateDetail.TotalNetCharge.Amount.xmltext
 					);
 				}
 			}
 		}
+	}
+	
+	public any function getRates(required any requestBean) {
+		
+		// Build Request XML
+		var xmlPacket = "";
+		
+		savecontent variable="xmlPacket" {
+			include "RatesRequestTemplate.cfm";
+        }
+        var XmlResponse = setupRequest(xmlPacket);
+        var responseBean = getShippingRatesResponseBean(XmlResponse);
+        
 		
 		return responseBean;
 	}
