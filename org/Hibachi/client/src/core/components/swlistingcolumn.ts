@@ -89,8 +89,8 @@ class SWListingColumn implements ng.IDirective{
             column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;
         }
         //TEMP OVERRIDES for TEMP multilisting directive
-        if(angular.isDefined(scope.$parent.swMultiListingDisplay)){
-            var listingDisplayScope = scope.$parent.swMultiListingDisplay;
+        if(angular.isDefined(scope.$parent.$parent.swMultiListingDisplay)){
+             var listingDisplayScope = scope.$parent.$parent.swMultiListingDisplay;
         }else if(angular.isDefined(scope.$parent.swListingDisplay)){
              var listingDisplayScope = scope.$parent.swListingDisplay;
         }else {

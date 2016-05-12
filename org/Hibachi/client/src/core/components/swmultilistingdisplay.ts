@@ -35,6 +35,8 @@ class SWMultiListingDisplayController{
     public multiselectIdPaths;
     public multiselectPropertyIdentifier;
     public multiselectValues;
+    public multipleCollectionDeffered:any;
+    public multipleCollectionPromise:any;
     public norecordstext;
     public orderBys = [];
     public orderByStates = {};
@@ -79,9 +81,15 @@ class SWMultiListingDisplayController{
         public observerService,
         public rbkeyService
     ){
+        //This multiple collection logic could probably be in link too
+        this.multipleCollectionDeffered = $q.defer();
+        this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
         this.initialSetup();
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
+        });
+        this.multipleCollectionPromise.then(()=>{
+            //now do the intial setup
         });
     }
 
@@ -881,7 +889,7 @@ class SWMultiListingDisplay implements ng.IDirective{
             hasActionBar:"=?"
     };
     public controller=SWMultiListingDisplayController;
-    public controllerAs="SWMultiListingDisplay";
+    public controllerAs="swMultiListingDisplay";
     public templateUrl;
     
     public static Factory(){

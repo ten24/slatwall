@@ -111,6 +111,7 @@ class SWCollectionConfig implements ng.IDirective{
                 ){
                     console.log("multicc pushing to", parentDirective)
                     parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
+                    parentDirective.hasCollectionNewCollectionConfig(); 
                 } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
                     parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
                 } else { 
