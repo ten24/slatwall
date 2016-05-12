@@ -3396,6 +3396,7 @@ tabel .s-table-header {
 .s-table-inner-nav .s-search-wrapper {
   display: inline-block;
   width: 100%;
+  position: relative;
 }
 .s-table-inner-nav .s-display-options {
   position: relative;
@@ -4476,7 +4477,6 @@ a[data-toggle="collapse"] {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background-color: #428bca;
-  border: none !important;
 }
 .dropdown-menu li a.btn-disabled {
   background: none !important;
