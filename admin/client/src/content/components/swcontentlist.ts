@@ -24,7 +24,8 @@ class SWContentListController{
         public $hibachi,
         public paginationService,
         public observerService,
-        public collectionConfigService
+        public collectionConfigService,
+        public localStorageService
     ){
             this.openRoot = true;
             this.$log.debug('slatwallcontentList init');
@@ -43,6 +44,11 @@ class SWContentListController{
             this.loadingCollection = false;
 
             this.selectedSite;
+
+            if(this.localStorageService.hasItem('selectedSiteOption')){
+                this.selectedSite = this.localStorageService.getItem('selectedSiteOption');
+            }
+
             this.orderBy;
             var orderByConfig;
 
@@ -195,7 +201,7 @@ class SWContentListController{
                     this.$timeout(()=>{
                         this.collection = value;
                         this.collection.collectionConfig = this.collectionConfig;
-                        
+
                         this.firstLoad = true;
                         this.loadingCollection = false;
                     });
@@ -205,10 +211,10 @@ class SWContentListController{
             //this.getCollection(false);
 
             this.loadingCollection = false;
-            
+
             this.searchCollection = ()=>{
 
-               
+
                $log.debug('search with keywords');
                $log.debug(this.keywords);
                $('.childNode').remove();
@@ -223,7 +229,8 @@ class SWContentListController{
 
 
         var siteChanged = (selectedSiteOption)=>{
-            this.selectedSite = selectedSiteOption;
+            this.localStorageService.setItem('selectedSiteOption',selectedSiteOption);
+            this.selectedSite = this.localStorageService.getItem('selectedSite');
             this.openRoot = true;
             this.getCollection();
         }
