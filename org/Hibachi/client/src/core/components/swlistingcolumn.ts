@@ -88,11 +88,21 @@ class SWListingColumn implements ng.IDirective{
             column.aggregate = scope.swListingColumn.aggregate;
             column.aggregate.propertyIdentifier = scope.swListingColumn.propertyIdentifier;
         }
-        if(this.utilityService.ArrayFindByPropertyValue(scope.$parent.swListingDisplay.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+        //TEMP OVERRIDES for TEMP multilisting directive
+        if(angular.isDefined(scope.$parent.swMultiListingDisplay)){
+            var listingDisplayScope = scope.$parent.swMultiListingDisplay;
+        }else if(angular.isDefined(scope.$parent.swListingDisplay)){
+             var listingDisplayScope = scope.$parent.swListingDisplay;
+        }else {
+            throw("listing display scope not available to sw-listing-column")
+        }
+        
+        if(this.utilityService.ArrayFindByPropertyValue(listingDisplayScope.columns,'propertyIdentifier',column.propertyIdentifier) === -1){
+            console.log("whitewhale", scope)
             if(column.aggregate){
-                scope.$parent.swListingDisplay.aggregates.unshift(column.aggregate);
+                listingDisplayScope.aggregates.unshift(column.aggregate);
             }else{
-                scope.$parent.swListingDisplay.columns.unshift(column);
+                listingDisplayScope.columns.unshift(column);
             }
         }
     }

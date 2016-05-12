@@ -44,7 +44,7 @@ import {SWExpandableRecord} from "./components/swexpandablerecord";
 import {SWGravatar} from "./components/swgravatar";
 import {SWListingDisplay} from "./components/swlistingdisplay";
 //TEMP directive to prevent conflicts with ongoing listing display work
-import {SWMultiListingDisplay} from "./components/swMultiListingDisplay"; 
+import {SWMultiListingDisplay} from "./components/swmultilistingdisplay"; 
 import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";

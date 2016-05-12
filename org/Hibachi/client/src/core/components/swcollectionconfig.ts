@@ -9,6 +9,7 @@ class SWCollectionConfigController{
     
     //@ngInject
     constructor(
+        public $transclude,
         public collectionConfigService
     ){
         console.log("multiccCONST2")
@@ -40,22 +41,18 @@ class SWCollectionConfig implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            $transclude,
             collectionConfigService
         )=>new SWCollectionConfig(
-            $transclude,
             collectionConfigService
         );
         directive.$inject = [
-            '$transclude',
             'collectionConfigService'
         ];
         return directive;
     }
     
-    //@ngInject
+    // @ngInject
     constructor( 
-        public $transclude,
         public collectionConfigService
     ){
         console.log("multiccCONST1")
@@ -97,7 +94,7 @@ class SWCollectionConfig implements ng.IDirective{
             }   
             
             //populate the columns and the filters
-            this.$transclude(scope,()=>{});
+            //this.$transclude(scope,()=>{});
             
             angular.forEach(scope.swCollectionConfig.columns, (column)=>{
                     newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);

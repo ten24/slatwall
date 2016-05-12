@@ -86,6 +86,7 @@ class SWMultiListingDisplayController{
     }
 
     private initialSetup = () => {
+        /*
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = true;    
         }
@@ -133,7 +134,7 @@ class SWMultiListingDisplayController{
         console.log("cellScope", "listing display transcluding now")
         this.$transclude(this.$scope,()=>{});
         console.log("multicc",this.collectionConfigs);
-        
+        /*
         //add filterGroups
         angular.forEach(this.filterGroups, (filterGroup)=>{
             this.collectionConfig.addFilterGroup(filterGroup);
@@ -198,6 +199,7 @@ class SWMultiListingDisplayController{
         }
         this.paginator.getCollection = this.getCollection;
         //this.getCollection();
+        */
     };
 
     private setupDefaultCollectionInfo = () =>{
@@ -226,7 +228,7 @@ class SWMultiListingDisplayController{
                 this.collectionConfig.getEntity().then((data)=>{
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
-                    this.setupColumns();
+                    //this.setupColumns();
                     this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
                     this.paginator.setPageRecordsInfo(this.collectionData);
                 });
@@ -776,8 +778,8 @@ class SWMultiListingDisplay implements ng.IDirective{
     public restrict:string = 'E';
     public scope = {};
     public transclude={
-        columns:"?swListingColumns", 
-        collectionConfigs:"?swCollectionConfigs"
+        columns:"swListingColumns", 
+        collectionConfigs:"swCollectionConfigs"
     };
     public priority=0; 
     public bindToController={
@@ -902,7 +904,7 @@ class SWMultiListingDisplay implements ng.IDirective{
         public hibachiPathBuilder
     ){
         this.corePartialsPath = corePartialsPath;
-        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplay.html';
+        this.templateUrl = hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'multilistingdisplay.html';
     }
 
 }
