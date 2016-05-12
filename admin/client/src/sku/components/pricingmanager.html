@@ -6,7 +6,6 @@
            <sw-tab-content data-name="basic">               
                <!-- Attempting to incorporate needs into existing listing -->
                <sw-listing-display
-                    data-collection="'Sku'"
                     data-edit="true"
                     data-has-search="true"
                     data-is-angular-route="false"
@@ -36,13 +35,22 @@
                         <sw-collection-config 
                             data-entity-name="Sku"
                             data-parent-directive-controller-as-name="swListingDisplay"
-                            data-collection-config-property="collectionConfig"
+                            data-multi-collection-config-property="collectionConfigs"
                             data-all-records="true"
                         >
                             <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
                             <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
                             <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
                             <sw-collection-filter data-property-identifier="sku.product.productID" data-comparison-operator="=" data-comparison-value="swPricingManager.productId"></sw-collection-filter>
+                        </sw-collection-config>
+                        <sw-collection-config 
+                            data-entity-name="SkuBundle"
+                            data-parent-directive-controller-as-name="swListingDisplay"
+                            data-multi-collection-config-property="collectionConfigs"
+                            data-all-records="true"
+                        >
+                            <sw-collection-column data-property-identifier="skuBundleID"></sw-collection-column>
+                            <sw-collection-filter data-property-identifier="skuBundle.product.productID" data-comparison-operator="=" data-comparison-value="swPricingManager.productId"></sw-collection-filter>
                         </sw-collection-config>
                     </sw-collection-configs>
             </sw-listing-display>
