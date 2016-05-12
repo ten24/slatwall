@@ -1916,18 +1916,18 @@
 	/// <reference path='../../../typings/tsd.d.ts' />
 	var HibachiInterceptor = (function () {
 	    //@ngInject
-	    function HibachiInterceptor($location, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder, localStorageService) {
+	    function HibachiInterceptor($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) {
 	        var _this = this;
 	        this.$location = $location;
 	        this.$q = $q;
 	        this.$log = $log;
 	        this.$injector = $injector;
+	        this.localStorageService = localStorageService;
 	        this.alertService = alertService;
 	        this.appConfig = appConfig;
 	        this.dialogService = dialogService;
 	        this.utilityService = utilityService;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
-	        this.localStorageService = localStorageService;
 	        this.urlParam = null;
 	        this.authHeader = 'Authorization';
 	        this.authPrefix = 'Bearer ';
@@ -2028,18 +2028,18 @@
 	        this.dialogService = dialogService;
 	        this.utilityService = utilityService;
 	        this.hibachiPathBuilder = hibachiPathBuilder;
-	        this.localStorageService = localStorage;
+	        this.localStorageService = localStorageService;
 	    }
 	    HibachiInterceptor.Factory = function () {
-	        var eventHandler = function ($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) {
-	            return new HibachiInterceptor($location, $window, $q, $log, $injector, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder);
+	        var eventHandler = function ($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder) {
+	            return new HibachiInterceptor($location, $q, $log, $injector, localStorageService, alertService, appConfig, dialogService, utilityService, hibachiPathBuilder);
 	        };
 	        eventHandler.$inject = [
 	            '$location',
-	            '$window',
 	            '$q',
 	            '$log',
 	            '$injector',
+	            'localStorageService',
 	            'alertService',
 	            'appConfig',
 	            'dialogService',
@@ -3606,12 +3606,20 @@
 	        var _this = this;
 	        this.$window = $window;
 	        this.hasItem = function (key) {
-	            return _this.$window.localStorage.getItem(key) && _this.$window.localStorage.getItem(key) !== "undefined";
+	            console.log('hasKey', key);
+	            console.log('hasitemValue', _this.$window.localStorage.getItem(key));
+	            return (_this.$window.localStorage.getItem(key)
+	                && _this.$window.localStorage.getItem(key) !== null
+	                && _this.$window.localStorage.getItem(key) !== "undefined");
 	        };
 	        this.getItem = function (key) {
-	            return _this.$window.localStorage.getItem(key);
+	            return angular.fromJson(_this.$window.localStorage.getItem(key));
 	        };
 	        this.setItem = function (key, data) {
+	            if (angular.isObject(data) || angular.isArray(data)) {
+	                data = angular.toJson(data);
+	            }
+	            console.log('setItem', data);
 	            _this.$window.localStorage.setItem(key, data);
 	        };
 	        this.$window = $window;
@@ -6498,10 +6506,16 @@
 	                    });
 	                };
 	                scope.getOptions();
-	                var selectFirstOption = function () {
-	                    scope.swOptions.selectOption(scope.swOptions.options[0]);
+	                var selectOption = function (option) {
+	                    console.log('selectOption', option);
+	                    if (option) {
+	                        scope.swOptions.selectOption(option);
+	                    }
+	                    else {
+	                        scope.swOptions.selectOption(scope.swOptions.options[0]);
+	                    }
 	                };
-	                observerService.attach(selectFirstOption, 'selectFirstOption', 'selectFirstOption');
+	                observerService.attach(selectOption, 'selectOption', 'selectOption');
 	                //use by ng-change to record changes
 	                scope.swOptions.selectOption = function (selectedOption) {
 	                    scope.swOptions.selectedOption = selectedOption;
@@ -16261,17 +16275,19 @@
 /* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
 	/// <reference path='../../typings/slatwallTypescript.d.ts' />
 	/// <reference path='../../typings/tsd.d.ts' />
+	//modules
+	var core_module_1 = __webpack_require__(11);
 	//services
-	"use strict";
 	//filters
 	//directives
 	var swcontentbasic_1 = __webpack_require__(151);
 	var swcontenteditor_1 = __webpack_require__(152);
 	var swcontentlist_1 = __webpack_require__(153);
 	var swcontentnode_1 = __webpack_require__(154);
-	var contentmodule = angular.module('hibachi.content', []).config(function () {
+	var contentmodule = angular.module('hibachi.content', [core_module_1.coremodule.name]).config(function () {
 	})
 	    .constant('contentPartialsPath', 'content/components/')
 	    .directive('swContentBasic', swcontentbasic_1.SWContentBasic.Factory())
@@ -16451,7 +16467,6 @@
 	            { display: 250, value: 250 }
 	        ];
 	        this.loadingCollection = false;
-	        this.selectedSite;
 	        if (this.localStorageService.hasItem('selectedSiteOption')) {
 	            this.selectedSite = this.localStorageService.getItem('selectedSiteOption');
 	        }
@@ -16550,7 +16565,8 @@
 	                columnsConfig.unshift(titlePathColumn);
 	            }
 	            //if we have a selected Site add the filter
-	            if (angular.isDefined(_this.selectedSite)) {
+	            if (_this.selectedSite && _this.selectedSite.siteID) {
+	                console.log('selectedSite', _this.selectedSite);
 	                var selectedSiteFilter = {
 	                    logicalOperator: "AND",
 	                    propertyIdentifier: "site.siteID",
@@ -16607,7 +16623,8 @@
 	        };
 	        var siteChanged = function (selectedSiteOption) {
 	            _this.localStorageService.setItem('selectedSiteOption', selectedSiteOption);
-	            _this.selectedSite = _this.localStorageService.getItem('selectedSite');
+	            _this.selectedSite = _this.localStorageService.getItem('selectedSiteOption');
+	            console.log('sso', _this.localStorageService.getItem('selectedSiteOption'));
 	            _this.openRoot = true;
 	            _this.getCollection();
 	        };
@@ -16618,7 +16635,11 @@
 	        };
 	        this.observerService.attach(sortChanged, 'sortByColumn', 'siteSorting');
 	        var optionsLoaded = function () {
-	            _this.observerService.notify('selectFirstOption');
+	            var option;
+	            if (_this.selectedSite) {
+	                option = _this.selectedSite;
+	            }
+	            _this.observerService.notify('selectOption', option);
 	        };
 	        this.observerService.attach(optionsLoaded, 'optionsLoaded', 'siteOptionsLoaded');
 	    }

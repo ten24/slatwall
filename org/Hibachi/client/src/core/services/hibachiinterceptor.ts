@@ -60,10 +60,10 @@ class HibachiInterceptor implements IInterceptor{
 		);
 		eventHandler.$inject = [
 			'$location',
-			'$window',
 			'$q',
 			'$log',
 			'$injector',
+			'localStorageService',
 			'alertService',
 			'appConfig',
 			'dialogService',
@@ -83,12 +83,12 @@ class HibachiInterceptor implements IInterceptor{
 		public $q:ng.IQService,
 		public $log:ng.ILogService,
 		public $injector:ng.auto.IInjectorService,
+		public localStorageService,
 		public alertService,
 		public appConfig:any,
 		public dialogService,
         public utilityService,
-        public hibachiPathBuilder,
-		public localStorageService
+        public hibachiPathBuilder
 	) {
         this.$location = $location;
 		this.$q = $q;
@@ -100,7 +100,7 @@ class HibachiInterceptor implements IInterceptor{
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
-		this.localStorageService = localStorage;
+		this.localStorageService = localStorageService;
     }
 
 	public request = (config): ng.IPromise<any> => {

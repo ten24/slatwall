@@ -43,7 +43,6 @@ class SWContentListController{
 
             this.loadingCollection = false;
 
-            this.selectedSite;
 
             if(this.localStorageService.hasItem('selectedSiteOption')){
                 this.selectedSite = this.localStorageService.getItem('selectedSiteOption');
@@ -151,7 +150,7 @@ class SWContentListController{
                     columnsConfig.unshift(titlePathColumn);
                 }
                 //if we have a selected Site add the filter
-                if(angular.isDefined(this.selectedSite)){
+                if(this.selectedSite && this.selectedSite.siteID){
                     var selectedSiteFilter = {
                         logicalOperator:"AND",
                         propertyIdentifier:"site.siteID",
@@ -229,8 +228,9 @@ class SWContentListController{
 
 
         var siteChanged = (selectedSiteOption)=>{
+
             this.localStorageService.setItem('selectedSiteOption',selectedSiteOption);
-            this.selectedSite = this.localStorageService.getItem('selectedSite');
+            this.selectedSite = this.localStorageService.getItem('selectedSiteOption');
             this.openRoot = true;
             this.getCollection();
         }
@@ -244,9 +244,14 @@ class SWContentListController{
         this.observerService.attach(sortChanged,'sortByColumn','siteSorting');
 
         var optionsLoaded = ()=>{
-            this.observerService.notify('selectFirstOption');
+            var option;
+            if(this.selectedSite){
+                option = this.selectedSite;
+            }
+            this.observerService.notify('selectOption',option);
 
         }
+
         this.observerService.attach(optionsLoaded,'optionsLoaded','siteOptionsLoaded');
 
 
