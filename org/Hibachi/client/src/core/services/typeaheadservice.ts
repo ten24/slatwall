@@ -20,7 +20,6 @@ class TypeaheadService{
         if(angular.isDefined(dataToReturn)){
             return dataToReturn;
         }
-        return false; 
     }
     
     //strips out dangerous directives that cause infinite compile errors
