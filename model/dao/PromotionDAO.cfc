@@ -2,58 +2,58 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
 
 --->
 <cfcomponent extends="HibachiDAO">
-	
+
 	<cffunction name="getActivePromotionRewards" returntype="Array" access="public">
 		<cfargument name="rewardTypeList" required="true" type="string" />
 		<cfargument name="promotionCodeList" required="true" type="string" />
 		<cfargument name="qualificationRequired" type="boolean" default="false" />
 		<cfargument name="promotionEffectiveDateTime" type="date" default="#now()#" />
-		
+
 		<cfset var noQualRequiredList = "" />
 		<cfif listFindNoCase(arguments.rewardTypeList,"fulfillment")>
 			<cfset noQualRequiredList = listAppend(noQualRequiredList, "fulfillment") />
@@ -61,7 +61,7 @@ Notes:
 		<cfif listFindNoCase(arguments.rewardTypeList,"order")>
 			<cfset noQualRequiredList = listAppend(noQualRequiredList, "order") />
 		</cfif>
-		
+
 		<cfset var hql = "SELECT spr FROM
 				SlatwallPromotionReward spr
 			  INNER JOIN FETCH
@@ -71,12 +71,12 @@ Notes:
 			WHERE
 				spr.rewardType IN (:rewardTypeList)
 			  and
-				(spp.startDateTime is null or spp.startDateTime < :promotionEffectiveDateTime) 
+				(spp.startDateTime is null or spp.startDateTime < :promotionEffectiveDateTime)
 			  and
 				(spp.endDateTime is null or spp.endDateTime > :promotionEffectiveDateTime)
 			  and
 				sp.activeFlag = :activeFlag" />
-		
+
 		<!--- If this query is a qualificationRequired request --->
 		<cfif arguments.qualificationRequired>
 
@@ -108,38 +108,38 @@ Notes:
 
 		<!--- Or if there are promotion codes then we have passed that pomotion code in --->
 		<cfif len(promotionCodeList)>
-			<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :promotionEffectiveDateTime) AND (c.endDateTime is null or c.endDateTime > :promotionEffectiveDateTime) )" />	
+			<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :promotionEffectiveDateTime) AND (c.endDateTime is null or c.endDateTime > :promotionEffectiveDateTime) )" />
 		</cfif>
 
 		<!--- End additional where --->
 		<cfset hql &= " )" />
-			
+
 		<cfset var params = {
 			promotionEffectiveDateTime = arguments.promotionEffectiveDateTime,
 			activeFlag = 1
 		} />
-		
+
 		<cfif arguments.qualificationRequired and len(noQualRequiredList)>
 			<cfset params.noQualRequiredList = listToArray(noQualRequiredList) />
 		</cfif>
-		
+
 		<cfif len(promotionCodeList)>
 			<cfset params.promotionCodeList = listToArray(arguments.promotionCodeList) />
 		</cfif>
-		
+
 		<cfset params.rewardTypeList = listToArray(arguments.rewardTypeList) />
-		
+
 		<cfreturn ormExecuteQuery(hql, params) />
 	</cffunction>
-	
+
 	<cffunction name="getPromotionPeriodUseCount" returntype="numeric" access="public">
 		<cfargument name="promotionPeriod" required="true" type="any" />
-		
+
 		<cfset var hqlParams = {} />
 		<cfset hqlParams.promotionID = arguments.promotionPeriod.getPromotion().getPromotionID() />
 		<cfset hqlParams.ostNotPlaced = "ostNotPlaced" />
-		
-		<cfset var hql = "SELECT count(pa.promotionAppliedID) as count 
+
+		<cfset var hql = "SELECT count(pa.promotionAppliedID) as count
 				FROM
 					SlatwallPromotionApplied pa
 				  LEFT JOIN
@@ -150,12 +150,12 @@ Notes:
 				  	oi.order oio
 				  LEFT JOIN
 				  	oio.orderStatusType oioost
-				  	
+
 				  LEFT JOIN
 				  	pa.order o
 				  LEFT JOIN
 				  	o.orderStatusType oost
-				  	
+
 				  LEFT JOIN
 				  	pa.orderFulfillment orderf
 				  LEFT JOIN
@@ -170,7 +170,7 @@ Notes:
 				  	(ofoost.systemCode is null or ofoost.systemCode != :ostNotPlaced)
 				  and
 					pap.promotionID = :promotionID" />
-					
+
 		<cfif not isNull(arguments.promotionPeriod.getStartDateTime())>
 			<cfset hqlParams.promotionPeriodStartDateTime = arguments.promotionPeriod.getStartDateTime() />
 			<cfset hql &= " and pa.createdDateTime > :promotionPeriodStartDateTime" />
@@ -179,21 +179,21 @@ Notes:
 			<cfset hqlParams.promotionPeriodEndDateTime = arguments.promotionPeriod.getEndDateTime() />
 			<cfset hql &= " and pa.createdDateTime < :promotionPeriodEndDateTime" />
 		</cfif>
-		
+
 		<cfset var results = ormExecuteQuery(hql, hqlParams) />
-		
+
 		<cfreturn results[1] />
 	</cffunction>
-	
+
 	<cffunction name="getPromotionPeriodAccountUseCount" returntype="numeric" access="public">
 		<cfargument name="promotionPeriod" required="true" type="any" />
 		<cfargument name="account" required="true" type="any" />
-		
+
 		<cfset var hqlParams = {} />
 		<cfset hqlParams.promotionID = arguments.promotionPeriod.getPromotion().getPromotionID() />
 		<cfset hqlParams.accountID = arguments.account.getAccountID() />
 		<cfset hqlParams.ostNotPlaced = "ostNotPlaced" />
-		
+
 		<cfset var hql = "SELECT count(pa.promotionAppliedID) as count
 				FROM
 					SlatwallPromotionApplied pa
@@ -205,14 +205,14 @@ Notes:
 				  	oio.orderStatusType oioost
 				  LEFT JOIN
 				  	oio.account oioa
-				  	
+
 				  LEFT JOIN
 				  	pa.order o
 				  LEFT JOIN
 				  	o.orderStatusType oost
 				  LEFT JOIN
 				  	o.account oa
-				  	
+
 				  LEFT JOIN
 				  	pa.orderFulfillment orderf
 				  LEFT JOIN
@@ -237,7 +237,7 @@ Notes:
 				  	(ofoost.systemCode is null or ofoost.systemCode != :ostNotPlaced)
 				  and
 					pa.promotion.promotionID = :promotionID" />
-					
+
 		<cfif not isNull(arguments.promotionPeriod.getStartDateTime())>
 			<cfset hqlParams.promotionPeriodStartDateTime = arguments.promotionPeriod.getStartDateTime() />
 			<cfset hql &= " and pa.createdDateTime > :promotionPeriodStartDateTime" />
@@ -245,16 +245,16 @@ Notes:
 		<cfif not isNull(arguments.promotionPeriod.getStartDateTime())>
 			<cfset hqlParams.promotionPeriodEndDateTime = arguments.promotionPeriod.getEndDateTime() />
 			<cfset hql &= " and pa.createdDateTime < :promotionPeriodEndDateTime" />
-		</cfif>			
-		
+		</cfif>
+
 		<cfset var results = ormExecuteQuery(hql, hqlParams) />
-		
+
 		<cfreturn results[1] />
 	</cffunction>
-	
+
 	<cffunction name="getPromotionCodeUseCount" returntype="numeric" access="public">
 		<cfargument name="promotionCode" required="true" type="any" />
-		
+
 		<cfset var results = ormExecuteQuery("SELECT count(o.orderID) as count FROM
 					SlatwallPromotionCode pc
 				  INNER JOIN
@@ -262,20 +262,20 @@ Notes:
 				WHERE
 					o.orderStatusType.systemCode != :ostNotPlaced
 				  AND
-				  	pc.promotionCodeID = :promotionCodeID	
+				  	pc.promotionCodeID = :promotionCodeID
 					", {
 						ostNotPlaced = "ostNotPlaced",
 						promotionCodeID = arguments.promotionCode.getPromotionCodeID()
 				}) />
-		
+
 		<cfreturn results[1] />
-		
+
 	</cffunction>
-	
+
 	<cffunction name="getPromotionCodeAccountUseCount" returntype="numeric" access="public">
 		<cfargument name="promotionCode" required="true" type="any" />
 		<cfargument name="account" required="true" type="any" />
-		
+
 		<cfset var results = ormExecuteQuery("SELECT count(o.orderID) as count
 				FROM
 					SlatwallPromotionCode pc
@@ -286,27 +286,27 @@ Notes:
 				  AND
 				  	pc.promotionCodeID = :promotionCodeID
 				  AND
-				  	o.account.accountID = :accountID	
+				  	o.account.accountID = :accountID
 					", {
 						ostNotPlaced = "ostNotPlaced",
 						promotionCodeID = arguments.promotionCode.getPromotionCodeID(),
 						accountID = arguments.account.getAccountID()
 				}) />
-		
+
 		<cfreturn results[1] />
 	</cffunction>
-	
+
 	<cffunction name="getPromotionCodeByPromotionCode" returntype="any" access="public">
 		<cfargument name="promotionCode" required="true" type="string" />
-		
+
 		<cfreturn ormExecuteQuery("SELECT pc FROM SlatwallPromotionCode pc WHERE LOWER(pc.promotionCode) = ?", [lcase(arguments.promotionCode)], true) />
 	</cffunction>
-	
+
 	<!--- function to return the calculated sales price based off of the price of the sku --->
 	<cffunction name="getSalePricePromotionRewardsQuery">
 		<cfargument name="productID" type="string">
 		<cfargument name="currencyCode" type="string">
-		
+
 		<cfset var noQualifierCurrentActivePromotionPeriods = "" />
 		<cfset var allDiscounts = "" />
 		<cfset var noQualifierDiscounts = "" />
@@ -316,22 +316,22 @@ Notes:
 		<cfset var timeNow = now() />
 		<cfset var salePromotionPeriodIDs = "" />
 		<cfset var defaultSkuCurrency=getHibachiScope().setting('skuCurrency') />
-		
+
 		<!--- get all of the Active Promotion Periods that don't have a qualifier --->
 		<cfset noQualifierCurrentActivePromotionPeriods= getNoQualifierCurrentActivePromotionPeriods(timeNow) >
-		
+
 		<cfloop query="noQualifierCurrentActivePromotionPeriods">
 			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
 		</cfloop>
-		
+
 		<cfif !structKeyExists(arguments,'currencyCode')>
 			<cfset arguments.currencyCode = "" />
 		</cfif>
-		
+
 		<!--- get allDiscounts at the sku level --->
 		<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
-		
-		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
+
+		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices --->
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
 
 		<!--- query to find the lowest salesPrice --->
@@ -344,7 +344,7 @@ Notes:
 			GROUP BY
 				skuID
 		</cfquery>
-		
+
 		<!--- query to get all the data for the lowest Sales Price --->
 		<cfquery name="skuResults" dbtype="query">
 			SELECT
@@ -364,14 +364,14 @@ Notes:
 			  and
 			    noQualifierDiscounts.salePrice = skuPrice.salePrice
 		</cfquery>
-		
-		<cfreturn skuResults /> 
+
+		<cfreturn skuResults />
 	</cffunction>
-	
+
 	<!--- function to return the calculated sales price based off of the price of the order items sku price--->
 	<cffunction name = "getOrderItemSalePricePromotionRewardsQuery">
 		<cfargument name="orderItem" type="any">
-		
+
 		<cfset var noQualifierCurrentActivePromotionPeriods = "" />
 		<cfset var allDiscounts = "" />
 		<cfset var noQualifierDiscounts = "" />
@@ -381,7 +381,7 @@ Notes:
 		<cfset var orderItemDiscountsQuery = "" />
 		<cfset var orderItemPrice = "" />
 		<cfset var orderItemResults = "" />
-		
+
 		<!--- get all of the Active Promotion Periods that don't have a qualifier --->
 		<cfset noQualifierCurrentActivePromotionPeriods = getNoQualifierCurrentActivePromotionPeriods(timeNow) >
 
@@ -391,17 +391,17 @@ Notes:
 
 		<!--- get allDiscounts at the sku level --->
 		<cfset allDiscounts = getAllDiscounts(arguments.orderItem.getSku().getProduct().getProductID(), timenow,arguments.orderItem.getOrder().getCurrencyCode())>
-		
-		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
+
+		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices --->
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
-		
+
 		<!--- Build a query to get the order Item information for a query of query --->
 		<cfset var orderItemDataQuery = queryNew("orderItemID, skuPrice, skuID", "varchar, decimal, varchar")>
-		<cfset queryAddRow(orderItemDataQuery, 1)> 
+		<cfset queryAddRow(orderItemDataQuery, 1)>
 		<cfset querySetCell(orderItemDataQuery, "orderItemID", #arguments.orderItem.getOrderItemID()#, 1 )>
 		<cfset querySetCell(orderItemDataQuery, "skuPrice", #arguments.orderItem.getSkuPrice()#, 1 )>
 		<cfset querySetCell(orderItemDataQuery, "skuID", #arguments.orderItem.getSku().getSkuID()#, 1 )>
-	
+
 		<!--- Query of Query to join noQualifierDiscounts with the orderItemDataQuery. It also recalculates salePrice based on the OrderItem Price --->
 		<cfquery name="orderItemDiscountsQuery" dbtype="query">
 			SELECT DISTINCT
@@ -416,21 +416,21 @@ Notes:
 				noQualifierDiscounts.promotionPeriodID,
 				noQualifierDiscounts.promotionID
 			FROM
-				noQualifierDiscounts, orderItemDataQuery 
+				noQualifierDiscounts, orderItemDataQuery
 			WHERE
 				orderItemDataQuery.skuID = noQualifierDiscounts.skuID
 		</cfquery>
-		
+
 		<cfloop query="orderItemDiscountsQuery">
 			<cfif orderItemDiscountsQuery.salePriceDiscountType EQ "amount">
 				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.amount, orderItemDiscountsQuery.currentRow )  >
 			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "amountOff">
-				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - orderItemDiscountsQuery.amount, orderItemDiscountsQuery.currentRow )>
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", precisionEvaluate(orderItemDiscountsQuery.originalPrice - orderItemDiscountsQuery.amount), orderItemDiscountsQuery.currentRow )>
 			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "percentageOff" >
-				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - ( orderItemDiscountsQuery.originalPrice * (orderItemDiscountsQuery.amount / 100) ), orderItemDiscountsQuery.currentRow )>
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", precisionEvaluate(orderItemDiscountsQuery.originalPrice - ( orderItemDiscountsQuery.originalPrice * (round(orderItemDiscountsQuery.amount / 100)*100)/100)), orderItemDiscountsQuery.currentRow )>
 			</cfif>
 		</cfloop>
-		
+
 		<!--- query to find the lowest salesPrice --->
 		<cfquery name="orderItemPrice" dbtype="query">
 			SELECT
@@ -441,7 +441,7 @@ Notes:
 			GROUP BY
 				orderItemID
 		</cfquery>
-		
+
 		<!--- query to get all the data for the lowest Sales Price --->
 		<cfquery name="orderItemResults" dbtype="query">
 			SELECT
@@ -460,17 +460,17 @@ Notes:
 			AND
 			    orderItemDiscountsQuery.salePrice = orderItemPrice.salePrice
 		</cfquery>
-		
+
 		<cfreturn orderItemResults >
 	</cffunction>
-	
-	
+
+
 	<!--- Function to get all Active Promotion Periods without qualifiers --->
 	<cffunction name="getNoQualifierCurrentActivePromotionPeriods" returntype="any" access="public">
 		<cfargument name="timeNow" type="date">
-		
+
 		<cfset var noQualifierCurrentActivePromotionPeriodQuery= "" />
-		
+
 		<cfquery name="noQualifierCurrentActivePromotionPeriodQuery">
 			SELECT
 				promotionPeriodID
@@ -489,39 +489,39 @@ Notes:
 			  AND
 			  	NOT EXISTS(SELECT promotionID FROM SwPromotionCode WHERE SwPromotionCode.promotionID = SwPromotion.promotionID)
 		</cfquery>
-		
+
 		<cfreturn noQualifierCurrentActivePromotionPeriodQuery>
 	</cffunction>
-	
+
       <!--- function to get all discount amount at the sku level --->
       <cffunction name="getAllDiscounts" returntype="any" access="public">
           <cfargument name="productID" type="string">
           <cfargument name="timeNow" type="date">
           <cfargument name="currencyCode" type="string">
-      
+
           <cfset var defaultSkuCurrency=getHibachiScope().setting('skuCurrency') />
           <cfset var allDiscountsQuery = "" />
           <cfquery name="allDiscountsQuery">
               <cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
-              SELECT 
+              SELECT
               skuID,
               originalPrice,
               discountLevel,
               salePriceDiscountType,
               CAST(CASE salePriceDiscountType
-                  WHEN 'percentageOff' THEN originalPrice - (originalPrice * (discountAmount / 100)) 
+                  WHEN 'percentageOff' THEN originalPrice - (originalPrice * (discountAmount / 100))
                   WHEN 'amount' THEN discountAmount
-                  WHEN 'amountOff' THEN (originalPrice - discountAmount) 
+                  WHEN 'amountOff' THEN (originalPrice - discountAmount)
               END as DECIMAL(19,2)) as salePrice,
               discountAmount as amount,
               roundingRuleID,
               salePriceExpirationDateTime,
               promotionPeriodID,
               promotionID
-              FROM (   
+              FROM (
                   SELECT combinedPromotionLevels.skuID,
                       CASE
-                          WHEN combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+                          WHEN combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
                               THEN COALESCE(skuCurrency.price,combinedPromotionLevels.originalPrice*skuConversionRate.conversionRate )
                           ELSE combinedPromotionLevels.originalPrice
                       END AS originalPrice,
@@ -549,7 +549,7 @@ Notes:
                       WHEN 'amount' THEN prSku.amount
                       WHEN 'amountOff' THEN SwSku.price - prSku.amount
                       WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prSku.amount / 100))
-                  END *100,0)/100 as salePrice,
+                  END * 100,0)/100 as salePrice,
                   prSku.roundingRuleID as roundingRuleID,
                   ppSku.endDateTime as salePriceExpirationDateTime,
                   ppSku.promotionPeriodID as promotionPeriodID,
@@ -557,7 +557,7 @@ Notes:
                   prSku.promotionRewardID as promotionRewardID,
                   prSku.amount as discountAmount,
                   COALESCE(SwSku.currencyCode,'#defaultSkuCurrency#') as skuCurrencyCode,
-                  COALESCE(prSku.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode 
+                  COALESCE(prSku.currencyCode,'#defaultSkuCurrency#') as prCurrencyCode
               FROM
                   SwSku
                 INNER JOIN
@@ -572,7 +572,7 @@ Notes:
                   (ppSku.endDateTime is null or ppSku.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
               <cfif structKeyExists(arguments, "productID")>
                 AND
-                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
               </cfif>
             UNION
               SELECT
@@ -585,7 +585,7 @@ Notes:
                       WHEN 'amount' THEN prProduct.amount
                       WHEN 'amountOff' THEN SwSku.price - prProduct.amount
                       WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProduct.amount / 100))
-                  END *100,0)/100 as salePrice,
+                  END * 100,0)/100 as salePrice,
                   prProduct.roundingRuleID as roundingRuleID,
                   ppProduct.endDateTime as salePriceExpirationDateTime,
                   ppProduct.promotionPeriodID as promotionPeriodID,
@@ -608,7 +608,7 @@ Notes:
                   (ppProduct.endDateTime is null or ppProduct.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
               <cfif structKeyExists(arguments, "productID")>
                 AND
-                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
               </cfif>
             UNION
               SELECT
@@ -621,7 +621,7 @@ Notes:
                       WHEN 'amount' THEN prBrand.amount
                       WHEN 'amountOff' THEN SwSku.price - prBrand.amount
                       WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prBrand.amount / 100))
-                  END *100,0)/100 as salePrice,
+                  END * 100,0)/100 as salePrice,
                   prBrand.roundingRuleID as roundingRuleID,
                   ppBrand.endDateTime as salePriceExpirationDateTime,
                   ppBrand.promotionPeriodID as promotionPeriodID,
@@ -646,7 +646,7 @@ Notes:
                   (ppBrand.endDateTime is null or ppBrand.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
               <cfif structKeyExists(arguments, "productID")>
                 AND
-                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
               </cfif>
             UNION
               SELECT
@@ -659,7 +659,7 @@ Notes:
                       WHEN 'amount' THEN prOption.amount
                       WHEN 'amountOff' THEN SwSku.price - prOption.amount
                       WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prOption.amount / 100))
-                  END *100,0)/100 as salePrice,
+                  END * 100,0)/100 as salePrice,
                   prOption.roundingRuleID as roundingRuleID,
                   ppOption.endDateTime as salePriceExpirationDateTime,
                   ppOption.promotionPeriodID as promotionPeriodID,
@@ -684,7 +684,7 @@ Notes:
                   (ppOption.endDateTime is null or ppOption.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
               <cfif structKeyExists(arguments, "productID")>
                 AND
-                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
               </cfif>
             UNION
               SELECT
@@ -697,7 +697,7 @@ Notes:
                       WHEN 'amount' THEN prProductType.amount
                       WHEN 'amountOff' THEN SwSku.price - prProductType.amount
                       WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProductType.amount / 100))
-                  END *100,0)/100 as salePrice,
+                  END * 100,0)/100 as salePrice,
                   prProductType.roundingRuleID as roundingRuleID,
                   ppProductType.endDateTime as salePriceExpirationDateTime,
                   ppProductType.promotionPeriodID as promotionPeriodID,
@@ -730,7 +730,7 @@ Notes:
                   (ppProductType.endDateTime is null or ppProductType.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
               <cfif structKeyExists(arguments, "productID")>
                 AND
-                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
               </cfif>
             UNION
               SELECT
@@ -743,7 +743,7 @@ Notes:
                       WHEN 'amount' THEN prGlobal.amount
                       WHEN 'amountOff' THEN SwSku.price - prGlobal.amount
                       WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prGlobal.amount / 100))
-                  END *100,0)/100 as salePrice,
+                  END * 100,0)/100 as salePrice,
                   prGlobal.roundingRuleID as roundingRuleID,
                   ppGlobal.endDateTime as salePriceExpirationDateTime,
                   ppGlobal.promotionPeriodID as promotionPeriodID,
@@ -778,58 +778,57 @@ Notes:
                   (ppGlobal.endDateTime is null or ppGlobal.endDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
               <cfif structKeyExists(arguments, "productID")>
                 AND
-                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">   
+                  SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">
               </cfif>
               <!---END: Original query--->
-              
+
               <cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
-              
+
                ) combinedPromotionLevels
                   LEFT JOIN SwSkuCurrency skuCurrency
-                      ON combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">  
+                      ON combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">
                       AND combinedPromotionLevels.skuID=skuCurrency.skuID
-                      AND skuCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">   
+                      AND skuCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">
                   LEFT JOIN SwPromotionRewardCurrency prCurrency
-                      ON combinedPromotionLevels.prCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">  
+                      ON combinedPromotionLevels.prCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">
                       AND combinedPromotionLevels.promotionRewardID=prCurrency.promotionRewardID
-                      AND prCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">   
+                      AND prCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">
                   LEFT JOIN (
                       SELECT cr1.currencyCode, cr1.conversionRate
                       FROM SwCurrencyRate cr1
                           LEFT JOIN SwCurrencyRate cr2
-                              ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
-                                  AND cr1.currencyCode=cr2.currencyCode 
-                                  AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 
+                              ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode
+                                  AND cr1.currencyCode=cr2.currencyCode
+                                  AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime
                                   AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
                                   AND cr2.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
                               )
                               WHERE cr2.currencyRateID IS NULL AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-                              AND cr1.conversionCurrencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
+                              AND cr1.conversionCurrencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">
                       ) skuConversionRate ON skuCurrencyCode=skuConversionRate.currencyCode
                   LEFT JOIN (
                       SELECT cr1.currencyCode, cr1.conversionCurrencyCode, cr1.conversionRate
                       FROM SwCurrencyRate cr1
                           LEFT JOIN SwCurrencyRate cr2
-                              ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
-                                  AND cr1.currencyCode=cr2.currencyCode 
-                                  AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 
+                              ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode
+                                  AND cr1.currencyCode=cr2.currencyCode
+                                  AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime
                                   AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
                                   AND cr2.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
                               )
                               WHERE cr2.currencyRateID IS NULL AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
-                              
-                      ) prConversionRate 
-                      ON prConversionRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
+
+                      ) prConversionRate
+                      ON prConversionRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">
                           AND combinedPromotionLevels.prCurrencyCode=prConversionRate.currencyCode
-                  ) convertedDiscounts WHERE 
+                  ) convertedDiscounts WHERE
                       CASE salePriceDiscountType
-                          WHEN 'percentageOff' THEN originalPrice - (originalPrice * (discountAmount / 100)) 
-                          WHEN 'amount' THEN CAST(discountAmount AS DECIMAL(19,2))
-                          WHEN 'amountOff' THEN CAST((originalPrice - discountAmount) AS DECIMAL(19,2))
+                          WHEN 'percentageOff' THEN (round((originalPrice - (originalPrice * (discountAmount / 100)))*100, 0)/100)
+                          WHEN 'amount' THEN (round(discountAmount * 100, 0) / 100)
+                          WHEN 'amountOff' THEN (round((originalPrice - discountAmount) * 100, 0) / 100)
                       END IS NOT NULL
               </cfif>
           </cfquery>
-          
           <cfreturn allDiscountsQuery />
       </cffunction>
 
@@ -837,7 +836,7 @@ Notes:
 	<cffunction name="getNoQualifierDiscounts" returntype="any" access="public">
 		<cfargument name="noQualifierCurrentActivePromotionPeriodsQuery" type="any">
 		<cfargument name="allDiscountsQuery" type="any">
-		
+
 		<cfset var noQualifierDiscountsQuery = "" >
 
 		<cfquery name="noQualifierDiscountsQuery" dbtype="query">
@@ -856,10 +855,10 @@ Notes:
 				noQualifierCurrentActivePromotionPeriodsQuery, allDiscountsQuery
 			WHERE
 				allDiscountsQuery.promotionPeriodID = noQualifierCurrentActivePromotionPeriodsQuery.promotionPeriodID
-				
+
 		</cfquery>
-		
+
 		<cfreturn noQualifierDiscountsQuery >
 	</cffunction>
-		
+
 </cfcomponent>

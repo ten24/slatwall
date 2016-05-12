@@ -1,4 +1,4 @@
-# Slatwall Version 4.1.011
+# Slatwall CI Build
 FROM lucee/lucee4:latest
 MAINTAINER Greg Moser, greg.moser@ten24web.com
 
