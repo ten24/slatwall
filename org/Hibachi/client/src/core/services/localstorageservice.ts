@@ -20,9 +20,11 @@ class LocalStorageService{
     }
 
     getItem = (key:string)=>{
-
-
-        return angular.fromJson(this.$window.localStorage.getItem(key));
+        let value = this.$window.localStorage.getItem(key);
+        if(value.charAt(0)==='{' || value.charAt(0)==='['){
+            value = angular.fromJson(value);
+        }
+        return value
     }
 
     setItem = (key:string, data:any)=>{
