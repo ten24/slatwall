@@ -84,15 +84,32 @@ class SWMultiListingDisplayController{
         //This multiple collection logic could probably be in link too
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
-        this.initialSetup();
+        this.setupTranscludedData(); 
+        this.multipleCollectionPromise.then(()=>{
+            //now do the intial setup
+            this.setupInMultiCollectionConfigMode(); 
+        }).catch(()=>{
+            //do the initial setup for single collection mode
+            this.setupInSingleCollectionConfigMode(); 
+        });
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
         });
-        this.multipleCollectionPromise.then(()=>{
-            //now do the intial setup
-        });
     }
-
+    
+    private setupTranscludedData = () => {
+        this.$transclude(this.$scope,()=>{});
+    }
+    
+    private setupInSingleCollectionConfigMode = () => {
+        
+    }
+    
+    private setupInMultiCollectionConfigMode = () => {
+        
+    }
+    
+    
     private initialSetup = () => {
         /*
         if(angular.isUndefined(this.isAngularRoute)){
@@ -125,9 +142,11 @@ class SWMultiListingDisplayController{
 
         if(!this.collection || !angular.isString(this.collection)){
             this.hasCollectionPromise = true;
+            this.multipleCollectionDeffered.reject();
         } else {
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            this.multipleCollectionDeffered.reject();
         }
 
         this.setupDefaultCollectionInfo();
