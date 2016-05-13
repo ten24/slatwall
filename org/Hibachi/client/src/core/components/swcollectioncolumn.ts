@@ -8,6 +8,7 @@ class SWCollectionColumnController{
 class SWCollectionColumn implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
+    public priority=1000; 
     public bindToController={
         propertyIdentifier:"@",
         isVisible:"@?",
@@ -48,6 +49,7 @@ class SWCollectionColumn implements ng.IDirective{
         
         if(angular.isDefined(scope.swCollectionConfig)){ 
             scope.swCollectionConfig.columns.push(column); 
+            scope.swCollectionConfig.columnsDeferred.resolve(); 
         }
     }
 }

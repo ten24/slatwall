@@ -41,19 +41,23 @@ class SWCollectionConfig implements ng.IDirective{
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            collectionConfigService
+            collectionConfigService,
+            $q
         )=>new SWCollectionConfig(
-            collectionConfigService
+            collectionConfigService,
+            $q
         );
         directive.$inject = [
-            'collectionConfigService'
+            'collectionConfigService',
+            '$q'
         ];
         return directive;
     }
     
     // @ngInject
     constructor( 
-        public collectionConfigService
+        public collectionConfigService,
+        public $q
     ){
         console.log("multiccCONST1")
     }
@@ -76,6 +80,11 @@ class SWCollectionConfig implements ng.IDirective{
                 scope.swCollectionConfig.allRecords=false;
             }
             
+            scope.swCollectionConfig.columnsDeferred = this.$q.defer();
+            scope.swCollectionConfig.columnsPromise =  scope.swCollectionConfig.columnsDeferred.promise; 
+            scope.swCollectionConfig.filtersDeferred = this.$q.defer(); 
+            scope.swCollectionConfig.filtersPromise =  scope.swCollectionConfig.filtersDeferred.promise;
+            
             var newCollectionConfig = this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
             newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);               
             
@@ -92,34 +101,38 @@ class SWCollectionConfig implements ng.IDirective{
                     break; 
                 }
             }   
-            
-            //populate the columns and the filters
-            //this.$transclude(scope,()=>{});
-            
-            angular.forEach(scope.swCollectionConfig.columns, (column)=>{
-                    newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
-            });
-            angular.forEach(scope.swCollectionConfig.filters, (filter)=>{
-                    newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+            scope.swCollectionConfig.columnsPromise.then(()=>{
+                angular.forEach(scope.swCollectionConfig.columns, (column)=>{
+                        newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
+                });
             }); 
-            console.log("MULTICC", newCollectionConfig);
-            if(angular.isDefined(parentDirective)){
-                console.log("multicc?", (angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
-                    && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
-                ));
-                if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
-                    && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
-                ){
-                    console.log("multicc pushing to", parentDirective)
-                    parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
-                    //should pass this in just like the collection property
-                    parentDirective.multipleCollectionDeffered.resolve();
-                } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
-                    parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
-                } else { 
-                    throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
-                }
-            }
+            scope.swCollectionConfig.filtersPromise.then(()=>{
+                angular.forEach(scope.swCollectionConfig.filters, (filter)=>{
+                    newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
+                }); 
+            });
+            scope.swCollectionConfig.columnsPromise.finally(()=>{
+               scope.swCollectionConfig.filtersPromise.finally(()=>{
+                   if(angular.isDefined(parentDirective)){
+                        console.log("multicc?", (angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
+                            && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
+                        ));
+                        if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
+                            && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
+                        ){
+                            console.log("multicc pushing to", parentDirective)
+                            parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
+                            //should pass this in just like the collection property
+                            parentDirective.multipleCollectionDeffered.resolve();
+                        } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
+                            parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+                        } else { 
+                            throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
+                        }
+                    } 
+               });
+            });
+            
             
         }
     }

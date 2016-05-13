@@ -44,6 +44,7 @@ class SWCollectionFilter implements ng.IDirective{
        
         if(angular.isDefined(scope.swCollectionConfig)){ 
             scope.swCollectionConfig.filters.push(filter); 
+            scope.swCollectionConfig.filtersDeferred.resolve(); 
         }
     }
 }
