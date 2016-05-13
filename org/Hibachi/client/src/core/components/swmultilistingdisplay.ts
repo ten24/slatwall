@@ -81,9 +81,46 @@ class SWMultiListingDisplayController{
         public observerService,
         public rbkeyService
     ){
+        //Common Setup
+        if(angular.isUndefined(this.isAngularRoute)){
+            this.isAngularRoute = true;    
+        }
+        if(angular.isUndefined(this.hasSearch)){
+            this.hasSearch = true;
+        }
+        if(angular.isString(this.showSearch)){
+            this.showSearch = (this.showSearch.toLowerCase() === 'true');
+        }
+        if(angular.isString(this.showTopPagination)){
+            this.showTopPagination = (this.showTopPagination.toLowerCase() === 'true');
+        }
+        if(angular.isUndefined(this.name)){
+            this.name = 'ListingDisplay';
+        }
+        this.paginator = this.paginationService.createPagination();
+
+        this.hasCollectionPromise = false;
+        if(angular.isUndefined(this.getChildCount)){
+            this.getChildCount = false;
+        }
         //This multiple collection logic could probably be in link too
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
+        //If
+        if(!this.collection || !angular.isString(this.collection)){
+            //I don't know if we want to make this assumption
+            this.hasCollectionPromise = true;//maybe
+            //this.multipleCollectionDeffered.reject();
+        } else if(angular.isDefined(this.collection) && angular.isString(this.collection)){
+            this.collectionObject = this.collection;
+            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            this.multipleCollectionDeffered.reject();
+        }
+        if( agnular.isDefined(angular.isUndefined(this.collectionConfig) 
+            && angular.isUndefined(this.collectionConfig.columns)
+        ){
+            this.collectionConfig.columns = [];
+        }
         this.setupTranscludedData(); 
         this.multipleCollectionPromise.then(()=>{
             //now do the intial setup
@@ -98,71 +135,13 @@ class SWMultiListingDisplayController{
     }
     
     private setupTranscludedData = () => {
+        //this is performed early to populate columns and multiple collectionConfigs if present
         this.$transclude(this.$scope,()=>{});
     }
     
     private setupInSingleCollectionConfigMode = () => {
         
-    }
-    
-    private setupInMultiCollectionConfigMode = () => {
-        
-    }
-    
-    
-    private initialSetup = () => {
-        /*
-        if(angular.isUndefined(this.isAngularRoute)){
-            this.isAngularRoute = true;    
-        }
-        //default search is available
-        if(angular.isUndefined(this.hasSearch)){
-            this.hasSearch = true;
-        }
-        
-        if(angular.isString(this.showSearch)){
-            this.showSearch = (this.showSearch.toLowerCase() === 'true');
-        }
-        
-        if(angular.isString(this.showTopPagination)){
-            this.showTopPagination = (this.showTopPagination.toLowerCase() === 'true');
-        }
-
-        if(angular.isUndefined(this.name)){
-            this.name = 'ListingDisplay';
-        }
-
-        this.paginator = this.paginationService.createPagination();
-
-        this.hasCollectionPromise = false;
-        if(angular.isUndefined(this.getChildCount)){
-            this.getChildCount = false;
-        }
-
-
-        if(!this.collection || !angular.isString(this.collection)){
-            this.hasCollectionPromise = true;
-            this.multipleCollectionDeffered.reject();
-        } else {
-            this.collectionObject = this.collection;
-            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-            this.multipleCollectionDeffered.reject();
-        }
-
-        this.setupDefaultCollectionInfo();
-
-        /*if columns doesn't exist then make it
-        if(!this.collectionConfig.columns){
-            this.collectionConfig.columns = [];
-        }*/
-
-        //if a collectionConfig was not passed in then we can run run swListingColumns
-        //this is performed early to populate columns with swlistingcolumn info
-        console.log("cellScope", "listing display transcluding now")
-        this.$transclude(this.$scope,()=>{});
-        console.log("multicc",this.collectionConfigs);
-        /*
-        //add filterGroups
+         //add filterGroups
         angular.forEach(this.filterGroups, (filterGroup)=>{
             this.collectionConfig.addFilterGroup(filterGroup);
         });
@@ -172,15 +151,17 @@ class SWMultiListingDisplayController{
         angular.forEach(this.filters, (filter)=>{
                 this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
+        
         //add order bys
         angular.forEach(this.orderBys, (orderBy)=>{
             this.collectionConfig.addOrderBy(orderBy.orderBy);
         });
+        
         angular.forEach(this.aggregates, (aggregate)=>{
             this.collectionConfig.addDisplayAggregate(aggregate.propertyIdentifier, aggregate.aggregateFunction, aggregate.aggregateAlias);
         });
         
-         //make sure we have necessary properties to make the actions 
+        //make sure we have necessary properties to make the actions 
         angular.forEach(this.actions, (action)=>{
             if(angular.isDefined(action.queryString)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(action.queryString);
@@ -189,20 +170,32 @@ class SWMultiListingDisplayController{
                 }
             }
         });
+        
         //also make sure we have necessary color filter properties
         angular.forEach(this.colorFilters,(colorFilter)=>{
             if(angular.isDefined(colorFilter.propertyToCompare)){
                 this.collectionConfig.addDisplayProperty(colorFilter.propertyToCompare, "", {isVisible:false});
             }
         });
-
+        
         this.exampleEntity = this.$hibachi.getEntityExample(this.collectionObject);
         if(this.collectionConfig.hasColumns()){
             this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName(),undefined,{isVisible:false});
         }
-
-
-        this.initData();
+        
+        this.initCollectionConfigData(this.collectionConfig);
+        
+        this.tableID = 'LD'+this.utilityService.createID();
+        
+        //if getCollection doesn't exist then create it
+        if(angular.isUndefined(this.getCollection)){
+            this.getCollection = this.setupDefaultGetCollection();
+        }
+        
+        this.paginator.getCollection = this.getCollection;
+        
+        //this.getCollection();
+        
         this.$scope.$watch('swMultiListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
                 this.$q.when(this.collectionPromise).then((data)=>{
@@ -219,30 +212,21 @@ class SWMultiListingDisplayController{
                 });
             }
         });
-        this.tableID = 'LD'+this.utilityService.createID();
-        //if getCollection doesn't exist then create it
-        if(angular.isUndefined(this.getCollection)){
-            this.getCollection = this.setupDefaultGetCollection();
-        }
-        this.paginator.getCollection = this.getCollection;
-        //this.getCollection();
-        */
-    };
+    }
+    
+    private setupInMultiCollectionConfigMode = () => {
+        
+    }
 
     private setupDefaultCollectionInfo = () =>{
-        if(this.collectionConfigs.length == 0 && false){//temp override
-            if(this.hasCollectionPromise){
-                this.collectionObject = this.collection.collectionObject;
-                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
-                this.collectionConfig.loadJson(this.collection.collectionConfig);
-            }
-            this.collectionConfig.setPageShow(this.paginator.getPageShow());
-            this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
-            //this.collectionConfig.setKeywords(this.paginator.keywords);
-        } else { 
-            //Multi Collection Config Info Here
-            
+        if(this.hasCollectionPromise){
+            this.collectionObject = this.collection.collectionObject;
+            this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+            this.collectionConfig.loadJson(this.collection.collectionConfig);
         }
+        this.collectionConfig.setPageShow(this.paginator.getPageShow());
+        this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
+        //this.collectionConfig.setKeywords(this.paginator.keywords);
     };
 
     private setupDefaultGetCollection = () =>{
@@ -266,14 +250,11 @@ class SWMultiListingDisplayController{
         }
     };
 
-    public initData = () =>{
-        if(this.collectionConfigs.length == 0){
-            this.collectionConfig.setPageShow(this.paginator.pageShow);
-            this.collectionConfig.setCurrentPage(this.paginator.currentPage);
-        } else { 
-            //Multi Collection Config Info Here
-            
-        }
+    public initCollectionConfigData = (collectionConfig) =>{
+
+        collectionConfig.setPageShow(this.paginator.pageShow);
+        collectionConfig.setCurrentPage(this.paginator.currentPage);
+
 
         //setup export action
         if(angular.isDefined(this.exportAction)){
@@ -302,14 +283,9 @@ class SWMultiListingDisplayController{
         }
         if(this.multiselectable && (!this.columns || !this.columns.length)){
             //check if it has an active flag and if so then add the active flag
-            if(this.collectionConfigs.length == 0){
-                if(this.exampleEntity.metaData.activeProperty && !this.hasCollectionPromise){
-                    this.collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
-                }
-            } else { 
-                //Multi Collection Config Info Here
+            if(this.exampleEntity.metaData.activeProperty && !this.hasCollectionPromise){
+                collectionConfig.addFilter('activeFlag',1,'=',undefined,true);
             }
-
         }
 
         //Look for Hierarchy in example entity
@@ -330,25 +306,23 @@ class SWMultiListingDisplayController{
             }
 
             this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
-            if(this.collectionConfigs.length == 0){
-                //add parent property root filter
-                if(!this.hasCollectionPromise){
-                    this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
-                }
-                //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
-                //add children column
-                if(this.childPropertyName && this.childPropertyName.length) {
-                    if(this.getChildCount || !this.hasCollectionPromise){
-                        this.collectionConfig.addDisplayAggregate(
-                            this.childPropertyName,
-                            'COUNT',
-                            this.childPropertyName+'Count'
-                        );
-                    }
-                }
-            } else { 
-                //Multi Collection Config Info Here
+
+            //add parent property root filter
+            if(!this.hasCollectionPromise){
+                collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
             }
+            //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
+            //add children column
+            if(this.childPropertyName && this.childPropertyName.length) {
+                if(this.getChildCount || !this.hasCollectionPromise){
+                    collectionConfig.addDisplayAggregate(
+                        this.childPropertyName,
+                        'COUNT',
+                        this.childPropertyName+'Count'
+                    );
+                }
+            }
+
             this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
             this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),' ');
         }
@@ -561,6 +535,7 @@ class SWMultiListingDisplayController{
         this.tableclass = this.tableclass || '';
         this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
     };
+    //end initCollectionConfigData
 
     public setupColumns = ()=>{
         //assumes no alias formatting
