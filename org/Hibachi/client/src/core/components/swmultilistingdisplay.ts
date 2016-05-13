@@ -237,7 +237,7 @@ class SWMultiListingDisplayController{
                             this.commonProperties[propertyName] = propertyMetaData; 
                         } else {
                             //otherwise compare against the commonPropertiesList
-                            if(!this.utilityService.structKeyExists(this.commonProperties[propertyName])){
+                            if(!(propertyName in this.commonProperties)){
                                 console.log("multicc","deleting non-shared", propertyName);
                                 delete this.commonProperties[propertyName];
                             }
