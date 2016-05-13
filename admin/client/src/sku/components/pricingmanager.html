@@ -14,15 +14,13 @@
                     data-multiselect-field-name="placeholder"
                                 >
                     <sw-listing-columns>
-                        <sw-listing-column data-property-identifier="skuDefinition"></sw-listing-column>
-                        <sw-listing-column data-property-identifier="skuCode"></sw-listing-column>
-                        <sw-listing-column data-property-identifier="currencyCode"></sw-listing-column>
-                        <sw-listing-column data-property-identifier="calculatedQATS"></sw-listing-column>
                         <sw-listing-column
                             data-property-identifier="skuID"
                             data-cell-view="swImageDetailModalLauncher"
                             data-is-visible="true"
                         >
+                        <sw-listing-column data-property-identifier="calculatedQATS"></sw-listing-column>
+                        
                         </sw-listing-column>
                         <sw-listing-column
                             data-property-identifier="price"
@@ -31,6 +29,9 @@
                             data-cell-scope="{'swSkuPriceSingleEdit':{'skuId':'102884f951c510620151c571cb020122'}}"
                         >
                         </sw-listing-column>
+                        <sw-listing-column data-property-identifier="skuDefinition"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="skuCode"></sw-listing-column>
+                        
                     </sw-listing-columns>
                     
                     <sw-collection-configs>

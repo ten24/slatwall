@@ -278,13 +278,15 @@ class SWMultiListingDisplayController{
         } else { 
             //Multi Collection Config Info Here
             return ()=>{
-                this.collectionData = [];
+                this.collectionData = {}; 
+                this.collectionData.pageRecords = [];
                 angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
                     this.setupColumns(collectionConfig, this.collectionObjects[key]);
                     collectionConfig.getEntity().then((data)=>{
-                        this.collectionData.concat(data); 
+                        //temp splice to keep the record set small
+                        this.collectionData.pageRecords = this.collectionData.pageRecords.concat(data.records.splice(0, 10)); 
                     });
-                }); 
+                });           
             }
         }
     };

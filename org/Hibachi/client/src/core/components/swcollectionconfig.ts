@@ -102,6 +102,7 @@ class SWCollectionConfig implements ng.IDirective{
             angular.forEach(scope.swCollectionConfig.filters, (filter)=>{
                     newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
             }); 
+            console.log("MULTICC", newCollectionConfig);
             if(angular.isDefined(parentDirective)){
                 console.log("multicc?", (angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
                     && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
