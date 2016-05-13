@@ -215,7 +215,7 @@ class SWMultiListingDisplayController{
                 });
             }
         });
-    }
+    };
     
     private setupInMultiCollectionConfigMode = () => {
         angular.forEach(this.collectionConfigs,(value,key)=>{
@@ -223,7 +223,7 @@ class SWMultiListingDisplayController{
         }); 
         this.buildCommonPropertiesList();
         console.log("multicc", "listing vars", this);
-    }
+    };
     
     private buildCommonPropertiesList = () => {
         if(this.collectionObjects.length > 1){
@@ -247,7 +247,7 @@ class SWMultiListingDisplayController{
                 }
             }); 
         }
-    }
+    };
 
     private setupDefaultCollectionInfo = () =>{
         if(this.hasCollectionPromise){
@@ -277,13 +277,10 @@ class SWMultiListingDisplayController{
             };
         } else { 
             //Multi Collection Config Info Here
-            console.log("multicc collection getter")
             return ()=>{
-                console.log("multicc get collection")
                 this.collectionData = [];
                 angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
                     this.setupColumns(collectionConfig, this.collectionObjects[key]);
-                    console.log("GETCOLLECTION", this.columns);
                     collectionConfig.getEntity().then((data)=>{
                         this.collectionData.concat(data); 
                     });
@@ -580,44 +577,45 @@ class SWMultiListingDisplayController{
 
     public setupColumns = (collectionConfig, collectionObject)=>{
         //assumes no alias formatting
-        angular.forEach(this.columns, (column:any)=>{
+        for(var i=0; i < this.columns.length; i++){
+            var column = this.columns[i];
+            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
 
-            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,column.propertyIdentifier);
-           
-            if(angular.isUndefined(column.title)){
-                column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
-            }
-            
-            if(angular.isUndefined(column.isVisible)){
-                column.isVisible = true;
-            }
-            var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
-            if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
-                column.type = metadata.hb_formatType;
-            } else { 
-                column.type = "none";
-            }
-            if(angular.isDefined(column.tooltip)){
-               
-                var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
+                if(angular.isUndefined(column.title)){
+                    console.log("multicc", "setting column title",this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.')))
+                    column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+                }
                 
-                if(parsedProperties && parsedProperties.length){
-                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                if(angular.isUndefined(column.isVisible)){
+                    column.isVisible = true;
                 }
-            } else { 
-                column.tooltip = '';
-            }
-            if(angular.isDefined(column.queryString)){
-                var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
-                if(parsedProperties && parsedProperties.length){
-                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                var metadata = this.$hibachi.getPropertyByEntityNameAndPropertyName(lastEntity, this.utilityService.listLast(column.propertyIdentifier,'.'));
+                if(angular.isDefined(metadata) && angular.isDefined(metadata.hb_formattype)){
+                    column.type = metadata.hb_formatType;
+                } else { 
+                    column.type = "none";
                 }
-            }
-            this.columnOrderBy(column);
-            
-            collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
-            
-        });
+                if(angular.isDefined(column.tooltip)){
+                
+                    var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
+                    
+                    if(parsedProperties && parsedProperties.length){
+                        collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    }
+                } else { 
+                    column.tooltip = '';
+                }
+                if(angular.isDefined(column.queryString)){
+                    var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
+                    if(parsedProperties && parsedProperties.length){
+                        collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    }
+                }
+                this.columnOrderBy(column);
+                
+                //only want to do this if it's a singleCollectionConfig
+                //collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
+        }
         //if the passed in collection has columns perform some formatting
         if(this.hasCollectionPromise){
             //assumes alias formatting from collectionConfig
