@@ -279,18 +279,15 @@ class SWMultiListingDisplayController{
             //Multi Collection Config Info Here
             console.log("multicc collection getter")
             return ()=>{
-                //this.multiCollectionGetRecordsPromise.then(()=>{
-                    console.log("multicc get collection")
-                    this.collectionData = [];
-                    angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
-                        this.setupColumns(collectionConfig, this.collectionObjects[key]);
-                        console.log("GETCOLLECTION", this.columns);
-                        collectionConfig.getEntity().then((data)=>{
-                            this.collectionData.concat(data); 
-                        });
-                    }); 
-                    //todo pagination logic
-                //});
+                console.log("multicc get collection")
+                this.collectionData = [];
+                angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
+                    this.setupColumns(collectionConfig, this.collectionObjects[key]);
+                    console.log("GETCOLLECTION", this.columns);
+                    collectionConfig.getEntity().then((data)=>{
+                        this.collectionData.concat(data); 
+                    });
+                }); 
             }
         }
     };
