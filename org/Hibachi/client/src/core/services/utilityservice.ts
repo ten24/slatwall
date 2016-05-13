@@ -11,6 +11,15 @@ class UtilityService extends BaseService{
 
     }
     
+    public structKeyExists = (struct,key) =>{
+        angular.forEach(struct, (v,k)=>{
+            if(key == k){
+                return true; 
+            }
+        });
+        return false; 
+    }
+    
     public keyToAttributeString = (key)=> {
         var attributeString = "data-"; 
         for(var i=0; i<key.length; i++){

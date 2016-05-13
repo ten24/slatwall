@@ -16,11 +16,13 @@ class SWMultiListingDisplayController{
     public collectionObject;
     public collectionConfig;
     public collectionConfigs = [];
+    public collectionObjects = [];
     public collection;
     public childPropertyName;
     public colorFilters = [];
     public columns = [];
     public columnCount;
+    public commonProperties;
     public expandable:boolean;
     public exampleEntity:any = "";
     public exportAction;
@@ -116,7 +118,7 @@ class SWMultiListingDisplayController{
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
             this.multipleCollectionDeffered.reject();
         }
-        if( agnular.isDefined(angular.isUndefined(this.collectionConfig) 
+        if( angular.isDefined(this.collectionConfig) 
             && angular.isUndefined(this.collectionConfig.columns)
         ){
             this.collectionConfig.columns = [];
@@ -215,7 +217,36 @@ class SWMultiListingDisplayController{
     }
     
     private setupInMultiCollectionConfigMode = () => {
-        
+        console.log("multicc", "setupInMultiCollectionConfigMode", this.collectionConfigs);
+        angular.forEach(this.collectionConfigs,(value,key)=>{
+            this.collectionObjects[key] = this.$hibachi.newEntity(value.baseEntityName); 
+        }); 
+        console.log("multicc", this.collectionObjects);
+        this.buildCommonPropertiesList();
+    }
+    
+    private buildCommonPropertiesList = () => {
+        if(this.collectionObjects.length > 1){
+            this.commonProperties = {}; 
+            angular.forEach(this.collectionObjects,(objValue,objKey)=>{
+                angular.forEach(objValue.metaData,(propertyMetaData,propertyName)=>{
+                    if(propertyName.charAt(0) != "$"){
+                        if(objKey == 1){
+                            //first iteration only populate the commonProperties list with all properties we will then remove those that don't exists
+                            console.log("multicc","comparing", propertyName);
+                            this.commonProperties[propertyName] = propertyMetaData; 
+                        } else {
+                            //otherwise compare against the commonPropertiesList
+                            if(!this.utilityService.structKeyExists(this.commonProperties[propertyName])){
+                                console.log("multicc","deleting non-shared", propertyName);
+                                delete this.commonProperties[propertyName];
+                            }
+                        }
+                    }
+                }); 
+            }); 
+            console.log("multicc", "successfully built list", this.commonProperties);
+        }
     }
 
     private setupDefaultCollectionInfo = () =>{
