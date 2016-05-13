@@ -217,35 +217,33 @@ class SWMultiListingDisplayController{
     }
     
     private setupInMultiCollectionConfigMode = () => {
-        console.log("multicc", "setupInMultiCollectionConfigMode", this.collectionConfigs);
         angular.forEach(this.collectionConfigs,(value,key)=>{
             this.collectionObjects[key] = this.$hibachi.newEntity(value.baseEntityName); 
         }); 
-        console.log("multicc", this.collectionObjects);
         this.buildCommonPropertiesList();
     }
     
     private buildCommonPropertiesList = () => {
         if(this.collectionObjects.length > 1){
             this.commonProperties = {}; 
+
             angular.forEach(this.collectionObjects,(objValue,objKey)=>{
-                angular.forEach(objValue.metaData,(propertyMetaData,propertyName)=>{
-                    if(propertyName.charAt(0) != "$"){
-                        if(objKey == 1){
-                            //first iteration only populate the commonProperties list with all properties we will then remove those that don't exists
-                            console.log("multicc","comparing", propertyName);
+                if(objKey == 0){
+                    //first iteration only populate the commonProperties list with all properties we will then remove those that don't exists
+                    angular.forEach(objValue.metaData,(propertyMetaData,propertyName)=>{
+                        if(propertyName.charAt(0) != "$"){
                             this.commonProperties[propertyName] = propertyMetaData; 
-                        } else {
-                            //otherwise compare against the commonPropertiesList
-                            if(!(propertyName in this.commonProperties)){
-                                console.log("multicc","deleting non-shared", propertyName);
-                                delete this.commonProperties[propertyName];
-                            }
                         }
-                    }
-                }); 
+                    }); 
+                } else { 
+                    //subsequent iterations we narrow down the list
+                    angular.forEach(this.commonProperties,(propertyMetaData,propertyName)=>{
+                        if(!(propertyName in objValue.metaData)){
+                            delete this.commonProperties[propertyName];
+                        }
+                    });                  
+                }
             }); 
-            console.log("multicc", "successfully built list", this.commonProperties);
         }
     }
 
@@ -283,9 +281,10 @@ class SWMultiListingDisplayController{
 
     public initCollectionConfigData = (collectionConfig) =>{
 
+        
+
         collectionConfig.setPageShow(this.paginator.pageShow);
         collectionConfig.setCurrentPage(this.paginator.currentPage);
-
 
         //setup export action
         if(angular.isDefined(this.exportAction)){
