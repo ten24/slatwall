@@ -135,6 +135,7 @@ class SWMultiListingDisplayController{
             if(angular.isUndefined(this.getCollection)){
                 this.getCollection = this.setupDefaultGetCollection();
             }
+            this.getCollection();
         });
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
@@ -154,7 +155,7 @@ class SWMultiListingDisplayController{
         });
 
          //add filters
-        this.setupColumns();
+        this.setupColumns(this.collectionConfig, this.collectionObject);
         angular.forEach(this.filters, (filter)=>{
                 this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
         }); 
@@ -204,7 +205,7 @@ class SWMultiListingDisplayController{
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
                     if(this.collectionConfig.hasColumns()){
-                        this.setupColumns();
+                        this.setupColumns(this.collectionConfig, this.collectionObject);
                     }else{
                         this.collectionConfig.loadJson(data.collectionConfig);
                     }
@@ -222,7 +223,6 @@ class SWMultiListingDisplayController{
         }); 
         this.buildCommonPropertiesList();
         console.log("multicc", "listing vars", this);
-        
     }
     
     private buildCommonPropertiesList = () => {
@@ -277,19 +277,20 @@ class SWMultiListingDisplayController{
             };
         } else { 
             //Multi Collection Config Info Here
-            this.multiCollectionGetRecordsDeffered = this.$q.defer(); 
-            this.multiCollectionGetRecordsPromise = this.multiCollectionGetRecordsDeffered.promise; 
-            this.collectionPromise = this.multiCollectionGetRecordsPromise; 
+            console.log("multicc collection getter")
             return ()=>{
-                this.multiCollectionGetRecordsPromise.then(()=>{
+                //this.multiCollectionGetRecordsPromise.then(()=>{
+                    console.log("multicc get collection")
                     this.collectionData = [];
                     angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
+                        this.setupColumns(collectionConfig, this.collectionObjects[key]);
+                        console.log("GETCOLLECTION", this.columns);
                         collectionConfig.getEntity().then((data)=>{
                             this.collectionData.concat(data); 
                         });
                     }); 
                     //todo pagination logic
-                });
+                //});
             }
         }
     };
@@ -580,14 +581,16 @@ class SWMultiListingDisplayController{
     };
     //end initCollectionConfigData
 
-    public setupColumns = ()=>{
+    public setupColumns = (collectionConfig, collectionObject)=>{
         //assumes no alias formatting
         angular.forEach(this.columns, (column:any)=>{
 
-            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,column.propertyIdentifier);
+            var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,column.propertyIdentifier);
+           
             if(angular.isUndefined(column.title)){
                 column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
             }
+            
             if(angular.isUndefined(column.isVisible)){
                 column.isVisible = true;
             }
@@ -602,7 +605,7 @@ class SWMultiListingDisplayController{
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.tooltip);
                 
                 if(parsedProperties && parsedProperties.length){
-                    this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
                 }
             } else { 
                 column.tooltip = '';
@@ -610,20 +613,20 @@ class SWMultiListingDisplayController{
             if(angular.isDefined(column.queryString)){
                 var parsedProperties = this.utilityService.getPropertiesFromString(column.queryString);
                 if(parsedProperties && parsedProperties.length){
-                    this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
+                    collectionConfig.addDisplayProperty(this.utilityService.arrayToList(parsedProperties), "", {isVisible:false});
                 }
             }
             this.columnOrderBy(column);
             
-            this.collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
+            collectionConfig.addDisplayProperty(column.propertyIdentifier,column.title,column);
             
         });
         //if the passed in collection has columns perform some formatting
         if(this.hasCollectionPromise){
             //assumes alias formatting from collectionConfig
-            angular.forEach(this.collectionConfig.columns, (column)=>{
+            angular.forEach(collectionConfig.columns, (column)=>{
 
-                var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(this.collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
+                var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionObject,this.utilityService.listRest(column.propertyIdentifier,'.'));
                 column.title = column.title || this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                 if(angular.isUndefined(column.isVisible)){
                     column.isVisible = true;

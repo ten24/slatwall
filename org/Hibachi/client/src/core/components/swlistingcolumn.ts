@@ -40,6 +40,7 @@ class SWListingColumn implements ng.IDirective{
         search:"=?",
         sort:"=?",
         filter:"=?",
+        isVisible:"=?",
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",
@@ -76,7 +77,8 @@ class SWListingColumn implements ng.IDirective{
             filter:scope.swListingColumn.filter,
             range:scope.swListingColumn.range,
             editable:scope.swListingColumn.editable,
-            buttonGroup:scope.swListingColumn.buttonGroup
+            buttonGroup:scope.swListingColumn.buttonGroup,
+            isVisible:scope.swListingColumn.isVisible || true
         };
 
         if(scope.swListingColumn.hasCellView){

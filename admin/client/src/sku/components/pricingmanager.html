@@ -14,7 +14,6 @@
                     data-multiselect-field-name="placeholder"
                                 >
                     <sw-listing-columns>
-                        asd
                         <sw-listing-column data-property-identifier="skuDefinition"></sw-listing-column>
                         <sw-listing-column data-property-identifier="skuCode"></sw-listing-column>
                         <sw-listing-column data-property-identifier="currencyCode"></sw-listing-column>
@@ -22,10 +21,12 @@
                         <sw-listing-column
                             data-property-identifier="skuID"
                             data-cell-view="swImageDetailModalLauncher"
+                            data-is-visible="true"
                         >
                         </sw-listing-column>
                         <sw-listing-column
                             data-property-identifier="price"
+                            data-is-visible="true"
                             data-cell-view="swSkuPriceSingleEdit"
                             data-cell-scope="{'swSkuPriceSingleEdit':{'skuId':'102884f951c510620151c571cb020122'}}"
                         >
@@ -33,7 +34,6 @@
                     </sw-listing-columns>
                     
                     <sw-collection-configs>
-                        asd
                         <sw-collection-config 
                             data-entity-name="Sku"
                             data-parent-directive-controller-as-name="swMultiListingDisplay"

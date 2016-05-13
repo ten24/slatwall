@@ -99,7 +99,7 @@
                             <!-- Sortable -->
                             <th class="sort" data-ng-if="swListingDisplay.sortable">&nbsp;</th>
                             <!-- TODO: CREATE FLAG IN COLUMN TO SET CLASS 's-detail-hidden-content'-->
-                            <th data-ng-repeat="column in swListingDisplay.collectionConfig.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" data-ng-click="swListingDisplay.toggleOrderBy(column)" ng-cloak>
+                            <th data-ng-repeat="column in swlistingdisplay.columns" class="data {{column.tdClass}}" data-ng-class="{'s-detail-hidden-content': column.CHANGE_THIS_LATER}" data-ng-if="column.isVisible" data-ng-click="swListingDisplay.toggleOrderBy(column)" ng-cloak>
                                 <span data-ng-bind="column.title" style="cursor: pointer"></span>
                                 <a href data-ng-if="!(column.persistent == false)" class="s-sort-arrows">
                                     <svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
@@ -147,7 +147,7 @@
 
                             <!--cell contents -->
 							<td
-                                    data-ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns"
+                                    data-ng-repeat="(key,column) in swlistingdisplay.columns"
                                     class="column.tdclass"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
@@ -181,7 +181,7 @@
 
                             <!--Expandable Check-->
                             <!--<td
-                                    data-ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns"
+                                    data-ng-repeat="(key,column) in swlistingdisplay.columns"
                                     class="column.tdclass"
                                     data-ng-cloak
                                     data-ng-if="column.isVisible"
