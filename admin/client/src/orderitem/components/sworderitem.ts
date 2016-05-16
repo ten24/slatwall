@@ -400,29 +400,10 @@ class SWOrderItem{
 				/**
 				* Gets a list of child order items if they exist.
 				*/
-				scope.getChildOrderItems = function(){
+				scope.showChildOrderItems = function(){
 					if(!scope.orderItem.childItemsRetrieved){
 						scope.orderItem.clicked = !scope.orderItem.clicked;
 						scope.orderItem.hide = !scope.orderItem.hide;
-						scope.orderItem.childItemsRetrieved = true;
-						var orderItemsPromise = $hibachi.getEntity('orderItem', options);
-						orderItemsPromise.then(function(value){
-							var collectionConfig:any = {};
-							collectionConfig.columns = columnsConfig;
-							collectionConfig.baseEntityName = 'SlatwallOrderItem';
-							collectionConfig.baseEntityAlias = '_orderitem';
-							var childOrderItems = $hibachi.populateCollection(value.records,collectionConfig);
-							angular.forEach(childOrderItems,function(childOrderItem){
-								childOrderItem.depth = scope.orderItem.depth+1;
-								scope.childOrderItems.push(childOrderItem);
-								childOrderItem.data.productBundleGroupPercentage = 1;
-								if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
-									childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
-								}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
-									childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
-								}
-							});
-						});
 					}else{
 						//We already have the items so we just need to show them.
 						angular.forEach(scope.childOrderItems, function(child){
@@ -432,7 +413,31 @@ class SWOrderItem{
 
 					}
 				};
-
+				
+				scope.getChildOrderitems = function(){
+					scope.orderItem.childItemsRetrieved = true;
+					var orderItemsPromise = $hibachi.getEntity('orderItem', options);
+					orderItemsPromise.then(function(value){
+						var collectionConfig:any = {};
+						collectionConfig.columns = columnsConfig;
+						collectionConfig.baseEntityName = 'SlatwallOrderItem';
+						collectionConfig.baseEntityAlias = '_orderitem';
+						var childOrderItems = $hibachi.populateCollection(value.records,collectionConfig);
+						angular.forEach(childOrderItems,function(childOrderItem){
+							childOrderItem.depth = scope.orderItem.depth+1;
+							scope.childOrderItems.push(childOrderItem);
+							childOrderItem.data.productBundleGroupPercentage = 1;
+							if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
+								childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
+							}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
+								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
+							}
+						});
+					});
+				}
+				
+				//Fetch this data eagerly to figure out whether to show or hide the detail link
+				scope.getChildOrderitems();
 			}
 		};
 	}
