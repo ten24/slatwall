@@ -107,7 +107,7 @@ class SWCollectionConfig implements ng.IDirective{
             }   
             scope.swCollectionConfig.columnsPromise.then(()=>{
                 angular.forEach(scope.swCollectionConfig.columns, (column)=>{
-                        newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
+                    newCollectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
                 });
             }); 
             scope.swCollectionConfig.filtersPromise.then(()=>{
@@ -117,6 +117,7 @@ class SWCollectionConfig implements ng.IDirective{
             });
             scope.swCollectionConfig.columnsPromise.finally(()=>{
                scope.swCollectionConfig.filtersPromise.finally(()=>{
+                   console.log("newCC", newCollectionConfig);
                    if(angular.isDefined(parentDirective)){
                         console.log("multicc?", (angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
                             && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])

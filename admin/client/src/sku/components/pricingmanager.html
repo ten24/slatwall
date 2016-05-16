@@ -47,7 +47,7 @@
                                 <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
                             </sw-collection-columns>
                             <sw-collection-filters>
-                                <sw-collection-filter data-property-identifier="sku.product.productID" data-comparison-operator="=" data-comparison-value="swPricingManager.productId"></sw-collection-filter>
+                                <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swPricingManager.productId}}"></sw-collection-filter>
                             </sw-collection-filters>
                         </sw-collection-config>
                         <sw-collection-config 
@@ -60,7 +60,7 @@
                                 <sw-collection-column data-property-identifier="skuBundleID"></sw-collection-column>
                             </sw-collection-columns>
                             <sw-collection-filters>
-                                <sw-collection-filter data-property-identifier="skuBundle.product.productID" data-comparison-operator="=" data-comparison-value="swPricingManager.productId"></sw-collection-filter>
+                                <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swPricingManager.productId}}"></sw-collection-filter>
                             </sw-collection-filters>
                         </sw-collection-config>
                     </sw-collection-configs>
