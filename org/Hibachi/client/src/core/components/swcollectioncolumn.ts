@@ -47,9 +47,20 @@ class SWCollectionColumn implements ng.IDirective{
                 hidden:scope.swCollectionColumn.hidden
         };
         
-        if(angular.isDefined(scope.swCollectionConfig)){ 
-            scope.swCollectionConfig.columns.push(column); 
-            scope.swCollectionConfig.columnsDeferred.resolve(); 
+        var currentScope = scope; 
+        //get the right parent scope
+        while(angular.isDefined(currentScope.$parent)){
+            if(angular.isDefined(currentScope.swCollectionConfig)){ 
+                break; 
+            }
+            currentScope = currentScope.$parent; 
+        }
+        
+        if(angular.isDefined(currentScope.swCollectionConfig)){ 
+            currentScope.swCollectionConfig.columns.push(column); 
+            currentScope.swCollectionConfig.columnsDeferred.resolve(); 
+        } else {
+            throw("Could not find swCollectionConfig in the parent scope from swcollectioncolumn");
         }
     }
 }

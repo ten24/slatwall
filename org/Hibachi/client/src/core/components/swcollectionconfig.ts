@@ -7,12 +7,21 @@ class SWCollectionConfigController{
     public collectionConfigProperty:string;
     public multiCollectionConfigProperty:string;
     
+    public columnsDeferred; 
+    public filtersDeferred; 
+    public columnsPromise; 
+    public filtersPromise; 
+    
     //@ngInject
     constructor(
         public $transclude,
+        public $q, 
         public collectionConfigService
     ){
-        console.log("multiccCONST2")
+        this.columnsDeferred = this.$q.defer();
+        this.columnsPromise =  this.columnsDeferred.promise; 
+        this.filtersDeferred = this.$q.defer(); 
+        this.filtersPromise =  this.filtersDeferred.promise;
     }
 }
 
@@ -59,7 +68,7 @@ class SWCollectionConfig implements ng.IDirective{
         public collectionConfigService,
         public $q
     ){
-        console.log("multiccCONST1")
+
     }
 
     public link = (scope: any, element: JQuery, attrs: angular.IAttributes) => {
@@ -79,11 +88,6 @@ class SWCollectionConfig implements ng.IDirective{
             if(angular.isUndefined(scope.swCollectionConfig.allRecords)){
                 scope.swCollectionConfig.allRecords=false;
             }
-            
-            scope.swCollectionConfig.columnsDeferred = this.$q.defer();
-            scope.swCollectionConfig.columnsPromise =  scope.swCollectionConfig.columnsDeferred.promise; 
-            scope.swCollectionConfig.filtersDeferred = this.$q.defer(); 
-            scope.swCollectionConfig.filtersPromise =  scope.swCollectionConfig.filtersDeferred.promise;
             
             var newCollectionConfig = this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
             newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);               
