@@ -132,7 +132,7 @@ Notes:
 				  	SwOrderPayment on SwPaymentTransaction.orderPaymentID = SwOrderPayment.orderPaymentID
 				  LEFT JOIN
 				  	SwType opst on opst.typeID = SwOrderPayment.orderPaymentStatusTypeID
-				  LEFt JOIN
+				  LEFT JOIN
 				  	SwOrder on SwOrderPayment.orderID = SwOrder.orderID
 				  LEFT JOIN
 				  	SwType ost on ost.typeID = SwOrder.orderStatusTypeID
