@@ -44,7 +44,8 @@ class SWListingColumn implements ng.IDirective{
         range:"=?",
         editable:"=?",
         buttonGroup:"=?",
-        cellView:"@?"
+        cellView:"@?",
+        fallbackPropertyIdentifiers:"@?"
     };
     public controller=SWListingColumnController;
     public controllerAs="swListingColumn";
@@ -69,6 +70,7 @@ class SWListingColumn implements ng.IDirective{
 
         var column:any = {
             propertyIdentifier:scope.swListingColumn.propertyIdentifier,
+            fallbackPropertyIdentifiers:scope.swListingColumn.fallbackPropertyIdentifiers,
             processObjectProperty:scope.swListingColumn.processObjectProperty,
             title:scope.swListingColumn.title,
             tdclass:scope.swListingColumn.tdclass,

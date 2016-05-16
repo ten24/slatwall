@@ -222,7 +222,6 @@ class SWMultiListingDisplayController{
             this.collectionObjects[key] = value.baseEntityName;
         }); 
         this.buildCommonPropertiesList();
-        console.log("multicc", "listing vars", this);
     };
     
     private buildCommonPropertiesList = () => {
@@ -280,10 +279,8 @@ class SWMultiListingDisplayController{
             return ()=>{
                 this.collectionData = {}; 
                 this.collectionData.pageRecords = [];
-                console.log("cccc",this.collectionConfigs);
                 var allGetEntityPromises = [];
                 angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
-                    console.log("cccc", key)
                     allGetEntityPromises.push(collectionConfig.getEntity());
                 });    
                 console.log("cccc", allGetEntityPromises)   
@@ -296,7 +293,7 @@ class SWMultiListingDisplayController{
                             });
                         },
                         (reason)=>{
-                           //error callback to implemented
+                           //error callback to be implemented
                         }
                     ); 
                 } 

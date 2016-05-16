@@ -28,6 +28,18 @@ class SWListingDisplayCellController{
         this.corePartialsPath = corePartialsPath;
         this.$scope = $scope;
         this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.propertyIdentifier)];
+        console.log("ldc",this.column.fallbackPropertyIdentifiers)
+        if(angular.isUndefined(this.value) && angular.isDefined(this.column.fallbackPropertyIdentifiers)){
+            //grab the value based on the values
+            var fallbackPropertyArray = this.column.fallbackPropertyIdentifiers.split(",");
+            for(var i=0; i<fallbackPropertyArray.length; i++){
+                if(angular.isDefined(this.pageRecord[fallbackPropertyArray[i]])){
+                    this.value = this.pageRecord[fallbackPropertyArray[i]];
+                    break;
+                }
+            }
+        }
+        
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
         this.hasActionCaller = false;
