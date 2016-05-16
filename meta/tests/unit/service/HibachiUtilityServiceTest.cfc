@@ -53,15 +53,81 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
+			
+	public void function getTemplateKeysTest() {
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		
+		var expectedTemplateKeyValues = [
+			'${anything}',
+			'${anotherTemplateKey}',
+			'${onemoreTemplateKey}'
+		];
+		
+		var resultTemplateKeys = variables.service.getTemplateKeys(mockTemplate);
+		
+		assertEquals(resultTemplateKeys,expectedTemplateKeyValues);
+		
+		/*
+		mockStructure.onemoreTemplateKey = variables.service.getTemplateKeys(mockStructure.onemoreTemplateKey);
+//		request.debug(serializejson(mockStructure));
+//		assertEquals(serializejson(mockStructure), serializejson(testStructure));
+		assertEquals(mockStructure.onemoreTemplateKey, testStructure.onemoreTemplateKey);
+		*/
+	}
 	
-	public void function replaceStringTemplateTest(){
-		var mockTemplate = '<div>${anything}</div>${anothertemplateKey},${onemoretemplatekey}';
+	public void function replaceStringTemplate_withStructure_Test(){
+		//testing with a structure
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		
 		var mockStructure = {
-			anything='value',
-			anothertemplateKey="othervalue"
-		};
+			anything = 'value',
+			anotherTemplateKey = "othervalue",
+			onemoreTemplateKey = "onemorevalue"
+		}; 
+		var resultStringResult = variables.service.replaceStringTemplate(mockTemplate, mockStructure);
+		assertEquals(resultStringResult,'<div>value</div>othervalue,onemorevalue');
+	}
+	
+	public void function replaceStringTemplate_withObject_Test(){
+		//testing with an object
+		var mockTemplate = '<div>${firstName}</div>';
+		
+		var mockObject = createTestEntity('Account');
+		mockObject.setFirstName('Yuqing');
+		
+		var resultStringResult = variables.service.replaceStringTemplate(mockTemplate, mockObject);
+		
+		assertEquals(resultStringResult,'<div>Yuqing</div>');
+	}
+	
+	public void function replaceStringTemplate_withObjectMissingKey_Test(){
+		//testing Missing Object
+		var mockTemplate = '<div>${firstName}</div>';
+		var mockObject = createTestEntity('Account');
+		
+		var resultMissingObject = variables.service.replaceStringTemplate(mockTemplate, mockObject);
+		assertEquals(resultMissingObject,'<div></div>');
 		
 	}
+	
+	public void function replaceStringTemplate_withStructureMissingKey_Test(){
+		//testing Missing Structure
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		var mockStructure = {
+		}; 
+		var resultMissingStructure = variables.service.replaceStringTemplate(mockTemplate, mockStructure);
+		assertEquals(resultMissingStructure, '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}');
+	}
+	
+	public void function replaceStringTemplate_withStructureMissingKeyRemoveMissingKey_Test(){
+		//testing Missing Structure
+		var mockTemplate = '<div>${anything}</div>${anotherTemplateKey},${onemoreTemplateKey}';
+		var mockStructure = {}; 
+		var resultMissingStructure = variables.service.replaceStringTemplate(mockTemplate, mockStructure,false,true);
+		assertEquals(resultMissingStructure, '<div></div>,');
+	}
+	
+	
 	
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};
