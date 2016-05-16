@@ -222,7 +222,29 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		];
 		
-		var result = variables.service.arrayOfStructsSort(mockArrayOfStructures);
+		var mockExpectedResultForDescending = [
+			{
+				"key":"value",
+				"key2":"differentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervaluedifferentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervalue"
+				
+			}
+		];
+		
+		var result = variables.service.arrayOfStructsSort(mockArrayOfStructures,'key2','desc');
 		//assertResults
+		
+		assertEquals( serializeJson(result), serializejson(mockExpectedResultForDescending));
+		
+		result = variables.service.arrayOfStructsSort(mockArrayOfStructures,'key2','asc');
 	}
 }
