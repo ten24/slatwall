@@ -54,6 +54,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("hibachiUtilityService");
 	}
 	
+	public void function replaceStringTemplateTest(){
+		var mockTemplate = '<div>${anything}</div>${anothertemplateKey},${onemoretemplatekey}';
+		var mockStructure = {
+			anything='value',
+			anothertemplateKey="othervalue"
+		};
+		
+	}
 	
 	public void function lcaseStructKeys_lcases_structure_keys_at_top_level() {
 		var data = {};

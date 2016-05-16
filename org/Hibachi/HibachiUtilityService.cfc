@@ -291,9 +291,14 @@
 
 			return returnString;
 		}
+		
+		public array function getTemplateKeys(required string template){
+			returnreMatchNoCase("\${[^}]+}",arguments.template)
+		}
+		
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
-			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
+			var templateKeys = getTemplateKeys(arguments.templateKeys);
 			var replacementArray = [];
 			var returnString = arguments.template;
 			for(var i=1; i<=arrayLen(templateKeys); i++) {
