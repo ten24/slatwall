@@ -89,6 +89,21 @@ class SWCollectionConfig implements ng.IDirective{
                 scope.swCollectionConfig.allRecords=false;
             }
             
+            var allCollectionConfigPromises = [];
+            
+            var currentScope = scope; 
+            //we want to wait for all sibling scopes before pushing the collection config
+            while(angular.isDefined(currentScope)){
+                if(angular.isDefined(currentScope.swCollectionConfig)){
+                    allCollectionConfigPromises.push(currentScope.swCollectionConfig.columnsPromise);
+                    allCollectionConfigPromises.push(currentScope.swCollectionConfig.filtersPromise);  
+                }
+                currentScope = currentScope.$$nextSibling;  
+                if(currentScope == null){
+                    break; 
+                }
+            }
+
             var newCollectionConfig = this.collectionConfigService.newCollectionConfig(scope.swCollectionConfig.entityName);
             newCollectionConfig.setAllRecords(scope.swCollectionConfig.allRecords);               
             
@@ -115,30 +130,21 @@ class SWCollectionConfig implements ng.IDirective{
                     newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
                 }); 
             });
-            scope.swCollectionConfig.columnsPromise.finally(()=>{
-               scope.swCollectionConfig.filtersPromise.finally(()=>{
-                   console.log("newCC", newCollectionConfig);
-                   if(angular.isDefined(parentDirective)){
-                        console.log("multicc?", (angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
-                            && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
-                        ));
-                        if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
-                            && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
-                        ){
-                            console.log("multicc pushing to", parentDirective)
-                            parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
-                            //should pass this in just like the collection property
-                            parentDirective.multipleCollectionDeffered.resolve();
-                        } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
-                            parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
-                        } else { 
-                            throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
-                        }
-                    } 
-               });
-            });
-            
-            
+            this.$q.all(allCollectionConfigPromises).then(()=>{
+                if(angular.isDefined(parentDirective)){
+                    if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
+                        && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
+                    ){
+                        parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
+                        //should pass this in just like the collection property
+                        parentDirective.multipleCollectionDeffered.resolve();
+                    } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
+                        parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
+                    } else { 
+                        throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
+                    }
+                } 
+            });       
         }
     }
    

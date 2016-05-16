@@ -219,7 +219,7 @@ class SWMultiListingDisplayController{
     
     private setupInMultiCollectionConfigMode = () => {
         angular.forEach(this.collectionConfigs,(value,key)=>{
-            this.collectionObjects[key] = this.$hibachi.newEntity(value.baseEntityName); 
+            this.collectionObjects[key] = value.baseEntityName;
         }); 
         this.buildCommonPropertiesList();
         console.log("multicc", "listing vars", this);
@@ -280,13 +280,27 @@ class SWMultiListingDisplayController{
             return ()=>{
                 this.collectionData = {}; 
                 this.collectionData.pageRecords = [];
+                console.log("cccc",this.collectionConfigs);
+                var allGetEntityPromises = [];
                 angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
-                    this.setupColumns(collectionConfig, this.collectionObjects[key]);
-                    collectionConfig.getEntity().then((data)=>{
-                        //temp splice to keep the record set small
-                        this.collectionData.pageRecords = this.collectionData.pageRecords.concat(data.records.splice(0, 10)); 
-                    });
-                });           
+                    console.log("cccc", key)
+                    allGetEntityPromises.push(collectionConfig.getEntity());
+                });    
+                console.log("cccc", allGetEntityPromises)   
+                if(allGetEntityPromises.length){
+                    this.$q.all(allGetEntityPromises).then(
+                        (results)=>{
+                            angular.forEach(results,(result,key)=>{
+                                this.setupColumns(this.collectionConfigs[key], this.collectionObjects[key]);
+                                this.collectionData.pageRecords = this.collectionData.pageRecords.concat(result.records); 
+                            });
+                        },
+                        (reason)=>{
+                           //error callback to implemented
+                        }
+                    ); 
+                } 
+                //todo pagination logic
             }
         }
     };
