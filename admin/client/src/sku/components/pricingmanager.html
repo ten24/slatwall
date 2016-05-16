@@ -29,8 +29,8 @@
                             data-cell-view="swSkuPriceSingleEdit"
                         >
                         </sw-listing-column>
-                        <sw-listing-column data-property-identifier="skuDefinition"></sw-listing-column>
-                        <sw-listing-column data-property-identifier="skuCode"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="skuDefinition" data-fallback-property-identifiers="skuDefinition,sku_skuDefinition"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="skuCode" data-fallback-property-identifiers="skuCode,sku_skuCode"></sw-listing-column>
                         
                     </sw-listing-columns>
                     
@@ -43,6 +43,7 @@
                         >
                             <sw-collection-columns>
                                 <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
+                                <sw-collection-column data-property-identifier="bundleFlag" data-is-searchabled="true"></sw-collection-column>
                                 <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
                                 <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
                             </sw-collection-columns>
@@ -51,18 +52,19 @@
                             </sw-collection-filters>
                         </sw-collection-config>
                         <sw-collection-config 
-                            data-entity-name="SkuBundle"
+                            data-entity-name="Sku"
                             data-parent-directive-controller-as-name="swMultiListingDisplay"
                             data-multi-collection-config-property="collectionConfigs"
                             data-all-records="true"
                         >
                             <sw-collection-columns>
-                                <sw-collection-column data-property-identifier="skuBundleID"></sw-collection-column>
-                                <sw-collection-column data-property-identifier="sku.skuCode"></sw-collection-column>
-                                <sw-collection-column data-property-identifier="sku.skuDefinition"></sw-collection-column>
+                                <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
+                                <sw-collection-column data-property-identifier="skuCode"></sw-collection-column>
+                                <sw-collection-column data-property-identifier="skuDefinition"></sw-collection-column>
                             </sw-collection-columns>
                             <sw-collection-filters>
                                 <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swPricingManager.productId}}"></sw-collection-filter>
+                                <sw-collection-filter data-property-identifier="bundleFlag" dat-comparison-operator="=" data-comparison-value="true" data-logical-operator="and"></sw-collection-filter>
                             </sw-collection-filters>
                         </sw-collection-config>
                     </sw-collection-configs>
