@@ -30,7 +30,7 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public function arrayOfStructsSort(aOfS,key){
+		public function arrayOfStructsSort(aOfS,key,sortOrder="asc"){
 		        //by default we'll use an ascending sort
 		        var sortOrder = "asc";        
 		        //by default, we'll use a textnocase sort
