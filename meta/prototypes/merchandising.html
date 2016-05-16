@@ -284,121 +284,6 @@
                             </div>
                         </div>
                         <div class="panel-group s-pannel-group" id="accordion">
-                            <div class="j-panel-remove-this  panel panel-default">
-                                <a data-toggle="collapse" href="#collapse1">
-                                    <div class="panel-heading">
-                                        <h4 class="panel-title">
-                                            <span>Basic</span>
-                                            <i class="s-accordion-toggle-icon fa fa-caret-down"></i>
-                                        </h4>
-                                    </div>
-                                </a>
-                                <div id="collapse1" class="panel-collapse collapse">
-                                    <content class="s-body-box">
-                                        <div class="tab-pane" id="tabbasic">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-horizontal">
-                                                        <div class="form-group ">
-                                                            <label for="activeFlag" class="control-label col-sm-4" style="text-align:left;">Active <a href="#" tabindex="-1" data-toggle="tooltip" class="hint" data-title="Item is available for utilization in the back-end" data-original-title="" title=""><i class="icon-question-sign"></i></a></label>
-                                                            <div class="col-sm-8">
-                                                                <div class="radio">
-                                                                    <input type="radio" name="activeFlag" id="activeFlagYes" class=" yes" value="1" checked="checked">
-                                                                    <label for="activeFlagYes">
-                                                                    Yes
-                                                                    </label>
-                                                                </div>
-                                                                <div class="radio">
-                                                                    <input type="radio" name="activeFlag" id="activeFlagNo" class=" yes" value="0">
-                                                                    <label for="activeFlagNo">
-                                                                    No
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group ">
-                                                            <label for="publishedFlag" class="control-label col-sm-4" style="text-align:left;">Published <a href="#" tabindex="-1" data-toggle="tooltip" class="hint" data-title="Item is available and visible on the front-end (both 'Active' and 'Published' must be selected to display on the front-end)" data-original-title="" title=""><i class="icon-question-sign"></i></a></label>
-                                                            <div class="col-sm-8">
-                                                                <div class="radio">
-                                                                    <input type="radio" name="publishedFlag" id="publishedFlagYes" class=" yes" value="1" checked="checked">
-                                                                    <label for="publishedFlagYes">
-                                                                    Yes
-                                                                    </label>
-                                                                </div>
-                                                                <div class="radio">
-                                                                    <input type="radio" name="publishedFlag" id="publishedFlagNo" class=" yes" value="0">
-                                                                    <label for="publishedFlagNo">
-                                                                    No
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group s-required">
-                                                            <label for="productName" class="control-label col-sm-4" style="text-align:left;">Product Name</label>
-                                                            <div class="col-sm-8">
-                                                                <input type="text" name="productName" value="EDGE" class="form-control required">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group s-required">
-                                                            <label for="productCode" class="control-label col-sm-4" style="text-align:left;">Product Code <a href="#" tabindex="-1" data-toggle="tooltip" class="hint" data-title="A unique string (alphanumeric, no spaces) to identify the product." data-original-title="" title=""><i class="icon-question-sign"></i></a></label>
-                                                            <div class="col-sm-8">
-                                                                <input type="text" name="productCode" value="EDGE" class="form-control required">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group s-required">
-                                                            <label for="urlTitle" class="control-label col-sm-4" style="text-align:left;">URL Title <a href="#" tabindex="-1" data-toggle="tooltip" class="hint" data-title="This field is used to create the front-end URL for SEO purposes.  The value must contain only alpha-numeric charecters as well as - or _.  Best practice is to leave this value as all lower case" data-original-title="" title=""><i class="icon-question-sign"></i></a></label>
-                                                            <div class="col-sm-8">
-                                                                <input type="text" name="urlTitle" value="edge" class="form-control required">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-horizontal">
-                                                        <div class="form-group ">
-                                                            <label for="brand.brandID" class="control-label col-sm-4" style="text-align:left;">Brand</label>
-                                                            <div class="col-sm-8">
-                                                                <select name="brand.brandID" class="form-control  j-custom-select-remove-this">
-                                                                    <option value="" selected="selected">None</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group s-required">
-                                                            <label for="productType.productTypeID" class="control-label col-sm-4" style="text-align:left;">Product Type</label>
-                                                            <div class="col-sm-8">
-                                                                <select name="productType.productTypeID" class="form-control required j-custom-select-remove-this">
-                                                                    <option value="5124bffa41a7a1c30141c25d4a9b0248" selected="selected">Merchandise | Monitor Arms</option>
-                                                                    <option value="5124bffa41a7a1c30141c25dd6ce0249">Merchandise | Tables</option>
-                                                                    <option value="5124bffa41a7a1c30141c25e47d8024a">Merchandise | Lighting</option>
-                                                                    <option value="5124bffa41a7a1c30141c25f8e43024c">Merchandise | Keyboard Solutions</option>
-                                                                    <option value="5124bffa41a7a1c30141c2602eaa024d">Merchandise | Technology Solutions</option>
-                                                                    <option value="5124bffa41a7a1c30141c260d693024e">Merchandise | Accessories</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="control-label col-sm-4 title" style="text-align:left;">Available To Sell</label>
-                                                            <div class="col-sm-8">
-                                                                <p class="form-control-static value">1000</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="control-label col-sm-4 title" style="text-align:left;">Immediately Available To Sell</label>
-                                                            <div class="col-sm-8">
-                                                                <p class="form-control-static value">1000</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </content>
-                                </div>
-                            </div>   
-                            
-                            
-                            
-                            
                             
                             
                                      
@@ -432,8 +317,8 @@
                             -->
                             
                             <!-- Start of content that you should care about in this mock (-:)-->
-                            <div class="j-panel-remove-this panel panel-default s-detail-content-wrapper">
-                                <a data-toggle="collapse" href="#collapse2">
+                            <div class="j-panel panel panel-default s-detail-content-wrapper">
+                                <a data-toggle="collapse" href="#collapse1">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
                                             <span>Products</span> 
@@ -441,7 +326,7 @@
                                         </h4>
                                     </div>
                                 </a>
-                                <div id="collapse2" class="panel-collapse collapse in">
+                                <div id="collapse1" class="panel-collapse collapse in">
                                     <content class="s-body-box">
                                         
                                         <div class="s-tab-table">
@@ -450,9 +335,6 @@
                                                     <li role="presentation" class="active">
                                                         <a href="#j-basic" role="tab" data-toggle="tab" aria-controls="basic" aria-expanded="true">Assigned Products</a>
                                                     </li> 
-                                                    <li role="presentation">
-                                                        <a href="#j-tree-view" role="tab" data-toggle="tab" aria-controls="pricing">Product Tree</a>
-                                                    </li>
                                                 </ul> 
                                             </div>
                                             <div class="tab-content">
@@ -464,23 +346,40 @@
                                                         <div class="row">
                                                             <div class="col-md-10">
                                                                 <div class="s-search-wrapper">
-                                                                    <input type="text" class="form-control" style="padding-left: 30px;" placeholder="Add product...">
-                                                                    <i style="position: absolute;top: 10px;left: 10px;font-size: 16px;color: #aaa;pointer-events:none;" class="fa fa-search"></i>
-                                                                    <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
-                            									        <ul class="dropdown-menu">
-                                                                            <li><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
-                            									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
-                            									            <li><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
-                                                                            <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
-                                                                            <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
-                            									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
-                                                                            <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
-                                                                            <li><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
-                            									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
-                                                                            <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
-                            									        </ul>
-                            									    </div>
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-btn search-panel">
+                                                                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                            <span>All</span> <span class="caret"></span>
+                                                                            </button>
+                                                                            <ul class="dropdown-menu" role="menu">
+                                                                                <li><a href="#">Name</a></li>
+                                                                                <li><a href="#">Code</a></li>
+                                                                                <li><a href="#">Type</a></li>
+                                                                                <li><a href="#">Active</a></li>
+                                                                                <li><a href="#">Published</a></li>
+                                                                                <li><a href="#">Price </a></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                        <span class="s-search">
+                                                                            <input type="text" class="form-control input-sm" name="" placeholder="Add product..." style="padding-left: 30px;">
+                                                                            <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
+                                    									        <ul class="dropdown-menu">
+                                                                                    <li><a href="##">Casio Business Casual Watch <span>Accessories</span></a></li>
+                                    									            <li><a href="##">Casio Classic Black Watch <span>Accessories</span></a></li>
+                                    									            <li><a href="##">Casio Calculator Watch <span>Accessories</span></a></li>
+                                                                                    <li class="s-selected"><a href="##">Casio Gold Player Special Watch <span>Accessories</span></a></li>
+                                                                                    <li><a href="##">Casio Kids Watch <span>Accessories</span></a></li>
+                                    									            <li><a href="##">Casio Training Day Watch <span>Accessories</span></a></li>
+                                                                                    <li><a href="##">Casio Silver Dress Watch <span>Accessories</span></a></li>
+                                                                                    <li class="s-loading"><a href="##">Casio Silver Player Special Watch <span>Accessories</span></a></li>
+                                    									            <li><a href="##">Casio Surf Tide Watch <span>Accessories</span></a></li>
+                                                                                    <li><a href="##">Casio Underwater Watch <span>Accessories</span></a></li>
+                                    									        </ul>
+                                    									    </div>
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
+                                                                
                                                             </div>
                                                             <div class="col-md-2">
                                                                 <div class="s-table-setting">
@@ -502,99 +401,9 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
-                                                        
-                                                        <style>
-                                                            .s-table-setting {
-                                                                height: 34px;
-                                                                border: 1px solid #DDD;
-                                                                border-radius: 2px;
-                                                                padding: 7px;
-                                                                text-align: center;
-                                                                font-weight: 600;
-                                                                background: #F2F2F2;
-                                                            }
-                                                            .s-table-setting .s-title {
-                                                                position: relative;
-                                                                bottom: -1px;
-                                                                margin-right: 4px;
-                                                            }
-                                                        </style>
-                                                        <script>
-                                                            $('#j-basic input').keyup(function() { 
-                                                                
-                                                                var inputLen = $(this).val().length;
-                                                                
-                                                                if(inputLen > 0){
-                                                                    $(this).parent().find('.s-search-results-wrapper').show();
-                                                                }else{
-                                                                    $(this).parent().find('.s-search-results-wrapper').hide();
-                                                                }
-                                                            });
-                                                        </script>
-                                                        
-                                                        
+
                                                     </div>
-                                                    <style>
-                                                        .s-search-results-wrapper.s-selectable .dropdown-menu a {
-                                                            padding-left: 30px;
-                                                            position: relative;
-                                                        }
-                                                        .s-search-results-wrapper.s-selectable .dropdown-menu a > span {
-                                                            color: #aaa;
-                                                            float: right;
-                                                        }
-                                                        .s-search-results-wrapper.s-selectable .dropdown-menu li.s-selected a {
-                                                            background: #eff9fd;
-                                                            color: #798c9c;
-                                                        }
-                                                        .s-search-results-wrapper.s-selectable .dropdown-menu li.s-selected a:before  {
-                                                            content: "\f00c";
-                                                            font-family: FontAwesome;
-                                                            left: 10px;
-                                                            position: absolute;
-                                                            top: 9px;
-                                                        }
-                                                        .s-search-checkbox-wrapper {
-                                                            background: #eee;
-                                                            padding: 6px 12px 4px 12px;
-                                                            border-bottom-right-radius: 2px;
-                                                            border-top-right-radius: 2px;
-                                                            display: inline-block;
-                                                            position: absolute;
-                                                            right: 1px;
-                                                            top: 1px;
-                                                            z-index: 10;
-                                                        }
-                                                        .s-search-checkbox-wrapper .s-checkbox {
-                                                            white-space: nowrap;
-                                                        }
-                                                        .s-search-checkbox-wrapper .s-checkbox label {
-                                                            display: inline-block;
-                                                            margin-left: 5px;
-                                                        }
-                                                    </style>
-                                                    <!-- <div class="s-detail-notifications ">
-                    									<div class="row">
-                    										<div class="col-sm-4 s-message" style="margin-top: 6px;">
-                    											<span><b>6</b> items are selected.</span> 
-                    		                                    <a href="##">Select all <b>8</b> items</a>
-                    										</div>
-                    										<div class="col-sm-8" style="text-align:right;">
-                                                                
-                                                                <div class="dropdown">
-                                                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                                                        <span>Bulk Action</span>
-                                                                        <span class="caret"></span>
-                                                                    </button>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li><a href="#">Delete Selected</a></li>
-                                                                    </ul>
-                                                                </div>
-                                                                                                                                
-                    										</div>
-                    									</div>
-                                                    </div> -->
+                                                    
                                                     <div class="table-responsive">
                                                         <table class="table table-bordered s-detail-content-table">
                                                             <thead>
@@ -679,61 +488,171 @@
                                                                         <a href="##" title="Move Order" target="_self">
                                                                             <i class="fa fa-bars" aria-hidden="true"></i>
                                                                         </a>
-                                                                        <style>
-                                                                            .s-order-table {
-                                                                                width: 44px;
-                                                                                padding: 0px !important;
-                                                                                display: none;
-                                                                            }
-                                                                            .s-order-table > a {
-                                                                                width: 100%;
-                                                                                height: 100%;
-                                                                                vertical-align: bottom;
-                                                                                position: absolute;
-                                                                                background: #F2F2F2;
-                                                                                color: #666;
-                                                                                text-align: center;
-                                                                                padding-top: 10px;
-                                                                            }
-                                                                        </style>
                                                                     </td>
-                                                                    <td>
-                                                                        Casio Gold Player Special Watch 
-                                                                    </td>
-                                                                    <td>
-                                                                        5TYU7876TYU
-                                                                    </td>
-                                                                    <td>
-                                                                        Accessories
-                                                                    </td>
-                                                                    <td>
-                                                                        True
-                                                                    </td>
-                                                                    <td>
-                                                                        True
-                                                                    </td>
-                                                                    <td>
-                                                                        $149.99
-                                                                    </td>
+                                                                    <td>Casio Gold Player Special Watch </td>
+                                                                    <td>5TYU7876TYU</td>
+                                                                    <td>Accessories</td>
+                                                                    <td>True</td>
+                                                                    <td>True</td>
+                                                                    <td>$149.99</td>
                                                                     <td class="s-actions">
                                                                         <a href="##" title="" class="btn btn-default btn-xs" target="_self">
                                                                             <i class="fa fa-remove"></i>
                                                                         </a> 
                                                                     </td>
-                                                                    <style>
-                                                                        .table-responsive td a.s-remove.s-remove-from-list {
-                                                                            background-color: #DA5757;
-                                                                            border: 1px solid #DA5757;
-                                                                            color: #FFF !important;
-                                                                            position: absolute;
-                                                                            margin-top: -2px;
-                                                                        }
-                                                                        .table-responsive td a.s-remove.s-remove-from-list:hover {
-                                                                            background-color: #BA3F3F !important;
-                                                                            border: 1px solid #BA3F3F !important;
-                                                                        }
-                                                                    </style>
-                                                                    
+                                                                </tr>
+                                                                
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="j-pagination-remove-this" data-tableid="LD9D579B9FCC280BDD7D9FBA9C0B5186CF">
+                                                        <ul class="pagination paginationpages12">
+                                                            <li><a href="#" class="paging-show-toggle">Show <span class="details">(1 - 10 of 113)</span></a></li>
+                                                            <li><a href="#" class="show-option" data-show="10" style="display: none;">10</a></li>
+                                                            <li><a href="#" class="show-option" data-show="25" style="display: none;">25</a></li>
+                                                            <li><a href="#" class="show-option" data-show="50" style="display: none;">50</a></li>
+                                                            <li><a href="#" class="show-option" data-show="100" style="display: none;">100</a></li>
+                                                            <li><a href="#" class="show-option" data-show="500" style="display: none;">500</a></li>
+                                                            <li><a href="#" class="show-option" data-show="ALL" style="display: none;">ALL</a></li>
+                                                            <li class="disabled"><a href="#" class="page-option prev">«</a></li>
+                                                            <li class="active"><a href="#" class="listing-pager page-option" data-page="1">1</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="2">2</a></li>
+                                                            <li><a href="#" class="listing-pager page-option" data-page="3">3</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <!-- ///First Tab -->
+                                        
+                                            </div>
+                                        </div>
+                                        
+                                    </content>
+                                </div>
+                            </div>
+                                                
+                            
+                            <div class="j-panel panel panel-default s-detail-content-wrapper">
+                                <a data-toggle="collapse" href="#collapse2">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <span>Listing Pages</span> 
+                                            <i class="fa fa-caret-left s-accordion-toggle-icon"></i>
+                                        </h4>
+                                    </div>
+                                </a>
+                                <div id="collapse2" class="panel-collapse collapse in">
+                                    <content class="s-body-box">
+                                        
+                                        <div class="s-tab-table">
+                                            <div class="row s-tabs">
+                                                <ul class="nav nav-tabs" role="tablist"> 
+                                                    <li role="presentation" class="active">
+                                                        <a href="#j-pages-basic" role="tab" data-toggle="tab" aria-controls="basic" aria-expanded="true">Assigned Pages</a>
+                                                    </li> 
+                                                    <li role="presentation">
+                                                        <a href="#j-page-tree-view" role="tab" data-toggle="tab" aria-controls="pricing">Page Tree</a>
+                                                    </li>
+                                                </ul> 
+                                            </div>
+                                            <div class="tab-content">
+                                                
+                                                <!-- First Tab -->
+                                                <div role="tabpanel" class="tab-pane active" id="j-pages-basic">
+                                                    <div class="row s-table-inner-nav ">
+                                                    
+                                                        <div class="s-search-wrapper">
+                                                            <div class="input-group">
+                                                                <div class="input-group-btn search-panel">
+                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                    <span>All</span> <span class="caret"></span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu" role="menu">
+                                                                        <li><a href="#">All</a></li>
+                                                                        <li><a href="#">Page</a></li>
+                                                                        <li><a href="#">Site</a></li>
+                                                                        <li><a href="#">Position</a></li>
+                                                                    </ul>
+                                                                </div>
+                                                                <span class="s-search">
+                                                                    <input type="text" class="form-control input-sm" name="" placeholder="Add page..." style="padding-left: 30px;">
+                                                                    <div class="dropdown s-search-results-wrapper s-selectable" style="display: none;">
+                            									        <ul class="dropdown-menu">
+                                                                            <li><a href="##">Classic Watches <span>Default</span></a></li>
+                            									            <li><a href="##">Black Wathces <span>Default</span></a></li>
+                            									            <li class="s-loading"><a href="##">Silver Wathces <span>Popup Store</span></a></li>
+                                                                            <li class="s-selected"><a href="##">Water Proof Watches <span>Popup Store</span></a></li>
+                                                                            <li><a href="##">Army Watches <span>Popup Store</span></a></li>
+                            									            <li><a href="##">Invisable Watches <span>Popup Store</span></a></li>
+                                                                            <li><a href="##">007 Watches  <span>Default</span></a></li>
+                                                                            <li><a href="##">Special Edition Watches<span>Default</span></a></li>
+                            									        </ul>
+                            									    </div>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered s-detail-content-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="s-order-table">
+                                                                        
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Page</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Site</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th>
+                                                                        <span>Position</span>
+                                                                        <a href="#" class="s-sort-arrows">
+                            												<svg class="nc-icon outline" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 64 64">
+                            													<g transform="translate(0.5, 0.5)"> 
+                            														<polygon class="s-ascending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="20,26 44,26 32,12 " stroke-linejoin="round"></polygon> 
+                            														<polygon class="s-descending" fill="#aaaaaa" stroke="#aaaaaa" stroke-width="3" stroke-linecap="square" stroke-miterlimit="10" points="44,38 20,38 32,52 " stroke-linejoin="round"></polygon> 
+                            													</g>
+                            												</svg>
+                            											</a>
+                                                                    </th>
+                                                                    <th class="s-actions">
+                                                                        
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>    
+                                                                <tr>
+                                                                    <td class="s-order-table">
+                                                                        <a href="##" title="Move Order" target="_self">
+                                                                            <i class="fa fa-bars" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>Water Proof Watches </td>
+                                                                    <td>Popup Store</td>
+                                                                    <td>24/50</td>
+                                                                    <td class="s-actions">
+                                                                        <a href="##" title="" class="btn btn-default btn-xs" target="_self">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a> 
+                                                                    </td>
                                                                 </tr>
                                                                 
                                                             </tbody>
@@ -758,52 +677,35 @@
                                                 <!-- ///First Tab -->
                                                 
                                                 <!-- Second Tab -->
-                                                <div role="tabpanel" class="tab-pane" id="j-tree-view">
+                                                <div role="tabpanel" class="tab-pane" id="j-page-tree-view">
                                                     <div class="row s-table-inner-nav ">
                                                         
                                                         <div class="s-search-wrapper">
                                                             <div class="input-group">
                                                                 <div class="input-group-btn search-panel">
-                                                                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                                                     <span>All</span> <span class="caret"></span>
                                                                     </button>
                                                                     <ul class="dropdown-menu" role="menu">
                                                                         <li><a href="#">All</a></li>
-                                                                        <li><a href="#">Selected Items</a></li>
-                                                                        <li><a href="#">Name</a></li>
-                                                                        <li><a href="#">Code</a></li>
-                                                                        <li><a href="#">Type</a></li>
-                                                                        <li><a href="#">Active</a></li>
-                                                                        <li><a href="#">Published</a></li>
-                                                                        <li><a href="#">Price </a></li>
+                                                                        <li><a href="#">Page</a></li>
+                                                                        <li><a href="#">Site</a></li>
+                                                                        <li><a href="#">Position</a></li>
                                                                     </ul>
                                                                 </div>
                                                                 <span class="s-search">
-                                                                    <input type="text" class="form-control s-search" name="" placeholder="Search Products...">
+                                                                    <input type="text" class="form-control s-search input-sm" name="" placeholder="Search page...">
                                                                     <!-- <buttom class="btn btn-xs btn-default s-add-search-param">Add this filter</buttom> -->
                                                                 </span>
                                                             </div>
                                                         </div>
                                                         
                                                     </div>
-                                                    <div class="s-detail-notifications ">
+                                                    <div class="s-detail-notifications">
                     									<div class="row">
-                    										<div class="col-sm-4 s-message" style="margin-top: 6px;">
+                    										<div class="col-sm-12 s-message" style="margin-top: 6px;">
                     											<span><b>6</b> items are selected.</span> 
                     		                                    <a href="##">Select all <b>8</b> items</a>
-                    										</div>
-                    										<div class="col-sm-8" style="text-align:right;">
-                                                                
-                                                                <!-- <div class="dropdown">
-                                                                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                                                        <span>Bulk Action</span>
-                                                                        <span class="caret"></span>
-                                                                    </button>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li><a href="#">Delete Selected</a></li>
-                                                                    </ul>
-                                                                </div> -->
-                                                                                                                                
                     										</div>
                     									</div>
                                                     </div>
@@ -817,27 +719,10 @@
                                                                             <label for="exampleID"></label>
                                                                         </div>
                                                                     </th>
-                                                                    <th>
-                                                                        Name
-                                                                    </th>
-                                                                    <th>
-                                                                        Code
-                                                                    </th>
-                                                                    <th>
-                                                                        Type
-                                                                    </th>
-                                                                    <th>
-                                                                        Active
-                                                                    </th>
-                                                                    <th>
-                                                                        Published
-                                                                    </th>
-                                                                    <th>
-                                                                        Price
-                                                                    </th>
-                                                                    <th class="s-actions">
-                                                                        
-                                                                    </th>
+                                                                    <th>Page</th>
+                                                                    <th>Site</th>
+                                                                    <th>Position</th>
+                                                                    <th class="s-actions"></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>    
@@ -848,24 +733,9 @@
                                                                             <label for="exampleID2"></label>
                                                                         </div>
                                                                     </td>
-                                                                    <td>
-                                                                        Casio Gold Player Special Watch 
-                                                                    </td>
-                                                                    <td>
-                                                                        5TYU7876TYU
-                                                                    </td>
-                                                                    <td>
-                                                                        Accessories
-                                                                    </td>
-                                                                    <td>
-                                                                        True
-                                                                    </td>
-                                                                    <td>
-                                                                        True
-                                                                    </td>
-                                                                    <td>
-                                                                        $149.99
-                                                                    </td>
+                                                                    <td>Water Proof Watches </td>
+                                                                    <td>Popup Store</td>
+                                                                    <td>24/50</td>
                                                                     <td class="s-actions">
                                                                         <a href="##" title="" class="btn btn-default btn-xs" target="_self">
                                                                             <i class="fa fa-eye"></i> 
@@ -902,6 +772,13 @@
                                 </div>
                             </div>
                             
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                             <script>
                                 
                                 $('#sampleCheckboxToggle').change(function() {    
@@ -915,6 +792,20 @@
                                 });
                                 
                             </script>
+                            
+                            
+                                <script>
+                                    $('.tab-pane input').keyup(function() { 
+                                        
+                                        var inputLen = $(this).val().length;
+                                        
+                                        if(inputLen > 0){
+                                            $(this).parent().find('.s-search-results-wrapper').show();
+                                        }else{
+                                            $(this).parent().find('.s-search-results-wrapper').hide();
+                                        }
+                                    });
+                                </script>
                             
                             
                              <!--// End of content that you should care about in this mock (-:)-->
