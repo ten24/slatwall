@@ -38,7 +38,8 @@ class SWCollectionConfig implements ng.IDirective{
         allRecords:"@?",
         parentDirectiveControllerAsName:"@",
         collectionConfigProperty:"@?",
-        multiCollectionConfigProperty:"@?"
+        multiCollectionConfigProperty:"@?",
+        parentDeferredProperty:"@?"
     };
     public controller=SWCollectionConfigController;
     public controllerAs="swCollectionConfig";
@@ -136,12 +137,13 @@ class SWCollectionConfig implements ng.IDirective{
                         && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
                     ){
                         parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty].push(newCollectionConfig); 
-                        //should pass this in just like the collection property
-                        parentDirective.multipleCollectionDeffered.resolve();
                     } else if(angular.isDefined(parentDirective[scope.swCollectionConfig.collectionConfigProperty])) {
                         parentDirective[scope.swCollectionConfig.collectionConfigProperty] = newCollectionConfig;
                     } else { 
                         throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
+                    }
+                    if(angular.isDefined(scope.swCollectionConfig.parentDeferredProperty)){
+                        parentDirective[scope.swCollectionConfig.parentDeferredProperty].resolve();
                     }
                 } 
             });       

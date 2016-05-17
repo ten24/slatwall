@@ -24,6 +24,7 @@ class SWMultiListingDisplayController{
     public columnCount;
     public commonProperties;
     public expandable:boolean;
+    public expandableRules = []; 
     public exampleEntity:any = "";
     public exportAction;
     public filters = [];
@@ -131,6 +132,7 @@ class SWMultiListingDisplayController{
             //do the initial setup for single collection mode
             this.setupInSingleCollectionConfigMode(); 
         }).finally(()=>{
+            console.log("the rules are layed out", this.expandableRules)
             //if getCollection doesn't exist then create it
             if(angular.isUndefined(this.getCollection)){
                 this.getCollection = this.setupDefaultGetCollection();
@@ -820,7 +822,8 @@ class SWMultiListingDisplay implements ng.IDirective{
     public scope = {};
     public transclude={
         columns:"swListingColumns", 
-        collectionConfigs:"swCollectionConfigs"
+        collectionConfigs:"swCollectionConfigs",
+        expandableRules:"swExpandableRules"
     };
     public bindToController={
 
