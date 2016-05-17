@@ -104,11 +104,11 @@ class SWTypeaheadSearchController {
 	}
 
     public clearSearch = () =>{
-        this.searchText = "";
-        this.hideSearch = true;
-        if(angular.isDefined(this.addFunction)){
-            this.addFunction()(undefined);
-        }
+        //this.searchText = "";
+        //this.hideSearch = true;
+        //if(angular.isDefined(this.addFunction)){
+        //    this.addFunction()(undefined);
+        //}
     };
 
     public toggleOptions = () =>{
