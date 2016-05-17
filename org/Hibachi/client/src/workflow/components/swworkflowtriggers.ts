@@ -186,9 +186,11 @@ class SWWorkflowTriggers{
                         scope.searchEvent = {
                             name:''
                         };
+<<<<<<< HEAD
                         scope.schedule.selectedName = '';
                         scope.schedulePreview = {};
-
+=======
+>>>>>>> origin/develop
                         //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
                         if (context == 'add'){
                             console.log("Save and New");
