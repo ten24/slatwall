@@ -105,7 +105,7 @@ class HibachiService{
 
 	getLastEntityNameInPropertyIdentifier = (entityName,propertyIdentifier)=>{
 		if(!entityName){
-			throw('No entity name was supplied to getLastEntityNameInPropertyIdentifier in hibachi service.');
+			throw('no entity name supplied');
 		}
 		//strip alias if it exists
 		if(propertyIdentifier.charAt(0) === '_'){

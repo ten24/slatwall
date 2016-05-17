@@ -18,7 +18,6 @@ class SWActionCallerController{
     public formCtrl:any;
     public actionUrl:string;
     public queryString:string;
-    public isAngularRoute:boolean;
     //@ngInject
     constructor(
         private $scope,
@@ -53,10 +52,8 @@ class SWActionCallerController{
     public init = ():void =>{
 
         //Check if is NOT a ngRouter
-        if(angular.isUndefined(this.isAngularRoute)){
-            this.isAngularRoute = this.utilityService.isAngularRoute();    
-        }
-        if(!this.isAngularRoute){
+
+        if(!this.utilityService.isAngularRoute()){
             this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
         }else{
             this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
@@ -225,7 +222,7 @@ class SWActionCallerController{
                 this.disabledtext = this.rbkeyService.getRBKey(disabledrbkey);
             }
             //add disabled class
-            this.class += " btn-disabled";
+            this.class += " s-btn-disabled";
             this.confirm = false;
             return this.disabledtext;
         }
@@ -277,8 +274,7 @@ class SWActionCaller implements ng.IDirective{
         disabledtext:"@",
         modal:"=",
         modalFullWidth:"=",
-        id:"@",
-        isAngularRoute:"=?"
+        id:"@"
     };
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";

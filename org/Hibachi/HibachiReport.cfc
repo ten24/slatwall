@@ -683,7 +683,7 @@
 						<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 1 />
 						<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['compareColor'] />
 
-						<hb:HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
+						<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 							<cfset var thisData = [] />
 							<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
 							<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
@@ -692,10 +692,8 @@
 							<cfelse>
 								<cfset arrayAppend(thisData, 0) />
 							</cfif>
-
-							<cfset arrayAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
-						</hb:HibachiDateLoop>
-
+							<cfset structAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
+						</cf_HibachiDateLoop>
 					</cfif>
 				</cfloop>
 

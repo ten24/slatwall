@@ -186,7 +186,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	
 	public any function getSession() {
 		if(!structKeyExists(variables, "session")) {
-			getService("hibachiSessionService").setProperSession();
+			getService("hibachiSessionService").setPropperSession();
 		}
 		return variables.session;
 	}

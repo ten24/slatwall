@@ -25,7 +25,6 @@ class SWListingDisplayController{
     public exportAction;
     public filters = [];
     public filterGroups = [];
-    public isAngularRoute:boolean;
     public getCollection;
     public getChildCount;
     public hasCollectionPromise;
@@ -81,17 +80,15 @@ class SWListingDisplayController{
         public observerService,
         public rbkeyService
     ){
-        
-        this.initialSetup();
+        console.log('here');
+        console.log(this);
+        this.intialSetup();
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
         });
     }
 
-    private initialSetup = () => {
-        if(angular.isUndefined(this.isAngularRoute)){
-            this.isAngularRoute = true;    
-        }
+    private intialSetup = () => {
         //default search is available
         if(angular.isUndefined(this.hasSearch)){
             this.hasSearch = true;
@@ -317,6 +314,7 @@ class SWListingDisplayController{
             }
             this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
             this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),' ');
+            this.collectionConfig.setAllRecords(true);
         }
 
 //            if(
@@ -341,9 +339,7 @@ class SWListingDisplayController{
 
         if(this.multiselectValues && this.multiselectValues.length){
             //select all owned ids
-            console.log('swListingDisplay');
-            console.log(this.multiselectValues);
-            angular.forEach(this.multiselectValues,(value)=>{
+            angular.forEach(this.multiselectValues.split(','),(value)=>{
                 this.selectionService.addSelection(this.name,value);
             });
         }
@@ -750,8 +746,8 @@ class SWListingDisplay implements ng.IDirective{
     public bindToController={
 
             isRadio:"=?",
+            //angularLink:true || false
             angularLinks:"=?",
-            isAngularRoute:"=?",
             name:"@?",
 
             /*required*/

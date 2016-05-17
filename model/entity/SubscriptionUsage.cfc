@@ -308,7 +308,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 						return "Renewal";
 						break;
 					case "soitInitial":
-						return "Initial";
+						return "Intial";
 						break;
 					default:
 						return "Change";

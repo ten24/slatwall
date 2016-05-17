@@ -42,6 +42,9 @@ jQuery(document).ready(function() {
 });
 
 function initUIElements( scopeSelector ) {
+    
+    jQuery("input[name='redemptionAmount']").hide();
+    jQuery("label[for='redemptionAmount']").hide();
 
 	var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
 	var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
@@ -331,7 +334,7 @@ function setupEventHandlers() {
 		jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
 		jQuery('#adminConfirm').modal();
 	});
-	jQuery('body').on('click', '.btn-disabled', function(e){	
+	jQuery('body').on('click', '.s-btn-disabled', function(e){	
 		e.preventDefault();
 		jQuery('#adminDisabled .modal-body').html( jQuery(this).data('disabled') );
 		jQuery('#adminDisabled').modal();
@@ -419,6 +422,16 @@ function setupEventHandlers() {
 		});
 
 	});
+    
+    jQuery("select[name='redemptionAmountType']").change(function(){
+        if( jQuery("select[name='redemptionAmountType']").val() == "sameAsPrice"){
+            jQuery("input[name='redemptionAmount']").hide();
+            jQuery("label[for='redemptionAmount']").hide();
+        } else { 
+            jQuery("input[name='redemptionAmount']").show();   
+            jQuery("label[for='redemptionAmount']").show();
+        }
+    }); 
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
@@ -974,16 +987,16 @@ function setupEventHandlers() {
 	});
 
 	//[TODO]: Change Up JS
-	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').addClass('s-opened');
+	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
 
 	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.s-accordion-toggle-icon').addClass('s-opened');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
 	});
 
 	jQuery('body').on('hidden.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.s-accordion-toggle-icon').removeClass('s-opened');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
 	});
 
 	//UI Collections - show export and delete options
@@ -1247,6 +1260,8 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 			nextRowDepth++;
 		}
 		if(data['entityName']){
+			
+			
 			jQuery.ajax({
 				url: hibachiConfig.baseURL + '/',
 				method: 'post',
@@ -1387,9 +1402,6 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 					pendingCarriageReturn=false;
 				}
 			});
-		}else{
-			removeLoadingDiv( tableID );
-			listingUpdateRelease();
 		}
 	}
 }

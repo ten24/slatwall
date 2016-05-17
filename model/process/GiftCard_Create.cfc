@@ -48,7 +48,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one";
     property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one";
 	property name="originalOrderItem" cfc="OrderItem"  fieldtype="many-to-one";
-	property name="orderPayments" cfc="OrderPayment" fieldtype="one-to-many" singularname="orderPayment" ;
+	property name="orderPayments" cfc="OrderPayment" fieldtype="one-to-many";
 
 	// Data Properties
 	property name="giftCardID";

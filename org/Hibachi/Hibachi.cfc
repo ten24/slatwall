@@ -67,8 +67,8 @@ component extends="FW1.framework" {
 		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
 		,{ "$GET/api/:entityName/:entityID/$" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
 		
-		,{ "$POST/api/$" = "/api:main/post/" }
-		,{ "$POST/api/:entityName/:entityID/$" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
+		,{ "$POST/api/" = "/api:main/post/" }
+		,{ "$POST/api/:entityName/:entityID" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
 		
 	];
 	
@@ -207,11 +207,11 @@ component extends="FW1.framework" {
 			// Verify that the application is setup
 			verifyApplicationSetup();
 			// Verify that the session is setup
-			getHibachiScope().getService("hibachiSessionService").setProperSession();
+			getHibachiScope().getService("hibachiSessionService").setPropperSession();
 			//check if we have the authorization header
-			if(structKeyExists(GetHttpRequestData().Headers,'Auth-Token')){
+			if(structKeyExists(GetHttpRequestData().Headers,'Authorization')){
 				
-				var authorizationHeader = GetHttpRequestData().Headers['Auth-Token'];
+				var authorizationHeader = GetHttpRequestData().Headers.authorization;
 				var prefix = 'Bearer ';
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
@@ -362,11 +362,11 @@ component extends="FW1.framework" {
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'forbidden';
 				}else if(structKeyExists(authorizationDetails,'timeout') && authorizationDetails.timeout == true){
-					status = getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode();
+					status = 401;
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'timeout';
 				}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
-					status = getHibachiScope().getService("hibachiAuthenticationService").getInvalidCredentialsStatusCode();;
+					status = 401;
 					context.getResponse().setStatus(status, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
 					message['message'] = 'invalid_token';
 				}
@@ -498,9 +498,6 @@ component extends="FW1.framework" {
 					}
 					if(!coreBF.containsBean("hibachiDataService")) {
 						coreBF.declareBean("hibachiDataService", "#variables.framework.applicationKey#.org.Hibachi.HibachiDataService", true);	
-					}
-					if(!coreBF.containsBean("hibachiDocsService")) {
-						coreBF.declareBean("hibachiDocsService", "#variables.framework.applicationKey#.org.Hibachi.HibachiDocsService", true);
 					}
 					if(!coreBF.containsBean("hibachiEventService")) {
 						coreBF.declareBean("hibachiEventService", "#variables.framework.applicationKey#.org.Hibachi.HibachiEventService", true);	

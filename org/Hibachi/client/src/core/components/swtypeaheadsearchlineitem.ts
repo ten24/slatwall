@@ -2,56 +2,47 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 
 class SWTypeaheadSearchLineItemController{
-    constructor(){}
+
+    constructor(
+
+    ){
+        this.init();
+    }
+
+    public init = () =>{
+
+    }
 }
 
 class SWTypeaheadSearchLineItem implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
     public bindToController={
-        propertyIdentifier:"@",
-        isSearchable:"@?",
+        propertyIdentifier:"@"
     };
     public controller=SWTypeaheadSearchLineItemController;
     public controllerAs="swTypeaheadSearchLineItem";
+    public static $inject = ['utilityService'];
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            $compile
+            utilityService
         )=>new SWTypeaheadSearchLineItem(
-            $compile
+            utilityService
         );
         directive.$inject = [
-            '$compile'
+            'utilityService'
         ];
         return directive;
     }
-    
-    //@ngInject
-    constructor(private $compile){}
-    
-    public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
-        return {
-            pre: (scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                var innerHTML = '<span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
-                element.append(innerHTML);
-                
-                //below is deprecated code pre dates swCollection, swCollectionFilter, and swCollectionColumn
-                var column = {
-                        propertyIdentifier:scope.swTypeaheadSearchLineItem.propertyIdentifier,
-                        isSearchable:scope.swTypeaheadSearchLineItem.isSearchable
-                };
-                
-                if(angular.isDefined(scope.$parent.swTypeaheadSearch)){ 
-                    scope.$parent.swTypeaheadSearch.columns.push(column);
-                } 
-                
-                if(angular.isDefined(scope.$parent.swTypeaheadInputField)){
-                    scope.$parent.swTypeaheadInputField.columns.push(column);
-                }   
-            },
-            post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}
-        };
+    constructor(private utilityService){
+
+    }
+
+    public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
+        if(angular.isDefined(scope.$parent.swTypeaheadSearch)){
+            scope.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
+        }
     }
 }
 export{

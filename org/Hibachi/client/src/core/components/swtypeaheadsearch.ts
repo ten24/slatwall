@@ -1,6 +1,7 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
+
 class SWTypeaheadSearchController {
 
 	public collectionConfig; 
@@ -13,33 +14,19 @@ class SWTypeaheadSearchController {
 	public results;
 	public addFunction;
     public validateRequired:boolean; 
-    public columns = [];
-    public filters = [];
+    public displayList = [];
 	public addButtonFunction;
     public viewFunction;
 	public hideSearch:boolean;
     public resultsPromise;
     public resultsDeferred;
     public showAddButton;
-    public placeholderText:string;
-    public placeholderRbKey:string;
 
 	private _timeoutPromise;
     public showViewButton;
 
     // @ngInject
-	constructor(private $scope, 
-                private $q,
-                private $transclude, 
-                private $hibachi, 
-                private $timeout:ng.ITimeoutService, 
-                private utilityService, 
-                private rbkeyService, 
-                private collectionConfigService
-     ){
-       
-        //populates all needed variables
-        this.$transclude($scope,()=>{});
+	constructor(private $scope, private $q, private $transclude, private $hibachi, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService){
 
         this.resultsDeferred = $q.defer();
         this.resultsPromise = this.resultsDeferred.promise;
@@ -66,12 +53,6 @@ class SWTypeaheadSearchController {
                 throw("You did not pass the correct collection config data to swTypeaheadSearch");
             }
         }
-        
-        if(angular.isDefined(this.placeholderRbKey)){
-            this.placeholderText = this.rbkeyService.getRBKey(this.placeholderRbKey);
-        } else if (angular.isUndefined(this.placeholderText)){
-            this.placeholderText = this.rbkeyService.getRBKey('define.search');
-        }
 
         if(angular.isDefined(this.addButtonFunction)){
             this.showAddButton = true;
@@ -84,17 +65,13 @@ class SWTypeaheadSearchController {
         //init timeoutPromise for link
         this._timeoutPromise = this.$timeout(()=>{},500);
 
+        //populate the displayList
+        this.$transclude($scope,()=>{});
+
         if(angular.isDefined(this.propertiesToDisplay)){
-            this.collectionConfig.addDisplayProperty(this.propertiesToDisplay.split(","));
+            this.displayList = this.propertiesToDisplay.split(",");
+            this.collectionConfig.addDisplayProperty(this.utilityService.arrayToList(this.displayList));
         }
-        
-        angular.forEach(this.columns, (column)=>{
-                this.collectionConfig.addDisplayProperty(column.propertyIdentifier, '', column);
-        });
-        
-        angular.forEach(this.filters, (filter)=>{
-                this.collectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
-        }); 
 
         if(angular.isDefined(this.allRecords)){
 			this.collectionConfig.setAllRecords(this.allRecords);
@@ -112,7 +89,7 @@ class SWTypeaheadSearchController {
     };
 
     public toggleOptions = () =>{
-        if(this.hideSearch && !this.searchText.length){
+        if(this.hideSearch && (!this.searchText || !this.searchText.length)){
             this.search(this.searchText);
         } else {
             this.hideSearch = !this.hideSearch;
@@ -156,11 +133,8 @@ class SWTypeaheadSearchController {
 			this.hideSearch = true;
 		}
 
-		if(angular.isDefined(this.columns) && 
-           this.columns.length && 
-           angular.isDefined(this.columns[0].propertyIdentifier)
-        ){
-			this.searchText = item[this.columns[0].propertyIdentifier];
+		if(angular.isDefined(this.displayList)){
+			this.searchText = item[this.displayList[0]];
 		}
 
 		if(angular.isDefined(this.addFunction)){
@@ -199,6 +173,8 @@ class SWTypeaheadSearchController {
 
 class SWTypeaheadSearch implements ng.IDirective{
 
+	public static $inject=["$hibachi", "$timeout", "collectionConfigService", "corePartialsPath",
+			'hibachiPathBuilder'];
 	public templateUrl;
     public transclude=true; 
 	public restrict = "EA";
@@ -211,7 +187,6 @@ class SWTypeaheadSearch implements ng.IDirective{
 		propertiesToDisplay:"@?",
 		filterGroupsConfig:"@?",
 		placeholderText:"@?",
-        placeholderRbKey:"@?",
 		searchText:"=?",
 		results:"=?",
 		addFunction:"&?",
@@ -224,55 +199,44 @@ class SWTypeaheadSearch implements ng.IDirective{
 	};
 	public controller=SWTypeaheadSearchController;
 	public controllerAs="swTypeaheadSearch";
-    
-    // @ngInject
-	constructor(public $compile, private corePartialsPath,hibachiPathBuilder){
+
+	constructor(private $hibachi, public $compile, private $timeout:ng.ITimeoutService, private utilityService, private collectionConfigService, private corePartialsPath,hibachiPathBuilder){
 		this.templateUrl = hibachiPathBuilder.buildPartialsPath(corePartialsPath) + "typeaheadsearch.html";
 	}
-    
-    public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
-        return {
-            pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {},
-            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
-                var target = element.find(".dropdown-menu");
-                var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
-                var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
-                var transcludeContent = transclude($scope,()=>{});
-                //strip out the ng-transclude if this typeahead exists inside typeaheadinputfield directive
-                if(angular.isDefined(transcludeContent[1])){
-                    if(angular.isDefined(transcludeContent[1].localName) && 
-                       transcludeContent[1].localName == 'sw-collection-config'
-                    ){
-                        transcludeContent.splice(1,1);
-                    }
-                    if(angular.isDefined(transcludeContent[1].localName) && 
-                       transcludeContent[1].localName == 'ng-transclude'
-                    ){
-                        transcludeContent = transcludeContent.children();
-                    }
-                }
-                actionTemplate.append(transcludeContent); 
-                listItemTemplate.append(actionTemplate); 
-                $scope.swTypeaheadSearch.resultsPromise.then(()=>{
-                    target.append(this.$compile(listItemTemplate)($scope));
-                });
-                
-            }
-        };
-    }
+
+	public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any, controller:any, transclude:any) =>{
+        var target = element.find(".dropdown-menu");
+        var listItemTemplate = angular.element('<li ng-repeat="item in swTypeaheadSearch.results"></li>');
+        var actionTemplate = angular.element('<a ng-click="swTypeaheadSearch.addItem(item)" ></a>');
+        var transcludeContent = transclude(scope,()=>{});
+        actionTemplate.append(transcludeContent); 
+        listItemTemplate.append(actionTemplate); 
+        
+        scope.swTypeaheadSearch.resultsPromise.then(()=>{
+            target.append(this.$compile(listItemTemplate)(scope));
+        });
+	};
 
 	public static Factory(){
 		var directive:ng.IDirectiveFactory = (
-            $compile
+			$hibachi
+            ,$compile
+			,$timeout
+            ,utilityService
+			,collectionConfigService
 			,corePartialsPath
             ,hibachiPathBuilder
 
 		)=> new SWTypeaheadSearch(
-            $compile
+			$hibachi
+            ,$compile
+			,$timeout
+            ,utilityService
+			,collectionConfigService
 			,corePartialsPath
             ,hibachiPathBuilder
 		);
-		directive.$inject = ["$compile","corePartialsPath",
+		directive.$inject = ["$hibachi", "$compile", "$timeout", "utilityService", "collectionConfigService", "corePartialsPath",
 			'hibachiPathBuilder'];
 		return directive;
 	}

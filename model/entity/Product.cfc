@@ -46,25 +46,25 @@
 Notes:
 
 */
-component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" description="All top level information about a product and serves as the grouping for skus where price and inventory is managed" {
+component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" {
 
 	// Persistent Properties
 	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
-	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this product.  For Example: http://www.myslatwallsite.com/sp/my-url-title/ where sp is the global product url key, and my-url-title is the urlTitle of this product";
-	property name="productName" ormtype="string" description="Defines the name of the product.  This can also be set at sku level with the skuName property.";
-	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE" description="A unique value that identifies this product and only this product.  This could also be though of as a 'Model Number' but should not be confused with skuCode which identifies the actual unit being sold.";
-	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General marketing description of the product.";
-	property name="publishedFlag" ormtype="boolean" default="false" description="This flag is used to determine if the product should be available for sale as published on the frontend of a website.";
-	property name="sortOrder" ormtype="integer" description="The sort order value can be used to manually organize all of the products in your catalog.";
-	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
-	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
+	property name="urlTitle" ormtype="string" unique="true";
+	property name="productName" ormtype="string";
+	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE";
+	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
+	property name="publishedFlag" ormtype="boolean" default="false";
+	property name="sortOrder" ormtype="integer";
+	property name="purchaseStartDateTime" ormtype="timestamp";
+	property name="purchaseEndDateTime" ormtype="timestamp";
 
 	// Calculated Properties
-	property name="calculatedSalePrice" ormtype="big_decimal" description="Stores the latest calculation of the dynamic 'salePrice' property which in turn calculates from the defaultSku's dynamic salePrice property.";
-	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
-	property name="calculatedAllowBackorderFlag" ormtype="boolean" description="Stores the value of the 'Allow Backorder' setting.  This is commonly used to drive dynamic product lists on the frontend where availability is important." deprecated="true" deprecatedDescription="Because the calculatedQATS propert takes into account if a product is able to be backordered, this property is no longer needed and will be removed in a future release for performance reasons.";
-	property name="calculatedTitle" ormtype="string" description="Stores the latest calculation of the products marketing 'Title' which is generated based on a dynamic string template in the products settings.";
+	property name="calculatedSalePrice" ormtype="big_decimal";
+	property name="calculatedQATS" ormtype="integer";
+	property name="calculatedAllowBackorderFlag" ormtype="boolean";
+	property name="calculatedTitle" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";
@@ -113,6 +113,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
+	property name="redemptionAmountTypeOptions" type="array" persistent="false";
 	property name="bundleSkusSmartList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";
@@ -204,7 +205,6 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 		return count;
 	}
-
 
     public any function getSubscriptionSkuSmartList(){
     	if(!structKeyExists(variables, "subscriptionSkuSmartList")){
@@ -475,7 +475,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	public any function getSkuOptionDetails(string selectedOptionIDList="") {
 
 		// Setup return structure
-		var skuOptionDetails = {};
+		var skuOptionDetials = {};
 
 		// Get all the skus for this product with options fetched
 		var skus = getService("skuService").getProductSkus(product=this, sorted=false, fetchOptions=true);
@@ -521,18 +521,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 				var ogCode = option.getOptionGroup().getOptionGroupCode();
 
 				// Create a struct for this optionGroup if it doesn't exist
-				if(!structKeyExists(skuOptionDetails, ogCode)) {
-					skuOptionDetails[ ogCode ] = {};
-					skuOptionDetails[ ogCode ][ "options" ] = [];
-					skuOptionDetails[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
-					skuOptionDetails[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
-					skuOptionDetails[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
-					skuOptionDetails[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
+				if(!structKeyExists(skuOptionDetials, ogCode)) {
+					skuOptionDetials[ ogCode ] = {};
+					skuOptionDetials[ ogCode ][ "options" ] = [];
+					skuOptionDetials[ ogCode ][ "optionGroupName" ] = option.getOptionGroup().getOptionGroupName();
+					skuOptionDetials[ ogCode ][ "optionGroupCode" ] = option.getOptionGroup().getOptionGroupCode();
+					skuOptionDetials[ ogCode ][ "optionGroupID" ] = option.getOptionGroup().getOptionGroupID();
+					skuOptionDetials[ ogCode ][ "sortOrder" ] = option.getOptionGroup().getSortOrder();
 				}
 
 				// Create a struct for this option if one doesn't exist
 				var existingOptionFound = false;
-				for(var existingOption in skuOptionDetails[ ogCode ][ "options" ]) {
+				for(var existingOption in skuOptionDetials[ ogCode ][ "options" ]) {
 					if( existingOption.optionID == option.getOptionID() ) {
 						existingOption['totalQATS'] += sku.getQuantity("QATS");
 						if(allSelectedInSku) {
@@ -554,13 +554,13 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					if(allSelectedInSku) {
 						newOption['selectedQATS'] = sku.getQuantity("QATS");
 					}
-					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
+					arrayAppend(skuOptionDetials[ ogCode ].options, newOption);
 				}
 			}
 
 		}
 
-		return skuOptionDetails;
+		return skuOptionDetials;
 	}
 
 	public struct function getCrumbData(required string path, required string siteID, required array baseCrumbArray) {
@@ -708,21 +708,17 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var sl = getService("skuService").getSkuSmartList();
 			sl.addFilter('product.productID', getProductID());
 			sl.setSelectDistinctFlag( true );
-			var skus = sl.getRecords();
+			var records = sl.getRecords();
 
-			for(var sku in skus) {
-				if(!isNull(sku.getImageFile())) {
-					var imageAlreadyIncluded = false;
-					for(var image in variables.defaultProductImageFiles){
-						if(image.imageFile == sku.getImageFile()){
-							imageAlreadyIncluded = true;
-						}
-					}
-
-					if(!imageAlreadyIncluded){
+			for(var record in records) {
+				if(!isNull(record.getImageFile())) {
+					arrayIndex = ArrayFind(variables.defaultProductImageFiles, function(struct){
+						return struct.ImageFile == record.getImageFile();
+					});
+					if(arrayIndex == 0){
 						var imageFileStruct = {};
-						imageFileStruct['imageFile'] = sku.getImageFile();
-						imageFileStruct['skuDefinition'] = sku.getSkuDefinition();
+						imageFileStruct['imageFile'] = record.getImageFile();
+						imageFileStruct['skuDefinition'] = record.getSkuDefinition();
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 					}
 				}

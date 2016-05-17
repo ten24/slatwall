@@ -57,19 +57,17 @@ Notes:
 	
 	<cfoutput>
 		<table class="table table-bordered table-hover">
-			<thead>
-				<tr>
-					<th class="primary">#request.slatwallScope.rbKey('entity.setting.settingName')#</th>
-					<cfif attributes.showFilterEntities>
-						<th>#attributes.hibachiScope.rbKey('define.filter')#</th>
-					</cfif>
-					<th>#request.slatwallScope.rbKey('entity.setting.settingValue')#</th>
-					<cfif attributes.showInheritance>
-						<th>#request.slatwallScope.rbKey('define.inheritance')#</th>
-					</cfif>
-					<th>&nbsp;</th>
-				</tr>
-			</thead>
+			<tr>
+				<th class="primary">#request.slatwallScope.rbKey('entity.setting.settingName')#</th>
+				<cfif attributes.showFilterEntities>
+					<th>#attributes.hibachiScope.rbKey('define.filter')#</th>
+				</cfif>
+				<th>#request.slatwallScope.rbKey('entity.setting.settingValue')#</th>
+				<cfif attributes.showInheritance>
+					<th>#request.slatwallScope.rbKey('define.inheritance')#</th>
+				</cfif>
+				<th>&nbsp;</th>
+			</tr>
 			<cfloop array="#thistag.settings#" index="thisSetting">
 				<tr>
 					<td class="primary">

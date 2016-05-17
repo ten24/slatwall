@@ -188,16 +188,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	public array function getRedemptionAmountTypeOptions(){
 		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){
-
 			variables.redemptionAmountTypeOptions = [];
 			var optionValues = 'sameAsPrice,fixedAmount,percentage';
 			var optionValuesArray = listToArray(optionValues);
-
-			var option = {};
-			option['name'] = rbKey('entity.Sku.redemptionAmountType.select');
-			option['value'] = "";
-			arrayAppend(variables.redemptionAmountTypeOptions,option);
-
 			for(var optionValue in optionValuesArray){
 				var option = {};
 				option['name'] = rbKey('define.#optionValue#');
