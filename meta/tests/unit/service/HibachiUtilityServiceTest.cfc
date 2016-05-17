@@ -271,4 +271,49 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		urlTitle = variables.service.createUniqueURLTitle(titleString=ucase(arguments.titleString), tableName="SwProduct");
 		assertEquals(expectedTitle, urlTitle, "title string #arguments.titleString#, position #arguments.index# failed");
 	}
+	
+	public void function arrayOfStructsSortTest(){
+		var mockArrayOfStructures= [
+			{
+				"key":"value",
+				"key2":"anothervalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"differentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervaluedifferentvalue"
+				
+			}
+		];
+		
+		var mockExpectedResultForDescending = [
+			{
+				"key":"value",
+				"key2":"differentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervaluedifferentvalue"
+				
+			},
+			{
+				"key":"value",
+				"key2":"anothervalue"
+				
+			}
+		];
+		
+		var result = variables.service.arrayOfStructsSort(mockArrayOfStructures,'key2','desc');
+		//assertResults
+		
+		assertEquals( serializeJson(result), serializejson(mockExpectedResultForDescending));
+		
+	}
 }
+
