@@ -60,11 +60,9 @@ Notes:
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<cfoutput>
-				<h5>You will see a generated set of access keys on the next page that will be required to make API calls.</h5><br>
-					Enter a description for this token. </br>
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
+				Would you like to generate an API Authentication Token for #rc.account.getFullName()#? </br></br>
 			</cfoutput>
-			
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </hb:HibachiEntityProcessForm>
