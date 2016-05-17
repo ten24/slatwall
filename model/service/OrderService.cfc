@@ -1726,7 +1726,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.order;
 	}
+	
+	public numeric function getAmountToBeCapturedByCaptureAuthorizationPayments(required any orderDelivery, required any processObject){
+		var amountToBeCaptured = arguments.processObject.getCapturableAmount();
+		for(var orderPayment in arguments.processObject.getOrder().getOrderPayments()) {
+			if(
+				orderPayment.getStatusCode() == 'opstActive' 
+				&& orderPayment.getPaymentMethod().getPaymentMethodType() == "creditCard" 
+				&& orderPayment.getAmountUnreceived() > 0 
+				&& amountToBeCaptured > 0
+			) {
+				var transactionData = {
+					transactionType = 'chargePreAuthorization',
+					amount = amountToBeCaptured
+				};
 
+				if(transactionData.amount > orderPayment.getAmountUnreceived()) {
+					transactionData.amount = orderPayment.getAmountUnreceived();
+				}
+
+				orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
+
+				if(!orderPayment.hasErrors()) {
+					amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
+				}
+			}
+		}
+		return amountToBeCaptured;
+	}
+	
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
 
@@ -1734,29 +1762,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If we need to capture payments first, then we do that to make sure the rest of the delivery can take place
 		if(arguments.processObject.getCaptureAuthorizedPaymentsFlag()) {
-			var amountToBeCaptured = arguments.processObject.getCapturableAmount();
-
-			for(var orderPayment in arguments.processObject.getOrder().getOrderPayments()) {
-
-				if(orderPayment.getStatusCode() == 'opstActive') {
-					if(orderPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard" && orderPayment.getAmountUnreceived() gt 0 && amountToBeCaptured gt 0) {
-						var transactionData = {
-							transactionType = 'chargePreAuthorization',
-							amount = amountToBeCaptured
-						};
-
-						if(transactionData.amount gt orderPayment.getAmountUnreceived()) {
-							transactionData.amount = orderPayment.getAmountUnreceived();
-						}
-
-						orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
-
-						if(!orderPayment.hasErrors()) {
-							amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
-						}
-					}
-				}
-			}
+			 amountToBeCaptured = getAmountToBeCapturedByCaptureAuthorizationPayments(arguments.orderDelivery,arguments.processObject);
 		}
 
 		// As long as the amount to be captured is eq 0 then we can continue making the order delivery
