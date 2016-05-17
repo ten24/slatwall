@@ -142,6 +142,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 				}
 			}
 		}
+		return responseBean;
 	}
 	
 	public any function getRates(required any requestBean) {
@@ -152,7 +153,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		savecontent variable="xmlPacket" {
 			include "RatesRequestTemplate.cfm";
         }
-        var XmlResponse = setupRequest(xmlPacket);
+        var XmlResponse = getXMLResponse(xmlPacket);
         var responseBean = getShippingRatesResponseBean(XmlResponse);
         
 		

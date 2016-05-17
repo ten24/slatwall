@@ -510,7 +510,7 @@ Notes:
 	}
 
 
-
+	
 	public struct function queryToStructOfStructures(theQuery, primaryKey){
        var theStructure  = structnew();
        /* remove primary key from cols listing */
@@ -528,6 +528,7 @@ Notes:
                for(col = 1; col LTE arraylen(cols); col = col + 1){
                        thisRow[cols[col]] = theQuery[cols[col]][row];
                }
+              
                theStructure[theQuery[primaryKey][row]] = duplicate(thisRow);
        }
        return(theStructure);

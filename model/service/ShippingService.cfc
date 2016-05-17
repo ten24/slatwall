@@ -82,6 +82,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	
+	public array function getShippingMethodRatesByOrderFulfillment(required any orderFulfillment){
+		var shippingMethodRatesSmartList = shippingMethods[m].getShippingMethodRatesSmartList();
+		shippingMethodRatesSmartList.addFilter('activeFlag',1);
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) <= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) >= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) <= #arguments.orderFulfillment.getTotalShippingWeight()#');
+		shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #arguments.orderFulfillment.getTotalShippingWeight()#');
+		return shippingMethodRatesSmartList.getRecords(); 
+	}
 
 	public void function updateOrderFulfillmentShippingMethodOptions( required any orderFulfillment ) {
 
@@ -101,16 +110,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over all of the shipping methods & their rates for
 		var shippingMethodsCount = arrayLen(shippingMethods);
 		
-		
 		for(var m=1; m<=shippingMethodsCount; m++) {
 
-			var shippingMethodRatesSmartList = shippingMethods[m].getShippingMethodRatesSmartList();
-			shippingMethodRatesSmartList.addFilter('activeFlag',1);
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentItemPrice,0) <= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentItemPrice,100000000) >= #arguments.orderFulfillment.getSubtotalAfterDiscounts()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.minimumShipmentWeight,0) <= #arguments.orderFulfillment.getTotalShippingWeight()#');
-			shippingMethodRatesSmartList.addWhereCondition('COALESCE(aslatwallshippingmethodrate.maximumShipmentWeight,100000000) >= #arguments.orderFulfillment.getTotalShippingWeight()#');
-			var shippingMethodRates = shippingMethodRatesSmartList.getRecords(); 
+			var shippingMethodRates = getShippingMethodRatesByOrderFulfillment(arguments.orderFulfillment); 
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
 			
 			var priceGroups = [];
