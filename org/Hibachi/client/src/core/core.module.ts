@@ -15,6 +15,7 @@ import {ExpandableService} from "./services/expandableservice";
 import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
+import {LocalStorageService} from "./services/localstorageservice";
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 //controllers
@@ -144,6 +145,7 @@ var coremodule = angular.module('hibachi.core',[
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
 .service('hibachiScope',HibachiScope)
+.service('localStorageService',LocalStorageService)
 //controllers
 .controller('globalSearch',GlobalSearchController)
 //filters
