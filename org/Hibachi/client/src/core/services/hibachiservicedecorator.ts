@@ -284,10 +284,6 @@ class HibachiServiceDecorator{
                                             if(angular.isDefined(thisEntityInstance.data[property.name])){
                                                 delete thisEntityInstance.data[property.name];
                                             }
-
-                                            if(!thisEntityInstance.parents){
-                                                return;
-                                            }
                                             for(var i = 0; i <= thisEntityInstance.parents.length; i++){
                                                 if(angular.isDefined(thisEntityInstance.parents[i]) &&  thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)){
                                                     thisEntityInstance.parents.splice(i,1);
@@ -745,11 +741,11 @@ class HibachiServiceDecorator{
                         //select first, visible, and enabled input with a class of ng-invalid
 
                         var target = $('input.ng-invalid:first:visible:enabled');
-                        if(angular.isDefined(target)){
-                            target.focus();
-                            var targetID = target.attr('id');
-                            $anchorScroll();
-                        }
+                        //$log.debug('input is invalid');
+                        //$log.debug(target);
+                        target.focus();
+                        var targetID = target.attr('id');
+                        $anchorScroll();
                         deferred.reject('Input is invalid.');
                         observerService.notify('validationFailed');
                         observerService.notify('validationFailed'+entityName);
