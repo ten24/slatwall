@@ -245,6 +245,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertEquals( serializeJson(result), serializejson(mockExpectedResultForDescending));
 		
-		result = variables.service.arrayOfStructsSort(mockArrayOfStructures,'key2','asc');
 	}
 }
+

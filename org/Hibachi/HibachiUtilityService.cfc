@@ -39,10 +39,10 @@
 		        var delim = ".";
 		        //make an array to hold the sort stuff
 		        var sortArray = arraynew(1);
-		        var sortArray2= arraynew(1);
+		        
 		        //make an array to return
 		        var returnArray = arraynew(1);
-		        var returnArray2=arraynew(1);
+		        
 		        //grab the number of elements in the array (used in the loops)
 		        var count = arrayLen(aOfS);
 		        //make a variable to use in the loop
