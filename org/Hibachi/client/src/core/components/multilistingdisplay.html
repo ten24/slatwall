@@ -161,7 +161,7 @@
 
                                     data-action="column.action"
                                     data-query-string="column.queryString"
-                                    data-expandable="swMultiListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
+                                    data-expandable="(swMultiListingDisplay.getPageRecordMatchesExpandableRule(pageRecord) || swMultiListingDisplay.expandable) && (column.tdclass && column.tdclass === 'primary')"
                                     data-auto-open="swMultiListingDisplay.expandableOpenRoot"
                                     data-link="{{$root.buildUrl(swMultiListingDisplay.recordEditAction,swMultiListingDisplay.recordEditQueryString)+'&'+swMultiListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]}}"
                                     data-record-value="pageRecord[swMultiListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
@@ -169,6 +169,7 @@
                                     data-child-count="pageRecord[swMultiListingDisplay.childPropertyName+'Count']"
                                     data-entity="swMultiListingDisplay.exampleEntity"
                                     data-collection-config="swMultiListingDisplay.collectionConfig"
+                                    data-page-record="pageRecord"
                                     data-records="swMultiListingDisplay.collectionData.pageRecords || swMultiListingDisplay.collectionData.records"
                                     data-record-index="pageRecordKey"
                                     data-record-depth="pageRecord.depth"

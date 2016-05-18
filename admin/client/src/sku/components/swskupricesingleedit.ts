@@ -33,7 +33,7 @@ class SWSkuPriceSingleEditController{
                 (reason)=>{
                     //there was an error 
                 }
-                ); 
+           ); 
         }
     }    
 

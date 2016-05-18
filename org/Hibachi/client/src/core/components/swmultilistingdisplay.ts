@@ -102,6 +102,9 @@ class SWMultiListingDisplayController{
         if(angular.isUndefined(this.name)){
             this.name = 'ListingDisplay';
         }
+        if(angular.isUndefined(this.expandable)){
+            this.expandable = false; 
+        }
         this.paginator = this.paginationService.createPagination();
 
         this.hasCollectionPromise = false;
@@ -662,6 +665,38 @@ class SWMultiListingDisplayController{
             });
         }
     };
+    
+    public getPageRecordMatchesExpandableRule = (pageRecord)=>{
+         var expandableRuleMet = false; 
+         if(angular.isDefined(this.expandableRules)){
+            angular.forEach(this.expandableRules, (rule, key)=>{
+                if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){
+                    if(angular.isString(pageRecord[rule.filterPropertyIdentifier])){
+                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier].trim(); 
+                    } else {
+                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
+                    }
+                    switch (rule.filterComparisonOperator){
+                        case "!=":
+                            if(pageRecordValue != rule.filterComparisonValue){
+                                expandableRuleMet = true; 
+                            }
+                            break; 
+                        default: 
+                            //= case
+                            if(pageRecordValue == rule.filterComparisonValue){
+                                expandableRuleMet = true; 
+                            }
+                            break; 
+                    }
+                    if(angular.isDefined(expandableRuleMet)){
+                        return expandableRuleMet;
+                    }
+                }
+            }); 
+        } 
+        return expandableRuleMet;  
+    }
     
     public getColorFilterNGClassObject = (pageRecord)=>{
         var classObjectString = "{"; 

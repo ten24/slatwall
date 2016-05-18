@@ -2,9 +2,12 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 
 class SWExpandableRecordController{
+    
     public childrenLoaded = false;
     public childrenOpen = false;
     public children = [];
+    public pageRecord; 
+    public expandable:boolean;
     public recordDepth:number;
     public records:any;
     public recordID:string;
@@ -12,9 +15,12 @@ class SWExpandableRecordController{
     public collectionData:any;
     public collectionPromise:any;
     public collectionConfig:any;
+    public childCollectionConfig:any;
     public parentId:string;
+    public parentIDName:string; 
     public entity:any
     public expandableRules; 
+    
     //@ngInject
     constructor(private $timeout:ng.ITimeoutService, private utilityService, private $hibachi, private collectionConfigService, private expandableService){
         this.$timeout = $timeout;
@@ -24,42 +30,51 @@ class SWExpandableRecordController{
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
         expandableService.addRecord(this.recordID);
         console.log("are the rules laid out", this.expandableRules);
+        //Check to see if this fits the expandable rule
     }
+    
+    public setupChildCollectionConfig = () =>{
+        this.childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
+        //set up parent
+        var parentName = this.entity.metaData.hb_parentPropertyName;
+        var parentCFC = this.entity.metaData[parentName].cfc;
+        this.parentIDName = this.$hibachi.getEntityExample(parentCFC).$$getIDName();
+        //set up child
+        var childName = this.entity.metaData.hb_childPropertyName;
+        var childCFC = this.entity.metaData[childName].cfc
+        var childIDName = this.$hibachi.getEntityExample(childCFC).$$getIDName();
+
+        this.childCollectionConfig.clearFilterGroups();
+        this.childCollectionConfig.collection = this.entity;
+        this.childCollectionConfig.addFilter(parentName+'.'+ this.parentIDName,this.parentId);
+        this.childCollectionConfig.setAllRecords(true);
+        angular.forEach(this.collectionConfig.columns,(column)=>{
+            this.childCollectionConfig.addColumn(column.propertyIdentifier,column.title,column);
+        });
+
+        angular.forEach(this.collectionConfig.joins,(join)=>{
+            this.childCollectionConfig.addJoin(join);
+        });
+        this.childCollectionConfig.groupBys = this.collectionConfig.groupBys;
+
+    }
+    
     public toggleChild = ()=>{
         this.$timeout(()=>{
             this.childrenOpen = !this.childrenOpen;
             this.expandableService.updateState(this.recordID,{isOpen:this.childrenOpen});
             if(!this.childrenLoaded){
-                    var childCollectionConfig = this.collectionConfigService.newCollectionConfig(this.entity.metaData.className);
-                    //set up parent
-                    var parentName = this.entity.metaData.hb_parentPropertyName;
-                    var parentCFC = this.entity.metaData[parentName].cfc;
-                    var parentIDName = this.$hibachi.getEntityExample(parentCFC).$$getIDName();
-                    //set up child
-                    var childName = this.entity.metaData.hb_childPropertyName;
-                    var childCFC = this.entity.metaData[childName].cfc
-                    var childIDName = this.$hibachi.getEntityExample(childCFC).$$getIDName();
-
-                    childCollectionConfig.clearFilterGroups();
-                    childCollectionConfig.collection = this.entity;
-                    childCollectionConfig.addFilter(parentName+'.'+parentIDName,this.parentId);
-                    childCollectionConfig.setAllRecords(true);
-                    angular.forEach(this.collectionConfig.columns,(column)=>{
-                        childCollectionConfig.addColumn(column.propertyIdentifier,column.title,column);
-                    });
-
-                    angular.forEach(this.collectionConfig.joins,(join)=>{
-                        childCollectionConfig.addJoin(join);
-                    });
-                    childCollectionConfig.groupBys = this.collectionConfig.groupBys;
-                    this.collectionPromise = childCollectionConfig.getEntity();
-
+                    if(angular.isUndefined(this.childCollectionConfig)){
+                        this.setupChildCollectionConfig(); 
+                    } 
+                    this.collectionPromise = this.childCollectionConfig.getEntity();
+                    
                     this.collectionPromise.then((data)=>{
                         this.collectionData = data;
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                         if(this.collectionData.pageRecords.length){
                             angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
-                                this.expandableService.addRecord(pageRecord[parentIDName],true);
+                                this.expandableService.addRecord(pageRecord[this.parentIDName],true);
                                 pageRecord.dataparentID = this.recordID;
                                 pageRecord.depth = this.recordDepth || 0;
                                 pageRecord.depth++;
@@ -112,7 +127,9 @@ class SWExpandableRecord implements ng.IDirective{
         parentId:"=",
         entity:"=",
         collectionConfig:"=",
+        childCollectionConfig:"=?",
         records:"=",
+        pageRecord:"=",
         recordIndex:"=",
         recordDepth:"=",
         childCount:"=",
@@ -173,6 +190,10 @@ class SWExpandableRecord implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
+        scope.swExpandableRecord.childCount = 1;
+        if(angular.isDefined( scope.swExpandableRecord.pageRecord)){
+            console.log("exp", scope.swExpandableRecord.expandable); 
+        }
         if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
             if(scope.swExpandableRecord.recordValue){
                 var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];

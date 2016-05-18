@@ -15,7 +15,7 @@ class SWListingDisplayCellController{
     public cellView:string;
     public template:string;
     public templateVariables:any; 
-    public expandable:boolean; 
+    public expandable:boolean=false; 
     public expandableRules; 
 
     //@ngInject
@@ -41,6 +41,7 @@ class SWListingDisplayCellController{
             }
         }
         //Check to see if this fits the expandable rule
+        /*
         if(angular.isDefined(this.expandableRules)){
             angular.forEach(this.expandableRules, (rule, key)=>{
                 if(angular.isDefined(this.pageRecord[rule.filterPropertyIdentifier])){
@@ -66,8 +67,8 @@ class SWListingDisplayCellController{
                             break; 
                     }
                 }
-            }); 
-        }
+            });
+        }*/
         
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
