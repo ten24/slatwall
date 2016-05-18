@@ -15,6 +15,8 @@ class SWListingDisplayCellController{
     public cellView:string;
     public template:string;
     public templateVariables:any; 
+    public expandable:boolean; 
+    public expandableRules; 
 
     //@ngInject
     constructor(
@@ -28,9 +30,8 @@ class SWListingDisplayCellController{
         this.corePartialsPath = corePartialsPath;
         this.$scope = $scope;
         this.value = this.pageRecord[this.swListingDisplay.getPageRecordKey(this.column.propertyIdentifier)];
-        console.log("ldc",this.column.fallbackPropertyIdentifiers)
+        //If there is no value for this column, we can see if other substitute property identifiers were defined
         if(angular.isUndefined(this.value) && angular.isDefined(this.column.fallbackPropertyIdentifiers)){
-            //grab the value based on the values
             var fallbackPropertyArray = this.column.fallbackPropertyIdentifiers.split(",");
             for(var i=0; i<fallbackPropertyArray.length; i++){
                 if(angular.isDefined(this.pageRecord[fallbackPropertyArray[i]])){
@@ -38,6 +39,34 @@ class SWListingDisplayCellController{
                     break;
                 }
             }
+        }
+        //Check to see if this fits the expandable rule
+        if(angular.isDefined(this.expandableRules)){
+            angular.forEach(this.expandableRules, (rule, key)=>{
+                if(angular.isDefined(this.pageRecord[rule.filterPropertyIdentifier])){
+                    if(angular.isString(this.pageRecord[rule.filterPropertyIdentifier])){
+                        var pageRecordValue = this.pageRecord[rule.filterPropertyIdentifier].trim(); 
+                    } else {
+                        var pageRecordValue = this.pageRecord[rule.filterPropertyIdentifier]; 
+                    }
+                    switch (rule.filterComparisonOperator){
+                        case "!=":
+                            if(pageRecordValue != rule.filterComparisonValue){
+                                console.log("rule not equal blam")
+                                this.expandable = true; 
+                            }
+                            break; 
+                        default: 
+                            //= case
+                            console.log("rule default",pageRecordValue,rule.filterComparisonValue, pageRecordValue == rule.filterComparisonValue);
+                            if(pageRecordValue == rule.filterComparisonValue){
+                                console.log("rule equal blam")
+                                this.expandable = true; 
+                            }
+                            break; 
+                    }
+                }
+            }); 
         }
         
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
@@ -77,8 +106,9 @@ class SWListingDisplayCellController{
     public getDirectiveTemplate = ()=>{
 
         var templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplaycell.html';
-        if(this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary'){
-            //templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplayselectablecellexpandable.html';
+        
+        if(this.expandable || (this.swListingDisplay.expandable && this.column.tdclass && this.column.tdclass === 'primary')){
+            templateUrl = this.hibachiPathBuilder.buildPartialsPath(this.corePartialsPath)+'listingdisplayselectablecellexpandable.html';
         }
 
         if(!this.swListingDisplay.expandable || !this.column.tdclass || this.column.tdclass !== 'primary'){
@@ -105,7 +135,8 @@ class SWListingDisplayCell {
         swListingDisplay:"=?",
         column:"=?",
         pageRecord:"=?",
-        cellView:"@?"
+        cellView:"@?",
+        expandableRules:"=?"
     }
     public controller=SWListingDisplayCellController;
     public controllerAs="swListingDisplayCell";

@@ -148,6 +148,7 @@ class SWMultiListingDisplayController{
             if(angular.isUndefined(this.getCollection)){
                 this.getCollection = this.setupDefaultGetCollection();
             }
+            this.paginator.getCollection = this.getCollection;
             this.getCollection();
         });
         this.$scope.$on('$destroy',()=>{
@@ -212,7 +213,7 @@ class SWMultiListingDisplayController{
         
         this.tableID = 'LD'+this.utilityService.createID();
         
-        this.paginator.getCollection = this.getCollection;
+        
         
         //this.getCollection();
         
