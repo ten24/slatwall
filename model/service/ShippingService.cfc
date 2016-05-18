@@ -170,6 +170,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return integrations;
 	}
 	
+	public struct function newQualifiedRateOption(required any shippingMethodRate, required numeric totalCharge, required boolean integrationFailed=false){
+		return {
+			shippingMethodRate=arguments.shippingMethodRate,
+			totalCharge=arguments.totalCharge,
+			integrationFailed=arguments.integrationFailed
+		};
+	}
+	
 	public array function getQualifiedRateOptionsByOrderFulfillmentAndShippingMethodRatesAndShippingMethodRatesResponseBeans(
 		required any orderFulfillment,
 		required array shippingMethodRates,
@@ -179,59 +187,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var shippingMethodRatesCount = arraylen(shippingMethodRates);
 		for(var r=1; r<=shippingMethodRatesCount; r++) {
 			var shippingMethodRate = shippingMethodRates[r];
-			
-			var priceGroups = [];
-			if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
-				priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
-			}
-			// again, check to make sure that this rate applies to the current orderFulfillment
-			if(
-				isShippingMethodRateUsable(
-					shippingMethodRate, 
-					arguments.orderFulfillment.getShippingAddress(), 
-					arguments.orderFulfillment.getTotalShippingWeight(), 
-					arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
-					arguments.orderFulfillment.getTotalShippingQuantity(), 
-					priceGroups
-				)
-			) {
-
-				// If this rate is a manual one, then use the default amount
-				if(isNull(shippingMethodRate.getShippingIntegration())) {
-					arrayAppend(qualifiedRateOptions, {
-						shippingMethodRate=shippingMethodRate,
-						totalCharge=nullReplace(shippingMethodRate.getDefaultAmount(), 0),
-						integrationFailed=false}
-					);
-
-				// If we got a response bean from the shipping integration then find those details inside the response
-				} else if (structKeyExists(arguments.shippingMethodRatesResponseBeans, shippingMethodRate.getShippingIntegration().getIntegrationID())) {
-					var thisResponseBean = arguments.shippingMethodRatesResponseBeans[ shippingMethodRate.getShippingIntegration().getIntegrationID() ];
+			// If this rate is a manual one, then use the default amount
+			if(isNull(shippingMethodRate.getShippingIntegration())) {
+				var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate,nullReplace(shippingMethodRate.getDefaultAmount(), 0));
+				arrayAppend(qualifiedRateOptions, qualifiedRateOption);
+			// If we got a response bean from the shipping integration then find those details inside the response
+			}else{
+				
+				var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
+				if (
+					structKeyExists(arguments.shippingMethodRatesResponseBeans, shippingIntegration.getIntegrationID())
+				) {
+					var thisResponseBean = arguments.shippingMethodRatesResponseBeans[ shippingIntegration.getIntegrationID() ];
 					var shippingMethodResponseBeansCount = arrayLen(thisResponseBean.getShippingMethodResponseBeans()); 
 					for(var b=1; b<=shippingMethodResponseBeansCount; b++) {
 
 						var methodResponse = thisResponseBean.getShippingMethodResponseBeans()[b];
 
 						if(methodResponse.getShippingProviderMethod() == shippingMethodRate.getShippingIntegrationMethod()) {
-
-							arrayAppend(qualifiedRateOptions, {
-								shippingMethodRate=shippingMethodRate,
-								totalCharge=calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate),
-								integrationFailed=false}
+							var qualifiedRateOption = newQualifiedRateOption(
+								shippingMethodRate,
+								calculateShippingRateAdjustment(methodResponse.getTotalCharge(), shippingMethodRate)
 							);
+							arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 
 							break;
 						}
 					}
 				// If we should have gotten a response bean from the shipping integration but didn't then use the default amount
 				} else if (!isNull(shippingMethodRate.getDefaultAmount())) {
-					arrayAppend(qualifiedRateOptions, {
-						shippingMethodRate=shippingMethodRate,
-						totalCharge=nullReplace(shippingMethodRate.getDefaultAmount(), 0),
-						integrationFailed=true}
+					var qualifiedRateOption = newQualifiedRateOption(
+						shippingMethodRate,
+						nullReplace(shippingMethodRate.getDefaultAmount(), 0),
+						true
 					);
+					arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 				}
-			}
+			} 
 		}
 		return qualifiedRateOptions;
 	}
