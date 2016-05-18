@@ -7,18 +7,14 @@ class HibachiServiceDecorator{
         $delegate,
         $http,
         $timeout,
-        $log,
-        $rootScope,
         $location,
         $anchorScroll,
         $q,
         utilityService,
-        formService,
         rbkeyService,
         appConfig,
         observerService
     ){
-            var _deferred = {};
             var _config = appConfig;
 
             var _jsEntities = {};
@@ -27,7 +23,7 @@ class HibachiServiceDecorator{
                 validations = appConfig.modelConfig.validations,
                 defaultValues = appConfig.modelConfig.defaultValues;
 
-            angular.forEach(entities,function(entity){
+            angular.forEach(entities,function(entity:any){
 
                 $delegate['get'+entity.className] = function(options){
                     var entityInstance = $delegate.newEntity(entity.className);
@@ -217,7 +213,7 @@ class HibachiServiceDecorator{
                         }
                     }
                 };
-                angular.forEach(entity,function(property){
+                angular.forEach(entity,function(property:any){
                     if(angular.isObject(property) && angular.isDefined(property.name)){
                         if(angular.isUndefined(property.persistent)){
                             if(angular.isDefined(property.fieldtype)){
@@ -283,6 +279,10 @@ class HibachiServiceDecorator{
                                         if(angular.isUndefined(entityInstance)){
                                             if(angular.isDefined(thisEntityInstance.data[property.name])){
                                                 delete thisEntityInstance.data[property.name];
+                                            }
+
+                                            if(!thisEntityInstance.parents){
+                                                return;
                                             }
                                             for(var i = 0; i <= thisEntityInstance.parents.length; i++){
                                                 if(angular.isDefined(thisEntityInstance.parents[i]) &&  thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)){
@@ -439,7 +439,7 @@ class HibachiServiceDecorator{
             });
             $delegate.setJsEntities(_jsEntities);
 
-            angular.forEach(_jsEntities,function(jsEntity){
+            angular.forEach(_jsEntities,(jsEntity)=>{
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
             });
@@ -462,7 +462,7 @@ class HibachiServiceDecorator{
                         }
                     }
                 }
-            }
+            };
 
             var _getPropertyTitle = function(propertyName,metaData){
                 var propertyMetaData = metaData[propertyName];
@@ -495,7 +495,7 @@ class HibachiServiceDecorator{
 
                 }
                 return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
-            }
+            };
 
             var _getPropertyHint = function(propertyName,metaData){
                 var propertyMetaData = metaData[propertyName];
@@ -550,7 +550,7 @@ class HibachiServiceDecorator{
                 }
 
                 return "text";
-            }
+            };
 
             var _getPropertyFormatType = function(propertyName,metaData){
                 var propertyMetaData = metaData[propertyName];
@@ -577,7 +577,7 @@ class HibachiServiceDecorator{
                     }
                 }
                 return 'none';
-            }
+            };
 
             var _isSimpleValue = function(value){
 
@@ -619,7 +619,7 @@ class HibachiServiceDecorator{
 
                     return utilityService.formatValue(value,formatType,formatDetails,entityInstance);
                 }
-            }
+            };
 
             var _delete = function(entityInstance){
                 var entityName = entityInstance.metaData.className;
@@ -714,7 +714,7 @@ class HibachiServiceDecorator{
                             entityName = modifiedData.objectLevel.metaData.className;
                         }
                         var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
-                        savePromise.then(function(response){
+                        savePromise.then((response)=>{
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
 
@@ -741,11 +741,11 @@ class HibachiServiceDecorator{
                         //select first, visible, and enabled input with a class of ng-invalid
 
                         var target = $('input.ng-invalid:first:visible:enabled');
-                        //$log.debug('input is invalid');
-                        //$log.debug(target);
-                        target.focus();
-                        var targetID = target.attr('id');
-                        $anchorScroll();
+                        if(angular.isDefined(target)){
+                            target.focus();
+                            var targetID = target.attr('id');
+                            $anchorScroll();
+                        }
                         deferred.reject('Input is invalid.');
                         observerService.notify('validationFailed');
                         observerService.notify('validationFailed'+entityName);
@@ -762,8 +762,7 @@ class HibachiServiceDecorator{
             };
 
             var _getModifiedData = function(entityInstance){
-                var modifiedData:any = {};
-                modifiedData = getModifiedDataByInstance(entityInstance);
+                var modifiedData:any = getModifiedDataByInstance(entityInstance);
                 return modifiedData;
             };
 
@@ -885,18 +884,18 @@ class HibachiServiceDecorator{
                     value:modifiedData
                 };
 
-            }
+            };
 
 
             var validateChildren = function(entityInstance){
-                var data = {}
+                var data = {};
 
                 if(angular.isDefined(entityInstance.children) && entityInstance.children.length){
 
                     data = getDataFromChildren(entityInstance);
                 }
                 return data;
-            }
+            };
 
             var processChild = function(entityInstance,entityInstanceParent){
 
@@ -922,7 +921,7 @@ class HibachiServiceDecorator{
                 }
 
                 return data;
-            }
+            };
 
             var processParent = function(entityInstance){
                 var data = {};
@@ -941,7 +940,7 @@ class HibachiServiceDecorator{
                 }
 
                 return data;
-            }
+            };
 
             var processForm = function(form,entityInstance){
                 //$log.debug('begin process form');
@@ -968,7 +967,7 @@ class HibachiServiceDecorator{
                 //$log.debug('process form data');
                 //$log.debug(data);
                 return data;
-            }
+            };
 
             var getDataFromParents = function(entityInstance,entityInstanceParent){
                 var data = {};
@@ -990,10 +989,10 @@ class HibachiServiceDecorator{
                         }
                     }
 
-                };
+                }
 
                 return data;
-            }
+            };
 
             var getDataFromChildren = function(entityInstance){
                 var data = {};
@@ -1033,7 +1032,7 @@ class HibachiServiceDecorator{
                 //$log.debug(data);
 
                 return data;
-            }
+            };
 
             var getModifiedDataByInstance = function(entityInstance){
                 var modifiedData:any = {};
@@ -1068,7 +1067,7 @@ class HibachiServiceDecorator{
                     }
 
                 }
-            }
+            };
 
             return $delegate;
         }

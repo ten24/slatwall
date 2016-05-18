@@ -29,7 +29,6 @@ class ScheduleService{
 
     public buildSchedulePreview =(scheduleObject:any, totalOfPreviews:number=10):any=>{
         this.clearSchedulePreview();
-        console.log(scheduleObject);
         var startTime = new Date(<any>Date.parse(scheduleObject.frequencyStartTime));
         var endTime = (scheduleObject.frequencyEndTime.trim()) ? new Date(<any>Date.parse(scheduleObject.frequencyEndTime)) : false;
         var now = new Date();
@@ -48,7 +47,7 @@ class ScheduleService{
 
         if(scheduleObject.recuringType == 'monthly'){
             daysToRun = scheduleObject.daysOfMonthToRun.toString().split(',');
-            if(!daysToRun.length || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
+            if(!daysToRun.length || !scheduleObject.daysOfWeekToRun || scheduleObject.daysOfWeekToRun.toString().trim() == '') {
                 return this.schedulePreview;
             }
         }
@@ -57,7 +56,7 @@ class ScheduleService{
         for (var i =0;;i++){
             if(datesAdded >= totalOfPreviews || i >= 500) break;
 
-            var timeToadd = (scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
+            var timeToadd = (scheduleObject.frequencyInterval && scheduleObject.frequencyInterval.toString().trim()) ? (scheduleObject.frequencyInterval * i) * 60000 : i * 24 * 60 * 60 * 1000;
             var currentDatetime = new Date(startPoint.getTime() + timeToadd);
             if(currentDatetime < now) continue;
 
