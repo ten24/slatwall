@@ -3,24 +3,15 @@
 class SWFilterGroups{
 	public static Factory(){
 		var directive = (
-			$http,
-			$compile,
-			$templateCache,
 			$log,
 			collectionPartialsPath,
 			hibachiPathBuilder
 		)=> new SWFilterGroups(
-			$http,
-			$compile,
-			$templateCache,
 			$log,
 			collectionPartialsPath,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
-			'$http',
-			'$compile',
-			'$templateCache',
 			'$log',
 			'collectionPartialsPath',
 			'hibachiPathBuilder'
@@ -28,9 +19,6 @@ class SWFilterGroups{
 		return directive;
 	}
 	constructor(
-		$http,
-		$compile,
-		$templateCache,
 		$log,
 		collectionPartialsPath,
 		hibachiPathBuilder
@@ -43,7 +31,9 @@ class SWFilterGroups{
 				filterPropertiesList:"=?",
 				saveCollection:"&",
 				filterGroup:"=?",
-				comparisonType:"=?"
+				comparisonType:"=?",
+                simple:"=",
+                readOnly:"="
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){

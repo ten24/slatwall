@@ -1,13 +1,13 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-
 class SWActionCallerController{
     public type:string;
     public confirm:any;
     public action:string;
     public actionItem:string;
     public title:string;
+    public titleRbKey:string;
     public class:string;
     public confirmtext:string;
     public disabledtext:string;
@@ -16,7 +16,9 @@ class SWActionCallerController{
     public actionItemEntityName:string;
     public hibachiPathBuilder:any;
     public formCtrl:any;
-    public isPublic:string;
+    public actionUrl:string;
+    public queryString:string;
+    public isAngularRoute:boolean;
     //@ngInject
     constructor(
         private $scope,
@@ -47,21 +49,41 @@ class SWActionCallerController{
         });
     }
 
+
     public init = ():void =>{
+
+        //Check if is NOT a ngRouter
+        if(angular.isUndefined(this.isAngularRoute)){
+            this.isAngularRoute = this.utilityService.isAngularRoute();    
+        }
+        if(!this.isAngularRoute){
+            this.actionUrl= this.$hibachi.buildUrl(this.action,this.queryString);
+        }else{
+            this.actionUrl = '#!/entity/'+this.action+'/'+this.queryString.split('=')[1];
+        }
+
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
         this.type = this.type || 'link';
-        if (this.type == "button" || this.type== "submit" || this.isPublic){
+        if(angular.isDefined(this.titleRbKey)){
+            this.title = this.rbkeyService.getRBKey(this.titleRbKey);
+        }
+        if(angular.isUndefined(this.text)){
+            this.text = this.title;
+        }
+
+            if (this.type == "button"){
                 //handle submit.
                 /** in order to attach the correct controller to local vm, we need a watch to bind */
-                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.formController; }, (newValue, oldValue) => {
+                var unbindWatcher = this.$scope.$watch(() => { return this.$scope.frmController; }, (newValue, oldValue) => {
                     if (newValue !== undefined){
                         this.formCtrl = newValue;
-                        unbindWatcher();
+
                     }
+
+                    unbindWatcher();
                 });
 
             }
-            
 //			this.actionItem = this.getActionItem();
 //			this.actionItemEntityName = this.getActionItemEntityName();
 //			this.text = this.getText();
@@ -85,10 +107,11 @@ class SWActionCallerController{
         </cfif>
         */
     }
-    /** submit function delegates back to the form */
+
     public submit = () => {
-        this.formCtrl.submit(this.action);
-    }
+
+            this.formCtrl.submit(this.action);
+        }
 
     public getAction = ():string =>{
 
@@ -234,10 +257,6 @@ class SWActionCallerController{
     }
 }
 
-
-interface IActionCallerScope extends ng.IScope {
-    formController: ng.IFormController
-}
 class SWActionCaller implements ng.IDirective{
     public restrict:string = 'EA';
     public scope:any={};
@@ -246,7 +265,8 @@ class SWActionCaller implements ng.IDirective{
         text:"@",
         type:"@",
         queryString:"@",
-        title:"@",
+        title:"@?",
+        titleRbKey:"@?",
         'class':"@",
         icon:"@",
         iconOnly:"=",
@@ -258,27 +278,39 @@ class SWActionCaller implements ng.IDirective{
         modal:"=",
         modalFullWidth:"=",
         id:"@",
-        isPublic: "@?"
+        isAngularRoute:"=?"
     };
     public controller=SWActionCallerController;
     public controllerAs="swActionCaller";
-    public require="^?swForm"
     public templateUrl;
-    
     public static Factory():ng.IDirectiveFactory{
-        var directive:ng.IDirectiveFactory = () => new SWActionCaller();
+        var directive:ng.IDirectiveFactory = (
+            partialsPath,
+            utiltiyService,
+            $hibachi
+        ) => new SWActionCaller(
+            partialsPath,
+            utiltiyService,
+            $hibachi
+        );
+        directive.$inject = [
+            'partialsPath',
+            'utilityService',
+            '$hibachi'
+        ];
         return directive;
     }
 
-    constructor(){}
+    constructor(
+        public partialsPath,
+        public utiltiyService,
+        public $hibachi
+        ){
+    }
 
-    public link:ng.IDirectiveLinkFn = (scope: IActionCallerScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes, formController) =>{
-        if (angular.isDefined(formController)){
-            scope.formController = formController;    
-        }
+    public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
     }
 }
-
 export{
     SWActionCaller,
     SWActionCallerController

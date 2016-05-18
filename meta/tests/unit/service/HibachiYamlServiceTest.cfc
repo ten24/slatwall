@@ -46,36 +46,40 @@
 Notes:
 
 */
-component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
-{
-	//list of supported algorithms
-	
-	public any function newJWT(required string key){
-		return new Slatwall.org.Hibachi.jwt.jwt(key);
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
+		//Setup the Yaml service
+		variables.service = request.slatwallScope.getService("hibachiYamlService");
 	}
 	
-	public any function getJwtByToken(required string token){
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		jwt.setTokenString(arguments.token);
-		return jwt;
+	// addAuditToCommit()
+	public void function loadYamlTest() {
+		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
+		assert(isStruct(yamlStruct));
 	}
 	
-	public string function createToken(){
-		//create token
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = newJwt(key);
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		//hard coded to 15 minutes
-		var tokenExpirationTime = 900;
-		var payload = {};
-		payload['iat'] = javaCast( "int", currentTime );
-		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
-		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
-		payload['encoding'] = "UTF-8";
-		var token = jwt.encode(payload);
+	public void function getYamlTest(){
+		var yaml = variables.service.getYaml();
+		assert(isObject(yaml));
+	}
+	
+	public void function dumpYamlTest(){
+		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
+		var dumpYaml = variables.service.dumpYaml(yamlStruct);
+		assert(len(dumpYaml));
+	}
+	
+	public void function writeYamlTest(){
+		var yamlStruct = variables.service.loadYamlFile(expandPath( '/Slatwall/org/Hibachi/yaml/examples/test.yaml' ) );
+		var applicationKey = request.slatwallScope.getDao('hibachiDao').getApplicationKey();
+		var filePath = expandPath('/#applicationKey#/meta/tests/assets.yml');
+		variables.service.writeYamlToFile(filePath,yamlStruct);
+		assert(FileExists(filePath));		
+		FileDelete(filepath);
 		
-		return token;
 	}
-	
 }
+
+

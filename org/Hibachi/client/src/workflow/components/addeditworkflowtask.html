@@ -5,12 +5,12 @@
 		<div class="row s-header-bar">
 			<div class="col-md-12 s-header-nav">
 				<ul class="nav nav-tabs" role="tablist">
-					<li class="active"><a href="/##j-basic-2" role="tab" data-toggle="tab">Basic</a></li>
+					<li class="active"><a href="/##j-basic-2" role="tab" data-toggle="tab" id="basictab">Basic</a></li>
 					<li><a href="/##j-conditions-2" role="tab" data-toggle="tab">Conditions</a></li>
 					<li>
-						<a 	href="/##j-actions-2" role="tab" 
-							data-toggle="tab" 
-							ng-init="taskActionsTabOpen=false" 
+						<a 	href="/##j-actions-2" role="tab"
+							data-toggle="tab"
+							ng-init="taskActionsTabOpen=false"
 							ng-click="taskActionsTabOpen=true"
 						>Actions</a>
 					</li>
@@ -22,7 +22,7 @@
 		<!-- Tab panes for menu options start-->
 		<div class="row s-options s-task-actions">
 			<div class="tab-content" id="j-property-box">
-				
+
 					<div class="tab-pane active" id="j-basic-2">
 						<sw-form name="selectedTask" 
 							data-object="workflowTasks.selectedTask"	
@@ -89,14 +89,14 @@
 									</div>
 								</div>
 							</div>
-							<sw-property-display
-                                data-object="workflowTasks.selectedTask"
-                                data-property="taskConditionsConfig"
-                                data-editing="true"
-                                data-editable="true"
-                                data-is-dirty="true"
-                                ng-show="false"
-                            ></sw-property-display>
+							<span style="display:none"
+                                  sw-property-display
+                                  data-object="workflowTasks.selectedTask"
+                                  data-property="taskConditionsConfig"
+                                  data-editing="true"
+                                  data-editable="true"
+                                  data-is-dirty="true"
+                                  data-field-type="json"></span>
 						</sw-form>
 					</div>
 				

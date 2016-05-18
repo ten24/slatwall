@@ -53,7 +53,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="settingService" type="any";
 
 	public void function updateOrderFulfillmentShippingMethodOptions( required any orderFulfillment ) {
-		
+
 		// Container to hold all shipping integrations that are in all the usable rates
 		var integrations = [];
 		var responseBeans = {};
@@ -63,11 +63,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Look up shippingMethods to use based on the fulfillment method
 		var smsl = arguments.orderFulfillment.getFulfillmentMethod().getShippingMethodsSmartList();
-		
 		smsl.addFilter('activeFlag', '1');
 		smsl.addOrder("sortOrder|ASC");
 		var shippingMethods = smsl.getRecords();
-		
+
 		// Loop over all of the shipping methods & their rates for
 		var shippingMethodsCount = arrayLen(shippingMethods);
 		
@@ -83,6 +82,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var shippingMethodRates = shippingMethodRatesSmartList.getRecords(); 
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
 			
+			var priceGroups = [];
+			if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+				priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+			}
+			
 			for(var r=1; r<=shippingMethodRatesCount; r++) {
 				
 				// check to make sure that this rate applies to the current orderFulfillment
@@ -91,8 +95,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						shippingMethodRates[r], 
 						arguments.orderFulfillment.getShippingAddress(), 
 						arguments.orderFulfillment.getTotalShippingWeight(), 
-						arguments.orderFulfillment.getSubtotalAfterDiscounts())
-					) {
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups
+					)
+				) {
 					// Add any new shipping integrations in any of the rates the the shippingIntegrations array that we are going to query for rates later
 					if(
 						!isNull(shippingMethodRates[r].getShippingIntegration()) 
@@ -101,11 +108,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arrayAppend(integrations, shippingMethodRates[r].getShippingIntegration());
 					}
 				}
-				
 			}
-			
 		}
-		
+
 		// Loop over all of the shipping integrations and add thier rates response to the 'responseBeans' struct that is key'd by integrationID
 		var integrationsCount = arrayLen(integrations); 
 		for(var i=1; i<=integrationsCount; i++) {
@@ -148,10 +153,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var shippingMethodRatesCount = arrayLen(shippingMethodRates);
 			
 			var qualifiedRateOptions = [];
+			var priceGroups = [];
+			if(!isNull(arguments.orderFulfillment.getOrder().getAccount())){
+				priceGroups = arguments.orderFulfillment.getOrder().getAccount().getPriceGroups();
+			}
+			
 			for(var r=1; r<=shippingMethodRatesCount; r++) {
 
 				// again, check to make sure that this rate applies to the current orderFulfillment
-				if(isShippingMethodRateUsable(shippingMethodRates[r], arguments.orderFulfillment.getShippingAddress(), arguments.orderFulfillment.getTotalShippingWeight(), arguments.orderFulfillment.getSubtotalAfterDiscounts())) {
+				if(
+					isShippingMethodRateUsable(
+						shippingMethodRates[r], 
+						arguments.orderFulfillment.getShippingAddress(), 
+						arguments.orderFulfillment.getTotalShippingWeight(), 
+						arguments.orderFulfillment.getSubtotalAfterDiscounts(), 
+						arguments.orderFulfillment.getTotalShippingQuantity(), 
+						priceGroups
+					)
+				) {
 
 					// If this rate is a manual one, then use the default amount
 					if(isNull(shippingMethodRates[r].getShippingIntegration())) {
@@ -264,10 +283,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 
 			}
-			
 		}
-		
-		
 
 		// If the previously selected shipping method does not exist in the options now, then we just remove it.
 		if( !isNull(arguments.orderFulfillment.getShippingMethod()) && !listFindNoCase(shippingMethodIDOptionsList, arguments.orderFulfillment.getShippingMethod().getShippingMethodID())) {
@@ -328,7 +344,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return true;
 	}
 
-	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice) {
+	public boolean function isShippingMethodRateUsable(required any shippingMethodRate, required any shipToAddress, required any shipmentWeight, required any shipmentItemPrice, required any shipmentItemQuantity, any accountPriceGroups) {
 		// Make sure that the rate is active
 		if(!isNull(shippingMethodRate.getActiveFlag()) && isBoolean(shippingMethodRate.getActiveFlag()) && !shippingMethodRate.getActiveFlag()) {
 			return false;
@@ -359,12 +375,47 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(shipmentWeight lt lowerWeight || shipmentWeight gt higherWeight) {
 			return false;
 		}
-		
-		// Make sure that the address is in the address zone
+
+        // Make sure that the orderFulfillment Total Quantity is within the min and max of rate
+        var lowerQuantity = 0;
+        var higherQuantity = 100000000;
+        if(!isNull(arguments.shippingMethodRate.getMinimumShipmentQuantity())) {
+            lowerQuantity = arguments.shippingMethodRate.getMinimumShipmentQuantity();
+        }
+        if(!isNull(arguments.shippingMethodRate.getMaximumShipmentQuantity())) {
+            higherQuantity = arguments.shippingMethodRate.getMaximumShipmentQuantity();
+        }
+        if(shipmentItemQuantity < lowerQuantity || shipmentItemQuantity gt higherQuantity) {
+            return false;
+        }
+        
+        // *** Make sure that the shipping method rates price-group is one that the user has access to on account.
+        //If this rate has price groups assigned but the user does not, then fail.
+        if ( !isNull(arguments.shippingMethodRate.getPriceGroups()) && 
+             arrayLen(arguments.shippingMethodRate.getPriceGroups()) && 
+             !arrayLen(arguments.accountPriceGroups) ){
+        	return false;
+        
+        //If this rate has price groups assigned and the user has groups but not the correct ones, then fail.
+        } else if ( !isNull(arguments.shippingMethodRate.getPriceGroups()) &&
+                    arrayLen(arguments.shippingMethodRate.getPriceGroups()) && 
+                    arrayLen(arguments.accountPriceGroups) ){
+        	var foundMatchingPriceGroup = false;
+        	//Check if the pricegroup supports the users price groups
+        	for (var priceGroup in arguments.accountPriceGroups){
+    			if (arguments.shippingMethodRate.hasPriceGroup(priceGroup)){
+                    foundMatchingPriceGroup = true;
+                }
+        	}
+        	//If not found then return false.
+        	if (!foundMatchingPriceGroup){
+        		return false;
+        	}
+        }
+        // Make sure that the address is in the address zone
 		if(!isNull(arguments.shippingMethodRate.getAddressZone()) && !getAddressService().isAddressInZone(arguments.shipToAddress, arguments.shippingMethodRate.getAddressZone())) {
 			return false;
 		}
-
 		// If we have not returned false by now, then return true
 		return true;
 	}
@@ -372,8 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public numeric function calculateShippingRateAdjustment(required numeric originalAmount, required any shippingMethodRate) {
 		var returnAmount = arguments.originalAmount;
 		var shippingMethodRateAdjustmentAmount = arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount');
-
-		if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
+              if(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentAmount') gt 0) {
 
 			switch(arguments.shippingMethodRate.setting('shippingMethodRateAdjustmentType')) {
 				case "increasePercentage":
@@ -400,7 +450,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		return returnAmount;
 	}
-
 
 	// ===================== START: Logical Methods ===========================
 

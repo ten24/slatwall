@@ -47,6 +47,32 @@ Notes:
 
 */
 component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+	
+	public void function all_entity_properties_with_tomany_has_singularname() {
+		//holds all errors
+		var entitiesThatDontHaveSingularNameArray = [];
+		
+		var allEntities = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+		
+		for(var entityName in allEntities) {
+			var properties = request.slatwallScope.getService("hibachiService").getPropertiesByEntityName(entityName);
+			for(var property in properties) {
+				if(
+					structkeyExists(property,'fieldtype') 
+					&& (property.fieldtype == 'one-to-many' || property.fieldtype == 'many-to-many')
+				){
+					//if we have a to-many then singularname should be defined
+					if(!structkeyExists(property,'singularname')){
+						arrayAppend(entitiesThatDontHaveSingularNameArray,{propertyName=property.name,entityName=entityName});
+					}
+				}
+
+			}
+		}
+		
+		
+		assert(!arrayLen(entitiesThatDontHaveSingularNameArray));
+	}
 
 	//Entity Audit Properties Test
 	public void function all_entity_properties_have_audit_properties() {

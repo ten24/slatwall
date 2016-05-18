@@ -536,5 +536,5 @@ component accessors="true" output="false" extends="HibachiService" {
 	public any function getAllAttributeStruct(){
 		return StructNew();
 	}
-
+	
 }

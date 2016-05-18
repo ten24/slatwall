@@ -12,8 +12,8 @@ class SWClickOutside{
         )=>new SWClickOutside(
             $document,$timeout,utilityService
         );
-        directive.$inject =[
-            '$document','$timeout','utilityService'
+        directive.$inject = [
+            '$document', '$timeout', 'utilityService'
         ];
         return directive;
     }
@@ -29,10 +29,10 @@ class SWClickOutside{
     }
     
     public link:ng.IDirectiveLinkFn = (scope:any, elem:any, attr:any) => {     
-        this.$document.on('click', function (e) {
+        this.$document.on('click', (e)=> {
             if (!e || !e.target) return;
             
-            //check if our element already hiden
+            //check if our element already hidden
             if(angular.element(elem).hasClass("ng-hide")){
                 return;
             }

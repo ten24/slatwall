@@ -81,9 +81,9 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 	
 	public array function getRecuringTypeOptions() {
 		var options = [
-			{name="Daily", value="daily"},
-			{name="Weekly", value="weekly"},
-			{name="Monthly", value="monthly"}
+			{"name"="Daily", "value"="daily"},
+			{"name"="Weekly", "value"="weekly"},
+			{"name"="Monthly", "value"="monthly"}
 		];
 		return options;
 	}

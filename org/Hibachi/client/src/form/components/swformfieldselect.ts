@@ -8,6 +8,7 @@ class SWFormFieldSelect implements ng.IDirective {
 			formService,
 			coreFormPartialsPath,
 			utilityService,
+            observerService,
 			hibachiPathBuilder
 		)=>new SWFormFieldSelect(
 			$log,
@@ -15,6 +16,7 @@ class SWFormFieldSelect implements ng.IDirective {
 			formService,
 			coreFormPartialsPath,
 			utilityService,
+            observerService,
 			hibachiPathBuilder
 		);
 		directive.$inject = [
@@ -23,6 +25,7 @@ class SWFormFieldSelect implements ng.IDirective {
 			'formService',
 			'coreFormPartialsPath',
 			'utilityService',
+            'observerService',
 			'hibachiPathBuilder'
 		];
 		return directive;
@@ -34,6 +37,7 @@ class SWFormFieldSelect implements ng.IDirective {
 		formService,
 		coreFormPartialsPath,
 		utilityService,
+        observerService,
 		hibachiPathBuilder
 	){
 		return{
@@ -45,31 +49,28 @@ class SWFormFieldSelect implements ng.IDirective {
 			},
 			link:function(scope, element, attr, formController){
 
-					var selectType;
-
-					if(angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc)){
-						selectType = 'object';
+					if(angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)){
+						scope.selectType = 'object';
 						$log.debug('selectType:object');
 					}else{
-						selectType = 'string';
+                        scope.selectType = 'string';
 						$log.debug('selectType:string');
-                    }
+					}
 
 
 					scope.formFieldChanged = function(option){
 						$log.debug('formfieldchanged');
 						$log.debug(option);
-						if(selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function" ){
+						if(scope.selectType === 'object' && typeof scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName == "function" ){
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
 							if(angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])){
 								scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
 							}
-						}else if(selectType === 'string'){
+						}else if(scope.selectType === 'string'){
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-
 						}
-
+                        observerService.notify(scope.propertyDisplay.object.metaData.className+scope.propertyDisplay.property.charAt(0).toUpperCase()+scope.propertyDisplay.property.slice(1)+'OnChange', option);
 					};
 
 
@@ -83,7 +84,7 @@ class SWFormFieldSelect implements ng.IDirective {
 							optionsPromise.then(function(value){
 								scope.propertyDisplay.options = value.data;
 
-								if(selectType === 'object'
+								if(scope.selectType === 'object'
 								){
 									if(angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
 										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
@@ -123,7 +124,7 @@ class SWFormFieldSelect implements ng.IDirective {
 										}
 
 									}
-								}else if(selectType === 'string'){
+								}else if(scope.selectType === 'string'){
 									if(scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null){
 										for(var i in scope.propertyDisplay.options){
 											if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){

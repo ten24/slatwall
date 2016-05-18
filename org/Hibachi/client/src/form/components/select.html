@@ -1,27 +1,27 @@
-<select type="{{propertyDisplay.fieldType}}" class="form-control" 
+<select type="{{propertyDisplay.fieldType}}" class="form-control"
 		    		 ng-model="propertyDisplay.object.data['selected'+propertyDisplay.property]"
 		    		 ng-disabled="!propertyDisplay.editable"
 		    		 ng-show="propertyDisplay.editing"
-		    		 ng-options="propertyDisplayOption.name
-  									 for propertyDisplayOption in propertyDisplay.options
-  									 track by propertyDisplayOption.value"
+		    		 ng-options="propertyDisplayOption.name for propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value"
 					 ng-change="formFieldChanged(propertyDisplay.object.data['selected'+propertyDisplay.property])"
 					 ng-click="getOptions()"
-					
+
 >
 </select>
-		<input style="display:none"	type="text" 
-				name="{{propertyDisplay.property+'ID'}}"
-				ng-if="!scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc"
-                ng-model="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
+		<input style="display:none"
+               type="text"
+               name="{{propertyDisplay.object.data[propertyDisplay.property].$$getIDName()}}"
+               ng-if="selectType === 'object'"
+               ng-model="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
 		/>
-		<input style="display:none"	type="text" 
-				name="{{propertyDisplay.property}}"
-                ng-if="scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc"
-				ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+		<input style="display:none"
+               type="text"
+               name="{{propertyDisplay.property}}"
+               ng-if="selectType === 'string'"
+               ng-model="propertyDisplay.object.data[propertyDisplay.property]"
 		/>
 <!-- Error Messages -->
-    
+
 <span style="color:red"
 	ng-repeat="(key,value) in propertyDisplay.errors"
 	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"

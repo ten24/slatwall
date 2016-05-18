@@ -37,7 +37,8 @@ class SWFilterItem{
 				filterPropertiesList:"=",
 				filterItemIndex:"=",
 				saveCollection:"&",
-				comparisonType:"="
+				comparisonType:"=",
+                simple:"="
 			},
 			templateUrl:hibachiPathBuilder.buildPartialsPath(collectionPartialsPath)+"filteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){

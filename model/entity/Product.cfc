@@ -46,25 +46,25 @@
 Notes:
 
 */
-component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" {
+component displayname="Product" entityname="SlatwallProduct" table="SwProduct" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="productService" hb_permission="this" hb_processContexts="addOptionGroup,addOption,addSubscriptionSku,deleteDefaultImage,updateDefaultImageFileNames,updateSkus,addProductReview" description="All top level information about a product and serves as the grouping for skus where price and inventory is managed" {
 
 	// Persistent Properties
 	property name="productID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
-	property name="urlTitle" ormtype="string" unique="true";
-	property name="productName" ormtype="string";
-	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE";
-	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
-	property name="publishedFlag" ormtype="boolean" default="false";
-	property name="sortOrder" ormtype="integer";
-	property name="purchaseStartDateTime" ormtype="timestamp";
-	property name="purchaseEndDateTime" ormtype="timestamp";
+	property name="urlTitle" ormtype="string" unique="true" description="URL Title defines the string in a URL that Slatwall will use to identify this product.  For Example: http://www.myslatwallsite.com/sp/my-url-title/ where sp is the global product url key, and my-url-title is the urlTitle of this product";
+	property name="productName" ormtype="string" description="Defines the name of the product.  This can also be set at sku level with the skuName property.";
+	property name="productCode" ormtype="string" unique="true" index="PI_PRODUCTCODE" description="A unique value that identifies this product and only this product.  This could also be though of as a 'Model Number' but should not be confused with skuCode which identifies the actual unit being sold.";
+	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg" description="General marketing description of the product.";
+	property name="publishedFlag" ormtype="boolean" default="false" description="This flag is used to determine if the product should be available for sale as published on the frontend of a website.";
+	property name="sortOrder" ormtype="integer" description="The sort order value can be used to manually organize all of the products in your catalog.";
+	property name="purchaseStartDateTime" ormtype="timestamp" description="This field can be set to restrict the begining of a time periord when this product can be sold.";
+	property name="purchaseEndDateTime" ormtype="timestamp" description="This field can be set to restrict the end of a time periord when this product can be sold.";
 
 	// Calculated Properties
-	property name="calculatedSalePrice" ormtype="big_decimal";
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedAllowBackorderFlag" ormtype="boolean";
-	property name="calculatedTitle" ormtype="string";
+	property name="calculatedSalePrice" ormtype="big_decimal" description="Stores the latest calculation of the dynamic 'salePrice' property which in turn calculates from the defaultSku's dynamic salePrice property.";
+	property name="calculatedQATS" ormtype="integer" description="Stores the latest calculation of the dynamic 'qats' property which in turn calculates from the defaultSku's dynamic qats property.";
+	property name="calculatedAllowBackorderFlag" ormtype="boolean" description="Stores the value of the 'Allow Backorder' setting.  This is commonly used to drive dynamic product lists on the frontend where availability is important." deprecated="true" deprecatedDescription="Because the calculatedQATS propert takes into account if a product is able to be backordered, this property is no longer needed and will be removed in a future release for performance reasons.";
+	property name="calculatedTitle" ormtype="string" description="Stores the latest calculation of the products marketing 'Title' which is generated based on a dynamic string template in the products settings.";
 
 	// Related Object Properties (many-to-one)
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID" hb_optionsNullRBKey="define.none" fetch="join";

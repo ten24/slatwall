@@ -166,7 +166,7 @@ class SWCriteriaManyToMany{
                 };
 
                 scope.viewSelectedCollection = function(){
-                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components//criteriacreatecollection', {
+                    dialogService.addPageDialog('org/Hibachi/client/src/collection/components/criteriacreatecollection', {
                         entityName: 'collection',
                         entityId: scope.selectedFilterProperty.selectedCollection.collectionID,
                         parentEntity: scope.collectionConfig.baseEntityName

@@ -52,7 +52,7 @@ Notes:
 
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.attributeSet" type="any" />
-	<cfparam name="attributes.edit" type="boolean" default="false" />
+	<cfparam name="attributes.edit" type="boolean" default=false />
 	<cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 	<cfparam name="attributes.entity" type="any" default="" />
 
@@ -112,7 +112,7 @@ Notes:
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
 			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
 		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
-			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attribute.getAttributeSet().getAttributeSetObject()#&#attribute.getAttributeSet().getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attribute.getAttributeSet().getAttributeSetObjectPrimaryIDPropertyName())#"/>
+			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attributes.attributeSet.getAttributeSetObject()#&#attributes.attributeSet.getAttributeSetObject()#ID=#thisAttributeValueObject.invokeMethod('get'&attributes.attributeSet.getAttributeSetObjectPrimaryIDPropertyName())#"/>
 			<cfset fdAttributes.removeLink = removeLink/>
 		</cfif>
 

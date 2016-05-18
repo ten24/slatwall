@@ -2,47 +2,42 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 
 class SWTypeaheadSearchLineItemController{
-
-    constructor(
-
-    ){
-        this.init();
-    }
-
-    public init = () =>{
-
-    }
+    constructor(){}
 }
 
 class SWTypeaheadSearchLineItem implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
     public bindToController={
-        propertyIdentifier:"@"
+        propertyIdentifier:"@",
+        isSearchable:"@?",
     };
     public controller=SWTypeaheadSearchLineItemController;
     public controllerAs="swTypeaheadSearchLineItem";
-    public static $inject = ['utilityService'];
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
-            utilityService
+            $compile
         )=>new SWTypeaheadSearchLineItem(
-            utilityService
+            $compile
         );
         directive.$inject = [
-            'utilityService'
+            '$compile'
         ];
         return directive;
     }
-    constructor(private utilityService){
-
-    }
-
-    public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        if(angular.isDefined(scope.$parent.swTypeaheadSearch)){
-            scope.$parent.swTypeaheadSearch.displayList.push(scope.swTypeaheadSearchLineItem.propertyIdentifier);
-        }
+    
+    //@ngInject
+    constructor(private $compile){}
+    
+    public compile = (element: JQuery, attrs: angular.IAttributes, transclude: any) => {
+        return {
+            pre: (scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                var innerHTML = '<span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
+                element.append(innerHTML);
+            },
+            post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}
+        };
     }
 }
 export{

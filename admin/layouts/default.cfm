@@ -77,6 +77,7 @@ Notes:
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/metismenu/metismenu.css" rel="stylesheet">
+        <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/client/lib/angularjs-datetime-picker/angularjs-datetime-picker.css" rel="stylesheet">
 		<!---<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>--->
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
@@ -201,6 +202,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listcountry" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcurrency" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
+									<hb:HibachiActionCaller action="admin:entity.listform" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listfulfillmentmethod" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listlocation" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listmeasurementunit" type="list">

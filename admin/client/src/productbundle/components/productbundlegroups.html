@@ -1,24 +1,20 @@
-<div class="s-bundle-group-section" ng-if="productBundleGroups">
+<div class="s-bundle-group-section" ng-if="swProductBundleGroups.productBundleGroups">
   <ul class="list-unstyled s-bundle-group">
-  	<span ng-repeat="productBundleGroup in productBundleGroups track by $index">
-  		
-		    <sw-product-bundle-group
-		    		data-product-bundle-groups="productBundleGroups"
+        <sw-product-bundle-group ng-repeat="productBundleGroup in swProductBundleGroups.productBundleGroups track by $index"
+                data-product-bundle-groups="swProductBundleGroups.productBundleGroups"
 		    		data-product-bundle-group="productBundleGroup"
 		    		data-index="$index"
-		    		data-add-product-bundle-group="addProductBundleGroup()"
-					data-remove-product-bundle-group="removeProductBundleGroup(index)"
+                data-add-product-bundle-group="swProductBundleGroups.addProductBundleGroup()"
+                data-remove-product-bundle-group="swProductBundleGroups.removeProductBundleGroup(index)"
 		    		data-form-name="form.createProductBundle{{$index}}"
 		    >
 		    </sw-product-bundle-group>
-		
-    </span>
   </ul>
 </div>
 		    
 <button class="btn btn-sm btn-primary s-create-bundle-btn"
 		data-toggle="collapse"
-		ng-click="addProductBundleGroup()"
+		ng-click="swProductBundleGroups.addProductBundleGroup()"
 >
 	<i class="fa fa-plus"></i> Bundle Group
 </button>

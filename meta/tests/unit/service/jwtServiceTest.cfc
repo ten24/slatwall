@@ -50,7 +50,7 @@ component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests t
 {
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("jwtService");
+		variables.service = request.slatwallScope.getService("HibachiJWTService");
 		variables.key = "abcdefg";
 		variables.jwt = variables.service.newJwt(key);
 		variables.json = '{"ts":"February, 05 2014 12:08:05","userid":"jdoe","iat":"1456503640","exp":"14565027400"}';

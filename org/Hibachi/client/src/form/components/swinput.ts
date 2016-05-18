@@ -9,32 +9,45 @@ class SWInput{
 		var directive = (
 			$log,
 			$compile,
-			utilityService
+            $hibachi,
+			utilityService,
+            rbkeyService
 		)=>new SWInput(
 			$log,
 			$compile,
-			utilityService
+            $hibachi,
+			utilityService,
+            rbkeyService
 		);
 		directive.$inject = [
 			'$log',
 			'$compile',
-			'utilityService'
+            '$hibachi',
+			'utilityService',
+            'rbkeyService'
 		];
 		return directive
 	}
 	constructor(
 		$log,
 		$compile,
-		utilityService
+        $hibachi,
+		utilityService,
+        rbkeyService
 	){
 		var getValidationDirectives = function(propertyDisplay){
 			var spaceDelimitedList = '';
 			var name = propertyDisplay.property;
 			var form = propertyDisplay.form.$$swFormInfo;
 			$log.debug("Name is:" + name + " and form is: " + form);
+            if(angular.isUndefined(propertyDisplay.object.validations )
+                || angular.isUndefined(propertyDisplay.object.validations.properties)
+                || angular.isUndefined(propertyDisplay.object.validations.properties[propertyDisplay.property])){
+                return '';
+            }
 			var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 			$log.debug("Validations: ", validations);
-            $log.debug(propertyDisplay.form.$$swFormInfo)
+            $log.debug(propertyDisplay.form.$$swFormInfo);
 			var validationsForContext = [];
 
 			//get the form context and the form name.
@@ -102,34 +115,78 @@ class SWInput{
                     currency = currency + 'data-currency-code="' + propertyDisplay.object.data.currencyCode + '" ';
                 }
             }
+
+            var appConfig = $hibachi.getConfig();
+            console.log('propertyDisplay', propertyDisplay);
+
+            var placeholder ='';
+            if(angular.isDefined(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey)){
+                placeholder = rbkeyService.getRBKey(propertyDisplay.object.metaData[propertyDisplay.property].hb_nullrbkey);
+            }
            
 			if(propertyDisplay.fieldType === 'text'){
 				template = '<input type="text" class="form-control" '+
-				'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
-				'ng-disabled="!propertyDisplay.editable" '+
-				'ng-show="propertyDisplay.editing" '+
-				'name="'+propertyDisplay.property+'" ' +
-				validations + currency +
-				'id="swinput'+utilityService.createID(26)+'"'+
-				' />';
+				    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    'placeholder="'+placeholder+'" '+
+                    validations + currency +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
 			}else if(propertyDisplay.fieldType === 'password'){
 				template = '<input type="password" class="form-control" '+
-				'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
-				'ng-disabled="!propertyDisplay.editable" '+
-				'ng-show="propertyDisplay.editing" '+
-				'name="'+propertyDisplay.property+'" ' +
-				validations +
-				'id="swinput'+utilityService.createID(26)+'"'+
-				' />';
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    'placeholder="'+placeholder+'" '+
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
 			} else if(propertyDisplay.fieldType === 'number'){
                 template = '<input type="number" class="form-control" '+
-				'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
-				'ng-disabled="!propertyDisplay.editable" '+
-				'ng-show="propertyDisplay.editing" '+
-				'name="'+propertyDisplay.property+'" ' +
-				validations +
-				'id="swinput'+utilityService.createID(26)+'"'+
-				' />';
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    'placeholder="'+placeholder+'" '+
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
+            } else if(propertyDisplay.fieldType === 'time'){
+                template = '<input type="text" class="form-control" '+
+                    'datetime-picker data-time-only="true" date-format="'+appConfig.timeFormat.replace('tt','a')+'" '+
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    'placeholder="'+placeholder+'" '+
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
+            } else if(propertyDisplay.fieldType === 'date'){
+                template = '<input type="text" class="form-control" '+
+                    'datetime-picker data-date-only="true" future-only date-format="'+appConfig.dateFormat+'" '+
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    'placeholder="'+placeholder+'" '+
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
+            } else if(propertyDisplay.fieldType === 'dateTime'){
+                template = '<input type="text" class="form-control" '+
+                    'datetime-picker '+ // date-format="MMM DD, YYYY hh:mm"
+                    'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+                    'ng-disabled="!propertyDisplay.editable" '+
+                    'ng-show="propertyDisplay.editing" '+
+                    'name="'+propertyDisplay.property+'" ' +
+                    'placeholder="'+placeholder+'" '+
+                    validations +
+                    'id="swinput'+utilityService.createID(26)+'"'+
+                    ' />';
             }
 
 			return template;
