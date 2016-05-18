@@ -8,13 +8,13 @@
 
 class SWListingExpandableRuleController{
 
-    public childrenCollectionConfig;
     public filterPropertyIdentifier:string;
     public filterComparisonOperator:string; 
     public filterComparisonValue:string;
     
     public hasChildrenCollectionConfigDeferred;
     public hasChildrenCollectionConfigPromise; 
+    public childrenCollectionConfig;
 
     //@ngInject
     constructor(
@@ -22,6 +22,8 @@ class SWListingExpandableRuleController{
     ){
         this.hasChildrenCollectionConfigDeferred = $q.defer(); 
         this.hasChildrenCollectionConfigPromise = this.hasChildrenCollectionConfigDeferred.promise;
+        //why did I need this? 
+        this.childrenCollectionConfig = null;
     }
 
 }
@@ -32,6 +34,9 @@ class SWListingExpandableRule implements ng.IDirective{
     public transclude={
         collectionConfig:"?swConfig"    
     };
+    public template=`
+        <div ng-transclude="collectionConfig"></div> 
+    `
     public bindToController={
         childrenCollectionConfig:"=?",
         filterPropertyIdentifier:"@",
@@ -40,7 +45,6 @@ class SWListingExpandableRule implements ng.IDirective{
     };
     public controller=SWListingExpandableRuleController;
     public controllerAs="swListingExpandableRule";
-    public static $inject = ['utilityService'];
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
@@ -76,7 +80,7 @@ class SWListingExpandableRule implements ng.IDirective{
                 if(angular.isDefined(listingDisplayScope)){
                     listingDisplayScope.expandableRules.push(rule); 
                 } else {
-                    throw("listing display scope not available to sw-listing-column")
+                    throw("listing display scope not available to sw-listing-expandable-rule")
                 }
          });
     }

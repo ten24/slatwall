@@ -58,6 +58,7 @@ class SWCollectionColumn implements ng.IDirective{
         
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
             currentScope.swCollectionConfig.columns.push(column); 
+            console.log("rule column resolve");
             currentScope.swCollectionConfig.columnsDeferred.resolve(); 
         } else {
             throw("Could not find swCollectionConfig in the parent scope from swcollectioncolumn");

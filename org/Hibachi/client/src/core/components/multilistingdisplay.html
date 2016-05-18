@@ -1,7 +1,11 @@
 <div class="row s-detail-content-wrapper">
+    
+    <!-- These will not contain any real markup -->
     <div ng-transclude="columns"></div>
     <div ng-transclude="collectionConfigs"></div>
     <div ng-transclude="expandableRules"></div>
+    <!-------------------------------------------->
+    
     <!-- The s-shrink-view class can be removed to show expanded view -->
     <div class="col-xs-12 s-results-listing">
         <div class="s-detail-body">
@@ -169,6 +173,8 @@
                                     data-record-index="pageRecordKey"
                                     data-record-depth="pageRecord.depth"
                                     data-multiselect-id-paths="swMultiListingDisplay.multiselectIdPaths"
+                                    data-expandable-rules="swMultiListingDisplay.expandableRules"
+                                    
                             >
                             	<sw-listing-display-cell
                             		data-column="column"

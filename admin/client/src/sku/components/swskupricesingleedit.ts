@@ -21,14 +21,19 @@ class SWSkuPriceSingleEditController{
             this.collectionConfig = this.collectionConfigService.newCollectionConfig("Sku"); 
             this.collectionConfig.addFilter("skuID", this.skuId, "=");
             this.collectionConfig.setAllRecords(true);
-            this.collectionConfig.getEntity().then((response)=>{
-                if(angular.isDefined(response.records[0])){
-                    this.sku = this.$hibachi.newEntity('Sku');
-                    angular.extend(this.sku.data, response.records[0]);
-                } else { 
-                    throw("There was a problem fetching the sku in SWSkuPriceSingleEditController")
+            this.collectionConfig.getEntity().then(
+                (response)=>{
+                    if(angular.isDefined(response.records) && angular.isDefined(response.records[0])){
+                        this.sku = this.$hibachi.newEntity('Sku');
+                        angular.extend(this.sku.data, response.records[0]);
+                    } else { 
+                        throw("There was a problem fetching the sku in SWSkuPriceSingleEditController")
+                    }
+                },
+                (reason)=>{
+                    //there was an error 
                 }
-            }); 
+                ); 
         }
     }    
 

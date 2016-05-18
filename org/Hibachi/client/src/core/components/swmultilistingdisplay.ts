@@ -40,6 +40,8 @@ class SWMultiListingDisplayController{
     public multiselectValues;
     public multipleCollectionDeffered:any;
     public multipleCollectionPromise:any;
+    public singleCollectionDeferred:any; 
+    public singleCollectionPromise:any; 
     public norecordstext;
     public orderBys = [];
     public orderByStates = {};
@@ -61,9 +63,9 @@ class SWMultiListingDisplayController{
     public showTopPagination;
     public sortable:boolean = false;
     public sortProperty;
-    public tableID;
-    public tableclass;
-    public tableattributes;
+    public tableID:string;
+    public tableclass:string;
+    public tableattributes:string;
     public hasSearch:boolean;
 
     public selections;
@@ -109,7 +111,13 @@ class SWMultiListingDisplayController{
         //This multiple collection logic could probably be in link too
         this.multipleCollectionDeffered = $q.defer();
         this.multipleCollectionPromise = this.multipleCollectionDeffered.promise;
-        //If
+        //Helps force single collection config mode 
+        this.singleCollectionDeferred = $q.defer();
+        this.singleCollectionPromise = this.singleCollectionDeferred.promise;
+        this.singleCollectionPromise.then(()=>{
+            this.multipleCollectionDeffered.reject(); 
+        }); 
+
         if(!this.collection || !angular.isString(this.collection)){
             //I don't know if we want to make this assumption
             this.hasCollectionPromise = true;//maybe
@@ -123,6 +131,9 @@ class SWMultiListingDisplayController{
             && angular.isUndefined(this.collectionConfig.columns)
         ){
             this.collectionConfig.columns = [];
+        } else if (angular.isUndefined(this.collectionConfig)){
+            //make it available to swCollectionConfig
+            this.collectionConfig = null; 
         }
         this.setupTranscludedData(); 
         this.multipleCollectionPromise.then(()=>{
@@ -150,6 +161,10 @@ class SWMultiListingDisplayController{
     }
     
     private setupInSingleCollectionConfigMode = () => {
+        
+        if (angular.isUndefined(this.collectionObject) && angular.isDefined(this.collectionConfig)){
+            this.collectionObject = this.collectionConfig.baseEntityName; 
+        }
         
          //add filterGroups
         angular.forEach(this.filterGroups, (filterGroup)=>{
@@ -251,7 +266,10 @@ class SWMultiListingDisplayController{
     };
 
     private setupDefaultCollectionInfo = () =>{
-        if(this.hasCollectionPromise){
+        if(this.hasCollectionPromise 
+            && angular.isDefined(this.collection) 
+            && angular.isUndefined(this.collectionConfig)
+        ){
             this.collectionObject = this.collection.collectionObject;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
             this.collectionConfig.loadJson(this.collection.collectionConfig);
@@ -284,8 +302,7 @@ class SWMultiListingDisplayController{
                 var allGetEntityPromises = [];
                 angular.forEach(this.collectionConfigs,(collectionConfig,key)=>{
                     allGetEntityPromises.push(collectionConfig.getEntity());
-                });    
-                console.log("cccc", allGetEntityPromises)   
+                });      
                 if(allGetEntityPromises.length){
                     this.$q.all(allGetEntityPromises).then(
                         (results)=>{

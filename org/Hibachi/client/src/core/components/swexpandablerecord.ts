@@ -14,6 +14,7 @@ class SWExpandableRecordController{
     public collectionConfig:any;
     public parentId:string;
     public entity:any
+    public expandableRules; 
     //@ngInject
     constructor(private $timeout:ng.ITimeoutService, private utilityService, private $hibachi, private collectionConfigService, private expandableService){
         this.$timeout = $timeout;
@@ -22,6 +23,7 @@ class SWExpandableRecordController{
         this.collectionConfigService = collectionConfigService;
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
         expandableService.addRecord(this.recordID);
+        console.log("are the rules laid out", this.expandableRules);
     }
     public toggleChild = ()=>{
         this.$timeout(()=>{
@@ -115,7 +117,8 @@ class SWExpandableRecord implements ng.IDirective{
         recordDepth:"=",
         childCount:"=",
         autoOpen:"=",
-        multiselectIdPaths:"="
+        multiselectIdPaths:"=",
+        expandableRules:"="
     };
 
     public static Factory(){

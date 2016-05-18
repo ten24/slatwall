@@ -54,6 +54,7 @@ class SWCollectionFilter implements ng.IDirective{
         if(angular.isDefined(currentScope.swCollectionConfig)){ 
             currentScope.swCollectionConfig.filters.push(filter); 
             currentScope.swCollectionConfig.filtersDeferred.resolve(); 
+            console.log("rule filter resolve");
         } else { 
             throw("could not find swCollectionConfig in the parent scope from swcollectionfilter");
         }
