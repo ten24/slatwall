@@ -27,6 +27,7 @@
 											data-filter-group="collectionConfig.filterGroups[0]"
 											data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
 											data-filter-properties-list="filterPropertiesList"
+                                            data-read-only="readOnly"
 											data-save-collection="saveCollection()"
 											>
 										</ul>
@@ -101,6 +102,7 @@
 							ng-change="searchCollection()"
 							/>
 							<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+                            <i ng-show="!loadingCollection" class="fa fa-search"></i>
 					</li>
 				</ul>
 			</div>

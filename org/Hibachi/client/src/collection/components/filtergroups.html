@@ -20,10 +20,10 @@
 			
 			<!-- filter Group Item -->
 			<span 	data-ng-switch-when="true"
-					data-ng-if="filterGroup && filterPropertiesList"
+					data-ng-if="!simple && filterGroup && filterPropertiesList"
 					sw-filter-group-item 
 					data-collection-config="collectionConfig"
-					data-filter-group-item="filterGroup",
+					data-filter-group-item="filterGroup"
 					data-sibling-items="filterGroupItem"
 					data-filter-properties-list="filterPropertiesList"
 					data-filter-group-item-index="$index"
@@ -37,6 +37,7 @@
 	<!-- buttons for adding filters -->
 	<sw-add-filter-buttons
 			data-item-in-use="itemInUse"
+            data-read-only="readOnly"
             data-ng-if="!simple"
 	>
 	</sw-add-filter-buttons>

@@ -284,6 +284,10 @@ class HibachiServiceDecorator{
                                             if(angular.isDefined(thisEntityInstance.data[property.name])){
                                                 delete thisEntityInstance.data[property.name];
                                             }
+
+                                            if(!thisEntityInstance.parents){
+                                                return;
+                                            }
                                             for(var i = 0; i <= thisEntityInstance.parents.length; i++){
                                                 if(angular.isDefined(thisEntityInstance.parents[i]) &&  thisEntityInstance.parents[i].name == property.name.charAt(0).toLowerCase() + property.name.slice(1)){
                                                     thisEntityInstance.parents.splice(i,1);
@@ -439,7 +443,7 @@ class HibachiServiceDecorator{
             });
             $delegate.setJsEntities(_jsEntities);
 
-            angular.forEach(_jsEntities,function(jsEntity){
+            angular.forEach(_jsEntities,(jsEntity)=>{
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
             });
@@ -714,7 +718,7 @@ class HibachiServiceDecorator{
                             entityName = modifiedData.objectLevel.metaData.className;
                         }
                         var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
-                        savePromise.then(function(response){
+                        savePromise.then((response)=>{
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
 
@@ -741,11 +745,11 @@ class HibachiServiceDecorator{
                         //select first, visible, and enabled input with a class of ng-invalid
 
                         var target = $('input.ng-invalid:first:visible:enabled');
-                        //$log.debug('input is invalid');
-                        //$log.debug(target);
-                        target.focus();
-                        var targetID = target.attr('id');
-                        $anchorScroll();
+                        if(angular.isDefined(target)){
+                            target.focus();
+                            var targetID = target.attr('id');
+                            $anchorScroll();
+                        }
                         deferred.reject('Input is invalid.');
                         observerService.notify('validationFailed');
                         observerService.notify('validationFailed'+entityName);

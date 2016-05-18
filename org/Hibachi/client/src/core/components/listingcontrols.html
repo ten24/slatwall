@@ -20,8 +20,11 @@
                        data-ng-model-options='{ debounce: 500 }'
                        data-ng-change="swListingControls.search()">
                 <buttom class="btn btn-xs btn-default s-add-search-param"
+                        data-ng-if="swListingControls.selectedSearchColumn && swListingControls.searchText"
                         data-ng-disabled="!swListingControls.selectedSearchColumn"
-                        data-ng-click="swListingControls.addSearchFilter()">Save this search</buttom>
+                        data-ng-click="swListingControls.addSearchFilter()">
+                        <i class="glyphicon glyphicon-plus"></i>
+                </buttom>
             </span>
             <span class="input-group-btn s-action">
                 <button class="btn btn-sm btn-default" type="button" data-ng-click="swListingControls.toggleFilters()">
@@ -37,7 +40,7 @@
         <!-- DISPLAY OPTIONS -->
         <div data-collapse="swListingControls.displayOptionsClosed" id="j-display-options">
             <div class="s-display-options">
-                <a href class="s-close" data-ng-click="swListingControls.toggleDisplayOptions()">
+                <a href class="s-close" data-ng-click="swListingControls.toggleDisplayOptions(true)">
                     <i class="fa fa-times"></i>
                 </a>
                 <!-- Dragable List group -->
@@ -54,7 +57,7 @@
                         data-column="column"
                         data-columns="swListingControls.collectionConfig.columns"
                         data-column-index="$index"
-                        data-save-collection="swListingControls.saveCollection"
+                        data-save-collection="swListingControls.saveCollection()"
                         data-properties-list="swListingControls.filterPropertiesList"
                         data-order-by="swListingControls.collectionConfig.orderBy">
                     </li>

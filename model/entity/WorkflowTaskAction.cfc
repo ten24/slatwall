@@ -139,6 +139,20 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		structDelete(variables, "WorkflowTask");
     }
 	
+	public boolean function checkPermission() {
+		switch(variables.actionType){
+			case 'delete':
+			case 'process':
+				var crudType = 'delete';
+				break;
+			case 'print':
+			case 'email':
+				var crudType = 'read';
+				break;
+		}
+		return getHibachiScope().authenticateEntity(crudType, getWorkflowTask().getWorkflow().getWorkflowObject());
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

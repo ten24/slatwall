@@ -134,10 +134,16 @@ class SWDisplayOptions{
                             if(angular.isDefined(selectedProperty.ormtype)){
                                 column['ormtype'] = selectedProperty.ormtype;
                             }
+                            if(selectedProperty.hb_formattype){
+                                column['type'] = selectedProperty.hb_formattype;
+                            }else{
+                                column['type'] = 'none';
+                            }
                             $scope.columns.push(column);
                             $scope.saveCollection();
                             if(angular.isDefined(closeDialog) && closeDialog === true){
                                 $scope.addDisplayDialog.toggleDisplayDialog();
+                                $scope.selectBreadCrumb(0);
                             }
                         }
                     }
