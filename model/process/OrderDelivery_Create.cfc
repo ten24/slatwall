@@ -56,15 +56,37 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
+	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
 	property name="shippingAddress" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="orderDeliveryItems" type="array" hb_populateArray="true";
 	property name="giftCardCodes" type="array" hb_populateArray="true";
-
+	
+	property name="useShippingIntegrationForTrackingNumber" hb_formFieldType="yesno";
 	property name="trackingNumber";
 	property name="captureAuthorizedPaymentsFlag" hb_formFieldType="yesno";
 	property name="capturableAmount" hb_formatType="currency";
 
 	variables.orderDeliveryItems = [];
+	
+	
+	
+	public any function getShippingIntegration(){
+		if(
+			!structKeyExists(variables,'shippingIntegration') 
+			&& !isNull(getOrderFulfillment().getShippingMethodRate())
+			&& !isNull(getOrderFulfillment().getShippingMethodRate().getShippingIntegration())
+		){
+			variable.shippingIntegration = getOrderFulfillment().getShippingMethodRate().getShippingIntegration();
+		}
+		return variable.shippingIntegration;
+	}
+	
+	public any function getUseShippingIntegrationForTrackingNumber(){
+		return (
+			!isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate())
+			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate().getShippingIntegration())
+		);
+	}
 
 	public boolean function hasQuantityOnOneOrderDeliveryItem() {
 		if (getOrderFulfillment().getFulfillmentMethodType() == "auto" ){

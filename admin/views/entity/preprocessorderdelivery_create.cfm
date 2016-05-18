@@ -71,13 +71,24 @@ Notes:
 
 				<!--- Shipping - Hidden Fields --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
+					
 					<input type="hidden" name="shippingMethod.shippingMethodID" value="#rc.processObject.getShippingMethod().getShippingMethodID()#" />
 					<input type="hidden" name="shippingAddress.addressID" value="#rc.processObject.getShippingAddress().getAddressID()#" />
 				</cfif>
-
+				
 				<!--- Shipping - Inputs --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+					<cfset hasShippingIntegration = rc.processObject.getUseShippingIntegrationForTrackingNumber()>
+					<hb:hibachidisplaytoggle selector="input[name='trackingNumber']" showValues="0" loadVisable="#hasShippingIntegration#">
+						<hb:HibachiPropertyDisplay 
+							object="#rc.processObject#" 
+							property="useShippingIntegrationForTrackingNumber" 
+							edit="true"
+						>
+					</hb:hibachiDisplayToggle>
+					<hb:hibachidisplaytoggle selector="input[name='useShippingIntegrationForTrackingNumber']" showValues="0" loadVisible="#!hasShippingIntegration#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+					</hb:hibachiDisplayToggle>
 				</cfif>
 
 				<!--- Gift Card Codes --->
