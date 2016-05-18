@@ -81,18 +81,21 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
         return xmlPacket;
 	}
 	
-	public any function generateShippingLabel(required any requestBean){
+	public any function processShipmentRequest(required any requestBean){
 		// Build Request XML
 		var xmlPacket = getProcessShipmentRequestXmlPacket(arguments.requestBean);
         
         var xmlResponse = getXMLResponse(xmlPacket);
-        
+        writedump(xmlPacket);
+        writedump(xmlResponse);
+        abort;
         var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
         return responseBean;
 	}
 	
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
 		var responseBean = {};
+		writedump(arguments.xmlResponse);abort;
 		return responseBean;
 	}
 	

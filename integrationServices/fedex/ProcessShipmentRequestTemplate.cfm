@@ -53,16 +53,15 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         
         <ns:WebAuthenticationDetail>
-            <ns:UserCredential>
-            <ns:Key>2O9ZGgXSHFgJhJdr</ns:Key>
-            <ns:Password>X87qtei798zz58VktqKOjSxsk</ns:Password>
-            </ns:UserCredential>
-        </ns:WebAuthenticationDetail>
-    
-        <ns:ClientDetail>
-            <ns:AccountNumber>510087585</ns:AccountNumber>
-            <ns:MeterNumber>118724670</ns:MeterNumber>
-        </ns:ClientDetail>
+	        <ns:UserCredential>
+	            <ns:Key>#trim(setting('transactionKey'))#</ns:Key>
+	            <ns:Password>#trim(setting('password'))#</ns:Password>
+	        </ns:UserCredential>
+	    </ns:WebAuthenticationDetail>
+	    <ns:ClientDetail>
+	        <ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
+	        <ns:MeterNumber>#trim(setting('meterNo'))#</ns:MeterNumber>
+	    </ns:ClientDetail>
           
         <ns:TransactionDetail>
            <ns:CustomerTransactionId>1111</ns:CustomerTransactionId>
@@ -75,46 +74,56 @@
            <ns:Minor>0</ns:Minor>
         </ns:Version>
         <ns:RequestedShipment>
-           <ns:ShipTimestamp>2016-05-13T11:11:11</ns:ShipTimestamp>
-           <ns:DropoffType>REGULAR_PICKUP</ns:DropoffType>
-           <ns:ServiceType>STANDARD_OVERNIGHT</ns:ServiceType>
-           <ns:PackagingType>YOUR_PACKAGING</ns:PackagingType>
-           <ns:Shipper>
-           <ns:Contact>
-	            <ns:PersonName>Ryan</ns:PersonName>
-	            <ns:CompanyName>ten24web</ns:CompanyName>
-	            <ns:PhoneNumber>5086997336</ns:PhoneNumber>
-           </ns:Contact>
-           <ns:Address>
-	            <ns:StreetLines>90 Bank st</ns:StreetLines>
-	            
-	            <ns:City>Bank st</ns:City>
-	            <ns:StateOrProvinceCode>MA</ns:StateOrProvinceCode>
-	            <ns:PostalCode>02760</ns:PostalCode>
-	            <ns:CountryCode>US</ns:CountryCode>
-	            <ns:Residential>false</ns:Residential>
-           </ns:Address>
-           </ns:Shipper>
-           <ns:Recipient>
-	           <ns:Contact>
-		            <ns:PersonName>Ryan</ns:PersonName>
+	        <ns:ShipTimestamp>#DateFormat(Now(),'yyyy-mm-dd')#T#TimeFormat(Now(),'hh:mm:ss')#</ns:ShipTimestamp>
+	        <ns:DropoffType>REGULAR_PICKUP</ns:DropoffType>
+	        <ns:ServiceType>STANDARD_OVERNIGHT</ns:ServiceType>
+	        <ns:PackagingType>YOUR_PACKAGING</ns:PackagingType>
+	        <ns:TotalWeight>
+	            <ns:Units>LB</ns:Units>
+	            <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
+	        </ns:TotalWeight>
+	        <ns:TotalInsuredValue>
+	            <ns:Currency>USD</ns:Currency>
+	            <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
+	        </ns:TotalInsuredValue>
+	       
+	        <ns:Shipper>
+	        	<ns:Contact>
+	            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
+	            	<ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
+	            	<ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
+           		</ns:Contact>
+	            <ns:Address>
+	            	<ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
+	                <ns:City>#trim(setting('shipperCity'))#</ns:City>
+	                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
+	                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
+	                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
+	            </ns:Address>
+	        </ns:Shipper>
+	        <ns:Recipient>
+	        	<ns:Contact>
+		            <ns:PersonName>#arguments.requestBean.getContactPersonName()#</ns:PersonName>
 		            
-		            <ns:CompanyName>ten24web</ns:CompanyName>
+		            <ns:CompanyName>#arguments.requestBean.getContactCompany()#</ns:CompanyName>
 		            
-		            <ns:PhoneNumber>5086997336</ns:PhoneNumber>
+		            <ns:PhoneNumber>#arguments.requestBean.getContactPhoneNumber#</ns:PhoneNumber>
 	           </ns:Contact>
-	           <ns:Address>
-		            <ns:StreetLines>90 bank st</ns:StreetLines>
-		            
-		            <ns:City>North Attleboro</ns:City>
-		            <ns:StateOrProvinceCode>MA</ns:StateOrProvinceCode>
-		            <ns:PostalCode>02760</ns:PostalCode>
-		            <ns:CountryCode>US</ns:CountryCode>
-		            <ns:Residential>false</ns:Residential>
-	           </ns:Address>
-           </ns:Recipient>
-       
-           <ns:ShippingChargesPayment>
+	        	<ns:Address>
+	                <ns:StreetLines>#arguments.requestBean.getShipToStreetAddress()#</ns:StreetLines>
+	                <ns:City>#arguments.requestBean.getShipToCity()#</ns:City>
+					<cfif len(arguments.requestBean.getShipToStateCode()) eq 2>
+	                	<ns:StateOrProvinceCode>#arguments.requestBean.getShipToStateCode()#</ns:StateOrProvinceCode>
+					<cfelseif len(arguments.requestBean.getShipToStateCode()) eq 3>
+						<ns:StateOrProvinceCode>#left(arguments.requestBean.getShipToStateCode(),2)#</ns:StateOrProvinceCode> 
+					</cfif>
+	                <ns:PostalCode>#arguments.requestBean.getShipToPostalCode()#</ns:PostalCode>
+	                <ns:CountryCode>#arguments.requestBean.getShipToCountryCode()#</ns:CountryCode>
+					<ns:Residential>false</ns:Residential>
+	            </ns:Address>
+	        </ns:Recipient>
+	        
+	        <ns:ShippingChargesPayment>
 	           <ns:PaymentType>THIRD_PARTY</ns:PaymentType>
 	           <ns:Payor>
 	            <ns:AccountNumber>510087585</ns:AccountNumber>
@@ -128,18 +137,21 @@
 	           <ns:ImageType>PDF</ns:ImageType>
 	           <ns:LabelStockType>PAPER_4X6</ns:LabelStockType>
            </ns:LabelSpecification>
-           
-           <ns:RateRequestTypes>ACCOUNT</ns:RateRequestTypes>
-           
-           <ns:PackageCount>1</ns:PackageCount>
-           <ns:PackageDetail>INDIVIDUAL_PACKAGES</ns:PackageDetail>
-           <ns:RequestedPackageLineItems>
-	           <ns:SequenceNumber>1</ns:SequenceNumber>
-	           <ns:Weight>
-	            <ns:Units>LB</ns:Units>
-	            <ns:Value>1</ns:Value>
-	           </ns:Weight>
-	           <ns:Dimensions>
+	        
+	        <ns:RateRequestTypes>LIST</ns:RateRequestTypes>
+	        <ns:PackageCount>1</ns:PackageCount>
+	        <ns:PackageDetail>INDIVIDUAL_PACKAGES</ns:PackageDetail>
+	        <ns:RequestedPackageLineItems>
+	            <ns:SequenceNumber>1</ns:SequenceNumber>
+	            <ns:InsuredValue>
+	                <ns:Currency>USD</ns:Currency>
+	                <ns:Amount>#arguments.requestBean.getTotalValue()#</ns:Amount>
+	            </ns:InsuredValue>
+	            <ns:Weight>
+	                <ns:Units>LB</ns:Units>
+	                <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
+	            </ns:Weight>
+	            <ns:Dimensions>
 	            <ns:Length>1</ns:Length>
 	            <ns:Width>1</ns:Width>
 	            <ns:Height>1</ns:Height>
@@ -151,8 +163,8 @@
 		           <ns:CustomerReferenceType>INVOICE_NUMBER</ns:CustomerReferenceType>
 		           <ns:Value>1</ns:Value>
 	           </ns:CustomerReferences>
-           
-           </ns:RequestedPackageLineItems>
-        </ns:RequestedShipment>
+	        </ns:RequestedPackageLineItems>
+	    </ns:RequestedShipment>
+        
     </ns:ProcessShipmentRequest>
 </cfoutput>

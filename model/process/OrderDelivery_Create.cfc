@@ -81,7 +81,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variable.shippingIntegration;
 	}
 	
-	public any function getUseShippingIntegrationForTrackingNumber(){
+	public boolean function getUseShippingIntegrationForTrackingNumber(){
 		return (
 			!isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate())
 			&& !isNull(getorderfulfillment().getSelectedShippingMethodOption().getShippingMethodRate().getShippingIntegration())
@@ -99,6 +99,22 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return false;
+	}
+	
+	public string function getTrackingNumber(){
+		if(!structKeyExists(variables,'trackingNumber')){
+			//get tracking number from integration if specified
+			if(getUseShippingIntegrationForTrackingNumber()){
+				var selectedIntegration = getShippingIntegration();
+				var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
+				//create OrderDelivery and get tracking Number and generate label
+				var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+				processShipmentRequestBean.populateWithOrderFulfillment(getOrderFulfillment());
+				var responseBean = shippingIntegrationCFC.processShipmentRequest(processShipmentRequestBean);
+				writedump(var=responseBean,top=2);abort;
+			}
+		}
+		return variables.trackingNumber;
 	}
 
 	public boolean function hasAllGiftCardCodes(){

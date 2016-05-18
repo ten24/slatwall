@@ -52,34 +52,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
 	
-	public any function generateShippingLabel(required any integration){
-		var integrationShippingAPI = arguments.integration.getIntegrationCFC("shipping");
-		var responseBean = {};
-		// Create processShipment request bean and populate it 
-		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-		
-//		ratesRequestBean.populateShippingItemsWithOrderFulfillmentItems( arguments.orderFulfillment.getOrderFulfillmentItems() );
-//		ratesRequestBean.populateShipToWithAddress( arguments.orderFulfillment.getShippingAddress() );
-//
-		logHibachi('#arguments.integration.getIntegrationName()# Shipping Integration Process Shipment Request - Started');
-		// Inside of a try/catch call the 'getRates' method of the integraion
-		//try {
-			responseBean = integrationShippingAPI.generateShippingLabel( processShipmentRequestBean );
-			
-			
-			
-			return responseBean;
-//		} catch(any e) {
-//
-//			logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call generateShippingLabel()', true);
-//			logHibachiException(e);
-//
-//			if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
-//				rethrow;
-//			}
-//		}
-		
-	}
+//	public any function generateShippingLabel(required any integration){
+//		var integrationShippingAPI = arguments.integration.getIntegrationCFC("shipping");
+//		var responseBean = {};
+//		// Create processShipment request bean and populate it 
+//		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+//		
+////		ratesRequestBean.populateShippingItemsWithOrderFulfillmentItems( arguments.orderFulfillment.getOrderFulfillmentItems() );
+////		ratesRequestBean.populateShipToWithAddress( arguments.orderFulfillment.getShippingAddress() );
+////
+//		logHibachi('#arguments.integration.getIntegrationName()# Shipping Integration Process Shipment Request - Started');
+//		// Inside of a try/catch call the 'getRates' method of the integraion
+//		//try {
+//			responseBean = integrationShippingAPI.generateShippingLabel( processShipmentRequestBean );
+//			
+//			
+//			
+//			return responseBean;
+////		} catch(any e) {
+////
+////			logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call generateShippingLabel()', true);
+////			logHibachiException(e);
+////
+////			if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
+////				rethrow;
+////			}
+////		}
+//		
+//	}
 	
 	
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
@@ -102,8 +102,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Create rates request bean and populate it with the orderFulfillment Info
 			var ratesRequestBean = getTransient("ShippingRatesRequestBean");
-			ratesRequestBean.populateShippingItemsWithOrderFulfillmentItems( arguments.orderFulfillment.getOrderFulfillmentItems() );
-			ratesRequestBean.populateShipToWithAddress( arguments.orderFulfillment.getShippingAddress() );
+			ratesRequestBean.populateWithOrderFulfillment(arguments.orderFulfillment);
 
 			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Started');
 			// Inside of a try/catch call the 'getRates' method of the integraion
@@ -120,7 +119,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			logHibachi('#arguments.integrations[i].getIntegrationName()# Shipping Integration Rates Request - Finished');
 		}
-		
 		return responseBeans;
 	}
 

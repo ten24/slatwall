@@ -59,6 +59,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="giftCardService";
 	property name="hibachiUtilityService";
 	property name="hibachiAuthenticationService";
+	property name="integrationService";
 	property name="locationService";
 	property name="paymentService";
 	property name="priceGroupService";
@@ -1839,14 +1840,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
 				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
 			}
-
-			// Setup the tracking number
+			
+			// Setup the tracking number if we have it
 			if(
 				!isNull(arguments.processObject.getTrackingNumber()) 
 				&& len(arguments.processObject.getTrackingNumber())
 			) {
 				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
 			}
+			
 
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
