@@ -63,10 +63,6 @@
 	        <ns:MeterNumber>#trim(setting('meterNo'))#</ns:MeterNumber>
 	    </ns:ClientDetail>
           
-        <ns:TransactionDetail>
-           <ns:CustomerTransactionId>1111</ns:CustomerTransactionId>
-        </ns:TransactionDetail>
-       
         <ns:Version>
            <ns:ServiceId>ship</ns:ServiceId>
            <ns:Major>7</ns:Major>
@@ -126,8 +122,8 @@
 	        <ns:ShippingChargesPayment>
 	           <ns:PaymentType>THIRD_PARTY</ns:PaymentType>
 	           <ns:Payor>
-	            <ns:AccountNumber>510087585</ns:AccountNumber>
-	            <ns:CountryCode>US</ns:CountryCode>
+	            <ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
+	            <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
 	           </ns:Payor>
            </ns:ShippingChargesPayment>
           
@@ -152,17 +148,12 @@
 	                <ns:Value>#arguments.requestBean.getTotalWeight( unitCode='lb' )#</ns:Value>
 	            </ns:Weight>
 	            <ns:Dimensions>
-	            <ns:Length>1</ns:Length>
-	            <ns:Width>1</ns:Width>
-	            <ns:Height>1</ns:Height>
-	            <ns:Units>IN</ns:Units>
-	           </ns:Dimensions>
-	           <ns:PhysicalPackaging>BOX</ns:PhysicalPackaging>
-	       
-	           <ns:CustomerReferences>
-		           <ns:CustomerReferenceType>INVOICE_NUMBER</ns:CustomerReferenceType>
-		           <ns:Value>1</ns:Value>
-	           </ns:CustomerReferences>
+		            <ns:Length>1</ns:Length>
+		            <ns:Width>1</ns:Width>
+		            <ns:Height>1</ns:Height>
+		            <ns:Units>IN</ns:Units>
+	            </ns:Dimensions>
+	            <ns:PhysicalPackaging>BOX</ns:PhysicalPackaging>
 	        </ns:RequestedPackageLineItems>
 	    </ns:RequestedShipment>
         

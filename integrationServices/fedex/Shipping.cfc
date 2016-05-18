@@ -86,10 +86,12 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		var xmlPacket = getProcessShipmentRequestXmlPacket(arguments.requestBean);
         
         var xmlResponse = getXMLResponse(xmlPacket);
+        
+        var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
         writedump(xmlPacket);
         writedump(xmlResponse);
+        writedump(responseBean);
         abort;
-        var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
         return responseBean;
 	}
 	
