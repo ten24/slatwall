@@ -615,7 +615,7 @@ table th {
 }
 .table-responsive .s-levels {
   position: initial !important;
-  padding-left: 25px !important;
+  padding-left: 25px;
 }
 .table-responsive .s-levels .s-levels-wrapper {
   position: relative;
@@ -6703,6 +6703,10 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-body-box .table-responsive thead {
   background: #fafafa;
+}
+.s-detail-content-table tr.s-selected-row {
+  color: #798c9c;
+  background: #eff9fd;
 }
 .s-detail-content-table tbody tr {
   font-weight: 600;
