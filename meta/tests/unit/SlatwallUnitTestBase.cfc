@@ -53,10 +53,10 @@ component extends="mxunit.framework.TestCase" output="false" {
 
 	// BEFORE ALL TESTS IN THIS SUITE
 	public void function beforeTests(){
-
+	
 		// Setup Components
 		variables.slatwallFW1Application = createObject("component", "Slatwall.Application");
-
+		variables.slatwallFW1Application.reloadApplication();
 		super.beforeTests();
 	}
 

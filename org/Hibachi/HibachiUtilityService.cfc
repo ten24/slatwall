@@ -291,7 +291,7 @@
 
 			return returnString;
 		}
-		
+		//function extract from the following one replaceStringTemplate
 		public array function getTemplateKeys(required string template){
 			return reMatchNoCase("\${[^}]+}",arguments.template);
 		}
