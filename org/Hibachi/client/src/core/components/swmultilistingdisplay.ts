@@ -698,6 +698,37 @@ class SWMultiListingDisplayController{
         return expandableRuleMet;  
     }
     
+    public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
+        var childCollectionConfig = null; 
+        if(angular.isDefined(this.expandableRules)){
+            angular.forEach(this.expandableRules, (rule, key)=>{
+                if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){
+                    if(angular.isString(pageRecord[rule.filterPropertyIdentifier])){
+                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier].trim(); 
+                    } else {
+                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
+                    }
+                    switch (rule.filterComparisonOperator){
+                        case "!=":
+                            if(pageRecordValue != rule.filterComparisonValue){
+                                childCollectionConfig = rule.childrenCollectionConfig; 
+                            }
+                            break; 
+                        default: 
+                            //= case
+                            if(pageRecordValue == rule.filterComparisonValue){
+                               childCollectionConfig = rule.childrenCollectionConfig; 
+                            }
+                            break; 
+                    }
+                    if(childCollectionConfig != null){
+                        return childCollectionConfig;
+                    }
+                }
+            }); 
+        } 
+    }
+    
     public getColorFilterNGClassObject = (pageRecord)=>{
         var classObjectString = "{"; 
         angular.forEach(this.colorFilters, (colorFilter, index)=>{
