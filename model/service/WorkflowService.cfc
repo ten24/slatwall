@@ -96,10 +96,6 @@ component extends="HibachiService" accessors="true" output="false" {
 							processData.workflowTrigger = workflowTrigger;
 
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
-
-							if(!processData.entity.hasErrors()) {
-								application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
-							}
 						}
 
 						// Update the workflowTriggerHistory
@@ -182,6 +178,12 @@ component extends="HibachiService" accessors="true" output="false" {
 						throw("error");
 						//application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
 					}
+
+					if(!getHibachiScope().getORMHasErrors()) {
+						getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+					}
+					// Commit audit queue
+					getHibachiScope().getService("hibachiAuditService").commitAudits();
 				}
 				threadJoin(currentThreadName);
 
@@ -213,7 +215,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 
 		// Update the taskSechedules nextRunDateTime
-		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(arguments.workflowTrigger.getStartDateTime(), arguments.workflowTrigger.getEndDateTime ) );
+		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(arguments.workflowTrigger.getStartDateTime(), arguments.workflowTrigger.getEndDateTime() ) );
+
+		this.saveWorkflowTrigger(workflowTrigger);
+
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
@@ -283,7 +288,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			//DELETE
 			case 'delete' :
 				if(type != 'Event'){
-				actionSuccess = getHibachiScope().deleteEntity(arguments.entity);
+					actionSuccess = getHibachiScope().deleteEntity(arguments.entity);
 				}else{
 					actionSuccess = false;
 				}
@@ -348,7 +353,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//Check if is a Schedule Trigger
 		if(structKeyExists(arguments.data, "schedule")){
 		// Update the nextRunDateTime
-			arguments.entity.setNextRunDateTime( entity.getSchedule().getNextRunDateTime(DateFormat(DateAdd('yyyy', -1, now()),'mmmm dd, yyyy'), DateFormat(DateAdd('yyyy', 1, now()),'mmmm dd, yyyy') ) );
+			arguments.entity.setNextRunDateTime( entity.getSchedule().getNextRunDateTime(entity.getStartDateTime(), entity.getEndDateTime()) );
 		}
 		
 		// If there aren't any errors then flush, and clear cache

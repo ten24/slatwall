@@ -78,7 +78,12 @@ class SWWorkflowTrigger{
                     if(scope.executingTrigger) return;
 
                     if(!workflowTrigger.data.workflow.data.workflowTasks || !workflowTrigger.data.workflow.data.workflowTasks.length) {
-                        return; //show message "you dont have a task yet"
+                        var alert = alertService.newAlert();
+                        alert.msg =  "You don't have any  Task yet!";
+                        alert.type = "error";
+                        alert.fade = true;
+                        alertService.addAlert(alert);
+                        return;
                     }
                     scope.executingTrigger = true;
 
