@@ -29,8 +29,6 @@ class SWExpandableRecordController{
         this.collectionConfigService = collectionConfigService;
         this.recordID = this.parentId; //this is what parent is initalized to in the listing display
         expandableService.addRecord(this.recordID);
-        console.log("are the rules laid out", this.expandableRules);
-        //Check to see if this fits the expandable rule
     }
     
     public setupChildCollectionConfig = () =>{
@@ -69,9 +67,7 @@ class SWExpandableRecordController{
                     } 
                     if(angular.isFunction(this.childCollectionConfig.getEntity)){
                         this.collectionPromise = this.childCollectionConfig.getEntity();
-                    } else {
-                        this.collectionPromise = this.$hibachi.getEntity(this.childCollectionConfig.baseEntityName, this.childCollectionConfig);
-                    }
+                    } 
                        
                     this.collectionPromise.then((data)=>{
                         this.collectionData = data;
@@ -90,7 +86,7 @@ class SWExpandableRecordController{
                         this.childrenLoaded = true;
                     });
             }
-
+            console.log("closing the children", this);
             angular.forEach(this.children,(child)=>{
                 child.dataIsVisible=this.childrenOpen;
                 var entityPrimaryIDName = this.entity.$$getIDName();
@@ -194,10 +190,6 @@ class SWExpandableRecord implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-        scope.swExpandableRecord.childCount = 1;
-        if(angular.isDefined( scope.swExpandableRecord.pageRecord)){
-            console.log("exp", scope.swExpandableRecord.expandable); 
-        }
         if(scope.swExpandableRecord.expandable && scope.swExpandableRecord.childCount){
             if(scope.swExpandableRecord.recordValue){
                 var id = scope.swExpandableRecord.records[scope.swExpandableRecord.recordIndex][scope.swExpandableRecord.entity.$$getIDName()];

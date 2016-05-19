@@ -707,12 +707,13 @@ class SWMultiListingDisplayController{
     }
     
     //this is going to be moved into a service
-    public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord,primaryIDField) => {
+    public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
-        if(angular.isDefined(pageRecord[primaryIDField]) 
-            && angular.isDefined(this.childCollectionConfigs[pageRecord[primaryIDField]])
+        console.log("thislisting",pageRecord[this.exampleEntity.$$getIDName()]);
+        if(angular.isDefined(pageRecord[this.exampleEntity.$$getIDName()]) 
+            && angular.isDefined(this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]])
         ){
-            return this.childCollectionConfigs[pageRecord[primaryIDField]];
+            return this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]];
         }
         if(keyOfExpandableRuleMet != -1){
            var childCollectionConfig = this.expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig.clone();
@@ -726,9 +727,17 @@ class SWMultiListingDisplayController{
                     }    
                 });
            }); 
-           this.childCollectionConfigs[pageRecord[primaryIDField]] = childCollectionConfig; 
-           return this.childCollectionConfigs[pageRecord[primaryIDField]];
+           this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]] = childCollectionConfig; 
+           return this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]];
         } 
+    }
+    
+    public getExampleEntityForExpandableRecord = (pageRecord) =>{
+        var childCollectionConfig = this.getPageRecordChildCollectionConfigForExpandableRule(pageRecord);
+        if(angular.isDefined(childCollectionConfig)){
+            return this.$hibachi.getEntityExample(this.getPageRecordChildCollectionConfigForExpandableRule(pageRecord).baseEntityName);
+        }
+         return this.exampleEntity; 
     }
     
     public getColorFilterNGClassObject = (pageRecord)=>{
@@ -927,6 +936,7 @@ class SWMultiListingDisplay implements ng.IDirective{
 
             /*Optional*/
             title:"@?",
+            childPropertyName:"@?",
 
             /*Admin Actions*/
             actions:"=?",

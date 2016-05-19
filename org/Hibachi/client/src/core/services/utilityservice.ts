@@ -18,7 +18,9 @@ class UtilityService extends BaseService{
     public keyToAttributeString = (key)=> {
         var attributeString = "data-"; 
         for(var i=0; i<key.length; i++){
-            if(this.isUpperCase(key.charAt(i))){
+            if(key.charAt(i) == "_"){ 
+                attributeString += "-"
+            } else if(this.isUpperCase(key.charAt(i))){
                 //special case for ID and Acronyms because it doesn't follow naming conventions
                 if(i+1 <= key.length && this.isUpperCase(key.charAt(i+1))){
                     if(key.charAt(i) + key.charAt(i+1) == "ID"){
@@ -35,8 +37,6 @@ class UtilityService extends BaseService{
                 } else { 
                     attributeString += "-" + key.charAt(i).toLowerCase(); 
                 } 
-            } else if(key.charAt(i) == "_"){ 
-                attributeString += "-"
             } else { 
                 attributeString += key.charAt(i); 
             }

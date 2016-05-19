@@ -4,7 +4,9 @@ class SWSkuPriceSingleEditController{
     
     public skuId;
     public currencyCode;
-    
+    public bundledSkuSkuId; 
+    public bundledSkuCurrencyCode;
+   
     public sku; 
     
     public collectionConfig; 
@@ -14,6 +16,12 @@ class SWSkuPriceSingleEditController{
         private collectionConfigService,
         private $hibachi
     ){
+        if(angular.isUndefined(this.skuId) && angular.isDefined(this.bundledSkuSkuId)){
+            this.skuId = this.bundledSkuSkuId;
+        }
+        if(angular.isUndefined(this.currencyCode) && angular.isDefined(this.bundledSkuCurrencyCode)){
+            this.currencyCode = this.bundledSkuCurrencyCode;
+        }
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWSkuPriceSingleEditController");
         }
@@ -45,6 +53,8 @@ class SWSkuPriceSingleEdit implements ng.IDirective{
     public scope = {}; 
     public bindToController = {
         skuId:"@",
+        bundledSkuSkuId:"@",
+        bundledSkuCurrencyCode:"@",        
         currencyCode:"@",
         sku:"=?"
     };

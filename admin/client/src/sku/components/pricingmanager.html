@@ -11,6 +11,7 @@
                     data-is-angular-route="false"
                     data-angular-links="false"
                     data-has-action-bar="false"
+                    data-child-property-name="bundledSkus"
                     data-multiselect-field-name="placeholder"
                     data-record-detail-action="admin:entity.detailsku"
                                 >
@@ -44,6 +45,8 @@
                                 <sw-collection-column data-property-identifier="bundleFlag" data-is-searchabled="true"></sw-collection-column>
                                 <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
                                 <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
+                                <sw-collection-column data-property-identifier="currencyCode"></sw-collection-column>
+                                <sw-collection-column data-property-identifier="bundledSkusCount"></sw-collection-column>
                             </sw-collection-columns>
                             <sw-collection-filters>
                                 <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swPricingManager.productId}}"></sw-collection-filter>
@@ -66,6 +69,7 @@
                                         <sw-collection-column data-property-identifier="bundledSku.skuID"></sw-collection-column>
                                         <sw-collection-column data-property-identifier="bundledSku.skuCode"></sw-collection-column>
                                         <sw-collection-column data-property-identifier="bundledSku.skuDefinition"></sw-collection-column>
+                                        <sw-collection-column data-property-identifier="bundledSku.currencyCode"></sw-collection-column>
                                     </sw-collection-columns>
                                     <sw-collection-filters>
                                         <sw-collection-filter data-property-identifier="sku.skuID" data-comparison-operator="=" data-comparison-value="${skuID}"></sw-collection-filter>

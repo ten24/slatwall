@@ -149,6 +149,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="optionsIDList" persistent="false";
 	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="productScheduleSmartList" type="any" persistent="false";
+	property name="bundledSkusCount" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="registeredUserCount" type="integer" persistent="false";
@@ -727,6 +728,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.eligibleFulfillmentMethods = sl.getRecords();
 		}
 		return variables.eligibleFulfillmentMethods;
+	}
+
+	public any function getBundledSkusCount() {
+		if(!structKeyExists(variables, "bundledSkusCount")){
+			variables.bundledSkusCount = 0;
+			if(arrayLen(this.getBundledSkus())){
+				variables.bundledSkusCount = arrayLen(this.getBundledSkus());
+			}
+		}
+		return variables.bundledSkusCount;
 	}
 
 	// @hint Returns count of registered or waitlisted users associated with this sku
