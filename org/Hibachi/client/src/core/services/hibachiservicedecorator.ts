@@ -443,7 +443,7 @@ class HibachiServiceDecorator{
             });
             $delegate.setJsEntities(_jsEntities);
 
-            angular.forEach(_jsEntities,(jsEntity)=>{
+            angular.forEach(_jsEntities,function(jsEntity){
                 var jsEntityInstance = new jsEntity;
                 _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
             });
@@ -718,7 +718,7 @@ class HibachiServiceDecorator{
                             entityName = modifiedData.objectLevel.metaData.className;
                         }
                         var savePromise = $delegate.saveEntity(entityName,entityID,params,context);
-                        savePromise.then((response)=>{
+                        savePromise.then(function(response){
                             var returnedIDs = response.data;
                             if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
 
