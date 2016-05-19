@@ -53,9 +53,16 @@ Notes:
 		
 		<!--- TODO: This needs to query DB and return an array of ALL workflow events --->
 		<!--- ['onOrderSaveSuccess','onOrderProcess_placeOrderSuccess'] --->
-		<cfreturn ORMExecuteQuery('SELECT triggerEvent 
-									FROM SlatwallWorkflowTrigger 
-									where triggerType = :triggerType'
+		<cfreturn ORMExecuteQuery('SELECT
+										triggerEvent
+									FROM
+										SlatwallWorkflowTrigger
+									WHERE
+										triggerType = :triggerType
+									AND
+										startDateTime >= CURRENT_TIMESTAMP()
+									AND
+										(endDateTime IS NULL OR startDateTime < CURRENT_TIMESTAMP())'
 									,{triggerType="Event"}) 
 									/>
 	</cffunction>
