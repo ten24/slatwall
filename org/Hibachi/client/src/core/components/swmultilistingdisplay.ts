@@ -666,40 +666,8 @@ class SWMultiListingDisplayController{
         }
     };
     
-    public getPageRecordMatchesExpandableRule = (pageRecord)=>{
-         var expandableRuleMet = false; 
-         if(angular.isDefined(this.expandableRules)){
-            angular.forEach(this.expandableRules, (rule, key)=>{
-                if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){
-                    if(angular.isString(pageRecord[rule.filterPropertyIdentifier])){
-                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier].trim(); 
-                    } else {
-                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
-                    }
-                    switch (rule.filterComparisonOperator){
-                        case "!=":
-                            if(pageRecordValue != rule.filterComparisonValue){
-                                expandableRuleMet = true; 
-                            }
-                            break; 
-                        default: 
-                            //= case
-                            if(pageRecordValue == rule.filterComparisonValue){
-                                expandableRuleMet = true; 
-                            }
-                            break; 
-                    }
-                    if(angular.isDefined(expandableRuleMet)){
-                        return expandableRuleMet;
-                    }
-                }
-            }); 
-        } 
-        return expandableRuleMet;  
-    }
-    
-    public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
-        var childCollectionConfig = null; 
+    public getKeyOfMatchedExpandableRule = (pageRecord)=>{
+        var expandableRuleMatchedKey = -1; 
         if(angular.isDefined(this.expandableRules)){
             angular.forEach(this.expandableRules, (rule, key)=>{
                 if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){
@@ -711,22 +679,37 @@ class SWMultiListingDisplayController{
                     switch (rule.filterComparisonOperator){
                         case "!=":
                             if(pageRecordValue != rule.filterComparisonValue){
-                                childCollectionConfig = rule.childrenCollectionConfig; 
+                                expandableRuleMatchedKey = key; 
                             }
                             break; 
                         default: 
                             //= case
                             if(pageRecordValue == rule.filterComparisonValue){
-                               childCollectionConfig = rule.childrenCollectionConfig; 
+                                expandableRuleMatchedKey = key; 
                             }
                             break; 
                     }
-                    if(childCollectionConfig != null){
-                        return childCollectionConfig;
+                    if(expandableRuleMatchedKey != -1){
+                        return expandableRuleMatchedKey;
                     }
                 }
             }); 
+        }  
+        return expandableRuleMatchedKey;
+    }
+    
+    public getPageRecordMatchesExpandableRule = (pageRecord)=>{
+        var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
+        return keyOfExpandableRuleMet != -1;  
+    }
+    
+    public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
+        var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
+        var childCollectionConfig = null; 
+        if(keyOfExpandableRuleMet != -1){
+           childCollectionConfig = this.expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig;
         } 
+        return childCollectionConfig; 
     }
     
     public getColorFilterNGClassObject = (pageRecord)=>{
