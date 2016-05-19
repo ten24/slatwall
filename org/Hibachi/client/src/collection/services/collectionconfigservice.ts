@@ -387,7 +387,7 @@ class CollectionConfig {
             if(angular.isDefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
                 title = _DividedTitles[index].trim();
             }else {
-                title = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,propertyIdentifier)+"."+this.utilityService.listLast(propertyIdentifier));
+                title = this.rbkeyService.getRBKey("entity."+this.$hibachi.getLastEntityNameInPropertyIdentifier(this.baseEntityName,column)+"."+this.utilityService.listLast(column));
             }
             this.addColumn(this.formatPropertyIdentifier(column),title, options);
         });
