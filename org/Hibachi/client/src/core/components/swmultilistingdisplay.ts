@@ -715,17 +715,14 @@ class SWMultiListingDisplayController{
             return this.childCollectionConfigs[pageRecord[primaryIDField]];
         }
         if(keyOfExpandableRuleMet != -1){
-           var childCollectionConfig = {}; 
-           angular.extend(childCollectionConfig, this.expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig.getCollectionConfig());
+           var childCollectionConfig = this.expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig.clone();
            angular.forEach(childCollectionConfig.filterGroups[0], (filterGroup, key)=>{ 
                 angular.forEach(filterGroup, (filter,key)=>{
-                    console.log("cc3", filter.value);
                     if(angular.isString(filter.value) 
                         && filter.value.length 
                         && filter.value.charAt(0) == '$'
                     ){
                         filter.value = this.utilityService.replaceStringWithProperties(filter.value, pageRecord); 
-                        console.log("ccc3", filter.value);
                     }    
                 });
            }); 

@@ -27,8 +27,8 @@
                             data-cell-view="swSkuPriceSingleEdit"
                         >
                         </sw-listing-column>
-                        <sw-listing-column data-property-identifier="skuDefinition" data-fallback-property-identifiers="skuDefinition,sku_skuDefinition"></sw-listing-column>
-                        <sw-listing-column data-property-identifier="skuCode" data-fallback-property-identifiers="skuCode,sku_skuCode" tdclass="primary"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="skuDefinition" data-fallback-property-identifiers="skuDefinition,bundledSku_skuDefinition"></sw-listing-column>
+                        <sw-listing-column data-property-identifier="skuCode" data-fallback-property-identifiers="skuCode,bundledSku_skuCode" tdclass="primary"></sw-listing-column>
                         
                     </sw-listing-columns>
                     
@@ -79,7 +79,8 @@
                                     data-all-records="true"
                                 >
                                     <sw-collection-columns>
-                                        <sw-collection-column data-property-identifier="skuID"></sw-collection-column>
+                                        <sw-collection-column data-property-identifier="skuBundleID"></sw-collection-column>
+                                        <sw-collection-column data-property-identifier="bundledSku.skuID"></sw-collection-column>
                                         <sw-collection-column data-property-identifier="bundledSku.skuCode"></sw-collection-column>
                                         <sw-collection-column data-property-identifier="bundledSku.skuDefinition"></sw-collection-column>
                                     </sw-collection-columns>

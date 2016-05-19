@@ -149,6 +149,10 @@ class CollectionConfig {
         this.isDistinct = jsonCollection.isDistinct;
         return this;
     };
+    
+    public clone= () =>{
+        return this.newCollectionConfig(this.baseEntityName, this.baseEntityAlias).loadJson(this.getCollectionConfig());
+    }
 
     public loadFilterGroups= (filterGroupsConfig:Array<any>=[{filterGroup: []}]):CollectionConfig =>{
         this.filterGroups = filterGroupsConfig;
