@@ -1,11 +1,9 @@
 /// <reference path='../../../typings/slatwallTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
-class SWSkuPriceSingleEditController{
+class SWSkuPricesEditController{
     
     public skuId;
-    public currencyCode;
     public bundledSkuSkuId; 
-    public bundledSkuCurrencyCode;
    
     public sku; 
     
@@ -18,9 +16,6 @@ class SWSkuPriceSingleEditController{
     ){
         if(angular.isUndefined(this.skuId) && angular.isDefined(this.bundledSkuSkuId)){
             this.skuId = this.bundledSkuSkuId;
-        }
-        if(angular.isUndefined(this.currencyCode) && angular.isDefined(this.bundledSkuCurrencyCode)){
-            this.currencyCode = this.bundledSkuCurrencyCode;
         }
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWSkuPriceSingleEditController");
@@ -47,26 +42,24 @@ class SWSkuPriceSingleEditController{
 
 }
 
-class SWSkuPriceSingleEdit implements ng.IDirective{
+class SWSkuPricesEdit implements ng.IDirective{
     public templateUrl;
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
         skuId:"@",
         bundledSkuSkuId:"@",
-        bundledSkuCurrencyCode:"@",        
-        currencyCode:"@",
         sku:"=?"
     };
-    public controller = SWSkuPriceSingleEditController;
-    public controllerAs="swSkuPriceSingleEdit";
+    public controller = SWSkuPricesEditController;
+    public controllerAs="swSkuPricesEdit";
    
    
     public static Factory(){
         var directive = (
             skuPartialsPath,
 			slatwallPathBuilder
-        )=> new SWSkuPriceSingleEdit(
+        )=> new SWSkuPricesEdit(
             skuPartialsPath,
 			slatwallPathBuilder
         );
@@ -80,10 +73,10 @@ class SWSkuPriceSingleEdit implements ng.IDirective{
 		skuPartialsPath,
 	    slatwallPathBuilder
     ){
-        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skupricesingleedit.html";
+        this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"skupricesedit.html";
     }
 }
 export{
-    SWSkuPriceSingleEdit,
-    SWSkuPriceSingleEditController
+    SWSkuPricesEdit,
+    SWSkuPricesEditController
 }

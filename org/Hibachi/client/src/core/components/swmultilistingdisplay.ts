@@ -737,7 +737,7 @@ class SWMultiListingDisplayController{
         if(angular.isDefined(childCollectionConfig)){
             return this.$hibachi.getEntityExample(this.getPageRecordChildCollectionConfigForExpandableRule(pageRecord).baseEntityName);
         }
-         return this.exampleEntity; 
+        return this.exampleEntity; 
     }
     
     public getColorFilterNGClassObject = (pageRecord)=>{
