@@ -62,7 +62,7 @@ class UtilityService extends BaseService{
 
     public replaceStringWithProperties = (stringItem:string, context:any) =>{
         var properties = this.getPropertiesFromString(stringItem);
-         if(!properties) return;
+        if(!properties) return;
         var data = [];
         angular.forEach(properties, (property)=>{
             if(property.indexOf('.') != -1){

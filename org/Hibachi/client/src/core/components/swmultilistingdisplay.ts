@@ -10,6 +10,7 @@ class SWMultiListingDisplayController{
     public allprocessobjectproperties:string = "false";
     public aggregates = [];
     public buttonGroup = [];
+    public childCollectionConfigs = {}; 
     public collectionID;
     public collectionPromise;
     public collectionData;
@@ -666,6 +667,7 @@ class SWMultiListingDisplayController{
         }
     };
     
+    //this is going to be moved into a service
     public getKeyOfMatchedExpandableRule = (pageRecord)=>{
         var expandableRuleMatchedKey = -1; 
         if(angular.isDefined(this.expandableRules)){
@@ -698,18 +700,38 @@ class SWMultiListingDisplayController{
         return expandableRuleMatchedKey;
     }
     
+    //this is going to be moved into a service
     public getPageRecordMatchesExpandableRule = (pageRecord)=>{
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
         return keyOfExpandableRuleMet != -1;  
     }
     
-    public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
+    //this is going to be moved into a service
+    public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord,primaryIDField) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
-        var childCollectionConfig = null; 
+        if(angular.isDefined(pageRecord[primaryIDField]) 
+            && angular.isDefined(this.childCollectionConfigs[pageRecord[primaryIDField]])
+        ){
+            return this.childCollectionConfigs[pageRecord[primaryIDField]];
+        }
         if(keyOfExpandableRuleMet != -1){
-           childCollectionConfig = this.expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig;
+           var childCollectionConfig = {}; 
+           angular.extend(childCollectionConfig, this.expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig.getCollectionConfig());
+           angular.forEach(childCollectionConfig.filterGroups[0], (filterGroup, key)=>{ 
+                angular.forEach(filterGroup, (filter,key)=>{
+                    console.log("cc3", filter.value);
+                    if(angular.isString(filter.value) 
+                        && filter.value.length 
+                        && filter.value.charAt(0) == '$'
+                    ){
+                        filter.value = this.utilityService.replaceStringWithProperties(filter.value, pageRecord); 
+                        console.log("ccc3", filter.value);
+                    }    
+                });
+           }); 
+           this.childCollectionConfigs[pageRecord[primaryIDField]] = childCollectionConfig; 
+           return this.childCollectionConfigs[pageRecord[primaryIDField]];
         } 
-        return childCollectionConfig; 
     }
     
     public getColorFilterNGClassObject = (pageRecord)=>{

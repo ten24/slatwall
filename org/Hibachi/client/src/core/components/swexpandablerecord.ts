@@ -67,8 +67,12 @@ class SWExpandableRecordController{
                     if(angular.isUndefined(this.childCollectionConfig)){
                         this.setupChildCollectionConfig(); 
                     } 
-                    this.collectionPromise = this.childCollectionConfig.getEntity();
-                    
+                    if(angular.isFunction(this.childCollectionConfig.getEntity)){
+                        this.collectionPromise = this.childCollectionConfig.getEntity();
+                    } else {
+                        this.collectionPromise = this.$hibachi.getEntity(this.childCollectionConfig.baseEntityName, this.childCollectionConfig);
+                    }
+                       
                     this.collectionPromise.then((data)=>{
                         this.collectionData = data;
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
