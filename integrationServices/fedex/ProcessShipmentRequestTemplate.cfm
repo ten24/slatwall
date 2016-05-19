@@ -48,8 +48,8 @@
 --->
 <cfoutput>
     <ns:ProcessShipmentRequest
-        xsi:schemaLocation="http://www.fedex.com/templates/components/apps/wpor/secure/downloads/xml/Aug09/Advanced/ShipService_v7.xsd"
-        xmlns:ns="http://fedex.com/ws/ship/v7"
+        xsi:schemaLocation="http://www.fedex.com/templates/components/apps/wpor/secure/downloads/xml/Aug09/Advanced/ShipService_v17.xsd"
+        xmlns:ns="http://fedex.com/ws/ship/v17"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         
         <ns:WebAuthenticationDetail>
@@ -65,7 +65,7 @@
           
         <ns:Version>
            <ns:ServiceId>ship</ns:ServiceId>
-           <ns:Major>7</ns:Major>
+           <ns:Major>17</ns:Major>
            <ns:Intermediate>0</ns:Intermediate>
            <ns:Minor>0</ns:Minor>
         </ns:Version>
@@ -122,8 +122,21 @@
 	        <ns:ShippingChargesPayment>
 	           <ns:PaymentType>THIRD_PARTY</ns:PaymentType>
 	           <ns:Payor>
-	            <ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
-	            <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
+	           		<ns:ResponsibleParty>
+			            <ns:AccountNumber>#trim(setting('accountNo'))#</ns:AccountNumber>
+			            <ns:Contact>
+			            	<ns:PersonName>#trim(setting('contactPersonName'))#</ns:PersonName>
+			            	<ns:CompanyName>#trim(setting('contactCompany'))#</ns:CompanyName>
+			            	<ns:PhoneNumber>#trim(setting('contactPhoneNumber'))#</ns:PhoneNumber>
+		           		</ns:Contact>
+		           		<ns:Address>
+			            	<ns:StreetLines>#trim(setting('shipperStreet'))#</ns:StreetLines>
+			                <ns:City>#trim(setting('shipperCity'))#</ns:City>
+			                <ns:StateOrProvinceCode>#trim(setting('shipperStateCode'))#</ns:StateOrProvinceCode>
+			                <ns:PostalCode>#trim(setting('shipperPostalCode'))#</ns:PostalCode>
+			                <ns:CountryCode>#trim(setting('shipperCountryCode'))#</ns:CountryCode>
+			            </ns:Address>
+			        </ns:ResponsibleParty>
 	           </ns:Payor>
            </ns:ShippingChargesPayment>
           
@@ -134,9 +147,9 @@
 	           <ns:LabelStockType>PAPER_4X6</ns:LabelStockType>
            </ns:LabelSpecification>
 	        
-	        <ns:RateRequestTypes>LIST</ns:RateRequestTypes>
+	        <ns:RateRequestTypes>NONE</ns:RateRequestTypes>
 	        <ns:PackageCount>1</ns:PackageCount>
-	        <ns:PackageDetail>INDIVIDUAL_PACKAGES</ns:PackageDetail>
+	        
 	        <ns:RequestedPackageLineItems>
 	            <ns:SequenceNumber>1</ns:SequenceNumber>
 	            <ns:InsuredValue>

@@ -95,12 +95,6 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
         return responseBean;
 	}
 	
-	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
-		var responseBean = {};
-		writedump(arguments.xmlResponse);abort;
-		return responseBean;
-	}
-	
 	private string function getXMLResponse(string xmlPacket){
 		// Setup Request to push to FedEx
         var httpRequest = new http();
@@ -116,6 +110,17 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		httpRequest.addParam(type="XML", name="name",value=arguments.xmlPacket);
 		
 		return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+	}
+	
+	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
+		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
+		responseBean.setData(arguments.xmlResponse);
+		responseBean.populate();
+		
+		writedump(responseBean);
+		writedump(arguments.xmlResponse);abort;
+		
+		return responseBean;
 	}
 	
 	private any function getShippingRatesResponseBean(string xmlResponse){

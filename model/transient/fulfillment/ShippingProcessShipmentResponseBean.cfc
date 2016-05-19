@@ -47,8 +47,11 @@ Notes:
 
 */
 
-component accessors="true" output="false" extends="Slatwall.model.transient.fulfillment.ShippingRequestBean" {
+component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean"{
 
+	property name="trackingNumber" type="string" default="";
+	property name="labelImage" type="string" default="";
+ 
 	public any function init() {
 		// Set defaults
 
@@ -56,6 +59,31 @@ component accessors="true" output="false" extends="Slatwall.model.transient.fulf
 		return super.init();
 	}
 
-
+	public void function populate(){
+		if(structKeyExists(getData(),'Fault')) {
+			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
+			// If XML fault then log error
+			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
+		} else {
+			// Log all messages from FedEx into the response bean
+			for(var i=1; i<=arrayLen(getData().ProcessShipmentReply.Notifications); i++) {
+				addMessage(
+					messageName=getData().ProcessShipmentReply.Notifications[i].Code.xmltext,
+					message=getData().ProcessShipmentReply.Notifications[i].Message.xmltext
+				);
+				if(FindNoCase("Error", getData().ProcessShipmentReply.Notifications[i].Severity.xmltext)) {
+					addError(getData().ProcessShipmentReply.Notifications[i].Code.xmltext, getData().ProcessShipmentReply.Notifications[i].Message.xmltext);
+				}
+			}
+			//if no errors then we should convert data to properties
+			if(!hasErrors()) {
+				var completedShipmentDetail = getData().ProcessShipmentReply.CompletedShipmentDetail;
+				setTrackingNumber(completedShipmentDetail.CompletedPackageDetails.TrackingIds.trackingNumber.xmlText);
+				setLabelImage(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmltext);
+				writedump(this);
+				writedump(getData());abort;
+			}
+		}
+	}
 
 }
