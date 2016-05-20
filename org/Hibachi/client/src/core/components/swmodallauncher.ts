@@ -34,7 +34,9 @@ class SWModalLauncher implements ng.IDirective{
     public bindToController = {
         showModal:"=?",
         modalName:"@", 
-        title:"@"
+        title:"@",
+        saveAction:"&", 
+        cancelAction:"&"
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";

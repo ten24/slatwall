@@ -26,7 +26,9 @@ class SWModalWindow implements ng.IDirective{
 
     public bindToController = {
         modalName:"@",
-        title:"@"
+        title:"@",
+        saveAction:"&?",
+        cancelAction:"&?"
     };
     public controller=SWModalWindowController;
     public controllerAs="swModalWindow";

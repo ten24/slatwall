@@ -147,7 +147,6 @@ class SWMultiListingDisplayController{
             //do the initial setup for single collection mode
             this.setupInSingleCollectionConfigMode(); 
         }).finally(()=>{
-            console.log("the rules are layed out", this.expandableRules)
             //if getCollection doesn't exist then create it
             if(angular.isUndefined(this.getCollection)){
                 this.getCollection = this.setupDefaultGetCollection();
@@ -619,7 +618,6 @@ class SWMultiListingDisplayController{
             var lastEntity = this.$hibachi.getLastEntityNameInPropertyIdentifier(collectionConfig.baseEntityName,column.propertyIdentifier);
 
                 if(angular.isUndefined(column.title)){
-                    console.log("multicc", "setting column title",this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.')))
                     column.title = this.rbkeyService.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
                 }
                 
@@ -709,7 +707,6 @@ class SWMultiListingDisplayController{
     //this is going to be moved into a service
     public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
-        console.log("thislisting",pageRecord[this.exampleEntity.$$getIDName()]);
         if(angular.isDefined(pageRecord[this.exampleEntity.$$getIDName()]) 
             && angular.isDefined(this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]])
         ){

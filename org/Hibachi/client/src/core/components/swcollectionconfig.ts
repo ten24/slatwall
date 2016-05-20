@@ -131,12 +131,8 @@ class SWCollectionConfig implements ng.IDirective{
                     newCollectionConfig.addFilter(filter.propertyIdentifier, filter.comparisonValue, filter.comparisonOperator, filter.logicalOperator, filter.hidden);
                 }); 
             });
-            console.log("rule",allCollectionConfigPromises);
             this.$q.all(allCollectionConfigPromises).then(()=>{
-                console.log("rule2",scope.swCollectionConfig);
                 if(angular.isDefined(parentDirective)){
-                    console.log("rule3",scope.swCollectionConfig);
-                    console.log("ruleResolve",parentDirective);
                     if(angular.isDefined(scope.swCollectionConfig.multiCollectionConfigProperty) 
                         && angular.isDefined(parentDirective[scope.swCollectionConfig.multiCollectionConfigProperty])
                     ){
@@ -147,7 +143,6 @@ class SWCollectionConfig implements ng.IDirective{
                         throw("swCollectionConfig could not locate a collection config property to bind it's collection to");
                     } 
                     if(angular.isDefined(parentDirective[scope.swCollectionConfig.parentDeferredProperty])){
-                        console.log("ruleresolve")
                         parentDirective[scope.swCollectionConfig.parentDeferredProperty].resolve();
                     } else {
                         throw("cannot resolve rule")

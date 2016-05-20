@@ -1,7 +1,12 @@
 <a data-toggle="modal" href="#{{swModalLauncher.modalName}}">
     <div ng-transclude="button"></div>
 </a>
-<sw-modal-window data-title="{{swModalLauncher.title}}" data-modal-name="{{swModalLauncher.modalName}}">
+<sw-modal-window 
+    data-title="{{swModalLauncher.title}}" 
+    data-modal-name="{{swModalLauncher.modalName}}" 
+    data-save-action="swModalLauncher.saveAction" 
+    data-cancel-action="swModalLauncher.cancelAction"
+>
     <sw-modal-body>
         <div ng-transclude="content"></div>
     </sw-modal-body>

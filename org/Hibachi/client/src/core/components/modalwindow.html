@@ -12,8 +12,8 @@
                     <div ng-transclude="modalBody"></div>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-default s-remove" data-dismiss="modal"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
-                <button class="btn btn-success" title="Create Order"><i class="glyphicon glyphicon-ok icon-white"></i> Save</button> 
+                <a href="#" class="btn btn-default s-remove" data-dismiss="modal" ng-click="swModalWindow.cancelAction()"><span class="glyphicon glyphicon-remove icon-white"></span> Cancel</a>
+                <button class="btn btn-success" ng-click="swModalWindow.saveAction()"><i class="glyphicon glyphicon-ok icon-white"></i> Save</button> 
             </div>
         </div>
     </div>
