@@ -916,9 +916,13 @@ class SWMultiListingDisplay implements ng.IDirective{
     public restrict:string = 'E';
     public scope = {};
     public transclude={
+        addAction:"?swListingAddAction", 
+        detailAction:"?swListingDetailAction", 
+        deleteAction:"?swListingDeleteAction",
+        editAction:"?swListingEditAction", 
         columns:"swListingColumns", 
-        collectionConfigs:"swCollectionConfigs",
-        expandableRules:"swExpandableRules"
+        collectionConfigs:"?swCollectionConfigs",
+        expandableRules:"?swExpandableRules"
     };
     public bindToController={
 
