@@ -50,7 +50,7 @@ Notes:
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean"{
 
 	property name="trackingNumber" type="string" default="";
-	property name="labelImage" type="string" default="";
+	property name="contatinerLabel" type="string" default="";
  
 	public any function init() {
 		// Set defaults
@@ -78,10 +78,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 			//if no errors then we should convert data to properties
 			if(!hasErrors()) {
 				var completedShipmentDetail = getData().ProcessShipmentReply.CompletedShipmentDetail;
-				setTrackingNumber(completedShipmentDetail.CompletedPackageDetails.TrackingIds.trackingNumber.xmlText);
-				setLabelImage(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmltext);
-				writedump(this);
-				writedump(getData());abort;
+				setTrackingNumber(completedShipmentDetail.CompletedPackageDetails.trackingIds.trackingNumber.xmlText);
+				setContatinerLabel(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmlText);
 			}
 		}
 	}

@@ -1849,6 +1849,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
 			}
 			
+			if(
+				!isNull(arguments.processObject.getContainerLabel())
+			){
+				arguments.orderDelivery.setContainterLabel(arguments.processObject.getContainterLabel());
+			}
 
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(

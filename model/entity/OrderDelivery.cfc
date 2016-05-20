@@ -51,7 +51,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	// Persistent Properties
 	property name="orderDeliveryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="trackingNumber" ormtype="string";
-
+	property name="contatinerLabel" ormtype="blob";
 	// Related Object Properties (Many-To-One)
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";

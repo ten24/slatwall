@@ -63,6 +63,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	property name="useShippingIntegrationForTrackingNumber" hb_formFieldType="yesno";
 	property name="trackingNumber";
+	property name="containterLabel";
 	property name="captureAuthorizedPaymentsFlag" hb_formFieldType="yesno";
 	property name="capturableAmount" hb_formatType="currency";
 
@@ -105,18 +106,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables,'trackingNumber')){
 			//get tracking number from integration if specified
 			if(getUseShippingIntegrationForTrackingNumber()){
-				var selectedIntegration = getShippingIntegration();
-				var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
-				//create OrderDelivery and get tracking Number and generate label
-				var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-				processShipmentRequestBean.populateWithOrderFulfillment(getOrderFulfillment());
-				var responseBean = shippingIntegrationCFC.processShipmentRequest(processShipmentRequestBean);
-				writedump(var=responseBean,top=2);abort;
+				processShipmentRequest();
 			}
 		}
 		return variables.trackingNumber;
 	}
+	
+	public string function getContainterLabel(){
+		if(!structKeyExists(variables,'containerLabel')){
+			//get tracking number from integration if specified
+			if(getUseShippingIntegrationForTrackingNumber()){
+				processShipmentRequest();
+			}
+		}
+		return variables.containerLabel;
+	}
 
+	
+	public void function processShipmentRequest(){
+		var selectedIntegration = getShippingIntegration();
+		var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
+		//create OrderDelivery and get tracking Number and generate label
+		shippingIntegrationCFC.processShipmentRequestWithOrderDelivery(this);
+	}
+	
+	
 	public boolean function hasAllGiftCardCodes(){
 
 			if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !isNull(this.getGiftCardCodes())){

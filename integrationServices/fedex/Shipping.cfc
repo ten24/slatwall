@@ -88,10 +88,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
         var xmlResponse = getXMLResponse(xmlPacket);
         
         var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
-        writedump(xmlPacket);
-        writedump(xmlResponse);
-        writedump(responseBean);
-        abort;
+        
         return responseBean;
 	}
 	
@@ -117,10 +114,15 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		responseBean.setData(arguments.xmlResponse);
 		responseBean.populate();
 		
-		writedump(responseBean);
-		writedump(arguments.xmlResponse);abort;
-		
 		return responseBean;
+	}
+	
+	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
+		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.getOrderFulfillment());
+		var responseBean = processShipmentRequest(processShipmentRequestBean);
+		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
+		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
 	}
 	
 	private any function getShippingRatesResponseBean(string xmlResponse){
