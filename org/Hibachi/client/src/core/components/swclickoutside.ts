@@ -36,7 +36,10 @@ class SWClickOutside{
             if(angular.element(elem).hasClass("ng-hide")){
                 return;
             }
-            if(e.target !== elem && !this.utilityService.isDescendantElement(elem[0],e.target)){
+            if(e.target !== elem
+                && angular.isArray(elem) 
+                && !this.utilityService.isDescendantElement(elem[0],e.target)
+            ){
                 this.$timeout(()=>{
                     scope.swClickOutside();
                 });
