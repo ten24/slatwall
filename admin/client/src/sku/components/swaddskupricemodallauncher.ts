@@ -2,17 +2,36 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWAddSkuPriceModalLauncherController{
     
-    public pageRecord; 
-    public skuId; 
-    public skuPrice; 
+    public pageRecord:any; 
+    public skuId:string; 
+    public skuPrice:any; 
+    public baseName:string="j-add-sku-item-"; 
+    public uniqueName:string; 
     
     //@ngInject
     constructor(
-        private $hibachi 
+        private $hibachi,
+        private utilityService
     ){
+        this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
         
     }    
+    
+    public save = () => {
+        this.skuPrice.$$save().then(
+            ()=>{
+                //sucess callback
+            },
+            ()=>{
+                //error callback
+            }
+        );
+    }
+    
+    public cancel = () => {
+        //wipe the sku price entity
+    }
 }
 
 class SWAddSkuPriceModalLauncher implements ng.IDirective{
