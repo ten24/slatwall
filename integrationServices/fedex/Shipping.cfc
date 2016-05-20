@@ -119,7 +119,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	
 	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
 		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-		processShipmentRequestBean.populateWithOrderFulfillment(arguments.getOrderFulfillment());
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
 		var responseBean = processShipmentRequest(processShipmentRequestBean);
 		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
 		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());

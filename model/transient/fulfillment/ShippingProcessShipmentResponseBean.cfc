@@ -50,7 +50,7 @@ Notes:
 component accessors="true" output="false" extends="Slatwall.model.transient.ResponseBean"{
 
 	property name="trackingNumber" type="string" default="";
-	property name="contatinerLabel" type="string" default="";
+	property name="containerLabel" type="string" default="";
  
 	public any function init() {
 		// Set defaults
@@ -79,7 +79,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 			if(!hasErrors()) {
 				var completedShipmentDetail = getData().ProcessShipmentReply.CompletedShipmentDetail;
 				setTrackingNumber(completedShipmentDetail.CompletedPackageDetails.trackingIds.trackingNumber.xmlText);
-				setContatinerLabel(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmlText);
+				setContainerLabel(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmlText);
 			}
 		}
 	}

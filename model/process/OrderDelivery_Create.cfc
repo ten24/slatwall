@@ -63,7 +63,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	property name="useShippingIntegrationForTrackingNumber" hb_formFieldType="yesno";
 	property name="trackingNumber";
-	property name="containterLabel";
+	property name="containerLabel";
 	property name="captureAuthorizedPaymentsFlag" hb_formFieldType="yesno";
 	property name="capturableAmount" hb_formatType="currency";
 
@@ -127,7 +127,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		var selectedIntegration = getShippingIntegration();
 		var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
 		//create OrderDelivery and get tracking Number and generate label
-		shippingIntegrationCFC.processShipmentRequestWithOrderDelivery(this);
+		shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
 	}
 	
 	
