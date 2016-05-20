@@ -96,10 +96,6 @@ component extends="HibachiService" accessors="true" output="false" {
 							processData.workflowTrigger = workflowTrigger;
 
 							this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
-
-							if(!processData.entity.hasErrors()) {
-								application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
-							}
 						}
 
 						// Update the workflowTriggerHistory
@@ -142,7 +138,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 
 		//Change WorkflowTrigger runningFlag to TRUE
-		//getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
+		getWorkflowDAO().updateWorkflowTriggerRunning(workflowTriggerID=arguments.workflowTrigger.getWorkflowTriggerID(), runningFlag=true);
 
 		//Attach workflowTrigger to workflowTriggerHistory
 		workflowTriggerHistory.setWorkflowTrigger(arguments.workflowTrigger);
@@ -155,31 +151,39 @@ component extends="HibachiService" accessors="true" output="false" {
 		try{
 
 			//get workflowTriggers Object
-			var currentObject = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
+			var currentObjectName = arguments.workflowTrigger.getScheduleCollection().getCollectionObject();
 			//execute Collection and return only the IDs
 			var triggerCollectionResult = arguments.workflowTrigger.getScheduleCollection().getPrimaryIDs();
 
 			//Loop Collection Data
 			for(i=1; i <= ArrayLen(triggerCollectionResult); i++){
 				//get current ObjectID
+				var workflowTriggerID = arguments.workflowTrigger.getWorkflowTriggerID();
 				var currentObjectID = triggerCollectionResult[i][structKeyArray(triggerCollectionResult[i])[1]];
-				var currentThreadName = "thread_#i#";
+				var currentThreadName = "thread_#right(workflowTriggerID, 6)&i#";
 
-				thread action="run" name="#currentThreadName#" application="#application#" currentObject="#currentObject#" currentObjectID="#currentObjectID#" workflowTriggerID="#arguments.workflowTrigger.getWorkflowTriggerID()#"{
+				thread action="run" name="#currentThreadName#" currentObjectName="#currentObjectName#" currentObjectID="#currentObjectID#" workflowTriggerID="#workflowTriggerID#"{
 					//load Objects by id
 
 					var workflowTrigger = getHibachiScope().getEntity('WorkflowTrigger', workflowTriggerID);
 					var processData = {
-						entity = getHibachiScope().getEntity(currentObject, currentObjectID),
+						entity = getHibachiScope().getEntity(currentObjectName, currentObjectID),
 						workflowTrigger = workflowTrigger
 					};
 
 					//Call proccess method to execute Tasks
 					this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 
-					if(!processData.entity.hasErrors()) {
-						application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
+					if(processData.entity.hasErrors()) {
+						throw("error");
+						//application[getDao('hibachiDao').gethibachiInstanceApplicationScopeKey()].application.endHibachiLifecycle();
 					}
+
+					if(!getHibachiScope().getORMHasErrors()) {
+						getHibachiScope().getDAO("hibachiDAO").flushORMSession();
+					}
+					// Commit audit queue
+					getHibachiScope().getService("hibachiAuditService").commitAudits();
 				}
 				threadJoin(currentThreadName);
 
@@ -211,14 +215,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		workflowTriggerHistory = this.saveWorkflowTriggerHistory(workflowTriggerHistory);
 
 		// Update the taskSechedules nextRunDateTime
-		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(arguments.workflowTrigger.getStartDateTime(), arguments.workflowTrigger.getEndDateTime ) );
+		workflowTrigger.setNextRunDateTime( arguments.workflowTrigger.getSchedule().getNextRunDateTime(arguments.workflowTrigger.getStartDateTime(), arguments.workflowTrigger.getEndDateTime() ) );
+
+		this.saveWorkflowTrigger(workflowTrigger);
+
 
 		// Flush the DB again to persist all updates
 		getHibachiDAO().flushORMSession();
 
 	}
 
-	private boolean function executeTaskAction(required any workflowTaskAction, required any entity){
+	private boolean function executeTaskAction(required any workflowTaskAction, required any entity, required string type){
 		var actionSuccess = false;
 
 		switch (workflowTaskAction.getActionType()) {
@@ -280,7 +287,11 @@ component extends="HibachiService" accessors="true" output="false" {
 
 			//DELETE
 			case 'delete' :
-				actionSuccess = getHibachiScope().deleteEntity(arguments.entity);
+				if(type != 'Event'){
+					actionSuccess = getHibachiScope().deleteEntity(arguments.entity);
+				}else{
+					actionSuccess = false;
+				}
 				break;
 		}
 		return actionSuccess;
@@ -309,7 +320,7 @@ component extends="HibachiService" accessors="true" output="false" {
 								arguments.data.entity.setAnnounceEvent(false);
 							}
 							//Execute ACTION
-							executeTaskAction(workflowTaskAction, arguments.data.entity);
+							executeTaskAction(workflowTaskAction, arguments.data.entity, data.workflowTrigger.getTriggerType());
 
 							if(data.workflowTrigger.getTriggerType() == 'Event') {
 								arguments.data.entity.setAnnounceEvent(true);
@@ -342,7 +353,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//Check if is a Schedule Trigger
 		if(structKeyExists(arguments.data, "schedule")){
 		// Update the nextRunDateTime
-			arguments.entity.setNextRunDateTime( entity.getSchedule().getNextRunDateTime(DateFormat(DateAdd('yyyy', -1, now()),'mmmm dd, yyyy'), DateFormat(DateAdd('yyyy', 1, now()),'mmmm dd, yyyy') ) );
+			arguments.entity.setNextRunDateTime( entity.getSchedule().getNextRunDateTime(entity.getStartDateTime(), entity.getEndDateTime()) );
 		}
 		
 		// If there aren't any errors then flush, and clear cache
