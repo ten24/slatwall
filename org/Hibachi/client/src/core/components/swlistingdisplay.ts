@@ -65,6 +65,8 @@ class SWListingDisplayController{
     public isCurrentPageRecordsSelected;
     public allSelected;
     public name;
+    public pageShow;
+
     //@ngInject
     constructor(
         public $scope,
@@ -119,6 +121,10 @@ class SWListingDisplayController{
         } else {
             this.collectionObject = this.collection;
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
+        }
+
+        if(angular.isDefined(this.pageShow)){
+            this.collectionConfig.setPageShow(this.pageShow);
         }
 
         this.setupDefaultCollectionInfo();
@@ -176,6 +182,7 @@ class SWListingDisplayController{
         this.initData();
         this.$scope.$watch('swListingDisplay.collectionPromise',(newValue,oldValue)=>{
             if(newValue){
+                this.collectionData = undefined;
                 this.$q.when(this.collectionPromise).then((data)=>{
                     this.collectionData = data;
                     this.setupDefaultCollectionInfo();
@@ -197,6 +204,15 @@ class SWListingDisplayController{
         }
         this.paginator.getCollection = this.getCollection;
         //this.getCollection();
+
+        this.observerService.attach(this.getCollectionObserver,'getCollection',(this.name || 'ListingDisplay'));
+    };
+
+    private getCollectionObserver=(param)=> {
+        console.warn("getCollectionObserver", param)
+        this.collectionConfig.loadJson(param.collectionConfig);
+        this.collectionData = undefined;
+        this.getCollection();
     };
 
     private setupDefaultCollectionInfo = () =>{
@@ -205,7 +221,8 @@ class SWListingDisplayController{
             this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collectionObject);
             this.collectionConfig.loadJson(this.collection.collectionConfig);
         }
-        this.collectionConfig.setPageShow(this.paginator.getPageShow());
+        //this.collectionConfig.setPageShow(this.paginator.getPageShow());
+        this.paginator.setPageShow(this.collectionConfig.getPageShow());
         this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
         //this.collectionConfig.setKeywords(this.paginator.keywords);
     };
@@ -216,10 +233,11 @@ class SWListingDisplayController{
         return ()=>{
             this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
             this.collectionConfig.setPageShow(this.paginator.getPageShow());
+            this.collectionData = undefined;
             this.collectionConfig.getEntity().then((data)=>{
                 this.collectionData = data;
                 this.setupDefaultCollectionInfo();
-                this.setupColumns();
+                //this.setupColumns();
                 this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
                 this.paginator.setPageRecordsInfo(this.collectionData);
             });
@@ -283,7 +301,6 @@ class SWListingDisplayController{
             this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
             //add parent property root filter
             if(!this.hasCollectionPromise){
-                console.log('HEREEE!!');
                 this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS', undefined, true);
             }
             //this.collectionConfig.addDisplayProperty(this.exampleEntity.$$getIDName()+'Path',undefined,{isVisible:false});
@@ -299,6 +316,7 @@ class SWListingDisplayController{
             }
             this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
             this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),' ');
+            this.collectionConfig.setAllRecords(true);
         }
 
 //            if(
@@ -325,7 +343,7 @@ class SWListingDisplayController{
             //select all owned ids
             console.log('swListingDisplay');
             console.log(this.multiselectValues);
-            angular.forEach(this.multiselectValues,(value)=>{
+            angular.forEach(this.multiselectValues.split(','),(value)=>{
                 this.selectionService.addSelection(this.name,value);
             });
         }
@@ -692,7 +710,7 @@ class SWListingDisplayController{
             ];
         }
 
-        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=main.collectionConfigExport" method="post" id="formExport"></form>');
+        $('body').append('<form action="/?'+this.$hibachi.getConfigValue('action')+'=admin:main.collectionConfigExport" method="post" id="formExport"></form>');
         $('#formExport')
             .append("<input type='hidden' name='collectionConfig' value='" + angular.toJson(exportCollectionConfig) + "' />")
             .submit()
@@ -825,7 +843,11 @@ class SWListingDisplay implements ng.IDirective{
 
             getChildCount:"=?",
             hasSearch:"=?",
-            hasActionBar:"=?"
+            hasActionBar:"=?",
+
+            showPagination:"@?",
+            pageShow:"@?",
+
     };
     public controller=SWListingDisplayController;
     public controllerAs="swListingDisplay";
