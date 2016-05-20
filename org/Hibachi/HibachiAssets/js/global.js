@@ -372,7 +372,6 @@ function setupEventHandlers() {
 			url:modalLink,
 			method:'get',
 			success: function(response){
-				jQuery('#adminModal').html(response);
 				jQuery('#adminModal').modal();
 				
 				var elem = angular.element(document.getElementById('ngApp'));
@@ -380,7 +379,7 @@ function setupEventHandlers() {
 			    var $compile = injector.get('$compile'); 
 			    var $rootScope = injector.get('$rootScope'); 
 			    
-			    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+			    jQuery('#adminModal').html($compile(response)($rootScope));
 				initUIElements('#adminModal');
 				
 				jQuery('#adminModal').css({
@@ -810,7 +809,6 @@ function setupEventHandlers() {
 				} else {
 
 					if(("preProcessView" in r)) {
-						jQuery('#adminModal').html(r.preProcessView);
 						jQuery('#adminModal').modal();
 						
 						var elem = angular.element(document.getElementById('ngApp'));
@@ -818,7 +816,7 @@ function setupEventHandlers() {
 					    var $compile = injector.get('$compile'); 
 					    var $rootScope = injector.get('$rootScope'); 
 					    
-					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+					    jQuery('#adminModal').html($compile(r.preProcessView)($rootScope));
 						initUIElements('#adminModal');
 						
 						jQuery('#adminModal').css({
