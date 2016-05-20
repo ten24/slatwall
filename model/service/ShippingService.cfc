@@ -157,7 +157,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var r=1; r<=shippingMethodRatesCount; r++) {
 				var shippingMethodRate = shippingMethodRates[r];
 				// check to make sure that this rate applies to the current orderFulfillment
-				if(!isNull(shippingMethodRate.getShippingIntegration())){
+				if(!isNull(shippingMethodRate.getShippingIntegration()) && shippingMethodRate.getShippingIntegration().getActiveFlag()){
 					var shippingIntegration = getIntegrationByOrderFulfillmentAndShippingMethodRate(arguments.orderFulfillment,shippingMethodRate);
 					if(!arrayFind(integrations, shippingIntegration)){
 						arrayAppend(integrations,shippingIntegration);

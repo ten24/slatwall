@@ -103,7 +103,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 	
 	public string function getTrackingNumber(){
-		if(!structKeyExists(variables,'trackingNumber')){
+		
+		if(!structKeyExists(variables,'trackingNumber') ){
 			//get tracking number from integration if specified
 			if(getUseShippingIntegrationForTrackingNumber()){
 				processShipmentRequest();
@@ -112,7 +113,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.trackingNumber;
 	}
 	
-	public string function getContainterLabel(){
+	public string function getContainerLabel(){
 		if(!structKeyExists(variables,'containerLabel')){
 			//get tracking number from integration if specified
 			if(getUseShippingIntegrationForTrackingNumber()){

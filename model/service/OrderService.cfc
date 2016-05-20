@@ -1780,9 +1780,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderDelivery;
 	}
 	
-	public any function addOrderDeliveryItemToOrderDelivery(
+	public any function addOrderDeliveryItemToOrderDeliveryStruct(
 		required any orderDelivery, 
-		required any orderDeliveryItem
+		required struct orderDeliveryItemStuct
 	){
 		// Create a new orderDeliveryItem
 		var newOrderDeliveryItem = this.newOrderDeliveryItem();
@@ -1790,10 +1790,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Populate with the data
 		newOrderDeliveryItem.setOrderItem( 
 			this.getOrderItem( 
-				arguments.orderDeliveryItem.getOrderItem.orderItemID 
+				orderDeliveryItemStuct.orderItem.orderItemID 
 			) 
 		);
-		newOrderDeliveryItem.setQuantity( arguments.orderDeliveryItem.getQuantity() );
+		newOrderDeliveryItem.setQuantity( orderDeliveryItemStuct.quantity );
 		
 		var stock = getStockService().getStockBySkuAndLocation(
 			sku=newOrderDeliveryItem.getOrderItem().getSku(), 
@@ -1810,7 +1810,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over delivery items from processObject and add them with stock to the orderDelivery
 		for(var i=1; i<=arrayLen(arguments.processObject.getOrderDeliveryItems()); i++) {
 			var orderDeliveryItem = arguments.processObject.getOrderDeliveryItems()[i];
-			addOrderDeliveryItemToOrderDelivery(arguments.orderDelivery,orderDeliveryItem);
+			addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
 		}
 		return arguments.orderDelivery;
 	}
@@ -1851,10 +1851,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			if(
 				!isNull(arguments.processObject.getContainerLabel())
+				&& len(arguments.processObject.getContainerLabel())
 			){
-				arguments.orderDelivery.setContainterLabel(arguments.processObject.getContainterLabel());
+				arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
 			}
-
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if(
 				(
