@@ -1,5 +1,5 @@
 <sw-modal-launcher 
-    data-modal-name="swAddSkuPriceModalLauncher.uniqueName" 
+    data-modal-name="{{swAddSkuPriceModalLauncher.uniqueName}}" 
     data-title="Add Sku Price Detail" 
     data-save-action="swAddSkuPriceModalLauncher.saveAction" 
     data-cancel-action="swAddSkuPriceModalLauncher.cancelAction" >
@@ -9,57 +9,82 @@
         </a>
     </sw-modal-button>
     <sw-modal-content> 
-         <div class="row">
-                <div class="col-sm-4">
-                    <div class="thumbnail">
-                        <div class="s-image">
-                            <img src="//placehold.it/600x600/" class="s-responsive-image"/>
-                        </div>
-                        <div class="caption">
-                            <h5>OTB DrinkingTeam</h5>
-                            <ul class="list-unstyled">
-                                <li><strong>Sku Code - </strong> OTB_DrinkingTeam-1826-...</li>
-                                <li><strong>Sku Definition - </strong> Ball Weight: ... lbs</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-8">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group j-adjustmentType-remove-this">
-                                <label for="" class="control-label">Price Group</label>
-                                <select class="form-control">
-                                    <option value="manualIn" selected>None</option>
-                                    <option value="manualOut">All Price Groups (2)</option>
-                                    <option value="manualOut">Employee Price</option>
-                                    <option value="manualOut">Wholesale</option>
-                                </select>
+        <sw-form 
+                name="addSkuPrice" 
+                data-object="swAddSkuPriceModalLauncher.skuPrice"    
+                data-context="save"
+                >
+            <div class="row">
+                    <div class="col-sm-4">
+                        <div class="thumbnail">
+                            <div class="s-image">
+                                <!-- NEED TO PUT THE SKU IMAGE HERE -->
+                                <img src="//placehold.it/600x600/" class="s-responsive-image"/>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="" class="control-label">Price</label>
-                                <input type="text" class="form-control">
+                            <div class="caption">
+                                <h5><span ng-bind="swAddSkuPriceModalLauncher.sku.skuName"></span></h5>
+                                <ul class="list-unstyled">
+                                    <!-- RB KEYS -->
+                                    <li><strong>Sku Code - </strong><span ng-bind="swAddSkuPriceModalLauncher.sku.skuCode"></span></li>
+                                    <li><strong>Sku Definition - </strong><span ng-bind="swAddSkuPriceModalLauncher.sku.skuDefinition"></span></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="" class="control-label">Minimum Quantity:</label>
-                                <input type="text" class="form-control" placeholder="any" value="">
-                            </div>        
+                    <div class="col-sm-8">
+                        <div class="row">
+                            <!-- Holding off on including price group consideration
+                            <div class="col-md-6">
+                                <div class="form-group j-adjustmentType-remove-this">
+                                    <label for="" class="control-label">Price Group</label>
+                                    <select class="form-control">
+                                        <option value="manualIn" selected>None</option>
+                                        <option value="manualOut">All Price Groups (2)</option>
+                                        <option value="manualOut">Employee Price</option>
+                                        <option value="manualOut">Wholesale</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="" class="control-label">Price</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                            </div>
+                            -->
+                            <div class="col-sm-6">
+                                <sw-property-display data-object="swAddSkuPriceModalLauncher.skuPrice" 
+                                                    data-property="price"
+                                                    data-editing="true"
+                                                    data-editable="true"
+                                                    data-is-dirty="true" 
+                                                    >
+                                </sw-property-display>
+                            </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="" class="control-label">Maximum Quantity:</label>
-                                <input type="text" class="form-control" placeholder="any" value="">
-                            </div>        
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+                               <sw-property-display data-object="swAddSkuPriceModalLauncher.skuPrice" 
+                                                    data-property="minQuantity"
+                                                    data-editing="true"
+                                                    data-editable="true"
+                                                    data-is-dirty="true" 
+                                                    >
+                                </sw-property-display>
+                            </div>
+                            <div class="col-sm-6">
+                                <sw-property-display data-object="swAddSkuPriceModalLauncher.skuPrice" 
+                                                    data-property="maxQuantity"
+                                                    data-editing="true"
+                                                    data-editable="true"
+                                                    data-is-dirty="true" 
+                                                    >
+                                </sw-property-display>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </sw-form>
     </sw-modal-content> 
 </sw-modal-launcher>

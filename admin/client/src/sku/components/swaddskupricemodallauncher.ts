@@ -3,6 +3,7 @@
 class SWAddSkuPriceModalLauncherController{
     
     public pageRecord:any; 
+    public sku:any;
     public skuId:string; 
     public skuPrice:any; 
     public baseName:string="j-add-sku-item-"; 
@@ -15,7 +16,6 @@ class SWAddSkuPriceModalLauncherController{
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
-        
     }    
     
     public save = () => {
@@ -47,21 +47,25 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
    
     public static Factory(){
         var directive = (
+            $hibachi,
             skuPartialsPath,
 			slatwallPathBuilder
         )=> new SWAddSkuPriceModalLauncher(
+            $hibachi, 
             skuPartialsPath,
 			slatwallPathBuilder
         );
         directive.$inject = [
+            '$hibachi',
             'skuPartialsPath',
 			'slatwallPathBuilder'
         ];
         return directive;
     }
     constructor(
-		skuPartialsPath,
-	    slatwallPathBuilder
+        private $hibachi, 
+		private skuPartialsPath,
+	    private slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"addskupricemodallauncher.html";
     }
@@ -80,7 +84,14 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                     console.log("found page record", currentScope.pageRecord);
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
                     if(angular.isDefined(currentScope.pageRecord.skuID)){ 
-                        $scope.swAddSkuPriceModalLauncher.skuId = currentScope.pageRecord.skuID;           
+                        $scope.swAddSkuPriceModalLauncher.skuId = currentScope.pageRecord.skuID;     
+                        this.$hibachi.getEntity('Sku', $scope.swAddSkuPriceModalLauncher.skuId).then(
+                            (sku)=>{
+                                $scope.swAddSkuPriceModalLauncher.sku = sku; 
+                            },
+                            (reason)=>{
+                                throw("swaddskupricemodallauncher could not load a sku for the following reason:" + reason);
+                            });   
                     }
                 } else{ 
                     throw("swAddSkuPriceModalLauncher was unable to find the pageRecord that it needs!");
