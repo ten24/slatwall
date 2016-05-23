@@ -50,6 +50,10 @@ Notes:
 component accessors="true" output="false" displayname="FedEx" implements="Slatwall.integrationServices.ShippingInterface" extends="Slatwall.integrationServices.BaseShipping" {
 
 	public any function init() {
+		this.super();
+		variables.trackingURL = "http://www.fedex.com/Tracking?tracknumber_list=${trackingNumber}";
+		variables.testUrl = "https://gatewaybeta.fedex.com/xml";
+		variables.productionUrl = "https://gateway.fedex.com/xml";
 		// Insert Custom Logic Here 
 		variables.shippingMethods = {
 			FIRST_OVERNIGHT="FedEx First Overnight",
@@ -64,66 +68,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		return this;
 	}
 	
-	public struct function getShippingMethods() {
-		return variables.shippingMethods;
-	}
 	
-	public string function getTrackingURL() {
-		return "http://www.fedex.com/Tracking?tracknumber_list=${trackingNumber}";
-	}
-	
-	public any function getProcessShipmentRequestXmlPacket(required any requestBean){
-		var xmlPacket = "";
-		
-		savecontent variable="xmlPacket" {
-			include "ProcessShipmentRequestTemplate.cfm";
-        }
-        return xmlPacket;
-	}
-	
-	public any function processShipmentRequest(required any requestBean){
-		// Build Request XML
-		var xmlPacket = getProcessShipmentRequestXmlPacket(arguments.requestBean);
-        
-        var xmlResponse = getXMLResponse(xmlPacket);
-        
-        var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
-        
-        return responseBean;
-	}
-	
-	private string function getXMLResponse(string xmlPacket){
-		// Setup Request to push to FedEx
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
-		httpRequest.setPort("443");
-		httpRequest.setTimeout(45);
-		if(setting('testingFlag')) {
-			httpRequest.setUrl("https://gatewaybeta.fedex.com/xml");
-		} else {
-			httpRequest.setUrl("https://gateway.fedex.com/xml");
-		}
-		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=arguments.xmlPacket);
-		
-		return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-	}
-	
-	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
-		responseBean.setData(arguments.xmlResponse);
-		responseBean.populate();
-		
-		return responseBean;
-	}
-	
-	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
-		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
-		var responseBean = processShipmentRequest(processShipmentRequestBean);
-		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
-		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
-	}
 	
 	private any function getShippingRatesResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
@@ -157,20 +102,7 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		return responseBean;
 	}
 	
-	public any function getRates(required any requestBean) {
-		
-		// Build Request XML
-		var xmlPacket = "";
-		
-		savecontent variable="xmlPacket" {
-			include "RatesRequestTemplate.cfm";
-        }
-        var XmlResponse = getXMLResponse(xmlPacket);
-        var responseBean = getShippingRatesResponseBean(XmlResponse);
-        
-		
-		return responseBean;
-	}
+	
 	
 }
 

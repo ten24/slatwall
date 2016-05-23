@@ -49,13 +49,15 @@ Notes:
 
 component accessors="true" output="false" displayname="UPS" implements="Slatwall.integrationServices.ShippingInterface" extends="Slatwall.integrationServices.BaseShipping" {
 	
-	variables.testRateURL = "https://wwwcie.ups.com/ups.app/xml/Rate";
-	variables.liveRateURL = "https://onlinetools.ups.com/ups.app/xml/Rate";
-	
 	// Variables Saved in this application scope, but not set by end user
 	variables.shippingMethods = {};
 
 	public any function init() {
+		super.init();
+		variables.testurl = "https://wwwcie.ups.com/ups.app/xml/Rate";
+		variables.productionUrl = "https://onlinetools.ups.com/ups.app/xml/Rate";
+		
+		variables.trackingURL = "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 
 		variables.shippingMethods = {
 			01="UPS Next Day Air",
@@ -73,14 +75,6 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		};
 		
 		return this;
-	}
-	
-	public struct function getShippingMethods() {
-		return variables.shippingMethods;
-	}
-	
-	public string function getTrackingURL() {
-		return "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 	}
 	
 	public any function getRates(required any requestBean) {
@@ -118,9 +112,9 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		httpRequest.setTimeout(45);
 		
 		if(setting('testingFlag')) {
-			httpRequest.setUrl(variables.testRateURL);
+			httpRequest.setUrl(variables.testUrl);
 		} else {
-			httpRequest.setUrl(variables.liveRateURL);
+			httpRequest.setUrl(variables.productionUrl);
 		}
 		
 		httpRequest.setResolveurl(false);

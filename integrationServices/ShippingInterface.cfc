@@ -63,6 +63,12 @@ Notes:
 		--->
 	</cffunction>
 	
+	<cffunction name="getProcessShipmentRequestXmlPacket" return type="any">
+	</cffunction>
+	
+	<cffunction name="getRatesRequestXmlPacket" return type="any">
+	</cffunctio>
+	
 	<cffunction name="getShippingMethods" access="public" returntype="Struct">
 		
 		<!--- 

@@ -48,16 +48,59 @@ Notes:
 */
 component extends="Slatwall.org.Hibachi.HibachiObject" {
 
+	property name="testUrl" type="string";
+	property name="productionUrl" type="string";
+	property name="shippingMethods" type="struct";
+	property name="trackingURL" type="string";
+
 	public any function init() {
+		variables.shippingMethods = {};
+		variables.trackingURL = "";
 		return this;
 	}
 	
-	public string function getShippingMethods() {
-		return "";
+	public struct function getShippingMethods() {
+		return variables.shippingMethods;
 	}
 	
 	public string function getTrackingURL() {
-		return "";
+		return variables.trackingURL;
+	}
+	
+	private string function getXMLResponse(string xmlPacket){
+		// Setup Request to push to FedEx
+        var httpRequest = new http();
+        httpRequest.setMethod("POST");
+		httpRequest.setPort("443");
+		httpRequest.setTimeout(45);
+		if(setting('testingFlag')) {
+			httpRequest.setUrl(variables.testUrl);
+		} else {
+			httpRequest.setUrl(variables.productionUrl);
+		}
+		httpRequest.setResolveurl(false);
+		httpRequest.addParam(type="XML", name="name",value=arguments.xmlPacket);
+		
+		return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+	}
+	
+	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
+		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
+		var responseBean = processShipmentRequest(processShipmentRequestBean);
+		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
+		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
+	}
+	
+	public any function processShipmentRequest(required any requestBean){
+		// Build Request XML
+		var xmlPacket = getProcessShipmentRequestXmlPacket(arguments.requestBean);
+        
+        var xmlResponse = getXMLResponse(xmlPacket);
+        
+        var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
+        
+        return responseBean;
 	}
 	
 	// @hint helper function to return a Setting
@@ -76,5 +119,38 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	// @hint helper function to return the packagename of this integration
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
+	}
+	
+	public any function getRates(required any requestBean) {
+		
+		// Build Request XML
+		var xmlPacket = "";
+		
+		savecontent variable="xmlPacket" {
+			writeOutput(variable.ratesRequestTemplate);
+			include "RatesRequestTemplate.cfm";
+        }
+        var XmlResponse = getXMLResponse(xmlPacket);
+        var responseBean = getShippingRatesResponseBean(XmlResponse);
+        
+		
+		return responseBean;
+	}
+	
+	public any function getProcessShipmentRequestXmlPacket(required any requestBean){
+		throw('override request template to Shipping.cfc');
+		var xmlPacket = "";
+		
+		savecontent variable="xmlPacket" {
+			include "ProcessShipmentRequestTemplate.cfm";
+        }
+        return xmlPacket;
+	}
+	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
+		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
+		responseBean.setData(arguments.xmlResponse);
+		responseBean.populate();
+		
+		return responseBean;
 	}
 }
