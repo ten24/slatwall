@@ -77,6 +77,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
+	property name="calculatedQOH" ormtype="integer";
 
 	// Related Object Properties (many-to-one)
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
@@ -939,6 +940,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	public any function getQATS() {
 		return getQuantity("QATS");
+	}
+
+	public any function getQOH() {
+		return getQuantity("QOH");
 	}
 
 	public any function getSalePriceDetails() {
