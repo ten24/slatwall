@@ -83,7 +83,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			
 			for(var orderPayment in opSmartList.getRecords()) {
-				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getSimpleRepresentation(), value=orderPayment.getOrderPaymentID()});
+				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getPaymentMethod().getPaymentMethodName() & " - " & orderPayment.getCreditCardType() & " ***" & orderPayment.getCreditCardLastFour() & ' - ' & getOrder().getFormattedValue('total'), value=orderPayment.getOrderPaymentID()});
 			}
 			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});
 		}
