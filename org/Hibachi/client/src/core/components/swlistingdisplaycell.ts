@@ -25,7 +25,6 @@ class SWListingDisplayCellController{
         public utilityService,
         public $scope
     ){
-        console.log("pageRecord", this.pageRecord);
         this.hibachiPathBuilder = hibachiPathBuilder;
         this.corePartialsPath = corePartialsPath;
         this.$scope = $scope;
@@ -40,35 +39,6 @@ class SWListingDisplayCellController{
                 }
             }
         }
-        //Check to see if this fits the expandable rule
-        /*
-        if(angular.isDefined(this.expandableRules)){
-            angular.forEach(this.expandableRules, (rule, key)=>{
-                if(angular.isDefined(this.pageRecord[rule.filterPropertyIdentifier])){
-                    if(angular.isString(this.pageRecord[rule.filterPropertyIdentifier])){
-                        var pageRecordValue = this.pageRecord[rule.filterPropertyIdentifier].trim(); 
-                    } else {
-                        var pageRecordValue = this.pageRecord[rule.filterPropertyIdentifier]; 
-                    }
-                    switch (rule.filterComparisonOperator){
-                        case "!=":
-                            if(pageRecordValue != rule.filterComparisonValue){
-                                console.log("rule not equal blam")
-                                this.expandable = true; 
-                            }
-                            break; 
-                        default: 
-                            //= case
-                            console.log("rule default",pageRecordValue,rule.filterComparisonValue, pageRecordValue == rule.filterComparisonValue);
-                            if(pageRecordValue == rule.filterComparisonValue){
-                                console.log("rule equal blam")
-                                this.expandable = true; 
-                            }
-                            break; 
-                    }
-                }
-            });
-        }*/
         
         this.popover = this.utilityService.replaceStringWithProperties(this.column.tooltip, this.pageRecord)
 
@@ -96,7 +66,10 @@ class SWListingDisplayCellController{
                     this.templateVariables[this.utilityService.keyToAttributeString(key)] = value;
                 }
             });
-            console.log("templateVariables", this.templateVariables);
+            if(angular.isDefined(this.column.columnID)){
+                this.templateVariables["data-column-id"] = this.column.columnID;
+            }
+            this.templateVariables["data-listing-display-id"] = this.swListingDisplay.tableID; 
         }else{
             this.templateUrl = this.getDirectiveTemplate();
         }

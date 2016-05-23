@@ -24,6 +24,7 @@ class SWMultiListingDisplayController{
     public columns = [];
     public columnCount;
     public commonProperties;
+    public defaultSelectEvent;
     public expandable:boolean;
     public expandableRules = []; 
     public exampleEntity:any = "";
@@ -88,6 +89,10 @@ class SWMultiListingDisplayController{
         public rbkeyService
     ){
         //Common Setup
+        this.tableID = 'LD'+this.utilityService.createID();
+        if(angular.isUndefined(this.defaultSelectEvent)){
+            this.defaultSelectEvent = 'swSelectionToggleSelection' + this.tableID; 
+        }
         if(angular.isUndefined(this.isAngularRoute)){
             this.isAngularRoute = true;    
         }
@@ -213,11 +218,7 @@ class SWMultiListingDisplayController{
         }
         
         this.initCollectionConfigData(this.collectionConfig);
-        
-        this.tableID = 'LD'+this.utilityService.createID();
-        
-        
-        
+         
         //this.getCollection();
         
         this.$scope.$watch('swMultiListingDisplay.collectionPromise',(newValue,oldValue)=>{
@@ -350,7 +351,7 @@ class SWMultiListingDisplayController{
 
 
             //attach observer so we know when a selection occurs
-            this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelection',this.collectionObject);
+            this.observerService.attach(this.updateMultiselectValues,this.defaultSelectEvent,this.collectionObject);
 
             //attach observer so we know when a pagination change occurs
             this.observerService.attach(this.paginationPageChange,'swPaginationAction');

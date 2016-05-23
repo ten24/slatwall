@@ -4,6 +4,9 @@ class SWDefaultSkuRadioController{
     
     public skuId;   
     public sku; 
+    public listingDisplayId;
+    public columnId;
+    public selectionId; 
     
     public collectionConfig; 
     
@@ -11,8 +14,15 @@ class SWDefaultSkuRadioController{
     constructor(
         private $hibachi
     ){
+        if(angular.isDefined(this.listingDisplayId) && angular.isDefined(this.columnId)){
+            this.selectionId = this.listingDisplayId + this.columnId;
+        } else if(angular.isDefined(this.listingDisplayId)){
+            this.selectionId = this.listingDisplayId; 
+        } else {
+            throw("You must provide the listingDisplayId to SWDefaultSkuRadioController");
+        }
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
-            throw("You must provide a skuID to SWSkuPriceSingleEditController");
+            throw("You must provide a skuID to SWDefaultSkuRadioController");
         }
         if(angular.isUndefined(this.sku)){
             this.$hibachi.getEntity("Sku",this.skuId).then(
@@ -39,7 +49,9 @@ class SWDefaultSkuRadio implements ng.IDirective{
     public scope = {}; 
     public bindToController = {
         skuId:"@",
-        sku:"=?"
+        sku:"=?",
+        listingDisplayId:"@?",
+        columnId:"@?"
     };
     public controller = SWDefaultSkuRadioController;
     public controllerAs="swDefaultSkuRadio";

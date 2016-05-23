@@ -69,6 +69,7 @@ class SWListingColumn implements ng.IDirective{
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
 
         var column:any = {
+            columnID: "C" + this.utilityService.createID(31),
             propertyIdentifier:scope.swListingColumn.propertyIdentifier,
             fallbackPropertyIdentifiers:scope.swListingColumn.fallbackPropertyIdentifiers,
             processObjectProperty:scope.swListingColumn.processObjectProperty,

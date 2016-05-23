@@ -10,7 +10,8 @@ import {coremodule} from "../../../../org/Hibachi/client/src/core/core.module";
 //directives
 import {SWPricingManager} from "./components/swpricingmanager";
 import {SWImageDetailModalLauncher} from "./components/swimagedetailmodallauncher";
-import {SWAddSkuPriceModalLauncher} from "./components/swaddskupricemodallauncher"; 
+import {SWAddSkuPriceModalLauncher} from "./components/swaddskupricemodallauncher";
+import {SWDefaultSkuRadio} from "./components/swdefaultskuradio"; 
 import {SWSkuPriceEdit} from "./components/swskupriceedit";
 import {SWSkuPricesEdit} from "./components/swskupricesedit";
 //filters
@@ -28,6 +29,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 .directive('swPricingManager', SWPricingManager.Factory())
 .directive('swImageDetailModalLauncher', SWImageDetailModalLauncher.Factory())
 .directive('swAddSkuPriceModalLauncher', SWAddSkuPriceModalLauncher.Factory()) 
+.directive('swDefaultSkuRadio', SWDefaultSkuRadio.Factory())
 .directive('swSkuPriceEdit', SWSkuPriceEdit.Factory())
 .directive('swSkuPricesEdit', SWSkuPricesEdit.Factory())
 //filters

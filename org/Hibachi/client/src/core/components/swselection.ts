@@ -12,6 +12,7 @@ class SWSelectionController{
         public selectionService,
         public observerService
     ){
+        console.log("SWSELECTION", this);
         if(angular.isUndefined(this.name)){
             this.name = 'selection';
         }
