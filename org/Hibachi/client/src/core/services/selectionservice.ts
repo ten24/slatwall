@@ -20,8 +20,10 @@ class SelectionService extends BaseService{
         };
     };
     radioSelection=(selectionid:string,selection:any):void =>{
+        console.log("ontheradio", selectionid,selection,this._selection[selectionid]);        
         this.createSelections(selectionid);
         this._selection[selectionid].ids.push(selection);
+        console.log("ontheradio2", selectionid,selection,this._selection[selectionid]); 
         this.observerService.notify('swSelectionToggleSelection' + selectionid,{action:'check',selectionid,selection});
     };
     addSelection=(selectionid:string,selection:any):void =>{

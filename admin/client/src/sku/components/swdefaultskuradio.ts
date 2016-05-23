@@ -7,6 +7,7 @@ class SWDefaultSkuRadioController{
     public listingDisplayId;
     public columnId;
     public selectionId; 
+    public selectionFieldName; 
     
     public collectionConfig; 
     
@@ -20,6 +21,9 @@ class SWDefaultSkuRadioController{
             this.selectionId = this.listingDisplayId; 
         } else {
             throw("You must provide the listingDisplayId to SWDefaultSkuRadioController");
+        }
+        if(angular.isUndefined(this.selectionFieldName)){
+            this.selectionFieldName = this.selectionId + 'selection';
         }
         if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
             throw("You must provide a skuID to SWDefaultSkuRadioController");

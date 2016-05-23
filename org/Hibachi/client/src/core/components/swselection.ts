@@ -12,7 +12,6 @@ class SWSelectionController{
         public selectionService,
         public observerService
     ){
-        console.log("SWSELECTION", this);
         if(angular.isUndefined(this.name)){
             this.name = 'selection';
         }
@@ -24,7 +23,7 @@ class SWSelectionController{
         }
 
         //attach observer so we know when a selection occurs
-        observerService.attach(this.updateSelectValue,'swSelectionToggleSelection');
+        observerService.attach(this.updateSelectValue,'swSelectionToggleSelection' + this.selectionid);
     }
 
     private updateSelectValue = (res)=>{
@@ -37,9 +36,9 @@ class SWSelectionController{
         }
     };
     private toggleSelection = (toggleValue,selectionid,selection)=>{
-        console.log(toggleValue);
-        console.log(selectionid);
-        console.log(selection);
+        console.log("ontheradio",toggleValue);
+        console.log("ontheradio",selectionid);
+        console.log("ontheradio",selection);
         if(this.isRadio){
             this.selectionService.radioSelection(selectionid,selection);
             this.toggleValue = toggleValue;
