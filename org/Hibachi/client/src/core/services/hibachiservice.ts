@@ -191,7 +191,11 @@ class HibachiService{
 		}
 	};
 	newEntity= (entityName) =>{
-		return new this._jsEntities[entityName];
+		if(angular.isDefined(this._jsEntities[entityName])){
+			return new this._jsEntities[entityName];
+		} else {
+			throw("HibachiService could not find an entity named: " + entityName); 
+		}
 	};
 	/*basic entity getter where id is optional, returns a promise*/
 	getEntity= (entityName:string, options:any) => {
