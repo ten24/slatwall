@@ -8,6 +8,9 @@ class SWSkuStockAdjustmentModalLauncherController{
     public stockAdjustment:any; 
     public processObject:any; 
     public name:string; 
+    public quantityDifference:number; 
+    
+    public skuPromise; 
     
     //@ngInject
     constructor(
@@ -21,8 +24,8 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stock = this.$hibachi.newEntity('Stock');
         this.stockAdjustment = this.$hibachi.newEntity('StockAdjustment');
         this.processObject = this.$hibachi.newEntity('StockAdjustment_AddStockAdjustmentItem');
-        console.log("THISSSS", this);
-        $hibachi.getEntity("Sku",this.skuId).then(
+        this.skuPromise = $hibachi.getEntity("Sku",this.skuId);
+        this.skuPromise.then(
             (sku)=>{
                 this.sku = this.$hibachi.newEntity('Sku');
                 angular.extend(this.sku.data, sku);
@@ -35,7 +38,7 @@ class SWSkuStockAdjustmentModalLauncherController{
                 throw("SWSkuStockAdjustmentModalLauncherController was unable to load the sku for the provided id:" + this.skuId + " with a reason of: " + reason );
             }
         );
-    }    
+    }
 }
 
 class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
