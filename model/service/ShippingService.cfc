@@ -51,37 +51,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService" type="any";
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
-	
-//	public any function generateShippingLabel(required any integration){
-//		var integrationShippingAPI = arguments.integration.getIntegrationCFC("shipping");
-//		var responseBean = {};
-//		// Create processShipment request bean and populate it 
-//		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-//		
-////		ratesRequestBean.populateShippingItemsWithOrderFulfillmentItems( arguments.orderFulfillment.getOrderFulfillmentItems() );
-////		ratesRequestBean.populateShipToWithAddress( arguments.orderFulfillment.getShippingAddress() );
-////
-//		logHibachi('#arguments.integration.getIntegrationName()# Shipping Integration Process Shipment Request - Started');
-//		// Inside of a try/catch call the 'getRates' method of the integraion
-//		//try {
-//			responseBean = integrationShippingAPI.generateShippingLabel( processShipmentRequestBean );
-//			
-//			
-//			
-//			return responseBean;
-////		} catch(any e) {
-////
-////			logHibachi('An error occured with the #integration.getIntegrationName()# integration when trying to call generateShippingLabel()', true);
-////			logHibachiException(e);
-////
-////			if(getSettingService().getSettingValue("globalDisplayIntegrationProcessingErrors")){
-////				rethrow;
-////			}
-////		}
-//		
-//	}
-	
-	
+
 	public array function getShippingMethodRatesByOrderFulfillmentAndShippingMethod(required any orderFulfillment, required any shippingMethod){
 		var shippingMethodRatesSmartList = shippingMethod.getShippingMethodRatesSmartList();
 		shippingMethodRatesSmartList.addFilter('activeFlag',1);

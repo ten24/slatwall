@@ -67,21 +67,25 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return variables.trackingURL;
 	}
 	
-	private string function getXMLResponse(string xmlPacket){
+	
+	
+	private any function getResponse(required string requestPacket, required string url, required string format="xml"){
 		// Setup Request to push to FedEx
         var httpRequest = new http();
         httpRequest.setMethod("POST");
 		httpRequest.setPort("443");
 		httpRequest.setTimeout(45);
-		if(setting('testingFlag')) {
-			httpRequest.setUrl(variables.testUrl);
-		} else {
-			httpRequest.setUrl(variables.productionUrl);
-		}
+		httpRequest.setUrl(arguments.url);
 		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="XML", name="name",value=arguments.xmlPacket);
+		if(arguments.format == 'xml'){
+			httpRequest.addParam(type="XML", name="name",value=trim(arguments.requestPacket));
+			return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
+		}else{
+			httpRequest.addParam(type="header",name="Content-Type",value="application/json");
+			httpRequest.addParam(type="body", value=trim(arguments.requestPacket));
+			return deserializeJson(httpRequest.send().getPrefix().fileContent);
+		}
 		
-		return XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
 	}
 	
 	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
@@ -121,31 +125,6 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
-	public any function getRates(required any requestBean) {
-		
-		// Build Request XML
-		var xmlPacket = "";
-		
-		savecontent variable="xmlPacket" {
-			writeOutput(variable.ratesRequestTemplate);
-			include "RatesRequestTemplate.cfm";
-        }
-        var XmlResponse = getXMLResponse(xmlPacket);
-        var responseBean = getShippingRatesResponseBean(XmlResponse);
-        
-		
-		return responseBean;
-	}
-	
-	public any function getProcessShipmentRequestXmlPacket(required any requestBean){
-		throw('override request template to Shipping.cfc');
-		var xmlPacket = "";
-		
-		savecontent variable="xmlPacket" {
-			include "ProcessShipmentRequestTemplate.cfm";
-        }
-        return xmlPacket;
-	}
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.xmlResponse);

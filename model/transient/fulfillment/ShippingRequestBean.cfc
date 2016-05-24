@@ -186,8 +186,6 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 	}
 	
-	
-	
 	public numeric function getTotalWeight( string unitCode="lb" ) {
 		var totalWeight = 0;
 		for(var i=1; i<=arrayLen(getShippingItemRequestBeans()); i++) {

@@ -50,7 +50,7 @@ Notes:
 component accessors="true" output="false" displayname="FedEx" implements="Slatwall.integrationServices.ShippingInterface" extends="Slatwall.integrationServices.BaseShipping" {
 
 	public any function init() {
-		this.super();
+		super.init();
 		variables.trackingURL = "http://www.fedex.com/Tracking?tracknumber_list=${trackingNumber}";
 		variables.testUrl = "https://gatewaybeta.fedex.com/xml";
 		variables.productionUrl = "https://gateway.fedex.com/xml";
@@ -68,7 +68,51 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		return this;
 	}
 	
+	public any function getProcessShipmentRequestXmlPacket(required any requestBean){
+		var xmlPacket = "";
+		
+		savecontent variable="xmlPacket" {
+			include "ProcessShipmentRequestTemplate.cfm";
+        }
+        return xmlPacket;
+	}
 	
+	public any function processShipmentRequest(required any requestBean){
+		// Build Request XML
+		var xmlPacket = getProcessShipmentRequestXmlPacket(arguments.requestBean);
+        
+        var xmlResponse = getXMLResponse(xmlPacket);
+        
+        var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
+        
+        return responseBean;
+	}
+	
+	private string function getXMLResponse(string xmlPacket){
+		var url = "";
+		if(setting('testingFlag')) {
+			url = variables.testUrl;
+		} else {
+			url = variables.productionUrl;
+		}
+		return getResponse(requestPacket=xmlPacket,url=url);
+	}
+	
+	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
+		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
+		responseBean.setData(arguments.xmlResponse);
+		responseBean.populate();
+		
+		return responseBean;
+	}
+	
+	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
+		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.getOrderFulfillment());
+		var responseBean = processShipmentRequest(processShipmentRequestBean);
+		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
+		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
+	}
 	
 	private any function getShippingRatesResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
@@ -102,7 +146,20 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 		return responseBean;
 	}
 	
-	
+	public any function getRates(required any requestBean) {
+		
+		// Build Request XML
+		var xmlPacket = "";
+		
+		savecontent variable="xmlPacket" {
+			include "RatesRequestTemplate.cfm";
+        }
+        var XmlResponse = getXMLResponse(xmlPacket);
+        var responseBean = getShippingRatesResponseBean(XmlResponse);
+        
+		
+		return responseBean;
+	}
 	
 }
 

@@ -54,8 +54,8 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 
 	public any function init() {
 		super.init();
-		variables.testurl = "https://wwwcie.ups.com/ups.app/xml/Rate";
-		variables.productionUrl = "https://onlinetools.ups.com/ups.app/xml/Rate";
+		variables.testurl = "https://wwwcie.ups.com/json/";
+		variables.productionUrl = "https://onlinetools.ups.com/json/";
 		
 		variables.trackingURL = "http://wwwapps.ups.com/WebTracking/track?loc=en_US&track.x=Track&trackNums=${trackingNumber}";
 
@@ -78,81 +78,59 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 	}
 	
 	public any function getRates(required any requestBean) {
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
-		
-		// Insert Custom Logic Here
-		var totalItemsWeight = 0;
-		var totalItemsValue = 0;
-		
-		// Loop over all items to get a price and weight for shipping
-		for(var i=1; i<=arrayLen(arguments.requestBean.getShippingItemRequestBeans()); i++) {
-			if(isNumeric(arguments.requestBean.getShippingItemRequestBeans()[i].getWeight())) {
-				totalItemsWeight +=	arguments.requestBean.getShippingItemRequestBeans()[i].getWeight() * arguments.requestBean.getShippingItemRequestBeans()[i].getQuantity();
-			}
-			 
-			totalItemsValue += arguments.requestBean.getShippingItemRequestBeans()[i].getValue() * arguments.requestBean.getShippingItemRequestBeans()[i].getQuantity();
-		}
-		
-		if(totalItemsWeight < 1) {
-			totalItemsWeight = 1;
-		}
 		
 		// Build Request XML
-		var xmlPacket = "";
+		var jsonPacket = "";
 		
-		savecontent variable="xmlPacket" {
+		savecontent variable="jsonPacket" {
 			include "RatesRequestTemplate.cfm";
         }
-        
-        // Setup Request to push to UPS
-        
-        var httpRequest = new http();
-        httpRequest.setMethod("POST");
-		httpRequest.setPort("443");
-		httpRequest.setTimeout(45);
+        var JsonResponse = getJsonResponse(jsonPacket);
+        var responseBean = getShippingRatesResponseBean(JsonResponse);
 		
+		return responseBean;
+	}
+	
+	public struct function getJsonResponse(required any jsonPacket){
+		var url = "";
+		var service = "Rate";
 		if(setting('testingFlag')) {
-			httpRequest.setUrl(variables.testUrl);
+			url = variables.testUrl & service;
 		} else {
-			httpRequest.setUrl(variables.productionUrl);
+			url = variables.productionUrl & service;
 		}
-		
-		httpRequest.setResolveurl(false);
-		httpRequest.addParam(type="xml", name="data",value="#trim(xmlPacket)#");
-		
-		var xmlResponse = XmlParse(REReplace(httpRequest.send().getPrefix().fileContent, "^[^<]*", "", "one"));
-		
+		return getResponse(requestPacket=arguments.jsonPacket,url=url,format="json");
+	}
+	
+	public any function getShippingRatesResponseBean(required any JsonResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
-		responseBean.setData(xmlResponse);
+		responseBean.setData(arguments.JsonResponse);
 		
-		if(isDefined('xmlResponse.Fault')) {
+		if(isDefined('responseBean.data.RateResponse.Fault')) {
 			responseBean.addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
-			// Log all messages from FedEx into the response bean
-			for(var i=1; i<=arrayLen(xmlResponse.RatingServiceSelectionResponse.Response); i++) {
+			responseBean.addMessage(
+				messageName=responseBean.getData().RateResponse.Response.ResponseStatus.code,
+				message=responseBean.getData().RateResponse.Response.ResponseStatus.Description
+			);
+			if(structKeyExists(responseBean.getData().RateResponse, "Error")) {
 				responseBean.addMessage(
-					messageName=xmlResponse.RatingServiceSelectionResponse.Response[i].ResponseStatusCode.xmltext,
-					message=xmlResponse.RatingServiceSelectionResponse.Response[i].ResponseStatusDescription.xmltext
+					messageName=responseBean.getData().RateResponse.Error.Code,
+					message=responseBean.getData().RateResponse.Error.Description
 				);
-				if(structKeyExists(xmlResponse.RatingServiceSelectionResponse.Response[i], "Error")) {
-					responseBean.addMessage(
-						messageName=xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorCode.xmltext,
-						message=xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorDescription.xmltext
-					);
-					responseBean.addError(
-						xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorCode.xmltext,
-						xmlResponse.RatingServiceSelectionResponse.Response[i].Error.ErrorDescription.xmltext
-					);
-				}
+				responseBean.addError(
+					responseBean.getData().RateResponse.Error.Code,
+					responseBean.getData().RateResponse.Error.Description
+				);
 			}
 			
 			if(!responseBean.hasErrors()) {
-				for(var i=1; i<=arrayLen(xmlResponse.RatingServiceSelectionResponse.RatedShipment); i++) {
+				for(var i=1; i<=arrayLen(responseBean.getData().RateResponse.RatedShipment); i++) {
 					responseBean.addShippingMethod(
-						shippingProviderMethod=xmlResponse.RatingServiceSelectionResponse.RatedShipment[i].Service.code.xmlText,
-						totalCharge=xmlResponse.RatingServiceSelectionResponse.RatedShipment[i].TotalCharges.MonetaryValue.xmlText
+						shippingProviderMethod=responseBean.getData().RateResponse.RatedShipment[i].Service.code,
+						totalCharge=responseBean.getData().RateResponse.RatedShipment[i].TotalCharges.MonetaryValue
 					);
 				}
 			}
@@ -161,6 +139,14 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return responseBean;
 	}
 	
+	public any function getProcessShipmentRequestXmlPacket(required any requestBean){
+		var xmlPacket = "";
+		
+		savecontent variable="xmlPacket" {
+			include "ProcessShipmentRequestTemplate.cfm";
+        }
+        return xmlPacket;
+	}
 	
 }
 
