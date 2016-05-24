@@ -5,20 +5,20 @@ class SWModalLauncherController {
     public showModal:boolean; 
     public modalName:string; 
     public title:string; 
+    public saveAction;
+    public cancelAction;
     
     // @ngInject
-    constructor(
-        ){
-            if(angular.isUndefined(this.showModal)){
-                this.showModal = false; 
-            }
+    constructor(){
+        if(angular.isUndefined(this.showModal)){
+            this.showModal = false; 
+        }
     }
     
     public launchModal = () =>{
         //activate the necessary modal
         this.showModal = true; 
     }
-
 }
 
 class SWModalLauncher implements ng.IDirective{
@@ -30,13 +30,12 @@ class SWModalLauncher implements ng.IDirective{
     };
     public restrict = "EA";
     public scope = {};
-
     public bindToController = {
         showModal:"=?",
         modalName:"@", 
         title:"@",
-        saveAction:"&", 
-        cancelAction:"&"
+        saveAction:"&?", 
+        cancelAction:"&?"
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";

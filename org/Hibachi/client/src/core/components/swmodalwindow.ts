@@ -4,6 +4,8 @@ class SWModalWindowController {
 
     public modalName;
     public title; 
+    public saveAction;
+    public cancelAction;
 
     // @ngInject
     constructor(){
