@@ -67,7 +67,7 @@ component extends="HibachiService" accessors="true" output="false" {
 
 				for (var workflowTrigger in workflowTriggers) {
 
-					if(workflowTrigger.getStartDateTime() > now() && (!isNull(workflowTrigger.getEndDateTime()) && workflowTrigger.getEndDateTime() < now())){
+					if(workflowTrigger.getStartDateTime() > now() || (!isNull(workflowTrigger.getEndDateTime()) && workflowTrigger.getEndDateTime() < now())){
 						continue;
 					}
 
