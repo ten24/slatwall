@@ -16,20 +16,8 @@
                 >
             <div class="row">
                     <div class="col-sm-4">
-                        <div class="thumbnail">
-                            <div class="s-image">
-                                <!-- NEED TO PUT THE SKU IMAGE HERE -->
-                                <img src="//placehold.it/600x600/" class="s-responsive-image"/>
-                            </div>
-                            <div class="caption">
-                                <h5><span ng-bind="swAddSkuPriceModalLauncher.sku.skuName"></span></h5>
-                                <ul class="list-unstyled">
-                                    <!-- RB KEYS -->
-                                    <li><strong>Sku Code - </strong><span ng-bind="swAddSkuPriceModalLauncher.sku.skuCode"></span></li>
-                                    <li><strong>Sku Definition - </strong><span ng-bind="swAddSkuPriceModalLauncher.sku.skuDefinition"></span></li>
-                                </ul>
-                            </div>
-                        </div>
+                        <sw-sku-thumbnail data-sku="swAddSkuPriceModalLauncher.sku">
+                        </sw-sku-thumbnail>
                     </div>
                     <div class="col-sm-8">
                         <div class="row">

@@ -2,11 +2,21 @@
 /// <reference path='../../../typings/tsd.d.ts' />
 class SWImageDetailModalLauncherController{
     
+    public skuId:string; 
+    public sku:any;
+    
     //@ngInject
     constructor(
         private $hibachi 
     ){
-    
+        $hibachi.getEntity("Sku",this.skuId).then(
+            (response)=>{
+                this.sku = response; 
+            },
+            (reason)=>{
+                throw("SWSkuStockAdjustmentModalLauncherController");
+            }
+        )
     }    
 }
 
@@ -15,6 +25,7 @@ class SWImageDetailModalLauncher implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
+        skuId:"@"
     };
     public controller = SWImageDetailModalLauncherController;
     public controllerAs="swImageDetailModalLauncher";

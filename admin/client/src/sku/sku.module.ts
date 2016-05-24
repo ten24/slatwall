@@ -15,6 +15,7 @@ import {SWSkuStockAdjustmentModalLauncher} from "./components/swskustockadjustme
 import {SWDefaultSkuRadio} from "./components/swdefaultskuradio"; 
 import {SWSkuPriceEdit} from "./components/swskupriceedit";
 import {SWSkuPricesEdit} from "./components/swskupricesedit";
+import {SWSkuThumbnail} from "./components/swskuthumbnail";
 //filters
 
 
@@ -34,6 +35,7 @@ var skumodule = angular.module('hibachi.sku',[coremodule.name]).config(()=>{
 .directive('swDefaultSkuRadio', SWDefaultSkuRadio.Factory())
 .directive('swSkuPriceEdit', SWSkuPriceEdit.Factory())
 .directive('swSkuPricesEdit', SWSkuPricesEdit.Factory())
+.directive('swSkuThumbnail', SWSkuThumbnail.Factory())
 //filters
 
 ;

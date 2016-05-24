@@ -1,0 +1,77 @@
+<sw-modal-launcher data-modal-name="{{swSkuStockAdjustmentModalLauncher.name}}" data-title="Stock Adjustment"><!-- Change this to rb -->
+    <sw-modal-button>
+        <!-- Load Sku Image Here -->
+        <sw-form-field-single-edit ng-if="swSkuStockAdjustmentModalLauncher.sku"
+            data-object="swSkuStockAdjustmentModalLauncher.sku"
+            data-property="calculatedQOH"
+        >
+        </sw-form-field-single-edit>
+    </sw-modal-button>
+    <sw-modal-content> 
+          <div class="row">              
+            <div class="col-sm-4">
+                <sw-sku-thumbnail data-sku="swSkuStockAdjustmentModalLauncher.sku">
+                    
+                </sw-sku-thumbnail> 
+                
+            </div>
+            
+            <div class="col-sm-8">
+                
+                <div class="row s-modal-module-wrapper">
+                    <div class="col-md-4">
+                        <div class="s-modal-module s-original-value">
+                            <div class="s-title">Original Qty</div>
+                            <div class="s-value">
+                                <span><span ng-bind="swSkuStockAdjustmentModalLauncher.sku.data.calculatedQOH"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="s-modal-module">
+                            <div class="s-title">Adjustment</div>
+                            <div class="s-value s-negative"><!--- s-positive class will turn green for positive number --->
+                                <span><!-- DYNAMIC VALUE HERE --></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="s-modal-module">
+                            <div class="s-title">New Qty</div>
+                            <div class="s-value">
+                                <input type="number" class="form-control input-xs" value="789" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="form-group j-adjustmentType-remove-this">
+                    <label for="" class="control-label">Adjustment Type</label>
+                    <select class="form-control">
+                        <option value="manualIn" selected>Manual In</option>
+                        <option value="manualOut">Manual Out</option>
+                    </select>
+                </div> -->
+                <div class="form-group">
+                    <label for="" class="control-label">From Location</label>
+                    <select class="form-control">
+                        <option value="" selected>Default</option>
+                        <option value="">San Diego</option>
+                        <option value="">Boston</option>
+                    </select>
+                </div>
+                <!-- <div class="form-group j-location-to-remove-this">
+                    <label for="" class="control-label">To Location</label>
+                    <select class="form-control">
+                        <option value="" selected>Default</option>
+                        <option value="">San Diego</option>
+                        <option value="">Boston</option>
+                    </select>
+                </div> -->
+                <div class="form-group">
+                    <label for="" class="control-label">Comment:</label>
+                    <textarea class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+    </sw-modal-content> 
+</sw-modal-launcher>
