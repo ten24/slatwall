@@ -1,7 +1,7 @@
-<a ng-click="swFormResponseListing.export()">
+<a ng-if="swFormResponseListing.columns.length && swFormResponseListing.pageRecords.length" ng-click="swFormResponseListing.export()">
     <span sw-rbKey="'define.export'"></span> <span sw-rbKey="'entity.formResponse'"></span>
 </a>
-<div class="table-responsive s-listing-display-table-wrapper">
+<div ng-if="swFormResponseListing.columns.length && swFormResponseListing.pageRecords.length" class="table-responsive s-listing-display-table-wrapper">
 	 <table id="" class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -19,6 +19,8 @@
     
     <sw-pagination-bar data-paginator="swFormResponseListing.paginator"></sw-pagination-bar>
 </div>
-
+<div ng-if="!swFormResponseListing.columns.length && !swFormResponseListing.pageRecords.length">
+    <span sw-rbKey="'admin.define.nosearchresults'"></span>
+</div>
 
 									

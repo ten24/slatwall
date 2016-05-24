@@ -28,6 +28,7 @@ interface IParams{
 
 interface IHibachiInterceptorPromise<T> extends ng.IPromise<any>{
 	data:any;
+    status:number;
 }
 
 
@@ -37,10 +38,10 @@ class HibachiInterceptor implements IInterceptor{
 	public static Factory() {
         var eventHandler = (
 			$location:ng.ILocationService,
-			$window:ng.IWindowService ,
 			$q:ng.IQService,
 			$log:ng.ILogService,
 			$injector:ng.auto.IInjectorService,
+			localStorageService,
 			alertService,
 			appConfig:string,
 			dialogService,
@@ -48,10 +49,10 @@ class HibachiInterceptor implements IInterceptor{
             hibachiPathBuilder
 		)=> new HibachiInterceptor(
 			$location,
-			$window,
 			$q,
 			$log,
 			$injector,
+			localStorageService,
 			alertService,
 			appConfig,
 			dialogService,
@@ -60,10 +61,10 @@ class HibachiInterceptor implements IInterceptor{
 		);
 		eventHandler.$inject = [
 			'$location',
-			'$window',
 			'$q',
 			'$log',
 			'$injector',
+			'localStorageService',
 			'alertService',
 			'appConfig',
 			'dialogService',
@@ -80,10 +81,10 @@ class HibachiInterceptor implements IInterceptor{
 	//@ngInject
     constructor(
         public $location:ng.ILocationService,
-		public $window:ng.IWindowService,
 		public $q:ng.IQService,
 		public $log:ng.ILogService,
 		public $injector:ng.auto.IInjectorService,
+		public localStorageService,
 		public alertService,
 		public appConfig:any,
 		public dialogService,
@@ -91,7 +92,6 @@ class HibachiInterceptor implements IInterceptor{
         public hibachiPathBuilder
 	) {
         this.$location = $location;
-    	this.$window = $window;
 		this.$q = $q;
 		this.$log = $log;
 		this.$injector = $injector;
@@ -101,6 +101,7 @@ class HibachiInterceptor implements IInterceptor{
 		this.dialogService = dialogService;
         this.utilityService = utilityService;
         this.hibachiPathBuilder = hibachiPathBuilder;
+		this.localStorageService = localStorageService;
     }
 
 	public request = (config): ng.IPromise<any> => {
@@ -116,9 +117,9 @@ class HibachiInterceptor implements IInterceptor{
         }
         config.cache = true;
         config.headers = config.headers || {};
-        if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
+        if (this.localStorageService.hasItem('token')) {
 
-            config.headers['Auth-Token'] = 'Bearer ' + this.$window.localStorage.getItem('token');
+            config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
         }
         var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
 		if(config.method == 'GET' && (queryParams[this.appConfig.action] && queryParams[this.appConfig.action] === 'api:main.get')){
@@ -174,12 +175,14 @@ class HibachiInterceptor implements IInterceptor{
 					this.dialogService.addPageDialog(this.hibachiPathBuilder.buildPartialsPath('preprocesslogin'),{} );
 				}else if(rejection.data.messages[0].message === 'invalid_token'){
                     return $http.get(this.baseUrl+'/index.cfm/api/auth/login').then((loginResponse:IHibachiInterceptorPromise<any>)=>{
-                        this.$window.localStorage.setItem('token',loginResponse.data.token);
-                        rejection.config.headers = rejection.config.headers || {};
-                        rejection.config.headers['Auth-Token'] = 'Bearer ' + this.$window.localStorage.getItem('token');
-                        return $http(rejection.config).then(function(response) {
-                           return response;
-                        });
+                        if(loginResponse.status === 200){
+                        this.localStorageService.setItem('token',loginResponse.data.token);
+                            rejection.config.headers = rejection.config.headers || {};
+                            rejection.config.headers['Auth-Token'] = 'Bearer ' + this.localStorageService.getItem('token');
+                            return $http(rejection.config).then(function(response) {
+                               return response;
+                            });
+                        }
 					},function(rejection){
                         return rejection;
                     });

@@ -549,6 +549,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					newOption['optionName'] = option.getOptionName();
 					newOption['name'] = option.getOptionName();
 					newOption['value'] = option.getOptionID();
+					newOption['sortOrder'] = option.getSortOrder();
 					newOption['totalQATS'] = sku.getQuantity("QATS");
 					newOption['selectedQATS'] = 0;
 					if(allSelectedInSku) {
@@ -557,7 +558,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 					arrayAppend(skuOptionDetails[ ogCode ].options, newOption);
 				}
 			}
-
+		}
+		for(var ogCode in skuOptionDetails){
+			skuOptionDetails[ ogCode ].options = getService("HibachiUtilityService").structArraySort(skuOptionDetails[ ogCode ].options, "sortOrder");
 		}
 
 		return skuOptionDetails;
@@ -708,17 +711,21 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			var sl = getService("skuService").getSkuSmartList();
 			sl.addFilter('product.productID', getProductID());
 			sl.setSelectDistinctFlag( true );
-			var records = sl.getRecords();
+			var skus = sl.getRecords();
 
-			for(var record in records) {
-				if(!isNull(record.getImageFile())) {
-					arrayIndex = ArrayFind(variables.defaultProductImageFiles, function(struct){
-						return struct.ImageFile == record.getImageFile();
-					});
-					if(arrayIndex == 0){
+			for(var sku in skus) {
+				if(!isNull(sku.getImageFile())) {
+					var imageAlreadyIncluded = false;
+					for(var image in variables.defaultProductImageFiles){
+						if(image.imageFile == sku.getImageFile()){
+							imageAlreadyIncluded = true;
+						}
+					}
+
+					if(!imageAlreadyIncluded){
 						var imageFileStruct = {};
-						imageFileStruct['imageFile'] = record.getImageFile();
-						imageFileStruct['skuDefinition'] = record.getSkuDefinition();
+						imageFileStruct['imageFile'] = sku.getImageFile();
+						imageFileStruct['skuDefinition'] = sku.getSkuDefinition();
 						arrayAppend(variables.defaultProductImageFiles, imageFileStruct);
 					}
 				}

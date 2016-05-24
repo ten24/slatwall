@@ -474,8 +474,7 @@ Notes:
 
 	// @hint utility function to sort array of ojbects can be used to override getCollection() method to add sorting.
 	// From Aaron Greenlee http://cookbooks.adobe.com/post_How_to_sort_an_array_of_objects_or_entities_with_C-17958.html
-	public array function sortObjectArray(required array objects, required string orderby, string sorttype="text", string direction = "asc") {
-		var property = arguments.orderby;
+	public array function sortObjectArray(required array objects, required string orderByProperty, string sortType="text", string direction = "asc") {
 		var sortedStruct = {};
 		var sortedArray = [];
         for (var i=1; i <= arrayLen(arguments.objects); i++) {
@@ -483,14 +482,31 @@ Notes:
                 // {VALUE}.{RAND NUMBER} This is important otherwise any objects
                 // with the same value would be lost.
                 var rn = randRange(1,100);
-                var sortedStruct[ evaluate("arguments.objects[i].get#property#() & '.' & rn") ] = objects[i];
+                var sortedStruct[ evaluate("arguments.objects[i].get#arguments.orderByProperty#() & '.' & rn") ] = objects[i];
 		}
 		var keyArray = structKeyArray(sortedStruct);
-		arraySort(keyArray,arguments.sorttype,arguments.direction);
+		arraySort(keyArray,arguments.sortType,arguments.direction);
 		for(var i=1; i<=arrayLen(keyArray);i++) {
 			arrayAppend(sortedArray, sortedStruct[keyArray[i]]);
 		}
 		return sortedArray;
+	}
+
+	/**
+	* Sorts an array of structures based on a key in the structures.
+	*/
+	function structArraySort(arrayOfStructs,key,sortType="numeric", sortOrder="asc"){
+	        var tempStruct = {};
+	        var structArrayLength = arrayLen(arrayOfStructs);
+	        for(var i=1; i<=structArrayLength; i++){
+	        	tempStruct[i] = StructCopy(arrayOfStructs[i]);
+	        }
+	        var keys = StructSort(tempStruct, sortType, sortOrder, key);
+	        var sortedArray = arrayNew(1);
+	        for(var i=1; i<=structArrayLength; i++){
+	        	arrayAppend(sortedArray, tempStruct[keys[i]]);
+	        }
+	        return sortedArray;
 	}
 
 

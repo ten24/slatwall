@@ -13,6 +13,9 @@ class SWTypeaheadInputFieldController {
     public propertiesToLoad; 
     public placeholderRbKey;
     public propertyToSave;
+    public allRecords;
+    public maxRecords; 
+    public propertyToShow;
     
     // @ngInject
 	constructor(private $scope, 
@@ -23,6 +26,14 @@ class SWTypeaheadInputFieldController {
                 private utilityService, 
                 private collectionConfigService
     ){
+        
+        if(angular.isUndefined(this.allRecords)){
+            this.allRecords = false; 
+        }
+        
+        if(angular.isUndefined(this.maxRecords)){
+            this.maxRecords = 100; 
+        }
         
         if(angular.isUndefined(this.entityName)){
             throw("The typeahead input field directive requires an entity name.");
@@ -66,8 +77,11 @@ class SWTypeaheadInputField implements ng.IDirective{
 	public bindToController = {
         fieldName:"@",
         entityName:"@",
+        allRecords:"=?",
+        maxRecords:"@",
         propertiesToLoad:"@?",
         placeholderRbKey:"@?",
+        propertyToShow:"@",
         propertyToSave:"@"
 	};
 	public controller=SWTypeaheadInputFieldController;

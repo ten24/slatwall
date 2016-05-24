@@ -35,20 +35,6 @@ class SWTypeaheadSearchLineItem implements ng.IDirective{
             pre: (scope: any, element: JQuery, attrs: angular.IAttributes) => {
                 var innerHTML = '<span ng-bind="item.' + scope.swTypeaheadSearchLineItem.propertyIdentifier + '"></span>';
                 element.append(innerHTML);
-                
-                //below is deprecated code pre dates swCollection, swCollectionFilter, and swCollectionColumn
-                var column = {
-                        propertyIdentifier:scope.swTypeaheadSearchLineItem.propertyIdentifier,
-                        isSearchable:scope.swTypeaheadSearchLineItem.isSearchable
-                };
-                
-                if(angular.isDefined(scope.$parent.swTypeaheadSearch)){ 
-                    scope.$parent.swTypeaheadSearch.columns.push(column);
-                } 
-                
-                if(angular.isDefined(scope.$parent.swTypeaheadInputField)){
-                    scope.$parent.swTypeaheadInputField.columns.push(column);
-                }   
             },
             post: (scope: any, element: JQuery, attrs: angular.IAttributes) => {}
         };

@@ -287,6 +287,11 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return optionString;
 	}
 
+	//@hint normally on missing method would handle this, but in the case of options it tries to use the wrong function.
+	public any function getOptionsSmartList() {
+    	return getPropertySmartList(propertyName="options");
+	}
+
 	//@hint Generates the image path based upon product code, and image options for this sku
 	public string function generateImageFileName() {
 

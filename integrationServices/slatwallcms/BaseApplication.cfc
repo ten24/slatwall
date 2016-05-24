@@ -224,12 +224,12 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			}
 		}
 	}
-	
+
 	/** Returns the content given a urlTitle or the default content if no urlTitle is given. */
     public any function getContentByUrlTitlePath(urlTitlePath){
-        
-        var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
-        
+
+        var currentSite = getHibachiScope().getCurrentRequestSite();
+
         if (!isNull(arguments.urlTitlePath) && !isNull(currentSite)){
             var contentEntity = getHibachiScope().getService("ContentService").getContentBySiteIDAndUrlTitlePath(currentSite.getSiteID(),arguments.urlTitlePath);
             return contentEntity;
@@ -240,8 +240,8 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		required string formCode,
 		string sRedirectUrl
 	){
-		var newFormResponse = getHibachiScope().getService('formService').newFormResponse();
-		var requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
+		request.context.newFormResponse = getHibachiScope().getService('formService').newFormResponse();
+		request.context.requestedForm = getHibachiScope().getService('formService').getFormByFormCode(arguments.formCode);
 		var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
 		var specificFormTemplateFileName = "form_"  & formCode & ".cfm";
 		var defaultFormTemplateFileName = "slatwall-form.cfm";
@@ -289,7 +289,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	){
 		//if content id does not exist then get home
 		if(!len(arguments.startContentID)){
-			var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
+			var currentSite = getHibachiScope().getCurrentRequestSite();
 			arguments.content = getHibachiScope().getService('contentService').getDefaultContentBySite(currentSite);
 		}else{
 			arguments.content = getHibachiScope().getService('contentService').getContent(arguments.startContentId);

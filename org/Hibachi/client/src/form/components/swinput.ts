@@ -178,7 +178,7 @@ class SWInput{
                     ' />';
             } else if(propertyDisplay.fieldType === 'dateTime'){
                 template = '<input type="text" class="form-control" '+
-                    'datetime-picker future-only '+ // date-format="MMM DD, YYYY hh:mm"
+                    'datetime-picker '+ // date-format="MMM DD, YYYY hh:mm"
                     'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
                     'ng-disabled="!propertyDisplay.editable" '+
                     'ng-show="propertyDisplay.editing" '+

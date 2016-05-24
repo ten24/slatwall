@@ -11,10 +11,13 @@ dependencies:
     - git config --global user.name "Big Boy (Slatwall Robot)"
     - git config --global push.default current
 
+    # Install node modules for building JS
     - npm install -g webpack gulp
 
-    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader
+    - npm install gulp gulp-inject@3 gulp-chmod gulp-util run-sequence webpack force-case-sensitivity-webpack-plugin strip-loader ng-annotate-webpack-plugin tsify typescript
 
+    # Install awscli so that we can push builds to S3
+    - pip install awscli
     # Install se-interpreter (Interperates SeleniumBuilder json for SauceLabs using nodeJS)
     - cd meta/tests/integration/se-interpreter && npm install
 
@@ -44,21 +47,20 @@ test:
     - sudo chmod -R 777 meta/tests/testresults
 
     # Connect ot SauceLabs for Integration Testing
-    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready --tunnel-identifier $CIRCLE_BUILD_NUM:
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --pidfile sc.pid --readyfile ~/sauce_is_ready --tunnel-identifier $CIRCLE_BUILD_NUM; fi:
         background: true
 
     # Wait for Saucelabs connection
-    - while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then while [ ! -e ~/sauce_is_ready ]; do sleep 1; done; fi
   override:
-
     # Run Sauce Labs Integration Setup Tests
-    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=1 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/setup_config.json; fi
 
     # Run Sauce Labs Integration Admin Tests, 2 side by side at a time
-    - node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then node meta/tests/integration/se-interpreter/interpreter.js --parallel=2 --listener=meta/tests/integration/se-interpreter/utils/se_sauce_junit_listener.js --listener-path=meta/tests/testresults/xml/integration meta/tests/integration/admin_config.json; fi
 
     # Kill the Sauce Labs tunnel
-    - cd sc-*-linux && kill $(cat sc.pid)
+    - if [[ ! -z $SAUCE_USERNAME ]] ; then cd sc-*-linux && kill $(cat sc.pid); fi
 
     # Run Unit Tests
     - sudo lxc-attach -n "$(docker inspect --format '{{.Id}}' slatwallci_slatwallweb_1)" -- ant -f /var/www/meta/tests/build.xml runUnitTests

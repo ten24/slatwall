@@ -67,6 +67,8 @@ Notes:
 			data-has-search="true"
 			data-record-detail-action="admin:entity.detailform"
 			data-record-edit-action="admin:entity.editform"
+			data-is-angular-route="false"
+			data-angular-links="false"
 			data-has-action-bar="false"
 						>
 		<sw-listing-column data-property-identifier="formCode"></sw-listing-column>

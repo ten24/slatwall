@@ -89,7 +89,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			
 			
 			//check if we are running on a CMS site by domain
-			var site = getService('SiteService').getCurrentRequestSite();
+			var site = getHibachiScope().getCurrentRequestSite();
 			if(
 				!isNull(site) 
 				&& !isNull(site.setting('siteOrderOrigin'))

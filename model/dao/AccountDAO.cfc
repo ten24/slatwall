@@ -191,6 +191,11 @@ Notes:
 		<cfset var aaCount = ormExecuteQuery("SELECT count(aa.accountAuthenticationID) FROM #getApplicationKey()#AccountAuthentication aa") />
 		<cfreturn aaCount[1] gt 0 />
 	</cffunction>
+	
+	<cffunction name="getAccountExists" returntype="any" access="public">
+		<cfset var accountCount = ormExecuteQuery("Select count(a.accountID) FROM #getApplicationKey()#Account a") />
+		<cfreturn accountCount[1] gt 0 />
+	</cffunction>
 
 	<cffunction name="getAccountWithAuthenticationByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />

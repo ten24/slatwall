@@ -778,7 +778,14 @@
 		
 		// @hint returns a property of a given entity
 		public any function getPropertyByEntityNameAndPropertyName( required string entityName, required string propertyName ) {
-			return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ]; 
+			if(!getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyName)){
+				return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ];
+			} else {
+				var key = 'attributeService_getAttributeNameByAttributeCode_#arguments.propertyName#';
+				if(getHibachiCacheService().hasCachedValue(key)) {
+					return getHibachiCacheService().getCachedValue(key);
+				}
+			}
 		}
 		
 		public any function getPropertyByEntityNameAndSingularName( required string entityName, required string singularName ) {
@@ -856,7 +863,11 @@
 		}
 		
 		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
-			return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+			if(!getHasAttributeByEntityNameAndPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier)){
+				return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+			} else {
+				return false;
+			}
 		}
 		
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()

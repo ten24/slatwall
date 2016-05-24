@@ -30,21 +30,23 @@
 		* @author Nathan Dintenfass (nathan@changemedia.com)
 		* @version 1, December 10, 2001
 		*/
-		public function arrayOfStructsSort(aOfS,key){
-		        //by default we'll use an ascending sort
-		        var sortOrder = "asc";        
+		public array function arrayOfStructsSort(aOfS,key,sortOrder2="des"){
+		      
+		        
 		        //by default, we'll use a textnocase sort
 		        var sortType = "textnocase";
 		        //by default, use ascii character 30 as the delim
 		        var delim = ".";
 		        //make an array to hold the sort stuff
 		        var sortArray = arraynew(1);
+		        
 		        //make an array to return
 		        var returnArray = arraynew(1);
+		        
 		        //grab the number of elements in the array (used in the loops)
 		        var count = arrayLen(aOfS);
 		        //make a variable to use in the loop
-		        var ii = 1;
+		        var ii = 1; var j=1;
 		        //if there is a 3rd argument, set the sortOrder
 		        if(arraylen(arguments) GT 2)
 		            sortOrder = arguments[3];
@@ -58,7 +60,7 @@
 		        for(ii = 1; ii lte count; ii = ii + 1)
 		            sortArray[ii] = aOfS[ii][key] & delim & ii;
 		        //now sort the array
-		        arraySort(sortArray,sortType,sortOrder);
+		        arraySort(sortArray,sortType,arguments.sortOrder2);
 		        //now build the return array
 		        for(ii = 1; ii lte count; ii = ii + 1)
 		            returnArray[ii] = aOfS[listLast(sortArray[ii],delim)];
@@ -291,9 +293,14 @@
 
 			return returnString;
 		}
+		
+		public array function getTemplateKeys(required string template){
+			return reMatchNoCase("\${[^}]+}",arguments.template);
+		}
+		
 		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
-			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
+			var templateKeys = getTemplateKeys(arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
 			for(var i=1; i<=arrayLen(templateKeys); i++) {
@@ -305,6 +312,7 @@
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object)) {
+					//if null then is blank
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
@@ -315,7 +323,10 @@
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
 			}
-			if(arraylen(reMatchNoCase("\${[^}]+}",returnString))){
+			if(
+				arguments.template != returnString
+				&& arraylen(getTemplateKeys(returnString))
+			){
 				returnString = replaceStringTemplate(returnString, arguments.object, arguments.formatValues,arguments.removeMissingKeys);
 			}
 
@@ -449,7 +460,7 @@
 
 		// helper method for downloading a file
 		public void function downloadFile(required string fileName, required string filePath, string fileType="", string contentType = 'application/unknown', boolean deleteFile = false) {
-			getHibachiTagService().cfheader(name="Content-Disposition", value="inline; filename=#arguments.fileName#.#arguments.fileType#");
+			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=#arguments.fileName#.#arguments.fileType#");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
 

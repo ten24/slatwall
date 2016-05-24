@@ -329,10 +329,10 @@
 
 			<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
 				<ul class="list-inline list-unstyled">
-					<li>
+					<li class="s-table-action">
 						<div class="btn-group navbar-left dropdown">
 
-							<button type="button" class="btn btn-xs btn-no-style dropdown-toggle"><i class="fa fa-cogs"></i></button>
+							<button type="button" class="btn btn-no-style dropdown-toggle"><i class="fa fa-cog"></i></button>
 
 							<ul class="dropdown-menu pull-right" role="menu">
 								<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
@@ -367,7 +367,7 @@
 					</li>
 					<li class="s-table-header-search">
 						<cfif not thistag.expandable>
-							<input type="text" name="search" class="form-control input-xs general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+							<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
 						</cfif>
 					</li>
 				</ul>
