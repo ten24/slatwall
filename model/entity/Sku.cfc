@@ -153,6 +153,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="bundledSkusCount" type="any" persistent="false";
 	property name="eventStatus" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
+	property name="qoh" type="numeric" persistent="false";
 	property name="registeredUserCount" type="integer" persistent="false";
 	property name="registrantCount" type="integer" persistent="false";
 	property name="registrantEmailList" type="array" persistent="false";
