@@ -115,44 +115,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
-		var join = {};
-		var doJoin = false;
 
 		if(!structKeyExists(collectionConfig,'filterGroups')){
 			collectionConfig["filterGroups"] = [{"filterGroup"=[]}];
 		}
 
-		var collection = arguments.propertyIdentifier;
-		var propertyKey = '';
+		var _propertyIdentifier = '';
+		var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
+		var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
 
-		if(arguments.propertyIdentifier.contains('.')){
-			collection = Mid(arguments.propertyIdentifier, 1, arguments.propertyIdentifier.lastIndexOf("."));
-			propertyKey = "." & ListLast(arguments.propertyIdentifier, '.');
+		for (i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+			if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
+				if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
+					addGroupBy(alias);
+				}
+				current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
+				_propertyIdentifier &= '_' & propertyIdentifierParts[i];
+				addJoin({
+					'associationName' = RemoveChars(rereplace(_propertyIdentifier, '_([^_]+)$', '.\1' ),1,1),
+					'alias' = alias & _propertyIdentifier
+				});
+			}else{
+				_propertyIdentifier &= '.' & propertyIdentifierParts[i];
+			}
 		}
-
 
 		//create filter Group
 		var filterGroup = {
-			"propertyIdentifier" = alias & '.' & arguments.propertyIdentifier,
+			"propertyIdentifier" = alias & _propertyIdentifier,
 			"comparisonOperator" = arguments.comparisonOperator,
 			"value" = arguments.value
 		};
-
-		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
-				getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier
-			);
-
-		if(isObject){
-			filterGroup['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
-			join['associationName'] = arguments.propertyIdentifier;
-			join['alias'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
-			doJoin = true;
-		}else if(propertyKey != ''){
-			filterGroup['propertyIdentifier'] =  BuildPropertyIdentifier(alias, collection)  & propertyKey;
-			join['associationName'] = collection;
-			join['alias'] = BuildPropertyIdentifier(alias, collection);
-			doJoin = true;
-		}
 
 
 		//if we already have a filter group then we need a logicalOperator
@@ -174,7 +167,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 
 		arrayAppend(collectionConfig.filterGroups[1].filterGroup,filterGroup);
-		if(doJoin) addJoin(join);
 	}
 
 	public void function setDisplayProperties(string displayPropertiesList=""){
@@ -192,7 +184,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(collectionConfig,'groupBys')){
 			collectionConfig["groupBys"] = arguments.groupByAlias;
 		}
-		listAppend(collectionConfig.groupBys,arguments.groupByAlias);
+		if(ListContains(collectionConfig.groupBys,arguments.groupByAlias) == 0){
+			listAppend(collectionConfig.groupBys,arguments.groupByAlias);
+		}
 		this.setCollectionConfigStruct(collectionConfig);
 	}
 
@@ -458,8 +452,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	//join introspects on itself for nested joins to ensure that all joins are added in the correct order
 	private string function addJoinHQL(required string parentAlias, required any join){
+		var separator = '.';
+		if(find('.', arguments.join.associationName) > 0){
+			separator = '_';
+		}
 		//Alias_
-		var fullJoinName = "#parentAlias#.#arguments.join.associationName#";
+		var fullJoinName = "#parentAlias##separator##arguments.join.associationName#";
 		addHQLAlias(fullJoinName,arguments.join.alias);
 		var joinHQL = ' left join #fullJoinName# as #arguments.join.alias# ';
 		if(!isnull(arguments.join.joins)){
@@ -1043,6 +1041,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						HQL = getHQL(forExport=arguments.forExport);
 						HQLParams = getHQLParams();
 						variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+						if(!structKeyExists(variables, "recordsCount")) {
+							variables.recordsCount = arrayLen(variables.records);
+						}
 					}
 				}
 			}
