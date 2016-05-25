@@ -28,6 +28,10 @@ class SWSkuStockAdjustmentModalLauncherController{
         } else{
             throw("SWSkuStockAdjustmentModalLauncherController was not provided with a sku id"); 
         }
+        this.initData();
+    }
+    
+    public initData = () => {
         this.stock = this.$hibachi.newStock();
         this.stockAdjustment = this.$hibachi.newStockAdjustment();
         this.toLocation = this.$hibachi.newLocation(); 
@@ -35,9 +39,9 @@ class SWSkuStockAdjustmentModalLauncherController{
         this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
         this.stockAdjustment.$$addStockAdjustmentItem(this.stockAdjustmentItem);
         this.stockAdjustmentItem.$$setToStock(this.stock);
-        this.skuPromise = $hibachi.getEntity("Sku",this.skuId);
-        this.stockAdjustmentTypePromise = $hibachi.getEntity("Type","444df2e60db81c12589c9b39346009f2");//manual in stock adjustment type 
-        this.stockAdjustmentStatusTypePromise = $hibachi.getEntity("Type","444df2e2f66ddfaf9c60caf5c76349a6");//new status type for stock adjusment
+        this.skuPromise = this.$hibachi.getEntity("Sku",this.skuId);
+        this.stockAdjustmentTypePromise = this.$hibachi.getEntity("Type","444df2e60db81c12589c9b39346009f2");//manual in stock adjustment type 
+        this.stockAdjustmentStatusTypePromise = this.$hibachi.getEntity("Type","444df2e2f66ddfaf9c60caf5c76349a6");//new status type for stock adjusment
         this.skuPromise.then(
             (sku)=>{
                 this.sku = this.$hibachi.populateEntity("Sku", sku);
@@ -68,11 +72,14 @@ class SWSkuStockAdjustmentModalLauncherController{
                 //error callback   
             }
         );
-        
     }
     
     public save = () => {
-        return this.stockAdjustment.$$save();
+        var savePromise = this.stockAdjustment.$$save(); 
+        savePromise.then((response)=>{
+            this.initData(); 
+        });
+        return savePromise;
     }      
 }
 
