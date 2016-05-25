@@ -101,14 +101,35 @@ component accessors="true" output="false" displayname="FedEx" implements="Slatwa
 	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
 		responseBean.setData(arguments.xmlResponse);
-		responseBean.populate();
+		if(structKeyExists(getData(),'Fault')) {
+			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
+			// If XML fault then log error
+			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
+		} else {
+			// Log all messages from FedEx into the response bean
+			for(var i=1; i<=arrayLen(getData().ProcessShipmentReply.Notifications); i++) {
+				addMessage(
+					messageName=getData().ProcessShipmentReply.Notifications[i].Code.xmltext,
+					message=getData().ProcessShipmentReply.Notifications[i].Message.xmltext
+				);
+				if(FindNoCase("Error", getData().ProcessShipmentReply.Notifications[i].Severity.xmltext)) {
+					addError(getData().ProcessShipmentReply.Notifications[i].Code.xmltext, getData().ProcessShipmentReply.Notifications[i].Message.xmltext);
+				}
+			}
+			//if no errors then we should convert data to properties
+			if(!hasErrors()) {
+				var completedShipmentDetail = getData().ProcessShipmentReply.CompletedShipmentDetail;
+				responseBean.setTrackingNumber(completedShipmentDetail.CompletedPackageDetails.trackingIds.trackingNumber.xmlText);
+				responseBean.setContainerLabel(completedShipmentDetail.CompletedPackageDetails.label.parts.image.xmlText);
+			}
+		}
 		
 		return responseBean;
 	}
 	
 	public any function processShipmentRequestWithOrderDelivery_Create(required any processObject){
 		var processShipmentRequestBean = getTransient("ShippingProcessShipmentRequestBean");
-		processShipmentRequestBean.populateWithOrderFulfillment(arguments.getOrderFulfillment());
+		processShipmentRequestBean.populateWithOrderFulfillment(arguments.processObject.getOrderFulfillment());
 		var responseBean = processShipmentRequest(processShipmentRequestBean);
 		arguments.processObject.setTrackingNumber(responseBean.getTrackingNumber());
 		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());

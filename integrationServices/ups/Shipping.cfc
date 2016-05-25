@@ -77,6 +77,18 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return this;
 	}
 	
+	public any function processShipmentRequest(required any requestBean){
+		// Build Request XML
+		var jsonPacket = getProcessShipmentRequestJsonPacket(arguments.requestBean);
+        
+        var jsonResponse = getJsonResponse(jsonPacket);
+        
+        var responseBean = getShippingProcessShipmentResponseBean(jsonResponse);
+        
+        return responseBean;
+	}
+
+	
 	public any function getRates(required any requestBean) {
 		
 		// Build Request XML
@@ -102,6 +114,40 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return getResponse(requestPacket=arguments.jsonPacket,url=url,format="json");
 	}
 	
+	private any function getShippingProcessShipmentResponseBean(struct jsonResponse){
+		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
+		responseBean.setData(arguments.jsonResponse);
+		if(isDefined('responseBean.data.ShipmentResponse.Fault')) {
+			addMessage(messageName="communicationError", message="An unexpected communication error occured, please notify system administrator.");
+			// If XML fault then log error
+			addError("unknown", "An unexpected communication error occured, please notify system administrator.");
+		} else {
+			// Log all messages from UPS into the response bean
+			responseBean.addMessage(
+				messageName=responseBean.getData().ShipmentResponse.Response.ResponseStatus.code,
+				message=responseBean.getData().ShipmentResponse.Response.ResponseStatus.Description
+			);
+			if(structKeyExists(responseBean.getData().ShipmentResponse, "Error")) {
+				responseBean.addMessage(
+					messageName=responseBean.getData().ShipmentResponse.Error.Code,
+					message=responseBean.getData().ShipmentResponse.Error.Description
+				);
+				responseBean.addError(
+					responseBean.getData().ShipmentResponse.Error.Code,
+					responseBean.getData().ShipmentResponse.Error.Description
+				);
+			}
+			//if no errors then we should convert data to properties
+			if(!responseBean.hasErrors()) {
+				var PackageResults = responseBean.getData().ShipmentResponse.ShipmentResults.PackageResults;
+				responseBean.setTrackingNumber(PackageResults.trackingNumber);
+				responseBean.setContainerLabel(PackageResults.ShippingLabel.GraphicImage);
+			}
+		}
+		
+		return responseBean;
+	}
+	
 	public any function getShippingRatesResponseBean(required any JsonResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
 		responseBean.setData(arguments.JsonResponse);
@@ -111,20 +157,7 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			// If XML fault then log error
 			responseBean.addError("unknown", "An unexpected communication error occured, please notify system administrator.");
 		} else {
-			responseBean.addMessage(
-				messageName=responseBean.getData().RateResponse.Response.ResponseStatus.code,
-				message=responseBean.getData().RateResponse.Response.ResponseStatus.Description
-			);
-			if(structKeyExists(responseBean.getData().RateResponse, "Error")) {
-				responseBean.addMessage(
-					messageName=responseBean.getData().RateResponse.Error.Code,
-					message=responseBean.getData().RateResponse.Error.Description
-				);
-				responseBean.addError(
-					responseBean.getData().RateResponse.Error.Code,
-					responseBean.getData().RateResponse.Error.Description
-				);
-			}
+			
 			
 			if(!responseBean.hasErrors()) {
 				for(var i=1; i<=arrayLen(responseBean.getData().RateResponse.RatedShipment); i++) {
@@ -139,13 +172,13 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 		return responseBean;
 	}
 	
-	public any function getProcessShipmentRequestXmlPacket(required any requestBean){
-		var xmlPacket = "";
+	public any function getProcessShipmentRequestJsonPacket(required any requestBean){
+		var jsonPacket = "";
 		
-		savecontent variable="xmlPacket" {
+		savecontent variable="jsonPacket" {
 			include "ProcessShipmentRequestTemplate.cfm";
         }
-        return xmlPacket;
+        return jsonPacket;
 	}
 	
 }

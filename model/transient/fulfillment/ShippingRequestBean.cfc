@@ -50,6 +50,8 @@ Notes:
 component accessors="true" output="false" extends="Slatwall.model.transient.RequestBean" {
 	property name="shipToName" type="string" default="";
 	property name="shipToCompany" type="string" default="";
+	property name="shipToEmailAddress" type="string" default="";
+	property name="shipToPhoneNumber" type="string" default="";
 	property name="shipToStreetAddress" type="string" default="";
 	property name="shipToStreet2Address" type="string" default="";
 	property name="shipToLocality" type="string" default="";
@@ -59,6 +61,8 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="shipToCountryCode" type="string" default="";
 	
 	property name="shipFromName" type="string" default="";
+	property name="shipFromEmailAddress" type="string" default="";
+	property name="shipFromPhoneNumber" type="string" default="";
 	property name="shipFromCompany" type="string" default="";
 	property name="shipFromStreetAddress" type="string" default="";
 	property name="shipFromStreet2Address" type="string" default="";

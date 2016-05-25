@@ -96,16 +96,6 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		arguments.processObject.setContainerLabel(responseBean.getContainerLabel());
 	}
 	
-	public any function processShipmentRequest(required any requestBean){
-		// Build Request XML
-		var xmlPacket = getProcessShipmentRequestXmlPacket(arguments.requestBean);
-        
-        var xmlResponse = getXMLResponse(xmlPacket);
-        
-        var responseBean = getShippingProcessShipmentResponseBean(xmlResponse);
-        
-        return responseBean;
-	}
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
@@ -125,11 +115,4 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
 	}
 	
-	private any function getShippingProcessShipmentResponseBean(string xmlResponse){
-		var responseBean = new Slatwall.model.transient.fulfillment.ShippingProcessShipmentResponseBean();
-		responseBean.setData(arguments.xmlResponse);
-		responseBean.populate();
-		
-		return responseBean;
-	}
 }
