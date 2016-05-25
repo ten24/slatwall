@@ -14,31 +14,20 @@ class SWAddSkuPriceModalLauncherController{
         private $hibachi,
         private utilityService
     ){
-        this.uniqueName = this.baseName + this.utilityService.createID(16);
-        this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
-        console.log("pageRecord", this.pageRecord);
-        if(angular.isDefined(this.pageRecord.skuId)){
-            this.skuId = this.pageRecord.skuId;
-        } else { 
-            throw("You Must Provide SWAddSkuPriceModalLauncherController with a skuId");
-        }
-        $hibachi.getEntity("Sku",this.skuId).then(
-            (sku)=>{
-                this.sku = this.$hibachi.populateEntity("Sku", sku);
-                this.skuPrice.$$setSku(this.sku); 
-            },
-            (reason)=>{
-               //error callback 
-            }
-        ); 
+        this.uniqueName = this.baseName + this.utilityService.createID(16); 
     }    
+    
+    public initData = () =>{
+        //these are populated in the link function initially
+        this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
+        this.skuPrice.$$setSku(this.sku);
+    }
     
     public save = () => {
         var savePromise = this.skuPrice.$$save();
         savePromise.then(
             (response)=>{
-                //sucess callback
-               
+               this.initData(); 
             },
             (reason)=>{
                 //error callback
@@ -53,7 +42,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public restrict = 'EA';
     public scope = {}; 
     public bindToController = {
-        pageRecord:"="
+        pageRecord:"=?"
     };
     public controller = SWAddSkuPriceModalLauncherController;
     public controllerAs="swAddSkuPriceModalLauncher";
@@ -87,6 +76,7 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
     public compile = (element: JQuery, attrs: angular.IAttributes) => {
         return {
             pre: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+                //have to do our setup here because there is no direct way to pass the pageRecord into this transcluded directive
                 var currentScope = $scope; 
                 while(angular.isDefined(currentScope.$parent)){
                     currentScope = currentScope.$parent; 
@@ -95,13 +85,14 @@ class SWAddSkuPriceModalLauncher implements ng.IDirective{
                     }
                 }
                 if(angular.isDefined(currentScope.pageRecord)){ 
-                    console.log("found page record", currentScope.pageRecord);
                     $scope.swAddSkuPriceModalLauncher.pageRecord = currentScope.pageRecord; 
                     if(angular.isDefined(currentScope.pageRecord.skuID)){ 
                         $scope.swAddSkuPriceModalLauncher.skuId = currentScope.pageRecord.skuID;     
                         this.$hibachi.getEntity('Sku', $scope.swAddSkuPriceModalLauncher.skuId).then(
                             (sku)=>{
-                                $scope.swAddSkuPriceModalLauncher.sku = sku; 
+                                $scope.swAddSkuPriceModalLauncher.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
+                                $scope.swAddSkuPriceModalLauncher.sku = this.$hibachi.populateEntity('Sku', sku); 
+                                $scope.swAddSkuPriceModalLauncher.skuPrice.$$setSku($scope.swAddSkuPriceModalLauncher.sku);
                             },
                             (reason)=>{
                                 throw("swaddskupricemodallauncher could not load a sku for the following reason:" + reason);

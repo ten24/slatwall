@@ -164,6 +164,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="salePriceDiscountAmount" type="string" persistent="false";
 	property name="salePriceExpirationDateTime" type="date" hb_formatType="datetime" persistent="false";
 	property name="skuDefinition" persistent="false";
+	property name="skuPricesCount" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
 	property name="redemptionAmountTypeOptions" persistent="false";
@@ -768,6 +769,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.registeredUserCount = ruCount;
 		}
 		return variables.registeredUserCount;
+	}
+
+	public any function getSkuPricesCount() {
+		if(!structKeyExists(variables, "skuPricesCount")){
+			variables.skuPricesCount = 0;
+			if(arrayLen(this.getSkuPrices())){
+				variables.skuPricesCount = arrayLen(this.getSkuPrices());
+			}
+		}
+		return variables.skuPricesCount;
 	}
 
 

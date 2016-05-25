@@ -133,7 +133,7 @@
                                     <sw-collection-column data-property-identifier="skuCode" data-is-searchabled="true"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="skuDefinition" data-is-searchabled="true"></sw-collection-column>
                                     <sw-collection-column data-property-identifier="currencyCode"></sw-collection-column>
-                                    <sw-collection-column data-property-identifier="bundledSkusCount"></sw-collection-column>
+                                    <sw-collection-column data-property-identifier="skuPricesCount"></sw-collection-column>
                                 </sw-collection-columns>
                                 <sw-collection-filters>
                                     <sw-collection-filter data-property-identifier="product.productID" data-comparison-operator="=" data-comparison-value="{{swPricingManager.productId}}"></sw-collection-filter>
@@ -142,7 +142,28 @@
                         </sw-collection-configs>
                         
                         <sw-expandable-rules>
-                            
+                            <sw-listing-expandable-rule data-filter-property-identifier="skuPricesCount" data-filter-comparison-operator=">" data-filter-comparison-value="0" > 
+                                <sw-config>
+                                    <sw-collection-config 
+                                        data-entity-name="SkuPrice"
+                                        data-parent-directive-controller-as-name="swListingExpandableRule"
+                                        data-parent-deferred-property="hasChildrenCollectionConfigDeferred"
+                                        data-collection-config-property="childrenCollectionConfig"
+                                        data-all-records="true"
+                                    >
+                                        <sw-collection-columns>
+                                            <sw-collection-column data-property-identifier="skuPriceID"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="minQuantity"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="maxQuantity"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="price"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="currencyCode"></sw-collection-column>
+                                        </sw-collection-columns>
+                                        <sw-collection-filters>
+                                            <sw-collection-filter data-property-identifier="sku.skuID" data-comparison-operator="=" data-comparison-value="${skuID}"></sw-collection-filter>
+                                        </sw-collection-filters>
+                                    </sw-collection-config>
+                                </sw-config>
+                            </sw-listing-expandable-rule>
                         </sw-expandable-rules> 
                         
                         <sw-listing-add-action>
