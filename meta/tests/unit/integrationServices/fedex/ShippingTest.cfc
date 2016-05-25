@@ -57,12 +57,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	public void function generateShippingLabelTest(){
-		var requestBean = request.slatwallScope.getTransient("ShippingProcessShipmentRequestBean");
-		var responseBean = variables.integrationCFC.generateShippingLabel(requestbean);
-		request.debug(responseBean);
-	}
-	
 	public void function getProcessShipmentRequestXmlPacketTest(){
 		var requestBean = request.slatwallScope.getTransient("ShippingProcessShipmentRequestBean");
 		var xmlPacket = variables.integrationCFC.getProcessShipmentRequestXmlPacket(requestBean);
