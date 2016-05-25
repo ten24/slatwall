@@ -72,16 +72,7 @@ class SWSkuStockAdjustmentModalLauncherController{
     }
     
     public save = () => {
-        this.stockAdjustment.$$save().then(
-            (response)=>{
-                //sucess callback
-                $("#" + this.name).modal('hide');
-            },
-            (reason)=>{
-                //error callback
-            }
-        );
-               
+        return this.stockAdjustment.$$save();
     }      
 }
 

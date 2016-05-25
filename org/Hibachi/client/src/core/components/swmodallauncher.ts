@@ -6,7 +6,6 @@ class SWModalLauncherController {
     public modalName:string; 
     public title:string; 
     public saveAction;
-    public cancelAction;
     
     // @ngInject
     constructor(){
@@ -18,6 +17,20 @@ class SWModalLauncherController {
     public launchModal = () =>{
         //activate the necessary modal
         this.showModal = true; 
+    }
+    
+    public saveCallback = () =>{
+        //the passed save action must return a promise
+        var savePromise = this.saveAction()(); 
+        savePromise.then(
+            (response)=>{
+                //if the action was sucessful
+                $("#" + this.modalName).modal('hide');
+            },
+            (reason)=>{
+                //if the action failed
+            }
+        );
     }
 }
 
@@ -34,8 +47,7 @@ class SWModalLauncher implements ng.IDirective{
         showModal:"=?",
         modalName:"@", 
         title:"@",
-        saveAction:"&?", 
-        cancelAction:"&?"
+        saveAction:"&?"
     };
     public controller=SWModalLauncherController;
     public controllerAs="swModalLauncher";

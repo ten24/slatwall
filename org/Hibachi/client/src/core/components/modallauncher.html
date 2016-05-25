@@ -4,8 +4,7 @@
 <sw-modal-window 
     data-title="{{swModalLauncher.title}}" 
     data-modal-name="{{swModalLauncher.modalName}}" 
-    data-save-action="swModalLauncher.saveAction()" 
-    data-cancel-action="swModalLauncher.cancelAction()"
+    data-save-action="swModalLauncher.saveCallback" 
 >
     <sw-modal-body>
         <div ng-transclude="content"></div>

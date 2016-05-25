@@ -5,7 +5,6 @@ class SWModalWindowController {
     public modalName;
     public title; 
     public saveAction;
-    public cancelAction;
 
     // @ngInject
     constructor(){
@@ -29,8 +28,7 @@ class SWModalWindow implements ng.IDirective{
     public bindToController = {
         modalName:"@",
         title:"@",
-        saveAction:"&?",
-        cancelAction:"&?"
+        saveAction:"&?"
     };
     public controller=SWModalWindowController;
     public controllerAs="swModalWindow";
