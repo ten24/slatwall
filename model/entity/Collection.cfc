@@ -124,7 +124,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var propertyIdentifierParts = ListToArray(arguments.propertyIdentifier, '.');
 		var current_object = getService('hibachiService').getPropertiesStructByEntityName(getCollectionObject());
 
-		for (i = 1; i <= arraylen(propertyIdentifierParts); i++) {
+		for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
 			if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
 				if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
 					addGroupBy(alias);
