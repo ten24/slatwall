@@ -16,21 +16,35 @@ class SWAddSkuPriceModalLauncherController{
     ){
         this.uniqueName = this.baseName + this.utilityService.createID(16);
         this.skuPrice = this.$hibachi.newEntity('SkuPrice'); 
+        console.log("pageRecord", this.pageRecord);
+        if(angular.isDefined(this.pageRecord.skuId)){
+            this.skuId = this.pageRecord.skuId;
+        } else { 
+            throw("You Must Provide SWAddSkuPriceModalLauncherController with a skuId");
+        }
+        $hibachi.getEntity("Sku",this.skuId).then(
+            (sku)=>{
+                this.sku = this.$hibachi.populateEntity("Sku", sku);
+                this.skuPrice.$$setSku(this.sku); 
+            },
+            (reason)=>{
+               //error callback 
+            }
+        ); 
     }    
     
     public save = () => {
-        this.skuPrice.$$save().then(
-            ()=>{
+        var savePromise = this.skuPrice.$$save();
+        savePromise.then(
+            (response)=>{
                 //sucess callback
+               
             },
-            ()=>{
+            (reason)=>{
                 //error callback
             }
         );
-    }
-    
-    public cancel = () => {
-        //wipe the sku price entity
+        return savePromise; 
     }
 }
 

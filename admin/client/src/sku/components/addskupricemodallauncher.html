@@ -1,8 +1,7 @@
 <sw-modal-launcher 
     data-modal-name="{{swAddSkuPriceModalLauncher.uniqueName}}" 
     data-title="Add Sku Price Detail" 
-    data-save-action="swAddSkuPriceModalLauncher.saveAction" 
-    data-cancel-action="swAddSkuPriceModalLauncher.cancelAction" >
+    data-save-action="swAddSkuPriceModalLauncher.save">
     <sw-modal-button>
         <a href="#" title="Add Price" class="btn btn-default btn-xs" data-target="#">
             <i class="fa fa-plus"></i>
@@ -71,6 +70,16 @@
                                 </sw-property-display>
                             </div>
                         </div>
+                        <!-- BEGIN HIDDEN FIELDS -->
+                         <sw-property-display data-object="swAddSkuPriceModalLauncher.skuPrice"
+                                data-property="sku"
+                                data-is-dirty="true"
+                                data-is-hidden="true"
+                                data-editing="true"   
+                                data-options-arguments="{property:'sku'}"   
+                        >
+                        </sw-property-display>
+                        <!-- END HIDDEN FIELDS -->
                     </div>
                 </div>
             </sw-form>
