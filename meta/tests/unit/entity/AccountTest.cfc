@@ -121,6 +121,54 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 		assertFalse(account.hasGiftCard(giftCard));
 	}
+	
+	
+	
+	public void function getEmailAddress_Normal_test() {
+		//Test normal email
+		var accountData = {
+			accountID = "",
+			firstName = "Hello",
+			lastName = "Kitty",
+			accountEmailAddresses = {
+				accountEmailAddressID = "",
+				emailAddress = "hello@yahoo.com"
+			}			
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultEmailAddress = mockAccount.getEmailAddress().getEmailAddress();
+		assertEquals(resultEmailAddress, "");
+	}
+	
+	public void function getPrimaryEmailAddressTest() {
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryEmailAddress = {
+				accountEmailAddressID = "0001",
+				emailAddress = "123@hotmail.com"
+			}
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultPrimaryEmail = mockAccount.getPrimaryEmailAddress().getEmailAddress();
+		assertEquals(resultPrimaryEmail, "123@hotmail.com");
+	}
+	
+	public void function getPrimaryPhoneNumberTest() {
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryPhoneNumber = {
+				accountPhoneNumberID = "0001",
+				phoneNumber = "123"
+			}
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultPrimaryPhone = mockAccount.getPrimaryPhoneNumber().getPhoneNumber();
+		assertEquals(resultPrimaryPhone, "123");
+	}
 
 }
 
