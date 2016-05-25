@@ -6,14 +6,21 @@ class SWSkuStockAdjustmentModalLauncherController{
     public sku:any; 
     public stock:any; 
     public stockAdjustment:any; 
-    public processObject:any; 
+    public stockAdjustmentType:any; 
+    public stockAdjustmentStatusType:any; 
+    public stockAdjustmentItem:any; 
+    public toLocation:any; 
     public name:string; 
     public quantityDifference:number; 
+    
+    public stockAdjustmentTypePromise:any; 
+    public stockAdjustmentStatusTypePromise:any;
     
     public skuPromise; 
     
     //@ngInject
     constructor(
+        private $q, 
         private $hibachi 
     ){
         if(angular.isDefined(this.skuId)){
@@ -21,25 +28,63 @@ class SWSkuStockAdjustmentModalLauncherController{
         } else{
             throw("SWSkuStockAdjustmentModalLauncherController was not provided with a sku id"); 
         }
-        this.stock = this.$hibachi.newEntity('Stock');
-        this.stockAdjustment = this.$hibachi.newEntity('StockAdjustment');
-        this.processObject = this.$hibachi.newEntity('StockAdjustment_AddStockAdjustmentItem');
+        this.stock = this.$hibachi.newStock();
+        this.stockAdjustment = this.$hibachi.newStockAdjustment();
+        this.toLocation = this.$hibachi.newLocation(); 
+        this.stockAdjustment.$$setToLocation(this.toLocation);
+        this.stockAdjustmentItem = this.$hibachi.newStockAdjustmentItem();
+        this.stockAdjustment.$$addStockAdjustmentItem(this.stockAdjustmentItem);
+        this.stockAdjustmentItem.$$setToStock(this.stock);
         this.skuPromise = $hibachi.getEntity("Sku",this.skuId);
+        this.stockAdjustmentTypePromise = $hibachi.getEntity("Type","444df2e60db81c12589c9b39346009f2");//manual in stock adjustment type 
+        this.stockAdjustmentStatusTypePromise = $hibachi.getEntity("Type","444df2e2f66ddfaf9c60caf5c76349a6");//new status type for stock adjusment
         this.skuPromise.then(
             (sku)=>{
-                this.sku = this.$hibachi.newEntity('Sku');
-                angular.extend(this.sku.data, sku);
+                this.sku = this.$hibachi.populateEntity("Sku", sku);
                 if(!this.sku.data.calculatedQOH.length){
                     this.sku.data.calculatedQOH = 0; 
                 }
-                console.log("looky", this.sku);
+                this.stockAdjustmentItem.$$setSku(this.sku); 
             },
             (reason)=>{
                 throw("SWSkuStockAdjustmentModalLauncherController was unable to load the sku for the provided id:" + this.skuId + " with a reason of: " + reason );
             }
         );
+        this.stockAdjustmentStatusTypePromise.then(
+            (type)=>{
+                this.stockAdjustmentStatusType = this.$hibachi.populateEntity("Type",type); 
+                this.stockAdjustment.$$setStockAdjustmentStatusType(this.stockAdjustmentStatusType);
+            },
+            (reason)=>{
+                //error callback   
+            }
+        );
+        this.stockAdjustmentTypePromise.then(
+            (type)=>{
+                this.stockAdjustmentType = this.$hibachi.populateEntity("Type",type); 
+                this.stockAdjustment.$$setStockAdjustmentType(this.stockAdjustmentType);
+            },
+            (reason)=>{
+                //error callback   
+            }
+        );
+        
     }
+    
+    public save = () => {
+        console.log("attempting to save", this.stockAdjustment);
+        this.stockAdjustment.$$save().then(
+                (success)=>{
+                    //success
+                    console.log("savesuccess")
+                },
+                (reason)=>{
+                    //error callback
+                }    
+            );
+        }        
 }
+
 
 class SWSkuStockAdjustmentModalLauncher implements ng.IDirective{
     public templateUrl;

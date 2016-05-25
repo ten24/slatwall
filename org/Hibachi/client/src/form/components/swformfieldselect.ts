@@ -48,15 +48,19 @@ class SWFormFieldSelect implements ng.IDirective {
 				propertyDisplay:"="
 			},
 			link:function(scope, element, attr, formController){
+				
+				    var propertyMetaData = scope.propertyDisplay.object.metaData[scope.propertyDisplay.property];
 
-					if(angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)){
+					if(angular.isDefined(propertyMetaData.fieldtype)){
 						scope.selectType = 'object';
 						$log.debug('selectType:object');
 					}else{
                         scope.selectType = 'string';
 						$log.debug('selectType:string');
 					}
-
+					if(angular.isDefined(propertyMetaData.fkcolumn)){
+						scope.fieldName = scope.propertyDisplay.property + "." + propertyMetaData.fkcolumn;
+					}
 
 					scope.formFieldChanged = function(option){
 						$log.debug('formfieldchanged');
@@ -87,14 +91,14 @@ class SWFormFieldSelect implements ng.IDirective {
 								if(scope.selectType === 'object'
 								){
 									if(angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
-										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+propertyMetaData.cfc]();
 									}
 
 									if(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === ''){
 										$log.debug('no ID');
 										$log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
 										scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
-										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+										scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $hibachi['new'+propertyMetaData.cfc]();
 										scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
 									}else{
 										var found = false;
