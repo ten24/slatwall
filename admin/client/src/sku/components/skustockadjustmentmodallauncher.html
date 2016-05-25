@@ -50,16 +50,6 @@
                              </div>
                         </div>
                     </div>
-                    <!-- BEGIN HIDDEN FIELDS -->
-                    <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentStatusType"
-                                         data-property="typeID"
-                                         data-is-dirty="true"
-                                         data-field-type="hidden"
-                                         
-                            >
-                            </sw-property-display>
-                    
-                    <!-- END HIDDEN FIELDS -->
                     <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"
                                          data-property="toLocation"
                                          data-editing="true"
@@ -76,6 +66,36 @@
                     --> 
                 </div>
             </div>
+        </sw-form> 
+        <sw-form data-name="stockAdjustmentItemForm"
+                 data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
+                 data-context="save">
+                <!-- BEGIN HIDDEN FIELDS -->
+                <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
+                                        data-property="quantity"
+                                        data-is-dirty="true"
+                                        data-is-hidden="true"
+                                        data-editing="true"      
+                        >
+                </sw-property-display>
+                <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
+                                data-property="sku"
+                                data-is-dirty="true"
+                                data-is-hidden="true"
+                                data-editing="true"   
+                                data-options-arguments="{property:'sku'}"   
+                >
+                </sw-property-display>
+                <sw-property-display data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
+                                data-property="toStock"
+                                data-is-dirty="true"
+                                data-is-hidden="true"
+                                data-editing="true"   
+                                data-options-arguments="{property:'toStock'}"   
+                >
+                </sw-property-display>
+
+                <!-- END HIDDEN FIELDS -->
         </sw-form> 
     </sw-modal-content> 
 </sw-modal-launcher>
