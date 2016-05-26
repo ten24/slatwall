@@ -157,7 +157,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var shippingMethodRate = shippingMethodRates[r];
 			// If this rate is a manual one, then use the default amount
 			if(isNull(shippingMethodRate.getShippingIntegration())) {
-				var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate,nullReplace(shippingMethodRate.getDefaultAmount(), 0));
+				var shipmentItemMultiplier = 0;
+				if(!isNull(getRateMultiplierAmount())){
+					shipmentItemMultiplier = arguments.orderFulfillment.getShipmentItemMultiplier();
+				}
+				
+				var chargeAmount = arguments.shippingMethodRate.getChargeAmountByShipmentItemMultiplier(shipmentItemMultiplier);
+				
+				var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate,chargeAmount);
 				arrayAppend(qualifiedRateOptions, qualifiedRateOption);
 			// If we got a response bean from the shipping integration then find those details inside the response
 			}else{
