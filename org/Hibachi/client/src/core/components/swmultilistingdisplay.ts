@@ -683,6 +683,26 @@ class SWMultiListingDisplayController{
                                 expandableRuleMatchedKey = key; 
                             }
                             break; 
+                        case ">":
+                            if(pageRecordValue > rule.filterComparisonValue){
+                                expandableRuleMatchedKey = key; 
+                            }
+                            break;
+                        case ">=":  
+                            if(pageRecordValue >= rule.filterComparisonValue){
+                                expandableRuleMatchedKey = key; 
+                            }
+                            break;
+                        case "<":
+                            if(pageRecordValue < rule.filterComparisonValue){
+                                expandableRuleMatchedKey = key; 
+                            }
+                            break; 
+                        case "<=":
+                            if(pageRecordValue <= rule.filterComparisonValue){
+                                expandableRuleMatchedKey = key; 
+                            }
+                            break; 
                         default: 
                             //= case
                             if(pageRecordValue == rule.filterComparisonValue){
