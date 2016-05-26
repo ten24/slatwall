@@ -48,7 +48,6 @@ Notes:
 */
 
 component accessors="true" output="false" displayname="UPS" implements="Slatwall.integrationServices.ShippingInterface" extends="Slatwall.integrationServices.BaseShipping" {
-	
 	// Variables Saved in this application scope, but not set by end user
 	variables.shippingMethods = {};
 
@@ -142,19 +141,15 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 				var PackageResults = responseBean.getData().ShipmentResponse.ShipmentResults.PackageResults;
 				responseBean.setTrackingNumber(PackageResults.trackingNumber);
 				//convert gif to pdf
-				var bae64pdf = convertBase64GIFToBase64PDF(PackageResults.ShippingLabel.GraphicImage);
-				responseBean.setContainerLabel(bae64pdf);
+				var base64pdf = getHibachiScope().getService('hibachiUtilityService').convertBase64GIFToBase64PDF(PackageResults.ShippingLabel.GraphicImage);
+				responseBean.setContainerLabel(base64pdf);
 			}
 		}
 		
 		return responseBean;
 	}
 	
-	public any function convertBase64GIFToBase64PDF(required any base64GIF){
-		var newPDF = createObject("component", "pdf");
-		newPDF.thumbnail.setSource(arguments.base64GIF);
-		writedump(newPDF);abort;
-	}
+	
 	
 	public any function getShippingRatesResponseBean(required any JsonResponse){
 		var responseBean = new Slatwall.model.transient.fulfillment.ShippingRatesResponseBean();
