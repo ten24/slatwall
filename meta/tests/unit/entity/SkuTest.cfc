@@ -104,7 +104,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			redemptionAmount=50
 		};
 		var userDefinedPercentage = createPersistedTestEntity('sku',skuData4);
-		assertEquals(userDefined.getRedemptionAmount(5), 2.50);
+		assertEquals(userDefinedPercentage.getRedemptionAmount(5), 2.50);
 
 		var skuData5 = {
 			skuID="",
