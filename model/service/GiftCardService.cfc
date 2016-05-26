@@ -104,11 +104,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		//is it time to credit the card
 		if(arguments.processObject.getCreditGiftCardFlag()){
-			if(arguments.giftCard.getOriginalOrderItem().getSku().getUserDefinedPriceFlag() && arguments.giftCard.getOriginalOrderItem().getSku().getRedemptionAmountType() == "sameAsPrice"){
-				var amountToRedeem = arguments.giftCard.getOriginalOrderItem().getPrice();
-			} else {
-				var amountToRedeem = arguments.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount();
-			}
+		    var amountToRedeem = arguments.giftCard.getOriginalOrderItem().getSku().getRedemptionAmount(userDefinedPrice=arguments.giftCard.getOriginalOrderItem().getPrice());
 			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), amountToRedeem);
 		}
 
