@@ -55,21 +55,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.integrationService = request.slatwallScope.getBean("integrationService");
 	}
 	
-	public void function generateShippingLabelTest(){
-		
-		var integration = variables.integrationService.getIntegrationByIntegrationPackage('fedex');
-		
-		var responseBean = variables.service.generateShippingLabel(integration);
-		request.debug(responseBean);
-	}
 	
-	public void function
-	
-// TODO: mock an order fulfillment data
-//	public void function updateOrderFulfillmentShippingMethodOptionsTest(){
-//		var orderfulfillment = ORMExecuteQuery('Select o From SlatwallOrderFulfillment o',true,{maxresults=1});
-//		variables.service.updateOrderFulfillmentShippingMethodOptions(orderfulfillment);
-//	}
 }
 
 
