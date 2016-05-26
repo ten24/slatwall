@@ -55,7 +55,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entityService = "accountService";
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
 	}
-
+/*
 	public void function accountCanBeDeleted() {
 		var accountService = request.slatwallScope.getService("accountService");
 
@@ -120,6 +120,131 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		account.removeGiftCard(giftCard);
 
 		assertFalse(account.hasGiftCard(giftCard));
+	}
+	*/
+	
+	
+	public void function getEmailAddressTest() {
+		//Testing existed accountEmailAddress
+		var accountData = {
+			accountID = "",
+			firstName = "Hello",
+			lastName = "Kitty",
+			accountEmailAddress = [
+				{
+					accountEmailAddressID = "00033",
+					emailAddress = "firstaccountEamilAddress@hotmail.com"
+				},{
+					accountEmailAddressID = "00034",
+					emailAddress = "secondAccountEmailAddress@hotmail.com"
+				}
+			]		
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		request.debug(mockAccount);//??why AddressEmailAccount is Empty
+		var resultEmailAddress = mockAccount.getEmailAddress();
+		assertEquals(resultEmailAddress, "");
+		//Testing empty accountEmailAddress
+		accountData = {
+			accountID = "",
+			firstName = "Hello",
+			lastName = "Kitty",
+			accountEmailAddress = []		
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		assertTrue(isNull(mockAccount.getEmailAddress()));
+	}
+	
+	public void function getPrimaryEmailAddressTest() {
+		//testing existing pPimaryEamilAddress
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryEmailAddress = {
+				accountEmailAddressID = "0001",
+				emailAddress = "123@hotmail.com"
+			}
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultPrimaryEmail = mockAccount.getPrimaryEmailAddress().getEmailAddress();
+		assertEquals(resultPrimaryEmail, "123@hotmail.com");
+		//testing empty PrimaryEmailAddress and empty accountEmailAddress
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryEmailAddress = {}
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		assertTrue(isNull(mockAccount.getPrimaryEmailAddress().getEmailAddress()));
+		//testing empty PrimaryEamilAddress and existing accountEmailAddress
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryEmailAddress = {},
+			accountEmailAddress = [
+				{
+					accountEmailAddressID = "00033",
+					emailAddress = "firstaccountEamilAddress@hotmail.com"
+				},{
+					accountEmailAddressID = "00034",
+					emailAddress = "secondAccountEmailAddress@hotmail.com"
+				}
+			]
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNoPrimaryExistAccountOne = mockAccount.getPrimaryEmailAddress().getEmailAddress();
+		assertEquals(resultNoPrimaryExistAccountOne, "firstaccountEamilAddress@hotmail.com");
+		//Bug?: should return the first accountEmailAddress, not undefine
+	
+		
+	}
+	
+	public void function getPrimaryPhoneNumberTest() {
+		//Testing existing primaryPhoneNumber
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryPhoneNumber = {
+				accountPhoneNumberID = "0001",
+				phoneNumber = "123"
+			}
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultPrimaryPhone = mockAccount.getPrimaryPhoneNumber().getPhoneNumber();
+		assertEquals(resultPrimaryPhone, "123");
+		//Testing emmpty primaryPhoneNumber
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryPhoneNumber = {}
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		assertTrue(isNull(mockAccount.getPrimaryPhoneNumber().getPhoneNumber()));
+		//Testing empty primaryPhoneNumber but existing phoneNumber
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryPhoneNumber = {},
+			accountEmailAddress = [
+				{
+					accountPhoneNumberID = "10033",
+					phoneNumber = "firstphoneNumber"
+				},{
+					accountPhoneNumberID = "10034",
+					phoneNumber = "secondphoneNumber"
+				}
+			]
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		resultNoPrimaryPhoneExistAccountPhone = mockAccount.getPrimaryPhoneNumber().getPhoneNumber();
+		assertEquals(resultNoPrimaryPhoneExistAccountPhone, "firstphoneNumber");
+		//bug?: same problem with PrimaryEmail, did I intepret the function wrong?
 	}
 
 }
