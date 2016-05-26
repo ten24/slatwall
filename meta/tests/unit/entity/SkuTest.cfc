@@ -75,7 +75,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			price="5.00"
 		};
 		var sameAsPrice = createPersistedTestEntity('sku',skuData);
-		assertEquals(sameAsPrice.getRedemptionAmount(), 5.00);
+		assertEquals(sameAsPrice.getRedemptionAmount(100), 5.00);
 
 		var skuData2 = {
 			skuID="",
@@ -84,7 +84,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			redemptionAmount="10.00"
 		};
 		var fixedAmount = createPersistedTestEntity('sku',skuData2);
-		assertEquals(fixedAmount.getRedemptionAmount(), 10.00);
+		assertEquals(fixedAmount.getRedemptionAmount(100), 10.00);
 
 		var skuData3 = {
 			skuID="",
@@ -94,7 +94,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			redemptionAmount=50
 		};
 		var percentage = createPersistedTestEntity('sku',skuData3);
-		assertEquals(percentage.getRedemptionAmount(), 5.00);
+		assertEquals(percentage.getRedemptionAmount(100), 5.00);
 
 		var skuData4 = {
 			skuID="",
@@ -113,7 +113,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			redemptionAmount=50
 		};
 		var noRedemptionAmountUserDefined = createPersistedTestEntity('sku',skuData5);
-		assertEquals(noRedemptionAmountUserDefined.getRedemptionAmount(), 0);
+		assertEquals(noRedemptionAmountUserDefined.getRedemptionAmount(10), 0);
 
 		var skuData6 = {
 			skuID="",

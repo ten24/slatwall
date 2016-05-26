@@ -237,7 +237,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	    if(
 	        this.getUserDefinedPriceFlag()
 	    ){
-	        if(structKeytExists(arguments,'userDefinedPrice')){
+	        if(structKeyExists(arguments,'userDefinedPrice')){
 	            amount = arguments.userDefinedPrice;
 	        }
 	    }
