@@ -193,7 +193,11 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		if(!structKeyExists(variables,'allDescendants')){
 			variables.allDescendants = getDao('contentDao').getContentDescendants(this);
 		}
-		return variables.allDescendants;
+		if (!isNull(variables.allDescendants)){
+ 			return variables.allDescendants;
+ 		}else {
+ 			return [];
+ 		}
 	}
 	
 	public numeric function getSortOrder(){
