@@ -93,6 +93,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="savedStateID" type="string" persistent="false";
 	property name="collectionEntityObject" type="any" persistent="false";
 	property name="hasDisplayAggregate" type="boolean" persistent="false";
+	property name="hasManyRelationFilter" type="boolean" persistent="false";
 
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
@@ -127,7 +128,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for (var i = 1; i <= arraylen(propertyIdentifierParts); i++) {
 			if(structKeyExists(current_object, propertyIdentifierParts[i]) && structKeyExists(current_object[propertyIdentifierParts[i]], 'cfc')){
 				if(structKeyExists(current_object[propertyIdentifierParts[i]], 'singularname')){
-					addGroupBy(alias);
+					//addGroupBy(alias);
+					setHasManyRelationFilter(true);
 				}
 				current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[propertyIdentifierParts[i]]['cfc']);
 				_propertyIdentifier &= '_' & propertyIdentifierParts[i];
@@ -376,6 +378,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.collectionConfig = '{}';
 		variables.processObjects = [];
 		variables.hasDisplayAggregate = false;
+		variables.hasManyRelationFilter = false;
 	}
 
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
@@ -1335,6 +1338,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
+				if(!isNull(collectionConfig.hasManyRelationFilter)){
+					setHasManyRelationFilter(collectionConfig.hasManyRelationFilter);
+				}
 				//get select columns if we don't have a non-persistent column and a processContext was not supplied
 				if(!this.getNonPersistentColumn() && !len(this.getProcessContext())){
 					selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
@@ -1350,7 +1356,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 			}//<--end if build select
 			if(
-				getHasDisplayAggregate()
+				(getHasDisplayAggregate() || getHasManyRelationFilter())
 				&& (
 					!structKeyExists(collectionConfig,'groupBys')
 					|| (
@@ -1421,10 +1427,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//If columns config is not passed in, use all the columns
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			var columns = arguments.collectionConfig.columns;
-							}else{
+		}else{
 			defaultColumns = true;
 			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
-										}
+		}
 		var keywordIndex = 0;
 		//loop through keywords
 		for(var keyword in keywordArray) {

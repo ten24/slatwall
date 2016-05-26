@@ -102,7 +102,8 @@ class CollectionConfig {
         private pageShow:number = 10,
         private keywords:string = '',
         private allRecords:boolean = false,
-        private isDistinct:boolean = false
+        private isDistinct:boolean = false,
+        private hasManyRelationFilter:boolean = false
 
     ){
         console.log('abc');
@@ -178,6 +179,7 @@ class CollectionConfig {
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
             isDistinct: this.isDistinct,
+            hasManyRelationFilter: this.hasManyRelationFilter,
             orderBy:this.orderBy
         };
     };
@@ -199,7 +201,8 @@ class CollectionConfig {
             keywords: this.keywords,
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
-            isDistinct: this.isDistinct
+            isDistinct: this.isDistinct,
+            hasManyRelationFilter: this.hasManyRelationFilter
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
@@ -235,7 +238,8 @@ class CollectionConfig {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
                 if('singularname' in current_collection.metaData[propertyIdentifierParts[i]]){
-                    this.addGroupBy(this.baseEntityAlias);
+                    //this.addGroupBy(this.baseEntityAlias);
+                    this.hasManyRelationFilter = true;
                 }
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
@@ -375,6 +379,7 @@ class CollectionConfig {
     };
 
     public addGroupBy = (groupByAlias):CollectionConfig=>{
+        console.log('CARAI', groupByAlias)
         if(!this.groupBys){
             this.groupBys = '';
         }
@@ -641,6 +646,7 @@ class CollectionConfig {
         if (angular.isDefined(id)){
             this.setId(id);
         }
+        console.log(this.getOptions());
         return this.$hibachi.getEntity(this.baseEntityName, this.getOptions());
     };
 

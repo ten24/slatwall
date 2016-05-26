@@ -627,6 +627,11 @@ component output="false" accessors="true" extends="HibachiController" {
                 isDistinct = arguments.rc['isDistinct'];
             }
 
+			var hasManyRelationFilter = false;
+			if(structKeyExists(arguments.rc, "hasManyRelationFilter")){
+				hasManyRelationFilter = arguments.rc['hasManyRelationFilter'];
+			}
+
             var allRecords = false;
             if(structKeyExists(arguments.rc,'allRecords')){
                 allRecords = arguments.rc['allRecords'];
@@ -650,6 +655,7 @@ component output="false" accessors="true" extends="HibachiController" {
                 joinsConfig=joinsConfig,
                 propertyIdentifiersList=propertyIdentifiersList,
                 isDistinct=isDistinct,
+				hasManyRelationFilter=hasManyRelationFilter,
                 columnsConfig=columnsConfig,
                 orderByConfig=orderByConfig,
                 groupBysConfig=groupBysConfig,
