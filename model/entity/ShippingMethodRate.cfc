@@ -95,10 +95,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public numeric function getChargeAmountByShipmentItemMultiplier(required numeric shipmentItemMultiplier){
-		var chargeAmount = nullReplace(getDefaultAmount(),0) + (getRateMultiplierAmount() * arguments.shipmentItemMultiplier);
-		return chargeAmount;
-	}
+	
 	
 	public array function getAddressZoneOptions() {
 		if(!structKeyExists(variables, "addressZoneOptions")) {

@@ -141,11 +141,19 @@ component accessors="true" output="false" displayname="UPS" implements="Slatwall
 			if(!responseBean.hasErrors()) {
 				var PackageResults = responseBean.getData().ShipmentResponse.ShipmentResults.PackageResults;
 				responseBean.setTrackingNumber(PackageResults.trackingNumber);
-				responseBean.setContainerLabel(PackageResults.ShippingLabel.GraphicImage);
+				//convert gif to pdf
+				var bae64pdf = convertBase64GIFToBase64PDF(PackageResults.ShippingLabel.GraphicImage);
+				responseBean.setContainerLabel(bae64pdf);
 			}
 		}
 		
 		return responseBean;
+	}
+	
+	public any function convertBase64GIFToBase64PDF(required any base64GIF){
+		var newPDF = createObject("component", "pdf");
+		newPDF.thumbnail.setSource(arguments.base64GIF);
+		writedump(newPDF);abort;
 	}
 	
 	public any function getShippingRatesResponseBean(required any JsonResponse){

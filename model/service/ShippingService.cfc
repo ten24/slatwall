@@ -146,6 +146,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		};
 	}
 	
+	public numeric function getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(required numeric defaultAmount, required numeric shipmentItemMultiplier, required numeric rateMultiplierAmount){
+		
+		var chargeAmount = arguments.defaultAmount + (arguments.rateMultiplierAmount * arguments.shipmentItemMultiplier);
+		return chargeAmount;
+	}
+	
+	
+	
 	public array function getQualifiedRateOptionsByOrderFulfillmentAndShippingMethodRatesAndShippingMethodRatesResponseBeans(
 		required any orderFulfillment,
 		required array shippingMethodRates,
@@ -158,11 +166,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// If this rate is a manual one, then use the default amount
 			if(isNull(shippingMethodRate.getShippingIntegration())) {
 				var shipmentItemMultiplier = 0;
-				if(!isNull(getRateMultiplierAmount())){
+				if(!isNull(shippingMethodRate.getRateMultiplierAmount())){
 					shipmentItemMultiplier = arguments.orderFulfillment.getShipmentItemMultiplier();
 				}
 				
-				var chargeAmount = arguments.shippingMethodRate.getChargeAmountByShipmentItemMultiplier(shipmentItemMultiplier);
+				var chargeAmount = getChargeAmountByShipmentItemMultiplierAndRateMultiplierAmount(
+					nullReplace(shippingMethodRate.getDefaultAmount(),0),
+					shipmentItemMultiplier,
+					nullReplace(shippingMethodRate.getRateMultiplierAmount(),0)
+				);
 				
 				var qualifiedRateOption = newQualifiedRateOption(shippingMethodRate,chargeAmount);
 				arrayAppend(qualifiedRateOptions, qualifiedRateOption);
