@@ -127,8 +127,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public void function processShipmentRequest(){
 		var selectedIntegration = getShippingIntegration();
 		var shippingIntegrationCFC = getService('integrationService').getShippingIntegrationCFC(selectedIntegration);
-		//create OrderDelivery and get tracking Number and generate label
-		shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
+		//create OrderDelivery and get tracking Number and generate label if shipping.cfc has method
+		if(structKeyExists(shippingIntegrationCFC,'processShipmentRequestWithOrderDelivery_Create')){
+			shippingIntegrationCFC.processShipmentRequestWithOrderDelivery_Create(this);
+		}
+		
 	}
 	
 	
