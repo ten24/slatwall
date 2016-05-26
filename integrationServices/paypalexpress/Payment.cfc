@@ -168,9 +168,9 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 
 		// cart totals
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_PAYMENTACTION", value="SALE");
-		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_ITEMAMT", value="#arguments.order.getSubTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_ITEMAMT", value="#arguments.order.getSubTotalAfterItemDiscounts()#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_TAXAMT", value="#arguments.order.getTaxTotal()#");
-		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_SHIPPINGAMT", value="#arguments.order.getFulfillmentChargeTotal()#");
+		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_SHIPPINGAMT", value="#arguments.order.getfulfillmentChargeAfterDiscountTotal()#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_AMT", value="#arguments.order.getTotal()#");
 		httpRequest.addParam(type="formfield", name="PAYMENTREQUEST_0_CURRENCYCODE", value="#arguments.order.getCurrencyCode()#");
 

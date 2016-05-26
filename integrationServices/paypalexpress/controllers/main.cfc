@@ -86,6 +86,9 @@ component accessors="true" output="false" {
 				} else {
 					location("https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=#responseData.token#", false);	
 				}
+			} else if (structKeyExists(responseData, "ack") && responseData.ack == "Failure") {
+				rc.$.slatwall.cart().addError('Payment',responseData["L_SHORTMESSAGE0"]);
+				rc.$.slatwall.cart().addError('PaypalExpressErrorDetail',responseData);
 			}
 		}
 	}
