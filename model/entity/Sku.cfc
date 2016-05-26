@@ -233,40 +233,35 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 
 	//returns gift card redemption amount, or 0 if incorrectly configured
 	public any function getRedemptionAmount(numeric userDefinedPrice){
-		if(this.getUserDefinedPriceFlag() && !structKeyExists(arguments, "userDefinedPrice")){
-            return 0; 
-		}
-		if(structKeyExists(variables, "redemptionAmountType")){
-			switch(variables.redemptionAmountType){
-				case "sameAsPrice":
-				    if(this.getUserDefinedPriceFlag()){
-                        return arguments.userDefinedPrice; 
-				    } 
-					return variables.price;
-					break;
-				case "fixedAmount":
-				    if(this.getUserDefinedPriceFlag()){
-                        return arguments.userDefinedPrice; 
-				    }
-					if(structKeyExists(variables, "redemptionAmount")){
-						return variables.redemptionAmount;
-					}
-					break;
-				case "percentage":
-				    if(structKeyExists(variables,"redemptionAmount")){
-				        if(this.getUserDefinedPriceFlag()){
-                            return precisionEvaluate(precisionEvaluate(arguments.userDefinedPrice * variables.redemptionAmount)/100);
-				        }
-				        return precisionEvaluate(precisionEvaluate(variables.price * variables.redemptionAmount)/100);
-					}
-					break;
-				default:
-					return 0;
-					break;
-			}
-		}
-		return 0;
+    	var amount = variables.price;
+	    if(
+	        this.getUserDefinedPriceFlag()
+	    ){
+	        if(structKeytExists(arguments,'userDefinedPrice')){
+	            amount = arguments.userDefinedPrice;
+	        }
+	    }
+
+	    if(structKeyExists(variables, "redemptionAmountType")){
+	        switch(variables.redemptionAmountType){
+	            case "sameAsPrice":
+	                break;
+	            case "fixedAmount":
+	                if(!this.getUserDefinedPriceFlag() && structKeyExists(variables, "redemptionAmount")){
+	                    amount = variables.redemptionAmount;
+	                }
+	                break;
+	            case "percentage":
+	                amount = precisionEvaluate(precisionEvaluate(amount * variables.redemptionAmount)/100);
+	                break;
+	        }
+	    }else{
+	        amount = 0;
+	    }
+
+	    return amount;
 	}
+
 
 	public string function getFormattedRedemptionAmount(){
 
