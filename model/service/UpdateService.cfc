@@ -253,6 +253,18 @@ Notes:
 	<cffunction name="mergeProperties" returntype="any">
 	  <cfargument name="fileName" type="String">
 		<cfscript>
+			var lineBreak = getHibachiUtilityService().getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
+			var paddingCount = 2;
+			var conditionalLineBreak="";
+			if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
+				paddingCount = 3;
+				conditionalLineBreak=lineBreak;
+			}
+			if(lcase(getApplicationValue("lineBreakStyle")) == 'mac'){
+				paddingCount = 3;
+				conditionalLineBreak=lineBreak;
+			}
+			
 			//declared file paths
 			var filePath =  "model/entity/#arguments.fileName#";
 			var customFilePath =  "custom/model/entity/#arguments.fileName#";
@@ -269,22 +281,28 @@ Notes:
 			var fileContent = fileRead(expandPath(filePath)) ;
 
 			//declared custom strings
-			var lineBreak = getHibachiUtilityService().getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
+			
 			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN';
 			var customPropertyEndString = '//CUSTOM PROPERTIES END';
-			var customFunctionBeginString = chr(9)&'//CUSTOM FUNCTIONS BEGIN';
+			var customFunctionBeginString = chr(9) &'//CUSTOM FUNCTIONS BEGIN';
 			var customFunctionEndString = '//CUSTOM FUNCTIONS END';
 			//if they already exists, then remove the custom properties and custom functions
 			if(findNoCase(customPropertyBeginString, fileContent)){
 				var customPropertyStartPos = findNoCase(chr(9)&customPropertyBeginString, fileContent);
 				var customPropertyEndPos = findNoCase(customPropertyEndString, fileContent) + len(customPropertyEndString);
 				fileContent = left(fileContent,customPropertyStartPos-1) & mid(fileContent,customPropertyEndPos, (len(fileContent) - customPropertyEndPos)+1);
+				if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
+					conditionalLineBreak = "";
+				}
 			}
 
 			if(findNoCase(customFunctionBeginString, fileContent)){
 				var customFunctionStartPos = findNoCase(customFunctionBeginString, fileContent);
 				var customFunctionEndPos = findNoCase(customFunctionEndString, fileContent) + len(customFunctionEndString);
 				fileContent = left(fileContent,customFunctionStartPos-1) & mid(fileContent,customFunctionEndPos, abs(len(fileContent) - customFunctionEndPos) + 1);
+				if(lcase(getApplicationValue("lineBreakStyle")) == 'windows'){
+					conditionalLineBreak = "";
+				}
 			}
 			
 			var customFileContent = fileRead(expandPath(customFilePath)) ;
@@ -369,7 +387,7 @@ Notes:
 				}
 
 				var newContentPropertiesStartPos = propertyEndPos;
-				newContent = left(newContent,newContentPropertiesStartPos-2) & chr(9) & customPropertyString & chr(9) & right(newContent,len(newContent) - newContentPropertiesStartPos);
+				newContent = left(newContent,newContentPropertiesStartPos-paddingCount) & conditionalLineBreak & chr(9) & customPropertyString & chr(9) & right(newContent,len(newContent) - newContentPropertiesStartPos);
 			}
 			//add functions
 			if(len(functionString)){
@@ -378,7 +396,7 @@ Notes:
 
 				var newContentComponentEndPos = newContent.lastIndexOf("}") ;
 
-				newContent = left(newContent,newContentComponentEndPos-1) & customFunctionString & '}';
+				newContent = left(newContent,newContentComponentEndPos-(paddingCount-1)) & conditionalLineBreak & customFunctionString & '}';
 			}
 
 			return newContent;
