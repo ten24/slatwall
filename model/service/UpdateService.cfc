@@ -270,10 +270,10 @@ Notes:
 
 			//declared custom strings
 			var lineBreak = getHibachiUtilityService().getLineBreakByEnvironment(getApplicationValue("lineBreakStyle"));
-			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN #lineBreak#';
-			var customPropertyEndString = '//CUSTOM PROPERTIES END #lineBreak & lineBreak#';
-			var customFunctionBeginString = chr(9)&'//CUSTOM FUNCTIONS BEGIN #lineBreak#';
-			var customFunctionEndString = '//CUSTOM FUNCTIONS END #lineBreak#';
+			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN';
+			var customPropertyEndString = '//CUSTOM PROPERTIES END';
+			var customFunctionBeginString = chr(9)&'//CUSTOM FUNCTIONS BEGIN';
+			var customFunctionEndString = '//CUSTOM FUNCTIONS END';
 			//if they already exists, then remove the custom properties and custom functions
 			if(findNoCase(customPropertyBeginString, fileContent)){
 				var customPropertyStartPos = findNoCase(chr(9)&customPropertyBeginString, fileContent);
@@ -286,6 +286,7 @@ Notes:
 				var customFunctionEndPos = findNoCase(customFunctionEndString, fileContent) + len(customFunctionEndString);
 				fileContent = left(fileContent,customFunctionStartPos-1) & mid(fileContent,customFunctionEndPos, abs(len(fileContent) - customFunctionEndPos) + 1);
 			}
+			
 			var customFileContent = fileRead(expandPath(customFilePath)) ;
 
 			// check duplicate properties and if there is a duplicate then write it to log
@@ -342,7 +343,7 @@ Notes:
 			//add properties
 			if(len(propertyString)){
 
-				var customPropertyString = customPropertyBeginString & chr(9) & propertyString & chr(9) & customPropertyEndString;
+				var customPropertyString = customPropertyBeginString & linebreak & chr(9) & propertyString & chr(9) & customPropertyEndString & linebreak;
 
 				propertyStartPos = findNoCase("property name=", newContent) ;
 				privateFunctionLineStartPos = reFind('private ',newContent);
@@ -368,16 +369,16 @@ Notes:
 				}
 
 				var newContentPropertiesStartPos = propertyEndPos;
-				newContent = left(newContent,newContentPropertiesStartPos) & customPropertyString & chr(9) & right(newContent,len(newContent) - newContentPropertiesStartPos);
+				newContent = left(newContent,newContentPropertiesStartPos-2) & chr(9) & customPropertyString & chr(9) & right(newContent,len(newContent) - newContentPropertiesStartPos);
 			}
 			//add functions
 			if(len(functionString)){
 
-				var customFunctionString =  customFunctionBeginString & chr(9) & functionString & lineBreak & chr(9) & customfunctionEndString;
+				var customFunctionString =  customFunctionBeginString & lineBreak & chr(9) & functionString & lineBreak & chr(9) & customfunctionEndString & lineBreak;
 
 				var newContentComponentEndPos = newContent.lastIndexOf("}") ;
 
-				newContent = left(newContent,newContentComponentEndPos) & customFunctionString & '}';
+				newContent = left(newContent,newContentComponentEndPos-1) & customFunctionString & '}';
 			}
 
 			return newContent;
