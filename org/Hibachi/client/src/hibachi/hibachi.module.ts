@@ -5,6 +5,7 @@ import {alertmodule} from "../alert/alert.module";
 import {collectionmodule} from "../collection/collection.module";
 import {coremodule} from "../core/core.module";
 import {dialogmodule} from "../dialog/dialog.module";
+import {entitymodule} from "../entity/entity.module";
 import {paginationmodule} from "../pagination/pagination.module";
 import {formmodule} from "../form/form.module";
 import {validationmodule} from "../validation/validation.module";
@@ -16,6 +17,7 @@ var hibachimodule = angular.module('hibachi',[
     alertmodule.name,
     coremodule.name,
     collectionmodule.name,
+    entitymodule.name,
     dialogmodule.name,
     paginationmodule.name,
     formmodule.name,
