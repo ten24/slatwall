@@ -115,7 +115,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 			return false;
 		}
 	}
-
+	
 	public void function setFirstReminderEmailDateBasedOnNextBillDate() {
 		// Setup the next Reminder email
 		if( len(this.setting('subscriptionUsageRenewalReminderDays')) ) {

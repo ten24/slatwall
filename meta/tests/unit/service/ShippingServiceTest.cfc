@@ -46,53 +46,16 @@
 Notes:
 
 */
-component accessors="true" output="false" displayname="UPS" extends="Slatwall.integrationServices.BaseIntegration" implements="Slatwall.integrationServices.IntegrationInterface" {
-	
-	public any function init() {
-		return this;
-	}
-	
-	public string function getIntegrationTypes() {
-		return "shipping";
-	}
-		
-	public string function getDisplayName() {
-		return "UPS";
-	}
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	public struct function getSettings() {
-		var settings = {
-			apiKey = {fieldType="text"},
-			username = {fieldType="text"},
-			password = {fieldType="password", encryptValue=true},
-			testingFlag = {fieldType="yesno", defaultValue="1"},
-			shipperNumber = {fieldType="text"},
-			shipFromName = {fieldType="text"},
-			shipFromEmailAddress = {fieldType="text"},
-			shipFromCompany = {fieldType="text"},
-			shipFromPhoneNumber = {fieldType="text"},
-			shipFromAddressLine = {fieldType="text"},
-			shipFromCity = {fieldType="text"},
-			shipFromStateCode = {fieldType="text"},
-			shipFromPostalCode = {fieldType="text"},
-			shipFromCountryCode = {fieldType="text"},
-			pickupTypeCode = {fieldType="select", defaultValue="03", valueOptions=[
-				{name="(01) Daily Pickup", value="01"},
-				{name="(03) Customer Counter", value="03"},
-				{name="(06) One Time Pickup", value="06"},
-				{name="(07) On Call Air", value="07"},
-				{name="(11) Suggested Retail Rates", value="11"},
-				{name="(19) Letter Center", value="19"},
-				{name="(20) Air Service Center", value="20"}
-			]},
-			customerClassificationCode = {fieldType="select", defaultValue="04", valueOptions=[
-				{name="(00) Negotiated (rates associated with shipper number)", value="00"},
-				{name="(01) Wholesale (default for daily pickups)", value="01"},
-				{name="(03) Occasional (default for other pickups)", value="03"},
-				{name="(04) Retail (default for customer counter pickups)", value="04"}
-			]}
-		};
+	public void function setUp() {
+		super.setup();
 		
-		return settings;
+		variables.service = request.slatwallScope.getBean("shippingService");
+		variables.integrationService = request.slatwallScope.getBean("integrationService");
 	}
+	
+	
 }
+
+

@@ -1082,6 +1082,19 @@
         <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
         <cfreturn round( local.utcDate.getTime() / 1000 )>
     </cffunction>
+    
+    <cffunction name="convertBase64GIFToBase64PDF">
+    	<cfargument name="base64GIF" />
+    	<cfset var myImage = ImageReadBase64("data:image/gif;base64,#arguments.base64GIF#")> 
+    	<cfset var tempDirectory = getTempDirectory()&'/newimage.gif'>
+    	<cfset imageWrite(myImage,tempDirectory)>
+		<cfdocument name="newpdf" format="pdf" localUrl="yes">
+			<cfoutput>
+				<img src="file:///#tempDirectory#" />
+			</cfoutput>
+		</cfdocument>
+		<cfreturn ToBase64(newpdf) />
+    </cffunction>
 
 
 </cfcomponent>

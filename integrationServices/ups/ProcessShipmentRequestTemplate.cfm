@@ -46,52 +46,102 @@
 	Notes:
 	
 --->
-<cfoutput>
+
+<cfoutput >
 {
-	"UPSSecurity": {
-	    "ServiceAccessToken":{
-	    	"AccessLicenseNumber": "#setting('apiKey')#"
-	    },
-	    "UserAccessToken":{
-	      "UserId": "#setting('username')#",
-      	  "Password": "#setting('password')#"
-	    }
-	    
-	},
-    "RateRequest": {
-      "Request": { "RequestOption": "Shop" },
-      "PickupType": { "Code": "#setting('pickupTypeCode')#" },
-      "CustomerClassification": { "Code": "#setting('customerClassificationCode')#" },
-      "Shipment": {
-        "Shipper": {
-          "Address": {
+  "UPSSecurity": {
+    "ServiceAccessToken":{
+    	"AccessLicenseNumber": "#setting('apiKey')#"
+    },
+    "UsernameToken":{
+      "Username": "#setting('username')#",
+      "Password": "#setting('password')#"
+    }
+    
+  },
+  "ShipmentRequest": {
+    "Request":{
+      "RequestOption":"validate"
+    },
+    "TransactionReference":"1111",
+    "Shipment":{
+      "Service":{
+        "Code":"03"
+      },
+      "Shipper":{
+    	"Name":"#setting('shipFromName')#",
+    	<cfif len(setting('shipFromCompany'))>
+    		"CompanyDisplayableName":"#setting('shipFromCompany')#",
+    	</cfif>
+    	<cfif len(setting('shipFromPhoneNumber'))>
+        "Phone":{
+    		"Number":"#setting('shipFromPhoneNumber')#"
+      	},
+    	</cfif>
+    	<cfif len(setting('shipFromEmailAddress'))>
+	    "EmailAddress":"#setting('shipFromEmailAddress')#",
+    	</cfif>
+        "Address": {
+        	"AddressLine":"#setting('shipFromAddressLine')#",
             "City": "#setting('shipFromCity')#",
             "StateProvinceCode": "#setting('shipFromStateCode')#",
             "PostalCode": "#setting('shipFromPostalCode')#",
             "CountryCode": "#setting('shipFromCountryCode')#"
-          },
-          "ShipperNumber": "#setting('shipperNumber')#"
         },
-        "ShipTo": {
-          "Address": {
-            "City": "#arguments.requestBean.getShipToCity()#",
-            "StateProvinceCode": "#arguments.requestBean.getShipToStateCode()#",
-            "PostalCode": "#arguments.requestBean.getShipToPostalCode()#",
-            "CountryCode": "#arguments.requestBean.getShipToCountryCode()#",
-            "ResidentialAddressIndicator": "1"
-          }
-        },
-        "ShipFrom": {
-          "Address": {
+        "ShipperNumber": "#setting('shipperNumber')#"
+  	  },
+      "ShipTo":{
+        "Name":"#arguments.requestBean.getShipToName()#",
+        <cfif len(arguments.requestBean.getShipToCompany())>
+    		"CompanyDisplayableName":"#arguments.requestBean.getShipToCompany()#",
+        </cfif>
+        <cfif len(arguments.requestBean.getShipToPhoneNumber())>
+	        "Phone":{
+	    		"Number":"#arguments.requestBean.getShipToPhoneNumber()#"
+	      	},
+        </cfif>
+        <cfif len(arguments.requestBean.getShipToEmailAddress())>
+	    	"EmailAddress":"ryan.marchand@ten24web.com",
+        </cfif>
+        "Address":{
+          "AddressLine":"#arguments.requestBean.getShipToStreetAddress()#",
+          "City":"#arguments.requestBean.getShipToCity()#",
+          "StateProvinceCode":"#arguments.requestBean.getShipToStateCode()#",
+          "PostalCode":"#arguments.requestBean.getShipToPostalCode()#",
+          "CountryCode":"#arguments.requestBean.getShipToCountryCode()#",
+          "ResidentialAddressIndicator":"1"
+        }
+	  },
+      "ShipFrom":{
+        "Name":"#setting('shipFromName')#",
+    	<cfif len(setting('shipFromCompany'))>
+    		"CompanyDisplayableName":"#setting('shipFromCompany')#",
+    	</cfif>
+    	<cfif len(setting('shipFromPhoneNumber'))>
+        "Phone":{
+    		"Number":"#setting('shipFromPhoneNumber')#"
+      	},
+    	</cfif>
+    	<cfif len(setting('shipFromEmailAddress'))>
+	    "EmailAddress":"#setting('shipFromEmailAddress')#",
+    	</cfif>
+        "Address": {
+        	"AddressLine":"#setting('shipFromAddressLine')#",
             "City": "#setting('shipFromCity')#",
             "StateProvinceCode": "#setting('shipFromStateCode')#",
             "PostalCode": "#setting('shipFromPostalCode')#",
             "CountryCode": "#setting('shipFromCountryCode')#"
+        }
+	  },
+  	  "PaymentInformation":{
+        "ShipmentCharge":{
+          "Type":"01",
+          "BillShipper":{
+            "AccountNumber":"#setting('shipperNumber')#"
           }
-        },
-        "ShipmentWeight": { "Weight": "#arguments.requestBean.getTotalWeight( unitCode='lb' )#" },
-        <!--- Set the total weight to a variable --->
-		<cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' )>
+        }
+      },
+        <cfset local.totalWeight = arguments.requestBean.getTotalWeight( unitCode='lb' )>
 		<cfif local.totalWeight gt 150>
 			<cfset local.finalWeight = local.totalWeight MOD 150>
 			<cfloop index="count" from="1" to="#round(abs(local.totalWeight / 150))#">
@@ -130,12 +180,26 @@
 					"Weight":"#arguments.requestBean.getTotalWeight( unitCode='lb' )#",	
 				</cfif>
 				"UnitOfMeasurement": { "Code": "LBS" }
-			}
+			},
+			"Packaging":{
+	          "Code":"02"
+	          <!--- TODO:implement containers with dimensions
+	          	"Dimensions":{
+	            "UnitOfMeasurement":{
+	              "Code":"01"
+	            },
+	            "Length":"1",
+	            "Width":"1",
+	            "Height":"1"
+	            
+	          }--->
+	        }
 		  }
 			
 		</cfif>
-      }
     }
+  }
+  
 }
-	
 </cfoutput>
+
