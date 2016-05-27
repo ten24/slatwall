@@ -113,10 +113,17 @@
                                 data-cell-view="swSkuPriceEdit"
                             >
                             </sw-listing-column>
-                            <sw-listing-column data-property-identifier="maxQuantity" data-title="Maximum Quantity"></sw-listing-column>
-                            <sw-listing-column data-property-identifier="minQuantity" data-title="Minimum Quantity"></sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuDefinition" data-fallback-property-identifiers="skuDefinition,bundledSku_skuDefinition"></sw-listing-column>
-                            <sw-listing-column data-property-identifier="skuCode" data-fallback-property-identifiers="skuCode,bundledSku_skuCode" tdclass="primary"></sw-listing-column>
+                            <sw-listing-column data-property-identifier="maxQuantity" 
+                                               data-title="Maximum Quantity"
+                                               data-cell-view="swSkuPriceQuantityEdit"
+                            >
+                            </sw-listing-column>
+                            <sw-listing-column data-property-identifier="minQuantity" 
+                                               data-title="Minimum Quantity"
+                                               data-cell-view="swSkuPriceQuantityEdit"
+                            ></sw-listing-column>
+                            <sw-listing-column data-property-identifier="skuDefinition" data-fallback-property-identifiers="skuDefinition,sku_skuDefinition"></sw-listing-column>
+                            <sw-listing-column data-property-identifier="skuCode" data-fallback-property-identifiers="skuCode,sku_skuCode" tdclass="primary"></sw-listing-column>
                             
                         </sw-listing-columns>
                         
@@ -153,6 +160,8 @@
                                     >
                                         <sw-collection-columns>
                                             <sw-collection-column data-property-identifier="skuPriceID"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sku.skuCode"></sw-collection-column>
+                                            <sw-collection-column data-property-identifier="sku.skuDefinition"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="minQuantity"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="maxQuantity"></sw-collection-column>
                                             <sw-collection-column data-property-identifier="price"></sw-collection-column>

@@ -67,7 +67,10 @@ class SWListingDisplayCellController{
                 }
             });
             if(angular.isDefined(this.column.columnID)){
-                this.templateVariables["data-column-id"] = this.column.columnID;
+                this.templateVariables["data-column"] = this.column.columnID;
+            }
+            if(angular.isDefined(this.column.propertyIdentifier)){
+                this.templateVariables["data-column-property-identifier"] = this.column.propertyIdentifier;
             }
             this.templateVariables["data-listing-display-id"] = this.swListingDisplay.tableID; 
         }else{

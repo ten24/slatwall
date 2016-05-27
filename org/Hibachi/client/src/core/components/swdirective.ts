@@ -23,13 +23,19 @@ class SWDirective{
 				variables:"=", //{key:value}
 				directiveTemplate:"="
 			},
+			controllerAs: "swDirective",
 			link: function(scope, element, attrs) {
 
 		        var template = '<' + scope.directiveTemplate + ' ';
-
+				
+				
 		        if(angular.isDefined(scope.variables)){
 			        angular.forEach(scope.variables, function(value,key){
-			        	template += ' ' + key + '="' + value + '" ';
+						if(!angular.isString(value)){
+							template += ' ' + key + '="swDirective.' + 'variables.' + key + '" ';
+						} else { 
+			        		template += ' ' + key + '="' + value + '" ';
+						}
 			        });
 			    }
 

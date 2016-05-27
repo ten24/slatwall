@@ -10,7 +10,8 @@
         </sw-form-field-single-edit>
     </sw-modal-button>
     <sw-modal-content> 
-        <sw-form data-name="swSkuStockAdjustmentModalLauncher.name"
+        <sw-form ng-if="angular.isDefined(swSkuStockAdjustmentModalLauncher.stockAdjustment)"
+                 data-name="swSkuStockAdjustmentModalLauncher.name"
                  data-object="swSkuStockAdjustmentModalLauncher.stockAdjustment"    
                  data-context="save"> 
             <div class="row">              
@@ -67,7 +68,8 @@
                 </div>
             </div>
         </sw-form> 
-        <sw-form data-name="stockAdjustmentItemForm"
+        <sw-form ng-if="angular.isDefined(swSkuStockAdjustmentModalLauncher.stockAdjustmentItem)"
+                 data-name="stockAdjustmentItemForm"
                  data-object="swSkuStockAdjustmentModalLauncher.stockAdjustmentItem"
                  data-context="save">
                 <!-- BEGIN HIDDEN FIELDS -->
