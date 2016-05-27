@@ -17,6 +17,7 @@ import {MetaDataService} from "./services/metadataservice";
 import {RbKeyService} from "./services/rbkeyservice";
 import {$Hibachi} from "./services/hibachiservice";
 import {LocalStorageService} from "./services/localstorageservice";
+import {ListingService} from "./services/listingservice"
 import {HibachiServiceDecorator} from "./services/hibachiservicedecorator";
 import {HibachiScope} from "./services/hibachiscope";
 //controllers
@@ -153,6 +154,7 @@ var coremodule = angular.module('hibachi.core',[
 .service('formService',FormService)
 .service('metadataService',MetaDataService)
 .service('rbkeyService',RbKeyService)
+.service('listingService', ListingService)
 .provider('$hibachi',$Hibachi)
 .decorator('$hibachi',HibachiServiceDecorator)
 .service('hibachiInterceptor', HibachiInterceptor.Factory())
