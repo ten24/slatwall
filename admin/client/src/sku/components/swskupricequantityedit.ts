@@ -5,20 +5,14 @@ class SWSkuPriceQuantityEditController{
     public skuPriceId;
     public skuPrice; 
     public column; 
-    public property; 
+    public columnPropertyIdentifier; 
     
     
     //@ngInject
     constructor(
         private $hibachi
     ){
-        if(angular.isUndefined(this.property) && angular.isUndefined(this.column)){
-            //throw("You must provide either the property or the column to SWSkuPriceQuantityEditController");
-        }
-        if(angular.isUndefined(this.skuPriceId) && angular.isUndefined(this.skuPrice)){
-            //throw("You must provide a skuPriceID to SWSkuPriceSingleEditController");
-        }
-        console.log("hellocolumn",this.column);
+        
         if(angular.isUndefined(this.skuPrice)){
             this.$hibachi.getEntity("SkuPrice", this.skuPriceId).then(
                 (skuPrice)=>{
@@ -46,7 +40,7 @@ class SWSkuPriceQuantityEdit implements ng.IDirective{
         skuPrice:"=?",
         skuPriceId:"@",
         column:"=?",
-        property:"@"
+        columnPropertyIdentifier:"@"
     };
     public controller = SWSkuPriceQuantityEditController;
     public controllerAs="swSkuPriceQuantityEdit";

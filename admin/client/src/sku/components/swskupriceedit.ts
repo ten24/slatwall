@@ -3,11 +3,13 @@
 class SWSkuPriceEditController{
     
     public skuId;
+    public skuPriceId;
     public currencyCode;
     public bundledSkuSkuId; 
     public bundledSkuCurrencyCode;
    
     public sku; 
+    public skuPrice;
     
     public collectionConfig; 
     
@@ -22,23 +24,44 @@ class SWSkuPriceEditController{
         if(angular.isUndefined(this.currencyCode) && angular.isDefined(this.bundledSkuCurrencyCode)){
             this.currencyCode = this.bundledSkuCurrencyCode;
         }
-        if(angular.isUndefined(this.skuId) && angular.isUndefined(this.sku)){
-            throw("You must provide a skuID to SWSkuPriceSingleEditController");
-        }
-        if(angular.isUndefined(this.sku)){
-            this.$hibachi.getEntity("Sku", this.skuId).then(
-                (sku)=>{
-                    if(angular.isDefined(sku)){
-                        this.sku = this.$hibachi.newEntity('Sku');
-                        angular.extend(this.sku.data, sku);
-                    } else { 
-                        throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
-                    }
-                },
-                (reason)=>{
-                    throw("SWSkuPriceEdit had trouble fetchin its sku because" + reason);
-                }
-           ); 
+        if(angular.isUndefined(this.skuId) 
+            && angular.isUndefined(this.sku)
+            && angular.isUndefined(this.skuPriceId)
+            && angular.isUndefined(this.skuPrice)
+        ){
+            throw("You must provide either a skuID or a skuPriceID or a sku or a skuPrice to SWSkuPriceSingleEditController");
+        } else {
+            if(angular.isDefined(this.skuId) && angular.isUndefined(this.sku)){
+                this.$hibachi.getEntity("Sku", this.skuId).then(
+                        (sku)=>{
+                            if(angular.isDefined(sku)){
+                                this.sku = this.$hibachi.newEntity('Sku');
+                                angular.extend(this.sku.data, sku);
+                            } else { 
+                                throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
+                            }
+                        },
+                        (reason)=>{
+                            throw("SWSkuPriceEdit had trouble fetchin its sku because" + reason);
+                        }
+                ); 
+            }
+            
+            if(angular.isDefined(this.skuPriceId) && angular.isUndefined(this.skuPrice)){
+                this.$hibachi.getEntity("SkuPrice", this.skuPriceId).then(
+                        (skuPrice)=>{
+                            if(angular.isDefined(skuPrice)){
+                                this.skuPrice = this.$hibachi.newEntity('Sku');
+                                angular.extend(this.skuPrice.data, skuPrice);
+                            } else { 
+                                throw("There was a problem fetching the sku in SWSkuPriceSingleEditController");
+                            }
+                        },
+                        (reason)=>{
+                            throw("SWSkuPriceEdit had trouble fetchin its sku because" + reason);
+                        }
+                ); 
+            }
         }
     }    
 
@@ -50,10 +73,12 @@ class SWSkuPriceEdit implements ng.IDirective{
     public scope = {}; 
     public bindToController = {
         skuId:"@",
+        skuPriceId:"@",
         bundledSkuSkuId:"@",
         bundledSkuCurrencyCode:"@",        
         currencyCode:"@",
-        sku:"=?"
+        sku:"=?",
+        skuPrice:"=?"
     };
     public controller = SWSkuPriceEditController;
     public controllerAs="swSkuPriceEdit";

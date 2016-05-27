@@ -1,55 +1,43 @@
 /// <reference path='../../../typings/hibachiTypescript.d.ts' />
 /// <reference path='../../../typings/tsd.d.ts' />
 
-/* SWListingExpandableRule
- * defines a filter, by which to determine what will be expanded
- * supplies the collection config and any other necessary rules for what will be loaded and displayed
+/* SwListingDisableRule
+ * defines a filter, by which to determine what rows will be disabled
  */
 
-class SWListingExpandableRuleController{
+class SwListingDisableRuleController{
 
     public filterPropertyIdentifier:string;
     public filterComparisonOperator:string; 
     public filterComparisonValue:string;
-    
-    public hasChildrenCollectionConfigDeferred;
-    public hasChildrenCollectionConfigPromise; 
-    public childrenCollectionConfig;
 
     //@ngInject
     constructor(
         public $q
     ){
-        this.hasChildrenCollectionConfigDeferred = $q.defer(); 
-        this.hasChildrenCollectionConfigPromise = this.hasChildrenCollectionConfigDeferred.promise;
-        //why did I need this? 
-        this.childrenCollectionConfig = null;
+
     }
 
 }
 
-class SWListingExpandableRule implements ng.IDirective{
+class SwListingDisableRule implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
-    public transclude={
-        collectionConfig:"?swConfig"    
-    };
     public template=`
-        <div ng-transclude="collectionConfig"></div> 
+        
     `
     public bindToController={
-        childrenCollectionConfig:"=?",
         filterPropertyIdentifier:"@",
         filterComparisonOperator:"@",
         filterComparisonValue:"@"        
     };
-    public controller=SWListingExpandableRuleController;
-    public controllerAs="swListingExpandableRule";
+    public controller=SwListingDisableRuleController;
+    public controllerAs="SwListingDisableRule";
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             $q
-        )=>new SWListingExpandableRule(
+        )=>new SwListingDisableRule(
             $q
         );
         directive.$inject = [
@@ -62,12 +50,11 @@ class SWListingExpandableRule implements ng.IDirective{
     }
 
     public link:ng.IDirectiveLinkFn = (scope:any, element:any, attrs:any) =>{
-         scope.swListingExpandableRule.hasChildrenCollectionConfigPromise.then(()=>{
+         scope.SwListingDisableRule.hasChildrenCollectionConfigPromise.then(()=>{
                 var rule = {
-                    filterPropertyIdentifier:scope.swListingExpandableRule.filterPropertyIdentifier,
-                    filterComparisonOperator:scope.swListingExpandableRule.filterComparisonOperator, 
-                    filterComparisonValue:scope.swListingExpandableRule.filterComparisonValue,
-                    childrenCollectionConfig:scope.swListingExpandableRule.childrenCollectionConfig
+                    filterPropertyIdentifier:scope.SwListingDisableRule.filterPropertyIdentifier,
+                    filterComparisonOperator:scope.SwListingDisableRule.filterComparisonOperator, 
+                    filterComparisonValue:scope.SwListingDisableRule.filterComparisonValue
                 };
                 
                 //TEMP OVERRIDES for TEMP multilisting directive
@@ -78,7 +65,7 @@ class SWListingExpandableRule implements ng.IDirective{
                 }
                 
                 if(angular.isDefined(listingDisplayScope)){
-                    listingDisplayScope.expandableRules.push(rule); 
+                    listingDisplayScope.disableRules.push(rule); 
                 } else {
                     throw("listing display scope not available to sw-listing-expandable-rule");
                 }
@@ -86,5 +73,5 @@ class SWListingExpandableRule implements ng.IDirective{
     }
 }
 export{
-    SWListingExpandableRule
+    SwListingDisableRule
 }
