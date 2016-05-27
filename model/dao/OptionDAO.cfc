@@ -96,12 +96,12 @@ Notes:
 
 		<cfquery name="rs">
 			SELECT DISTINCT
-            	og.optionGroupID as ogID
-			FROM SwOptionGroup as og
-			    Left Join SwOption as o on og.optionGroupID = o.optionGroupID
-			    Left Join SwSkuOption as so on so.optionID = o.optionID
-			    Left Join SwSku as s on so.skuID = s.skuID
-			    Left Join SwProduct as p on s.productID = p.productID
+    				og.optionGroupID ogID
+			FROM SwOptionGroup og
+			    Left Join SwOption o on og.optionGroupID = o.optionGroupID
+			    Left Join SwSkuOption so on so.optionID = o.optionID
+			    Left Join SwSku s on so.skuID = s.skuID
+			    Left Join SwProduct p on s.productID = p.productID
 			WHERE
 				p.productID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#productID#" />
 		</cfquery>

@@ -237,29 +237,36 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 
 	//returns gift card redemption amount, or 0 if incorrectly configured
-	public any function getRedemptionAmount(){
-		if(structKeyExists(variables, "redemptionAmountType")){
-			switch(variables.redemptionAmountType){
-				case "sameAsPrice":
-					return variables.price;
-					break;
-				case "fixedAmount":
-					if(structKeyExists(variables, "redemptionAmount")){
-						return variables.redemptionAmount;
-					}
-					break;
-				case "percentage":
-					if(structKeyExists(variables, "redemptionAmount")){
-						return precisionEvaluate(precisionEvaluate(variables.price * variables.redemptionAmount)/100);
-					}
-					break;
-				default:
-					return 0;
-					break;
-			}
-		}
-		return 0;
+	public any function getRedemptionAmount(numeric userDefinedPrice){
+    	var amount = variables.price;
+	    if(
+	        this.getUserDefinedPriceFlag()
+	    ){
+	        if(structKeyExists(arguments,'userDefinedPrice')){
+	            amount = arguments.userDefinedPrice;
+	        }
+	    }
+
+	    if(structKeyExists(variables, "redemptionAmountType")){
+	        switch(variables.redemptionAmountType){
+	            case "sameAsPrice":
+	                break;
+	            case "fixedAmount":
+	                if(!this.getUserDefinedPriceFlag() && structKeyExists(variables, "redemptionAmount")){
+	                    amount = variables.redemptionAmount;
+	                }
+	                break;
+	            case "percentage":
+	                amount = precisionEvaluate(precisionEvaluate(amount * variables.redemptionAmount)/100);
+	                break;
+	        }
+	    }else{
+	        amount = 0;
+	    }
+
+	    return amount;
 	}
+
 
 	public string function getFormattedRedemptionAmount(){
 

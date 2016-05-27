@@ -56,6 +56,7 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 	property name="sortOrder" ormtype="integer" sortContext="fulfillmentMethod";
 	
 	// Related Object Properties (many-to-one)
+	
 	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	
 	// Related Object Properties (one-to-many)
