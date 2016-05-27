@@ -25,6 +25,7 @@ class SWMultiListingDisplayController{
     public columnCount;
     public commonProperties;
     public defaultSelectEvent;
+    public disableRules = [];
     public expandable:boolean;
     public expandableRules = []; 
     public exampleEntity:any = "";
@@ -940,6 +941,7 @@ class SWMultiListingDisplay implements ng.IDirective{
         editAction:"?swListingEditAction", 
         columns:"swListingColumns", 
         collectionConfigs:"?swCollectionConfigs",
+        disableRules:"?swDisableRules",
         expandableRules:"?swExpandableRules"
     };
     public bindToController={
