@@ -90,8 +90,6 @@ Notes:
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
 
-		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></script>--->
-
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
