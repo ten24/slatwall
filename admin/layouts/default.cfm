@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../tags" />
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
+
+
 <cfoutput>
 <!DOCTYPE html>
 <html lang="en" id="ngApp" ng-strict-di>
@@ -89,11 +91,6 @@ Notes:
 		<script type="text/javascript">
 			var hibachiConfig = $.slatwall.getConfig();
 		</script>
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
-
 
 		<!--- Trigger Print Window --->
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
@@ -364,7 +361,12 @@ Notes:
 				</span>
 			</span>
 		</span>
-
+		
+		<cfif structKeyExists(request,'isWysiwygPage') AND request.isWysiwygPage>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
+		</cfif>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/admin/client/src/bundle.js?instantiationKey=#$.slatwall.getApplicationValue('version')#" charset="utf-8"></script>
 	</body>
 </html>

@@ -240,6 +240,8 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="wysiwyg">
+			
+			<cfset request.isWysiwygPage = true />
 			<cfoutput>
 				<textarea name="#attributes.fieldName#" class="#attributes.fieldClass# wysiwyg form-control" #attributes.fieldAttributes#>#attributes.value#</textarea>
 			</cfoutput>
