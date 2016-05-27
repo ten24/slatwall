@@ -31,7 +31,7 @@ var entitymodule = angular.module('hibachi.entity',['ngRoute',coremodule.name])
      if(vars.ng){
          $locationProvider.html5Mode( false ).hashPrefix('!');
      }
-
+    
     $routeProvider.when('/entity/:entityName/', {
          template: function(params){
              var entityDirectiveExists = $injector.has('sw'+params.entityName+'ListDirective');

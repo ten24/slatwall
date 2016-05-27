@@ -78,10 +78,7 @@ appConfig
     .addVendor('angular-sanitize','angular/angular-sanitize.min.js')
     .addVendor('metismenu','metismenu/metismenu.js')
     .addVendor('angularjs-datetime-picker','angularjs-datetime-picker/angularjs-datetime-picker.js')
-    .addVendor('jquery-ui-timepicker-addon','../../HibachiAssets/js/jquery-ui-timepicker-addon-1.3.1.js')
-    .addVendor('jquery-typewatch','../../HibachiAssets/js/jquery-typewatch-2.0.js')
-    .addVendor('adminjs','../../../../assets/js/admin.js')
-    .addVendor('globaljs','../../HibachiAssets/js/global.js')
+    
     
 ;
 module.exports = appConfig;
