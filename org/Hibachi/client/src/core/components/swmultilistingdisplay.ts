@@ -671,86 +671,17 @@ class SWMultiListingDisplayController{
     
     //this has moved into a service
     public getKeyOfMatchedExpandableRule = (pageRecord)=>{
-        var expandableRuleMatchedKey = -1; 
-        if(angular.isDefined(this.expandableRules)){
-            angular.forEach(this.expandableRules, (rule, key)=>{
-                if(angular.isDefined(pageRecord[rule.filterPropertyIdentifier])){
-                    if(angular.isString(pageRecord[rule.filterPropertyIdentifier])){
-                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier].trim(); 
-                    } else {
-                        var pageRecordValue = pageRecord[rule.filterPropertyIdentifier]; 
-                    }
-                    switch (rule.filterComparisonOperator){
-                        case "!=":
-                            if(pageRecordValue != rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        case ">":
-                            if(pageRecordValue > rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break;
-                        case ">=":  
-                            if(pageRecordValue >= rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break;
-                        case "<":
-                            if(pageRecordValue < rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        case "<=":
-                            if(pageRecordValue <= rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
-                        default: 
-                            //= case
-                            if(pageRecordValue == rule.filterComparisonValue){
-                                expandableRuleMatchedKey = key; 
-                            }
-                            break; 
-                    }
-                    if(expandableRuleMatchedKey != -1){
-                        return expandableRuleMatchedKey;
-                    }
-                }
-            }); 
-        }  
-        return expandableRuleMatchedKey;
+        return this.listingService.getKeyOfMatchedExpandableRule(this.tableID, pageRecord);
     }
     
     //this has moved into a service
     public getPageRecordMatchesExpandableRule = (pageRecord)=>{
-        var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
-        return keyOfExpandableRuleMet != -1;  
+        return this.listingService.getPageRecordMatchesExpandableRule(this.tableID, pageRecord);
     }
     
     //this has moved into a service
     public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
-        var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
-        if(angular.isDefined(pageRecord[this.exampleEntity.$$getIDName()]) 
-            && angular.isDefined(this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]])
-        ){
-            return this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]];
-        }
-        if(keyOfExpandableRuleMet != -1){
-           var childCollectionConfig = this.expandableRules[keyOfExpandableRuleMet].childrenCollectionConfig.clone();
-           angular.forEach(childCollectionConfig.filterGroups[0], (filterGroup, key)=>{ 
-                angular.forEach(filterGroup, (filter,key)=>{
-                    if(angular.isString(filter.value) 
-                        && filter.value.length 
-                        && filter.value.charAt(0) == '$'
-                    ){
-                        filter.value = this.utilityService.replaceStringWithProperties(filter.value, pageRecord); 
-                    }    
-                });
-           }); 
-           this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]] = childCollectionConfig; 
-           return this.childCollectionConfigs[pageRecord[this.exampleEntity.$$getIDName()]];
-        } 
+        return this.listingService.getPageRecordChildCollectionConfigForExpandableRule(this.tableID, pageRecord);
     }
     
     public getExampleEntityForExpandableRecord = (pageRecord) =>{

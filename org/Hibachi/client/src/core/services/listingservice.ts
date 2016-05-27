@@ -7,7 +7,7 @@ class ListingService{
     //@ngInject
     constructor(private utilityService){}
     
-    public setListingDisplayState = (listingID, state) =>{
+    public setListingState = (listingID, state) =>{
         this.listingDisplays[listingID] = state; 
     }
     

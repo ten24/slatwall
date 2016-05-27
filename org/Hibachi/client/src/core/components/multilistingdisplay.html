@@ -274,7 +274,7 @@
                             <td class="admin admin{{swMultiListingDisplay.administrativeCount}} s-detail-hidden-content" data-ng-if="swMultiListingDisplay.administrativeCount">
                                 <!-- Detail -->
                                 <sw-action-caller
-                                        ng-if="swMultiListingDisplay.recordDetailAction && swMultiListingDisplay.recordDetailAction.length"
+                                        ng-if="swMultiListingDisplay.recordDetailAction && swMultiListingDisplay.recordDetailAction.length && angular.isDefined(pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()])"
                                         data-action="{{swMultiListingDisplay.recordDetailAction}}"
                                         data-query-string="{{'&'+swMultiListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]+swMultiListingDisplay.recordDetailQueryString}}"
                                         data-class="btn btn-default btn-xs"
@@ -289,7 +289,7 @@
 
                                 <!--Edit-->
                                 <sw-action-caller
-                                        ng-if="swMultiListingDisplay.recordEditAction && swMultiListingDisplay.recordEditAction.length"
+                                        ng-if="swMultiListingDisplay.recordEditAction && swMultiListingDisplay.recordEditAction.length && angular.isDefined(pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()])"
                                         data-action="{{swMultiListingDisplay.recordEditAction}}"
                                         data-query-string="{{'&'+swMultiListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]+swMultiListingDisplay.recordDetailQueryString}}"
                                         data-class="btn btn-default btn-xs"
@@ -304,7 +304,7 @@
 
                                 <!-- Delete -->
                                 <sw-action-caller
-                                        ng-if="swMultiListingDisplay.recordDeleteAction && swMultiListingDisplay.recordDeleteAction.length"
+                                        ng-if="swMultiListingDisplay.recordDeleteAction && swMultiListingDisplay.recordDeleteAction.length && angular.isDefined(pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()])"
                                         data-action="{{swMultiListingDisplay.recordDeleteAction}}"
                                         data-query-string="{{'&'+swMultiListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]+swMultiListingDisplay.recordDetailQueryString}}"
                                         data-class="btn btn-default btn-xs"
@@ -319,7 +319,7 @@
 
                                 <!-- Add -->
                                 <sw-action-caller
-                                        ng-if="swMultiListingDisplay.recordAddAction && swMultiListingDisplay.recordAddAction.length"
+                                        ng-if="swMultiListingDisplay.recordAddAction && swMultiListingDisplay.recordAddAction.length && angular.isDefined(pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()])"
                                         data-action="{{swMultiListingDisplay.recordAddAction}}"
                                         data-query-string="{{'&'+swMultiListingDisplay.parentPropertyName+'ID='+pageRecord[swMultiListingDisplay.exampleEntity.$$getIDName()]+swMultiListingDisplay.recordAddQueryString}}"
                                         data-class="btn btn-default btn-xs"

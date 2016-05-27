@@ -60,7 +60,6 @@ class SWDefaultSkuRadio implements ng.IDirective{
     public controller = SWDefaultSkuRadioController;
     public controllerAs="swDefaultSkuRadio";
    
-   
     public static Factory(){
         var directive = (
             skuPartialsPath,
@@ -80,6 +79,15 @@ class SWDefaultSkuRadio implements ng.IDirective{
 	    slatwallPathBuilder
     ){
         this.templateUrl = slatwallPathBuilder.buildPartialsPath(skuPartialsPath)+"defaultskuradio.html";
+    }
+    
+     public compile = (element: JQuery, attrs: angular.IAttributes) => {
+        return {
+            pre: ($scope: any, element: JQuery, attrs) => {
+            },
+            post: ($scope: any, element: JQuery, attrs: angular.IAttributes) => {
+            }
+        };
     }
 }
 export{
