@@ -92,24 +92,25 @@ function initUIElements( scopeSelector ) {
 	// Wysiwyg
 	jQuery.each(jQuery( scopeSelector ).find(jQuery( '.wysiwyg' )), function(i, v){
 		// Wysiwyg custom config file located in: custom/assets/ckeditor_config.js
-		
-		var customConfigLocation = '../../../custom/assets/ckeditor_config.js';
-		
-		var config = {
-			customConfig: customConfigLocation,
+		if(typeof(CKEDITOR) != "undefined"){
+			
+			var customConfigLocation = '../../../custom/assets/ckeditor_config.js';
+			
+			var config = {
+				customConfig: customConfigLocation,
+			}
+			if($(v).attr('siteCode') && $(v).attr('appCode')){
+				var codeString = 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
+				config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+codeString;
+				config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+codeString;
+				config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+codeString;
+				config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+codeString;
+			}
+			var editor = CKEDITOR.replace( v, config);
+			
+			CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
+			//allow override via attributes
 		}
-		if($(v).attr('siteCode') && $(v).attr('appCode')){
-			var codeString = 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
-			config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+codeString;
-			config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+codeString;
-			config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+codeString;
-			config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+codeString;
-		}
-		var editor = CKEDITOR.replace( v, config);
-		
-		CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
-		//allow override via attributes
-		
 	});
 
 	// Tooltips
@@ -441,14 +442,16 @@ function setupEventHandlers() {
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
+		if(typeof(CKEDITOR) != "undefined"){
+			for(var i in CKEDITOR.instances) {
 
-		for(var i in CKEDITOR.instances) {
-
-			if( jQuery( 'textarea[name="' + i + '"]' ).parents( '#adminModal' ).length ){
-				CKEDITOR.instances[i].destroy(true);
+				if( jQuery( 'textarea[name="' + i + '"]' ).parents( '#adminModal' ).length ){
+					CKEDITOR.instances[i].destroy(true);
+				}
+	
 			}
-
 		}
+		
 		//return to default size
 		jQuery('#adminModal .modal-body').css({
 				'height':'auto'
