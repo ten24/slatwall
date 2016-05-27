@@ -84,6 +84,7 @@ class SWMultiListingDisplayController{
         public $hibachi,
         public utilityService,
         public collectionConfigService,
+        public listingService, 
         public paginationService,
         public selectionService,
         public observerService,
@@ -159,6 +160,7 @@ class SWMultiListingDisplayController{
             }
             this.paginator.getCollection = this.getCollection;
             this.getCollection();
+            this.listingService.setListingState(this.tableID, this);
         });
         this.$scope.$on('$destroy',()=>{
             this.observerService.detachById(this.$scope.collection);
@@ -667,7 +669,7 @@ class SWMultiListingDisplayController{
         }
     };
     
-    //this is going to be moved into a service
+    //this has moved into a service
     public getKeyOfMatchedExpandableRule = (pageRecord)=>{
         var expandableRuleMatchedKey = -1; 
         if(angular.isDefined(this.expandableRules)){
@@ -720,13 +722,13 @@ class SWMultiListingDisplayController{
         return expandableRuleMatchedKey;
     }
     
-    //this is going to be moved into a service
+    //this has moved into a service
     public getPageRecordMatchesExpandableRule = (pageRecord)=>{
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
         return keyOfExpandableRuleMet != -1;  
     }
     
-    //this is going to be moved into a service
+    //this has moved into a service
     public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
         var keyOfExpandableRuleMet = this.getKeyOfMatchedExpandableRule(pageRecord); 
         if(angular.isDefined(pageRecord[this.exampleEntity.$$getIDName()]) 

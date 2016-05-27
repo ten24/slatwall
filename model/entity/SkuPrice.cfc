@@ -52,7 +52,7 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="skuPriceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="minQuantity" ormtype="integer";
 	property name="maxQuantity" ormtype="integer";
-	property name="currencyCode" ormtype="string" length="3";
+	property name="currencyCode" ormtype="string" length="3" hb_formfieldType="select";
 	property name="price" ormtype="big_decimal";
 	property name="listPrice" ormtype="big_decimal";
 	property name="renewalPrice" ormtype="big_decimal";
@@ -77,5 +77,14 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 	// Non-Persistent Properties
+	property name="currencyCodeOptions" persistent="false";
+
+	public any function getCurrencyCodeOptions(){
+		if(!structKeyExists(variables,"currencyCodeOptions")){
+
+		}
+		return variables.currencyCodeOptions;
+	}
+
 
 }

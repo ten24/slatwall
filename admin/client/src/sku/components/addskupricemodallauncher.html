@@ -1,4 +1,4 @@
-<sw-modal-launcher 
+<sw-modal-launcher ng-if="angular.isDefined(swAddSkuPriceModalLauncher.skuId)"
     data-modal-name="{{swAddSkuPriceModalLauncher.uniqueName}}" 
     data-title="Add Sku Price Detail" 
     data-save-action="swAddSkuPriceModalLauncher.save">
@@ -45,6 +45,14 @@
                                                     data-editing="true"
                                                     data-editable="true"
                                                     data-is-dirty="true" 
+                                                    >
+                                </sw-property-display>
+                                <sw-property-display data-object="swAddSkuPriceModalLauncher.skuPrice" 
+                                                    data-property="currencyCode"
+                                                    data-editing="true"
+                                                    data-editable="true"
+                                                    data-is-dirty="true" 
+                                                    data-options-arguments="{property:'currencyCode'}"   
                                                     >
                                 </sw-property-display>
                             </div>
