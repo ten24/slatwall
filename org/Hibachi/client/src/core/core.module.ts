@@ -50,6 +50,7 @@ import {SWListingControls} from "./components/swlistingcontrols";
 import {SWListingAggregate} from "./components/swlistingaggregate";
 import {SWListingColorFilter} from "./components/swlistingcolorfilter";
 import {SWListingColumn} from "./components/swlistingcolumn";
+import {SWListingDisableRule} from "./components/swlistingdisablerule"
 import {SWListingExpandableRule} from "./components/swlistingexpandablerule"
 import {SWListingFilter} from "./components/swlistingfilter";
 import {SWListingFilterGroup} from "./components/swlistingfiltergroup";
@@ -186,6 +187,7 @@ var coremodule = angular.module('hibachi.core',[
 .directive('swListingAggregate',SWListingAggregate.Factory())
 .directive('swListingColorFilter',SWListingColorFilter.Factory())
 .directive('swListingColumn',SWListingColumn.Factory())
+.directive('swListingDisableRule', SWListingDisableRule.Factory())
 .directive('swListingExpandableRule', SWListingExpandableRule.Factory())
 .directive('swListingFilter',SWListingFilter.Factory())
 .directive('swListingFilterGroup',SWListingFilterGroup.Factory())

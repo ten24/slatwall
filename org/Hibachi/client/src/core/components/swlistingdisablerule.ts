@@ -5,7 +5,7 @@
  * defines a filter, by which to determine what rows will be disabled
  */
 
-class SwListingDisableRuleController{
+class SWListingDisableRuleController{
 
     public filterPropertyIdentifier:string;
     public filterComparisonOperator:string; 
@@ -20,7 +20,7 @@ class SwListingDisableRuleController{
 
 }
 
-class SwListingDisableRule implements ng.IDirective{
+class SWListingDisableRule implements ng.IDirective{
     public restrict:string = 'EA';
     public scope=true;
     public template=`
@@ -31,13 +31,13 @@ class SwListingDisableRule implements ng.IDirective{
         filterComparisonOperator:"@",
         filterComparisonValue:"@"        
     };
-    public controller=SwListingDisableRuleController;
-    public controllerAs="SwListingDisableRule";
+    public controller=SWListingDisableRuleController;
+    public controllerAs="swListingDisableRule";
 
     public static Factory(){
         var directive:ng.IDirectiveFactory=(
             $q
-        )=>new SwListingDisableRule(
+        )=>new SWListingDisableRule(
             $q
         );
         directive.$inject = [
@@ -73,5 +73,5 @@ class SwListingDisableRule implements ng.IDirective{
     }
 }
 export{
-    SwListingDisableRule
+    SWListingDisableRule
 }
