@@ -13,7 +13,8 @@
 			<cfset arguments.domain = getApplicationValue("hibachiConfig").sessionCookieDomain />
 		</cfif>
 		
-		<cfcookie attributeCollection="#removeNullStructValues(arguments)#" />
+		<cfset arguments = removeNullStructValues(arguments)>
+		<cfcookie attributeCollection="#arguments#" />
 	</cffunction>
 	
 	<cffunction name="removeNullStructValues" returntype="struct" >
