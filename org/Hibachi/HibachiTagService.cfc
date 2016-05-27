@@ -19,9 +19,9 @@
 	<cffunction name="removeNullStructValues" returntype="struct" >
 		<cfargument name="oldStruct" type="struct">
 		<cfset var newStruct = {}/>
-		<cfloop collection="#arguments.oldStruct#" item="key">
-			<cfif structKeyExists(arguments.oldStruct,key) && !isNull(arguments.oldStruct[key])>
-				<cfset newStruct[key] = arguments.oldStruct[key]/>
+		<cfloop collection="#arguments.oldStruct#" item="local.key">
+			<cfif structKeyExists(arguments.oldStruct,local.key) AND NOT isNull(arguments.oldStruct[local.key])>
+				<cfset newStruct[local.key] = arguments.oldStruct[local.key]/>
 			</cfif>
 		</cfloop>
 		<cfreturn newStruct/>
