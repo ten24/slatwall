@@ -2,7 +2,7 @@
 <Table tableName="SwState">
 	<Columns>
 		<column name="stateCode" fieldtype="id" />
-		<column name="countryCode" fieldtype="id" />
+		<column name="countryCode" />
 		<column name="stateName" update="false" />
 	</Columns>
 	<Records>
