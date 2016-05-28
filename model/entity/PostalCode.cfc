@@ -62,7 +62,7 @@ component displayname="Postal Code" entityname="SlatwallPostalCode" table="SwPos
 	
 	// Related Object Properties
 	property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryCode" insert="false" update="false";
-	property name="state" cfc="State" fieldtype="many-to-one" fkcolumn="stateCode,countryCode";
+	property name="state" cfc="State" fieldtype="many-to-one" fkcolumn="stateCode";
 	
 	    
 
