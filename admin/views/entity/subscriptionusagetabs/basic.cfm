@@ -28,7 +28,7 @@
 					<cfset renewalSkuID = "" />
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="useRenewalSku" edit=true>
-				<hb:hibachidisplaytoggle selector="input[name='useRenewalSku']" showvalues="1" loadVisable="#!isNull(rc.subscriptionUsage.getRenewalSku())#">
+				<hb:HibachiDisplayToggle selector="input[name='useRenewalSku']" showvalues="1" loadVisable="#!isNull(rc.subscriptionUsage.getRenewalSku())#">
 					<swa:SlatwallErrorDisplay object="#rc.subscriptionUsage#" errorName="renewalSku" />
 					<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionSkuSmartList()#"
 											  selectValue="#renewalSkuID#"

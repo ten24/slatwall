@@ -65,12 +65,12 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalMethod" valueDefault="#renewalMethodDefault#" valueOptions="#rc.sku.getProduct().getRenewalMethodOptions()#" edit=true>
 		</cfif>
 
-		<hb:hibachidisplaytoggle selector="select[name='renewalMethod']" showvalues="custom" loadVisable="#isNull(rc.sku.getRenewalSku())#">
+		<hb:HibachiDisplayToggle selector="select[name='renewalMethod']" showvalues="custom" loadVisable="#isNull(rc.sku.getRenewalSku())#">
             <hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalPrice" edit="#rc.edit#">
             <hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalSubscriptionBenefits" edit="#rc.edit#" displayType="plain">
-		</hb:hibachidisplaytoggle>
+		</hb:HibachiDisplayToggle>
 
-		<hb:hibachidisplaytoggle selector="select[name='renewalMethod']" showvalues="renewalsku" loadVisable="#!isNull(rc.sku.getRenewalSku())#">
+		<hb:HibachiDisplayToggle selector="select[name='renewalMethod']" showvalues="renewalsku" loadVisable="#!isNull(rc.sku.getRenewalSku())#">
 			<cfif !isNull(rc.sku.getRenewalSku()) && !rc.edit>
 				<hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalPrice" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.sku.getRenewalSku()#" fieldname="renewalSku.skuCode" property="skuCode" edit="#rc.edit#" title="#$.slatwall.getRBKey('define.renewalSku')#" valuelink="#$.slatwall.buildURL(action='admin:entity.detailsku',querystring='skuID=#rc.sku.getRenewalSku().getSkuID()#')#"/>
@@ -95,7 +95,7 @@ Notes:
 					<hb:HibachiListingColumn propertyIdentifier="price" />
 				</hb:HibachiListingDisplay>
 			</cfif>
-		</hb:hibachidisplaytoggle>
+		</hb:HibachiDisplayToggle>
 
 
 

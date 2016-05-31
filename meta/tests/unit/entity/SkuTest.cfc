@@ -69,30 +69,80 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function getRedemptionAmountType_test(){
 		var skuData = {
 			skuID="",
+			userDefinedPriceFlag=false,
 			redemptionAmountType="sameAsPrice",
 			redemptionAmount="10.00",
 			price="5.00"
 		};
 		var sameAsPrice = createPersistedTestEntity('sku',skuData);
+		assertEquals(sameAsPrice.getRedemptionAmount(100), 5.00);
 
 		var skuData2 = {
 			skuID="",
+			userDefinedPriceFlag=false,
 			redemptionAmountType="fixedAmount",
 			redemptionAmount="10.00"
 		};
 		var fixedAmount = createPersistedTestEntity('sku',skuData2);
+		assertEquals(fixedAmount.getRedemptionAmount(100), 10.00);
 
 		var skuData3 = {
 			skuID="",
+			userDefinedPriceFlag=false,
 			redemptionAmountType="percentage",
 			price="10.00",
 			redemptionAmount=50
 		};
 		var percentage = createPersistedTestEntity('sku',skuData3);
+		assertEquals(percentage.getRedemptionAmount(100), 5.00);
 
-		assertEquals(sameAsPrice.getRedemptionAmount(), 5.00);
-		assertEquals(fixedAmount.getRedemptionAmount(), 10.00);
-		assertEquals(percentage.getRedemptionAmount(), 5.00);
+		var skuData4 = {
+			skuID="",
+			redemptionAmountType="percentage",
+			userDefinedPriceFlag=true,
+			price="10.00",
+			redemptionAmount=50
+		};
+		var userDefinedPercentage = createPersistedTestEntity('sku',skuData4);
+		assertEquals(userDefinedPercentage.getRedemptionAmount(5), 2.50);
+
+		var skuData5 = {
+			skuID="",
+			userDefinedPriceFlag=true,
+			price="10.00",
+			redemptionAmount=50
+		};
+		var noRedemptionAmountUserDefined = createPersistedTestEntity('sku',skuData5);
+		assertEquals(noRedemptionAmountUserDefined.getRedemptionAmount(10), 0);
+
+		var skuData6 = {
+			skuID="",
+			userDefinedPriceFlag=false,
+			price="10.00",
+			redemptionAmount=50
+		};
+		var noRedemptionAmountNotUserDefined = createPersistedTestEntity('sku',skuData6);
+		assertEquals(noRedemptionAmountNotUserDefined.getRedemptionAmount(), 0);
+
+		var skuData7 = {
+			skuID="",
+			redemptionAmountType="fixedAmount",
+			userDefinedPriceFlag=true,
+			price="10.00",
+			redemptionAmount=50
+		};
+		var userDefinedFixedAmount = createPersistedTestEntity('sku',skuData7);
+		assertEquals(userDefinedFixedAmount.getRedemptionAmount(5), 5);
+
+		var skuData8 = {
+			skuID="",
+			redemptionAmountType="sameAsPrice",
+			userDefinedPriceFlag=true,
+			price="10.00",
+			redemptionAmount=50
+		};
+		var userDefinedSameAsPrice = createPersistedTestEntity('sku',skuData8);
+		assertEquals(userDefinedSameAsPrice.getRedemptionAmount(5), 5);
 	}
 
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {

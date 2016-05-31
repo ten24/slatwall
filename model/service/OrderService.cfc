@@ -59,6 +59,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="giftCardService";
 	property name="hibachiUtilityService";
 	property name="hibachiAuthenticationService";
+	property name="integrationService";
 	property name="locationService";
 	property name="paymentService";
 	property name="priceGroupService";
@@ -1726,7 +1727,94 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		return arguments.order;
 	}
+	
+	public numeric function getAmountToBeCapturedByCaptureAuthorizationPayments(required any orderDelivery, required any processObject){
+		var amountToBeCaptured = arguments.processObject.getCapturableAmount();
+		for(var orderPayment in arguments.processObject.getOrder().getOrderPayments()) {
+			if(
+				orderPayment.getStatusCode() == 'opstActive' 
+				&& orderPayment.getPaymentMethod().getPaymentMethodType() == "creditCard" 
+				&& orderPayment.getAmountUnreceived() > 0 
+				&& amountToBeCaptured > 0
+			) {
+				var transactionData = {
+					transactionType = 'chargePreAuthorization',
+					amount = amountToBeCaptured
+				};
 
+				if(transactionData.amount > orderPayment.getAmountUnreceived()) {
+					transactionData.amount = orderPayment.getAmountUnreceived();
+				}
+
+				orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
+
+				if(!orderPayment.hasErrors()) {
+					amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
+				}
+			}
+		}
+		return amountToBeCaptured;
+	}
+	
+	
+	
+	public any function addOrderFulfillmentItemsToOrderDelivery(required any orderDelivery, required any processObject){
+		// Loop over delivery items from processObject and add them with stock to the orderDelivery
+		for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
+
+			// Local pointer to the orderItem
+			var thisOrderItem = arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()[i];
+
+			if(thisOrderItem.getQuantityUndelivered() && thisOrderItem.hasAllGiftCardsAssigned()) {
+				// Create a new orderDeliveryItem
+				var orderDeliveryItem = this.newOrderDeliveryItem();
+
+				// Populate with the data
+				orderDeliveryItem.setOrderItem( thisOrderItem );
+				orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
+				orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
+				orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
+			}
+
+		}
+		return arguments.orderDelivery;
+	}
+	
+	public any function addOrderDeliveryItemToOrderDeliveryStruct(
+		required any orderDelivery, 
+		required struct orderDeliveryItemStuct
+	){
+		// Create a new orderDeliveryItem
+		var newOrderDeliveryItem = this.newOrderDeliveryItem();
+
+		// Populate with the data
+		newOrderDeliveryItem.setOrderItem( 
+			this.getOrderItem( 
+				orderDeliveryItemStuct.orderItem.orderItemID 
+			) 
+		);
+		newOrderDeliveryItem.setQuantity( orderDeliveryItemStuct.quantity );
+		
+		var stock = getStockService().getStockBySkuAndLocation(
+			sku=newOrderDeliveryItem.getOrderItem().getSku(), 
+			location=arguments.orderDelivery.getLocation()
+		);
+		newOrderDeliveryItem.setStock( 
+			stock
+		);
+		newOrderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
+		return arguments.orderDelivery;
+	}
+	
+	public any function addOrderDeliveryItemsToOrderDelivery(required any orderDelivery, required any processObject){
+		// Loop over delivery items from processObject and add them with stock to the orderDelivery
+		for(var i=1; i<=arrayLen(arguments.processObject.getOrderDeliveryItems()); i++) {
+			var orderDeliveryItem = arguments.processObject.getOrderDeliveryItems()[i];
+			addOrderDeliveryItemToOrderDeliveryStruct(arguments.orderDelivery,orderDeliveryItem);
+		}
+		return arguments.orderDelivery;
+	}
+	
 	// Process: Order Delivery
 	public any function processOrderDelivery_create(required any orderDelivery, required any processObject, struct data={}) {
 
@@ -1734,33 +1822,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// If we need to capture payments first, then we do that to make sure the rest of the delivery can take place
 		if(arguments.processObject.getCaptureAuthorizedPaymentsFlag()) {
-			var amountToBeCaptured = arguments.processObject.getCapturableAmount();
-
-			for(var orderPayment in arguments.processObject.getOrder().getOrderPayments()) {
-
-				if(orderPayment.getStatusCode() == 'opstActive') {
-					if(orderPayment.getPaymentMethod().getPaymentMethodType() eq "creditCard" && orderPayment.getAmountUnreceived() gt 0 && amountToBeCaptured gt 0) {
-						var transactionData = {
-							transactionType = 'chargePreAuthorization',
-							amount = amountToBeCaptured
-						};
-
-						if(transactionData.amount gt orderPayment.getAmountUnreceived()) {
-							transactionData.amount = orderPayment.getAmountUnreceived();
-						}
-
-						orderPayment = this.processOrderPayment(orderPayment, transactionData, 'createTransaction');
-
-						if(!orderPayment.hasErrors()) {
-							amountToBeCaptured = precisionEvaluate(amountToBeCaptured - transactionData.amount);
-						}
-					}
-				}
-			}
+			 amountToBeCaptured = getAmountToBeCapturedByCaptureAuthorizationPayments(arguments.orderDelivery,arguments.processObject);
 		}
 
 		// As long as the amount to be captured is eq 0 then we can continue making the order delivery
-		if(amountToBeCaptured eq 0) {
+		if(amountToBeCaptured == 0) {
 
 			// Setup the header information
 			arguments.orderDelivery.setOrder( arguments.processObject.getOrder() );
@@ -1768,55 +1834,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.orderDelivery.setFulfillmentMethod( arguments.processObject.getOrderFulfillment().getFulfillmentMethod() );
 
 			// If this is a shipping fulfillment, then populate the correct values
-			if(arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping") {
+			if(
+				arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() == "shipping"
+			) {
 				arguments.orderDelivery.setShippingMethod( arguments.processObject.getShippingMethod() );
 				arguments.orderDelivery.setShippingAddress( arguments.processObject.getShippingAddress().copyAddress( saveNewAddress=true ) );
 			}
-
-			// Setup the tracking number
-			if(!isNull(arguments.processObject.getTrackingNumber()) && len(arguments.processObject.getTrackingNumber())) {
+			
+			// Setup the tracking number if we have it
+			if(
+				!isNull(arguments.processObject.getTrackingNumber()) 
+				&& len(arguments.processObject.getTrackingNumber())
+			) {
 				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
 			}
-
+			
+			if(
+				!isNull(arguments.processObject.getContainerLabel())
+				&& len(arguments.processObject.getContainerLabel())
+			){
+				arguments.orderDelivery.setContainerLabel(arguments.processObject.getContainerLabel());
+			}
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
-			if((arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "auto"
-				|| (!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
-					&& arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag()))
+			if(
+				(
+					arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() == "auto"
+				|| (
+					!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
+					&& arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag()
+					)
+				) 
 				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())
 				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")
 			) {
-
-				// Loop over delivery items from processObject and add them with stock to the orderDelivery
-				for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
-
-					// Local pointer to the orderItem
-					var thisOrderItem = arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()[i];
-
-					if(thisOrderItem.getQuantityUndelivered() && thisOrderItem.hasAllGiftCardsAssigned()) {
-						// Create a new orderDeliveryItem
-						var orderDeliveryItem = this.newOrderDeliveryItem();
-
-						// Populate with the data
-						orderDeliveryItem.setOrderItem( thisOrderItem );
-						orderDeliveryItem.setQuantity( thisOrderItem.getQuantityUndelivered() );
-						orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
-						orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
-					}
-
-				}
+				addOrderFulfillmentItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
+				
 			} else {
-				// Loop over delivery items from processObject and add them with stock to the orderDelivery
-				for(var i=1; i<=arrayLen(arguments.processObject.getOrderDeliveryItems()); i++) {
-
-					// Create a new orderDeliveryItem
-					var orderDeliveryItem = this.newOrderDeliveryItem();
-
-					// Populate with the data
-					orderDeliveryItem.setOrderItem( this.getOrderItem( arguments.processObject.getOrderDeliveryItems()[i].orderItem.orderItemID ) );
-					orderDeliveryItem.setQuantity( arguments.processObject.getOrderDeliveryItems()[i].quantity );
-					orderDeliveryItem.setStock( getStockService().getStockBySkuAndLocation(sku=orderDeliveryItem.getOrderItem().getSku(), location=arguments.orderDelivery.getLocation()));
-					orderDeliveryItem.setOrderDelivery( arguments.orderDelivery );
-				}
+				addOrderDeliveryItemsToOrderDelivery(arguments.orderDelivery,arguments.processObject);
 			}
 
 			// Loop over the orderDeliveryItems to setup subscriptions and contentAccess

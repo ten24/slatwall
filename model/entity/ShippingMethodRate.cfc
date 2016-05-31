@@ -93,8 +93,9 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	property name="shippingMethodRateName" type="string" persistent="false";
 	property name="hasPriceGroups" type="string" persistent="false";
 	
-	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	
 	
 	public array function getAddressZoneOptions() {
 		if(!structKeyExists(variables, "addressZoneOptions")) {
