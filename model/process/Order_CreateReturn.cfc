@@ -83,7 +83,25 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			opSmartList.addFilter('orderPaymentStatusType.systemCode', 'opstActive');
 			
 			for(var orderPayment in opSmartList.getRecords()) {
-				arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getPaymentMethod().getPaymentMethodName() & " - " & orderPayment.getCreditCardType() & " ***" & orderPayment.getCreditCardLastFour() & ' - ' & getOrder().getFormattedValue('total'), value=orderPayment.getOrderPaymentID()});
+				var simpleRepresentationString="";
+				if(orderPayment.getPaymentMethod().getPaymentMethodName()== "creditCard"){
+					if(!isNull(orderPayment.getPaymentMethod())){
+						if(!isNull(orderPayment.getPaymentMethod().getPaymentMethodName())){
+							simpleRepresentationString &= orderPayment.getPaymentMethod().getPaymentMethodName();
+						}
+					}
+					arrayAppend(variables.refundOrderPaymentIDOptions, {
+						name=orderPayment.getPaymentMethod().getPaymentMethodName() & " - " & orderPayment.getCreditCardType() & " ***" & orderPayment.getCreditCardLastFour() & ' - ' & getOrder().getFormattedValue('total'), value=orderPayment.getOrderPaymentID()});	
+				}
+				else if(orderPayment.getPaymentMethod().getPaymentMethodName()== "giftCard"){
+					if(!isNull(orderPayment.getPaymentMethod())){
+						if(!isNull(orderPayment.getPaymentMethod().getPaymentMethodName())){
+							simpleRepresentationString &= orderPayment.getPaymentMethod().getPaymentMethodName();
+							}
+						}
+					arrayAppend(variables.refundOrderPaymentIDOptions, {name=orderPayment.getPaymentMethod().getPaymentMethodName() & " - " & orderPayment.getGiftCardNumber() & ' - ' & getOrder().getFormattedValue('total'), value=orderPayment.getOrderPaymentID()});
+				}
+				
 			}
 			arrayAppend(variables.refundOrderPaymentIDOptions, {name=rbKey('define.new'), value=""});
 		}
