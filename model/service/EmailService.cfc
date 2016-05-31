@@ -170,6 +170,7 @@ Notes:
 
 	public any function generateAndSendFromEntityAndEmailTemplate( required any entity, required any emailTemplate ) {
 		var email = this.newEmail();
+		arguments[arguments.entity.getClassName()] = arguments.entity;
 		email = this.processEmail(email, arguments, 'createFromTemplate');
 		email = this.processEmail(email, 'addToQueue');
 		return email;
