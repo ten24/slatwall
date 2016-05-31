@@ -89,20 +89,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 
 
-	//public void function addDisplayAggregateTest(){
+//	public void function addDisplayAggregateTest(){
 //
 //
 //
-		//var myCollection = variables.entityService.getSkuCollectionList();
-		//myCollection.setDisplayProperties('product.productName,price');
-		//myCollection.addFilter('skuID','402828904e79c0a5014e8dc30190060c');
-		//myCollection.addDisplayAggregate('product','count','productCount');
-		//var aggregateHQL = myCollection.getHQL();
-		////debug(aggregateHQL);
-		//var pageRecords = myCollection.getPageRecords();
-		//request.debug(pageRecords);
-		//assertEquals(1,pageRecords[1]['productCount']);
-	//}
+//		var myCollection = variables.entityService.getSkuCollectionList();
+//		myCollection.setDisplayProperties('product.productName,price');
+//		myCollection.addFilter('skuID','402828904e79c0a5014e8dc30190060c');
+//		myCollection.addDisplayAggregate('product','count','productCount');
+//		var aggregateHQL = myCollection.getHQL();
+//		//debug(aggregateHQL);
+//		var pageRecords = myCollection.getPageRecords();
+//		//debug(pageRecords);
+//		assertEquals(1,pageRecords[1]['productCount']);
+//	}
 
 //	public void function addDisplayAggregate_one_to_manyTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
@@ -1828,13 +1828,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var test = ormexecuteQuery("SELECT _orderitem FROM SlatwallOrderItem as _orderitem left join _orderitem.order as _orderitem_order where (_orderitem_order.orderID = 'ff80808151a223aa0151a735438e014a') GROUP BY _orderitem ORDER BY _orderitem.createdDateTime desc",false,{maxresults=1});
  		addToDebug('test');
 		addToDebug(test);
-	}
-
-
-	public void function testManyToMany(){
-		var test = ormexecuteQuery("FROM SlatwallOrder");
-
-		request.debug(test[1].getOrderID());
 	}
 
 	public void function getHQLForCollectionFilterManyToManyTest(){
