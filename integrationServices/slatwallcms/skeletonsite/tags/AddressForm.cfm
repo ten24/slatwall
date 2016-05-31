@@ -89,7 +89,7 @@
 						<div class="controls">
 							
 							<sw:FormField type="select" name="#attributes.fieldNamePrefix#countryCode" valueObject="#attributes.address#" valueObjectProperty="countryCode" valueOptions="#attributes.address.getCountryCodeOptions()#" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="countryCode" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="countryCode" />
 							
 						</div>
 					</div>
@@ -102,7 +102,7 @@
 						<div class="controls" data-sw-field="true">
 							
 							<sw:FormField type="text" name="#attributes.fieldNamePrefix#name" valueObject="#attributes.address#" valueObjectProperty="name" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="name" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="name" />
 							
 						</div>
 					</div>
@@ -115,7 +115,7 @@
 						<div class="controls" data-sw-field="true">
 							
 							<sw:FormField type="text" name="#attributes.fieldNamePrefix#company" valueObject="#attributes.address#" valueObjectProperty="company" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="company" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="company" />
 							
 						</div>
 					</div>
@@ -128,7 +128,7 @@
 						<div class="controls" data-sw-field="true">
 							
 							<sw:FormField type="text" name="#attributes.fieldNamePrefix#streetAddress" valueObject="#attributes.address#" valueObjectProperty="streetAddress" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="streetAddress" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="streetAddress" />
 							
 						</div>
 					</div>
@@ -141,7 +141,7 @@
 						<div class="controls" data-sw-field="true">
 							
 							<sw:FormField type="text" name="#attributes.fieldNamePrefix#street2Address" valueObject="#attributes.address#" valueObjectProperty="street2Address" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="street2Address" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="street2Address" />
 							
 						</div>
 					</div>
@@ -154,7 +154,7 @@
 						<div class="controls" data-sw-field="true">
 							
 							<sw:FormField type="text" name="#attributes.fieldNamePrefix#locality" valueObject="#attributes.address#" valueObjectProperty="locality" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="locality" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="locality" />
 							
 						</div>
 					</div>
@@ -167,7 +167,7 @@
 						<div class="controls" data-sw-field="true">
 							
 							<sw:FormField type="text" name="#attributes.fieldNamePrefix#city" valueObject="#attributes.address#" valueObjectProperty="city" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="city" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="city" />
 							
 						</div>
 					</div>
@@ -184,7 +184,7 @@
 							<cfelse>
 								<sw:FormField type="text" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" class="#attributes.fieldClass#" />
 							</cfif>
-							<sw:errorDisplay object="#attributes.address#" errorName="stateCode" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="stateCode" />
 							
 						</div>
 					</div>
@@ -197,7 +197,7 @@
 						<div class="controls" data-sw-field="true">
 							
 							<sw:FormField type="text" name="#attributes.fieldNamePrefix#postalCode" valueObject="#attributes.address#" valueObjectProperty="postalCode" class="#attributes.fieldClass#" />
-							<sw:errorDisplay object="#attributes.address#" errorName="postalCode" />
+							<sw:ErrorDisplay object="#attributes.address#" errorName="postalCode" />
 							
 						</div>
 					</div>

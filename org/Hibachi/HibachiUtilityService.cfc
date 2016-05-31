@@ -460,7 +460,7 @@
 
 		// helper method for downloading a file
 		public void function downloadFile(required string fileName, required string filePath, string fileType="", string contentType = 'application/unknown', boolean deleteFile = false) {
-			getHibachiTagService().cfheader(name="Content-Disposition", value="inline; filename=#arguments.fileName#.#arguments.fileType#");
+			getHibachiTagService().cfheader(name="Content-Disposition", value="attachment; filename=#arguments.fileName#.#arguments.fileType#");
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
 
