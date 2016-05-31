@@ -199,7 +199,7 @@ class CollectionConfig {
             keywords: this.keywords,
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
-            isDistinct: this.isDistinct,
+            isDistinct: this.isDistinct
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
