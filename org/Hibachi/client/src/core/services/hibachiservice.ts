@@ -222,7 +222,6 @@ class HibachiService{
 			params.orderByConfig = options.orderByConfig || '';
 			params.groupBysConfig = options.groupBysConfig || '';
 			params.isDistinct = (options.isDistinct == undefined) ? false : options.isDistinct;
-            params.hasManyRelationFilter = (options.hasManyRelationFilter == undefined) ? false : options.hasManyRelationFilter;
 			params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 			params.allRecords = options.allRecords || '';
 			params.defaultColumns = (options.defaultColumns == undefined) ? true : options.defaultColumns;

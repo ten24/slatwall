@@ -102,8 +102,7 @@ class CollectionConfig {
         private pageShow:number = 10,
         private keywords:string = '',
         private allRecords:boolean = false,
-        private isDistinct:boolean = false,
-        private hasManyRelationFilter:boolean = false
+        private isDistinct:boolean = false
 
     ){
         console.log('abc');
@@ -179,7 +178,6 @@ class CollectionConfig {
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
             isDistinct: this.isDistinct,
-            hasManyRelationFilter: this.hasManyRelationFilter,
             orderBy:this.orderBy
         };
     };
@@ -202,7 +200,6 @@ class CollectionConfig {
             defaultColumns: (!this.columns || !this.columns.length),
             allRecords: this.allRecords,
             isDistinct: this.isDistinct,
-            hasManyRelationFilter: this.hasManyRelationFilter
         };
         if(angular.isDefined(this.id)){
             options['id'] = this.id;
@@ -237,10 +234,6 @@ class CollectionConfig {
         for (var i = 0; i < propertyIdentifierParts.length; i++) {
 
             if (angular.isDefined(current_collection.metaData[propertyIdentifierParts[i]]) && ('cfc' in current_collection.metaData[propertyIdentifierParts[i]])) {
-                if('singularname' in current_collection.metaData[propertyIdentifierParts[i]]){
-                    //this.addGroupBy(this.baseEntityAlias);
-                    this.hasManyRelationFilter = true;
-                }
                 current_collection = this.$hibachi.getEntityExample(current_collection.metaData[propertyIdentifierParts[i]].cfc);
                 _propertyIdentifier += '_' + propertyIdentifierParts[i];
                 this.addJoin(new Join(

@@ -544,6 +544,25 @@ component output="false" accessors="true" extends="HibachiService" {
 
 			if(structKeyExists(arguments.collectionOptions,'joinsConfig') && len(arguments.collectionOptions.joinsConfig)){
 				collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
+
+				for(var currentJoin = 1; currentJoin <= arraylen(collectionEntity.getCollectionConfigStruct().joins); currentJoin++){
+
+					var currentJoinParts = ListToArray(collectionEntity.getCollectionConfigStruct().joins[currentJoin]['associationName'], '.');
+					var current_object = getService('hibachiService').getPropertiesStructByEntityName(arguments.collectionEntity.getCollectionObject());
+
+					for (var i = 1; i <= arraylen(currentJoinParts); i++) {
+						if(structKeyExists(current_object, currentJoinParts[i]) && structKeyExists(current_object[currentJoinParts[i]], 'cfc')){
+							if(structKeyExists(current_object[currentJoinParts[i]], 'singularname')){
+								collectionEntity.getCollectionConfigStruct().hasManyRelationFilter = true;
+								break;
+							}
+							current_object = getService('hibachiService').getPropertiesStructByEntityName(current_object[currentJoinParts[i]]['cfc']);
+						}
+					}
+					if(collectionEntity.getCollectionConfigStruct().hasManyRelationFilter){
+						break;
+					}
+				}
 			}
 
 			if(structKeyExists(arguments.collectionOptions,'orderByConfig') && len(arguments.collectionOptions.orderByConfig)){
