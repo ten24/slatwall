@@ -252,6 +252,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var mockAccount = createTestEntity('Account', accountData);
 		var resultPrimaryAddress = mockAccount.getPrimaryAddress().getAccountAddressName();
 		assertEquals(resultPrimaryAddress, "123 Franklin St");
+		//testing empty PrimaryAddress but existing Address
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			accountAddresses = [{
+				accountAddressID = "0001",
+				accountAddressName = "12 Franklin St"
+			}]
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultNoPrimaryAddressExistAddress = mockAccount.getPrimaryAddress().getAccountAddressName();
+		assertEquals(resultNoPrimaryAddressExistAddress, "12 Franklin St");
 		//testing empty PrimaryAddress empty address
 		accountData = {
 			accountID = "001",
@@ -259,8 +272,49 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			lastName = "Kitty"
 		};
 		mockAccount = createTestEntity('Account', accountData);
-		var resultNoAddress = mockAccount.getPrimaryAddress().getAccountAddressName();
 		assert(mockAccount.getPrimaryAddress().getNewFlag());
+	}
+	
+	public void function getPrimaryPaymentMethodTest() {
+		//testing existing PrimaryPaymentMethod
+		var accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			primaryPaymentMethod = {
+				accountPaymentMethodID = "0001",
+				accountPaymentMethodName = "Yuqing BOA card",
+				nameOnCreditCard = "Yuqing"
+			}
+		};
+		var mockAccount = createTestEntity('Account', accountData);
+		var resultPrimaryPaymentNameOnCreditCard = mockAccount.getPrimaryPaymentMethod().getNameOnCreditCard();
+		assertEquals(resultPrimaryPaymentNameOnCreditCard, "Yuqing");
+		var resultPrimaryPaymentAccountPaymentMethodName = mockAccount.getPrimaryPaymentMethod().getaccountPaymentMethodName();
+		assertEquals(resultPrimaryPaymentAccountPaymentMethodName, "Yuqing BOA card");
+		//testing empty PrimaryPaymentMethod but existing account paymentMethods
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty",
+			accountPaymentMethods = [{
+				accountPaymentMethodID = "0001",
+				accountPaymentMethodName = "Yuqing BOA card",
+				nameOnCreditCard = "YuqingYang"
+			}]
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNoPrimaryPaymentExistingPayment = mockAccount.getPrimaryPaymentMethod().getNameOnCreditCard();
+		assertEquals(resultNoPrimaryPaymentExistingPayment, "YuqingYang");
+		//testing empty PrimaryPaymentMethod
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty"
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNonePrimaryPayment = mockAccount.getPrimaryPaymentMethod();
+		assertTrue(resultNonePrimaryPayment..getNewFlag());
 		
 	}
 	
