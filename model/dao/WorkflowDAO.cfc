@@ -58,11 +58,7 @@ Notes:
 									FROM
 										SlatwallWorkflowTrigger
 									WHERE
-										triggerType = :triggerType
-									AND
-										startDateTime >= CURRENT_TIMESTAMP()
-									AND
-										(endDateTime IS NULL OR startDateTime < CURRENT_TIMESTAMP())'
+										triggerType = :triggerType'
 									,{triggerType="Event"}) 
 									/>
 	</cffunction>
