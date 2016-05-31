@@ -239,6 +239,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function getPrimaryAddressTest() {
+		//testing existing PrimaryAddress
 		var accountData = {
 			accountID = "001",
 			firstName = "Hello",
@@ -249,8 +250,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			}
 		};
 		var mockAccount = createTestEntity('Account', accountData);
-		var resultPrimaryAddress = mockAccount.getPrimaryAddress().getAddress();
-		assertEquals(resultPrimaryAddress, "123");
+		var resultPrimaryAddress = mockAccount.getPrimaryAddress().getAccountAddressName();
+		assertEquals(resultPrimaryAddress, "123 Franklin St");
+		//testing empty PrimaryAddress empty address
+		accountData = {
+			accountID = "001",
+			firstName = "Hello",
+			lastName = "Kitty"
+		};
+		mockAccount = createTestEntity('Account', accountData);
+		var resultNoAddress = mockAccount.getPrimaryAddress().getAccountAddressName();
+		assert(mockAccount.getPrimaryAddress().getNewFlag());
+		
 	}
 	
 	public void function getSuperUserFlagTest() {
@@ -302,7 +313,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultOnlyFirstName = mockAccount.getFullName();
-		assertEquals(resultOnlyFirstName, "Hello "); //One extra space
+		assertEquals(resultOnlyFirstName, "Hello "); 
 		//testing empty FirstName existing LastName
 		accountData = {
 			accountID = "001",
@@ -310,14 +321,14 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultOnlyLastName = mockAccount.getFullName();
-		assertEquals(resultOnlyLastName, " Kitty");//One extra space
+		assertEquals(resultOnlyLastName, " Kitty");
 		//testing empty FirstName & LastName
 		accountData = {
 			accountID = "001"
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultNoName = mockAccount.getFullName();
-		assertEquals(resultNoName, " ");//One extra space
+		assertEquals(resultNoName, " ");
 	}
 	
 	public void function getSimpleRepresentationTest() {
@@ -336,12 +347,12 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
-		assertEquals(resultFirstLastName, " ");//?I think it should return accountID to represent
+		assertEquals(resultFirstLastName, " ");
 		//testing empty account
 		accountData = {};
 		mockAccount = createTestEntity('Account', accountData);
 		var resultFirstLastName = mockAccount.getSimpleRepresentation();
-		assertEquals(resultFirstLastName, mockAccount.getFullName());
+		assertEquals(resultFirstLastName, " ");
 	}
 	
 }
