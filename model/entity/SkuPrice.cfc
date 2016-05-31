@@ -81,7 +81,9 @@ component entityname="SlatwallSkuPrice" table="SwSkuPrice" persistent=true acces
 
 	public any function getCurrencyCodeOptions(){
 		if(!structKeyExists(variables,"currencyCodeOptions")){
+			if(!isNull(getSku())){
 
+			}
 		}
 		return variables.currencyCodeOptions;
 	}

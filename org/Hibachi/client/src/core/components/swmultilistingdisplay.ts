@@ -669,21 +669,19 @@ class SWMultiListingDisplayController{
         }
     };
     
-    //this has moved into a service
     public getKeyOfMatchedExpandableRule = (pageRecord)=>{
         return this.listingService.getKeyOfMatchedExpandableRule(this.tableID, pageRecord);
     }
     
-    //this has moved into a service
     public getPageRecordMatchesExpandableRule = (pageRecord)=>{
         return this.listingService.getPageRecordMatchesExpandableRule(this.tableID, pageRecord);
     }
     
-    //this has moved into a service
     public getPageRecordChildCollectionConfigForExpandableRule = (pageRecord) => {
         return this.listingService.getPageRecordChildCollectionConfigForExpandableRule(this.tableID, pageRecord);
     }
     
+    //move this to the service
     public getExampleEntityForExpandableRecord = (pageRecord) =>{
         var childCollectionConfig = this.getPageRecordChildCollectionConfigForExpandableRule(pageRecord);
         if(angular.isDefined(childCollectionConfig)){
@@ -692,17 +690,25 @@ class SWMultiListingDisplayController{
         return this.exampleEntity; 
     }
     
-    public getColorFilterNGClassObject = (pageRecord)=>{
+    //move this to the service
+    public getPageRecordIsChild = (pageRecord)=>{
+        var isChild = false; 
+        console.log("this is a page record",pageRecord);
+        return isChild;
+    }
+    
+    //move this to the service
+    public getNGClassObjectForPageRecord = (pageRecord)=>{
         var classObjectString = "{"; 
         angular.forEach(this.colorFilters, (colorFilter, index)=>{
             classObjectString = classObjectString.concat("'" + colorFilter.colorClass + "':" + this.getColorFilterConditionString(colorFilter, pageRecord));
-            if(index<this.colorFilters.length-1){
-                classObjectString = classObjectString.concat(",");
-            }
+            classObjectString = classObjectString.concat(",");
         }); 
+        classObjectString = classObjectString.concat("s-child:" + this.getPageRecordIsChild(pageRecord)); 
         return classObjectString + "}"; 
     };
     
+    //move this to the service
     private getColorFilterConditionString = (colorFilter, pageRecord)=>{
        if(angular.isDefined(colorFilter.comparisonProperty)){
             return pageRecord[colorFilter.propertyToCompare.replace('.','_')] + colorFilter.comparisonOperator + pageRecord[colorFilter.comparisonProperty.replace('.','_')];

@@ -123,7 +123,7 @@
 
                         <tr data-ng-repeat="(pageRecordKey, pageRecord) in swMultiListingDisplay.collectionData.pageRecords"
                             data-ng-if="pageRecord.dataIsVisible !== false"
-                            data-ng-class="{{swMultiListingDisplay.getColorFilterNGClassObject(pageRecord)}}">
+                            data-ng-class="{{swMultiListingDisplay.getNGClassObjectForPageRecord(pageRecord)}}">
 
                             <!--Selectable/Multiselectable-->
                             <td ng-if="swMultiListingDisplay.selectable || swMultiListingDisplay.multiselectable"

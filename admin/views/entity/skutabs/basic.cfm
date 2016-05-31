@@ -5,6 +5,7 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+	<cfdump var="#rc.sku.getCurrencyDetails()#" top="2" abort="true">
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.sku#" property="activeFlag" edit="#rc.edit#">
