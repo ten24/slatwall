@@ -2299,6 +2299,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					};
 					newStockAdjustment = getStockService().processStockAdjustment(newStockAdjustment,addStockAdjustmentItemData,'addStockAdjustmentItem');
 					
+					var comment = getCommentService().newComment();
+					comment.setPublicFlag(false);
+					comment.setComment(getHibachiScope().getRbKey('define.stockloss'));
+					var commentRelationship = getCommentService().newCommentRelationship();
+					commentRelationship.setStockAdjustment(newStockAdjustment);
+					commentRelationship.setComment(comment);
+					commentRelationship.setStockAdjustment(newStockAdjustment);
+					commentRelationship = getCommentService().saveCommentRelationship(commentRelationship);
+					comment = getCommentService().saveComment(comment,{});
+					
 					newStockAdjustment = getStockService().saveStockAdjustment(newStockAdjustment);
 					arrayAppend(stockAdjustments,newStockAdjustment);
 				}
